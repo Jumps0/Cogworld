@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6ec149692851794295060569572dd78, type: 3}
+  m_Name: Industrial Cave Wall
+  m_EditorClassIdentifier: 
+  Id: 3
+  displaySprite: {fileID: -440446855, guid: 0baaa671f5673164fbd9cbd465c9e16b, type: 3}
+  tileName: Industrial Cave Wall
+  type: 1
+  altSprite: {fileID: 0}
+  asciiRep: {fileID: 1342612219, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  asciiColor: {r: 0.54509807, g: 0.54509807, b: 0.5411765, a: 1}
+  isDirty: 0
+  impassable: 0
+  health: {x: 10, y: 10}
+  armor: 15
+  currentVis: 0

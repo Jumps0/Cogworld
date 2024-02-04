@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
+  m_Name: Asb. Rifle
+  m_EditorClassIdentifier: 
+  instantUnique: 0
+  amount: 1
+  data:
+    Name: 
+    Id: 68
+    stackable: 0
+    itemData: {fileID: 11400000}
+  knowByPlayer: 1
+  floorDisplay: {fileID: 678505362, guid: 29b93740c1620a54b8cc50531ce485a5, type: 3}
+  inventoryDisplay: {fileID: 678505362, guid: 29b93740c1620a54b8cc50531ce485a5, type: 3}
+  asciiRep: {fileID: -441784439, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  itemColor: {r: 0.043137256, g: 0.854902, b: 0.77647066, a: 1}
+  type: 15
+  slot: 3
+  slotsRequired: 1
+  mass: 2
+  rating: 1
+  star: 1
+  integrityCurrent: 100
+  integrityMax: 100
+  coverage: 100
+  state: 0
+  schematicDetails:
+    hackable: 0
+    location:
+    - {x: 1, y: -10}
+    - {x: 2, y: -10}
+    - {x: 3, y: -10}
+  hasUpkeep: 0
+  energyUpkeep: 0
+  matterUpkeep: 0
+  heatUpkeep: 0
+  supply: 0
+  storage: 0
+  power_HasStability: 0
+  power_stability: 0
+  propulsion: []
+  shot:
+    shotRange: 18
+    shotEnergy: -1
+    shotMatter: -3
+    shotHeat: 20
+    shotRecoil: 2
+    shotTargeting: 0
+    shotDelay: 0
+    shotStability: 0
+    shotArc: 0
+    hasStability: 0
+    hasArc: 0
+    shotSound:
+    - {fileID: 8300000, guid: af2a115abd7240945bbf2afbc17a18cf, type: 3}
+    - {fileID: 8300000, guid: 50dacb74b16c3124eb80773c32472739, type: 3}
+    - {fileID: 8300000, guid: a3d2fef54e204bc49866c1cda0538bd1, type: 3}
+    - {fileID: 8300000, guid: 3b6173f5ae4fbdb4a9c39072af9be6cb, type: 3}
+    - {fileID: 8300000, guid: 8e9bee95fa2653042ba62f5fa91ddf7c, type: 3}
+  projectileAmount: 1
+  projectile:
+    damage: {x: 10, y: 15}
+    damageType: 0
+    critChance: 0.01
+    critType: 3
+    penChance: 0
+    heatTrasfer: 0
+    heatTransferDegree: 0
+    spectrum: 0
+    hasSpectrum: 0
+    disruption: 0
+    salvage: 0
+  itemEffect: []
+  quality: 21
+  itemName: Asb. Rifle
+  description: A small lightweight rifle utilized by the Assembled. Not particularly
+    dangerous.
+  details:
+    temp: 
+  fabricationInfo:
+    canBeFabricated: 0
+    amountMadePer: 0
+    fabTime: {x: 51, y: 25, z: 17}
+    matterCost: 30
+    componenetsRequired: []

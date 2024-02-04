@@ -1,0 +1,129 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 530edc62ed973694caed63aea242337c, type: 3}
+  m_Name: 8R-AWN
+  m_EditorClassIdentifier: 
+  Id: 10
+  asciiRep: {fileID: 0}
+  _class: 32
+  _size: 2
+  _profile:
+    forward: RD
+    size: {x: 5, y: 5}
+  rating: 174
+  tier: 9
+  threat: 1
+  value: 1
+  energyGeneration: 34
+  heatDissipation: 76
+  visualRange: 16
+  memory: 10
+  spotPercent: 30
+  _movement:
+    moveType: 0
+    moveTileRange: 120
+    moveSpeedPercent: 0.83
+    overloadedMovement: 0
+    moveType_ov: 0
+    moveTileRange_ov: 0
+    moveSpeedPercent_ov: 0
+  coreIntegrity: 200
+  currentIntegrity: 200
+  coreExposure: 0.14
+  salvagePotential: {x: 100, y: 120}
+  schematicDetails:
+    hackable: 0
+    location: []
+  armament:
+  - _item: {fileID: 11400000, guid: 3fc93cf30d7c3ab4c81d6fefd9632f18, type: 2}
+    dropChance: 0.04
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 3fc93cf30d7c3ab4c81d6fefd9632f18, type: 2}
+    dropChance: 0.04
+    _altChoices: []
+    altChoicesDropChance: []
+  components:
+  - _item: {fileID: 11400000, guid: bb18f1e1669cb11448ade7e98babbe3f, type: 2}
+    dropChance: 0.02
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: fe5bf85f54ac2fb41ba96bbedb80a9b0, type: 2}
+    dropChance: 0.02
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: fe5bf85f54ac2fb41ba96bbedb80a9b0, type: 2}
+    dropChance: 0.02
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 9d30ca9fd40b9a940a320226ed57f8cf, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 48d53b9ba7fcb444d93e20caab5167df, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 2671cd1edea99f6409e10694262e65e9, type: 2}
+    dropChance: 0.3
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 1d41cc3001413914ba1e87f2c52bd446, type: 2}
+    dropChance: 0.36
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 4034478e5b889964c9b0005924c11f49, type: 2}
+    dropChance: 0.02
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: c7920d62a2c05744d942439ff264b4e8, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 2f4b269c3ea54504caf2a3a59276d65b, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  resistances:
+  - damageType: 1
+    resistanceAmount: 0.9
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.9
+    immune: 0
+  - damageType: 3
+    resistanceAmount: 0.9
+    immune: 0
+  resistancesExtra:
+    coring: 1
+    disruption: 1
+    meltdown: 1
+    hacking: 0
+    jamming: 0
+  traits: []
+  fabricationInfo:
+    canBeFabricated: 0
+    amountMadePer: 3
+    fabTime: {x: 81, y: 40, z: 27}
+    matterCost: 180
+    componenetsRequired: []
+  description: A former grunt armed and aligned with the EXILES. A loyal defender
+    and friend, 8R-AWN is usually found around their base or on scouting missions.
+    Don't mess with him!
+  locations:
+    all0b10Maps: 0
+    _0b10Range: {x: -10, y: -9}
+    fromHost: 0
+    fromEvent: 1
+    relation: 2
+    alignment: 5
+  playerHasAnalysisData: 0

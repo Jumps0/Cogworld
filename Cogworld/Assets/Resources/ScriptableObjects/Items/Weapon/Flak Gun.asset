@@ -1,0 +1,90 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
+  m_Name: Flak Gun
+  m_EditorClassIdentifier: 
+  instantUnique: 0
+  amount: 1
+  data:
+    Name: 
+    Id: 43
+    stackable: 0
+    itemData: {fileID: 11400000}
+  knowByPlayer: 0
+  floorDisplay: {fileID: 255043747, guid: de1bd95886cf7e3458436c5f8ca70a8d, type: 3}
+  inventoryDisplay: {fileID: 678505362, guid: 29b93740c1620a54b8cc50531ce485a5, type: 3}
+  asciiRep: {fileID: -441784439, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  itemColor: {r: 0.043137256, g: 0.854902, b: 0.77647066, a: 1}
+  type: 15
+  slot: 3
+  mass: 4
+  rating: 4
+  star: 0
+  integrityCurrent: 140
+  integrityMax: 140
+  coverage: 100
+  state: 0
+  schematicDetails:
+    hackable: 1
+    location:
+    - {x: 1, y: -7}
+    - {x: 2, y: -8}
+    - {x: 3, y: -9}
+  hasUpkeep: 0
+  energyUpkeep: 0
+  matterUpkeep: 0
+  heatUpkeep: 0
+  supply: 0
+  storage: 0
+  power_HasStability: 0
+  power_stability: 0
+  propulsion: []
+  shot:
+    shotRange: 16
+    shotEnergy: -2
+    shotMatter: -5
+    shotHeat: 28
+    shotRecoil: 4
+    shotTargeting: -0.15
+    shotDelay: 0
+    shotStability: 0
+    shotArc: 0
+    hasStability: 0
+    hasArc: 0
+    shotSound:
+    - {fileID: 8300000, guid: b8bbb8f5ce3678447964f861b2239fe6, type: 3}
+    - {fileID: 8300000, guid: f8d0e0a968853d54a8fdeaef8cfa6109, type: 3}
+  projectileAmount: 6
+  projectile:
+    damage: {x: 5, y: 6}
+    damageType: 0
+    critChance: 0
+    critType: 0
+    penChance: 0
+    heatTrasfer: 0
+    heatTransferDegree: 0
+    spectrum: 0
+    hasSpectrum: 0
+    disruption: 0
+    salvage: -1
+  itemEffect: []
+  quality: 2
+  itemName: Flak Gun
+  description: A heavy ballistic gun capable of firing 6 kinetic rounds at once.
+  details:
+    temp: 
+  fabricationInfo:
+    canBeFabricated: 1
+    amountMadePer: 2
+    fabTime: {x: 84, y: 42, z: 28}
+    matterCost: 80
+    componenetsRequired: []

@@ -1,0 +1,235 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
+  m_Name: Utility Shielding
+  m_EditorClassIdentifier: 
+  instantUnique: 0
+  amount: 1
+  data:
+    Name: 
+    Id: 12
+    stackable: 0
+    itemData: {fileID: 11400000}
+  knowByPlayer: 1
+  floorDisplay: {fileID: -32666557, guid: 9e5fd32a0821a894a9c4ce41b9aec735, type: 3}
+  inventoryDisplay: {fileID: -32666557, guid: 9e5fd32a0821a894a9c4ce41b9aec735, type: 3}
+  asciiRep: {fileID: -923958525, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  itemColor: {r: 0.16470589, g: 0.70980394, b: 0.65882355, a: 1}
+  type: 13
+  slot: 2
+  slotsRequired: 1
+  mass: 1
+  rating: 1
+  star: 0
+  integrityCurrent: 50
+  integrityMax: 50
+  coverage: 0
+  state: 0
+  schematicDetails:
+    hackable: 1
+    location:
+    - {x: 1, y: -10}
+    - {x: 2, y: -10}
+    - {x: 3, y: -10}
+  hasUpkeep: 0
+  energyUpkeep: 0
+  matterUpkeep: 0
+  heatUpkeep: 0
+  supply: 0
+  storage: 0
+  power_HasStability: 0
+  power_stability: 0
+  propulsion: []
+  shot:
+    shotRange: 0
+    shotEnergy: 0
+    shotMatter: 0
+    shotHeat: 0
+    shotRecoil: 0
+    shotTargeting: 0
+    shotDelay: 0
+    shotStability: 0
+    shotArc: 0
+    hasStability: 0
+    hasArc: 0
+    shotSound: []
+  projectileAmount: 1
+  projectile:
+    damage: {x: 0, y: 0}
+    damageType: 0
+    critChance: 0
+    critType: 0
+    penChance: {x: 0, y: 0, z: 0}
+    heatTrasfer: 0
+    heatTransferDegree: 0
+    spectrum: 0
+    hasSpectrum: 0
+    disruption: 0
+    salvage: 0
+  meleeAttack:
+    isMelee: 0
+    energy: 0
+    matter: 0
+    heat: 0
+    targeting: 0
+    delay: 0
+    damage: {x: 0, y: 0}
+    damageType: 6
+    critical: 0
+    critType: 0
+    disruption: 0
+    salvage: 0
+  itemEffect:
+  - chainExplode: 0
+    damage: {x: 0, y: 0}
+    chainDamageType: 0
+    radius: 0
+    chunks: {x: 0, y: 0}
+    fallOff: 0
+    salvage: 0
+    transferLevel: 0
+    disruption: 0
+    spectrum: 0
+    doesHeatDissip: 0
+    heatDissipation_perTurn: 0
+    heatDissipation_stacks: 0
+    hasLegEffect: 0
+    extraKickChance: 0
+    appliesToLargeTargets: 0
+    conferToRunningState: 0
+    evasionNaccuracyChange: 0
+    maxMomentumAmount: 0
+    inventorySizeEffect: 0
+    sizeIncrease: 0
+    effectStacks: 0
+    ramCrushEffect: 0
+    ramCrushChance: 0
+    ramCrush_canDoLarge: 0
+    ramCrush_canDoGigantic: 0
+    ramCrush_integLimit: 0
+    ramCrush_canStack: 0
+    ramCrush_stackCap: 0
+    hasStabEffect: 0
+    stab_recoilPerWeapon: 0
+    stab_KnockbackImmune: 0
+    armorEffect: 1
+    armorEffect_slotType: 2
+    armorEffect_absorbtion: 0.33
+    armorEffect_preventCritStrikes: 1
+    armorEffect_preventChainReactions: 0
+    armorEffect_stacks: 0
+    armorEffect_resistances: []
+    hasAccuracyBuff: 0
+    accBuff_nonMelee: 0
+    accBuff_melee: 0
+    accBuff_stacks: 0
+    hasDetectionEffect: 0
+    detection_range: 0
+    detect_seismic: 0
+    detect_machines: 0
+    detect_bots: 0
+    detect_pure: 0
+    detect_structural: 0
+    detect_stacks: 0
+    hasSignalInterp: 0
+    signalInterp_strength: 0
+    haulerTracking: 0
+    hasMassSupport: 0
+    massSupport: 0
+    massSupport_stacks: 0
+    collectsMatterBeam: 0
+    matterCollectionRange: 0
+    terrainScan: 0
+    terrainScanRange: 0
+    terrainScan_boost: 0
+    terrainScan_densBoost: 0
+    terrainScanBoost_stacks: 0
+    internalStorage: 0
+    internalStorageType: 0
+    internalStorageCapacity: 0
+    internalStorageType_stacks: 0
+    hackBonuses:
+      hasHackBonus: 0
+      hackSuccessBonus: 0
+      rewireBonus: 0
+      programmerHackDefenseBonus: 0
+      stacks: 1
+      hasSystemShieldBonus: 0
+      hackDetectRateBonus: 0
+      hackDetectChanceBonus: 0
+      securityLevelIncreaseChance: 0
+      databaseLockoutBonus: 0
+      hackFeedbackPreventBonus: 0
+      allyHackDefenseBonus: 0
+      allyHackRange: 0
+    emitEffect:
+      hasEffect: 0
+      target: 0
+      turnTime: 5
+      range: 0
+    fireTimeEffect:
+      hasEffect: 0
+      fireTimeReduction: 0
+      capped: 0
+      cap: 0
+      stacks: 1
+      compatability: 0
+    transmissionJammingEffect:
+      hasEffect: 0
+      range: 0
+      preventReinforcementCall: 1
+      suppressAlarmTraps: 1
+    effectiveCorruptionEffect:
+      hasEffect: 0
+      amount: 0
+      stacks: 1
+    partRestoreEffect:
+      hasEffect: 0
+      percentChance: 0
+      canRepairAlienTech: 0
+      protoRepairCap: 0
+      canRunInParralel: 1
+    exilesEffects:
+      hasEffect: 0
+      isAutoWeapon: 0
+      chronoWheelEffect: 0
+      deployableTurret: 0
+      lifetimeDecay: 0
+    toHitBuffs:
+      hasEffect: 0
+      amount: 0
+      stacks: 0
+      halfStacks: 0
+      bonusCritChance: 0
+      bypassArmor: 0
+      coreExposureEffect: 0
+      launcherAccuracy: 0
+    partIdent:
+      hasEffect: 0
+      amount: 0
+      parallel: 0
+    antiCorruption:
+      hasEffect: 0
+      amount: 0
+      integrityLossPer: 0
+      parallel: 0
+  quality: 2
+  itemName: Utility Shielding
+  description: Armored plates designed to protect integrated utility systems.
+  details:
+    temp: 
+  fabricationInfo:
+    canBeFabricated: 1
+    amountMadePer: 1
+    fabTime: {x: 51, y: 25, z: 17}
+    matterCost: 15
+    componenetsRequired: []

@@ -1,0 +1,1108 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+using Random = UnityEngine.Random;
+
+public class GameManager : MonoBehaviour
+{
+    public static GameManager inst;
+
+    [Header("Data Related")]
+    private iDataService DataService = new JsonDataService();
+    public SaveData data;
+
+    private void Awake()
+    {
+        if(inst == null)
+        {
+            inst = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
+        // -- Maybe move the stuff below somewhere else? (later) --
+
+        data = new SaveData(); // Set Default values for save
+
+        CanDeserializeSavaDataJson(); // Try to load save data from .json file
+
+        if (!CanDeserializeSavaDataJson()) // If that fails
+        {
+            CreateNewSavaDataJson(); // Make a new one
+        }
+
+        gameDifficulty = data.mode;
+        hardDiff = data.difficulty;
+    }
+
+    #region File I/O (.json)
+
+    // Methods
+    // Writes and saves player's save data to the JSON file; Returns if successful or not
+    public bool CanSerializeSavaDataJson()
+    {
+        if (DataService.SaveData("/save-data.json", data))
+        {
+            //Debug.Log("Save Data can be Saved...");
+
+            return true;
+        }
+        else
+        {
+            Debug.LogError("Could not save the save data.");
+
+            return false;
+        }
+    }
+
+    // Writes and saves the save data to the JSON file
+    public void SerializeSavaDataJson()
+    {
+        if (DataService.SaveData("/save-data.json", data))
+        {
+            //Debug.Log("Save Data Saved");
+        }
+        else
+        {
+            Debug.LogError("Could not save the save data.");
+        }
+    }
+
+    /*
+     Reads and saves the save data from the JSON file.
+    If the file does not exist, the save will not be initialized.
+        In this case, the save will copy the save data provided in the MainMenuMgr,
+        where the data is initialized in the Unity Editor Inspection Window.
+    Returns if succesful or not
+     */
+    public bool CanDeserializeSavaDataJson()
+    {
+        try
+        {
+            data = DataService.LoadData<SaveData>("/save-data.json");
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Could not read file." + " - Thrown Exception: " + e);
+
+            return false;
+        }
+    }
+
+    /*
+    Reads and saves the save data from the JSON file.
+    If the file does not exist, the save will not be initialized.
+    In this case, the save will copy the save data provided in the MainMenuMgr,
+    where the data is initialized in the Unity Editor Inspection Window.
+ */
+    public void DeserializeSavaDataJson()
+    {
+        try
+        {
+            data = DataService.LoadData<SaveData>("/save-data.json");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Could not read file." + " - Thrown Exception: " + e);
+        }
+    }
+
+    public void CreateNewSavaDataJson()
+    {
+        data = new SaveData();
+        CanSerializeSavaDataJson();
+    }
+
+    // Save the player's current status from PlayerData to the .json file. Called externally.
+    public void SavePlayerStatus(int layer, string layerName, int newSeed, int turn, Vector2Int core1, Vector2Int core2, int killCount)
+    {
+        data = new SaveData(layer, layerName, newSeed, gameDifficulty, hardDiff, turn, core1, core2, killCount);
+
+        if (CanSerializeSavaDataJson())
+        {
+            SerializeSavaDataJson();
+        }
+
+    }
+
+    #endregion
+
+    public List<Entity> entities = new List<Entity>();
+    public List<Entity> Entities { get => entities; }
+
+    [Header("Game Options")]
+    public bool allowMouseMovement = true;
+    [Tooltip("0 = Novice, 1 = Explorer, 2 = Rogue")]
+    public int mode = 0;
+    [Tooltip("False = Normal, True = Hard")]
+    public bool hardDiff = false;
+
+    [Header("Variables")]
+    [SerializeField] private int enemyCount;
+    [SerializeField] private int botCount;
+    [SerializeField] private float turnTimeDelay = 0.1f;
+
+
+    public void AddEntity(Entity entity)
+    {
+        entities.Add(entity);
+    }
+
+    public void InsertEntity(Entity entity, int index)
+    {
+        entities.Insert(index, entity);
+    }
+
+    public Actor GetBlockingActorAtLocation(Vector3 location)
+    {
+        foreach (Actor actor in TurnManager.inst.actors)
+        {
+            if (actor.BlocksMovement && actor.transform.position == location)
+            {
+                return actor;
+            }
+        }
+        return null;
+    }
+
+    public void AllActorsVisUpdate()
+    {
+        foreach (Entity E in entities)
+        {
+            E.GetComponent<Actor>().UpdateFieldOfView();
+        }
+    }
+
+    private void Start()
+    {
+        // - Startup Logic -
+        HandleStartup();
+
+        // - Button Listener Adding -
+        confirm_button.onClick.AddListener(ConfirmExitEvolution);
+        //
+        powerButtonL.onClick.AddListener(EP_Decrease_Power);
+        powerButtonR.onClick.AddListener(EP_Increase_Power);
+        propulsionButtonL.onClick.AddListener(EP_Decrease_Propulsion);
+        propulsionButtonR.onClick.AddListener(EP_Increase_Propulsion);
+        utilityButtonL.onClick.AddListener(EP_Decrease_Utility);
+        utilityButtonR.onClick.AddListener(EP_Increase_Utility);
+        weaponButtonL.onClick.AddListener(EP_Decrease_Weapon);
+        weaponButtonR.onClick.AddListener(EP_Increase_Weapon);
+    }
+
+    private void Update()
+    {
+        if (doEvolutionCheck)
+        {
+            EvolutionCheck();
+        }
+    }
+
+    #region Start-Up
+
+    [Header("Start-up UI")]
+    [Tooltip("This is where the LNG/LSG/LIH info gets assigned.")]
+    [SerializeField] private GameObject startupCanvas;
+    // Launch New Game
+    [Header("Load New Game (LNG)")]
+    [SerializeField] private GameObject lngPanel;
+    [SerializeField] private TextMeshProUGUI lngMode_text;
+    [SerializeField] private TextMeshProUGUI lngModeInteract_text;
+    [SerializeField] private TextMeshProUGUI lngDifficulty_text;
+    [SerializeField] private TextMeshProUGUI lngDifficultyInteract_text;
+    // Launch Saved Game
+    [Header("Load Saved Game (LSG)")]
+    [SerializeField] private GameObject lsgPanel;
+    [SerializeField] private TextMeshProUGUI lsgMode_text;
+    [SerializeField] private TextMeshProUGUI lsgModeInteract_text;
+    [SerializeField] private TextMeshProUGUI lsgDifficulty_text;
+    [SerializeField] private TextMeshProUGUI lsgDifficultyInteract_text;
+    [SerializeField] private TextMeshProUGUI lsgDepth_text;
+    [SerializeField] private TextMeshProUGUI lsgDepthInteract_text;
+    [SerializeField] private TextMeshProUGUI lsgTurn_text;
+    [SerializeField] private TextMeshProUGUI lsgTurnInteract_text;
+    [SerializeField] private TextMeshProUGUI lsgCoreSetup_text;
+    [SerializeField] private TextMeshProUGUI lsgCoreSetupInteract_text;
+    [SerializeField] private TextMeshProUGUI lsgRobokills_text;
+    [SerializeField] private TextMeshProUGUI lsgRobokillsInteract_text;
+    // Load into Hideout
+    [Header("Load into Hideout (LIH)")]
+    [SerializeField] private GameObject lihPanel;
+    [SerializeField] private TextMeshProUGUI lihDepth_text;
+    [SerializeField] private TextMeshProUGUI lihLayerName_text;
+
+    [Header("Game Values")]
+    public int gameDifficulty = 0; // 0 = Novice, 1 = Explorer, 2 = Rogue
+    public int hardMode = 0; // False = Normal, True = Hard
+
+    public void HandleStartup()
+    {
+        startupCanvas.SetActive(true); // Turn on the canvas
+
+        lngPanel.SetActive(false);
+        lsgPanel.SetActive(false);
+        lihPanel.SetActive(false);
+    }
+
+    public void ExitStartup()
+    {
+        startupCanvas.SetActive(false); // Turn off the canvas
+
+
+    }
+
+    public void LaunchNewGame() // ======
+    {
+        ExitStartup();
+
+        StartCoroutine(MapManager.inst.InitNewLevel());
+    }
+
+    public void LNG_ShowGameSettings()
+    {
+        lngPanel.SetActive(true);
+        // Show current game settings (difficulty, type, etc...)
+        switch (mode)
+        {
+            case 0: // Novice
+                lngModeInteract_text.text = "Novice";
+                break;
+            case 1: // Explorer
+                lngModeInteract_text.text = "Explorer";
+                break;
+            case 2: // Rogue
+                lngModeInteract_text.text = "Rogue";
+                break;
+
+            default:
+                lngModeInteract_text.text = "ERROR: Mode not valid!";
+                Debug.LogError("Mode not valid!");
+                break;
+        }
+
+        if (hardDiff)
+        {
+            lngDifficultyInteract_text.text = "Hard";
+        }
+        else
+        {
+            lngDifficultyInteract_text.text = "Normal";
+        }
+    }
+
+    public void LNG_HideGameSettings()
+    {
+        lngPanel.SetActive(false);
+
+    }
+
+    public void LaunchSavedGame() // ======
+    {
+        ExitStartup();
+
+
+    }
+
+    public void LSG_ShowSaveDetails()
+    {
+        lsgPanel.SetActive(true);
+        // -- Retrieve info from save file --
+        switch (data.mode)
+        {
+            case 0: // Novice
+                lsgModeInteract_text.text = "Novice";
+                break;
+            case 1: // Explorer
+                lsgModeInteract_text.text = "Explorer";
+                break;
+            case 2: // Rogue
+                lsgModeInteract_text.text = "Rogue";
+                break;
+
+            default:
+                lsgModeInteract_text.text = "ERROR: Mode not valid!";
+                Debug.LogError("Mode not valid!");
+                break;
+        }
+
+        if (data.difficulty)
+        {
+            lsgDifficultyInteract_text.text = "Hard";
+        }
+        else
+        {
+            lsgDifficultyInteract_text.text = "Normal";
+        }
+
+        lsgDepthInteract_text.text = data.layer + "/" + data.layerName;
+
+        lsgTurnInteract_text.text = data.turn.ToString();
+
+        lsgCoreSetupInteract_text.text = data.core1.x.ToString() + "/" + data.core1.y.ToString() + "/" + data.core2.x.ToString() + "/" + data.core2.y.ToString();
+
+        lsgRobokillsInteract_text.text = data.killCount.ToString();
+
+    }
+
+    public void LSG_HideSaveDetails()
+    {
+        lsgPanel.SetActive(false);
+
+    }
+
+    public void LoadIntoHideout() // ======
+    {
+        ExitStartup();
+
+        BaseManager.inst.TryLoadIntoBase();
+    }
+
+    public void LIH_ShowHideoutInfo()
+    {
+        lihPanel.SetActive(true);
+        // Show hideout details
+        // (BaseManager should have already loaded this!)
+        lihDepth_text.text = "Depth: " + BaseManager.inst.data.layer.ToString();
+        lihLayerName_text.text = "Layer: " + BaseManager.inst.data.layerName;
+
+    }
+
+    public void LIH_HideHideoutInfo()
+    {
+        lihPanel.SetActive(false);
+
+    }
+
+    #endregion
+
+    #region Patrol Management
+
+    public List<GroupLeader> groups = new List<GroupLeader>();
+
+    public void CreatePatrolRoutes()
+    {
+
+    }
+
+    public void PatrolCleanUp()
+    {
+
+    }
+
+    #endregion
+
+    #region Evolution
+    [Header("Evolution Page")]
+    private bool doEvolutionCheck = false;
+    public GameObject evolution_ref;
+    public TextMeshProUGUI _binary;
+    public TextMeshProUGUI _matrix;
+    public Color greenDark;
+    public Color grayedOut;
+    public Color verygrayedOut;
+    public Color yellowFilled;
+    public Color yellowGrayedOut;
+    public Color greenIn;
+    public int upgradesToApply = 0;
+    [Header("--Apply")]
+    public Image applyBacking;
+    public TextMeshProUGUI _apply;
+    public GameObject params_ref;
+    public GameObject confirm_ref;
+    public Button confirm_button;
+    [Header("--PPUW")]
+    public TextMeshProUGUI _powerNum;
+    public TextMeshProUGUI _powerNum2;
+    public TextMeshProUGUI _propulsionNum;
+    public TextMeshProUGUI _propulsionNum2;
+    public TextMeshProUGUI _utilityNum;
+    public TextMeshProUGUI _utilityNum2;
+    public TextMeshProUGUI _weaponNum;
+    public TextMeshProUGUI _weaponNum2;
+    public Image powerBacking;
+    public Image propulsionBacking;
+    public Image utilityBacking;
+    public Image weaponBacking;
+    public Button powerButtonL;
+    public Button powerButtonR;
+    public Button propulsionButtonL;
+    public Button propulsionButtonR;
+    public Button utilityButtonL;
+    public Button utilityButtonR;
+    public Button weaponButtonL;
+    public Button weaponButtonR;
+
+    [SerializeField] private int stringLength = 100; // Binary
+    [SerializeField] private int string2Length = 100; // Matrix
+
+    public void OpenEvolutionScreen(int depth)
+    {
+        // Early game is less
+        switch (depth)
+        {
+            case -11:
+                upgradesToApply += 1;
+                break;
+            case -10:
+                upgradesToApply += 1;
+                break;
+            case -9:
+                upgradesToApply += 1;
+                break;
+            default:
+                upgradesToApply += 2; // Default is 2
+                break;
+        }
+
+        evolution_ref.SetActive(true);
+        StartBinary();
+        
+
+        SetDefaultNums();
+        EvolveButtonVisuals();
+
+        doEvolutionCheck = true;
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[108]);
+    }
+
+    public void CloseEvolutionScreen()
+    {
+        StopBinary();
+
+        evolution_ref.SetActive(false);
+
+        doEvolutionCheck = false;
+
+        // Update player's save
+        if (CanDeserializeSavaDataJson())
+        {
+            SavePlayerStatus(data.layer, data.layerName, data.mapSeed, data.turn, new Vector2Int(PlayerData.inst.powerSlots, PlayerData.inst.propulsionSlots),
+                new Vector2Int(PlayerData.inst.utilitySlots, PlayerData.inst.weaponSlots), data.killCount);
+        }
+
+        StartCoroutine(MapManager.inst.InitNewLevel()); // All done, generate the new level
+    }
+
+    int usedPoints = 0;
+
+    public void EvolutionCheck()
+    {
+        // Yellow backing stuff
+        if (pPower_d < pPower_new)
+        {
+            powerBacking.color = yellowFilled;
+        }
+        else
+        {
+            powerBacking.color = greenIn;
+        }
+        if (pProp_d < pProp_new)
+        {
+            propulsionBacking.color = yellowFilled;
+        }
+        else
+        {
+            propulsionBacking.color = greenIn;
+        }
+        if (pUtil_d < pUtil_new)
+        {
+            utilityBacking.color = yellowFilled;
+        }
+        else
+        {
+            utilityBacking.color = greenIn;
+        }
+        if (pWep_d < pWep_new)
+        {
+            weaponBacking.color = yellowFilled;
+        }
+        else
+        {
+            weaponBacking.color = greenIn;
+        }
+
+        UpdateEvolveNumbers(pPower_new, pProp_new, pUtil_new, pWep_new);
+
+        // Set text
+        _apply.text = "APPLY " + (upgradesToApply - usedPoints).ToString();
+
+        if (usedPoints == upgradesToApply)
+        {
+            // Gray out apply
+            applyBacking.color = greenDark;
+
+            // Show confirm/exit thing
+            EnableConfirmExit();
+        }
+        else
+        {
+            // Green in apply
+            applyBacking.color = greenIn;
+
+            DisableConfirmExit();
+        }
+    }
+
+    public void EvolveButtonVisuals()
+    {
+        if(pPower_new > pPower_d && usedPoints == upgradesToApply) // We can decrease but can't increase
+        {
+            // Highlight decrease button & gray out increase
+            powerButtonL.GetComponentInChildren<TextMeshProUGUI>().color = greenIn;
+            powerButtonR.GetComponentInChildren<TextMeshProUGUI>().color = grayedOut;
+        }
+        else if (pPower_new > pPower_d && usedPoints < upgradesToApply) // We can decrease & increase
+        {
+            // Highlight both decrease & increase buttons
+            powerButtonL.GetComponentInChildren<TextMeshProUGUI>().color = greenIn;
+            powerButtonR.GetComponentInChildren<TextMeshProUGUI>().color = greenIn;
+        }
+        else if(pPower_new <= pPower_d && usedPoints < upgradesToApply) // We can increase but can't decrease
+        {
+            // Highlight increase button & gray out decrease
+            powerButtonL.GetComponentInChildren<TextMeshProUGUI>().color = grayedOut;
+            powerButtonR.GetComponentInChildren<TextMeshProUGUI>().color = greenIn;
+        }
+        else // Can't do anything
+        {
+            // Gray out both
+            powerButtonL.GetComponentInChildren<TextMeshProUGUI>().color = grayedOut;
+            powerButtonR.GetComponentInChildren<TextMeshProUGUI>().color = grayedOut;
+        }
+        // ------------------------------------------------------------------------------------------------------------------------- //
+        if (pProp_new > pProp_d && usedPoints == upgradesToApply) // We can decrease but can't increase
+        {
+            // Highlight decrease button & gray out increase
+            propulsionButtonL.GetComponentInChildren<TextMeshProUGUI>().color = greenIn;
+            propulsionButtonR.GetComponentInChildren<TextMeshProUGUI>().color = grayedOut;
+        }
+        else if (pProp_new > pProp_d && usedPoints < upgradesToApply) // We can decrease & increase
+        {
+            // Highlight both decrease & increase buttons
+            propulsionButtonL.GetComponentInChildren<TextMeshProUGUI>().color = greenIn;
+            propulsionButtonR.GetComponentInChildren<TextMeshProUGUI>().color = greenIn;
+        }
+        else if (pProp_new <= pProp_d && usedPoints < upgradesToApply) // We can increase but can't decrease
+        {
+            // Highlight increase button & gray out decrease
+            propulsionButtonL.GetComponentInChildren<TextMeshProUGUI>().color = grayedOut;
+            propulsionButtonR.GetComponentInChildren<TextMeshProUGUI>().color = greenIn;
+        }
+        else // Can't do anything
+        {
+            // Gray out both
+            propulsionButtonL.GetComponentInChildren<TextMeshProUGUI>().color = grayedOut;
+            propulsionButtonR.GetComponentInChildren<TextMeshProUGUI>().color = grayedOut;
+        }
+        // ------------------------------------------------------------------------------------------------------------------------- //
+        if (pUtil_new > pUtil_d && usedPoints == upgradesToApply) // We can decrease but can't increase
+        {
+            // Highlight decrease button & gray out increase
+            utilityButtonL.GetComponentInChildren<TextMeshProUGUI>().color = greenIn;
+            utilityButtonR.GetComponentInChildren<TextMeshProUGUI>().color = grayedOut;
+        }
+        else if (pUtil_new > pUtil_d && usedPoints < upgradesToApply) // We can decrease & increase
+        {
+            // Highlight both decrease & increase buttons
+            utilityButtonL.GetComponentInChildren<TextMeshProUGUI>().color = greenIn;
+            utilityButtonR.GetComponentInChildren<TextMeshProUGUI>().color = greenIn;
+        }
+        else if (pUtil_new <= pUtil_d && usedPoints < upgradesToApply) // We can increase but can't decrease
+        {
+            // Highlight increase button & gray out decrease
+            utilityButtonL.GetComponentInChildren<TextMeshProUGUI>().color = grayedOut;
+            utilityButtonR.GetComponentInChildren<TextMeshProUGUI>().color = greenIn;
+        }
+        else // Can't do anything
+        {
+            // Gray out both
+            utilityButtonL.GetComponentInChildren<TextMeshProUGUI>().color = grayedOut;
+            utilityButtonR.GetComponentInChildren<TextMeshProUGUI>().color = grayedOut;
+        }
+        // ------------------------------------------------------------------------------------------------------------------------- //
+        if (pWep_new > pWep_d && usedPoints == upgradesToApply) // We can decrease but can't increase
+        {
+            // Highlight decrease button & gray out increase
+            weaponButtonL.GetComponentInChildren<TextMeshProUGUI>().color = greenIn;
+            weaponButtonR.GetComponentInChildren<TextMeshProUGUI>().color = grayedOut;
+        }
+        else if (pWep_new > pWep_d && usedPoints < upgradesToApply) // We can decrease & increase
+        {
+            // Highlight both decrease & increase buttons
+            weaponButtonL.GetComponentInChildren<TextMeshProUGUI>().color = greenIn;
+            weaponButtonR.GetComponentInChildren<TextMeshProUGUI>().color = greenIn;
+        }
+        else if (pWep_new <= pWep_d && usedPoints < upgradesToApply) // We can increase but can't decrease
+        {
+            // Highlight increase button & gray out decrease
+            weaponButtonL.GetComponentInChildren<TextMeshProUGUI>().color = grayedOut;
+            weaponButtonR.GetComponentInChildren<TextMeshProUGUI>().color = greenIn;
+        }
+        else // Can't do anything
+        {
+            // Gray out both
+            weaponButtonL.GetComponentInChildren<TextMeshProUGUI>().color = grayedOut;
+            weaponButtonR.GetComponentInChildren<TextMeshProUGUI>().color = grayedOut;
+        }
+    }
+
+    public void EnableConfirmExit()
+    {
+        confirm_ref.SetActive(true);
+        params_ref.SetActive(false);
+    }
+
+    public void DisableConfirmExit()
+    {
+        confirm_ref.SetActive(false);
+        params_ref.SetActive(true);
+    }
+
+    // This is the one that actually changes things!
+    public void SetNewEvolveValues()
+    {
+
+        MapManager.inst.tempPlayer.GetComponent<PlayerData>().powerSlots = pPower_new;
+        MapManager.inst.tempPlayer.GetComponent<PlayerData>().propulsionSlots = pProp_new;
+        MapManager.inst.tempPlayer.GetComponent<PlayerData>().utilitySlots = pUtil_new;
+        MapManager.inst.tempPlayer.GetComponent<PlayerData>().weaponSlots = pWep_new;
+
+        /*
+        InventoryControl.inst.ClearInterfacesInventories();
+
+        // This might hurt
+        if (pPower_new - pPower_d != 0)
+        {
+            InventoryControl.inst.p_inventoryPower.Container.Items = ResizeISArray(InventoryControl.inst.p_inventoryPower.Container.Items, pPower_new);
+        }
+
+        if (pProp_new - pProp_d != 0)
+        {
+            InventoryControl.inst.p_inventoryPropulsion.Container.Items = ResizeISArray(InventoryControl.inst.p_inventoryPropulsion.Container.Items, pProp_new);
+        }
+
+        if (pUtil_new - pUtil_d != 0)
+        {
+            InventoryControl.inst.p_inventoryUtilities.Container.Items = ResizeISArray(InventoryControl.inst.p_inventoryUtilities.Container.Items, pUtil_new);
+        }
+
+        if (pWep_new - pWep_d != 0)
+        {
+            InventoryControl.inst.p_inventoryWeapons.Container.Items = ResizeISArray(InventoryControl.inst.p_inventoryWeapons.Container.Items, pWep_new);
+        }
+        */
+
+        MapManager.inst.logEvoChanges = true;
+        MapManager.inst.evoChanges = new List<int>();
+        MapManager.inst.evoChanges.Add(pPower_new - pPower_d);
+        MapManager.inst.evoChanges.Add(pProp_new - pProp_d);
+        MapManager.inst.evoChanges.Add(pUtil_new - pUtil_d);
+        MapManager.inst.evoChanges.Add(pWep_new - pWep_d);
+
+        // Also apply evo boosts to player
+        PlayerData.inst.maxHealth += 150;
+        PlayerData.inst.naturalHeatDissipation += 3;
+        // And refresh their core values
+        PlayerData.inst.NewLevelRestore();
+    }
+
+    public InventorySlot[] ResizeISArray(InventorySlot[] array, int length)
+    {
+        InventorySlot[] newArray = new InventorySlot[length];
+
+        if (length > array.Length)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                newArray[i] = array[i];
+            }
+        }
+        else if (length < array.Length)
+        {
+            for (int i = 0; i < length; i++)
+            {
+                newArray[i] = array[i];
+            }
+        }
+
+        return newArray;
+    }
+
+    // - Button Events -
+
+    public void ConfirmExitEvolution()
+    {
+        SetNewEvolveValues();
+        CloseEvolutionScreen();
+    }
+
+    private void EP_Increase_Power()
+    {
+        if(usedPoints < upgradesToApply) // Have points to use
+        {
+            pPower_new += 1; // Update new
+            usedPoints += 1;
+            UpdateEvolveNumbers(pPower_new, pProp_new, pUtil_new, pWep_new); // Update text
+            EvolveButtonVisuals(); // Update button visuals
+        }
+    }
+
+    private void EP_Decrease_Power()
+    {
+        if (pPower_new > pPower_d) // Have points to use
+        {
+            pPower_new -= 1; // Update new
+            usedPoints -= 1;
+            UpdateEvolveNumbers(pPower_new, pProp_new, pUtil_new, pWep_new); // Update text
+            EvolveButtonVisuals(); // Update button visuals
+        }
+    }
+
+    private void EP_Increase_Propulsion()
+    {
+        if (usedPoints < upgradesToApply) // Have points to use
+        {
+            pProp_new += 1; // Update new
+            usedPoints += 1;
+            UpdateEvolveNumbers(pPower_new, pProp_new, pUtil_new, pWep_new); // Update text
+            EvolveButtonVisuals(); // Update button visuals
+        }
+    }
+
+    private void EP_Decrease_Propulsion()
+    {
+        if (pProp_new > pProp_d) // Have points to use
+        {
+            pProp_new -= 1; // Update new
+            usedPoints -= 1;
+            UpdateEvolveNumbers(pPower_new, pProp_new, pUtil_new, pWep_new); // Update text
+            EvolveButtonVisuals(); // Update button visuals
+        }
+    }
+
+    private void EP_Increase_Utility()
+    {
+        if (usedPoints < upgradesToApply) // Have points to use
+        {
+            pUtil_new += 1; // Update new
+            usedPoints += 1;
+            UpdateEvolveNumbers(pPower_new, pProp_new, pUtil_new, pWep_new); // Update text
+            EvolveButtonVisuals(); // Update button visuals
+        }
+    }
+
+    private void EP_Decrease_Utility()
+    {
+        if (pUtil_new > pUtil_d) // Have points to use
+        {
+            pUtil_new -= 1; // Update new
+            usedPoints -= 1;
+            UpdateEvolveNumbers(pPower_new, pProp_new, pUtil_new, pWep_new); // Update text
+            EvolveButtonVisuals(); // Update button visuals
+        }
+    }
+
+    private void EP_Increase_Weapon()
+    {
+        if (usedPoints < upgradesToApply) // Have points to use
+        {
+            pWep_new += 1; // Update new
+            usedPoints += 1;
+            UpdateEvolveNumbers(pPower_new, pProp_new, pUtil_new, pWep_new); // Update text
+            EvolveButtonVisuals(); // Update button visuals
+        }
+    }
+
+    private void EP_Decrease_Weapon()
+    {
+        if (pWep_new > pWep_d) // Have points to use
+        {
+            pWep_new -= 1; // Update new
+            usedPoints -= 1;
+            UpdateEvolveNumbers(pPower_new, pProp_new, pUtil_new, pWep_new); // Update text
+            EvolveButtonVisuals(); // Update button visuals
+        }
+    }
+
+    // -              -
+
+    int pPower_d = 0;
+    int pProp_d = 0;
+    int pUtil_d = 0;
+    int pWep_d = 0;
+    int pPower_new = 0;
+    int pProp_new = 0;
+    int pUtil_new = 0;
+    int pWep_new = 0;
+
+    public void SetDefaultNums()
+    {
+        // Set default number values (getting from tempPlayer may be risky!)
+        int pPower = MapManager.inst.tempPlayer.GetComponent<PlayerData>().powerSlots;
+        int pProp = MapManager.inst.tempPlayer.GetComponent<PlayerData>().propulsionSlots;
+        int pUtil = MapManager.inst.tempPlayer.GetComponent<PlayerData>().utilitySlots;
+        int pWep = MapManager.inst.tempPlayer.GetComponent<PlayerData>().weaponSlots;
+        pPower_d = (int)pPower;
+        pProp_d = (int)pProp;
+        pUtil_d = (int)pUtil;
+        pWep_d = (int)pWep;
+        pPower_new = (int)pPower;
+        pProp_new = (int)pProp;
+        pUtil_new = (int)pUtil;
+        pWep_new = (int)pWep;
+
+
+        UpdateEvolveNumbers(pPower, pPower, pUtil, pWep);
+    }
+
+    public void UpdateEvolveNumbers(int pPower, int pProp, int pUtil, int pWep)
+    {
+        //Debug.Log("Default: " + pPower_d + " ," + pProp_d + " ," + pUtil_d + " ," + pWep_d);
+        //Debug.Log("New: " + pPower_new + " ," + pProp_new + " ," + pUtil_new + " ," + pWep_new);
+
+        if (pPower > 9) // 2 digits
+        {
+            _powerNum.color = Color.black;
+            _powerNum.text = (pPower / 10).ToString();
+            _powerNum2.color = Color.black;
+            _powerNum2.text = pPower.ToString();
+        }
+        else
+        {
+            if(powerBacking.color == greenIn) // Green
+            {
+                _powerNum.color = verygrayedOut;
+            }
+            else // Yellow
+            {
+                _powerNum.color = yellowGrayedOut;
+            }
+            _powerNum.text = "0";
+            _powerNum2.color = Color.black;
+            _powerNum2.text = pPower.ToString();
+        }
+
+        if (pProp > 9) // 2 digits
+        {
+            _propulsionNum.color = Color.black;
+            _propulsionNum.text = (pProp / 10).ToString();
+            _propulsionNum2.color = Color.black;
+            _propulsionNum2.text = pProp.ToString();
+        }
+        else
+        {
+            if (propulsionBacking.color == greenIn) // Green
+            {
+                _propulsionNum.color = verygrayedOut;
+            }
+            else // Yellow
+            {
+                _propulsionNum.color = yellowGrayedOut;
+            }
+            _propulsionNum.text = "0";
+            _propulsionNum2.color = Color.black;
+            _propulsionNum2.text = pProp.ToString();
+        }
+
+        if (pUtil > 9) // 2 digits
+        {
+            _utilityNum.color = Color.black;
+            _utilityNum.text = (pUtil / 10).ToString();
+            _utilityNum2.color = Color.black;
+            _utilityNum2.text = pUtil.ToString();
+        }
+        else
+        {
+            if (utilityBacking.color == greenIn) // Green
+            {
+                _utilityNum.color = verygrayedOut;
+            }
+            else // Yellow
+            {
+                _utilityNum.color = yellowGrayedOut;
+            }
+            _utilityNum.text = "0";
+            _utilityNum2.color = Color.black;
+            _utilityNum2.text = pUtil.ToString();
+        }
+
+        if (pWep > 9) // 2 digits
+        {
+            _weaponNum.color = Color.black;
+            _weaponNum.text = (pWep / 10).ToString();
+            _weaponNum2.color = Color.black;
+            _weaponNum2.text = pWep.ToString();
+        }
+        else
+        {
+            if (weaponBacking.color == greenIn) // Green
+            {
+                _weaponNum.color = verygrayedOut;
+            }
+            else // Yellow
+            {
+                _weaponNum.color = yellowGrayedOut;
+            }
+            _weaponNum.text = "0";
+            _weaponNum2.color = Color.black;
+            _weaponNum2.text = pWep.ToString();
+        }
+    }
+
+    public void StartBinary()
+    {
+        InvokeRepeating("UpdateText", 0f, 1f);
+        InvokeRepeating("UpdateMatrix", 0f, 1f);
+    }
+
+    public void StopBinary()
+    {
+        CancelInvoke("UpdateText");
+        CancelInvoke("UpdateMatrix");
+    }
+
+    private void UpdateText()
+    {
+        var randomBinaryChars = new char[stringLength];
+        for (int i = 0; i < stringLength; i++)
+        {
+            randomBinaryChars[i] = (Random.Range(0, 2) == 0) ? '0' : '1';
+        }
+        _binary.text = new string(randomBinaryChars);
+    }
+
+    private void UpdateMatrix()
+    {
+        string randomAlphabet = "";
+        for (int i = 0; i < string2Length; i++)
+        {
+            char randomLetter = (char)('A' + Random.Range(0, 26));
+            randomAlphabet += randomLetter;
+        }
+        _matrix.text = randomAlphabet;
+    }
+
+    public void EvoButtonSound()
+    {
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[53], 0.5f);
+    }
+
+    public void EvoHoverSound()
+    {
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[44], 0.5f);
+    }
+
+    #endregion
+
+    #region Global Actions Realized
+
+    public void AccessMain()
+    {
+
+    }
+
+    public void AccessBranch()
+    {
+
+    }
+
+    public void AccessEmergency(GameObject target)
+    {
+        if (target.GetComponent<Terminal>())
+        {
+            target.GetComponent<Terminal>().zone.RevealLocalEAccess();
+        }
+        else
+        {
+            Debug.LogError("ERROR: Tried to reveal emergency access of non-terminal machine.");
+        }
+    }
+
+    public void IndexMachinesGeneric(int id)
+    {
+        switch (id)
+        {
+            case 0: // Fabricators
+
+                break;
+            case 1: // Garrisons
+
+                break;
+            case 2: // Machines
+
+                break;
+            case 3: // Recycling Units
+
+                break;
+            case 4: // Repair Stations
+
+                break;
+            case 5: // Scanalyzers
+
+                break;
+            case 6: // Terminals
+
+                break;
+        }
+    }
+
+    #endregion
+
+    #region Squad Deployment
+
+    public void DeploySquadTo(string type, GameObject targetLocation) // ------------ NOT FINISHED ---------
+    {
+        // We want to deploy a squad of a specific type of bots to go to a location.
+
+
+        switch (type)
+        {
+            case "Investigation":
+
+                break;
+            case "Extermination":
+
+                break;
+            case "Programmer":
+
+                break;
+            case "Demolisher":
+
+                break;
+            // more after this
+        }
+    }
+
+    #endregion
+}
+
+#region Global Actions
+[System.Serializable]
+/// <summary>
+/// Used mainly for hack rewards.
+/// -Recall patrols
+/// -Lower alert status
+/// -Locate traps
+/// etc...
+/// </summary>
+public class GlobalActions
+{
+    public TerminalCommandType type;
+    public GameObject connectedMachine;
+
+    public GlobalActions(TerminalCommandType type, string specifier, GameObject connectedMachine = null, ItemObject item = null, BotObject bot = null)
+    {
+        this.type = type;
+        this.connectedMachine = connectedMachine;
+
+    }
+}
+#endregion

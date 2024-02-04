@@ -1,0 +1,178 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 530edc62ed973694caed63aea242337c, type: 3}
+  m_Name: EX-DEC
+  m_EditorClassIdentifier: 
+  Id: 16
+  asciiRep: {fileID: 0}
+  _class: 32
+  _size: 2
+  _profile:
+    forward: RD
+    size: {x: 5, y: 5}
+  rating: 113
+  tier: 4
+  threat: 1
+  value: 1
+  energyGeneration: 23
+  heatDissipation: 15
+  visualRange: 16
+  memory: 50
+  spotPercent: 30
+  _movement:
+    moveType: 3
+    moveTileRange: 80
+    moveSpeedPercent: 1.25
+    overloadedMovement: 0
+    moveType_ov: 0
+    moveTileRange_ov: 0
+    moveSpeedPercent_ov: 0
+  coreIntegrity: 50
+  currentIntegrity: 50
+  coreExposure: 0.19
+  salvagePotential: {x: 20, y: 30}
+  schematicDetails:
+    hackable: 0
+    location: []
+  armament:
+  - _item: {fileID: 11400000, guid: bea834eb5c531534588920ade3d7b609, type: 2}
+    dropChance: 0.49
+    _altChoices: []
+    altChoicesDropChance: []
+  components:
+  - _item: {fileID: 11400000, guid: 9c2b4eaff10ae76409656a7df36c98bf, type: 2}
+    dropChance: 0.14
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: a5ca9accdeafe2841a4fc2c9cc20e7c5, type: 2}
+    dropChance: 0.08
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: d9cdff11c62ccc349a48658a7995ac55, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 782f37978eb054f4991293670d08aa1b, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 289ebc0e8febf8f47ad5dfb93aca9b6f, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: bdfd28b31a81b35408911a7355490397, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 26215d8ca4e919443a8ee840d6a9332d, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 26215d8ca4e919443a8ee840d6a9332d, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 26215d8ca4e919443a8ee840d6a9332d, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 26215d8ca4e919443a8ee840d6a9332d, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 26215d8ca4e919443a8ee840d6a9332d, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 26215d8ca4e919443a8ee840d6a9332d, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 26215d8ca4e919443a8ee840d6a9332d, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 26215d8ca4e919443a8ee840d6a9332d, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 26215d8ca4e919443a8ee840d6a9332d, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  resistances:
+  - damageType: 3
+    resistanceAmount: 0.9
+    immune: 0
+  resistancesExtra:
+    coring: 1
+    disruption: 1
+    meltdown: 0
+    hacking: 1
+    jamming: 1
+  traits: []
+  fabricationInfo:
+    canBeFabricated: 0
+    amountMadePer: 3
+    fabTime: {x: 81, y: 40, z: 27}
+    matterCost: 180
+    componenetsRequired: []
+  description: One of the three EXILEd researchers EX-DEC. Responsible for research
+    into component development.
+  locations:
+    all0b10Maps: 0
+    _0b10Range: {x: -10, y: -9}
+    fromHost: 0
+    fromEvent: 1
+    relation: 2
+    alignment: 5
+  playerHasAnalysisData: 0

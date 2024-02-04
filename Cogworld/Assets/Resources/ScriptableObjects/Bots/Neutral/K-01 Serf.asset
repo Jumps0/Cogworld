@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 530edc62ed973694caed63aea242337c, type: 3}
+  m_Name: K-01 Serf
+  m_EditorClassIdentifier: 
+  Id: 0
+  asciiRep: {fileID: -855077151, guid: bbf1a054510493147ace67589225c41a, type: 3}
+  _class: 13
+  _size: 2
+  _profile:
+    forward: RD
+    size: {x: 5, y: 5}
+  rating: 6
+  tier: 1
+  threat: 1
+  value: 5
+  energyGeneration: 10
+  heatDissipation: 10
+  visualRange: 14
+  memory: 10
+  spotPercent: 100
+  _movement:
+    moveType: 4
+    moveTileRange: 80
+    moveSpeedPercent: 1.25
+    overloadedMovement: 0
+    moveType_ov: 0
+    moveTileRange_ov: 0
+    moveSpeedPercent_ov: 0
+  coreIntegrity: 10
+  currentIntegrity: 10
+  coreExposure: 0.5
+  salvagePotential: {x: 10, y: 30}
+  schematicDetails:
+    hackable: 1
+    location:
+    - {x: 1, y: -10}
+    - {x: 2, y: -10}
+    - {x: 3, y: -10}
+  armament: []
+  components:
+  - _item: {fileID: 11400000, guid: fe5264c7ff4d80440834c70b67b6338b, type: 2}
+    dropChance: 0.17
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: b915e972b2af513499339f4938168cb3, type: 2}
+    dropChance: 0.14
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: b915e972b2af513499339f4938168cb3, type: 2}
+    dropChance: 0.14
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 206e1235fcc6fc54791bb4305eb62f36, type: 2}
+    dropChance: 0.02
+    _altChoices:
+    - {fileID: 11400000, guid: 7fe2510871faabf40abe13b70a577e09, type: 2}
+    altChoicesDropChance: []
+  resistances:
+  - damageType: 3
+    resistanceAmount: -0.25
+    immune: 0
+  resistancesExtra:
+    coring: 0
+    disruption: 0
+    meltdown: 0
+    hacking: 0
+    jamming: 0
+  traits: []
+  fabricationInfo:
+    canBeFabricated: 0
+    amountMadePer: 1
+    fabTime: {x: 81, y: 40, z: 27}
+    matterCost: 50
+    componenetsRequired: []
+  description: K-class workers perform menial tasks such as clearing debris to facilitate
+    work by other robots. Their built-in compact recycling unit can break down almost
+    any form of debris into reusable matter. As K-01 Serfs are extremely cheap to
+    produce and perform no vital function, despite their size they are among the
+    weakest robot designs with the most exposed core.
+  locations:
+    all0b10Maps: 1
+    _0b10Range: {x: -10, y: -7}
+    fromHost: 0
+    fromEvent: 0
+    relation: 1
+  playerHasAnalysisData: 0

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 895e3a7950cbf284aa5f07a9b8309806, type: 3}
+  m_Name: Blade Trap
+  m_EditorClassIdentifier: 
+  Id: 0
+  type: 2
+  bot: {fileID: 0}
+  item: {fileID: 0}
+  lore: A simple trap mechanism, though the effectiveness of forcibly detaching target
+    components is not to be underestimated where hostile forces are incapable of
+    rebuilding in the field.

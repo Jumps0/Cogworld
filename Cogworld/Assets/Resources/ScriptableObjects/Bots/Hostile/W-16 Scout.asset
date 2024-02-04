@@ -1,0 +1,108 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 530edc62ed973694caed63aea242337c, type: 3}
+  m_Name: W-16 Scout
+  m_EditorClassIdentifier: 
+  Id: 2
+  asciiRep: {fileID: 0}
+  _class: 23
+  _size: 1
+  _profile:
+    forward: SQ
+    size: {x: 3, y: 3}
+  rating: 9
+  tier: 1
+  threat: 1
+  value: 16
+  energyGeneration: 15
+  heatDissipation: 15
+  visualRange: 18
+  memory: 50
+  spotPercent: 100
+  _movement:
+    moveType: 3
+    moveTileRange: 56
+    moveSpeedPercent: 1.78
+    overloadedMovement: 0
+    moveType_ov: 0
+    moveTileRange_ov: 0
+    moveSpeedPercent_ov: 0
+  coreIntegrity: 12
+  currentIntegrity: 12
+  coreExposure: 0.39
+  salvagePotential: {x: 10, y: 30}
+  schematicDetails:
+    hackable: 1
+    location:
+    - {x: 1, y: -10}
+    - {x: 2, y: -10}
+    - {x: 3, y: -10}
+  armament: []
+  components:
+  - _item: {fileID: 11400000, guid: fe5264c7ff4d80440834c70b67b6338b, type: 2}
+    dropChance: 0.19
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: faafafef29173cf42b6915519d611118, type: 2}
+    dropChance: 0.17
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: faafafef29173cf42b6915519d611118, type: 2}
+    dropChance: 0.17
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: abaeaa02ef539a24ea0d39460e22ab0f, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 12179fd869a4bbc499e280cd72fabff1, type: 2}
+    dropChance: 0.04
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 59ba32a78c5cec7479c57656865c2399, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  resistances:
+  - damageType: 3
+    resistanceAmount: -1
+    immune: 0
+  resistancesExtra:
+    coring: 0
+    disruption: 0
+    meltdown: 0
+    hacking: 0
+    jamming: 0
+  traits:
+  - trait_sensorJamming: 1
+    trait_energyEmmission: 0
+    eeRange: 0
+    eeAmount: 0
+  fabricationInfo:
+    canBeFabricated: 0
+    amountMadePer: 2
+    fabTime: {x: 81, y: 40, z: 27}
+    matterCost: 90
+    componenetsRequired: []
+  description: W-series watchers are equipped with a wide variety of sensors to excel
+    at surveillance. However, their heavy reliance on highly-exposed advanced electronic
+    systems means they are extremely susceptible to electromagnetic attacks. On detecting
+    intruders, a W-16 Scout will alert all nearby combat units and continue to provide
+    position updates as long as the hostile is visible.
+  locations:
+    all0b10Maps: 0
+    _0b10Range: {x: -10, y: -9}
+    fromHost: 0
+    fromEvent: 0
+    relation: 0
+    alignment: 0
+  playerHasAnalysisData: 0

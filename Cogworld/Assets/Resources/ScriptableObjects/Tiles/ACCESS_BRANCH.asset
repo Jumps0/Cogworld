@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bf959f1c2ce52248b62ff453abcc06c, type: 3}
+  m_Name: ACCESS_BRANCH
+  m_EditorClassIdentifier: 
+  Id: 7
+  displaySprite: {fileID: -333158863, guid: 0669e38ad5cf6a74b85a00b903976e80, type: 3}
+  tileName: Branch Access
+  type: 4
+  altSprite: {fileID: -268443102, guid: 0669e38ad5cf6a74b85a00b903976e80, type: 3}
+  asciiRep: {fileID: 386359694, guid: 484b699857d60234c908d529dd37a90d, type: 3}
+  asciiColor: {r: 1, g: 0.5019608, b: 0, a: 1}
+  isDirty: 0
+  impassable: 0
+  health: {x: 10, y: 10}
+  armor: 5
+  currentVis: 0

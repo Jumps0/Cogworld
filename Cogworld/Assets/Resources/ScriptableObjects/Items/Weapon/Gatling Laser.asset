@@ -1,0 +1,90 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
+  m_Name: Gatling Laser
+  m_EditorClassIdentifier: 
+  instantUnique: 0
+  amount: 1
+  data:
+    Name: 
+    Id: 42
+    stackable: 0
+    itemData: {fileID: 11400000}
+  knowByPlayer: 0
+  floorDisplay: {fileID: -593278526, guid: de1bd95886cf7e3458436c5f8ca70a8d, type: 3}
+  inventoryDisplay: {fileID: -593278526, guid: de1bd95886cf7e3458436c5f8ca70a8d, type: 3}
+  asciiRep: {fileID: -946019755, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  itemColor: {r: 0.043137256, g: 0.854902, b: 0.77647066, a: 1}
+  type: 16
+  slot: 3
+  mass: 4
+  rating: 4
+  star: 0
+  integrityCurrent: 85
+  integrityMax: 85
+  coverage: 60
+  state: 0
+  schematicDetails:
+    hackable: 1
+    location:
+    - {x: 1, y: -7}
+    - {x: 2, y: -8}
+    - {x: 3, y: -9}
+  hasUpkeep: 0
+  energyUpkeep: 0
+  matterUpkeep: 0
+  heatUpkeep: 0
+  supply: 0
+  storage: 0
+  power_HasStability: 0
+  power_stability: 0
+  propulsion: []
+  shot:
+    shotRange: 14
+    shotEnergy: -20
+    shotMatter: 0
+    shotHeat: 80
+    shotRecoil: 0
+    shotTargeting: 0
+    shotDelay: 20
+    shotStability: 0
+    shotArc: 0
+    hasStability: 0
+    hasArc: 0
+    shotSound:
+    - {fileID: 8300000, guid: e07740137d5fa554fa6379a29f3eb4d8, type: 3}
+    - {fileID: 8300000, guid: 94d0c04dbf0798c469fe5b5a2469b166, type: 3}
+  projectileAmount: 3
+  projectile:
+    damage: {x: 10, y: 12}
+    damageType: 1
+    critChance: 0
+    critType: 1
+    penChance: 0
+    heatTrasfer: 25
+    heatTransferDegree: 1
+    spectrum: 0
+    hasSpectrum: 0
+    disruption: 0
+    salvage: -1
+  itemEffect: []
+  quality: 2
+  itemName: Gatling Laser
+  description: A powerful energy weapon that shoots 3 thermal projectiles at once.
+  details:
+    temp: 
+  fabricationInfo:
+    canBeFabricated: 1
+    amountMadePer: 2
+    fabTime: {x: 84, y: 42, z: 28}
+    matterCost: 80
+    componenetsRequired: []

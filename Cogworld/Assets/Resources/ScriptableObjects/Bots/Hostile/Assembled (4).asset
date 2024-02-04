@@ -1,0 +1,101 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 530edc62ed973694caed63aea242337c, type: 3}
+  m_Name: Assembled (4)
+  m_EditorClassIdentifier: 
+  Id: 12
+  asciiRep: {fileID: 0}
+  _class: 31
+  _size: 1
+  _profile:
+    forward: SQ
+    size: {x: 3, y: 3}
+  rating: 8
+  tier: 4
+  threat: 1
+  value: 0
+  energyGeneration: 20
+  heatDissipation: 35
+  visualRange: 16
+  memory: 20
+  spotPercent: 30
+  _movement:
+    moveType: 3
+    moveTileRange: 60
+    moveSpeedPercent: 1.66
+    overloadedMovement: 0
+    moveType_ov: 0
+    moveTileRange_ov: 0
+    moveSpeedPercent_ov: 0
+  coreIntegrity: 20
+  currentIntegrity: 20
+  coreExposure: 0.5
+  salvagePotential: {x: 10, y: 20}
+  schematicDetails:
+    hackable: 0
+    location:
+    - {x: 1, y: -10}
+    - {x: 2, y: -10}
+    - {x: 3, y: -10}
+  armament:
+  - _item: {fileID: 11400000, guid: 1ba8eb0b775dc074da3b12ec7338822a, type: 2}
+    dropChance: 0.31
+    _altChoices:
+    - {fileID: 11400000, guid: 71c97fbec6a31ad4e884f8d716844c9c, type: 2}
+    - {fileID: 11400000, guid: 9af9d50b832fdb94c8c7be85068e7238, type: 2}
+    - {fileID: 11400000, guid: 994dc102c54c52f4d81c6b7489e1d41f, type: 2}
+    - {fileID: 11400000, guid: b51ecdfb47fa18141b80f2d7db259437, type: 2}
+    altChoicesDropChance:
+    - 0.31
+    - 0.31
+    - 0.06
+    - 0.04
+  components:
+  - _item: {fileID: 11400000, guid: a9c60a102b6e95f4e90e23bf6e5f6f44, type: 2}
+    dropChance: 0.17
+    _altChoices: []
+    altChoicesDropChance: []
+  resistances:
+  - damageType: 6
+    resistanceAmount: -0.25
+    immune: 0
+  - damageType: 7
+    resistanceAmount: -0.25
+    immune: 0
+  - damageType: 8
+    resistanceAmount: -0.25
+    immune: 0
+  resistancesExtra:
+    coring: 0
+    disruption: 0
+    meltdown: 0
+    hacking: 1
+    jamming: 0
+  traits: []
+  fabricationInfo:
+    canBeFabricated: 0
+    amountMadePer: 3
+    fabTime: {x: 81, y: 40, z: 27}
+    matterCost: 180
+    componenetsRequired: []
+  description: A quick but not especially dangerous combat derelict with fully integrated
+    systems, constructed seemingly at random by an Assembler's self-contained fabrication
+    apparatus. Individually resilient for their size, they pose a real threat in
+    greater numbers.
+  locations:
+    all0b10Maps: 0
+    _0b10Range: {x: -10, y: -9}
+    fromHost: 0
+    fromEvent: 1
+    relation: 0
+    alignment: 2
+  playerHasAnalysisData: 0

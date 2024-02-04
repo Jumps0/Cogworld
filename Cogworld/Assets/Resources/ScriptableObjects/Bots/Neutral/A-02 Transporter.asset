@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 530edc62ed973694caed63aea242337c, type: 3}
+  m_Name: A-02 Transporter
+  m_EditorClassIdentifier: 
+  Id: 3
+  asciiRep: {fileID: -570742473, guid: 11c48a8f38663be4997fdfa1689cb530, type: 3}
+  _class: 0
+  _size: 2
+  _profile:
+    forward: RD
+    size: {x: 5, y: 5}
+  rating: 10
+  tier: 1
+  threat: 1
+  value: 2
+  energyGeneration: 10
+  heatDissipation: 10
+  visualRange: 14
+  memory: 10
+  spotPercent: 100
+  _movement:
+    moveType: 1
+    moveTileRange: 160
+    moveSpeedPercent: 0.62
+    overloadedMovement: 0
+    moveType_ov: 0
+    moveTileRange_ov: 0
+    moveSpeedPercent_ov: 0
+  coreIntegrity: 15
+  currentIntegrity: 15
+  coreExposure: 0.29
+  salvagePotential: {x: 40, y: 60}
+  schematicDetails:
+    hackable: 1
+    location:
+    - {x: 1, y: -10}
+    - {x: 2, y: -10}
+    - {x: 3, y: -10}
+  armament: []
+  components:
+  - _item: {fileID: 11400000, guid: f257c55e230457d4085a2d7f236d192e, type: 2}
+    dropChance: 0.12
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: ad71293061e3cd44488b48253176448b, type: 2}
+    dropChance: 0.25
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: ad71293061e3cd44488b48253176448b, type: 2}
+    dropChance: 0.25
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 820aa2865c05353479e7cf7425603bc7, type: 2}
+    dropChance: 0.01
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: ee5b59af207bf7b43a915e1dc4bd7565, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: af1565b03106357469fa062f9c720bdf, type: 2}
+    dropChance: 0.05
+    _altChoices: []
+    altChoicesDropChance: []
+  resistances:
+  - damageType: 3
+    resistanceAmount: -0.25
+    immune: 0
+  resistancesExtra:
+    coring: 0
+    disruption: 0
+    meltdown: 0
+    hacking: 0
+    jamming: 0
+  traits: []
+  fabricationInfo:
+    canBeFabricated: 0
+    amountMadePer: 1
+    fabTime: {x: 81, y: 40, z: 27}
+    matterCost: 50
+    componenetsRequired: []
+  description: A-series haulers transport matter and parts vital to construction
+    and manufacturing. To minimize losses during derelict incursions, like most other
+    maintenance robots they are of relatively sturdy construction, but remain somewhat
+    susceptible to electromagnetic damage as such weaponry is not prevalent enough
+    to warrant specialized defenses.
+  locations:
+    all0b10Maps: 0
+    _0b10Range: {x: -10, y: -7}
+    fromHost: 0
+    fromEvent: 0
+    relation: 1
+  playerHasAnalysisData: 0

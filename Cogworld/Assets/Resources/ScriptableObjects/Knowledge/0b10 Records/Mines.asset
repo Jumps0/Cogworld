@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 895e3a7950cbf284aa5f07a9b8309806, type: 3}
+  m_Name: Mines
+  m_EditorClassIdentifier: 
+  Id: 0
+  type: 2
+  bot: {fileID: 0}
+  item: {fileID: 0}
+  lore: "\tDeep underground areas newly excavated to provide access to raw materials
+    for processing in the lower levels of Complex 0b10. Initially the mining tunnels
+    only rarely experienced hostile Derelict activity, not enough to justify allocating
+    significant resources to defense. This has recently changed with the Infestation,
+    for which the current response is to dispatch garrisoned Demolishers until a
+    more permanent solution can be put in place."

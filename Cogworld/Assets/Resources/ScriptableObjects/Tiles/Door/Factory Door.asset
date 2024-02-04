@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bf959f1c2ce52248b62ff453abcc06c, type: 3}
+  m_Name: Factory Door
+  m_EditorClassIdentifier: 
+  Id: 12
+  displaySprite: {fileID: -1637553928, guid: 39169aeda5af12542a7067234993ee9d, type: 3}
+  tileName: Factory Door
+  type: 2
+  altSprite: {fileID: 1365937539, guid: 39169aeda5af12542a7067234993ee9d, type: 3}
+  asciiRep: {fileID: 921198686, guid: 14ab35a0b2c4fc84681e675af9facbe5, type: 3}
+  asciiColor: {r: 1, g: 0.5019608, b: 0, a: 1}
+  isDirty: 0
+  impassable: 0
+  health: {x: 12, y: 12}
+  armor: 5
+  currentVis: 0

@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
+  m_Name: Small Laser
+  m_EditorClassIdentifier: 
+  instantUnique: 0
+  amount: 1
+  data:
+    Name: 
+    Id: 41
+    stackable: 0
+    itemData: {fileID: 11400000}
+  knowByPlayer: 1
+  floorDisplay: {fileID: -593278526, guid: de1bd95886cf7e3458436c5f8ca70a8d, type: 3}
+  inventoryDisplay: {fileID: -593278526, guid: de1bd95886cf7e3458436c5f8ca70a8d, type: 3}
+  asciiRep: {fileID: -946019755, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  itemColor: {r: 0.043137256, g: 0.854902, b: 0.77647066, a: 1}
+  type: 16
+  slot: 3
+  mass: 1
+  rating: 1
+  star: 0
+  integrityCurrent: 70
+  integrityMax: 70
+  coverage: 60
+  state: 0
+  schematicDetails:
+    hackable: 1
+    location:
+    - {x: 1, y: -10}
+    - {x: 2, y: -10}
+    - {x: 3, y: -10}
+  hasUpkeep: 0
+  energyUpkeep: 0
+  matterUpkeep: 0
+  heatUpkeep: 0
+  supply: 0
+  storage: 0
+  power_HasStability: 0
+  power_stability: 0
+  propulsion: []
+  shot:
+    shotRange: 12
+    shotEnergy: -8
+    shotMatter: 0
+    shotHeat: 40
+    shotRecoil: 0
+    shotTargeting: 0
+    shotDelay: 0
+    shotStability: 0
+    shotArc: 0
+    hasStability: 0
+    hasArc: 0
+    shotSound:
+    - {fileID: 8300000, guid: e070043e348f2e1498eb5d09dbd6d843, type: 3}
+    - {fileID: 8300000, guid: b590c25584a1c774ebc2986780fd770e, type: 3}
+    - {fileID: 8300000, guid: b871b9cfdfd312e4694813a3910caac5, type: 3}
+    - {fileID: 8300000, guid: 90ae9c49052d4ee4aafec5ef6bbfbaac, type: 3}
+  projectileAmount: 1
+  projectile:
+    damage: {x: 10, y: 12}
+    damageType: 1
+    critChance: 0
+    critType: 1
+    penChance: 0
+    heatTrasfer: 25
+    heatTransferDegree: 1
+    spectrum: 0
+    hasSpectrum: 0
+    disruption: 0
+    salvage: 0
+  itemEffect: []
+  quality: 2
+  itemName: Sml. Laser
+  description: A lightweight laser that shoots beams of energy that do thermal damage
+    to the target.
+  details:
+    temp: 
+  fabricationInfo:
+    canBeFabricated: 1
+    amountMadePer: 2
+    fabTime: {x: 51, y: 25, z: 17}
+    matterCost: 15
+    componenetsRequired: []

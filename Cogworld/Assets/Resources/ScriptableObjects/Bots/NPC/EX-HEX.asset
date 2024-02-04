@@ -1,0 +1,174 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 530edc62ed973694caed63aea242337c, type: 3}
+  m_Name: EX-HEX
+  m_EditorClassIdentifier: 
+  Id: 11
+  asciiRep: {fileID: 0}
+  _class: 32
+  _size: 2
+  _profile:
+    forward: RD
+    size: {x: 5, y: 5}
+  rating: 85
+  tier: 4
+  threat: 1
+  value: 1
+  energyGeneration: 34
+  heatDissipation: 15
+  visualRange: 16
+  memory: 50
+  spotPercent: 30
+  _movement:
+    moveType: 3
+    moveTileRange: 60
+    moveSpeedPercent: 1.66
+    overloadedMovement: 0
+    moveType_ov: 0
+    moveTileRange_ov: 0
+    moveSpeedPercent_ov: 0
+  coreIntegrity: 30
+  currentIntegrity: 30
+  coreExposure: 0.39
+  salvagePotential: {x: 20, y: 30}
+  schematicDetails:
+    hackable: 0
+    location: []
+  armament: []
+  components:
+  - _item: {fileID: 11400000, guid: 1d1290a5f1b43b647bdd6f34aa3b382b, type: 2}
+    dropChance: 0.16
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 99726f0e8e112f44ea62469248a43989, type: 2}
+    dropChance: 0.27
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 3470fc7346008bc438bfe698faf25548, type: 2}
+    dropChance: 0.02
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 9cd33263e9f2e544fa6686f6030522c0, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 3dccd5c1517571b46985ad7c5ae96d25, type: 2}
+    dropChance: 0.05
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 26215d8ca4e919443a8ee840d6a9332d, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 26215d8ca4e919443a8ee840d6a9332d, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 26215d8ca4e919443a8ee840d6a9332d, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 26215d8ca4e919443a8ee840d6a9332d, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 26215d8ca4e919443a8ee840d6a9332d, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 26215d8ca4e919443a8ee840d6a9332d, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 26215d8ca4e919443a8ee840d6a9332d, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 26215d8ca4e919443a8ee840d6a9332d, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 26215d8ca4e919443a8ee840d6a9332d, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 26215d8ca4e919443a8ee840d6a9332d, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
+    dropChance: 0
+    _altChoices: []
+    altChoicesDropChance: []
+  resistances:
+  - damageType: 3
+    resistanceAmount: 0.9
+    immune: 0
+  resistancesExtra:
+    coring: 1
+    disruption: 1
+    meltdown: 0
+    hacking: 1
+    jamming: 1
+  traits: []
+  fabricationInfo:
+    canBeFabricated: 0
+    amountMadePer: 3
+    fabTime: {x: 81, y: 40, z: 27}
+    matterCost: 180
+    componenetsRequired: []
+  description: One of the three EXILEd researchers EX-HEX. Responsible for research
+    into the Assembled.
+  locations:
+    all0b10Maps: 0
+    _0b10Range: {x: -10, y: -9}
+    fromHost: 0
+    fromEvent: 1
+    relation: 2
+    alignment: 5
+  playerHasAnalysisData: 0

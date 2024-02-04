@@ -1,0 +1,215 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
+  m_Name: Neutrino Core
+  m_EditorClassIdentifier: 
+  instantUnique: 0
+  amount: 1
+  data:
+    Name: Imp. Deuterium Engine
+    Id: 61
+    stackable: 0
+    itemData: {fileID: 11400000}
+  knowByPlayer: 0
+  floorDisplay: {fileID: -1884263998, guid: 6074c0389029dd34c9cd2fd482c26683, type: 3}
+  inventoryDisplay: {fileID: -1884263998, guid: 6074c0389029dd34c9cd2fd482c26683, type: 3}
+  asciiRep: {fileID: -164177848, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  itemColor: {r: 0.35554314, g: 0, b: 1, a: 1}
+  type: 1
+  slot: 0
+  slotsRequired: 1
+  mass: 14
+  rating: 6
+  star: 0
+  integrityCurrent: 95
+  integrityMax: 95
+  coverage: 60
+  state: 0
+  schematicDetails:
+    hackable: 1
+    location:
+    - {x: 1, y: -5}
+    - {x: 2, y: -6}
+    - {x: 3, y: -7}
+  hasUpkeep: 1
+  energyUpkeep: 0
+  matterUpkeep: 0
+  heatUpkeep: 8
+  supply: 14
+  storage: 215
+  power_HasStability: 0
+  power_stability: 0
+  propulsion: []
+  shot:
+    shotRange: 0
+    shotEnergy: 0
+    shotMatter: 0
+    shotHeat: 0
+    shotRecoil: 0
+    shotTargeting: 0
+    shotDelay: 0
+    shotStability: 0
+    shotArc: 0
+    hasStability: 0
+    hasArc: 0
+    shotSound: []
+  projectileAmount: 0
+  projectile:
+    damage: {x: 0, y: 0}
+    damageType: 0
+    critChance: 0
+    critType: 0
+    penChance: 0
+    heatTrasfer: 0
+    heatTransferDegree: 0
+    spectrum: 0
+    hasSpectrum: 0
+    disruption: 0
+    salvage: 0
+  meleeAttack:
+    isMelee: 0
+    energy: 0
+    matter: 0
+    heat: 0
+    targeting: 0
+    delay: 0
+    damage: {x: 0, y: 0}
+    damageType: 6
+    critical: 0
+    critType: 0
+    disruption: 0
+    salvage: 0
+  itemEffect:
+  - chainExplode: 1
+    damage: {x: 24, y: 40}
+    chainDamageType: 3
+    radius: 2
+    chunks: {x: 1, y: 1}
+    fallOff: 3
+    salvage: 3
+    transferLevel: 3
+    disruption: 0.02
+    spectrum: 2
+    doesHeatDissip: 0
+    heatDissipation_perTurn: 0
+    heatDissipation_stacks: 0
+    hasLegEffect: 0
+    extraKickChance: 0
+    appliesToLargeTargets: 0
+    conferToRunningState: 0
+    evasionNaccuracyChange: 0
+    maxMomentumAmount: 0
+    inventorySizeEffect: 0
+    sizeIncrease: 0
+    effectStacks: 0
+    ramCrushEffect: 0
+    ramCrushChance: 0
+    ramCrush_canDoLarge: 0
+    ramCrush_canDoGigantic: 0
+    ramCrush_integLimit: 0
+    ramCrush_canStack: 0
+    ramCrush_stackCap: 0
+    hasStabEffect: 0
+    stab_recoilPerWeapon: 0
+    stab_KnockbackImmune: 0
+    armorEffect: 0
+    armorEffect_slotType: 0
+    armorEffect_absorbtion: 0
+    armorEffect_preventCritStrikes: 0
+    armorEffect_preventChainReactions: 0
+    armorEffect_stacks: 0
+    armorEffect_resistances: []
+    hasAccuracyBuff: 0
+    accBuff_nonMelee: 0
+    accBuff_melee: 0
+    accBuff_stacks: 0
+    hasDetectionEffect: 0
+    detection_range: 0
+    detect_seismic: 0
+    detect_machines: 0
+    detect_bots: 0
+    detect_pure: 0
+    detect_structural: 0
+    detect_stacks: 0
+    hasSignalInterp: 0
+    signalInterp_strength: 0
+    haulerTracking: 0
+    hasMassSupport: 0
+    massSupport: 0
+    massSupport_stacks: 0
+    collectsMatterBeam: 0
+    matterCollectionRange: 0
+    terrainScan: 0
+    terrainScanRange: 0
+    terrainScan_boost: 0
+    terrainScan_densBoost: 0
+    terrainScanBoost_stacks: 0
+    internalStorage: 0
+    internalStorageType: 0
+    internalStorageCapacity: 0
+    internalStorageType_stacks: 0
+    hackBonuses:
+      hasHackBonus: 0
+      hackSuccessBonus: 0
+      rewireBonus: 0
+      programmerHackDefenseBonus: 0
+      stacks: 1
+      hasSystemShieldBonus: 0
+      hackDetectRateBonus: 0
+      hackDetectChanceBonus: 0
+      securityLevelIncreaseChance: 0
+      databaseLockoutBonus: 0
+      hackFeedbackPreventBonus: 0
+      allyHackDefenseBonus: 0
+      allyHackRange: 0
+    emitEffect:
+      hasEffect: 0
+      target: 0
+      turnTime: 5
+      range: 0
+    fireTimeEffect:
+      hasEffect: 0
+      fireTimeReduction: 0
+      capped: 0
+      cap: 0
+      stacks: 1
+      compatability: 0
+    transmissionJammingEffect:
+      hasEffect: 0
+      range: 0
+      preventReinforcementCall: 1
+      suppressAlarmTraps: 1
+    effectiveCorruptionEffect:
+      hasEffect: 0
+      amount: 0
+      stacks: 1
+    partRestoreEffect:
+      hasEffect: 0
+      percentChance: 0
+      canRepairAlienTech: 0
+      protoRepairCap: 0
+      canRunInParralel: 1
+    isAutoWeapon: 0
+    chronoWheelEffect: 0
+    deployableTurret: 0
+  quality: 2
+  itemName: Neutrino Core
+  description: A power core that utilizes Neutrino particles to generate energy.
+    This core provides reliable power output and storage.
+  details:
+    temp: 
+  fabricationInfo:
+    canBeFabricated: 1
+    amountMadePer: 2
+    fabTime: {x: 106, y: 53, z: 35}
+    matterCost: 85
+    componenetsRequired: []

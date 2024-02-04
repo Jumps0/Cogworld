@@ -1,0 +1,174 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f374f6b6bfaf9544bbf62fd2b8bf7b7, type: 3}
+  m_Name: design1c - def preplaced modified
+  m_EditorClassIdentifier: 
+  isConsistent: 1
+  seed: 5634311
+  sizeX: 120
+  sizeY: 120
+  background: 1
+  joinDistance: 2
+  tunnelJoinDistance: 2
+  openings: 
+  preplaced:
+  - startX: 87
+    startY: 45
+    endX: 95
+    endY: 54
+    type: 24
+    prefab: {fileID: 3707101782480976417, guid: 9832799a303dd274b8e5e1c5e5ce6142, type: 3}
+  - startX: 86
+    startY: 45
+    endX: 86
+    endY: 51
+    type: 11
+    prefab: {fileID: 0}
+  ggConsistent: 1
+  babyDelayProbsForGenerationRoomies: 0000000000000000320000003200000000000000000000000000000000000000000000000000000000000000
+  maxAgesCrawlers: 050000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a00000005000000030000000f0000000a00000005000000140000000a000000060000000f0000000a00000007000000140000001400000014000000140000000a00000014000000050000001400000005000000
+  maxAgesTunnelers: 000200000c0000000f0000000f0000000f0000000f0000000f0000000f0000000f000000140000001e0000000a0000000f0000000a00000003000000140000000a000000050000000f0000000a00000005000000140000001400000014000000140000000a00000014000000050000001400000005000000
+  stepLengths: 030000000300000003000000030000000300000003000000
+  corridorWidths: 0f0000000f00000007000000070000000300000003000000030000000300000001000000
+  lastChanceTunneler:
+    location: {x: 0, y: 0}
+    direction: 8
+    desiredDirection: 8
+    age: 0
+    maxAge: 0
+    generation: 0
+    stepLength: 0
+    tunnelWidth: 0
+    straightDoubleSpawnProb: 30
+    turnDoubleSpawnProb: 80
+    changeDirProb: 40
+    makeRoomRightProb: 100
+    makeRoomLeftProb: 100
+    joinPref: 0
+  genDelayLastChance: 7
+  crawlers: []
+  tunnelers:
+  - location: {x: 2, y: 50}
+    direction: 2
+    desiredDirection: 2
+    age: 0
+    maxAge: 7
+    generation: 0
+    stepLength: 7
+    tunnelWidth: 1
+    straightDoubleSpawnProb: 40
+    turnDoubleSpawnProb: 80
+    changeDirProb: 40
+    makeRoomRightProb: 100
+    makeRoomLeftProb: 100
+    joinPref: 100
+  - location: {x: 86, y: 50}
+    direction: 0
+    desiredDirection: 0
+    age: 0
+    maxAge: 12
+    generation: 0
+    stepLength: 3
+    tunnelWidth: 1
+    straightDoubleSpawnProb: 40
+    turnDoubleSpawnProb: 60
+    changeDirProb: 40
+    makeRoomRightProb: 100
+    makeRoomLeftProb: 100
+    joinPref: 100
+  - location: {x: 50, y: 2}
+    direction: 1
+    desiredDirection: 1
+    age: 0
+    maxAge: 12
+    generation: 0
+    stepLength: 3
+    tunnelWidth: 1
+    straightDoubleSpawnProb: 0
+    turnDoubleSpawnProb: 50
+    changeDirProb: 60
+    makeRoomRightProb: 100
+    makeRoomLeftProb: 100
+    joinPref: 100
+  - location: {x: 50, y: 97}
+    direction: 3
+    desiredDirection: 3
+    age: 0
+    maxAge: 12
+    generation: 0
+    stepLength: 3
+    tunnelWidth: 1
+    straightDoubleSpawnProb: 0
+    turnDoubleSpawnProb: 50
+    changeDirProb: 60
+    makeRoomRightProb: 100
+    makeRoomLeftProb: 100
+    joinPref: 100
+  crawlerPairs: []
+  minRoomSize: 20
+  medRoomSize: 40
+  largeRoomSize: 80
+  MaxRoomSize: 150
+  numSmallL: 20
+  numMedL: 7
+  numLargeL: 5
+  numSmallD: 50
+  numMedD: 15
+  numLargeD: 2
+  BabyGenerationProbsCrawler: 00000000460000000000000014000000000000000a0000000000000000000000000000000000000000000000
+  tunnelCrawlerStats:
+    location: {x: 0, y: 0}
+    direction: 8
+    desiredDirection: 8
+    age: 0
+    maxAge: 5
+    generation: 0
+    stepLength: 7
+    opening: 0
+    corridorWidth: 0
+    straightSingleSpawnProb: 0
+    straightDoubleSpawnProb: 0
+    turnSingleSpawnProb: 0
+    turnDoubleSpawnProb: 0
+    changeDirectionProb: 0
+  tunnelCrawlerGeneration: -1
+  tunnelCrawlerClosedProb: 100
+  babyGenerationProbsTunneler: 0000000000000000640000000000000000000000000000000000000000000000000000000000000000000000
+  joinPref: 00000000000000000a0000006400000064000000
+  roomSizeProbS:
+  - {x: 100, y: 0, z: 0}
+  - {x: 50, y: 50, z: 0}
+  - {x: 0, y: 100, z: 0}
+  - {x: 0, y: 0, z: 100}
+  roomSizeProbB:
+  - {x: 100, y: 0, z: 0}
+  - {x: 0, y: 100, z: 0}
+  - {x: 0, y: 0, z: 100}
+  SizeUpProb: 000000000000000000000000000000000000000064000000640000001e000000
+  SizeDownProb: 0000000000000000320000006400000064000000000000000000000046000000
+  anteRoomProb: 140000001e000000000000000000000064000000
+  randomCrawlerPerGen: 0000000063000000
+  RandomCrawler_sSSP: 0
+  RandomCrawler_sDSP: 20
+  RandomCrawler_tSSP: 0
+  RandomCrawler_tDSP: 80
+  RandomCrawler_cDP: 20
+  roomAspectRatio: 0
+  crawlersInTunnels: 0
+  crawlersInAnteRooms: 0
+  columnsInTunnels: 0
+  seedCrawlersInTunnels: 0
+  GenSpeedUpOnAnteRoom: 4
+  patience: 90
+  mutator: 50
+  noHeadProb: 40
+  sizeUpGenDelay: 1

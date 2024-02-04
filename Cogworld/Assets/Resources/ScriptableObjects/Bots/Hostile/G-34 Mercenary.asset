@@ -1,0 +1,101 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 530edc62ed973694caed63aea242337c, type: 3}
+  m_Name: G-34 Mercenary
+  m_EditorClassIdentifier: 
+  Id: 1
+  asciiRep: {fileID: 400640993, guid: 0f98ae4f61612184ab250349db1b02ec, type: 3}
+  _class: 9
+  _size: 2
+  _profile:
+    forward: RD
+    size: {x: 5, y: 5}
+  rating: 8
+  tier: 1
+  threat: 1
+  value: 34
+  energyGeneration: 15
+  heatDissipation: 25
+  visualRange: 16
+  memory: 20
+  spotPercent: 20
+  _movement:
+    moveType: 0
+    moveTileRange: 120
+    moveSpeedPercent: 0.83
+    overloadedMovement: 0
+    moveType_ov: 0
+    moveTileRange_ov: 0
+    moveSpeedPercent_ov: 0
+  coreIntegrity: 15
+  currentIntegrity: 15
+  coreExposure: 0.4
+  salvagePotential: {x: 30, y: 50}
+  schematicDetails:
+    hackable: 1
+    location:
+    - {x: 1, y: -10}
+    - {x: 2, y: -10}
+    - {x: 3, y: -10}
+  armament:
+  - _item: {fileID: 11400000, guid: 1cf0bc96597c038438d406d6d145579c, type: 2}
+    dropChance: 0.12
+    _altChoices: []
+    altChoicesDropChance: []
+  components:
+  - _item: {fileID: 11400000, guid: f257c55e230457d4085a2d7f236d192e, type: 2}
+    dropChance: 0.12
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: e115e467b239ba74cbe9fdda3e326c3f, type: 2}
+    dropChance: 0.16
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: e115e467b239ba74cbe9fdda3e326c3f, type: 2}
+    dropChance: 0.16
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 6e1e04cb2f8405447992feb6ecec365a, type: 2}
+    dropChance: 0.04
+    _altChoices: []
+    altChoicesDropChance: []
+  resistances:
+  - damageType: 3
+    resistanceAmount: -0.25
+    immune: 0
+  resistancesExtra:
+    coring: 0
+    disruption: 0
+    meltdown: 0
+    hacking: 0
+    jamming: 0
+  traits: []
+  fabricationInfo:
+    canBeFabricated: 0
+    amountMadePer: 3
+    fabTime: {x: 81, y: 40, z: 27}
+    matterCost: 180
+    componenetsRequired: []
+  description: G-series grunts serve as low-level front-line combat units, of sturdy
+    construction but with fairly weak armament. Internal systems are not as protected
+    as they could be, to enable rapid repair in the field, but this also makes them
+    somewhat susceptible to additional damage from electromagnetic attacks. Grunts
+    patrol in groups, or sometimes operate alone as hauler escorts to protect those
+    with more valuable cargo.
+  locations:
+    all0b10Maps: 0
+    _0b10Range: {x: -10, y: -9}
+    fromHost: 0
+    fromEvent: 0
+    relation: 0
+    alignment: 0
+  playerHasAnalysisData: 0

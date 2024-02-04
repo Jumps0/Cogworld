@@ -1,0 +1,114 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 530edc62ed973694caed63aea242337c, type: 3}
+  m_Name: Y-54 Gaurdian
+  m_EditorClassIdentifier: 
+  Id: 0
+  asciiRep: {fileID: 0}
+  _class: 25
+  _size: 3
+  _profile:
+    forward: RD
+    size: {x: 7, y: 7}
+  rating: 32
+  tier: 4
+  threat: 2
+  value: 54
+  energyGeneration: 21
+  heatDissipation: 43
+  visualRange: 16
+  memory: 40
+  spotPercent: 100
+  _movement:
+    moveType: 1
+    moveTileRange: 160
+    moveSpeedPercent: 0.62
+    overloadedMovement: 0
+    moveType_ov: 0
+    moveTileRange_ov: 0
+    moveSpeedPercent_ov: 0
+  coreIntegrity: 45
+  currentIntegrity: 45
+  coreExposure: 0.35
+  salvagePotential: {x: 60, y: 75}
+  schematicDetails:
+    hackable: 1
+    location:
+    - {x: 1, y: -7}
+    - {x: 2, y: -8}
+    - {x: 3, y: -9}
+  armament:
+  - _item: {fileID: 11400000, guid: cd6f9ca7b29a597478aa379acda3b55e, type: 2}
+    dropChance: 0.06
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 15d0398cccca65a4c97bb4ab981754ce, type: 2}
+    dropChance: 0.1
+    _altChoices: []
+    altChoicesDropChance: []
+  components:
+  - _item: {fileID: 11400000, guid: 07bcfd395a1503349a7addc53acdc08b, type: 2}
+    dropChance: 0.06
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: ad71293061e3cd44488b48253176448b, type: 2}
+    dropChance: 0.12
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: ad71293061e3cd44488b48253176448b, type: 2}
+    dropChance: 0.12
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 851462495d80346488f9ed0b41eb94de, type: 2}
+    dropChance: 0.15
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 591a744c750455244bc8ee986a032d0b, type: 2}
+    dropChance: 0.02
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 591a744c750455244bc8ee986a032d0b, type: 2}
+    dropChance: 0.02
+    _altChoices: []
+    altChoicesDropChance: []
+  resistances:
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0.25
+    immune: 0
+  resistancesExtra:
+    coring: 0
+    disruption: 0
+    meltdown: 0
+    hacking: 0
+    jamming: 0
+  traits: []
+  fabricationInfo:
+    canBeFabricated: 0
+    amountMadePer: 2
+    fabTime: {x: 134, y: 67, z: 44}
+    matterCost: 200
+    componenetsRequired: []
+  description: Y-54 Defenders improve on the Y-45 with better armor and greater effectiveness
+    against both single and multiple targets, swapping out the beam rifle and heavy
+    assault rifle for a gatling laser and flak gun. Like all Y-series sentries, their
+    armor is hardened against impact damage and explosive blasts.
+  locations:
+    all0b10Maps: 0
+    _0b10Range: {x: -7, y: -6}
+    fromHost: 0
+    fromEvent: 0
+    relation: 0
+    alignment: 0
+  playerHasAnalysisData: 0

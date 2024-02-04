@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 895e3a7950cbf284aa5f07a9b8309806, type: 3}
+  m_Name: The Assembled
+  m_EditorClassIdentifier: 
+  Id: 0
+  type: 2
+  bot: {fileID: 0}
+  item: {fileID: 0}
+  lore: Given this name by the Derelicts, these robots of integrated construction
+    are created seemingly at random by larger mobile factories. They form sudden
+    groups, often in the most unexpected of places, and attack almost everything.
+    I can discern no pattern in their behavior, though as their hostility is not
+    directed solely towards Complex 0b10 and my robots it seems that their creator's
+    intent is to instigate something larger while disrupting my own operations.

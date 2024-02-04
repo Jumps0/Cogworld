@@ -1,0 +1,88 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using UnityEngine.EventSystems;
+
+public class UILogMessage : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+{
+    public TextMeshProUGUI _text;
+    public Image _hover;
+    public string _message;
+    public Color setColor;
+    public Color highLightColor;
+
+    [SerializeField] private float textSpeed = 0.01f;
+    private int currentDisplayingText = 0;
+
+    bool hasAudioPlayout = false;
+
+    public void Setup(string message, Color color, Color highlight, bool hasAudio)
+    {
+        this.GetComponent<RectTransform>().sizeDelta = (new Vector2(600, 300));
+
+        // Should this happen in the other log too? (Only if it's active)
+        if (UIManager.inst.currentActiveMenu_LAIC == "L" || UIManager.inst.currentActiveMenu_LAIC == "l")
+        {
+            UIManager.inst.CreateNewSecondaryLogMessage(message, color, highlight, false, false);
+        }
+
+        _message = message;
+        setColor = color;
+        highLightColor = highlight;
+        _text.color = setColor;
+        _hover.color = highLightColor;
+        hasAudioPlayout = hasAudio;
+        TypeOutAnimation();
+    }
+
+    public void TypeOutAnimation()
+    {
+        StartCoroutine(AnimateText());
+    }
+
+    IEnumerator AnimateText()
+    {
+        if (hasAudioPlayout)
+        {
+            // Play (typing) sound
+            AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[67]);
+        }
+
+        int len = _message.Length;
+        _text.text = "";
+        for (int i = 0; i < len; i++)
+        {
+            _text.text += _message[i];
+            yield return new WaitForSeconds(textSpeed * Time.deltaTime);
+        }
+
+        if (hasAudioPlayout)
+        {
+            // When finished, stop playing the text sound
+            AudioManager.inst.StopMiscSpecific();
+        }
+        
+    }
+
+    public void HoverOn()
+    {
+        _hover.enabled = true;
+    }
+
+    public void HoverOff()
+    {
+        _hover.enabled = false;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        HoverOn();
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        HoverOff();
+    }
+}

@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
+  m_Name: Adv. Surge Thruster
+  m_EditorClassIdentifier: 
+  instantUnique: 0
+  amount: 1
+  data:
+    Name: 
+    Id: 1
+    stackable: 0
+    itemData: {fileID: 11400000}
+  knowByPlayer: 1
+  floorDisplay: {fileID: -1937396886, guid: 341095b58407e0e4aa4bb36190339c2d, type: 3}
+  inventoryDisplay: {fileID: -1937396886, guid: 341095b58407e0e4aa4bb36190339c2d, type: 3}
+  asciiRep: {fileID: -1087548489, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  itemColor: {r: 0.69803923, g: 0, b: 0, a: 1}
+  type: 8
+  slot: 1
+  mass: 0
+  rating: 7
+  star: 0
+  integrityCurrent: 90
+  integrityMax: 90
+  coverage: 70
+  state: 0
+  schematicDetails:
+    hackable: 1
+    location:
+    - {x: 1, y: -4}
+    - {x: 2, y: -5}
+    - {x: 3, y: -6}
+  hasUpkeep: 1
+  energyUpkeep: -1.5
+  matterUpkeep: 0
+  heatUpkeep: 2
+  supply: 0
+  storage: 0
+  power_HasStability: 0
+  power_stability: 0
+  propulsion:
+  - timeToMove: 25
+    modExtra: -3
+    drag: 0
+    propEnergy: -0.5
+    propHeat: 1
+    support: 4
+    penalty: 40
+    burnout: 40
+    hasBurnout: 1
+  shot:
+    shotRange: 0
+    shotEnergy: 0
+    shotMatter: 0
+    shotHeat: 0
+    shotRecoil: 0
+    shotTargeting: 0
+    shotDelay: 0
+    shotStability: 0
+    shotArc: 0
+    hasStability: 0
+    hasArc: 0
+    shotSound: []
+  projectileAmount: 1
+  projectile:
+    damage: {x: 0, y: 0}
+    damageType: 0
+    critChance: 0
+    critType: 0
+    penChance: 0
+    heatTrasfer: 0
+    heatTransferDegree: 0
+    spectrum: 0
+    hasSpectrum: 0
+    disruption: 0
+    salvage: 0
+  itemEffect: []
+  quality: 3
+  itemName: Adv. Surge Thruster
+  description: 
+  details:
+    temp: 
+  fabricationInfo:
+    canBeFabricated: 1
+    amountMadePer: 2
+    fabTime: {x: 117, y: 58, z: 39}
+    matterCost: 0
+    componenetsRequired: []

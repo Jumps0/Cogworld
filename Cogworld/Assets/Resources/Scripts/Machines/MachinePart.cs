@@ -1,0 +1,160 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class MachinePart : MonoBehaviour
+{
+    [Header("Core Info")]
+    [Header("----Overview----")]
+    [Tooltip("Basically health. X = current, Y = max.")]
+    public Vector2Int armor;
+    public bool state = true; // Active
+    [Header("----Resistances----")]
+    public List<BotResistances> resistances;
+    [Header("----Explosive Potential----")]
+    public bool explodes = false;
+    public float stability = 1.0f;
+    public Vector2Int delay = new Vector2Int(0,0);
+    public int chunks = 0;
+    [Tooltip("Heat Transfer level: 0 --> 3 [None, Low, Medium, High]")]
+    public int heatTransferLevel;
+    public int heatTransfer;
+    public ItemExplosion explosivePotential;
+    [Header("----Random----")]
+    public bool initializeRandom = false; // If true, will be set to a random machine sprite, and to a random rotation
+    public bool walkable = false; // If true, certain bots (zionities, subcaves, etc.) will be able to walk through this machine.
+
+    [Header("Special Types")]
+    public bool isSealedDoor = false; // Orange
+    public bool isSealedStorage = false; // Blue
+    public Color sealedDoorOrange = new Color32(255, 128, 0, 255);
+    public Color sealedStorageBlue = new Color32(199, 234, 255, 255);
+
+    public bool destroyed = false;
+
+    public Color activeColor;
+    public Color disabledColor;
+
+    public List<MachinePart> connectedParts;
+    public MachinePart parentPart;
+
+    public bool isExplored = false;
+    public bool isVisible = false;
+
+    private void Start()
+    {
+        if (initializeRandom)
+        {
+            this.transform.Rotate(new Vector3(0f, 0f, 90f * Random.Range(0, 4))); // Random Rotation
+            this.GetComponent<SpriteRenderer>().sprite = MiscSpriteStorage.inst.machinePartSprites[Random.Range(0, MiscSpriteStorage.inst.machinePartSprites.Count - 1)]; // Random sprite
+        }
+
+        if (isSealedDoor)
+        {
+            this.GetComponent<SpriteRenderer>().color = sealedDoorOrange;
+        }
+        if (isSealedStorage)
+        {
+            this.GetComponent<SpriteRenderer>().color = sealedStorageBlue;
+        }
+    }
+
+    // Update is called once per frame
+    private void Update()
+    {
+        if(MapManager.inst && MapManager.inst.loaded)
+            CheckVisibility();
+    }
+
+    private void CheckVisibility()
+    {
+        Color actiColor = activeColor;
+        if(parentPart == null || parentPart == this)
+        {
+            actiColor = Color.white;
+        }
+
+
+        if (parentPart && parentPart.state)
+        {
+            if (isVisible)
+            {
+                this.GetComponent<SpriteRenderer>().color = actiColor;
+            }
+            else if (isExplored && isVisible)
+            {
+                this.GetComponent<SpriteRenderer>().color = actiColor;
+            }
+            else if (isExplored && !isVisible)
+            {
+                this.GetComponent<SpriteRenderer>().color = new Color(actiColor.r, actiColor.g, actiColor.b, 0.7f);
+            }
+            else if (!isExplored)
+            {
+                this.GetComponent<SpriteRenderer>().color = Color.black;
+            }
+        }
+        else
+        {
+            if (isVisible)
+            {
+                this.GetComponent<SpriteRenderer>().color = disabledColor;
+            }
+            else if (isExplored && isVisible)
+            {
+                this.GetComponent<SpriteRenderer>().color = disabledColor;
+            }
+            else if (isExplored && !isVisible)
+            {
+                this.GetComponent<SpriteRenderer>().color = new Color(disabledColor.r, disabledColor.g, disabledColor.b, 0.7f);
+            }
+            else if (!isExplored)
+            {
+                this.GetComponent<SpriteRenderer>().color = Color.black;
+            }
+        }
+
+        
+    }
+
+    /// <summary>
+    /// For when this part needs to actually be destroyed. Plays a sound effect, and leaves some trash behind.
+    /// </summary>
+    public void DestroyMe()
+    {
+        // Decide if this should leave debris or note (random)
+        if (Random.Range(0f, 1f) > 0.5f) // Yes, debris
+        {
+            if (MapManager.inst.loaded)
+            {
+                MapManager.inst._allTilesRealized[new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y)].SetToDirty();
+            }
+            // Play a sound
+            AudioClip clip = AudioManager.inst.nonBotDestruction_Clips[Random.Range(14, 18)]; // Metal debris clips
+            AudioManager.inst.CreateTempClip(this.transform.position, clip, 0.8f);
+        }
+        else // No debris
+        {
+            // Play a sound
+            AudioClip clip = AudioManager.inst.nonBotDestruction_Clips[Random.Range(9, 13)]; // Metal clips
+            AudioManager.inst.CreateTempClip(this.transform.position, clip, 0.8f);
+        }
+
+        Destroy(this.gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        if (MapManager.inst)
+        {
+            if (MapManager.inst.loaded) // This odd workaround is necessary for machines loaded from prefabs. Since two will exist and the first gets deleted, without this check it will remove the 2nd from the dictionary.
+            {
+                MapManager.inst._allTilesRealized[new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y)].occupied = false;
+                MapManager.inst._layeredObjsRealized.Remove(new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y));
+            }
+            destroyed = true;
+            if(parentPart)
+                parentPart.state = false;
+        }
+    }
+}

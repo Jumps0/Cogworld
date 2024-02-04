@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 530edc62ed973694caed63aea242337c, type: 3}
+  m_Name: R-06 Scavenger
+  m_EditorClassIdentifier: 
+  Id: 4
+  asciiRep: {fileID: 1395080542, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  _class: 26
+  _size: 2
+  _profile:
+    forward: RD
+    size: {x: 5, y: 5}
+  rating: 8
+  tier: 1
+  threat: 1
+  value: 6
+  energyGeneration: 10
+  heatDissipation: 10
+  visualRange: 14
+  memory: 10
+  spotPercent: 100
+  _movement:
+    moveType: 4
+    moveTileRange: 100
+    moveSpeedPercent: 1
+    overloadedMovement: 0
+    moveType_ov: 0
+    moveTileRange_ov: 0
+    moveSpeedPercent_ov: 0
+  coreIntegrity: 15
+  currentIntegrity: 15
+  coreExposure: 0.39
+  salvagePotential: {x: 50, y: 100}
+  schematicDetails:
+    hackable: 1
+    location:
+    - {x: 1, y: -10}
+    - {x: 2, y: -10}
+    - {x: 3, y: -10}
+  armament: []
+  components:
+  - _item: {fileID: 11400000, guid: fe5264c7ff4d80440834c70b67b6338b, type: 2}
+    dropChance: 0.2
+    _altChoices: []
+  - _item: {fileID: 11400000, guid: 746b5ef51141b204d827c72119776c25, type: 2}
+    dropChance: 0.1
+    _altChoices: []
+  - _item: {fileID: 11400000, guid: 746b5ef51141b204d827c72119776c25, type: 2}
+    dropChance: 0.1
+    _altChoices: []
+  - _item: {fileID: 11400000, guid: 0acc6e35c3d332c4badcb96dc5027f3d, type: 2}
+    dropChance: 0.1
+    _altChoices: []
+  - _item: {fileID: 11400000, guid: ca22bcab4c8ac7f4bb4cf735f0a4a715, type: 2}
+    dropChance: 0.08
+    _altChoices: []
+  resistances:
+  - damageType: 3
+    resistanceAmount: -0.25
+    immune: 0
+  traits: []
+  fabricationInfo:
+    canBeFabricated: 0
+    amountMadePer: 1
+    fabTime: {x: 81, y: 40, z: 27}
+    matterCost: 50
+    componenetsRequired: []
+  description: R-series recyclers collect used, damaged, or unregistered components
+    for recycling and repurposing. To minimize losses during derelict incursions,
+    like most other maintenance robots they are of relatively sturdy construction,
+    but remain somewhat susceptible to electromagnetic damage as such weaponry is
+    not prevalent enough to warrant specialized defenses.
+  locations:
+    all0b10Maps: 0
+    _0b10Range: {x: -11, y: -7}
+    fromHost: 0
+    fromEvent: 0
+    relation: 1
+  playerHasAnalysisData: 0

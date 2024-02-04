@@ -1,0 +1,100 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 530edc62ed973694caed63aea242337c, type: 3}
+  m_Name: T-07 Excavator
+  m_EditorClassIdentifier: 
+  Id: 1
+  asciiRep: {fileID: 2048525777, guid: 484b699857d60234c908d529dd37a90d, type: 3}
+  _class: 21
+  _size: 2
+  _profile:
+    forward: RD
+    size: {x: 5, y: 5}
+  rating: 10
+  tier: 1
+  threat: 1
+  value: 7
+  energyGeneration: 10
+  heatDissipation: 10
+  visualRange: 14
+  memory: 10
+  spotPercent: 100
+  _movement:
+    moveType: 4
+    moveTileRange: 80
+    moveSpeedPercent: 1.25
+    overloadedMovement: 0
+    moveType_ov: 0
+    moveTileRange_ov: 0
+    moveSpeedPercent_ov: 0
+  coreIntegrity: 10
+  currentIntegrity: 10
+  coreExposure: 0.39
+  salvagePotential: {x: 10, y: 30}
+  schematicDetails:
+    hackable: 1
+    location:
+    - {x: 1, y: -10}
+    - {x: 2, y: -10}
+    - {x: 3, y: -10}
+  armament:
+  - _item: {fileID: 11400000, guid: f92ef0c7b29d062429105f7d2ed0283a, type: 2}
+    dropChance: 0.2
+    _altChoices: []
+    altChoicesDropChance: []
+  components:
+  - _item: {fileID: 11400000, guid: fe5264c7ff4d80440834c70b67b6338b, type: 2}
+    dropChance: 0.12
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: b915e972b2af513499339f4938168cb3, type: 2}
+    dropChance: 0.14
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: b915e972b2af513499339f4938168cb3, type: 2}
+    dropChance: 0.14
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 7372380eac0ad49408bf075e3d28924a, type: 2}
+    dropChance: 0.03
+    _altChoices: []
+    altChoicesDropChance: []
+  - _item: {fileID: 11400000, guid: 56807d47fd6aea348b54c50dafec6663, type: 2}
+    dropChance: 0.03
+    _altChoices: []
+    altChoicesDropChance: []
+  resistances:
+  - damageType: 3
+    resistanceAmount: -0.25
+    immune: 0
+  resistancesExtra:
+    coring: 0
+    disruption: 0
+    meltdown: 0
+    hacking: 0
+    jamming: 0
+  traits: []
+  fabricationInfo:
+    canBeFabricated: 0
+    amountMadePer: 1
+    fabTime: {x: 81, y: 40, z: 27}
+    matterCost: 50
+    componenetsRequired: []
+  description: ' T-class tunnelers analyze subsurface integrity and open new areas
+    for expansion.'
+  locations:
+    all0b10Maps: 1
+    _0b10Range: {x: -10, y: -7}
+    fromHost: 0
+    fromEvent: 0
+    relation: 1
+  playerHasAnalysisData: 0

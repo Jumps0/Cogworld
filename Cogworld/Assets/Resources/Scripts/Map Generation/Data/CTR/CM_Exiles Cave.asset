@@ -1,0 +1,134 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f374f6b6bfaf9544bbf62fd2b8bf7b7, type: 3}
+  m_Name: CM_Exiles Cave
+  m_EditorClassIdentifier: 
+  isCustomMap: 1
+  isConsistent: 1
+  seed: 0
+  sizeX: 150
+  sizeY: 150
+  background: 1
+  joinDistance: 0
+  tunnelJoinDistance: 0
+  openings: 
+  preplaced:
+  - startX: 0
+    startY: 0
+    endX: 140
+    endY: 140
+    type: 24
+    prefab: {fileID: 7846646878580617158, guid: 59584774e23a40a408666a2961b39c21, type: 3}
+  ggConsistent: 1
+  babyDelayProbsForGenerationRoomies: 
+  maxAgesCrawlers: 
+  maxAgesTunnelers: 
+  stepLengths: 
+  corridorWidths: 
+  lastChanceTunneler:
+    location: {x: 0, y: 0}
+    direction: 8
+    desiredDirection: 8
+    age: 0
+    maxAge: 0
+    generation: 0
+    stepLength: 0
+    tunnelWidth: 0
+    straightDoubleSpawnProb: 0
+    turnDoubleSpawnProb: 0
+    changeDirProb: 0
+    makeRoomRightProb: 0
+    makeRoomLeftProb: 0
+    joinPref: 0
+  genDelayLastChance: 0
+  crawlers:
+  - location: {x: 0, y: 0}
+    direction: 0
+    desiredDirection: 0
+    age: 0
+    maxAge: 0
+    generation: 0
+    stepLength: 0
+    opening: 0
+    corridorWidth: 0
+    straightSingleSpawnProb: 0
+    straightDoubleSpawnProb: 0
+    turnSingleSpawnProb: 0
+    turnDoubleSpawnProb: 0
+    changeDirectionProb: 0
+  tunnelers:
+  - location: {x: 0, y: 0}
+    direction: 0
+    desiredDirection: 0
+    age: 0
+    maxAge: 0
+    generation: 0
+    stepLength: 0
+    tunnelWidth: 0
+    straightDoubleSpawnProb: 0
+    turnDoubleSpawnProb: 0
+    changeDirProb: 0
+    makeRoomRightProb: 0
+    makeRoomLeftProb: 0
+    joinPref: 0
+  crawlerPairs: []
+  minRoomSize: 0
+  medRoomSize: 0
+  largeRoomSize: 0
+  MaxRoomSize: 0
+  numSmallL: 0
+  numMedL: 0
+  numLargeL: 0
+  numSmallD: 0
+  numMedD: 0
+  numLargeD: 0
+  BabyGenerationProbsCrawler: 
+  tunnelCrawlerStats:
+    location: {x: 0, y: 0}
+    direction: 8
+    desiredDirection: 8
+    age: 0
+    maxAge: 0
+    generation: 0
+    stepLength: 0
+    opening: 0
+    corridorWidth: 0
+    straightSingleSpawnProb: 0
+    straightDoubleSpawnProb: 0
+    turnSingleSpawnProb: 0
+    turnDoubleSpawnProb: 0
+    changeDirectionProb: 0
+  tunnelCrawlerGeneration: 0
+  tunnelCrawlerClosedProb: 0
+  babyGenerationProbsTunneler: 
+  joinPref: 
+  roomSizeProbS: []
+  roomSizeProbB: []
+  SizeUpProb: 
+  SizeDownProb: 
+  anteRoomProb: 
+  randomCrawlerPerGen: 
+  RandomCrawler_sSSP: 0
+  RandomCrawler_sDSP: 0
+  RandomCrawler_tSSP: 0
+  RandomCrawler_tDSP: 0
+  RandomCrawler_cDP: 0
+  roomAspectRatio: 0
+  crawlersInTunnels: 0
+  crawlersInAnteRooms: 0
+  columnsInTunnels: 0
+  seedCrawlersInTunnels: 0
+  GenSpeedUpOnAnteRoom: 0
+  patience: 0
+  mutator: 0
+  noHeadProb: 0
+  sizeUpGenDelay: 0

@@ -1,0 +1,112 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
+  m_Name: Cmb. Antigrav System
+  m_EditorClassIdentifier: 
+  instantUnique: 0
+  amount: 1
+  data:
+    Name: 
+    Id: 24
+    stackable: 0
+    itemData: {fileID: 11400000}
+  knowByPlayer: 1
+  floorDisplay: {fileID: -24734676, guid: 9e5fd32a0821a894a9c4ce41b9aec735, type: 3}
+  inventoryDisplay: {fileID: -24734676, guid: 9e5fd32a0821a894a9c4ce41b9aec735, type: 3}
+  asciiRep: {fileID: -1087548489, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  itemColor: {r: 0.827451, g: 0.068543024, b: 0.015686251, a: 1}
+  type: 7
+  slot: 1
+  slotsRequired: 1
+  mass: 0
+  rating: 8
+  star: 0
+  integrityCurrent: 210
+  integrityMax: 210
+  coverage: 35
+  state: 0
+  schematicDetails:
+    hackable: 1
+    location:
+    - {x: 1, y: -3}
+    - {x: 2, y: -4}
+    - {x: 3, y: -5}
+  hasUpkeep: 1
+  energyUpkeep: -2
+  matterUpkeep: 0
+  heatUpkeep: 2
+  supply: 0
+  storage: 0
+  power_HasStability: 0
+  power_stability: 0
+  propulsion:
+  - timeToMove: 80
+    modExtra: -3
+    drag: 0
+    propEnergy: -1
+    propHeat: 2
+    support: 16
+    penalty: 70
+    burnout: 0
+    hasBurnout: 0
+  shot:
+    shotRange: 0
+    shotEnergy: 0
+    shotMatter: 0
+    shotHeat: 0
+    shotRecoil: 0
+    shotTargeting: 0
+    shotDelay: 0
+    shotStability: 0
+    shotArc: 0
+    hasStability: 0
+    hasArc: 0
+    shotSound: []
+  projectileAmount: 0
+  projectile:
+    damage: {x: 0, y: 0}
+    damageType: 0
+    critChance: 0
+    critType: 0
+    penChance: {x: 0, y: 0, z: 0}
+    heatTrasfer: 0
+    heatTransferDegree: 0
+    spectrum: 0
+    hasSpectrum: 0
+    disruption: 0
+    salvage: 0
+  meleeAttack:
+    isMelee: 0
+    energy: 0
+    matter: 0
+    heat: 0
+    targeting: 0
+    delay: 0
+    damage: {x: 0, y: 0}
+    damageType: 6
+    critical: 0
+    critType: 0
+    disruption: 0
+    salvage: 0
+  itemEffect: []
+  quality: 18
+  itemName: Cmb. Antigrav System
+  description: A collection of multiple antigravity sensors and thrusters combined
+    together into one reliable hover unit.
+  details:
+    temp: 
+  fabricationInfo:
+    canBeFabricated: 1
+    amountMadePer: 2
+    fabTime: {x: 128, y: 64, z: 42}
+    matterCost: 95
+    componenetsRequired: []
