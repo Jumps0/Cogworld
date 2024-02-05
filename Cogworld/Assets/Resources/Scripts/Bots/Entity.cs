@@ -25,12 +25,32 @@ public class Entity : MonoBehaviour
     public bool siegeMode = false;
     public bool inStatis = false;
     //
+    public int speed = 0;
+    //
+    public int weightCurrent;
+    public int weightMax;
+    //
     [Tooltip("This bot hasn't moved for the past X times it could have.")]
-    public int noMovementFor = 0;
+    public int noMovementFor = 1;
+    [Tooltip("If a bot continues to move in the same direction multiple times, their 'momentum' increases.")]
+    public int momentum = 0;
+    private Vector2 lastDirection = Vector2.zero;
 
     public void Move(Vector2 direction)
     {
+        // Move character
         transform.position += (Vector3)direction;
+
+        // Update momentum
+        if(lastDirection == direction)
+        {
+            momentum++;
+        }
+        else
+        {
+            momentum = 0;
+        }
+        lastDirection = direction;
     }
 
     public void AddToGameManager()

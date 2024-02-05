@@ -197,7 +197,7 @@ public class ItemEffect
     public bool conferToRunningState;
     [Tooltip("Increase invasion by X% but also decreases accuracy by X% (per level)")]
     public float evasionNaccuracyChange;
-    public int maxMomentumAmount;
+    public int maxMomentumAmount = 3; // This value seems to always be 3
 
     [Header("Inventory Size")]
     public bool inventorySizeEffect = false;
@@ -309,6 +309,12 @@ public class ItemEffect
 
     [Header("Anti-Corruption")]
     public ItemAntiCorruption antiCorruption;
+
+    [Header("Reaction Control System")]
+    public ItemRCS rcsEffect;
+
+    [Header("Phasing")]
+    public ItemPhasing phasingEffect;
 }
 
 public enum ItemQuality
@@ -438,6 +444,7 @@ public class ItemExplosion
     public float disruption;
     public int salvage;
 }
+
 #region Misc Effects
 [System.Serializable]
 public class ItemDamageResistance
@@ -572,7 +579,31 @@ public class ItemAntiCorruption
     public int integrityLossPer;
     public bool parallel = false;
 }
+
+[System.Serializable]
+[Tooltip("Enables responsive movement to avoid direct attacks, #% to dodge while on legs, or #% * 2 while hovering or flying (no effect on tracked or wheeled movement). Same chance to evade triggered traps, and a +# to effective momentum for melee attacks and ramming. No effects while overweight.")]
+public class ItemRCS
+{
+    public bool hasEffect = false;
+    [Header("0.## | Effect doubled while hovering or flying")]
+    public float percentage;
+    public bool stacks = false;
+    public int momentumBonus = 1;
+}
+
+[System.Serializable]
+[Tooltip("Reduces enemy ranged targeting accuracy by ##%.")]
+public class ItemPhasing
+{
+    public bool hasEffect = false;
+    [Header("0.## | Effect doubled while hovering or flying")]
+    public float percentage;
+    public bool stacks = false;
+}
+
 #endregion
+
+
 [System.Serializable]
 public class ItemFabInfo
 {

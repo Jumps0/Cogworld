@@ -22,6 +22,8 @@ public class AccessObject : MonoBehaviour
     public bool isExplored;
     public bool isVisible;
 
+    public GameObject blackBacker;
+
     public void Setup(int target, bool branch)
     {
         targetDestination = target;

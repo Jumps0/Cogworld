@@ -60,12 +60,18 @@ public class PlayerData : MonoBehaviour
     public int timeTilSiege = 100;
     //
     //
-    public int currentAvoidance;
+    public float currentAvoidance;
+    [Tooltip("Flight/Hover bonus")]
     public int evasion1;
+    [Tooltip("Heat level (This value is negative)")]
     public int evasion2;
+    [Tooltip("Movement speed (and whether recently moved)")]
     public int evasion3;
+    [Tooltip("Evasion modifiers from utilities (e.g. Manuevering Thrusters)")]
     public int evasion4;
+    [Tooltip("Cloaking modifiers from utilities (e.g. Cloaking Devices")]
     public int evasion5;
+    public bool lockedInStasis = false;
 
     [Header("  Parts")]
     public int maxWeight;
@@ -192,7 +198,7 @@ public class PlayerData : MonoBehaviour
     {
 
 
-        // - Movement - //
+        #region Update Stats - Movement
         bool R = false, T = false, H = false, F = false, WA = false;
         R = Action.HasWheels(this.GetComponent<Actor>());
         T = Action.HasTreads(this.GetComponent<Actor>());
@@ -224,13 +230,24 @@ public class PlayerData : MonoBehaviour
         float energyUse, heatUse;
         (moveSpeed1, energyUse, heatUse) = Action.GetSpeed(this.GetComponent<Actor>());
         moveSpeed2 = 100 * (100 / moveSpeed1); // Get it into the percentage value
-        // -          - //
+        #endregion
 
-        // - Weight - //
+        #region Update Stats - Evasion/Avoidance
+        List<int> individualEAvalues = new List<int>();
+
+        (currentAvoidance, individualEAvalues) = Action.CalculateAvoidance(this.GetComponent<Actor>());
+        evasion1 = individualEAvalues[0];
+        evasion2 = individualEAvalues[1];
+        evasion3 = individualEAvalues[2];
+        evasion4 = individualEAvalues[3];
+        evasion5 = individualEAvalues[4];
+
+        #endregion
+
+        #region Update Stats - Weight
         currentWeight = Action.GetTotalMass(this.GetComponent<Actor>());
         maxWeight = Action.GetTotalSupport(this.GetComponent<Actor>());
-
-        //
+        #endregion
 
         // And finally update the UI
         UIManager.inst.UpdatePSUI();

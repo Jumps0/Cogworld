@@ -3209,7 +3209,7 @@ public class UIManager : MonoBehaviour
     //
     public TextMeshProUGUI scanHeader_text; //: / S C A N /
     public GameObject scanButtonsParent; // Parent for the 4 buttons in the scan box
-    public List<Button> scanButtons = new List<Button>();
+    public List<TextMeshProUGUI> scanButtonText = new List<TextMeshProUGUI>();
     //
     // -      -
 
@@ -3220,7 +3220,6 @@ public class UIManager : MonoBehaviour
     //
     public Image avoidanceIndicator_image; // the square
     public TextMeshProUGUI avoidanceNum_text; //: ##%
-    public TextMeshProUGUI avoidanceName; //: Avoidance
     public TextMeshProUGUI avoidanceDetail1_text; // The five
     public TextMeshProUGUI avoidanceDetail2_text; // numbers
     public TextMeshProUGUI avoidanceDetail3_text; // along
@@ -3318,6 +3317,7 @@ public class UIManager : MonoBehaviour
         AssignPartKeys(); // Assign each slot keybinds
     }
 
+    #region Rightside - Player Stats UI
     /// <summary>
     /// Update player stats UI (top right)
     /// </summary>
@@ -3459,6 +3459,7 @@ public class UIManager : MonoBehaviour
          * Walking <none>
          */
 
+        int speed = PlayerData.inst.moveSpeed1;
         switch (PlayerData.inst.moveType)
         {
             case BotMoveType.Running:
@@ -3475,80 +3476,156 @@ public class UIManager : MonoBehaviour
                 moveTypeText.text = "Treading";
                 modeGO.SetActive(true);
                 flashRef.SetActive(false);
-                if (PlayerData.inst.moveSpeed1 >= 300) // SLOWx3
+                if (speed <= 25) // FASTx3
+                {
+                    modeText.text = "FASTx3";
+                    modeImage.color = specialPurple;
+                }
+                else if (speed > 25 && speed <= 50) // FASTx2
+                {
+                    modeText.text = "FASTx2";
+                    modeImage.color = coolBlue;
+                }
+                else if (speed > 50 && speed <= 75) // FAST
+                {
+                    modeText.text = "FAST";
+                    modeImage.color = coolBlue;
+                }
+                else if (speed >= 300) // SLOWx3
                 {
                     modeText.text = "SLOWx3";
                     modeImage.color = alertRed;
                 }
-                else if (PlayerData.inst.moveSpeed1 >= 200 && PlayerData.inst.moveSpeed1 < 300) // SLOWx2
+                else if (speed >= 200 && speed < 300) // SLOWx2
                 {
                     modeText.text = "SLOWx2";
                     modeImage.color = warningOrange;
                 }
-                else // SLOW
+                else if (speed >= 150 && speed < 200) // SLOW
                 {
                     modeText.text = "SLOW";
                     modeImage.color = siegeYellow;
+                }
+                else // Nothing
+                {
+                    modeGO.SetActive(false);
                 }
                 break;
             case BotMoveType.Flying:
                 moveTypeText.text = "Flying";
                 modeGO.SetActive(true);
                 flashRef.SetActive(false);
-                if (PlayerData.inst.moveSpeed1 <= 25) // FASTx3
+                if (speed <= 25) // FASTx3
                 {
                     modeText.text = "FASTx3";
                     modeImage.color = specialPurple;
                 }
-                else if (PlayerData.inst.moveSpeed1 > 25 && PlayerData.inst.moveSpeed1 <= 50) // FASTx2
+                else if (speed > 25 && speed <= 50) // FASTx2
                 {
                     modeText.text = "FASTx2";
                     modeImage.color = coolBlue;
                 }
-                else
+                else if (speed > 50 && speed <= 75) // FAST
                 {
                     modeText.text = "FAST";
                     modeImage.color = coolBlue;
+                }
+                else if (speed >= 300) // SLOWx3
+                {
+                    modeText.text = "SLOWx3";
+                    modeImage.color = alertRed;
+                }
+                else if (speed >= 200 && speed < 300) // SLOWx2
+                {
+                    modeText.text = "SLOWx2";
+                    modeImage.color = warningOrange;
+                }
+                else if (speed >= 150 && speed < 200) // SLOW
+                {
+                    modeText.text = "SLOW";
+                    modeImage.color = siegeYellow;
+                }
+                else // Nothing
+                {
+                    modeGO.SetActive(false);
                 }
                 break;
             case BotMoveType.Hovering:
                 moveTypeText.text = "Hovering";
                 modeGO.SetActive(true);
                 flashRef.SetActive(false);
-                if (PlayerData.inst.moveSpeed1 <= 25) // FASTx3
+                if (speed <= 25) // FASTx3
                 {
                     modeText.text = "FASTx3";
                     modeImage.color = specialPurple;
                 }
-                else if (PlayerData.inst.moveSpeed1 > 25 && PlayerData.inst.moveSpeed1 <= 50) // FASTx2
+                else if (speed > 25 && speed <= 50) // FASTx2
                 {
                     modeText.text = "FASTx2";
                     modeImage.color = coolBlue;
                 }
-                else
+                else if (speed > 50 && speed <= 75) // FAST
                 {
                     modeText.text = "FAST";
                     modeImage.color = coolBlue;
+                }
+                else if (speed >= 300) // SLOWx3
+                {
+                    modeText.text = "SLOWx3";
+                    modeImage.color = alertRed;
+                }
+                else if (speed >= 200 && speed < 300) // SLOWx2
+                {
+                    modeText.text = "SLOWx2";
+                    modeImage.color = warningOrange;
+                }
+                else if (speed >= 150 && speed < 200) // SLOW
+                {
+                    modeText.text = "SLOW";
+                    modeImage.color = siegeYellow;
+                }
+                else // Nothing
+                {
+                    modeGO.SetActive(false);
                 }
                 break;
             case BotMoveType.Rolling:
                 moveTypeText.text = "Rolling";
                 modeGO.SetActive(true);
                 flashRef.SetActive(false);
-                if (PlayerData.inst.moveSpeed1 >= 300) // SLOWx3
+                if (speed <= 25) // FASTx3
+                {
+                    modeText.text = "FASTx3";
+                    modeImage.color = specialPurple;
+                }
+                else if (speed > 25 && speed <= 50) // FASTx2
+                {
+                    modeText.text = "FASTx2";
+                    modeImage.color = coolBlue;
+                }
+                else if (speed > 50 && speed <= 75) // FAST
+                {
+                    modeText.text = "FAST";
+                    modeImage.color = coolBlue;
+                }
+                else if (speed >= 300) // SLOWx3
                 {
                     modeText.text = "SLOWx3";
                     modeImage.color = alertRed;
                 }
-                else if (PlayerData.inst.moveSpeed1 >= 200 && PlayerData.inst.moveSpeed1 < 300) // SLOWx2
+                else if (speed >= 200 && speed < 300) // SLOWx2
                 {
                     modeText.text = "SLOWx2";
                     modeImage.color = warningOrange;
                 }
-                else // SLOW
+                else if (speed >= 150 && speed < 200) // SLOW
                 {
                     modeText.text = "SLOW";
                     modeImage.color = siegeYellow;
+                }
+                else // Nothing
+                {
+                    modeGO.SetActive(false);
                 }
                 break;
             case BotMoveType.SIEGE:
@@ -3597,20 +3674,68 @@ public class UIManager : MonoBehaviour
         {
             avoidanceNum_text.gameObject.SetActive(true);
             avoidanceIndicator_image.gameObject.SetActive(true);
-            avoidanceName.gameObject.SetActive(true);
             avoidanceDetail1_text.gameObject.SetActive(true);
             avoidanceDetail2_text.gameObject.SetActive(true);
             avoidanceDetail3_text.gameObject.SetActive(true);
             avoidanceDetail4_text.gameObject.SetActive(true);
             avoidanceDetail5_text.gameObject.SetActive(true);
 
-            avoidanceNum_text.text = PlayerData.inst.currentAvoidance.ToString() + "%";
+            int avoidance = (int)(PlayerData.inst.currentAvoidance);
+            avoidanceNum_text.text = avoidance.ToString() + "% Avoidance";
             SetAvoidanceImageColor(PlayerData.inst.currentAvoidance);
-            SetAvoidanceTextColor(avoidanceDetail1_text, PlayerData.inst.evasion1);
-            SetAvoidanceTextColor(avoidanceDetail2_text, PlayerData.inst.evasion2);
-            SetAvoidanceTextColor(avoidanceDetail3_text, PlayerData.inst.evasion3);
-            SetAvoidanceTextColor(avoidanceDetail4_text, PlayerData.inst.evasion4);
-            SetAvoidanceTextColor(avoidanceDetail5_text, PlayerData.inst.evasion5);
+
+            // Flight/Hover Bonus
+            if (PlayerData.inst.evasion1 > 0)
+            {
+                if (!PlayerData.inst.lockedInStasis && !(PlayerData.inst.currentWeight > PlayerData.inst.maxWeight)) // Not held in stasis or overweight
+                {
+                    avoidanceDetail1_text.text = "<color=#295BA0>" + "+" + PlayerData.inst.evasion1 + "</color>"; // Blue
+                }
+                else
+                {
+                    avoidanceDetail1_text.text = "<color=#5B5B5B>" + "+" + PlayerData.inst.evasion1 + "</color>"; // Gray
+                }
+            }
+            else
+            {
+                avoidanceDetail1_text.text = "<color=#5B5B5B>" + "-0" + "</color>"; // Gray
+            }
+            // Heat level (Inverted)
+            if (PlayerData.inst.evasion2 > 0)
+            {
+                avoidanceDetail2_text.text = "<color=#B53E00>" + "+" + PlayerData.inst.evasion2 + "</color>"; // Orange
+            }
+            else
+            {
+                avoidanceDetail2_text.text = "<color=#5B5B5B>" + "-0" + "</color>"; // Gray
+            }
+            // Movement speed (and whether recently moved)
+            if (PlayerData.inst.evasion3 > 0)
+            {
+                avoidanceDetail3_text.text = "<color=#00FFF5>" + "+" + PlayerData.inst.evasion3 + "</color>"; // Cyan
+            }
+            else
+            {
+                avoidanceDetail3_text.text = "<color=#5B5B5B>" + "-0" + "</color>"; // Gray
+            }
+            // Evasion modifiers from utilities (e.g. Maneuvering Thrusters)
+            if (PlayerData.inst.evasion4 > 0)
+            {
+                avoidanceDetail4_text.text = "<color=#B2B200>" + "+" + PlayerData.inst.evasion4 + "</color>"; // Yellow
+            }
+            else
+            {
+                avoidanceDetail4_text.text = "<color=#5B5B5B>" + "-0" + "</color>"; // Gray
+            }
+            // Cloaking modifiers from utilities (e.g. Cloaking Devices)
+            if (PlayerData.inst.evasion5 > 0)
+            {
+                avoidanceDetail5_text.text = "<color=#8600B2>" + "+" + PlayerData.inst.evasion5 + "</color>"; // Purple
+            }
+            else
+            {
+                avoidanceDetail5_text.text = "<color=#5B5B5B>" + "-0" + "</color>"; // Gray
+            }
         }
 
         // Warning Bars
@@ -3738,15 +3863,86 @@ public class UIManager : MonoBehaviour
         matterD_slider.value = currentMatter;
     }
 
+    #endregion
+
     // ----- SCAN ------
-    #region Scan
+    #region Rightside - Scan
+
+    public void Scan_DetailTextFlip(bool detailedMode)
+    {
+        if(detailedMode) // Colored text
+        {
+            string displayText = "";
+            // (Dark green) [
+            displayText += "<color=#006C00>" + "[" + "</color>";
+            // (White)      Number
+            displayText += "<color=#CCC9CC>" + "1" + "</color>";
+            // (High green) - Text
+            displayText += "<color=#00D900>" + " - Hostile" + "</color>";
+            // (Dark green) ]
+            displayText += "<color=#006C00>" + "]" + "</color>";
+            scanButtonText[0].text = displayText;
+
+            displayText = "";
+            // (Dark green) [
+            displayText += "<color=#006C00>" + "[" + "</color>";
+            // (White)      Number
+            displayText += "<color=#CCC9CC>" + "2" + "</color>";
+            // (High green) - Text
+            displayText += "<color=#00D900>" + " - Friendly" + "</color>";
+            // (Dark green) ]
+            displayText += "<color=#006C00>" + "]" + "</color>";
+            scanButtonText[1].text = displayText;
+
+            displayText = "";
+            // (Dark green) [
+            displayText += "<color=#006C00>" + "[" + "</color>";
+            // (White)      Number
+            displayText += "<color=#CCC9CC>" + "3" + "</color>";
+            // (High green) - Text
+            displayText += "<color=#00D900>" + " - Parts" + "</color>";
+            // (Dark green) ]
+            displayText += "<color=#006C00>" + "]" + "</color>";
+            scanButtonText[2].text = displayText;
+
+            displayText = "";
+            // (Dark green) [
+            displayText += "<color=#006C00>" + "[" + "</color>";
+            // (White)      Number
+            displayText += "<color=#CCC9CC>" + "4" + "</color>";
+            // (High green) - Text
+            displayText += "<color=#00D900>" + " - Exits" + "</color>";
+            // (Dark green) ]
+            displayText += "<color=#006C00>" + "]" + "</color>";
+            scanButtonText[3].text = displayText;
+        }
+        else // Dim green text
+        {
+            string displayText = "";
+            displayText += "<color=#006C00>" + "[1 - Hostile]" + "</color>";
+            scanButtonText[0].text = displayText;
+
+            displayText = "";
+            displayText += "<color=#006C00>" + "[2 - Friendly]" + "</color>";
+            scanButtonText[1].text = displayText;
+
+            displayText = "";
+            displayText += "<color=#006C00>" + "[3 - Parts]" + "</color>";
+            scanButtonText[2].text = displayText;
+
+            displayText = "";
+            displayText += "<color=#006C00>" + "[4 - Exits]" + "</color>";
+            scanButtonText[3].text = displayText;
+        }
+    }
+
     public void Scan_IndicateHostiles() // 1
     {
         List<GameObject> hostiles = new List<GameObject>();
 
         foreach (Actor B in GameManager.inst.entities) // Go through all entities
         {
-            if(HF.DetermineRelation(PlayerData.inst.GetComponent<Actor>(), B) == BotRelation.Hostile) // Search for hostile aligned bots
+            if(HF.DetermineRelation(PlayerData.inst.GetComponent<Actor>(), B) == BotRelation.Hostile && B.isVisible) // Search for hostile aligned bots
             {
                 hostiles.Add(B.gameObject); // Add it to the list
             }
@@ -3766,7 +3962,7 @@ public class UIManager : MonoBehaviour
 
         foreach (Actor B in GameManager.inst.entities) // Go through all entities
         {
-            if (HF.DetermineRelation(PlayerData.inst.GetComponent<Actor>(), B) == BotRelation.Friendly) // Search for friendly aligned bots
+            if (HF.DetermineRelation(PlayerData.inst.GetComponent<Actor>(), B) == BotRelation.Friendly && B.isVisible) // Search for friendly aligned bots
             {
                 friendlies.Add(B.gameObject); // Add it to the list
             }
@@ -3781,7 +3977,10 @@ public class UIManager : MonoBehaviour
 
         foreach (var item in InventoryControl.inst.worldItems)
         {
-            parts.Add(item.Value);
+            if (item.Value.GetComponent<Part>().isExplored)
+            {
+                parts.Add(item.Value);
+            }
         }
 
         AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.UI_Clips[0]);
@@ -3793,12 +3992,18 @@ public class UIManager : MonoBehaviour
 
         foreach (var B in MapManager.inst.placedBranches)
         {
-            exits.Add(B.gameObject);
+            if (B.gameObject.GetComponent<AccessObject>().isExplored)
+            {
+                exits.Add(B.gameObject);
+            }
         }
 
         foreach (var E in MapManager.inst.placedExits)
         {
-            exits.Add(E.gameObject);
+            if (E.gameObject.GetComponent<AccessObject>().isExplored)
+            {
+                exits.Add(E.gameObject);
+            }
         }
 
         AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.UI_Clips[0]);
@@ -3890,43 +4095,26 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private void SetAvoidanceImageColor(int amount)
+    private void SetAvoidanceImageColor(float amount)
     {
-        if(amount >= 20 && amount <= 70) // Yellow (20-70%)
+        amount = amount / 100f;
+
+        if(amount >= 0.6 && amount <= 0.8) // Yellow (60-80%)
         {
             avoidanceIndicator_image.color = cautiousYellow;
         }
-        else if(amount < 20) // Red (< 20%)
+        else if(amount < 0.6 && amount > 0.3) // Orange (30-60%)
         {
-            avoidanceIndicator_image.color = alertRed;
+            avoidanceIndicator_image.color = corruptOrange;
         }
-        else // Blue (> 70%)
+        else if (amount < 0.3) // Red (< 30%)
+        {
+            avoidanceIndicator_image.color = dangerRed;
+        }
+        else // Blue (> 80%)
         {
             avoidanceIndicator_image.color = coolBlue;
         }
-    }
-
-    private void SetAvoidanceTextColor(TextMeshProUGUI text, int amount)
-    {
-        string modifier = "";
-
-        if (amount == 0) // Gray
-        {
-            text.color = inactiveGray;
-            modifier = "-";
-        }
-        else if (amount > 0) // Blue
-        {
-            text.color = coolBlue;
-            modifier = "+";
-        }
-        else // Yellow
-        {
-            text.color = cautiousYellow;
-            modifier = "-";
-        }
-
-        text.text = modifier + amount.ToString();
     }
 
     /// <summary>

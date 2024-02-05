@@ -190,6 +190,7 @@ MonoBehaviour:
   evasion3: 0
   evasion4: 0
   evasion5: 0
+  lockedInStasis: 0
   maxWeight: 0
   currentWeight: 0
   baseWeightSupport: 3
@@ -204,6 +205,22 @@ MonoBehaviour:
   customCodes: []
   allies: []
   followers: []
+  robotsKilled: 0
+  kills_0b10: 0
+  kills_derelict: 0
+  kills_zion: 0
+  kills_warlord: 0
+  uk_imprinter: 0
+  uk_warlord: 0
+  uk_dataminer: 0
+  uk_MAINC: 0
+  uk_architect: 0
+  uk_r17: 0
+  specialTrait:
+    FARCOM: 0
+    CRM: 0
+    imprinted: 0
+    RIF: 0
 --- !u!61 &38123581663690283
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -392,7 +409,11 @@ MonoBehaviour:
   currentMatter: 0
   siegeMode: 0
   inStatis: 0
-  noMovementFor: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  noMovementFor: 1
+  momentum: 0
   isAlive: 1
   fieldOfViewRange: 15
   fieldOfView: []
@@ -400,6 +421,11 @@ MonoBehaviour:
   botInfo: {fileID: 0}
   Initiative: 0
   _sprite: {fileID: 1489840735416740139}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 0
+  state_DISABLED: 0
   isExplored: 0
   isVisible: 0
   fow_sprite: {fileID: 0}

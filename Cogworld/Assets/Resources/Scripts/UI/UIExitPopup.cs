@@ -15,6 +15,7 @@ public class UIExitPopup : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public GameObject boxing;
     public GameObject connectorLine;
 
+    [Tooltip("The AccessObject assigned to this popup.")]
     public GameObject _parent;
 
     public List<GameObject> connectors = new List<GameObject>();
@@ -39,6 +40,8 @@ public class UIExitPopup : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         // - Text + Bar fades in from black
         // - (At the same time) Edge comes in from WHITE to its normal color
         //      -Line follows the same rules
+
+        _parent.GetComponent<AccessObject>().blackBacker.SetActive(true);
 
         StartCoroutine(FadeIn());
         StartCoroutine(ConnectorExpand());
@@ -100,8 +103,9 @@ public class UIExitPopup : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             yield return null;
         }
 
+        _parent.GetComponent<AccessObject>().blackBacker.SetActive(false);
         this.gameObject.SetActive(false);
-        Destroy(gameObject);
+        Destroy(this.gameObject.transform.parent);
     }
 
     IEnumerator ConnectorExpand()

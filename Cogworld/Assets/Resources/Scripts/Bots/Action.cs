@@ -74,16 +74,16 @@ public static class Action
 
             if (target.botInfo) // Bot
             {
-
+                // TODO: Bot attacking!
             }
             else // Player
             {
-                float momentum = 1;
+                int momentum = PlayerData.inst.GetComponent<Actor>().momentum;
                 float attackHigh = (((10 + PlayerData.inst.currentWeight) / 5) + 1) * (PlayerData.inst.moveSpeed1 / 100) * momentum;
 
                 float damage = Random.Range(0, attackHigh);
 
-                if(damage > 100)
+                if (damage > 100)
                 {
                     damage = 100;
                 }
@@ -102,7 +102,7 @@ public static class Action
                 {
                     target.currentHealth -= (int)damage;
                 }
-                
+
 
                 // Deal half damage to player (if no legs/treads)
                 if (HasTreads(source) || HasLegs(source))
@@ -119,7 +119,15 @@ public static class Action
         }
         else
         {
+            // TODO: Melee attacks!
 
+            if (target.botInfo) // Bot
+            {
+                // TODO: Bot attacking!
+            }
+            else{ // Player
+
+            }
         }
 
 
@@ -190,7 +198,12 @@ public static class Action
         ItemProjectile projData = weapon.itemData.projectile;
         int projAmount = weapon.itemData.projectileAmount;
 
-        float toHitChance = 0.60f; // Default to-hit chance of 60%.
+        float toHitChance = 1f;
+        // First factor in the target's evasion/avoidance rate
+        float avoidance = 0f;
+        List<int> unused = new List<int>();
+        (avoidance, unused) = Action.CalculateAvoidance(target);
+        toHitChance -= (avoidance / 100);
 
         // - Range - //
         int distance = (int)Vector2Int.Distance(Action.V3_to_V2I(source.gameObject.transform.position), Action.V3_to_V2I(target.gameObject.transform.position));
@@ -270,7 +283,6 @@ public static class Action
         // - Target has legs - //
         if (HasLegs(target))
         {
-            // Add momentum calculation in later
             toHitChance += -0.05f;
         }
 
@@ -283,7 +295,6 @@ public static class Action
         // - If attacker is using legs - //
         if (HasLegs(source))
         {
-            // Add momentum calculation in later
             toHitChance += -0.05f;
         }
 
@@ -316,6 +327,7 @@ public static class Action
             }
         }
 
+        /* // Calculated in Evasion
         // - If target is flying or hovering (and not overweight or in stasis) - //
         if (HasFlight(target) && !IsOverweight(target) && !target.inStatis)
         {
@@ -325,6 +337,7 @@ public static class Action
         {
             toHitChance += -0.05f;
         }
+        */
 
         // - If line of sight being blocked - // (THIS ALSO GETS USED LATER)
         Vector3 targetDirection = target.transform.position - source.transform.position;
@@ -633,7 +646,7 @@ public static class Action
     {
         if (actor.botInfo) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.armament)
+            foreach (BotArmament item in actor.botInfo.components)
             {
                 if (item._item.data.Id >= 0)
                 {
@@ -668,7 +681,7 @@ public static class Action
     {
         if (actor.botInfo) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.armament)
+            foreach (BotArmament item in actor.botInfo.components)
             {
                 if (item._item.data.Id >= 0)
                 {
@@ -703,7 +716,7 @@ public static class Action
     {
         if (actor.botInfo) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.armament)
+            foreach (BotArmament item in actor.botInfo.components)
             {
                 if (item._item.data.Id >= 0)
                 {
@@ -738,7 +751,7 @@ public static class Action
     {
         if (actor.botInfo) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.armament)
+            foreach (BotArmament item in actor.botInfo.components)
             {
                 if (item._item.data.Id >= 0)
                 {
@@ -773,7 +786,7 @@ public static class Action
     {
         if (actor.botInfo) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.armament)
+            foreach (BotArmament item in actor.botInfo.components)
             {
                 if (item._item.data.Id >= 0)
                 {
@@ -813,7 +826,7 @@ public static class Action
 
         if (actor.botInfo) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.armament)
+            foreach (BotArmament item in actor.botInfo.components)
             {
                 if (item._item.data.Id >= 0)
                 {
@@ -872,7 +885,7 @@ public static class Action
 
         if (actor.botInfo) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.armament)
+            foreach (BotArmament item in actor.botInfo.components)
             {
                 if (item._item.data.Id >= 0)
                 {
@@ -938,7 +951,7 @@ public static class Action
 
         if (actor.botInfo) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.armament)
+            foreach (BotArmament item in actor.botInfo.components)
             {
                 if (item._item.data.Id >= 0)
                 {
@@ -1562,6 +1575,376 @@ public static class Action
         }
 
         return moveDir;
+    }
+
+    public static BotMoveType DetermineBotMoveType(Actor actor)
+    {
+        BotMoveType result = BotMoveType.Running;
+
+        if(HasHover(actor))
+        {
+            result = BotMoveType.Hovering;
+        }
+        else if (HasFlight(actor))
+        {
+            result = BotMoveType.Flying;
+        }
+        else if (HasWheels(actor))
+        {
+            result = BotMoveType.Rolling;
+        }
+        else if (HasLegs(actor))
+        {
+            result = BotMoveType.Walking;
+        }
+        else if (HasTreads(actor))
+        {
+            result = BotMoveType.Treading;
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Calculates the Evasion/Avoidance level of a specific bot.
+    /// </summary>
+    /// <param name="actor">The bot to focus on.</param>
+    /// <returns>Returns 1. The avoidance value as a float that is a WHOLE NUMBER (ex. 20) not a percent. 2. A list of all 5 avoidance values in int form.</returns>
+    public static (float, List<int>) CalculateAvoidance(Actor actor)
+    {
+        List<int> individualValues = new List<int>();
+
+        // The default evasion rate is 40%
+        float avoidance = 40f;
+        /*
+         * The 5 factors contributing to evasion are:
+         *  -Flight/Hover bonus (unless held in stasis and not overweight)
+         *  -Heat level
+         *  -Movement speed (and whether recently moved)
+         *  -Evasion modifiers from utilities (e.g. Maneuvering Thrusters)
+         *  -Cloaking modifiers from utilities (e.g. Cloaking Devices)
+         */
+
+        int evasionBonus1 = 0;
+        int evasionBonus2 = 0; // negative
+        int evasionBonus3 = 0;
+        int evasionBonus4 = 0;
+        int evasionBonus5 = 0;
+
+        if (actor.botInfo) // Bot
+        {
+            // -- Flight/Hover bonus -- //
+
+            if (actor.inStatis || (actor.weightCurrent > actor.weightMax)) // checks for statis & overweight
+            {
+                evasionBonus1 = 0;
+            }
+            else 
+            {
+                foreach (BotArmament item in actor.botInfo.components)
+                {
+                    if (item._item.data.Id >= 0)
+                    {
+                        // I still have no idea how this is actually calculated, this is just a guess
+                        if (item._item.type == ItemType.Flight)
+                        {
+                            evasionBonus1 += (int)(1.5f * item._item.slotsRequired);
+                        }
+                        else if (item._item.type == ItemType.Hover)
+                        {
+                            evasionBonus1 += (int)(1 * item._item.slotsRequired);
+                        }
+                    }
+                }
+            }
+
+            // -- Heat Level -- //
+            // This appears to add a -1 bonus for every 30 or so heat.
+            int heatCalc = 0;
+            if (actor.currentHeat > 29)
+            {
+                heatCalc = (int)(actor.currentHeat / 30);
+            }
+            evasionBonus2 = -heatCalc;
+
+            // -- Movement Speed -- //
+            int speed = actor.speed;
+            if (speed <= 25) // FASTx3
+            {
+                evasionBonus3 = (int)(speed / 2);
+            }
+            else if (speed > 25 && speed <= 50) // FASTx2
+            {
+                evasionBonus3 = (int)(speed / 3);
+            }
+            else if (speed > 50 && speed <= 75) // FAST
+            {
+                evasionBonus3 = (int)(speed / 15);
+            }
+            else // Not fast enough so no bonus
+            {
+                evasionBonus3 = 0;
+            }
+            // However this bonus is only actually added if the bot has recently moved! Not if they have been standing still.
+            if(actor.noMovementFor > 0)
+            {
+                evasionBonus3 = 0;
+            }
+
+            // -- Evasion modifiers -- //
+            // These effects can be found in 1. Legs 2. Variants of the reaction control system device
+            bool rcsStack = true;
+            BotMoveType myMoveType = DetermineBotMoveType(actor);
+            foreach (BotArmament item in actor.botInfo.components)
+            {
+                if (item._item.data.Id >= 0)
+                {
+                    if(actor.momentum > 0)
+                    {
+                        if (item._item.type == ItemType.Legs)
+                        {
+                            foreach (ItemEffect effect in item._item.itemEffect)
+                            {
+                                if (effect.hasLegEffect)
+                                {
+                                    float potentialLegBonus = 0;
+                                    potentialLegBonus += effect.evasionNaccuracyChange;
+                                    if(actor.momentum > 3)
+                                    {
+                                        evasionBonus4 += (int)((potentialLegBonus * 100) * 3);
+                                    }
+                                    else
+                                    {
+                                        evasionBonus4 += (int)((potentialLegBonus * 100) * actor.momentum);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if(item._item.type == ItemType.Device && actor.weightCurrent <= actor.weightMax && rcsStack)
+                    {
+                        foreach (ItemEffect effect in item._item.itemEffect)
+                        {
+                            if (effect.rcsEffect.hasEffect 
+                                && (myMoveType == BotMoveType.Walking || myMoveType == BotMoveType.Flying || myMoveType == BotMoveType.Hovering))
+                            {
+                                if (myMoveType == BotMoveType.Walking)
+                                {
+                                    evasionBonus4 += (int)(effect.rcsEffect.percentage * 100);
+                                }
+                                else // Doubled
+                                {
+                                    evasionBonus4 += (int)(effect.rcsEffect.percentage * 2 * 100);
+                                }
+
+                                effect.rcsEffect.stacks = rcsStack;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // -- Phasing / Cloaking modifiers -- //
+            bool phasingStack = true;
+            foreach (BotArmament item in actor.botInfo.components)
+            {
+                if(item._item.data.Id > 0 && item._item.type == ItemType.Device)
+                {
+                    foreach (ItemEffect effect in item._item.itemEffect)
+                    {
+                        if (effect.phasingEffect.hasEffect && phasingStack)
+                        {
+                            evasionBonus5 = (int)(effect.phasingEffect.percentage * 100);
+
+                            phasingStack = effect.phasingEffect.stacks;
+                        }
+                    }
+                }
+            }
+
+
+            // -- ADD THEM ALL UP -- //
+
+            // -- 1
+            avoidance += evasionBonus1;
+            // -- 2
+            avoidance += evasionBonus2; // This is negative, remember
+            // -- 3
+            avoidance += evasionBonus3;
+            // -- 4
+            avoidance += evasionBonus4;
+            // -- 5
+            avoidance += evasionBonus5;
+
+        }
+        else // Player
+        {
+            // We are also going to update the player's individual evasion1-5 variables as we go, because UIManager needs them.
+
+            // -- Flight/Hover bonus -- //
+
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items)
+            {
+                if (item.item.Id >= 0)
+                {
+                    if (item.item.itemData.type == ItemType.Flight && item.item.itemData.state)
+                    {
+                        evasionBonus1 += (int)(1.5f * item.item.itemData.slotsRequired);
+                    }
+                    else if (item.item.itemData.type == ItemType.Hover && item.item.itemData.state)
+                    {
+                        evasionBonus1 += (int)(1f * item.item.itemData.slotsRequired);
+                    }
+                }
+
+            }
+
+            evasionBonus1 = 0;
+
+            // -- Heat Level -- //
+            // This appears to add a -1 bonus for every 30 or so heat.
+            int heatCalc = 0;
+            if (PlayerData.inst.currentHeat > 29)
+            {
+                heatCalc = (int)(PlayerData.inst.currentHeat / 30);
+            }
+            evasionBonus2 = -heatCalc;
+
+            // -- Movement Speed -- //
+
+            int speed = PlayerData.inst.moveSpeed1;
+            if (speed <= 25) // FASTx3
+            {
+                evasionBonus3 = (int)(speed / 2);
+            }
+            else if (speed > 25 && speed <= 50) // FASTx2
+            {
+                evasionBonus3 = (int)(speed / 3);
+            }
+            else if (speed > 50 && speed <= 75) // FAST
+            {
+                evasionBonus3 = (int)(speed / 15);
+            }
+            else // Not fast enough so no bonus
+            {
+                evasionBonus3 = 0;
+            }
+            // However this bonus is only actually added if the bot has recently moved! Not if they have been standing still.
+            if (actor.noMovementFor > 0)
+            {
+                evasionBonus3 = 0;
+            }
+
+            // -- Evasion modifiers -- //
+            // These effects can be found in 1. Legs 2. Variants of the reaction control system device
+            bool rcsStack = true;
+            BotMoveType myMoveType = DetermineBotMoveType(actor);
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items)
+            {
+                if (item.item.Id >= 0)
+                {
+                    if (actor.momentum > 0)
+                    {
+                        if (item.item.itemData.type == ItemType.Legs)
+                        {
+                            foreach (ItemEffect effect in item.item.itemData.itemEffect)
+                            {
+                                if (effect.hasLegEffect)
+                                {
+                                    float potentialLegBonus = 0;
+                                    potentialLegBonus += effect.evasionNaccuracyChange;
+                                    if (actor.momentum > 3)
+                                    {
+                                        evasionBonus4 += (int)((potentialLegBonus * 100) * 3);
+                                    }
+                                    else
+                                    {
+                                        evasionBonus4 += (int)((potentialLegBonus * 100) * actor.momentum);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items)
+            {
+                if (item.item.Id >= 0)
+                {
+                    if (item.item.itemData.type == ItemType.Device && actor.weightCurrent <= actor.weightMax && rcsStack)
+                    {
+                        foreach (ItemEffect effect in item.item.itemData.itemEffect)
+                        {
+                            if (effect.rcsEffect.hasEffect
+                                && (myMoveType == BotMoveType.Walking || myMoveType == BotMoveType.Flying || myMoveType == BotMoveType.Hovering))
+                            {
+                                if (myMoveType == BotMoveType.Walking)
+                                {
+                                    evasionBonus4 += (int)(effect.rcsEffect.percentage * 100);
+                                }
+                                else // Doubled
+                                {
+                                    evasionBonus4 += (int)(effect.rcsEffect.percentage * 2 * 100);
+                                }
+
+                                effect.rcsEffect.stacks = rcsStack;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // -- Phasing / Cloaking modifiers -- //
+            bool phasingStack = true;
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items)
+            {
+                if(item.item.Id > 0)
+                {
+                    if (item.item.itemData.type == ItemType.Device)
+                    {
+                        foreach (ItemEffect effect in item.item.itemData.itemEffect)
+                        {
+                            if (effect.phasingEffect.hasEffect && phasingStack)
+                            {
+                                evasionBonus5 = (int)(effect.phasingEffect.percentage * 100);
+
+                                phasingStack = effect.phasingEffect.stacks;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // -- ADD THEM ALL UP -- //
+
+            // -- 1
+            if (actor.inStatis || (actor.weightCurrent > actor.weightMax)) // checks for statis & overweight
+            {
+                // Unlike for bot calculations, we will return the bonus here, but just not add it in (For UI display purposes)
+            }
+            else
+            {
+                avoidance += evasionBonus1;
+            }
+            // -- 2
+            avoidance += evasionBonus2; // This is negative, remember
+            // -- 3
+            avoidance += evasionBonus3;
+            // -- 4
+            avoidance += evasionBonus4;
+            // -- 5
+            avoidance += evasionBonus5;
+        }
+
+        individualValues.Add(evasionBonus1);
+        individualValues.Add(evasionBonus2);
+        individualValues.Add(evasionBonus3);
+        individualValues.Add(evasionBonus4);
+        individualValues.Add(evasionBonus5);
+
+        return (avoidance, individualValues);
     }
 
     #endregion

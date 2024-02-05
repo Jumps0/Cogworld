@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class UIHoverEvent : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -21,7 +22,4 @@ public class UIHoverEvent : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         onHoverEnd.Invoke();
     }
 
-
-
-    
 }
