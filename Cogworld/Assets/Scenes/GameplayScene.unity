@@ -9784,7 +9784,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 120.675674, y: 0}
   m_SizeDelta: {x: 0, y: 22.777779}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &272249432
@@ -25940,7 +25940,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 526870180}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -29665,7 +29665,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bee1f16c2bf803e48b1e6c047d621f5d, type: 2}
   - {fileID: 11400000, guid: 3f1bf64e23c81b149a75c74890c74f84, type: 2}
   - {fileID: 11400000, guid: beabde3ee87ee8446a3c059dfcfec658, type: 2}
-  showNewLevelAnimation: 0
+  showNewLevelAnimation: 1
   debugUI_parent: {fileID: 774804271}
   dField: {fileID: 1318891503}
   dButton: {fileID: 272563533}
@@ -31501,6 +31501,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 640395299}
+  - component: {fileID: 640395301}
   - component: {fileID: 640395300}
   m_Layer: 5
   m_Name: '[Evasion] - Area'
@@ -31540,7 +31541,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 640395298}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 98f07cd08fd48784492b557ac2e6e4a8, type: 2}
   m_CullingMode: 0
@@ -31552,6 +31553,42 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &640395301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 640395298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c792f3e4f9cc0f94288e7fdb81bbe26e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainWindow_ref: {fileID: 1008992123}
+  title_text: {fileID: 1149773586}
+  title_image: {fileID: 1292006464}
+  theoretical_text: {fileID: 620688824}
+  theoretical_image: {fileID: 763914355}
+  running_text: {fileID: 15078561}
+  running_image: {fileID: 746992290}
+  heat_text: {fileID: 1190940585}
+  heat_image: {fileID: 2122709993}
+  speed_text: {fileID: 1546130068}
+  speed_image: {fileID: 1813879328}
+  evasion_text: {fileID: 840478175}
+  evasion_image: {fileID: 962844462}
+  phasing_text: {fileID: 1479655086}
+  phasing_image: {fileID: 726965644}
+  modified_text: {fileID: 272257185}
+  modified_image: {fileID: 526870182}
+  realValue_text: {fileID: 1317710819}
+  realValue_image: {fileID: 1296062706}
+  bar: {fileID: 386444985}
+  text_Gray: {r: 0.35686275, g: 0.35686275, b: 0.35686275, a: 1}
+  highGreen: {r: 0, g: 0.7803922, b: 0, a: 1}
+  lowGreen: {r: 0.019607844, g: 0.23529413, b: 0.03137255, a: 1}
+  blackOut: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &647566784
 GameObject:
   m_ObjectHideFlags: 0
@@ -33657,7 +33694,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 726965642}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -34292,7 +34329,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 746992288}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -34638,7 +34675,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 763914353}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -38867,7 +38904,7 @@ MonoBehaviour:
   initAnimObjects: []
   evasionExtra: {fileID: 2062886321}
   evasion_hoverOpener: {fileID: 16228038}
-  evasionAnimator: {fileID: 640395300}
+  evasionAnimator: {fileID: 640395298}
   evasionText1: {fileID: 15078561}
   evasionText2: {fileID: 1190940585}
   evasionText3: {fileID: 1546130068}
@@ -42561,7 +42598,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 962844460}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -43875,7 +43912,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 172.365
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -55163,7 +55200,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190336
+    rgba: 4278233088
   m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -67053,7 +67090,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 172.365
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -93115,7 +93152,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1813879326}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -96660,7 +96697,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 172.365
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -101086,7 +101123,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 172.365
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -103429,7 +103466,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 172.365
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -104708,7 +104745,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2122709991}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 

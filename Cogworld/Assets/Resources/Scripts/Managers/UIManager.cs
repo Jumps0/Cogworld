@@ -4062,7 +4062,7 @@ public class UIManager : MonoBehaviour
     [Header("RSUI - Evasion")]
     public GameObject evasionExtra;
     public GameObject evasion_hoverOpener;
-    public Animator evasionAnimator;
+    public GameObject evasionAnimator;
     public TextMeshProUGUI evasionText1;
     public TextMeshProUGUI evasionText2;
     public TextMeshProUGUI evasionText3;
@@ -4073,27 +4073,31 @@ public class UIManager : MonoBehaviour
 
     public void Evasion_ExpandMenu()
     {
+        //StopCoroutine(Evasion_ExpandMenu_Animation());
 
-        evasionExtra.transform.GetChild(0).gameObject.SetActive(true);
+        //evasionExtra.transform.GetChild(0).gameObject.SetActive(true);
         evasionExtra.GetComponent<UIMouseBounds>().disabled = true; // Disable opening detection
         evasion_hoverOpener.GetComponent<UIMouseBounds>().disabled = false; // Allow closing
 
-        StartCoroutine(Evasion_ExpandMenu_Animation());
+        evasionAnimator.GetComponent<UIEvasionAnimation>().OpenMenu();
+        //StartCoroutine(Evasion_ExpandMenu_Animation());
     }
 
+    /*
     private IEnumerator Evasion_ExpandMenu_Animation()
     {
         evasionAnimator.enabled = true;
+
         evasionAnimator.Play("Evasion_ExpandMenu");
 
         yield return new WaitForSeconds(1f);
 
-        evasionAnimator.StopPlayback();
         evasionAnimator.enabled = false;
         Evasion_UpdateUI();
     }
+    */
 
-    private void Evasion_UpdateUI()
+    public void Evasion_UpdateUI()
     {
         // Flight/Hover Bonus
         if (PlayerData.inst.evasion1 > 0)
@@ -4159,9 +4163,9 @@ public class UIManager : MonoBehaviour
 
     public void Evasion_ShrinkMenu()
     {
+        //StopCoroutine(Evasion_ExpandMenu_Animation());
 
-        StopCoroutine(Evasion_ExpandMenu_Animation());
-        evasionAnimator.enabled = false;
+        //evasionAnimator.enabled = false;
         evasionExtra.GetComponent<UIMouseBounds>().disabled = false; // Allow opening
         evasion_hoverOpener.GetComponent<UIMouseBounds>().disabled = true; // Disabled closing detection
         evasionExtra.transform.GetChild(0).gameObject.SetActive(false);
