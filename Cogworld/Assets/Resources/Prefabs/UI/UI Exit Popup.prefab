@@ -1238,7 +1238,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6403499281517663831}
-  - component: {fileID: 9007329225673013159}
   m_Layer: 5
   m_Name: UI Exit Popup_
   m_TagString: Untagged
@@ -1271,38 +1270,6 @@ RectTransform:
   m_AnchoredPosition: {x: -3.891, y: -0.848}
   m_SizeDelta: {x: 204.4086, y: 18}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &9007329225673013159
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6403499281517663828}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 658f3aaf4561e45459e59ee787df2cb2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _text: {fileID: 5884612650995548387}
-  backing: {fileID: 8091425652211100540}
-  sideBar: {fileID: 7033872896826832883}
-  boxing: {fileID: 3511242904708064481}
-  connectorLine: {fileID: 0}
-  _parent: {fileID: 0}
-  connectors:
-  - {fileID: 5103610190034040427}
-  - {fileID: 5478852243902515905}
-  - {fileID: 5437991272301470107}
-  - {fileID: 1519760646252063793}
-  - {fileID: 731565891656827759}
-  - {fileID: 2063375827734323687}
-  - {fileID: 5182595398910866963}
-  - {fileID: 7917876619794010366}
-  - {fileID: 947984735833935660}
-  - {fileID: 6755078270867289356}
-  - {fileID: 2087936712774669332}
-  setName: 
-  mouseOver: 0
 --- !u!1 &6432099498211834256
 GameObject:
   m_ObjectHideFlags: 0
@@ -1514,6 +1481,7 @@ GameObject:
   - component: {fileID: 7308777045394364367}
   - component: {fileID: 7308777045394364364}
   - component: {fileID: 7308777045394364365}
+  - component: {fileID: 8243488100824841184}
   m_Layer: 5
   m_Name: UI Exit Popup
   m_TagString: Untagged
@@ -1603,6 +1571,38 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &8243488100824841184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7308777045394364362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 658f3aaf4561e45459e59ee787df2cb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _text: {fileID: 5884612650995548387}
+  backing: {fileID: 8091425652211100540}
+  sideBar: {fileID: 7033872896826832883}
+  boxing: {fileID: 3511242904708064481}
+  connectorLine: {fileID: 0}
+  _parent: {fileID: 0}
+  connectors:
+  - {fileID: 5103610190034040427}
+  - {fileID: 5478852243902515905}
+  - {fileID: 5437991272301470107}
+  - {fileID: 1519760646252063793}
+  - {fileID: 731565891656827759}
+  - {fileID: 2063375827734323687}
+  - {fileID: 5182595398910866963}
+  - {fileID: 7917876619794010366}
+  - {fileID: 947984735833935660}
+  - {fileID: 6755078270867289356}
+  - {fileID: 2087936712774669332}
+  setName: 
+  mouseOver: 0
 --- !u!1 &7595787410557253869
 GameObject:
   m_ObjectHideFlags: 0

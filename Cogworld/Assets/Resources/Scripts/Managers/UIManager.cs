@@ -161,7 +161,17 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void NewFloor_BeginAnimate()
     {
-        StartCoroutine(NewFloor_Animation());
+        if (GlobalSettings.inst.showNewLevelAnimation)
+        {
+            StartCoroutine(NewFloor_Animation());
+        }
+        else
+        {
+            // - Completion Effects -
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.INTRO_Clips[4], 0.45f); // "UI/DONE" this audio clip is too loud for its own good
+            MapManager.inst.PlayAmbientMusic(); // Ambient music
+            MapManager.inst.FreezePlayer(false); // Unfreeze the player, we are done!
+        }
     }
 
     private IEnumerator NewFloor_Animation()
@@ -3303,7 +3313,10 @@ public class UIManager : MonoBehaviour
 
     public void FirstTimeStartup()
     {
-        FreshStart_BeginAnimate();
+        if (GlobalSettings.inst.showNewLevelAnimation)
+        {
+            FreshStart_BeginAnimate();
+        }
 
         InitDefaultPartsMenu(); // Set the parts menu (empty)
     }
@@ -3682,7 +3695,7 @@ public class UIManager : MonoBehaviour
 
             int avoidance = (int)(PlayerData.inst.currentAvoidance);
             avoidanceNum_text.text = avoidance.ToString() + "% Avoidance";
-            SetAvoidanceImageColor(PlayerData.inst.currentAvoidance);
+            SetAvoidanceImageColor(PlayerData.inst.currentAvoidance, avoidanceIndicator_image);
 
             // Flight/Hover Bonus
             if (PlayerData.inst.evasion1 > 0)
@@ -3736,6 +3749,10 @@ public class UIManager : MonoBehaviour
             {
                 avoidanceDetail5_text.text = "<color=#5B5B5B>" + "-0" + "</color>"; // Gray
             }
+
+            // And update the expanded menu if necessary
+            if (evasionExtra.transform.GetChild(0).gameObject.activeInHierarchy)
+                Evasion_UpdateUI();
         }
 
         // Warning Bars
@@ -3815,7 +3832,7 @@ public class UIManager : MonoBehaviour
         }
 
         UpdateCEMCUI();
-        UpdateEvasion();
+        UpdateParts();
     }
 
     public void UpdateTimer(int time)
@@ -3936,8 +3953,23 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    private bool scanIndicateCooldown = false;
+    private IEnumerator Scan_Cooldown()
+    {
+        scanIndicateCooldown = true;
+
+        yield return new WaitForSeconds(GlobalSettings.inst.itemPopupLifetime + 1);
+
+        scanIndicateCooldown = false;
+    }
+
     public void Scan_IndicateHostiles() // 1
     {
+        if (!scanIndicateCooldown) // We don't want the player to be able to spam these
+        {
+            StartCoroutine(Scan_Cooldown());
+        }
+
         List<GameObject> hostiles = new List<GameObject>();
 
         foreach (Actor B in GameManager.inst.entities) // Go through all entities
@@ -3958,6 +3990,11 @@ public class UIManager : MonoBehaviour
 
     public void Scan_IndicateFriendlies() // 2
     {
+        if (!scanIndicateCooldown) // We don't want the player to be able to spam these
+        {
+            StartCoroutine(Scan_Cooldown());
+        }
+
         List<GameObject> friendlies = new List<GameObject>();
 
         foreach (Actor B in GameManager.inst.entities) // Go through all entities
@@ -3973,6 +4010,11 @@ public class UIManager : MonoBehaviour
 
     public void Scan_IndicateParts() // 3
     {
+        if (!scanIndicateCooldown) // We don't want the player to be able to spam these
+        {
+            StartCoroutine(Scan_Cooldown());
+        }
+
         List<GameObject> parts = new List<GameObject>();
 
         foreach (var item in InventoryControl.inst.worldItems)
@@ -3988,6 +4030,11 @@ public class UIManager : MonoBehaviour
 
     public void Scan_IndicateExits() // 4
     {
+        if (!scanIndicateCooldown) // We don't want the player to be able to spam these
+        {
+            StartCoroutine(Scan_Cooldown());
+        }
+
         List<GameObject> exits = new List<GameObject>();
 
         foreach (var B in MapManager.inst.placedBranches)
@@ -4010,10 +4057,117 @@ public class UIManager : MonoBehaviour
     }
     #endregion
 
-    public void UpdateEvasion()
+    #region Rightside - Evasion
+    // -- EVASION -- //
+    [Header("RSUI - Evasion")]
+    public GameObject evasionExtra;
+    public GameObject evasion_hoverOpener;
+    public Animator evasionAnimator;
+    public TextMeshProUGUI evasionText1;
+    public TextMeshProUGUI evasionText2;
+    public TextMeshProUGUI evasionText3;
+    public TextMeshProUGUI evasionText4;
+    public TextMeshProUGUI evasionText5;
+    public TextMeshProUGUI evasionMainText;
+    public Image evasionImage;
+
+    public void Evasion_ExpandMenu()
     {
 
+        evasionExtra.transform.GetChild(0).gameObject.SetActive(true);
+        evasionExtra.GetComponent<UIMouseBounds>().disabled = true; // Disable opening detection
+        evasion_hoverOpener.GetComponent<UIMouseBounds>().disabled = false; // Allow closing
+
+        StartCoroutine(Evasion_ExpandMenu_Animation());
     }
+
+    private IEnumerator Evasion_ExpandMenu_Animation()
+    {
+        evasionAnimator.enabled = true;
+        evasionAnimator.Play("Evasion_ExpandMenu");
+
+        yield return new WaitForSeconds(1f);
+
+        evasionAnimator.StopPlayback();
+        evasionAnimator.enabled = false;
+        Evasion_UpdateUI();
+    }
+
+    private void Evasion_UpdateUI()
+    {
+        // Flight/Hover Bonus
+        if (PlayerData.inst.evasion1 > 0)
+        {
+            if (PlayerData.inst.lockedInStasis)
+            {
+                evasionText1.text = "<color=#5B5B5B>" + Action.DetermineBotMoveType(PlayerData.inst.GetComponent<Actor>()).ToString() + " (in stasis) + " + PlayerData.inst.evasion1 + "</color>"; // Gray
+            }
+            else if (Action.IsOverweight(PlayerData.inst.GetComponent<Actor>()))
+            {
+                evasionText1.text = "<color=#5B5B5B>" + Action.DetermineBotMoveType(PlayerData.inst.GetComponent<Actor>()).ToString() + " (overweight) + " + PlayerData.inst.evasion1 + "</color>"; // Gray
+            }
+            else
+            {
+                evasionText1.text = "<color=#295BA0>" + Action.DetermineBotMoveType(PlayerData.inst.GetComponent<Actor>()).ToString() + " + " + PlayerData.inst.evasion1 + "</color>"; // Gray
+            }
+        }
+        else
+        {
+            evasionText1.text = "<color=#5B5B5B>" + Action.DetermineBotMoveType(PlayerData.inst.GetComponent<Actor>()).ToString() + " - 0" + "</color>"; // Gray
+        }
+        // Heat level (Inverted)
+        if (PlayerData.inst.evasion2 > 0)
+        {
+            evasionText2.text = "<color=#B53E00>" + "Heat - " + PlayerData.inst.evasion2 + "</color>"; // Orange
+        }
+        else
+        {
+            evasionText2.text = "<color=#5B5B5B>" + "Heat - 0" + "</color>"; // Gray
+        }
+        // Movement speed (and whether recently moved)
+        if (PlayerData.inst.evasion3 > 0)
+        {
+            evasionText3.text = "<color=#00FFF5>" + "Speed + " + PlayerData.inst.evasion3 + "</color>"; // Cyan
+        }
+        else
+        {
+            evasionText3.text = "<color=#5B5B5B>" + "Speed + 0" + "</color>"; // Gray
+        }
+        // Evasion modifiers from utilities (e.g. Maneuvering Thrusters)
+        if (PlayerData.inst.evasion4 > 0)
+        {
+            evasionText4.text = "<color=#B2B200>" + "Evasion + " + PlayerData.inst.evasion4 + "</color>"; // Yellow
+        }
+        else
+        {
+            evasionText4.text = "<color=#5B5B5B>" + "Evasion + 0" + "</color>"; // Gray
+        }
+        // Cloaking modifiers from utilities (e.g. Cloaking Devices)
+        if (PlayerData.inst.evasion5 > 0)
+        {
+            evasionText5.text = "<color=#8600B2>" + "Phasing + " + PlayerData.inst.evasion5 + "</color>"; // Purple
+        }
+        else
+        {
+            evasionText5.text = "<color=#5B5B5B>" + "Phasing + 0" + "</color>"; // Gray
+        }
+
+        SetAvoidanceImageColor(PlayerData.inst.currentAvoidance, evasionImage);
+
+        evasionMainText.text = PlayerData.inst.currentAvoidance.ToString() + "%";
+    }
+
+    public void Evasion_ShrinkMenu()
+    {
+
+        StopCoroutine(Evasion_ExpandMenu_Animation());
+        evasionAnimator.enabled = false;
+        evasionExtra.GetComponent<UIMouseBounds>().disabled = false; // Allow opening
+        evasion_hoverOpener.GetComponent<UIMouseBounds>().disabled = true; // Disabled closing detection
+        evasionExtra.transform.GetChild(0).gameObject.SetActive(false);
+    }
+
+    #endregion
 
     /// <summary>
     /// Updates the [ Parts ] area on the UI
@@ -4095,25 +4249,25 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private void SetAvoidanceImageColor(float amount)
+    private void SetAvoidanceImageColor(float amount, Image image)
     {
         amount = amount / 100f;
 
         if(amount >= 0.6 && amount <= 0.8) // Yellow (60-80%)
         {
-            avoidanceIndicator_image.color = cautiousYellow;
+            image.color = cautiousYellow;
         }
         else if(amount < 0.6 && amount > 0.3) // Orange (30-60%)
         {
-            avoidanceIndicator_image.color = corruptOrange;
+            image.color = corruptOrange;
         }
         else if (amount < 0.3) // Red (< 30%)
         {
-            avoidanceIndicator_image.color = dangerRed;
+            image.color = dangerRed;
         }
         else // Blue (> 80%)
         {
-            avoidanceIndicator_image.color = coolBlue;
+            image.color = coolBlue;
         }
     }
 

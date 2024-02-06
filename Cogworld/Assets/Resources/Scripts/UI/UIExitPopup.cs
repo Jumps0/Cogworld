@@ -105,7 +105,7 @@ public class UIExitPopup : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
         _parent.GetComponent<AccessObject>().blackBacker.SetActive(false);
         this.gameObject.SetActive(false);
-        Destroy(this.gameObject.transform.parent);
+        Destroy(this.gameObject);
     }
 
     IEnumerator ConnectorExpand()

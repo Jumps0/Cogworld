@@ -72,6 +72,10 @@ public class GlobalSettings : MonoBehaviour
     public float itemPopupLifetime = 5;
     public List<TMP_FontAsset> fonts = new List<TMP_FontAsset>();
 
+    [Header("Settings")]
+    [Tooltip("The scanning/UI animation when the player enters a new level.")]
+    public bool showNewLevelAnimation = true;
+
     #region DebugUI
     [Header("DebugUI")]
     [SerializeField] private GameObject debugUI_parent;

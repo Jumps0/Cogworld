@@ -1711,11 +1711,11 @@ public static class Action
                                     potentialLegBonus += effect.evasionNaccuracyChange;
                                     if(actor.momentum > 3)
                                     {
-                                        evasionBonus4 += (int)((potentialLegBonus * 100) * 3);
+                                        evasionBonus4 += (int)(1 * 3);
                                     }
                                     else
                                     {
-                                        evasionBonus4 += (int)((potentialLegBonus * 100) * actor.momentum);
+                                        evasionBonus4 += (int)(1 * actor.momentum);
                                     }
                                 }
                             }
@@ -1856,11 +1856,11 @@ public static class Action
                                     potentialLegBonus += effect.evasionNaccuracyChange;
                                     if (actor.momentum > 3)
                                     {
-                                        evasionBonus4 += (int)((potentialLegBonus * 100) * 3);
+                                        evasionBonus4 += (int)(1 * 3);
                                     }
                                     else
                                     {
-                                        evasionBonus4 += (int)((potentialLegBonus * 100) * actor.momentum);
+                                        evasionBonus4 += (int)(1 * actor.momentum);
                                     }
                                 }
                             }
