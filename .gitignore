@@ -18,6 +18,23 @@
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
 
+# Efforts at futility below
+Cogworld/[Ll]ibrary/
+Cogworld/[Tt]emp/
+Cogworld/[Oo]bj/
+Cogworld/[Bb]uild/
+Cogworld/[Bb]uilds/
+Cogworld/[Ll]ogs/
+Cogworld/[Uu]ser[Ss]ettings/
+
+/Cogworld/[Ll]ibrary/
+/Cogworld/[Tt]emp/
+/Cogworld/[Oo]bj/
+/Cogworld/[Bb]uild/
+/Cogworld/[Bb]uilds/
+/Cogworld/[Ll]ogs/
+/Cogworld/[Uu]ser[Ss]ettings/
+
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
 /[Mm]emoryCaptures/
