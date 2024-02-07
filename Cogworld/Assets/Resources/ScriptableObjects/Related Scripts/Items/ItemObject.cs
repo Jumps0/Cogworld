@@ -59,7 +59,7 @@ public class Item
     [Tooltip("Active or In-active")]
     public bool state = true; // Active/In-Active
     [Tooltip("Current integrity of this item.")]
-    public int integrityCurrent; // failsafe
+    public int integrityCurrent;
 
     public Item()
     {

@@ -45,7 +45,7 @@ public class InvDisplayItem : MonoBehaviour
     // --        --
 
     public Item _assignedItem;
-    public Item _part;
+    //public Item _part;
     public char _assignedChar;
 
     public void SetEmpty()
@@ -95,7 +95,7 @@ public class InvDisplayItem : MonoBehaviour
     {
         _assignedChar = assignment;
         assignedOrderText.text = _assignedChar.ToString();
-        if (_part.state)
+        if (_assignedItem.state)
         {
             assignedOrderText.color = activeGreen;
         }
@@ -108,23 +108,23 @@ public class InvDisplayItem : MonoBehaviour
 
     public void UpdateDisplay()
     {
-        if(_assignedItem != null)
-            _part = InventoryControl.inst._itemDatabase.Items[_assignedItem.Id].data;
+        //if(_assignedItem != null)
+        //    _part = InventoryControl.inst._itemDatabase.Items[_assignedItem.Id].data;
 
         // - Name - //
-        itemNameText.text = _part.itemData.itemName;
+        itemNameText.text = _assignedItem.itemData.itemName;
 
         // - Letter Assignment - //
         // ?
 
         // - Icon - //
-        partDisplay.sprite = _part.itemData.inventoryDisplay;
+        partDisplay.sprite = _assignedItem.itemData.inventoryDisplay;
 
         // - Icon Color - //
-        partDisplay.color = _part.itemData.itemColor;
+        partDisplay.color = _assignedItem.itemData.itemColor;
 
         // - Integrity Color Square - //
-        float currentIntegrity = (float)_part.integrityCurrent / (float)_part.itemData.integrityMax;
+        float currentIntegrity = (float)_assignedItem.integrityCurrent / (float)_assignedItem.itemData.integrityMax;
         if (currentIntegrity >= 0.75f) // Green (>=75%)
         {
             healthDisplay.color = activeGreen;
@@ -159,7 +159,7 @@ public class InvDisplayItem : MonoBehaviour
             }
             healthModeTextRep.text = displayText; // Set text (bars)
             healthModeTextRep.color = healthDisplay.color; // Set color
-            healthModeNumber.text = _part.integrityCurrent.ToString(); // Set text (numbers)
+            healthModeNumber.text = _assignedItem.integrityCurrent.ToString(); // Set text (numbers)
             healthModeNumber.color = healthDisplay.color; // Set color
         }
         else if (UIManager.inst.inventoryDisplayMode == "M") // Mass (this is bars AND %)

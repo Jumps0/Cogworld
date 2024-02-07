@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+/// <summary>
+/// This script is largely unused, TODO: Migrate away to a different method.
+/// </summary>
 public class UIHoverButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public string identifier;
@@ -20,7 +23,7 @@ public class UIHoverButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
             case "INV_ITEM":
                 // Turn on hover animation
-                if(this.GetComponent<InvDisplayItem>()._part != null)
+                if(this.GetComponent<InvDisplayItem>()._assignedItem != null)
                     this.GetComponent<InvDisplayItem>().DoHighlight();
                 break;
 
