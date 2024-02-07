@@ -1495,7 +1495,7 @@ public static class HF
             {
                 foreach (var E in item.itemEffect)
                 {
-                    if (E.hackBonuses.hasSystemShieldBonus && item.state)
+                    if (E.hackBonuses.hasSystemShieldBonus && item.data.state)
                     {
                         hackDetectRateBonus += E.hackBonuses.hackDetectRateBonus;
                         hackDetectChanceBonus += E.hackBonuses.hackDetectChanceBonus;

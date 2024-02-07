@@ -563,7 +563,7 @@ public class Actor : Entity
         {
             float random = Random.Range(0f, 1f);
 
-            if (item._item.integrityCurrent > 0 && random <= item.dropChance)
+            if (item._item.data.integrityCurrent > 0 && random <= item.dropChance)
             {
                 InventoryControl.inst.DropItemOnFloor(item._item.data);
             }
@@ -572,7 +572,7 @@ public class Actor : Entity
         {
             float random = Random.Range(0f, 1f);
 
-            if (item._item.integrityCurrent > 0 && random <= item.dropChance)
+            if (item._item.data.integrityCurrent > 0 && random <= item.dropChance)
             {
                 InventoryControl.inst.DropItemOnFloor(item._item.data);
             }

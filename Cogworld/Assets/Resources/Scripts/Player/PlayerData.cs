@@ -562,7 +562,7 @@ public class PlayerData : MonoBehaviour
     {
         foreach (InventorySlot slot in this.GetComponent<PartInventory>()._invWeapon.Container.Items)
         {
-            if(slot.item.Id > -1 && slot.item.itemData.state) // There is an item here, and its active
+            if(slot.item.Id > -1 && slot.item.state) // There is an item here, and its active
             {
                 return slot.item.itemData;
             }

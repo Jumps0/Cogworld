@@ -590,7 +590,7 @@ public static class Action
             {
                 if (item.item.Id >= 0)
                 {
-                    if (item.item.itemData.shot.shotRange <= 2 && item.item.itemData.state)
+                    if (item.item.itemData.shot.shotRange <= 2 && item.item.state)
                     {
                         weapon = item.item.itemData;
                         return weapon;
@@ -630,7 +630,7 @@ public static class Action
             {
                 if (item.item.Id >= 0)
                 {
-                    if (item.item.itemData.shot.shotRange > 3 && item.item.itemData.state)
+                    if (item.item.itemData.shot.shotRange > 3 && item.item.state)
                     {
                         weapon = item.item;
                         return weapon;
@@ -665,7 +665,7 @@ public static class Action
             {
                 if (item.item.Id >= 0)
                 {
-                    if (item.item.itemData.type == ItemType.Treads && item.item.itemData.state)
+                    if (item.item.itemData.type == ItemType.Treads && item.item.state)
                     {
                         return true;
                     }
@@ -700,7 +700,7 @@ public static class Action
             {
                 if (item.item.Id >= 0)
                 {
-                    if (item.item.itemData.type == ItemType.Legs && item.item.itemData.state)
+                    if (item.item.itemData.type == ItemType.Legs && item.item.state)
                     {
                         return true;
                     }
@@ -735,7 +735,7 @@ public static class Action
             {
                 if(item.item.Id >= 0)
                 {
-                    if (item.item.itemData.type == ItemType.Wheels && item.item.itemData.state)
+                    if (item.item.itemData.type == ItemType.Wheels && item.item.state)
                     {
                         return true;
                     }
@@ -770,7 +770,7 @@ public static class Action
             {
                 if (item.item.Id >= 0)
                 {
-                    if (item.item.itemData.type == ItemType.Hover && item.item.itemData.state)
+                    if (item.item.itemData.type == ItemType.Hover && item.item.state)
                     {
                         return true;
                     }
@@ -805,7 +805,7 @@ public static class Action
             {
                 if (item.item.Id >= 0)
                 {
-                    if (item.item.itemData.type == ItemType.Flight && item.item.itemData.state)
+                    if (item.item.itemData.type == ItemType.Flight && item.item.state)
                     {
                         return true;
                     }
@@ -1293,8 +1293,8 @@ public static class Action
                     }
                     else
                     {
-                        item._item.integrityCurrent -= damage;
-                        if (item._item.integrityCurrent <= 0)
+                        item._item.data.integrityCurrent -= damage;
+                        if (item._item.data.integrityCurrent <= 0)
                         {
                             item._item.data.Id = -1; // Destroy it
                             // And play a sound ?
@@ -1311,8 +1311,8 @@ public static class Action
                     // If we got here, we need to damage some kind of armor
                     if (item._item.slot == ItemSlot.Power && protection.Contains(ArmorType.Power))
                     {
-                        item._item.integrityCurrent -= damage;
-                        if (item._item.integrityCurrent <= 0)
+                        item._item.data.integrityCurrent -= damage;
+                        if (item._item.data.integrityCurrent <= 0)
                         {
                             item._item.data.Id = -1; // Destroy it
                             // And play a sound ?
@@ -1321,8 +1321,8 @@ public static class Action
                     }
                     else if (item._item.slot == ItemSlot.Propulsion && protection.Contains(ArmorType.Propulsion))
                     {
-                        item._item.integrityCurrent -= damage;
-                        if (item._item.integrityCurrent <= 0)
+                        item._item.data.integrityCurrent -= damage;
+                        if (item._item.data.integrityCurrent <= 0)
                         {
                             item._item.data.Id = -1; // Destroy it
                             // And play a sound ?
@@ -1331,8 +1331,8 @@ public static class Action
                     }
                     else if (item._item.slot == ItemSlot.Utilities && protection.Contains(ArmorType.Utility))
                     {
-                        item._item.integrityCurrent -= damage;
-                        if (item._item.integrityCurrent <= 0)
+                        item._item.data.integrityCurrent -= damage;
+                        if (item._item.data.integrityCurrent <= 0)
                         {
                             item._item.data.Id = -1; // Destroy it
                             // And play a sound ?
@@ -1341,8 +1341,8 @@ public static class Action
                     }
                     else if (item._item.slot == ItemSlot.Weapons && protection.Contains(ArmorType.Weapon))
                     {
-                        item._item.integrityCurrent -= damage;
-                        if (item._item.integrityCurrent <= 0)
+                        item._item.data.integrityCurrent -= damage;
+                        if (item._item.data.integrityCurrent <= 0)
                         {
                             item._item.data.Id = -1; // Destroy it
                             // And play a sound ?
@@ -1351,8 +1351,8 @@ public static class Action
                     }
                     else if (protection.Contains(ArmorType.General))
                     {
-                        item._item.integrityCurrent -= damage;
-                        if (item._item.integrityCurrent <= 0)
+                        item._item.data.integrityCurrent -= damage;
+                        if (item._item.data.integrityCurrent <= 0)
                         {
                             item._item.data.Id = -1; // Destroy it
                             // And play a sound ?
@@ -1393,8 +1393,8 @@ public static class Action
                     }
                     else
                     {
-                        item.item.itemData.integrityCurrent -= damage;
-                        if (item.item.itemData.integrityCurrent <= 0)
+                        item.item.integrityCurrent -= damage;
+                        if (item.item.integrityCurrent <= 0)
                         {
                             item.item.Id = -1; // Destroy it
                             // And play a sound ?
@@ -1432,8 +1432,8 @@ public static class Action
                     }
                     else
                     {
-                        item.item.itemData.integrityCurrent -= damage;
-                        if (item.item.itemData.integrityCurrent <= 0)
+                        item.item.integrityCurrent -= damage;
+                        if (item.item.integrityCurrent <= 0)
                         {
                             item.item.Id = -1; // Destroy it
                             // And play a sound ?
@@ -1471,8 +1471,8 @@ public static class Action
                     }
                     else
                     {
-                        item.item.itemData.integrityCurrent -= damage;
-                        if (item.item.itemData.integrityCurrent <= 0)
+                        item.item.integrityCurrent -= damage;
+                        if (item.item.integrityCurrent <= 0)
                         {
                             item.item.Id = -1; // Destroy it
                             // And play a sound ?
@@ -1488,8 +1488,8 @@ public static class Action
                     // If we got here, we need to damage some kind of armor
                     if (item.item.itemData.slot == ItemSlot.Power && protection.Contains(ArmorType.Power))
                     {
-                        item.item.itemData.integrityCurrent -= damage;
-                        if (item.item.itemData.integrityCurrent <= 0)
+                        item.item.integrityCurrent -= damage;
+                        if (item.item.integrityCurrent <= 0)
                         {
                             item.item.Id = -1; // Destroy it
                             // And play a sound ?
@@ -1498,8 +1498,8 @@ public static class Action
                     }
                     else if (item.item.itemData.slot == ItemSlot.Propulsion && protection.Contains(ArmorType.Propulsion))
                     {
-                        item.item.itemData.integrityCurrent -= damage;
-                        if (item.item.itemData.integrityCurrent <= 0)
+                        item.item.integrityCurrent -= damage;
+                        if (item.item.integrityCurrent <= 0)
                         {
                             item.item.Id = -1; // Destroy it
                             // And play a sound ?
@@ -1508,8 +1508,8 @@ public static class Action
                     }
                     else if (item.item.itemData.slot == ItemSlot.Utilities && protection.Contains(ArmorType.Utility))
                     {
-                        item.item.itemData.integrityCurrent -= damage;
-                        if (item.item.itemData.integrityCurrent <= 0)
+                        item.item.integrityCurrent -= damage;
+                        if (item.item.integrityCurrent <= 0)
                         {
                             item.item.Id = -1; // Destroy it
                             // And play a sound ?
@@ -1518,8 +1518,8 @@ public static class Action
                     }
                     else if (item.item.itemData.slot == ItemSlot.Weapons && protection.Contains(ArmorType.Weapon))
                     {
-                        item.item.itemData.integrityCurrent -= damage;
-                        if (item.item.itemData.integrityCurrent <= 0)
+                        item.item.integrityCurrent -= damage;
+                        if (item.item.integrityCurrent <= 0)
                         {
                             item.item.Id = -1; // Destroy it
                             // And play a sound ?
@@ -1528,8 +1528,8 @@ public static class Action
                     }
                     else if (protection.Contains(ArmorType.General))
                     {
-                        item.item.itemData.integrityCurrent -= damage;
-                        if (item.item.itemData.integrityCurrent <= 0)
+                        item.item.integrityCurrent -= damage;
+                        if (item.item.integrityCurrent <= 0)
                         {
                             item.item.Id = -1; // Destroy it
                             // And play a sound ?
@@ -1541,8 +1541,8 @@ public static class Action
 
             int random = Random.Range(0, target.GetComponent<PartInventory>()._invUtility.Container.Items.Length - 1);
             // As a failsafe, try to damage a random item in the utilities slot
-            target.GetComponent<PartInventory>()._invUtility.Container.Items[random].item.itemData.integrityCurrent -= damage;
-            if (target.GetComponent<PartInventory>()._invUtility.Container.Items[random].item.itemData.integrityCurrent <= 0)
+            target.GetComponent<PartInventory>()._invUtility.Container.Items[random].item.integrityCurrent -= damage;
+            if (target.GetComponent<PartInventory>()._invUtility.Container.Items[random].item.integrityCurrent <= 0)
             {
                 target.GetComponent<PartInventory>()._invUtility.Container.Items[random].item.Id = -1; // Destroy it
                                     // And play a sound ?
@@ -1783,11 +1783,11 @@ public static class Action
             {
                 if (item.item.Id >= 0)
                 {
-                    if (item.item.itemData.type == ItemType.Flight && item.item.itemData.state)
+                    if (item.item.itemData.type == ItemType.Flight && item.item.state)
                     {
                         evasionBonus1 += (int)(1.5f * item.item.itemData.slotsRequired);
                     }
-                    else if (item.item.itemData.type == ItemType.Hover && item.item.itemData.state)
+                    else if (item.item.itemData.type == ItemType.Hover && item.item.state)
                     {
                         evasionBonus1 += (int)(1f * item.item.itemData.slotsRequired);
                     }

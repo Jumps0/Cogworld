@@ -45,7 +45,7 @@ public class InvDisplayItem : MonoBehaviour
     // --        --
 
     public Item _assignedItem;
-    public ItemObject _part;
+    public Item _part;
     public char _assignedChar;
 
     public void SetEmpty()
@@ -109,22 +109,22 @@ public class InvDisplayItem : MonoBehaviour
     public void UpdateDisplay()
     {
         if(_assignedItem != null)
-            _part = InventoryControl.inst._itemDatabase.Items[_assignedItem.Id];
+            _part = InventoryControl.inst._itemDatabase.Items[_assignedItem.Id].data;
 
         // - Name - //
-        itemNameText.text = _part.itemName;
+        itemNameText.text = _part.itemData.itemName;
 
         // - Letter Assignment - //
         // ?
 
         // - Icon - //
-        partDisplay.sprite = _part.inventoryDisplay;
+        partDisplay.sprite = _part.itemData.inventoryDisplay;
 
         // - Icon Color - //
-        partDisplay.color = _part.itemColor;
+        partDisplay.color = _part.itemData.itemColor;
 
         // - Integrity Color Square - //
-        float currentIntegrity = (float)_part.integrityCurrent / (float)_part.integrityMax;
+        float currentIntegrity = (float)_part.integrityCurrent / (float)_part.itemData.integrityMax;
         if (currentIntegrity >= 0.75f) // Green (>=75%)
         {
             healthDisplay.color = activeGreen;

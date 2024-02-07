@@ -89,7 +89,7 @@ public abstract class UserInterface : MonoBehaviour
 
             var rt = tempItem;
             //CopyInvDisplayItem(obj.GetComponent<InvDisplayItem>(), rt.GetComponent<InvDisplayItem>());
-            rt.GetComponent<InvMovingDisplayItem>().Setup(obj.GetComponent<InvDisplayItem>()._part.itemName);
+            rt.GetComponent<InvMovingDisplayItem>().Setup(obj.GetComponent<InvDisplayItem>()._part.itemData.itemName);
             tempItem.transform.SetParent(inventoryArea.transform.parent);
 
             // Is there an actual item there?
@@ -109,7 +109,7 @@ public abstract class UserInterface : MonoBehaviour
         if(MouseData.interfaceMouseIsOver == null)
         {
             // Drop the item on the floor
-            InventoryControl.inst.DropItemOnFloor(obj.GetComponent<InvDisplayItem>()._part.data);
+            InventoryControl.inst.DropItemOnFloor(obj.GetComponent<InvDisplayItem>()._part);
 
             if (this.GetComponent<StaticInterface>())
             {  
@@ -117,10 +117,10 @@ public abstract class UserInterface : MonoBehaviour
             }
             else if (this.GetComponent<DynamicInterface>()) // If this item was equipped we need to change the player's stats
             {
-                PlayerData.inst.currentWeight -= obj.GetComponent<InvDisplayItem>()._part.mass;
-                if (obj.GetComponent<InvDisplayItem>()._part.propulsion.Count > 0)
+                PlayerData.inst.currentWeight -= obj.GetComponent<InvDisplayItem>()._part.itemData.mass;
+                if (obj.GetComponent<InvDisplayItem>()._part.itemData.propulsion.Count > 0)
                 {
-                    PlayerData.inst.maxWeight -= obj.GetComponent<InvDisplayItem>()._part.propulsion[0].support;
+                    PlayerData.inst.maxWeight -= obj.GetComponent<InvDisplayItem>()._part.itemData.propulsion[0].support;
                 }
                 
             }
@@ -191,7 +191,7 @@ public static class ExtensionMethods
             {
                 if (_slot.Value.item.Id != -1)
                 {
-                    _slot.Key.GetComponent<InvDisplayItem>()._part = InventoryControl.inst.p_inventory.database.Items[_slot.Value.item.Id];
+                    _slot.Key.GetComponent<InvDisplayItem>()._part = InventoryControl.inst.p_inventory.database.Items[_slot.Value.item.Id].data;
                     _slot.Key.GetComponent<InvDisplayItem>().SetUnEmpty();
                     _slot.Key.GetComponent<InvDisplayItem>().UpdateDisplay();
                 }

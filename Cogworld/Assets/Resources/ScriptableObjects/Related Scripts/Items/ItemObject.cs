@@ -56,6 +56,10 @@ public class Item
     public int amount = 1;
     public ItemObject itemData;
     // This section WILL need to be expanded later (probably BotObject too)
+    [Tooltip("Active or In-active")]
+    public bool state = true; // Active/In-Active
+    [Tooltip("Current integrity of this item.")]
+    public int integrityCurrent; // failsafe
 
     public Item()
     {
@@ -68,6 +72,7 @@ public class Item
         Name = item.itemName;
         Id = item.data.Id;
         itemData = item;
+        integrityCurrent = item.integrityMax;
     }
 }
 
@@ -98,12 +103,9 @@ public abstract class ItemObject : ScriptableObject
     public int rating;
     [Tooltip("If this item has a star * next to its rating, generally means it is better.")]
     public bool star = false;
-    public int integrityCurrent;
     public int integrityMax;
     [Tooltip("Percentage value.")]
     public int coverage;
-    [Tooltip("Active or In-active")]
-    public bool state = true; // Active/In-Active
 
     [Header("Schematic")]
     public SchematicInfo schematicDetails;

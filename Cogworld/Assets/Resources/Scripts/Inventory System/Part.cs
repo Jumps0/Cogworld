@@ -250,7 +250,7 @@ public class Part : MonoBehaviour
                 {
                     _message = _item.itemData.itemName + " [" + _item.itemData.rating.ToString() + "]"; // Name [Rating]
                     // Set color related to current item health
-                    float HP = (float)_item.itemData.integrityCurrent / (float)_item.itemData.integrityMax;
+                    float HP = (float)_item.integrityCurrent / (float)_item.itemData.integrityMax;
                     if (HP >= 0.75) // Healthy
                     {
                         b = UIManager.inst.activeGreen; // Special item = special color

@@ -34,7 +34,7 @@ public class UIHackinfoV1 : MonoBehaviour//, IPointerEnterHandler, IPointerExitH
         {
             activeBase.gameObject.SetActive(true);
             activeText.gameObject.SetActive(true);
-            SetState(assignedPart.state);
+            SetState(assignedPart.data.state);
         }
         else
         {
@@ -53,7 +53,7 @@ public class UIHackinfoV1 : MonoBehaviour//, IPointerEnterHandler, IPointerExitH
         {
             activeBase.gameObject.SetActive(true);
             activeText.gameObject.SetActive(true);
-            SetState(assignedPart.state);
+            SetState(assignedPart.data.state);
         }
         else
         {
