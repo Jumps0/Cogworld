@@ -29666,6 +29666,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3f1bf64e23c81b149a75c74890c74f84, type: 2}
   - {fileID: 11400000, guid: beabde3ee87ee8446a3c059dfcfec658, type: 2}
   showNewLevelAnimation: 1
+  useAdvMoveDisNumbers: 1
   debugUI_parent: {fileID: 774804271}
   dField: {fileID: 1318891503}
   dButton: {fileID: 272563533}
@@ -38840,7 +38841,6 @@ MonoBehaviour:
   modeImage: {fileID: 260723535}
   modeText: {fileID: 1232998895}
   moveNumberText: {fileID: 653772848}
-  useAdvMoveDisNumbers: 0
   usingSpecialMovement: 0
   slowOrange: {r: 0.7019608, g: 0.7019608, b: 0.003921569, a: 1}
   superSlowOrange: {r: 0.6509804, g: 0.34509805, b: 0.023529414, a: 1}

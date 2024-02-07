@@ -167,7 +167,7 @@ public class PlayerData : MonoBehaviour
         evasion4 = GlobalSettings.inst.startingEvasionWide;
         evasion5 = GlobalSettings.inst.startingEvasionWide;
 
-        moveType = BotMoveType.Running;
+        moveType = BotMoveType.Running; // aka Core
         
 
         // Parts

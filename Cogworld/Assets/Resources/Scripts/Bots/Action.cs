@@ -1685,11 +1685,6 @@ public static class Action
             {
                 evasionBonus3 = 0;
             }
-            // However this bonus is only actually added if the bot has recently moved! Not if they have been standing still.
-            if(actor.noMovementFor > 0)
-            {
-                evasionBonus3 = 0;
-            }
 
             // -- Evasion modifiers -- //
             // These effects can be found in 1. Legs 2. Variants of the reaction control system device
@@ -1713,7 +1708,7 @@ public static class Action
                                     {
                                         evasionBonus4 += (int)(1 * 3);
                                     }
-                                    else
+                                    else if(actor.momentum > 0 && actor.momentum <= 3)
                                     {
                                         evasionBonus4 += (int)(1 * actor.momentum);
                                     }
@@ -1812,7 +1807,7 @@ public static class Action
             evasionBonus2 = -heatCalc;
 
             // -- Movement Speed -- //
-
+            // This is almost certainly wrong, here is a formula that's also probably wrong: Bonus = 20 - (Main Value / 10) + floor(Main Value / 20)
             int speed = PlayerData.inst.moveSpeed1;
             if (speed <= 25) // FASTx3
             {
@@ -1827,11 +1822,6 @@ public static class Action
                 evasionBonus3 = (int)(speed / 15);
             }
             else // Not fast enough so no bonus
-            {
-                evasionBonus3 = 0;
-            }
-            // However this bonus is only actually added if the bot has recently moved! Not if they have been standing still.
-            if (actor.noMovementFor > 0)
             {
                 evasionBonus3 = 0;
             }
@@ -1858,7 +1848,7 @@ public static class Action
                                     {
                                         evasionBonus4 += (int)(1 * 3);
                                     }
-                                    else
+                                    else if (actor.momentum > 0 && actor.momentum <= 3)
                                     {
                                         evasionBonus4 += (int)(1 * actor.momentum);
                                     }

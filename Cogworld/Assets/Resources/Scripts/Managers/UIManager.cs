@@ -3189,7 +3189,6 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI modeText;
     //
     public TextMeshProUGUI moveNumberText; //: (###)
-    public bool useAdvMoveDisNumbers = false; //: Normal = ###% Advanced = (###) ##
     public bool usingSpecialMovement = false;
     //
     public Color slowOrange;
@@ -3316,6 +3315,15 @@ public class UIManager : MonoBehaviour
         if (GlobalSettings.inst.showNewLevelAnimation)
         {
             FreshStart_BeginAnimate();
+        }
+        else
+        {
+            FSA_LOG.enabled = false;
+            FSA_LAIC.enabled = false;
+            FSA_TopRight.enabled = false;
+            FSA_ScanEvasion.enabled = false;
+            FSA_Parts.enabled = false;
+            FSA_Inventory.enabled = false;
         }
 
         InitDefaultPartsMenu(); // Set the parts menu (empty)
@@ -3450,7 +3458,7 @@ public class UIManager : MonoBehaviour
 
         // ---------- MOVEMENT ------------
 
-        if (useAdvMoveDisNumbers) // Advanced move display: (###) ##
+        if (GlobalSettings.inst.useAdvMoveDisNumbers) // Advanced move display: (###) ##
         {
             moveNumberText.text = "(" + PlayerData.inst.moveSpeed1.ToString() + ") "; // Time "units"
             moveNumberText.text += PlayerData.inst.moveSpeed2.ToString(); // 1 move = X turns
@@ -3468,7 +3476,7 @@ public class UIManager : MonoBehaviour
          * Treading [SLOW] <yellow>
          * Hovering [FAST] x0/1/2/3 <none,blue,blue,purple>
          * Immobile (Siege in #) OR [SIEGE] <yellow>
-         * Running <none> <-- Default
+         * Running (Core) <none> <-- Default
          * Walking <none>
          */
 
@@ -3476,14 +3484,82 @@ public class UIManager : MonoBehaviour
         switch (PlayerData.inst.moveType)
         {
             case BotMoveType.Running:
-                moveTypeText.text = "Running";
+                moveTypeText.text = "Core";
                 modeGO.SetActive(false);
                 flashRef.SetActive(false);
+                if (speed <= 25) // FASTx3
+                {
+                    modeText.text = "FASTx3";
+                    modeImage.color = specialPurple;
+                }
+                else if (speed > 25 && speed <= 50) // FASTx2
+                {
+                    modeText.text = "FASTx2";
+                    modeImage.color = coolBlue;
+                }
+                else if (speed > 50 && speed <= 75) // FAST
+                {
+                    modeText.text = "FAST";
+                    modeImage.color = coolBlue;
+                }
+                else if (speed >= 300) // SLOWx3
+                {
+                    modeText.text = "SLOWx3";
+                    modeImage.color = alertRed;
+                }
+                else if (speed >= 200 && speed < 300) // SLOWx2
+                {
+                    modeText.text = "SLOWx2";
+                    modeImage.color = warningOrange;
+                }
+                else if (speed >= 150 && speed < 200) // SLOW
+                {
+                    modeText.text = "SLOW";
+                    modeImage.color = siegeYellow;
+                }
+                else // Nothing
+                {
+                    modeGO.SetActive(false);
+                }
                 break;
             case BotMoveType.Walking:
                 moveTypeText.text = "Walking";
                 modeGO.SetActive(false);
                 flashRef.SetActive(false);
+                if (speed <= 25) // FASTx3
+                {
+                    modeText.text = "FASTx3";
+                    modeImage.color = specialPurple;
+                }
+                else if (speed > 25 && speed <= 50) // FASTx2
+                {
+                    modeText.text = "FASTx2";
+                    modeImage.color = coolBlue;
+                }
+                else if (speed > 50 && speed <= 75) // FAST
+                {
+                    modeText.text = "FAST";
+                    modeImage.color = coolBlue;
+                }
+                else if (speed >= 300) // SLOWx3
+                {
+                    modeText.text = "SLOWx3";
+                    modeImage.color = alertRed;
+                }
+                else if (speed >= 200 && speed < 300) // SLOWx2
+                {
+                    modeText.text = "SLOWx2";
+                    modeImage.color = warningOrange;
+                }
+                else if (speed >= 150 && speed < 200) // SLOW
+                {
+                    modeText.text = "SLOW";
+                    modeImage.color = siegeYellow;
+                }
+                else // Nothing
+                {
+                    modeGO.SetActive(false);
+                }
                 break;
             case BotMoveType.Treading:
                 moveTypeText.text = "Treading";

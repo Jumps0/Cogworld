@@ -15,25 +15,6 @@ public class GlobalSettings : MonoBehaviour
         inst = this;
     }
 
-    #region Layer Guide
-
-    /* // THIS IS OLD, GOTO UIMANAGER
-     * >===< LAYER GUIDE >===<
-     * (Sort order)
-     * 1  - Floor/Wall tiles
-     * 2  -
-     * 3  - 
-     * 4  - 
-     * 5  - Doors
-     * 6  -
-     * 7  - Machines
-     * 
-     * 20 - Player
-     * 
-     */
-
-    #endregion
-
     [Header("Cheats")]
     public bool fullVision = false;
 
@@ -75,6 +56,8 @@ public class GlobalSettings : MonoBehaviour
     [Header("Settings")]
     [Tooltip("The scanning/UI animation when the player enters a new level.")]
     public bool showNewLevelAnimation = true;
+    [Tooltip("Normal = ###% Advanced = (###) ##")]
+    public bool useAdvMoveDisNumbers = true;
 
     #region DebugUI
     [Header("DebugUI")]
