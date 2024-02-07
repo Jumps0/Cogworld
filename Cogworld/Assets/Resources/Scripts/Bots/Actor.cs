@@ -565,7 +565,7 @@ public class Actor : Entity
 
             if (item._item.integrityCurrent > 0 && random <= item.dropChance)
             {
-                InventoryControl.inst.DropItemOnFloor(item._item);
+                InventoryControl.inst.DropItemOnFloor(item._item.data);
             }
         }
         foreach (BotArmament item in this.botInfo.components.ToList())
@@ -574,7 +574,7 @@ public class Actor : Entity
 
             if (item._item.integrityCurrent > 0 && random <= item.dropChance)
             {
-                InventoryControl.inst.DropItemOnFloor(item._item);
+                InventoryControl.inst.DropItemOnFloor(item._item.data);
             }
         }
 

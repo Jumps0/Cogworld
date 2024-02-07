@@ -247,22 +247,22 @@ public class InventoryControl : MonoBehaviour
     /// <param name="location">Where in the world to place the item.</param>
     /// <param name="randomAmountLow">If this item has an amount, this will be the LOW end of what it could be.</param>
     /// <param name="randomAmountHigh">If this item has an amount, this will be the HIGH end of what it could be.</param>
-    public void CreateItemInWorld(int id, Vector2Int location, int randomAmountLow = 1, int randomAmountHigh = 1)
+    public void CreateItemInWorld(int id, Vector2Int location, int specificAmount = 1)
     {
-        ItemObject newObj = _itemDatabase.Items[id];
-
         var spawnedItem = Instantiate(_itemGroundPrefab, new Vector3(location.x * GridManager.inst.globalScale, location.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
         spawnedItem.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
         spawnedItem.name = $"Floor Item {location.x} {location.y} - "; // Give grid based name
 
-        if (newObj.instantUnique) // For stuff like matter, change this later (this is still probably not the best idea)
+        Item item = new Item(_itemDatabase.Items[id]);
+
+        if (_itemDatabase.Items[id].instantUnique) // For stuff like matter, change this later (this is still probably not the best idea)
         {
-            newObj.amount = Random.Range(randomAmountLow, randomAmountHigh);
+            item.amount = specificAmount;
         }
 
-        spawnedItem.GetComponent<Part>()._item = newObj; // Assign part data from database by ID
+        spawnedItem.GetComponent<Part>()._item = item; // Assign part data from database by ID
 
-        spawnedItem.name += spawnedItem.GetComponent<Part>()._item.itemName.ToString(); // Modify name with type
+        spawnedItem.name += spawnedItem.GetComponent<Part>()._item.itemData.itemName.ToString(); // Modify name with type
 
         spawnedItem.GetComponent<Part>().location.x = (int)location.x; // Assign X location
         spawnedItem.GetComponent<Part>().location.x = (int)location.y; // Assign Y location
@@ -284,7 +284,7 @@ public class InventoryControl : MonoBehaviour
     /// </summary>
     /// <param name="_item">The item in question.</param>
     /// <param name="location">The place to put it.</param>
-    public void PlaceItemIntoWorld(ItemObject _item, Vector2Int location, TileBlock tile)
+    public void PlaceItemIntoWorld(Item _item, Vector2Int location, TileBlock tile)
     {
         var placedItem = Instantiate(_itemGroundPrefab, new Vector3(location.x * GridManager.inst.globalScale, location.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
         placedItem.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
@@ -293,7 +293,7 @@ public class InventoryControl : MonoBehaviour
         placedItem.GetComponent<Part>()._item = _item; // Assign part data from database by ID
         tile._partOnTop = placedItem.GetComponent<Part>();
 
-        placedItem.name += placedItem.GetComponent<Part>()._item.itemName.ToString(); // Modify name with type
+        placedItem.name += placedItem.GetComponent<Part>()._item.itemData.itemName.ToString(); // Modify name with type
 
         placedItem.GetComponent<Part>().location.x = (int)location.x; // Assign X location
         placedItem.GetComponent<Part>().location.x = (int)location.y; // Assign Y location
@@ -446,24 +446,24 @@ public class InventoryControl : MonoBehaviour
     /// <param name="inventory">The inventory to target.</param>
     public void AddItemToPlayer(Part part, InventoryObject inventory)
     {
-        part._item.state = true;
-        Item _item = new Item(part._item);
+        part._item.itemData.state = true;
+        Item _item = new Item(part._item.itemData); // surley this couldn't backfire? (instead of Item _item = part._item)
         if(inventory.AddItem(_item, 1))
         {
             // Destroying is handled internally
         }
     }
 
-    public void DropItemOnFloor(ItemObject _item)
+    public void DropItemOnFloor(Item _item)
     {
         // We want to drop the item as close to the player as possible
         TileBlock dropTile = PlayerData.inst.GetComponent<PlayerGridMovement>().GetCurrentPlayerTile();
         
         if(dropTile._partOnTop == null) // Success!
         {
-            PlayDropSound(_item.itemName);
+            PlayDropSound(_item.itemData.itemName);
             PlaceItemIntoWorld(_item, new Vector2Int(dropTile.locX, dropTile.locY), dropTile);
-            UIManager.inst.CreateNewLogMessage("Dropped " + _item.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
+            UIManager.inst.CreateNewLogMessage("Dropped " + _item.itemData.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
             return;
         }
         else // We need to search neighboring tiles
@@ -483,9 +483,9 @@ public class InventoryControl : MonoBehaviour
 
             if (success) // Success!
             {
-                PlayDropSound(_item.itemName);
+                PlayDropSound(_item.itemData.itemName);
                 PlaceItemIntoWorld(_item, new Vector2Int(dropTile.locX, dropTile.locY), dropTile);
-                UIManager.inst.CreateNewLogMessage("Dropped " + _item.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
+                UIManager.inst.CreateNewLogMessage("Dropped " + _item.itemData.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
                 return;
             }
             else // Keep going...
@@ -508,9 +508,9 @@ public class InventoryControl : MonoBehaviour
 
                 if (success) // Success!
                 {
-                    PlayDropSound(_item.itemName);
+                    PlayDropSound(_item.itemData.itemName);
                     PlaceItemIntoWorld(_item, new Vector2Int(dropTile.locX, dropTile.locY), dropTile);
-                    UIManager.inst.CreateNewLogMessage("Dropped " + _item.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
+                    UIManager.inst.CreateNewLogMessage("Dropped " + _item.itemData.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
                     return;
                 }
                 else

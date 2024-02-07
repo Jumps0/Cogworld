@@ -641,19 +641,19 @@ public class MapManager : MonoBehaviour
                     // - 1 device
                     // - 1 processor
                     // - 3 random weapon (2 of one type, 1 of other)
-                    // - And finally, ~250 matter
+                    // - And finally, 200 matter
 
                     Vector2Int spawnArea = new Vector2Int(50, 50); // Bottom Left Corner of our 8x8 room
                     List<Vector2Int> occupiedLocations = new List<Vector2Int>(); // We don't want to stack things
                     occupiedLocations.Add(new Vector2Int((int)playerSpawnLocation.x, (int)playerSpawnLocation.y));
 
-                    // And for the matter RNG
-                    List<Vector2Int> matterRNG = new List<Vector2Int>
+                    // And for the matter RNG (this is overly complex)
+                    int random = Random.Range(75, 150);
+                    List<int> matterRNG = new List<int>
                     {
-                        new Vector2Int(75, 150),
-                        new Vector2Int(70, 155)
+                        random,
+                        200 - random
                     };
-
                     int[] idsToSpawn = { 4, 4, 9, 9, Random.Range(10, 13), Random.Range(10, 13), 2, 3, 5, 15, 14, 16, 6, 8, 17, 17 };
 
                     SpawnItems(idsToSpawn, spawnArea, matterRNG);
@@ -669,19 +669,19 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    void SpawnItems(int[] itemIds, Vector2Int spawnArea, List<Vector2Int> lowHighsRandom = null)
+    void SpawnItems(int[] itemIds, Vector2Int spawnArea, List<int> randomValues = null)
     {
         HashSet<Vector2Int> usedLocations = new HashSet<Vector2Int>();
+        int i = 0;
 
         foreach (int itemId in itemIds)
         {
             Vector2Int location = GetRandomLocation(spawnArea, usedLocations);
 
-            if(itemId == 17) // This is *MATTER*, we need a random amount.
+            if (itemId == 17) // This is *MATTER*, we need a random amount.
             {
-                InventoryControl.inst.CreateItemInWorld(itemId, location, lowHighsRandom[0].x, lowHighsRandom[0].y);
-                if(lowHighsRandom.Count > 1)
-                    lowHighsRandom.Remove(lowHighsRandom[0]);
+                InventoryControl.inst.CreateItemInWorld(itemId, location, randomValues[i]);
+                i++;
             }
             else // Just normal item.
             {

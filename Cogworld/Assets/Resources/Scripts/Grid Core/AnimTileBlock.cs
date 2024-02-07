@@ -17,7 +17,7 @@ public class AnimTileBlock : MonoBehaviour
     [SerializeField] private Animator _animator;
     
     [Header("Assignments")]
-    [HideInInspector] public ItemObject _item;
+    [HideInInspector] public Item _item;
     [HideInInspector] public GameObject _tile;
     [HideInInspector] public BotObject _bot;
     [Tooltip("Is this AnimTileBlock representing the player?")]
@@ -31,7 +31,7 @@ public class AnimTileBlock : MonoBehaviour
     public Color veryDark;
     [SerializeField] private Sprite playerASCII;
 
-    public void Init(string setType, GameObject tile = null, ItemObject item = null, BotObject bot = null, bool isPlayer = false, Sprite macSprite = null)
+    public void Init(string setType, GameObject tile = null, Item item = null, BotObject bot = null, bool isPlayer = false, Sprite macSprite = null)
     {
         _sprite.color = Color.black;
         type = setType;
@@ -48,10 +48,10 @@ public class AnimTileBlock : MonoBehaviour
                 _sprite.sprite = _tile.GetComponent<TileBlock>().tileInfo.asciiRep;
             }
         }
-        if (item)
+        if (item != null)
         {
             _item = item;
-            _sprite.sprite = _item.asciiRep;
+            _sprite.sprite = _item.itemData.asciiRep;
         }
         if (bot || isPlayer)
         {

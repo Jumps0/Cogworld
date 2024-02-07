@@ -13,7 +13,7 @@ public class Part : MonoBehaviour
 
     public TileBlock _tile; // Assigned on Creation
     public Vector2Int location; // Assigned on Creation
-    public ItemObject _item; // Assigned on Creation
+    public Item _item; // Assigned on Creation
 
     public SpriteRenderer _sprite;
 
@@ -39,26 +39,26 @@ public class Part : MonoBehaviour
     public void Init()
     {
         // Set basic values
-        this._sprite.sprite = _item.floorDisplay;
-        this.realColor = _item.itemColor;
+        this._sprite.sprite = _item.itemData.floorDisplay;
+        this.realColor = _item.itemData.itemColor;
         inInventory = false;
 
-        if (InventoryControl.inst.knownItems.Contains(_item)) // We know what this item is
+        if (InventoryControl.inst.knownItems.Contains(_item.itemData)) // We know what this item is
         {
             knownByPlayer = true;
-            displayText = _item.itemName;
+            displayText = _item.itemData.itemName;
             _sprite.color = realColor;
         }
         else
         {
             knownByPlayer = false;
-            displayText = "Unknown " + ParseType(_item.type);
+            displayText = "Unknown " + ParseType(_item.itemData.type);
             _sprite.color = protoColor;
         }
 
         halfColor = new Color((realColor.r / 2), (realColor.g / 2), (realColor.b / 2));
 
-        if (this._item && this._item.data.Id == 17) // Is this item just *Matter*?
+        if (this._item != null && this._item.Id == 17) // Is this item just *Matter*?
         {
             isMatterItem = true;
 
@@ -66,7 +66,7 @@ public class Part : MonoBehaviour
         }
 
         // Rigged for Explosion
-        if(this._item.quality == ItemQuality.Rigged)
+        if(this._item.itemData.quality == ItemQuality.Rigged)
         {
             isRigged = true;
             //_riggedAnimator.enabled = true;
@@ -240,17 +240,17 @@ public class Part : MonoBehaviour
                 Color a = Color.black, b = Color.black, c = Color.black;
                 a = Color.black;
                 string _message = "";
-                if (_item.instantUnique)
+                if (_item.itemData.instantUnique)
                 {
-                    _message = _item.amount.ToString() + " " + _item.itemName;
-                    b = _item.itemColor;
-                    c = new Color(_item.itemColor.r, _item.itemColor.g, _item.itemColor.b, 0.7f);
+                    _message = _item.amount.ToString() + " " + _item.itemData.itemName;
+                    b = _item.itemData.itemColor;
+                    c = new Color(_item.itemData.itemColor.r, _item.itemData.itemColor.g, _item.itemData.itemColor.b, 0.7f);
                 }
                 else
                 {
-                    _message = _item.itemName + " [" + _item.rating.ToString() + "]"; // Name [Rating]
+                    _message = _item.itemData.itemName + " [" + _item.itemData.rating.ToString() + "]"; // Name [Rating]
                     // Set color related to current item health
-                    float HP = (float)_item.integrityCurrent / (float)_item.integrityMax;
+                    float HP = (float)_item.itemData.integrityCurrent / (float)_item.itemData.integrityMax;
                     if (HP >= 0.75) // Healthy
                     {
                         b = UIManager.inst.activeGreen; // Special item = special color
@@ -302,7 +302,7 @@ public class Part : MonoBehaviour
         {
             // If the player clicks on this item, we want to first try and put it in one of their / PARTS / slots.
             bool slotAvailable = false;
-            switch (_item.slot)
+            switch (_item.itemData.slot)
             {
                 // First we want to see if there is space to add this item
                 // - Check if the current amount of items the player holds in this sub-inventory is < the max,
@@ -344,8 +344,8 @@ public class Part : MonoBehaviour
 
             if (slotAvailable) // There is space, we can add it!
             {
-                Debug.Log(">> Adding " + this._item.itemName + " - " + this._item + " - " + this._item.type + " - to inventory.");
-                switch (_item.slot)
+                Debug.Log(">> Adding " + this._item.itemData.itemName + " - " + this._item + " - " + this._item.itemData.type + " - to inventory.");
+                switch (_item.itemData.slot)
                 {
                     case ItemSlot.Power:
                         InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>()._invPower);
@@ -353,7 +353,7 @@ public class Part : MonoBehaviour
                         break;
                     case ItemSlot.Propulsion:
                         InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>()._invPropulsion);
-                        PlayerData.inst.maxWeight += _item.propulsion[0].support;
+                        PlayerData.inst.maxWeight += _item.itemData.propulsion[0].support;
 
                         break;
                     case ItemSlot.Utilities:
@@ -374,7 +374,7 @@ public class Part : MonoBehaviour
                 }
 
                 InventoryControl.inst.UpdateInterfaceInventories();
-                UIManager.inst.CreateNewLogMessage("Aquired " + this._item.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+                UIManager.inst.CreateNewLogMessage("Aquired " + this._item.itemData.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
                 //PlayerData.inst.currentWeight += _item.mass;
 
                 // Play a sound
@@ -400,7 +400,7 @@ public class Part : MonoBehaviour
                     InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>()._inventory);
                     InventoryControl.inst.UpdateInterfaceInventories();
                     PlayerData.inst.currentInvCount += 1;
-                    UIManager.inst.CreateNewLogMessage("Aquired " + this._item.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+                    UIManager.inst.CreateNewLogMessage("Aquired " + this._item.itemData.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
                     // Play a sound
                     PlayEquipSound();
                     // Play an animation
@@ -560,7 +560,11 @@ public class Part : MonoBehaviour
     public void PlayEquipSound()
     {
         // First check if this item is light or not
-        if (_item.itemName.Contains("Lgt.") || _item.itemName.Contains("Lgt") || _item.itemName.Contains("LGT") || _item.itemName.Contains("LGT.") || _item.itemName.Contains("Light"))
+        if (_item.itemData.itemName.Contains("Lgt.") 
+            || _item.itemData.itemName.Contains("Lgt") 
+            || _item.itemData.itemName.Contains("LGT") 
+            || _item.itemData.itemName.Contains("LGT.") 
+            || _item.itemData.itemName.Contains("Light"))
         {
             AudioManager.inst.PlayMiscSpecific(AudioManager.inst.equipItem_Clips[Random.Range(4,6)]);
         }

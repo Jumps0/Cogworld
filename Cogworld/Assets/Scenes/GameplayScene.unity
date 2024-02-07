@@ -29665,7 +29665,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bee1f16c2bf803e48b1e6c047d621f5d, type: 2}
   - {fileID: 11400000, guid: 3f1bf64e23c81b149a75c74890c74f84, type: 2}
   - {fileID: 11400000, guid: beabde3ee87ee8446a3c059dfcfec658, type: 2}
-  showNewLevelAnimation: 1
+  showNewLevelAnimation: 0
   useAdvMoveDisNumbers: 1
   debugUI_parent: {fileID: 774804271}
   dField: {fileID: 1318891503}

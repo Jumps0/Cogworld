@@ -53,7 +53,9 @@ public class Item
     public string Name;
     public int Id = -1;
     public bool stackable = false;
+    public int amount = 1;
     public ItemObject itemData;
+    // This section WILL need to be expanded later (probably BotObject too)
 
     public Item()
     {
