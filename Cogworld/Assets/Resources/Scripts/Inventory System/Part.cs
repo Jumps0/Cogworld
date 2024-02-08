@@ -14,6 +14,8 @@ public class Part : MonoBehaviour
     public TileBlock _tile; // Assigned on Creation
     public Vector2Int location; // Assigned on Creation
     public Item _item; // Assigned on Creation
+    [Tooltip("Is this item native to 0b10? If false, scavengers will move to pick up and recycle this item.")]
+    public bool native = false;
 
     public SpriteRenderer _sprite;
 

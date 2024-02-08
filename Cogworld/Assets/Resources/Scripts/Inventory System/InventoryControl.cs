@@ -245,9 +245,9 @@ public class InventoryControl : MonoBehaviour
     /// </summary>
     /// <param name="id">The id of the item to place.</param>
     /// <param name="location">Where in the world to place the item.</param>
-    /// <param name="randomAmountLow">If this item has an amount, this will be the LOW end of what it could be.</param>
-    /// <param name="randomAmountHigh">If this item has an amount, this will be the HIGH end of what it could be.</param>
-    public void CreateItemInWorld(int id, Vector2Int location, int specificAmount = 1)
+    /// <param name="native">Is this item 'native' to 0b10? If false, scavengers will pick this up and recycle it.</param>
+    /// <param name="specificAmount">A specific amount of this item to spawn, only really applies to matter</param>
+    public void CreateItemInWorld(int id, Vector2Int location, bool native = false, int specificAmount = 1)
     {
         var spawnedItem = Instantiate(_itemGroundPrefab, new Vector3(location.x * GridManager.inst.globalScale, location.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
         spawnedItem.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
@@ -468,7 +468,7 @@ public class InventoryControl : MonoBehaviour
         }
         else // We need to search neighboring tiles
         {
-            List<GameObject> neighbors = PlayerData.inst.GetComponent<PlayerGridMovement>().FindNeighbors(dropTile.locX, dropTile.locY);
+            List<GameObject> neighbors = HF.FindNeighbors(dropTile.locX, dropTile.locY);
             bool success = false;
 
             foreach (var T in neighbors)
@@ -493,7 +493,7 @@ public class InventoryControl : MonoBehaviour
                 List<GameObject> neighbors_new = new List<GameObject>();
                 foreach (var T in neighbors.ToList())
                 {
-                    neighbors_new = PlayerData.inst.GetComponent<PlayerGridMovement>().FindNeighbors(T.GetComponent<TileBlock>().locX, T.GetComponent<TileBlock>().locY);
+                    neighbors_new = HF.FindNeighbors(T.GetComponent<TileBlock>().locX, T.GetComponent<TileBlock>().locY);
                 }
 
                 foreach (var T in neighbors_new)

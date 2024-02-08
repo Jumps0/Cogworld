@@ -622,7 +622,7 @@ public class MapManager : MonoBehaviour
 
                     Vector2Int loc = spots[Random.Range(0, spots.Count - 1)].position;
 
-                    InventoryControl.inst.CreateItemInWorld(validitems[Random.Range(0, validitems.Count - 1)], loc);
+                    InventoryControl.inst.CreateItemInWorld(validitems[Random.Range(0, validitems.Count - 1)], loc, true);
                     itemsPlaced++;
                 }
 
@@ -680,12 +680,12 @@ public class MapManager : MonoBehaviour
 
             if (itemId == 17) // This is *MATTER*, we need a random amount.
             {
-                InventoryControl.inst.CreateItemInWorld(itemId, location, randomValues[i]);
+                InventoryControl.inst.CreateItemInWorld(itemId, location, true, randomValues[i]);
                 i++;
             }
             else // Just normal item.
             {
-                InventoryControl.inst.CreateItemInWorld(itemId, location);
+                InventoryControl.inst.CreateItemInWorld(itemId, location, true);
             }
 
             usedLocations.Add(location);
