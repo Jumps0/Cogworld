@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.Windows;
 using Random = UnityEngine.Random;
+using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
 /// <summary>
@@ -3101,5 +3102,53 @@ public static class HF
         char character = (char)('A' + index);
 
         return character.ToString();
+    }
+
+    public static bool LOSOnTarget(Actor source, Actor target)
+    {
+        bool LOS = true;
+
+        // - If line of sight being blocked - // (THIS ALSO GETS USED LATER)
+        Vector2 targetDirection = target.transform.position - source.transform.position;
+        float distance = Vector2.Distance(Action.V3_to_V2I(source.transform.position), Action.V3_to_V2I(target.transform.position));
+
+        RaycastHit2D[] hits = Physics2D.RaycastAll(new Vector2(source.transform.position.x, source.transform.position.y), targetDirection.normalized, distance);
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            RaycastHit2D hit = hits[i];
+            TileBlock tile = hit.collider.GetComponent<TileBlock>();
+            DoorLogic door = hit.collider.GetComponent<DoorLogic>();
+            MachinePart machine = hit.collider.GetComponent<MachinePart>();
+
+            // (TODO: Expand this later when needed)
+            // If we encounter:
+            // - A wall
+            // - A closed door
+            // - A machine
+
+            // Then there is no LOS
+
+            if (tile != null && tile.tileInfo.type == TileType.Wall)
+            {
+                return false;
+            }
+
+            if (door != null && tile.specialNoBlockVis == true)
+            {
+                LOS = true;
+            }
+            else if (door != null && tile.specialNoBlockVis == false)
+            {
+                return false;
+            }
+
+            if (machine != null)
+            {
+                return false;
+            }
+        }
+
+        return LOS;
     }
 }

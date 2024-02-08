@@ -185,17 +185,3 @@ public enum FriendlyBotState
     Misc
 }
 */
-[System.Serializable]
-public class DialogueC
-{
-    [Tooltip("Starts at 1, sorry.")]
-    public int id;
-    [TextArea(3,5)]
-    public string speech;
-
-    public DialogueC(int id, string speech)
-    {
-        this.id = id;
-        this.speech = speech;
-    }
-}

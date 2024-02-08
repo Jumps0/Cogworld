@@ -100,9 +100,6 @@ GameObject:
   - component: {fileID: 8069790356811527637}
   - component: {fileID: 78723924119389563}
   - component: {fileID: -3755893158877589520}
-  - component: {fileID: 2178058123372315140}
-  - component: {fileID: -7194381563064273491}
-  - component: {fileID: -6763454461826967281}
   m_Layer: 3
   m_Name: ~ Player Core ~
   m_TagString: Player
@@ -205,6 +202,9 @@ MonoBehaviour:
   customCodes: []
   allies: []
   followers: []
+  hasRIF: 0
+  hasImprinted: 0
+  hasFARCOM: 0
   robotsKilled: 0
   kills_0b10: 0
   kills_derelict: 0
@@ -433,64 +433,3 @@ MonoBehaviour:
   showSensorIndicator: 0
   flashAlertSprite: {fileID: 0}
   confirmCollision: 0
---- !u!114 &2178058123372315140
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1489840735499938570}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95a3b040f6a7ee64780bd44737a1c55c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHp: 10
-  hp: 10
-  defense: 10
-  power: 10
-  target: {fileID: 0}
---- !u!114 &-7194381563064273491
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1489840735499938570}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfc0eec1d9c12384a8b9fe7548c909e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attractive: 1
-  repulsive: 0
-  movementActive: 0
-  Aconstant: 100
-  Rconstant: 0
-  ent: {fileID: -6763454461826967281}
-  hasGoal: 0
-  mustFlee: 0
-  goal: {x: 0, y: 0, z: 0}
-  fleeSource: {fileID: 0}
---- !u!114 &-6763454461826967281
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1489840735499938570}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1a992b5c62ea694fbacf15904876831, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  position: {x: 0, y: 0, z: 0}
-  velocity: {x: 0, y: 0, z: 0}
-  speed: 0
-  desiredSpeed: 0
-  heading: 0
-  desiredHeading: 0
-  acceleration: 0
-  turnRate: 0
-  maxSpeed: 0
-  minSpeed: 0
