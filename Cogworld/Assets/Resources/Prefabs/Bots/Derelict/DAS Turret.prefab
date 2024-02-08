@@ -181,13 +181,8 @@ GameObject:
   - component: {fileID: 6264526523162837533}
   - component: {fileID: 78723924119389563}
   - component: {fileID: -7551770013587196452}
-  - component: {fileID: 9015702668241111867}
-  - component: {fileID: -2470096789103883103}
-  - component: {fileID: 9049801910981531949}
+  - component: {fileID: -6662281646775278896}
   - component: {fileID: 2232679177993127119}
-  - component: {fileID: -4696181256998066827}
-  - component: {fileID: -3197126557459310465}
-  - component: {fileID: -4209504476956600370}
   m_Layer: 3
   m_Name: DAS Turret
   m_TagString: Player
@@ -377,11 +372,15 @@ MonoBehaviour:
   currentMatter: 0
   siegeMode: 0
   inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
   noMovementFor: 0
+  momentum: 0
   isAlive: 1
   fieldOfViewRange: 8
   fieldOfView: []
-  AI: {fileID: 9049801910981531949}
+  AI: {fileID: 0}
   botInfo: {fileID: 11400000, guid: 0633304d21a363148a924c58fb541549, type: 2}
   Initiative: 0
   _sprite: {fileID: 1489840735416740139}
@@ -397,7 +396,7 @@ MonoBehaviour:
   showSensorIndicator: 0
   flashAlertSprite: {fileID: 9212121307027914503}
   confirmCollision: 0
---- !u!114 &9015702668241111867
+--- !u!114 &-6662281646775278896
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -406,9 +405,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1489840735499938570}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba9546dac3b59e54db3f8d60116ffa0a, type: 3}
+  m_Script: {fileID: 11500000, guid: 88cb567f3ec23ef498af60463e6e23fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  squad: []
+  squadLeader: {fileID: 0}
+  state: 0
+  isTurn: 0
+  memory: 0
+  pointsOfInterest: []
   hasDialogue: 0
   hasBufferDialogue: 0
   talking: 0
@@ -417,44 +422,6 @@ MonoBehaviour:
   moveToNextDialogue: 0
   uniqueDialogueSound: {fileID: 0}
   uniqueName: 
-  botInfo: {fileID: 0}
-  _type: 4
-  squadLeader: {fileID: 0}
-  isTurn: 0
-  memory: 0
---- !u!114 &-2470096789103883103
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1489840735499938570}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95a3b040f6a7ee64780bd44737a1c55c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHp: 10
-  hp: 10
-  defense: 10
-  power: 10
-  target: {fileID: 0}
---- !u!114 &9049801910981531949
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1489840735499938570}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a0815f1874bb024b914e3452c88ce3e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  length: 0
-  activeCommand: 0
-  AI_m: {fileID: -2470096789103883103}
-  isFighting: 0
 --- !u!114 &2232679177993127119
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -479,65 +446,6 @@ MonoBehaviour:
   maxSize_weapon: 0
   _inventory: {fileID: 0}
   maxSize_inv: 0
---- !u!114 &-4696181256998066827
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1489840735499938570}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfc0eec1d9c12384a8b9fe7548c909e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attractive: 0
-  repulsive: 1
-  movementActive: 0
-  Aconstant: 0
-  Rconstant: 75
-  ent: {fileID: -3197126557459310465}
-  hasGoal: 0
-  mustFlee: 0
-  goal: {x: 0, y: 0, z: 0}
-  fleeSource: {fileID: 0}
---- !u!114 &-3197126557459310465
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1489840735499938570}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1a992b5c62ea694fbacf15904876831, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  position: {x: 0, y: 0, z: 0}
-  velocity: {x: 0, y: 0, z: 0}
-  speed: 0
-  desiredSpeed: 0
-  heading: 0
-  desiredHeading: 0
-  acceleration: 0.4
-  turnRate: 160
-  maxSpeed: 1.5
-  minSpeed: 0
---- !u!114 &-4209504476956600370
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1489840735499938570}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41a624e58f330ee46800e4225a1e4b78, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  desiredPostion: {x: 0, y: 0, z: 0}
-  entity: {fileID: -3197126557459310465}
-  eulerRotation: {x: 0, y: 0, z: 0}
 --- !u!1 &9212121307027914503
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static Unity.VisualScripting.Member;
+using static UnityEngine.GraphicsBuffer;
 
 public class Actor : Entity
 {
@@ -180,42 +182,21 @@ public class Actor : Entity
 
     public void StartTurn()
     {
-        
-        if (this.GetComponent<AI_Passive>())
+        if(this.GetComponent<BotAI>() != null)
         {
-            this.GetComponent<AI_Passive>().isTurn = true;
-            this.GetComponent<AI_Passive>().TakeTurn();
-        }
-        else if (this.GetComponent<AI_Hostile>())
-        {
-            this.GetComponent<AI_Hostile>().isTurn = true;
-            this.GetComponent<AI_Hostile>().TakeTurn();
-        }
-        else if (this.GetComponent<AI_Friendly>())
-        {
-            this.GetComponent<AI_Friendly>().isTurn = true;
-            this.GetComponent<AI_Friendly>().TakeTurn();
+            this.GetComponent<BotAI>().isTurn = true;
+            this.GetComponent<BotAI>().TakeTurn();
         }
     }
 
     public void EndTurn()
     {
-        noMovementFor += 1;
-        if (this.GetComponent<AI_Passive>())
-        {
-            this.GetComponent<AI_Passive>().isTurn = false;
-        }
-        else if (this.GetComponent<AI_Hostile>())
-        {
-            this.GetComponent<AI_Hostile>().isTurn = false;
-        }
-        else if (this.GetComponent<AI_Friendly>())
-        {
-            this.GetComponent<AI_Friendly>().isTurn = false;
-        }
+        noMovementFor += 1; // should this be here?
+        if (this.GetComponent<BotAI>() != null)
+            this.GetComponent<BotAI>().isTurn = false;
         //TurnManager.inst.EndTurn(this);
         //MapManager.inst.NearTileVisUpdate(this.fieldOfViewRange, HF.V3_to_V2I(this.transform.position)); // experimental
-        
+
     }
 
     #region Navigation
@@ -281,7 +262,7 @@ public class Actor : Entity
     {
         // !! Assumes that this bot is a hostile one !!
 
-        NewGoal(Action.V3_to_V2I(this.GetComponent<AI_Hostile>().squadLeader.transform.position));
+        NewGoal(Action.V3_to_V2I(this.GetComponent<BotAI>().squadLeader.transform.position));
         // Then move based on inputs from PF
         Vector2Int moveToLocation = Action.NormalizeMovement(this.gameObject.transform, this.GetComponent<OrientedPhysics>().desiredPostion);
         Vector2Int realPos = Action.V3_to_V2I(this.GetComponent<OrientedPhysics>().desiredPostion);
@@ -486,15 +467,15 @@ public class Actor : Entity
 
     public void HealthColorCheck(Color originColor)
     {
-        // We are going to override this system for a few conditions
+        // We are going to override this system for a few conditions (in cases where the bot is hostile)
 
         // >> Unpowered
-        if (!this.GetComponent<AI_Friendly>() && state_UNPOWERED && originColor != Color.black)
+        if (HF.DetermineRelation(this, PlayerData.inst.GetComponent<Actor>()) == BotRelation.Hostile && state_UNPOWERED && originColor != Color.black)
         {
             // Faded out red
             _sprite.color = new Color(Color.red.r, Color.red.g, Color.red.b, 0.7f);
         } // >> Disarmed
-        else if (!this.GetComponent<AI_Friendly>() && state_DISARMED && originColor != Color.black)
+        else if (HF.DetermineRelation(this, PlayerData.inst.GetComponent<Actor>()) == BotRelation.Hostile && state_DISARMED && originColor != Color.black)
         {
             // Faded out green
             _sprite.color = new Color(Color.green.r, Color.green.g, Color.green.b, 0.7f);
@@ -504,13 +485,13 @@ public class Actor : Entity
             // Faded out blue
             _sprite.color = new Color(Color.blue.r, Color.blue.g, Color.blue.b, 0.7f);
         }  // Dormant
-        else if (!this.GetComponent<AI_Friendly>() && state_DORMANT && originColor != Color.black)
+        else if (HF.DetermineRelation(this, PlayerData.inst.GetComponent<Actor>()) == BotRelation.Hostile && state_DORMANT && originColor != Color.black)
         {
             // Faded out orange
             Color darkOrange = new Color(0.67f, 0.34f, 0.023f, 0.7f);
             _sprite.color = darkOrange;
         } // Disabled
-        else if (!this.GetComponent<AI_Friendly>() && state_DISABLED && originColor != Color.black)
+        else if (HF.DetermineRelation(this, PlayerData.inst.GetComponent<Actor>()) == BotRelation.Hostile && state_DISABLED && originColor != Color.black)
         {
             // Faded out normal color
             _sprite.color = new Color(baseColor.r, baseColor.g, baseColor.b, 0.7f);
@@ -540,8 +521,8 @@ public class Actor : Entity
     {
         // Make a log message
         string botName = this.botInfo.name;
-        if (this.GetComponent<AI_Friendly>() && this.GetComponent<AI_Friendly>().uniqueName != "")
-            botName = this.GetComponent<AI_Friendly>().uniqueName;
+        if (this.GetComponent<BotAI>().uniqueName != "")
+            botName = this.GetComponent<BotAI>().uniqueName;
         UIManager.inst.CreateNewLogMessage(botName + " destroyed.", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
 
         // Play a death sound
@@ -627,7 +608,7 @@ public class Actor : Entity
         else
         {
             // If this is a hostile bot and is seeing the player for the first time, do the alert indicator
-            if(GetComponent<AI_Hostile>() && fieldOfView.Contains(new Vector3Int((int)PlayerData.inst.transform.position.x, (int)PlayerData.inst.transform.position.y, 0)))
+            if(HF.DetermineRelation(this, PlayerData.inst.GetComponent<Actor>()) == BotRelation.Hostile && fieldOfView.Contains(new Vector3Int((int)PlayerData.inst.transform.position.x, (int)PlayerData.inst.transform.position.y, 0)))
             {
                 if (!firstTimeSeen)
                 {
@@ -639,16 +620,19 @@ public class Actor : Entity
                 }
                 
                 //PlayerData.inst.GetComponent<PotentialField>().enabled = true; // Enable the player's PF
-                if(this.GetComponent<AI_Hostile>().squadLeader)
-                    this.GetComponent<AI_Hostile>().squadLeader.GetComponent<GroupLeader>().playerSpotted = true;
+                if(this.GetComponent<BotAI>().squadLeader)
+                    this.GetComponent<BotAI>().squadLeader.GetComponent<GroupLeader>().playerSpotted = true;
             }
             // If this is a friendly bot and is seeing the player for the first AND, has; dialogue, hasn't talked yet, isn't talking, THEN perform that dialogue.
-            if (GetComponent<AI_Friendly>() && GetComponent<AI_Friendly>().hasDialogue && !GetComponent<AI_Friendly>().talking && !GetComponent<AI_Friendly>().finishedTalking &&
+            if ((HF.DetermineRelation(this, PlayerData.inst.GetComponent<Actor>()) == BotRelation.Neutral || HF.DetermineRelation(this, PlayerData.inst.GetComponent<Actor>()) == BotRelation.Friendly) 
+                && GetComponent<BotAI>().hasDialogue 
+                && !GetComponent<BotAI>().talking 
+                && !GetComponent<BotAI>().finishedTalking &&
                 fieldOfView.Contains(new Vector3Int((int)PlayerData.inst.transform.position.x, (int)PlayerData.inst.transform.position.y, 0)))
             {
                 if (!firstTimeSeen)
                 {
-                    StartCoroutine(GetComponent<AI_Friendly>().PerformScriptedDialogue());
+                    StartCoroutine(GetComponent<BotAI>().PerformScriptedDialogue());
                     firstTimeSeen = true;
                 }
             }

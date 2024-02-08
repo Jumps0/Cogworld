@@ -5,6 +5,7 @@ using UnityEngine;
 
 /// <summary>
 /// Belongs to derelicts & npcs.
+/// LEGACY CODE. SEE *BotAI.cs*
 /// </summary>
 public class AI_Friendly : MonoBehaviour
 {
@@ -113,8 +114,8 @@ public class AI_Friendly : MonoBehaviour
         talking = true;
 
         string botName = this.botInfo.name;
-        if (this.GetComponent<AI_Friendly>() && this.GetComponent<AI_Friendly>().uniqueName != "")
-            botName = this.GetComponent<AI_Friendly>().uniqueName;
+        if (this.GetComponent<BotAI>().uniqueName != "")
+            botName = this.GetComponent<BotAI>().uniqueName;
         UIManager.inst.Dialogue_OpenBox(botName, this.GetComponent<Actor>());
 
         // Wait for the box to open (and do its little animation)

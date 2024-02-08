@@ -6,6 +6,7 @@ using static UnityEngine.GraphicsBuffer;
 
 /// <summary>
 /// Belongs to bots like: Haulers, Serfs, Engineers, Drillers, Scavengers, etc.
+/// LEGACY CODE. SEE *BotAI.cs*
 /// </summary>
 public class AI_Passive : MonoBehaviour
 {

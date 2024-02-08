@@ -102,12 +102,12 @@ public class GroupLeader : MonoBehaviour
     public void AddBotToPatrol(Actor bot)
     {
         members.Add(bot);
-        bot.GetComponent<AI_Hostile>().squadLeader = this.GetComponent<Actor>();
+        bot.GetComponent<BotAI>().squadLeader = this.GetComponent<Actor>();
     }
 
     public void RemoveMemberFromPatrol(Actor member)
     {
-        member.GetComponent<AI_Hostile>().squadLeader = null;
+        member.GetComponent<BotAI>().squadLeader = null;
         members.Add(member);
     }
 

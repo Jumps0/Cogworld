@@ -13,8 +13,10 @@ public class BotAI : MonoBehaviour
     private Allegance allegances;
 
     [Header("Squad")]
-    [Tooltip("List of all squad members, squad leader has bool = true")]
-    public List<(bool, Actor)> squad = new List<(bool, Actor)>();
+    [Tooltip("List of all squad members")]
+    public List<Actor> squad = new List<Actor>();
+    [Tooltip("The squad leader")]
+    public Actor squadLeader;
 
     [Header("Relevant Actions")]
     public BotAIState state = BotAIState.Working;
@@ -182,8 +184,8 @@ public class BotAI : MonoBehaviour
         talking = true;
 
         string botName = this.botInfo.name;
-        if (this.GetComponent<AI_Friendly>() && this.GetComponent<AI_Friendly>().uniqueName != "")
-            botName = this.GetComponent<AI_Friendly>().uniqueName;
+        if (uniqueName != "")
+            botName = uniqueName;
         UIManager.inst.Dialogue_OpenBox(botName, this.GetComponent<Actor>());
 
         // Wait for the box to open (and do its little animation)

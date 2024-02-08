@@ -551,10 +551,10 @@ public static class Action
             // Don't move
         }
 
-        // Passive bots will flee temporarily
-        if (target.GetComponent<AI_Passive>())
+        // Neutral bots will flee temporarily (maybe change this later?)
+        if (HF.DetermineRelation(target, source) == BotRelation.Neutral)
         {
-            target.GetComponent<AI_Passive>().FleeFromSource(source);
+            target.GetComponent<BotAI>().FleeFromSource(source);
         }
 
         target.confirmCollision = false; // Unset the flag
@@ -642,6 +642,7 @@ public static class Action
         return weapon;
     }
 
+    #region Has Propulsion Type
     public static bool HasTreads(Actor actor)
     {
         if (actor.botInfo) // Bot
@@ -816,6 +817,7 @@ public static class Action
 
         return false;
     }
+    #endregion
 
     // To hit bonus from utilities, first return is ranged bonus, second is melee
     public static (float, float) HasToHitBonus(Actor actor)
@@ -1669,6 +1671,7 @@ public static class Action
 
             // -- Movement Speed -- //
             int speed = actor.speed;
+            /*
             if (speed <= 25) // FASTx3
             {
                 evasionBonus3 = (int)(speed / 2);
@@ -1680,6 +1683,10 @@ public static class Action
             else if (speed > 50 && speed <= 75) // FAST
             {
                 evasionBonus3 = (int)(speed / 15);
+            }*/
+            if (speed <= 75) // Use a special formula (bonus goes from 0 to 20)
+            {
+                evasionBonus3 = (int)(1 + ((75f - speed) / 3.75f));
             }
             else // Not fast enough so no bonus
             {
@@ -1807,8 +1814,8 @@ public static class Action
             evasionBonus2 = -heatCalc;
 
             // -- Movement Speed -- //
-            // This is almost certainly wrong, here is a formula that's also probably wrong: Bonus = 20 - (Main Value / 10) + floor(Main Value / 20)
             int speed = PlayerData.inst.moveSpeed1;
+            /*
             if (speed <= 25) // FASTx3
             {
                 evasionBonus3 = (int)(speed / 2);
@@ -1820,6 +1827,10 @@ public static class Action
             else if (speed > 50 && speed <= 75) // FAST
             {
                 evasionBonus3 = (int)(speed / 15);
+            }*/
+            if(speed <= 75) // Use a special formula (bonus goes from 0 to 20)
+            {
+                evasionBonus3 = (int)(1 + ((75f - speed) / 3.75f));
             }
             else // Not fast enough so no bonus
             {

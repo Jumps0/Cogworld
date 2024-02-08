@@ -68,14 +68,14 @@ public class EventTile : MonoBehaviour
         if(dialogueTarget != null)
         {
             // Set flags
-            dialogueTarget.GetComponent<AI_Friendly>().hasDialogue = true;
-            dialogueTarget.GetComponent<AI_Friendly>().finishedTalking = false;
+            dialogueTarget.GetComponent<BotAI>().hasDialogue = true;
+            dialogueTarget.GetComponent<BotAI>().finishedTalking = false;
 
             // Add lines of dialogue to actor
             int i = 1;
             foreach (string line in dialogue)
             {
-                dialogueTarget.GetComponent<AI_Friendly>().dialogue.Add(new DialogueC(i, line));
+                dialogueTarget.GetComponent<BotAI>().dialogue.Add(new DialogueC(i, line));
                 i++;
             }
         }

@@ -163,6 +163,16 @@ public class PlayerGridMovement : MonoBehaviour
             }
 
         }
+        else if (inDialogueSequence)
+        {
+            // Attempting to move will also skip dialogue (plus Space/Enter/Escape)
+            if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow)
+                || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D)
+                || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Escape))
+            {
+                UIManager.inst.Dialogue_MoveToNext();
+            }
+        }
     }
 
     /// <summary>

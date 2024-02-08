@@ -715,9 +715,7 @@ public class MapManager : MonoBehaviour
     public int yOff = 0;
 
     [SerializeField] private Transform mapParent;
-    [SerializeField] private Transform passiveBotParent;
-    [SerializeField] private Transform hostileBotParent;
-    [SerializeField] private Transform NPCBotParent;
+    [SerializeField] private Transform botParent;
     public void GenerateByGrid(Tile[,] grid)
     {
 
@@ -2426,24 +2424,11 @@ public class MapManager : MonoBehaviour
         spawnedBot.GetComponent<Actor>().maxHealth = spawnedBot.GetComponent<Actor>().botInfo.coreIntegrity;
         spawnedBot.GetComponent<Actor>().currentHealth = spawnedBot.GetComponent<Actor>().maxHealth;
 
-        if (bots[type].GetComponent<Actor>().botInfo.locations.relation == BotRelation.Hostile)
-        {
-            spawnedBot.transform.SetParent(passiveBotParent, true);
-            if(_reference)
-                CopyComponentData<AI_Hostile>(_reference, spawnedBot.gameObject);
-        }
-        else if (bots[type].GetComponent<Actor>().botInfo.locations.relation == BotRelation.Neutral)
-        {
-            spawnedBot.transform.SetParent(hostileBotParent, true);
-            if (_reference)
-                CopyComponentData<AI_Passive>(_reference, spawnedBot.gameObject);
-        }
-        else
-        {
-            spawnedBot.transform.SetParent(NPCBotParent, true);
-            if (_reference)
-                CopyComponentData<AI_Friendly>(_reference, spawnedBot.gameObject);
-        }
+        
+        spawnedBot.transform.SetParent(botParent, true);
+        if(_reference)
+            CopyComponentData<BotAI>(_reference, spawnedBot.gameObject);
+        
 
         if(_reference)
             _reference.GetComponent<Actor>().TransferStates(spawnedBot.GetComponent<Actor>()); // Transfer any states
@@ -2466,15 +2451,7 @@ public class MapManager : MonoBehaviour
         // Make it a squad leader
         spawnedBot.AddComponent<GroupLeader>();
 
-        if (type <= 4)
-        {
-            spawnedBot.transform.SetParent(passiveBotParent, true);
-        }
-        else
-        {
-            spawnedBot.transform.SetParent(hostileBotParent, true);
-        }
-        // Add more later
+        spawnedBot.transform.SetParent(botParent, true);
 
         return spawnedBot;
     }
@@ -2495,21 +2472,9 @@ public class MapManager : MonoBehaviour
         spawnedBot.GetComponent<Actor>().maxHealth = spawnedBot.GetComponent<Actor>().botInfo.coreIntegrity;
         spawnedBot.GetComponent<Actor>().currentHealth = spawnedBot.GetComponent<Actor>().maxHealth;
 
-        if (bots[_reference.GetComponent<Actor>().botInfo.Id].GetComponent<Actor>().botInfo.locations.relation == BotRelation.Hostile) // Hostile
-        {
-            spawnedBot.transform.SetParent(hostileBotParent, true);
-            CopyComponentData<AI_Hostile>(_reference, spawnedBot.gameObject);
-        }
-        else if (bots[_reference.GetComponent<Actor>().botInfo.Id].GetComponent<Actor>().botInfo.locations.relation == BotRelation.Neutral) // Neutral
-        {
-            spawnedBot.transform.SetParent(passiveBotParent, true);
-            CopyComponentData<AI_Passive>(_reference, spawnedBot.gameObject);
-        }
-        else // Friendly
-        {
-            spawnedBot.transform.SetParent(NPCBotParent, true);
-            CopyComponentData<AI_Friendly>(_reference, spawnedBot.gameObject);
-        }
+        spawnedBot.transform.SetParent(botParent, true);
+        if (_reference)
+            CopyComponentData<BotAI>(_reference, spawnedBot.gameObject);
 
         _reference.GetComponent<Actor>().TransferStates(spawnedBot.GetComponent<Actor>()); // Transfer any states
 

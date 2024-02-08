@@ -25563,11 +25563,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 509992686}
   m_CullTransparentMesh: 1
---- !u!4 &516129097 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2490074899817927322, guid: 22c97fecabc426743bb3de9411274a46, type: 3}
-  m_PrefabInstance: {fileID: 671847211}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &519625144
 GameObject:
   m_ObjectHideFlags: 0
@@ -32400,6 +32395,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 677705806158052163, guid: 22c97fecabc426743bb3de9411274a46, type: 3}
   m_PrefabInstance: {fileID: 671847211}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &671847213 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3960505303447584637, guid: 22c97fecabc426743bb3de9411274a46, type: 3}
+  m_PrefabInstance: {fileID: 671847211}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &672663707
 GameObject:
   m_ObjectHideFlags: 0
@@ -38851,7 +38851,6 @@ MonoBehaviour:
   locationText: {fileID: 83582186}
   influenceGO: {fileID: 313837920}
   influence_text: {fileID: 541401339}
-  usingRIF: 0
   scanHeader_text: {fileID: 1519012102}
   scanButtonsParent: {fileID: 841918355}
   scanButtonText:
@@ -58076,9 +58075,7 @@ MonoBehaviour:
   xOff: 0
   yOff: 0
   mapParent: {fileID: 901294680}
-  passiveBotParent: {fileID: 1664736282}
-  hostileBotParent: {fileID: 1958524990}
-  NPCBotParent: {fileID: 516129097}
+  botParent: {fileID: 671847213}
   mapGenSpecifics:
   - {fileID: 11400000, guid: eb379394ad6a9054a860b16d444ed8cf, type: 2}
   - {fileID: 11400000, guid: 8c22a523bd4ae484b9d390b46f966e17, type: 2}
@@ -85506,6 +85503,8 @@ MonoBehaviour:
   enemyCount: 0
   botCount: 0
   turnTimeDelay: 0.1
+  alertLevel: 0
+  alertValue: 0
   startupCanvas: {fileID: 618440340}
   lngPanel: {fileID: 1926439973}
   lngMode_text: {fileID: 219404132}
@@ -86936,11 +86935,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1663945467}
   m_CullTransparentMesh: 1
---- !u!4 &1664736282 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7463362654875491218, guid: 22c97fecabc426743bb3de9411274a46, type: 3}
-  m_PrefabInstance: {fileID: 671847211}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1668279803
 GameObject:
   m_ObjectHideFlags: 0
@@ -97892,11 +97886,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Delegates: []
---- !u!4 &1958524990 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4236720329612550129, guid: 22c97fecabc426743bb3de9411274a46, type: 3}
-  m_PrefabInstance: {fileID: 671847211}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1958545159
 GameObject:
   m_ObjectHideFlags: 0

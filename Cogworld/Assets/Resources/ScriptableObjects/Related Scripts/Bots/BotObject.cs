@@ -202,9 +202,9 @@ public class BotLocations
 [System.Serializable]
 public enum BotRelation
 {
-    Hostile,
-    Neutral,
-    Friendly,
+    Hostile, // Will attack on sight
+    Neutral, // Will co-exist
+    Friendly,// Will share information and protect
     Default
 }
 

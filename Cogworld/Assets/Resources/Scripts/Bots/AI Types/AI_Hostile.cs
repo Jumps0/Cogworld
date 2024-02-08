@@ -7,6 +7,7 @@ using static UnityEngine.GraphicsBuffer;
 
 /// <summary>
 /// Belongs to most combat 0b10 bots
+/// LEGACY CODE. NO LONGER USED. GOTO *BotAI.cs*
 /// </summary>
 public class AI_Hostile : MonoBehaviour
 {
@@ -98,8 +99,8 @@ public class AI_Hostile : MonoBehaviour
                     else
                     {
                         //PlayerData.inst.GetComponent<PotentialField>().enabled = false; // Disable the player's PF
-                        if (this.GetComponent<AI_Hostile>().squadLeader)
-                            this.GetComponent<AI_Hostile>().squadLeader.GetComponent<GroupLeader>().playerSpotted = false;
+                        if (this.GetComponent<BotAI>().squadLeader)
+                            this.GetComponent<BotAI>().squadLeader.GetComponent<GroupLeader>().playerSpotted = false;
 
                         memory = 0;
                         _state = HostileBotState.Working;
