@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
+using static UnityEngine.GraphicsBuffer;
 
 [RequireComponent(typeof(Actor))]
 /// <summary>
@@ -8,9 +10,6 @@ using UnityEngine;
 /// </summary>
 public class BotAI : MonoBehaviour
 {
-    [Header("Info")]
-    private BotObject botInfo;
-    private Allegance allegances;
 
     [Header("Squad")]
     [Tooltip("List of all squad members")]
@@ -28,8 +27,7 @@ public class BotAI : MonoBehaviour
 
     private void Start()
     {
-        this.botInfo = GetComponent<Actor>().botInfo;
-        this.allegances = GetComponent<Actor>().allegances;
+
     }
 
     // Update is called once per frame
@@ -71,10 +69,84 @@ public class BotAI : MonoBehaviour
 
         yield return null;
 
+
+
         Action.SkipAction(this.GetComponent<Actor>()); // Fallback condition
     }
 
     #endregion
+
+    /// <summary>
+    /// Will make the bot "loiter" around a specific area. Randomly wandering around but staying near the center.
+    /// </summary>
+    /// <param name="center">The point to stay near.</param>
+    private void Loiter(Vector2Int center)
+    {
+        float maxDistance = 4;
+
+        Vector2Int myPos = HF.V3_to_V2I(this.transform.position);
+        // Get neighbors
+        List<GameObject> neighbors = HF.FindNeighbors(myPos.x, myPos.y);
+
+        float currentDistance = Vector2.Distance(myPos, center);
+
+        if(currentDistance > maxDistance) // Too far, try to get closer
+        {
+            // Sort the neighbors based on distance
+            neighbors.Sort((a, b) => Vector3.Distance(this.transform.position, a.transform.position).CompareTo(Vector3.Distance(this.transform.position, b.transform.position)));
+
+            // We are going to try the 3 closest tiles
+            for (int i = 0; i < 3; i++)
+            {
+                // Try moving here
+                if (this.GetComponent<Actor>().IsUnoccupiedTile(neighbors[i].GetComponent<TileBlock>()))
+                {
+                    Vector2 direction = HF.V3_to_V2I(neighbors[i].transform.position) - myPos;
+                    Action.MovementAction(this.GetComponent<Actor>(), direction);
+                    return;
+                }
+            }
+
+            // Can't move, so don't
+            Action.SkipAction(this.GetComponent<Actor>());
+            return;
+        }
+        else // If not, continue
+        {
+            float random = Random.Range(0f, 1f);
+
+            if(random > 0.5f) // Don't move
+            {
+                Action.SkipAction(this.GetComponent<Actor>());
+                return;
+            }
+            else // Move to a random space (if possible)
+            {
+                List<GameObject> validMoveLocations = new List<GameObject>();
+
+                foreach (var T in neighbors)
+                {
+                    if (this.GetComponent<Actor>().IsUnoccupiedTile(T.GetComponent<TileBlock>()))
+                    {
+                        validMoveLocations.Add(T);
+                    }
+                }
+
+                if(validMoveLocations.Count > 0)
+                {
+                    // May need to swap these
+                    Vector2 direction = HF.V3_to_V2I(validMoveLocations[Random.Range(0, validMoveLocations.Count - 1)].transform.position) - myPos;
+                    Action.MovementAction(this.GetComponent<Actor>(), direction);
+                    return;
+                }
+                else // We're stuck, don't move
+                {
+                    Action.SkipAction(this.GetComponent<Actor>());
+                    return;
+                }
+            }
+        }
+    }
 
     #region Fleeing
 
@@ -106,7 +178,7 @@ public class BotAI : MonoBehaviour
             if (Vector3.Distance(this.transform.position, fleeSource.transform.position) <= viewRange) // Flee!
             {
                 // We need to move away from the source
-                List<GameObject> neighbors = this.GetComponent<Actor>().FindNeighbors((int)this.transform.position.x, (int)this.transform.position.y);
+                List<GameObject> neighbors = HF.FindNeighbors((int)this.transform.position.x, (int)this.transform.position.y);
 
                 List<GameObject> validMoveLocations = new List<GameObject>();
 
@@ -183,7 +255,7 @@ public class BotAI : MonoBehaviour
     {
         talking = true;
 
-        string botName = this.botInfo.name;
+        string botName = this.GetComponent<Actor>().botInfo.name;
         if (uniqueName != "")
             botName = uniqueName;
         UIManager.inst.Dialogue_OpenBox(botName, this.GetComponent<Actor>());

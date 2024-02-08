@@ -507,7 +507,7 @@ public static class Action
     public static void ShuntAction(Actor source, Actor target)
     {
         // We need to move away from the source
-        List<GameObject> neighbors = target.FindNeighbors((int)target.transform.position.x, (int)target.transform.position.y);
+        List<GameObject> neighbors = HF.FindNeighbors((int)target.transform.position.x, (int)target.transform.position.y);
 
         List<GameObject> validMoveLocations = new List<GameObject>();
 

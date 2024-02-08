@@ -238,7 +238,7 @@ public class AI_Passive : MonoBehaviour
             if (Vector3.Distance(this.transform.position, fleeSource.transform.position) <= viewRange) // Flee!
             {
                 // We need to move away from the source
-                List<GameObject> neighbors = this.GetComponent<Actor>().FindNeighbors((int)this.transform.position.x, (int)this.transform.position.y);
+                List<GameObject> neighbors = HF.FindNeighbors((int)this.transform.position.x, (int)this.transform.position.y);
 
                 List<GameObject> validMoveLocations = new List<GameObject>();
 

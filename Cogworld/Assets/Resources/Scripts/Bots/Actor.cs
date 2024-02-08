@@ -45,6 +45,12 @@ public class Actor : Entity
     [Tooltip("DISABLED: Some robots have been temporarily disabled and put in garrison storage. Prime candidates for rewiring!")]
     public bool state_DISABLED = false; // Grayed-out normal
 
+    [Header("Following Flags")]
+    [Tooltip("If true, will be under the player's direct control, appearing in 'allies' tab.")]
+    public bool directPlayerAlly = false;
+    [Tooltip("If true, the bot will always try to be close to and fight with the player.")]
+    public bool followThePlayer = false;
+
     private void OnValidate()
     {
         if (GetComponent<UnitAI>())
@@ -204,7 +210,7 @@ public class Actor : Entity
     //finds an empty tile for this actor to move to
     public void FindNewTile()
     {
-        List<GameObject> neighbors = FindNeighbors(((int)transform.localPosition.x), ((int)transform.localPosition.y));
+        List<GameObject> neighbors = HF.FindNeighbors(((int)transform.localPosition.x), ((int)transform.localPosition.y));
         GameObject tile = null;
         foreach (GameObject neighbor in neighbors)
         {
@@ -311,64 +317,6 @@ public class Actor : Entity
         {
             Action.SkipAction(this.GetComponent<Actor>());
         }
-    }
-
-    public List<GameObject> FindNeighbors(int X, int Y)
-    {
-        // --
-        // Copied from "Astar.cs"
-        // --
-
-        List<GameObject> neighbors = new List<GameObject>();
-
-        // We want to include diagonals into this.
-
-        if (X < GridManager.inst.grid.GetLength(0) - 1) // [ RIGHT ]
-        {
-            neighbors.Add(GridManager.inst.grid[X + 1, Y]);
-        }
-        if (X > 0) // [ LEFT ]
-        {
-            neighbors.Add(GridManager.inst.grid[X - 1, Y]);
-        }
-        if (Y < GridManager.inst.grid.GetLength(1) - 1) // [ UP ]
-        {
-            neighbors.Add(GridManager.inst.grid[X, Y + 1]);
-        }
-        if (Y > 0) // [ DOWN ]
-        {
-            neighbors.Add(GridManager.inst.grid[X, Y - 1]);
-        }
-        // -- 
-        // Diagonals
-        // --
-        if (X < GridManager.inst.grid.GetLength(0) - 1 && Y < GridManager.inst.grid.GetLength(1) - 1) // [ UP-RIGHT ]
-        {
-            neighbors.Add(GridManager.inst.grid[X + 1, Y + 1]);
-        }
-        if (Y < GridManager.inst.grid.GetLength(1) - 1 && X > 0) // [ UP-LEFT ]
-        {
-            neighbors.Add(GridManager.inst.grid[X - 1, Y + 1]);
-        }
-        if (Y > 0 && X > 0) // [ DOWN-LEFT ]
-        {
-            neighbors.Add(GridManager.inst.grid[X - 1, Y - 1]);
-        }
-        if (Y > 0 && X < GridManager.inst.grid.GetLength(0) - 1) // [ DOWN-RIGHT ]
-        {
-            neighbors.Add(GridManager.inst.grid[X + 1, Y - 1]);
-        }
-
-        /*
-        // Debug
-        foreach (Tile t in neighbors)
-        {
-            Debug.Log("[" + t.locInGrid_x + "," + t.locInGrid_y + "]");
-        }
-        */
-
-        return neighbors;
-
     }
 
     /// <summary>

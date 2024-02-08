@@ -237,7 +237,7 @@ public class PlayerGridMovement : MonoBehaviour
 
         // -- Ordinary Movement to tiles / exits detection --
 
-        List<GameObject> neighbors = FindNeighbors(currentX, currentY);
+        List<GameObject> neighbors = HF.FindNeighbors(currentX, currentY);
 
         GameObject desiredDestinationTile = null;
 
@@ -386,63 +386,6 @@ public class PlayerGridMovement : MonoBehaviour
         }
 
         return null; // Failure
-    }
-
-    /// <summary>
-    /// Finds *VALID* neighbors given a current position on a grid.
-    /// </summary>
-    /// <param name="X">Current X position on the grid.</param>
-    /// <param name="Y">Current Y position on the grid.</param>
-    /// <returns>Returns a list of *VALID* neighbors that exist.</returns>
-    public List<GameObject> FindNeighbors(int X, int Y)
-    {
-        // --
-        // Copied from "Astar.cs"
-        // --
-
-        // NOTE: I hate GridManager, the array sucks. We are going to use _allTilesRealized instead.
-
-        List<GameObject> neighbors = new List<GameObject>();
-
-        // We want to include diagonals into this.
-        if (X < MapManager.inst._mapSizeX - 1) // [ RIGHT ]
-        {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X + 1, Y)].gameObject);
-        }
-        if (X > 0) // [ LEFT ]
-        {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X - 1, Y)].gameObject);
-        }
-        if (Y < MapManager.inst._mapSizeY - 1) // [ UP ]
-        {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X, Y + 1)].gameObject);
-        }
-        if (Y > 0) // [ DOWN ]
-        {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X, Y - 1)].gameObject);
-        }
-        // -- 
-        // Diagonals
-        // --
-        if (X < MapManager.inst._mapSizeX - 1 && Y < MapManager.inst._mapSizeY - 1) // [ UP-RIGHT ]
-        {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X + 1, Y + 1)].gameObject);
-        }
-        if (Y < MapManager.inst._mapSizeY - 1 && X > 0) // [ UP-LEFT ]
-        {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X - 1, Y + 1)].gameObject);
-        }
-        if (Y > 0 && X > 0) // [ DOWN-LEFT ]
-        {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X - 1, Y - 1)].gameObject);
-        }
-        if (Y > 0 && X < MapManager.inst._mapSizeX - 1) // [ DOWN-RIGHT ]
-        {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X + 1, Y - 1)].gameObject);
-        }
-
-        return neighbors;
-
     }
 
     #endregion
