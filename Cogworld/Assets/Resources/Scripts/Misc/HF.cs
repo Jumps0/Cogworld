@@ -3086,4 +3086,20 @@ public static class HF
 
         return (startCoords, endCoords);
     }
+
+
+    // Used in the Influence UI
+    public static string AssignInfluenceLetter(int value)
+    {
+        // Ensure the value is within the range of 0 to 200
+        value = Mathf.Clamp(value, 0, 200);
+
+        // Calculate the index of the alphabet character based on the value
+        int index = Mathf.RoundToInt(value / 200f * 25);
+
+        // Convert the index to the corresponding character
+        char character = (char)('A' + index);
+
+        return character.ToString();
+    }
 }

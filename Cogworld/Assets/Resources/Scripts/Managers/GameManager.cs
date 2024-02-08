@@ -149,6 +149,22 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int botCount;
     [SerializeField] private float turnTimeDelay = 0.1f;
 
+    [Header("Alert")]
+    /*
+     * Alert goes from:
+     * Low Security (#) aka 0 - (0 to 100)
+     *                Level 1 - (200 to 400)
+     *                Level 2 - (400 to 600)
+     *                Level 3 - (600 to 800)
+     *                Level 4 - (800 to 1000)
+     *                Level 5 - (1000 to 1200)
+     *  HIGH SECURTIY   aka 6 - (1200+)
+     */
+    [Tooltip("Goes from 0 to 6, see GameManager.cs for details")]
+    public int alertLevel = 0;
+    [Tooltip("Goes from 0 to 1200+, see GameManager.cs for details")]
+    public int alertValue = 0;
+
 
     public void AddEntity(Entity entity)
     {

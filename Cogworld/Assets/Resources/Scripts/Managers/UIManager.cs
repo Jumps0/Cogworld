@@ -3209,7 +3209,6 @@ public class UIManager : MonoBehaviour
     //
     public GameObject influenceGO;
     public TextMeshProUGUI influence_text; //: ### #-#
-    public bool usingRIF = false;
     //
     // -                 -
 
@@ -3885,11 +3884,39 @@ public class UIManager : MonoBehaviour
         }
 
         // ~ Special Indicators ~
-        if (usingRIF) // (Influence)
+        if (PlayerData.inst & PlayerData.inst.hasRIF) // (Influence)
         {
             influence_text.gameObject.SetActive(true);
             influenceGO.SetActive(true);
-            // DO LATER
+            influence_text.text = "Influence: ";
+
+            switch (GameManager.inst.alertLevel)
+            {
+                case 0: // Low Security
+                    influence_text.text += GameManager.inst.alertValue + " LOW";
+                    break;
+                case 1:
+                    influence_text.text += GameManager.inst.alertValue + " " + GameManager.inst.alertLevel + "-" + HF.AssignInfluenceLetter(GameManager.inst.alertValue - 100);
+                    break;
+                case 2:
+                    influence_text.text += GameManager.inst.alertValue + " " + GameManager.inst.alertLevel + "-" + HF.AssignInfluenceLetter(GameManager.inst.alertValue - 300);
+                    break;
+                case 3:
+                    influence_text.text += GameManager.inst.alertValue + " " + GameManager.inst.alertLevel + "-" + HF.AssignInfluenceLetter(GameManager.inst.alertValue - 500);
+                    break;
+                case 4:
+                    influence_text.text += GameManager.inst.alertValue + " " + GameManager.inst.alertLevel + "-" + HF.AssignInfluenceLetter(GameManager.inst.alertValue - 700);
+                    break;
+                case 5:
+                    influence_text.text += GameManager.inst.alertValue + " " + GameManager.inst.alertLevel + "-" + HF.AssignInfluenceLetter(GameManager.inst.alertValue - 900);
+                    break;
+                case 6: // High Security
+                    influence_text.text += GameManager.inst.alertValue + " HIGH";
+                    break;
+
+                default:
+                    break;
+            }
         }
         else
         {

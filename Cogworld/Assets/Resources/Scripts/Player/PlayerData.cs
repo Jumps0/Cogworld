@@ -108,6 +108,11 @@ public class PlayerData : MonoBehaviour
     [Tooltip("Followers are bots that follow the player, but that the player can't directly control. They are usually white, red, purple, etc.")]
     public List<Actor> followers = new List<Actor>();
 
+    [Header("Unique Alignments")]
+    public bool hasRIF = false;
+    public bool hasImprinted = false;
+    public bool hasFARCOM = false;
+
     [Header("*STATS THIS RUN*")]
     public int robotsKilled = 0;
     public int kills_0b10 = 0;
