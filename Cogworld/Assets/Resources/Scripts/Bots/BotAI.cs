@@ -69,10 +69,120 @@ public class BotAI : MonoBehaviour
 
         yield return null;
 
+        // -- Now decide what to do based on their *Refined Class* --
+        switch (this.GetComponent<Actor>()._class)
+        {
+            case BotClassRefined.Worker:
+
+
+
+                break;
+            case BotClassRefined.Fighter:
+
+
+
+                break;
+            case BotClassRefined.Support:
+
+
+
+                break;
+            case BotClassRefined.Static:
+                // -- We are going to spend most of our time standing still, unless told otherwise. --
+                switch (state)
+                {
+                    case BotAIState.Working:
+                        if(HF.V3_to_V2I(this.transform.position) != locationOfInterest)
+                        {
+                            // Move back to the position
+
+                        }
+                        else
+                        {
+                            // Do... nothing?
+                        }
+
+                        break;
+
+                    case BotAIState.Returning:
+                        if (HF.V3_to_V2I(this.transform.position) != locationOfInterest)
+                        {
+                            // Move back to the position
+
+                        }
+                        else
+                        {
+                            state = BotAIState.Working;
+                        }
+                        break;
+                    case BotAIState.Fleeing:
+                        Flee(); // Flee!
+                        break;
+                    case BotAIState.Idle:
+                        break;
+                    default:
+                        break;
+                }
+
+                break;
+            case BotClassRefined.Ambient:
+                // -- Our main goal here is to just wander around if nothing is happening --
+                switch (state)
+                {
+                    case BotAIState.Working: // aka Wandering
+                        if(timeOnTask > Random.Range(5, 10) || locationOfInterest == Vector2Int.zero) // Find a new spot to wander to
+                        {
+                            locationOfInterest = FindNewWanderPoint(Random.Range(3, 6));
+                            timeOnTask = 0;
+                        }
+                        else // Loiter around location of interest
+                        {
+                            timeOnTask++;
+                            Loiter(locationOfInterest);
+                        }
+                        break;
+                    case BotAIState.Returning:
+                        if(timeOnTask < 20) // Try and move back to our loiter spot
+                        {
+                            timeOnTask++;
+                            Loiter(locationOfInterest);
+                        }
+                        else // Switch states
+                        {
+                            locationOfInterest = FindNewWanderPoint(Random.Range(3, 6));
+                            timeOnTask = 0;
+                            state = BotAIState.Working;
+                        }
+                        break;
+                    case BotAIState.Fleeing:
+                        Flee(); // Flee!
+                        break;
+                    case BotAIState.Idle:
+                        // Do nothing
+                        break;
+                    default:
+                        // Do nothing
+                        break;
+                }
+
+                break;
+            case BotClassRefined.None:
+
+
+
+                break;
+        }
+
+
 
 
         Action.SkipAction(this.GetComponent<Actor>()); // Fallback condition
     }
+
+    [Tooltip("How long has this bot been doing this specific task?")]
+    int timeOnTask = 0;
+    [Tooltip("A location of importance, used in decisionmaking.")]
+    Vector2Int locationOfInterest = Vector2Int.zero;
 
     #endregion
 
@@ -145,6 +255,48 @@ public class BotAI : MonoBehaviour
                     return;
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// Will attempt to find an unoccupied space nearby to wander around.
+    /// </summary>
+    /// <param name="distance">The max distance away the point can be. Don't set this too high!</param>
+    /// <returns>The position to wander to.</returns>
+    private Vector2Int FindNewWanderPoint(int distance)
+    {
+        Vector2Int myPos = HF.V3_to_V2I(this.transform.position);
+
+        // Calculate the bottom left corner of the square area
+        Vector2Int bottomLeftCorner = new Vector2Int(myPos.x - distance, myPos.y - distance);
+
+        List<Vector2Int> validPositions = new List<Vector2Int>();
+
+        // Iterate through the square area
+        for (int x = bottomLeftCorner.x; x <= bottomLeftCorner.x + 2 * distance; x++)
+        {
+            for (int y = bottomLeftCorner.y; y <= bottomLeftCorner.y + 2 * distance; y++)
+            {
+                Vector2Int currentTile = new Vector2Int(x, y);
+
+                if (MapManager.inst._allTilesRealized.ContainsKey(currentTile))
+                {
+                    // Check if the tile exists and is unoccupied.
+                    if (this.GetComponent<Actor>().IsUnoccupiedTile(MapManager.inst._allTilesRealized[new Vector2Int(x, y)]))
+                    {
+                        validPositions.Add(currentTile); // Add to valid positions
+                    }
+                }
+            }
+        }
+
+        if(validPositions.Count > 0)
+        {
+            return validPositions[Random.Range(0, validPositions.Count - 1)];
+        }
+        else
+        {
+            return Vector2Int.zero; // Failsafe
         }
     }
 

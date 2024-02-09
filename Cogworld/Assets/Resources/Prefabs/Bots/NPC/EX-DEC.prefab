@@ -382,6 +382,7 @@ MonoBehaviour:
   fieldOfView: []
   AI: {fileID: 0}
   botInfo: {fileID: 11400000, guid: 0daab0d6dca91af45b7d63b86ba27cfc, type: 2}
+  _class: 3
   Initiative: 0
   _sprite: {fileID: 1489840735416740139}
   state_DORMANT: 0
@@ -389,6 +390,8 @@ MonoBehaviour:
   state_CLOAKED: 0
   state_UNPOWERED: 0
   state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
   isExplored: 0
   isVisible: 0
   fow_sprite: {fileID: 1489840735416740139}

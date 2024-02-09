@@ -234,3 +234,15 @@ public class Allegance
         alleganceTree = aT;
     }
 }
+
+[System.Serializable]
+[Tooltip("A more refined class split up into generalized categories.")]
+public enum BotClassRefined
+{
+    Worker,  // Has a job, and will spend its time doing that job
+    Fighter, // Will patrol, fight, and guard
+    Support, // Follows around fighters (and sometimes supports them)
+    Static,  // Will not move unless told otherwise (sometimes scripted to perform actions, like NPCs)
+    Ambient, // Wanders around and does nothing
+    None
+}

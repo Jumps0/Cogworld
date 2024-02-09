@@ -18,9 +18,11 @@ public class Actor : Entity
     [Tooltip("All tiles that are currently visible.")]
     [SerializeField] private List<Vector3Int> fieldOfView;
 
+    [Header("Details")]
     public UnitAI AI;
     public BotObject botInfo;
     public Allegance allegances;
+    public BotClassRefined _class = BotClassRefined.None;
 
     AdamMilVisibility algorithm;
 
