@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.EventSystems.EventTrigger;
 using static UnityEngine.GraphicsBuffer;
@@ -94,12 +95,26 @@ public class BotAI : MonoBehaviour
                     case BotAIState.Working:
                         if(HF.V3_to_V2I(this.transform.position) != locationOfInterest)
                         {
-                            // Move back to the position
+                            state = BotAIState.Returning;
 
+                            // Move back to the position
+                            if (pathing.path.Count < 0)
+                            {
+                                // Need to calculate an A* path, this may be computationally expensive!
+                                SetNewAStar();
+                                CreateAStarPath(locationOfInterest);
+                            }
+
+                            NavigateToPOI(locationOfInterest);
                         }
                         else
                         {
                             // Do... nothing?
+
+                            if(pathing.path.Count > 0) // Just in case, clear this path (due to logic above)
+                            {
+                                pathing.path.Clear();
+                            }
                         }
 
                         break;
@@ -108,7 +123,14 @@ public class BotAI : MonoBehaviour
                         if (HF.V3_to_V2I(this.transform.position) != locationOfInterest)
                         {
                             // Move back to the position
+                            if (pathing.path.Count < 0)
+                            {
+                                // Need to calculate an A* path, this may be computationally expensive!
+                                SetNewAStar();
+                                CreateAStarPath(locationOfInterest);
+                            }
 
+                            NavigateToPOI(locationOfInterest);
                         }
                         else
                         {
@@ -299,6 +321,80 @@ public class BotAI : MonoBehaviour
             return Vector2Int.zero; // Failsafe
         }
     }
+
+    #region A* & Fun!
+    [Header("A* & Pathing")]
+    public Astar pathing;
+    bool destinationReached = false;
+    int timeOnPath = 0;
+
+
+    public void SetNewAStar()
+    {
+        pathing = new Astar(GridManager.inst.grid); // Set up the A*
+    }
+
+    public void CreateAStarPath(Vector2Int point)
+    {
+        pathing.CreatePath(GridManager.inst.grid, (int)this.transform.position.x, (int)this.transform.position.y, point.x, point.y);
+    }
+
+    public void NavigateToPOI(Vector2Int poi)
+    {
+        float distanceToPoi = Vector2.Distance(this.transform.position, poi);
+
+        if (distanceToPoi > 3) // Navigate to it
+        {
+            destinationReached = false;
+            int index = pathing.path.Count - timeOnPath;
+            if (index < 0)
+            { // Stop early!!!
+                destinationReached = true;
+                state = BotAIState.Idle;
+                return;
+            }
+
+            Vector2 destination = new Vector2(pathing.path[index].X, pathing.path[index].Y);
+            // Normalize move direction
+            Vector2Int moveDir = new Vector2Int(0, 0);
+            if (destination.x > this.transform.position.x)
+            {
+                moveDir.x++;
+            }
+            else if (destination.x < this.transform.position.x)
+            {
+                moveDir.x--;
+            }
+
+            if (destination.y > this.transform.position.y)
+            {
+                moveDir.y++;
+            }
+            else if (destination.y < this.transform.position.y)
+            {
+                moveDir.y--;
+            }
+            // Only move to valid tiles!
+            if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int((int)destination.x, (int)destination.y))
+                && this.GetComponent<Actor>().IsUnoccupiedTile(MapManager.inst._allTilesRealized[new Vector2Int((int)destination.x, (int)destination.y)]))
+            {
+                Action.MovementAction(this.GetComponent<Actor>(), moveDir); // Move
+            }
+            else
+            {
+                Action.SkipAction(this.GetComponent<Actor>()); // Wait...
+            }
+
+            state = BotAIState.Working;
+        }
+        else // We are done
+        {
+            destinationReached = true;
+            state = BotAIState.Idle;
+        }
+    }
+
+    #endregion
 
     #region Fleeing
 
