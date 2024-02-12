@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Astar
@@ -7,14 +9,17 @@ public class Astar
     public Spot[,] Spots;
     public List<Spot> openSet = new List<Spot>();
     public List<Spot> closedSet = new List<Spot>();
+    [Tooltip("NOTE: By default this list is sorted from Destination to Start Point. Reversing may be necessary. It also includes the start and end point in the path.")]
     public List <Spot> path = new List<Spot>();
     public Spot start;
     public Spot end;
     public AStarSearchStatus searchStatus;
 
+
     public Astar(GameObject[,] grid)
     {
         Spots = new Spot[grid.GetLength(0), grid.GetLength(1)];
+        GenerateLandmarks();
     }
 
     public void CreatePath(GameObject[,] grid, int startX = 0, int startY = 0, int endX = 10, int endY = 5)
@@ -137,12 +142,100 @@ public class Astar
          */
 
         int D = 1;
+        /*
+        // Calculate the Euclidean distance from the current spot to each landmark
+        float minDistance = float.MaxValue;
+        foreach (Vector2Int landmark in landmarks)
+        {
+            float dx = b.X - landmark.x;
+            float dy = b.Y - landmark.y;
+            float distance = Mathf.Sqrt(dx * dx + dy * dy);
+            minDistance = Mathf.Min(minDistance, distance);
+        }
+
+        return (int)(D * minDistance);
+        */
 
         // Diagonal
         var dx = Mathf.Abs(a.X - b.X);
         var dy = Mathf.Abs(a.Y - b.Y);
         //return D * (dx + dy) + ((D * 2) - 2 * D) * Mathf.Min(dx, dy);
         return D * (int)Mathf.Sqrt(dx * dx + dy * dy); // This is more resource intensive but (maybe?) better. [Euclidean Distance]
+    }
+
+    
+    private int Landmark_Heuristic(Spot a, Spot b)
+    {
+        // - Here for testing purposes -
+        if (PathfindingTestControl.inst)
+        {
+            if (!PathfindingTestControl.inst.useLandmark)
+            {
+                return Heuristic(a, b);
+            }
+        }
+        // -                           -
+
+        // But is there a better way?
+        // Introducing the - Landmark Heuristic -
+        // https://www.redblobgames.com/pathfinding/heuristics/differential.html
+        // tldr:
+        // Place a bunch of help landmarks across the map, factor them in to pathfinding
+
+        int d0 = Heuristic(a, b);
+
+        int distance = d0;
+        for (int i = 0; i < landmarks.Count; i++)
+        {
+            Vector2Int landmark = landmarks[i];
+            // I could use Math.abs() here because my cost function is
+            // symmetric. However for the explanation to match the
+            // diagrams, I don't use abs() here.
+            float dxA = a.X - landmark.x;
+            float dyA = a.Y - landmark.y;
+            float distA = Mathf.Sqrt(dxA * dxA + dyA * dyA);
+
+            float dxB = b.X - landmark.x;
+            float dyB = b.Y - landmark.y;
+            float distB = Mathf.Sqrt(dxB * dxB + dyB * dyB);
+
+            distance = (int)Mathf.Max(distance, (float)(d0 * 1e-6 + (distB - distA)));
+        }
+        return distance;
+    }
+    
+
+    public List<Vector2Int> landmarks = new List<Vector2Int>();
+    private void GenerateLandmarks()
+    {
+        // Place landmarks in a grid pattern every 30 units
+        int pattern = 30;
+        Vector2Int mapSize = Vector2Int.zero;
+        if (MapManager.inst)
+        {
+            mapSize = new Vector2Int(MapManager.inst._mapSizeX, MapManager.inst._mapSizeY);
+        }
+        else if (PathfindingTestControl.inst)
+        {
+            mapSize = PathfindingTestControl.inst.mapSize;
+        }
+        else
+        {
+            Debug.LogError("ERROR: No place to get map size from!");
+            Debug.Break();
+        }
+        
+        for (int i = 0; i < mapSize.x; i += pattern)
+        {
+            for (int j = 0; j < mapSize.y; j += pattern)
+            {
+                // Ensure the position is within the map bounds
+                if (i < mapSize.x && j < mapSize.y)
+                {
+                    landmarks.Add(new Vector2Int(i, j));
+                }
+            }
+        }
     }
 }
 
@@ -223,4 +316,19 @@ public enum AStarSearchStatus
     Searching,
     Success,
     Failure
+}
+
+public class Landmark
+{
+    public int X;
+    public int Y;
+
+    public int cost;
+
+    public Landmark(int x, int y, int cost)
+    {
+        X = x;
+        Y = y;
+        this.cost = cost;
+    }
 }
