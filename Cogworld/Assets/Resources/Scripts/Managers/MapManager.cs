@@ -2865,6 +2865,8 @@ public class MapManager : MonoBehaviour
 
     #endregion
 
+    #region Misc
+
     public void PlaceMine(Vector2Int location, TrapType type, BotRelation alignment = BotRelation.Hostile)
     {
         var spawnedMine = Instantiate(minePrefab, new Vector3(location.x * GridManager.inst.globalScale, location.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
@@ -3024,4 +3026,6 @@ public class MapManager : MonoBehaviour
             }
         }
     }
+
+    #endregion
 }

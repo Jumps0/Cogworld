@@ -74,7 +74,14 @@ public class BotAI : MonoBehaviour
         switch (this.GetComponent<Actor>()._class)
         {
             case BotClassRefined.Worker:
-
+                /* -- Each type of worker does different things, these are:
+                 *  Hauler:     Roam the map, pick up (non-player made) items created via fabricators.
+                 *  Mechanic:   Roam the map, look for allied bots to repair.
+                 *  Operator:   Roams around a home terminal, reports Cogmind and turns neutral on visual contact.
+                 *  Recycler:   Roam the map, look for parts to recycle.
+                 *  Builder:    Roam the map, look for walls and doors to repair.
+                 *  Watcher:    Roam the map, report Cogmind to nearby allies, stay close unless attacked.
+                 */
 
 
                 break;

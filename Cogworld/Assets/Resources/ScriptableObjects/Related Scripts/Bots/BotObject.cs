@@ -27,11 +27,10 @@ public enum BotClass
     Recycler,
     Swarmer,
     Tunneler,
-    Builder,
+    Builder, // aka Engineer
     Watcher,
     Specialist,
     Sentry,
-    Scavenger,
     NPC,
     Misc,
     Samaritan, // (Derelict)

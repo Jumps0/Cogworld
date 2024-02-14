@@ -6,6 +6,7 @@ public class MachinePart : MonoBehaviour
 {
     [Header("Core Info")]
     [Header("----Overview----")]
+    public string displayName;
     [Tooltip("Basically health. X = current, Y = max.")]
     public Vector2Int armor;
     public bool state = true; // Active
@@ -56,6 +57,61 @@ public class MachinePart : MonoBehaviour
         if (isSealedStorage)
         {
             this.GetComponent<SpriteRenderer>().color = sealedStorageBlue;
+        }
+
+        SetName();
+    }
+
+    private void SetName()
+    {
+        // -- TODO: This will need to be expanded later if/when new machines are added --
+
+        // First check if this is an interactable machine
+        if(this.GetComponent<Terminal>() || (parentPart && parentPart.GetComponent<Terminal>()))
+        {
+            displayName = "Terminal";
+        }
+        else if (this.GetComponent<Fabricator>() || (parentPart && parentPart.GetComponent<Fabricator>()))
+        {
+            displayName = "Fabricator";
+        }
+        else if (this.GetComponent<RecyclingUnit>() || (parentPart && parentPart.GetComponent<RecyclingUnit>()))
+        {
+            displayName = "Recycling Unit";
+        }
+        else if (this.GetComponent<Garrison>() || (parentPart && parentPart.GetComponent<Garrison>()))
+        {
+            displayName = "Garrison";
+        }
+        else if (this.GetComponent<RepairStation>() || (parentPart && parentPart.GetComponent<RepairStation>()))
+        {
+            displayName = "Repair Station";
+        }
+        else if (this.GetComponent<Scanalyzer>() || (parentPart && parentPart.GetComponent<Scanalyzer>()))
+        {
+            displayName = "Scanalyzer";
+        }
+        else if (this.GetComponent<TerminalCustom>() || (parentPart && parentPart.GetComponent<TerminalCustom>()))
+        {
+            if (parentPart)
+            {
+                displayName = parentPart.GetComponent<TerminalCustom>().systemType;
+            }
+            else
+            {
+                displayName = this.GetComponent<TerminalCustom>().systemType;
+            }
+        }
+        else if(this.GetComponent<StaticMachine>() || (parentPart && parentPart.GetComponent<StaticMachine>()))
+        {
+            if (parentPart)
+            {
+                displayName = parentPart.GetComponent<StaticMachine>()._name;
+            }
+            else
+            {
+                displayName = this.GetComponent<StaticMachine>()._name;
+            }
         }
     }
 
