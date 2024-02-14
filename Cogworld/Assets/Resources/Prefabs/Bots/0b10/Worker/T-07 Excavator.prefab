@@ -52,7 +52,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 752ed65f43ff5f24d938c4c1433f8022, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -298,6 +298,7 @@ MonoBehaviour:
   fieldOfView: []
   AI: {fileID: 0}
   botInfo: {fileID: 11400000, guid: 704dab73cf7de29488206a2481574055, type: 2}
+  _class: 5
   Initiative: 0
   _sprite: {fileID: 1489840735416740139}
   state_DORMANT: 0
@@ -305,6 +306,8 @@ MonoBehaviour:
   state_CLOAKED: 0
   state_UNPOWERED: 0
   state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
   isExplored: 0
   isVisible: 0
   fow_sprite: {fileID: 1489840735416740139}
@@ -414,7 +417,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 752ed65f43ff5f24d938c4c1433f8022, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -498,7 +501,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 752ed65f43ff5f24d938c4c1433f8022, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

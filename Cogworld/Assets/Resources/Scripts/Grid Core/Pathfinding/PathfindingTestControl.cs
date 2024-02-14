@@ -4,7 +4,6 @@ using System.Drawing;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using static UnityEditor.PlayerSettings;
 using Color = UnityEngine.Color;
 
 /// <summary>

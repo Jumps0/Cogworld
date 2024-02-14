@@ -107,7 +107,14 @@ MonoBehaviour:
   _highlight: {fileID: 4208225745914881562}
   _dartHighlight: {fileID: 3346412570222661567}
   _animator: {fileID: 4220349399545761095}
-  _item: {fileID: 0}
+  _item:
+    Name: 
+    Id: -1
+    stackable: 0
+    amount: 1
+    itemData: {fileID: 0}
+    state: 1
+    integrityCurrent: 0
   _tile: {fileID: 0}
   _bot: {fileID: 0}
   player: 0
@@ -238,7 +245,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 752ed65f43ff5f24d938c4c1433f8022, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -343,7 +350,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 752ed65f43ff5f24d938c4c1433f8022, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
