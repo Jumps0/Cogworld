@@ -81,8 +81,29 @@ public class BotAI : MonoBehaviour
                  *  Recycler:   Roam the map, look for parts to recycle.
                  *  Builder:    Roam the map, look for walls and doors to repair.
                  *  Watcher:    Roam the map, report Cogmind to nearby allies, stay close unless attacked.
+                 *  Worker:     Roam the map looking for debris & machines to clean up
+                 *  Tunneler:   Roam the map, dig scripted sections
+                 *  Researcher: Stand at station, fight Cogmind if they act up, roam around if alert is up.
                  */
 
+                switch (state)
+                {
+                    case BotAIState.Working:
+
+                        break;
+                    case BotAIState.Hunting:
+
+                        break;
+                    case BotAIState.Returning:
+
+                        break;
+                    case BotAIState.Fleeing:
+
+                        break;
+                    case BotAIState.Idle:
+
+                        break;
+                }
 
                 break;
             case BotClassRefined.Fighter:
@@ -572,8 +593,7 @@ public enum BotAIState
     Hunting,  // Engaging or Looking for the player
     Returning,// Going back to normal routine
     Fleeing,  // Running from something, probably the player
-    Idle,
-    Misc
+    Idle
 }
 
 [System.Serializable]

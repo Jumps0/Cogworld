@@ -5,39 +5,83 @@ using UnityEngine;
 [System.Serializable]
 public enum BotClass
 {
-    Hauler,
-    Drone,
-    Brawler,
+    // Source: https://noemica.github.io/cog-minder/bots.html
+    Alpha7,   // Alpha 7
+    Assembled,
     Behemoth,
+    Borebot,  // Derelict /w Warlord
+    Bouncer,  // Derelict
+    Brawler,
+    Builder,
+    Butcher,  // Derelict
+    Carrier,  // aka ARC
+    Cogmind,  // That's me!
+    Commander,// Derelict
+    Compactor,// as seen in Wastes
     Cutter,
-    Carrier,
-    Compactor,
     Demolisher,
-    Saboteur,
+    Decomposer,// Derelict
+    Demented,  // Derelict
+    Dragon,    // Derelict
+    Drone,
+    Deulist,
+    Executioner,
+    Fireman,  // Derelict
+    Fortress, // as seen in Section 7
+    Furnace,  // Derelict
+    Golem,    // "Derelict"
+    Guerrilla,// Derelict
     Grunt,
-    Hunter,
+    Hauler,
     Heavy,
-    Protector,
-    Worker,
-    Duelist,
+    Hunter,
+    Hydra,    // Derelict
+    Infiltrator, // Derelict
+    Knight,   // Derelict
+    LRC,      // What was what now is
+    Marauder, // Derelict
+    Martyr,   // Derelict
+    MasterTheif, // Derelict
     Mechanic,
     Minesweeper,
+    Mutant,   // Derelict
     Operator,
+    Packrat,  // Derelict
+    Parasite, // Derelict
+    Protector,
     Programmer,
+    Q_Series, // _ should be -
     Recycler,
+    Researcher,
+    Saboteur,
+    Samaritan,// Derelict
+    Sapper,   // Derelict
+    Savage,   // Derelict
+    Sentry,   // Cetus Guard & other permanent unique guards
+    Special,  // Architect, Data miner, Godmode, etc.
+    Specialist, // Dudes that are mostly gun
+    Striker,
+    Surgeon,  // Derelict
     Swarmer,
+    Theif,    // Derelict
+    Thug,     // Derelict
+    Tinkerer, // Derelict
+    Troll,    // Derelict
     Tunneler,
-    Builder, // aka Engineer
+    Turret,
+    Unique,   // Mostly for NPCs
+    Wasp,     // Derelict
     Watcher,
-    Specialist,
-    Sentry,
-    NPC,
-    Misc,
-    Samaritan, // (Derelict)
-    Derelict,
-    Assembled,
-    Unique, // Used for NPCs
-    Turret
+    Wizard,   // Derelict
+    Worker,   // K-01 Serf aka Jannies
+    Z_Courier,// Heroes of Zion (Derelict)
+    Z_Drone,  // Heroes of Zion (Derelict)
+    Z_EX,     // Heroes of Zion (Derelict)
+    Z_Heavy,  // Heroes of Zion (Derelict)
+    Z_Light,  // Heroes of Zion (Derelict)
+    Z_Technicatian, // Heroes of Zion (Derelict)
+    Zionite,  // (Derelict)
+    None
 }
 
 [System.Serializable]

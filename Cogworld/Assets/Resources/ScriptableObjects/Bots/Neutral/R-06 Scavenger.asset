@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 4
   asciiRep: {fileID: 1395080542, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
-  _class: 26
+  _class: 45
   _size: 2
   _profile:
     forward: RD
@@ -51,22 +51,33 @@ MonoBehaviour:
   - _item: {fileID: 11400000, guid: fe5264c7ff4d80440834c70b67b6338b, type: 2}
     dropChance: 0.2
     _altChoices: []
+    altChoicesDropChance: []
   - _item: {fileID: 11400000, guid: 746b5ef51141b204d827c72119776c25, type: 2}
     dropChance: 0.1
     _altChoices: []
+    altChoicesDropChance: []
   - _item: {fileID: 11400000, guid: 746b5ef51141b204d827c72119776c25, type: 2}
     dropChance: 0.1
     _altChoices: []
+    altChoicesDropChance: []
   - _item: {fileID: 11400000, guid: 0acc6e35c3d332c4badcb96dc5027f3d, type: 2}
     dropChance: 0.1
     _altChoices: []
+    altChoicesDropChance: []
   - _item: {fileID: 11400000, guid: ca22bcab4c8ac7f4bb4cf735f0a4a715, type: 2}
     dropChance: 0.08
     _altChoices: []
+    altChoicesDropChance: []
   resistances:
   - damageType: 3
     resistanceAmount: -0.25
     immune: 0
+  resistancesExtra:
+    coring: 0
+    disruption: 0
+    meltdown: 0
+    hacking: 0
+    jamming: 0
   traits: []
   fabricationInfo:
     canBeFabricated: 0
@@ -85,4 +96,5 @@ MonoBehaviour:
     fromHost: 0
     fromEvent: 0
     relation: 1
+    alignment: 0
   playerHasAnalysisData: 0

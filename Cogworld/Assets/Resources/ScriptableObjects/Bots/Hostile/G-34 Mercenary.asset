@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 1
   asciiRep: {fileID: 400640993, guid: 0f98ae4f61612184ab250349db1b02ec, type: 3}
-  _class: 9
+  _class: 25
   _size: 2
   _profile:
     forward: RD

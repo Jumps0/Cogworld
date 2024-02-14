@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 3
   asciiRep: {fileID: -570742473, guid: 11c48a8f38663be4997fdfa1689cb530, type: 3}
-  _class: 0
+  _class: 26
   _size: 2
   _profile:
     forward: RD
@@ -100,4 +100,5 @@ MonoBehaviour:
     fromHost: 0
     fromEvent: 0
     relation: 1
+    alignment: 0
   playerHasAnalysisData: 0

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 12
   asciiRep: {fileID: 0}
-  _class: 31
+  _class: 1
   _size: 1
   _profile:
     forward: SQ
