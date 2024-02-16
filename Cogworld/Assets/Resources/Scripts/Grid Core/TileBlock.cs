@@ -17,6 +17,8 @@ public class TileBlock : MonoBehaviour
     [SerializeField] public GameObject _highlight;
     public GameObject _highlightPerm; // Used for map border mostly
     public GameObject _debrisSprite;
+    [SerializeField] private GameObject _collapseSprite;
+    [SerializeField] private Animator _collapseAnim;
     public bool isDirty = false;
 
     [Tooltip("What this tile would look in DOS mode.")]
@@ -140,6 +142,8 @@ public class TileBlock : MonoBehaviour
         }
         */
     }
+
+    #region Vision/Display
 
     /// <summary>
     /// Should the white highlight animation be played?
@@ -303,6 +307,72 @@ public class TileBlock : MonoBehaviour
         _highlightPerm.SetActive(state);
     }
 
+    [SerializeField] private Animator _secretDoorAnimator;
+    public void SecretDoorReveal()
+    {
+        _secretDoorAnimator.gameObject.SetActive(true);
+        _secretDoorAnimator.enabled = true;
+        _secretDoorAnimator.Play("TileSecretDoorReveal");
+    }
+
+    #endregion
+
+    #region Creation & Destruction
+
+    /// <summary>
+    /// Sets this tile to its destroyed state.
+    /// </summary>
+    public void DamageMe()
+    {
+        // Change the sprite
+        this.GetComponent<SpriteRenderer>().sprite = tileInfo.altSprite;
+
+        // Activate the "danger roof will collapse" red indicator (if needed)
+        if (tileInfo.type == TileType.Wall)
+        {
+            _collapseSprite.SetActive(true);
+            _collapseAnim.enabled = true;
+            _collapseAnim.Play("");
+        }
+
+        // Change walkablility if needed
+        if(tileInfo.type == TileType.Wall || tileInfo.type == TileType.Machine)
+        {
+            walkable = true;
+        }
+
+        // Play a sound
+        AudioManager.inst.CreateTempClip(this.transform.position, tileInfo.destructionClips[Random.Range(0, tileInfo.destructionClips.Count - 1)]);
+
+            // Add to MapManager list
+        if (tileInfo.type != TileType.Machine) // Machines don't get repaired
+            MapManager.inst.damagedStructures.Add(this.gameObject);
+
+    }
+
+    /// <summary>
+    /// Sets this tile to its repaired state from its damaged state.
+    /// </summary>
+    public void RepairMe()
+    {
+        // Change the sprite
+        this.GetComponent<SpriteRenderer>().sprite = tileInfo.displaySprite;
+
+        // De-active the "danger roof will collapse" red indicator (if its active)
+        if (_collapseSprite.activeInHierarchy)
+        {
+            _collapseSprite.SetActive(false);
+            _collapseAnim.enabled = false;
+            walkable = false;
+        }
+
+        // Remove from MapManager list
+        MapManager.inst.damagedStructures.Remove(this.gameObject);
+
+    }
+
+    #endregion
+
     public Actor GetBotOnTop()
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.TransformDirection(Vector3.zero), 10f);
@@ -313,13 +383,5 @@ public class TileBlock : MonoBehaviour
         }
 
         return null; // Failure
-    }
-
-    [SerializeField] private Animator _secretDoorAnimator;
-    public void SecretDoorReveal()
-    {
-        _secretDoorAnimator.gameObject.SetActive(true);
-        _secretDoorAnimator.enabled = true;
-        _secretDoorAnimator.Play("TileSecretDoorReveal");
     }
 }

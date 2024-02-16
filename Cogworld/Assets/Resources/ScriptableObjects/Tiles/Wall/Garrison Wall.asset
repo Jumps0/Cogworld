@@ -24,3 +24,7 @@ MonoBehaviour:
   health: {x: 50, y: 50}
   armor: 30
   currentVis: 0
+  destructionClips:
+  - {fileID: 8300000, guid: fbac4b8082b660f43952bc9fc1f62628, type: 3}
+  - {fileID: 8300000, guid: edb70e29d2e6804498b0f619b0522f1e, type: 3}
+  - {fileID: 8300000, guid: 7020e8f099817ea46b8fc5ebb455b8ea, type: 3}

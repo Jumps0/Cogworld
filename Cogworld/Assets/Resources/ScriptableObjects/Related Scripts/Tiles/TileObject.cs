@@ -44,6 +44,9 @@ public abstract class TileObject : ScriptableObject
     [Header("Field of View")]
     public TileVisibility currentVis;
 
+    [Header("Destruction Sounds")]
+    public List<AudioClip> destructionClips = new List<AudioClip>();
+
 }
 
 [System.Serializable]

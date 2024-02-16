@@ -61,14 +61,8 @@ public class MapManager : MonoBehaviour
 
     [Header("Misc")]
     [SerializeField] private Vector3 originalPlayerSpawnLocation;
-
-    [Header("AI Groups")]
-    public List<GroupLeader> activeAssaults = new List<GroupLeader>();
-    public List<GroupLeader> activeInvestigations = new List<GroupLeader>();
-    public List<GroupLeader> activeExterminations = new List<GroupLeader>();
-    public List<GroupLeader> activeReinforcements = new List<GroupLeader>();
-    public List<GroupLeader> activePatrols = new List<GroupLeader>();
-    // Expand this later...
+    [Tooltip("Used by engineers to find things to repair. This list is updated by TileBlocks that get damaged.")]
+    public List<GameObject> damagedStructures = new List<GameObject>();
 
     [Header("MapGen Debug")]
     [Tooltip("1 = Caves | 2 = Normal | 3 = Custom")]
@@ -2042,7 +2036,7 @@ public class MapManager : MonoBehaviour
                 }
 
                 // Recall
-                if (activeAssaults.Count > 0 || activeExterminations.Count > 0 || activeInvestigations.Count > 0 || activeReinforcements.Count > 0)
+                if (GameManager.inst.activeAssaults.Count > 0 || GameManager.inst.activeExterminations.Count > 0 || GameManager.inst.activeInvestigations.Count > 0 || GameManager.inst.activeReinforcements.Count > 0)
                 {
                     if ((Random.Range(0f, 1f) >= 0.4f))
                     {
@@ -2051,19 +2045,19 @@ public class MapManager : MonoBehaviour
 
                         HackObject hack = null;
 
-                        if (activeAssaults.Count > 0)
+                        if (GameManager.inst.activeAssaults.Count > 0)
                         {
                             hack = hackDatabase.Hack[116];
                         }
-                        else if (activeExterminations.Count > 0)
+                        else if (GameManager.inst.activeExterminations.Count > 0)
                         {
                             hack = hackDatabase.Hack[117];
                         }
-                        else if (activeInvestigations.Count > 0)
+                        else if (GameManager.inst.activeInvestigations.Count > 0)
                         {
                             hack = hackDatabase.Hack[118];
                         }
-                        else if (activeReinforcements.Count > 0)
+                        else if (GameManager.inst.activeReinforcements.Count > 0)
                         {
                             hack = hackDatabase.Hack[119];
                         }

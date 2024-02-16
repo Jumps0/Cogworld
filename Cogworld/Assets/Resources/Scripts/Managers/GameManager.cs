@@ -137,6 +137,14 @@ public class GameManager : MonoBehaviour
     public List<Entity> entities = new List<Entity>();
     public List<Entity> Entities { get => entities; }
 
+    [Header("AI Groups")]
+    public List<GroupLeader> activeAssaults = new List<GroupLeader>();
+    public List<GroupLeader> activeInvestigations = new List<GroupLeader>();
+    public List<GroupLeader> activeExterminations = new List<GroupLeader>();
+    public List<GroupLeader> activeReinforcements = new List<GroupLeader>();
+    public List<GroupLeader> activePatrols = new List<GroupLeader>();
+    // Expand this later...
+
     [Header("Game Options")]
     public bool allowMouseMovement = true;
     [Tooltip("0 = Novice, 1 = Explorer, 2 = Rogue")]
