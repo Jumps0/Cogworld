@@ -34,69 +34,108 @@ public class FogOfWar : MonoBehaviour
 
     public void UpdateFogMap(List<Vector3Int> playerFOV)
     {
+        // Note: This looks terrible, is there a better way?
+
         foreach (Vector3Int pos in visibleTiles)
         {
-            // -- isExplored Check
-            if (MapManager.inst._allTilesRealized.ContainsKey((Vector2Int)pos) && MapManager.inst._allTilesRealized[(Vector2Int)pos])
-            { // Safety check
-                if (!MapManager.inst._allTilesRealized[(Vector2Int)pos].GetComponent<TileBlock>().isExplored) // We have now seen this tile (for the first time)
+            if (GlobalSettings.inst.cheat_fullVision)
+            {
+                #region Vision Cheat
+                // For full vision cheat
+                if (MapManager.inst._allTilesRealized.ContainsKey((Vector2Int)pos) && MapManager.inst._allTilesRealized[(Vector2Int)pos])
                 {
-                    MapManager.inst._allTilesRealized[(Vector2Int)pos].GetComponent<TileBlock>().isExplored = true; // Make it explored
-
+                    MapManager.inst._allTilesRealized[(Vector2Int)pos].GetComponent<TileBlock>().isExplored = true;
+                    MapManager.inst._allTilesRealized[(Vector2Int)pos].GetComponent<TileBlock>().isVisible = true;
                     if (MapManager.inst._allTilesRealized[(Vector2Int)pos].GetComponent<TileBlock>()._partOnTop) // Items
                     {
                         MapManager.inst._allTilesRealized[(Vector2Int)pos].GetComponent<TileBlock>()._partOnTop.isExplored = true;
+                        MapManager.inst._allTilesRealized[(Vector2Int)pos].GetComponent<TileBlock>()._partOnTop.isVisible = true;
                     }
-
-                    StartCoroutine(MapManager.inst._allTilesRealized[(Vector2Int)pos].GetComponent<TileBlock>().RevealAnim());
-
                     if (MapManager.inst._layeredObjsRealized.ContainsKey((Vector2Int)pos)) // -- Extra step for doors, access, and machines
                     {
                         if (MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<TileBlock>()) // Door
                         {
                             MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<TileBlock>().isExplored = true;
+                            MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<TileBlock>().isVisible = true;
                         }
                         else if (MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<AccessObject>()) // Access
                         {
                             MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<AccessObject>().isExplored = true;
-                            MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<AccessObject>().InitialReveal();
+                            MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<AccessObject>().isVisible = true;
                         }
                         else if (MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<MachinePart>()) // Machine
                         {
                             MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<MachinePart>().isExplored = true;
+                            MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<MachinePart>().isVisible = true;
                         }
                     }
                 }
 
-                // -- isVisibile Check
-                MapManager.inst._allTilesRealized[(Vector2Int)pos].GetComponent<TileBlock>().isVisible = false;
-
-                // -- Item Visibility
-                if (MapManager.inst._allTilesRealized[(Vector2Int)pos].GetComponent<TileBlock>()._partOnTop) // Items
-                {
-                    MapManager.inst._allTilesRealized[(Vector2Int)pos].GetComponent<TileBlock>()._partOnTop.isVisible = false;
-                }
+                #endregion
             }
-
-            
-
-            // -- Extra step for doors, access, and machines
-            if (MapManager.inst._layeredObjsRealized.ContainsKey((Vector2Int)pos) && MapManager.inst._layeredObjsRealized[(Vector2Int)pos])
+            else
             {
-                if (MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<TileBlock>()) // Door
-                {
-                    MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<TileBlock>().isVisible = false;
+                // -- isExplored Check
+                if (MapManager.inst._allTilesRealized.ContainsKey((Vector2Int)pos) && MapManager.inst._allTilesRealized[(Vector2Int)pos])
+                { // Safety check
+                    if (!MapManager.inst._allTilesRealized[(Vector2Int)pos].GetComponent<TileBlock>().isExplored) // We have now seen this tile (for the first time)
+                    {
+                        MapManager.inst._allTilesRealized[(Vector2Int)pos].GetComponent<TileBlock>().isExplored = true; // Make it explored
+
+                        if (MapManager.inst._allTilesRealized[(Vector2Int)pos].GetComponent<TileBlock>()._partOnTop) // Items
+                        {
+                            MapManager.inst._allTilesRealized[(Vector2Int)pos].GetComponent<TileBlock>()._partOnTop.isExplored = true;
+                        }
+
+                        StartCoroutine(MapManager.inst._allTilesRealized[(Vector2Int)pos].GetComponent<TileBlock>().RevealAnim());
+
+                        if (MapManager.inst._layeredObjsRealized.ContainsKey((Vector2Int)pos)) // -- Extra step for doors, access, and machines
+                        {
+                            if (MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<TileBlock>()) // Door
+                            {
+                                MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<TileBlock>().isExplored = true;
+                            }
+                            else if (MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<AccessObject>()) // Access
+                            {
+                                MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<AccessObject>().isExplored = true;
+                                MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<AccessObject>().InitialReveal();
+                            }
+                            else if (MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<MachinePart>()) // Machine
+                            {
+                                MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<MachinePart>().isExplored = true;
+                            }
+                        }
+                    }
+
+                    // -- isVisibile Check
+                    MapManager.inst._allTilesRealized[(Vector2Int)pos].GetComponent<TileBlock>().isVisible = false;
+
+                    // -- Item Visibility
+                    if (MapManager.inst._allTilesRealized[(Vector2Int)pos].GetComponent<TileBlock>()._partOnTop) // Items
+                    {
+                        MapManager.inst._allTilesRealized[(Vector2Int)pos].GetComponent<TileBlock>()._partOnTop.isVisible = false;
+                    }
                 }
-                else if (MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<AccessObject>()) // Access
+
+
+
+                // -- Extra step for doors, access, and machines
+                if (MapManager.inst._layeredObjsRealized.ContainsKey((Vector2Int)pos) && MapManager.inst._layeredObjsRealized[(Vector2Int)pos])
                 {
-                    MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<AccessObject>().isVisible = false;
-                }
-                else if (MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<MachinePart>()) // Machine
-                {
-                    MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<MachinePart>().isVisible = false;
+                    if (MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<TileBlock>()) // Door
+                    {
+                        MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<TileBlock>().isVisible = false;
+                    }
+                    else if (MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<AccessObject>()) // Access
+                    {
+                        MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<AccessObject>().isVisible = false;
+                    }
+                    else if (MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<MachinePart>()) // Machine
+                    {
+                        MapManager.inst._layeredObjsRealized[(Vector2Int)pos].GetComponent<MachinePart>().isVisible = false;
+                    }
                 }
             }
-            
 
         }
 
@@ -202,15 +241,21 @@ public class FogOfWar : MonoBehaviour
         // Bots
         foreach (Entity E in GameManager.inst.entities)
         {
-            E.GetComponent<Actor>().isVisible = true;
-            E.GetComponent<Actor>().isExplored = true;
+            if (E)
+            {
+                E.GetComponent<Actor>().isVisible = true;
+                E.GetComponent<Actor>().isExplored = true;
+            }
         }
 
         // Items
         foreach (var item in InventoryControl.inst.worldItems)
         {
-            item.Value.GetComponent<Part>().isVisible = true;
-            item.Value.GetComponent<Part>().isExplored = true;
+            if (item.Value != null)
+            {
+                item.Value.GetComponent<Part>().isVisible = true;
+                item.Value.GetComponent<Part>().isExplored = true;
+            }
         }
     }
 

@@ -9784,7 +9784,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 120.675674, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 22.777779}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &272249432
@@ -43911,7 +43911,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 172.365
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -58061,11 +58061,7 @@ MonoBehaviour:
   pointsOfInterest: []
   initialAISpawnPositions: []
   originalPlayerSpawnLocation: {x: 0, y: 0, z: 0}
-  activeAssaults: []
-  activeInvestigations: []
-  activeExterminations: []
-  activeReinforcements: []
-  activePatrols: []
+  damagedStructures: []
   mapType: 3
   customMapType: -1
   setMapSize: {x: 101, y: 101}
@@ -58121,10 +58117,14 @@ MonoBehaviour:
   imp_fabricators:
   - {fileID: 7456691822352536937, guid: 4fddd0493e289c94685f2da7aa78834b, type: 3}
   - {fileID: 7456691822352536937, guid: d400bdf96efe405418dba79f60fc9664, type: 3}
-  imp_recyclingunits: []
+  imp_recyclingunits:
+  - {fileID: 7456691822352536937, guid: 201e810c107504141847b2c6fc2c524d, type: 3}
   imp_garrisons:
   - {fileID: 7456691822352536937, guid: 02939376884b00d4f96702ed8e3b3dec, type: 3}
-  imp_repairstations: []
+  imp_repairstations:
+  - {fileID: 7456691822352536937, guid: 21c32ace1e3874e46b2199fe23f40eb0, type: 3}
+  - {fileID: 7456691822352536937, guid: 423ecc60fd33a8348aaa10a241d031c0, type: 3}
+  - {fileID: 7456691822352536937, guid: fc940ba472295774eb69c273a8989f73, type: 3}
   imp_scanalyzers:
   - {fileID: 7456691822352536937, guid: d699bbd9c4aaea54988cad73cfc19a9c, type: 3}
   imp_customTerminals:
@@ -67087,7 +67087,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 172.365
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -85497,6 +85497,11 @@ MonoBehaviour:
     core2: {x: 2, y: 2}
     killCount: 0
   entities: []
+  activeAssaults: []
+  activeInvestigations: []
+  activeExterminations: []
+  activeReinforcements: []
+  activePatrols: []
   allowMouseMovement: 0
   mode: 0
   hardDiff: 0
@@ -96691,7 +96696,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 172.365
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -101112,7 +101117,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 172.365
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -103455,7 +103460,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 172.365
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.y

@@ -86,6 +86,7 @@ public static class HF
             19 = Testing (Green)
             20 = Architect wall (White) also for access and lab
             21 = Cave vault wall (Orange)
+            22 = Cave floor (Smooth floor with no rivits in the corners)
             */
             #endregion
 
@@ -150,7 +151,64 @@ public static class HF
         }
         else if(type == TileType.Floor)
         {
-            return 4; // Will this ever change?
+            switch (MapManager.inst.currentLevelName)
+            { // We have two types of floor tiles at the moment. One thats clean (for caves), and one thats industrial (for everythign else)
+                case "MATERIALS":
+                    return 4;
+                case "LOWER CAVES":
+                    return 22;
+                case "STORAGE":
+                    return 4;
+                case "DSF":
+                    return 4;
+                case "GARRISON":
+                    return 4;
+                case "FACTORY":
+                    return 4;
+                case "EXTENSION":
+                    return 4;
+                case "UPPER CAVES":
+                    return 22;
+                case "RESEARCH":
+                    return 4;
+                case "ACCESS":
+                    return 4;
+                case "COMMAND":
+                    return 4;
+                case "ARMORY":
+                    return 4;
+                case "WASTE":
+                    return 4;
+                case "HUB":
+                    return 4;
+                case "ARCHIVES":
+                    return 4;
+                case "CETUS":
+                    return 4;
+                case "ARCHITECT":
+                    return 22;
+                case "ZHIROV":
+                    return 22;
+                case "DATA MINER":
+                    return 22;
+                case "EXILES":
+                    return 22;
+                case "WARLORD":
+                    return 22;
+                case "SECTION 7":
+                    return 4;
+                case "TESTING":
+                    return 4;
+                case "QUARANTINE":
+                    return 4;
+                case "LAB":
+                    return 4;
+                case "HUB_04(d)":
+                    return 4;
+                default:
+                    return 4;
+                    // EXPAND THIS LATER
+            }
         }
         else if (type == TileType.Door)
         {
@@ -3207,5 +3265,16 @@ public static class HF
         }
 
         return LOS;
+    }
+
+    /// <summary>
+    /// Determines if the actor in question is within the players FOV (list).
+    /// </summary>
+    /// <param name="actor">The actor in question.</param>
+    /// <returns>If this actor is in the player's FOV. True/False</returns>
+    public static bool InPlayerFOV(GameObject actor)
+    {
+        return (PlayerData.inst.GetComponent<Actor>().FieldofView.Contains(new Vector3Int((int)actor.transform.position.x, (int)actor.transform.position.y, (int)actor.transform.position.z))
+            && actor.GetComponent<Actor>().isVisible);
     }
 }

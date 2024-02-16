@@ -16,7 +16,7 @@ public class GlobalSettings : MonoBehaviour
     }
 
     [Header("Cheats")]
-    public bool fullVision = false;
+    public bool cheat_fullVision = false;
 
     #region Defaults
     [Header("Defaults")]
@@ -352,7 +352,7 @@ public class GlobalSettings : MonoBehaviour
 
     private void CheckForCheats()
     {
-        if (fullVision && !doOnce4)
+        if (cheat_fullVision && !doOnce4)
         {
             FogOfWar.inst.DEBUG_RevealAll();
             doOnce4 = false;

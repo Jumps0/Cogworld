@@ -89,7 +89,43 @@ public class BotAI : MonoBehaviour
                 switch (state)
                 {
                     case BotAIState.Working:
+                        // In this state, the worker is going to be performing some kind of action.
+                        if(this.GetComponent<Actor>().botInfo._class == BotClass.Hauler)
+                        {
 
+                        }
+                        else if (this.GetComponent<Actor>().botInfo._class == BotClass.Mechanic)
+                        {
+
+                        }
+                        else if (this.GetComponent<Actor>().botInfo._class == BotClass.Operator)
+                        {
+
+                        }
+                        else if (this.GetComponent<Actor>().botInfo._class == BotClass.Recycler)
+                        {
+
+                        }
+                        else if (this.GetComponent<Actor>().botInfo._class == BotClass.Builder)
+                        {
+
+                        }
+                        else if (this.GetComponent<Actor>().botInfo._class == BotClass.Watcher)
+                        {
+
+                        }
+                        else if (this.GetComponent<Actor>().botInfo._class == BotClass.Worker)
+                        {
+
+                        }
+                        else if (this.GetComponent<Actor>().botInfo._class == BotClass.Tunneler)
+                        {
+
+                        }
+                        else if (this.GetComponent<Actor>().botInfo._class == BotClass.Researcher)
+                        {
+
+                        }
                         break;
                     case BotAIState.Hunting:
 
@@ -236,13 +272,15 @@ public class BotAI : MonoBehaviour
 
     #endregion
 
+
+    #region Loitering
     /// <summary>
     /// Will make the bot "loiter" around a specific area. Randomly wandering around but staying near the center.
     /// </summary>
     /// <param name="center">The point to stay near.</param>
-    private void Loiter(Vector2Int center)
+    private void Loiter(Vector2Int center, float maxDist = 4)
     {
-        float maxDistance = 4;
+        float maxDistance = maxDist;
 
         Vector2Int myPos = HF.V3_to_V2I(this.transform.position);
         // Get neighbors
@@ -349,6 +387,7 @@ public class BotAI : MonoBehaviour
             return Vector2Int.zero; // Failsafe
         }
     }
+    #endregion
 
     #region A* & Fun!
     [Header("A* & Pathing")]
@@ -513,6 +552,104 @@ public class BotAI : MonoBehaviour
     }
 
     private Actor fleeSource = null;
+
+    #endregion
+
+    #region Find me a...
+
+    /// <summary>
+    /// Finds the nearest recycler to this bot.
+    /// </summary>
+    /// <returns>The parent part of the recycler.</returns>
+    public RecyclingUnit FindNearestRecycler()
+    {
+        Transform tMin = null;
+        float minDist = Mathf.Infinity;
+        Vector3 currentPos = this.transform.position;
+        foreach (GameObject M in MapManager.inst.machines_recyclingUnits)
+        {
+            float dist = Vector3.Distance(M.transform.position, currentPos);
+            if (dist < minDist)
+            {
+                tMin = M.transform;
+                minDist = dist;
+            }
+        }
+        return tMin.transform.GetChild(0).GetComponent<RecyclingUnit>(); ;
+    }
+
+    /// <summary>
+    /// Find a random static machine.
+    /// </summary>
+    /// <returns>The parent part of a static machine.</returns>
+    public StaticMachine FindRandomStaticMachine()
+    {
+        GameObject M = MapManager.inst.machines_static[Random.Range(0, MapManager.inst.machines_static.Count)];
+
+        return M.transform.GetChild(0).GetComponent<StaticMachine>();
+    }
+
+    /// <summary>
+    /// Finds a dirty floor tile somewhere on the map.
+    /// </summary>
+    /// <returns>A dirty floor tile in the form of a GameObject.</returns>
+    public GameObject FindDirtyFloor()
+    {
+        foreach (var T in MapManager.inst._allTilesRealized)
+        {
+            if (T.Value.isDirty)
+            {
+                return T.Value.gameObject;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Finds nearby dirty floor tiles within specified distance.
+    /// </summary>
+    /// <param name="distance">How far away to check, keep this low.</param>
+    /// <returns>A list of any dirty floor tiles.</returns>
+    public List<GameObject> FindDirtyFloorLocal(int distance = 8)
+    {
+        List<GameObject> local = new List<GameObject>();
+
+        Vector2Int bottomLeft = HF.V3_to_V2I(this.transform.position) - new Vector2Int(distance, distance);
+
+        for (int x = bottomLeft.x; x < bottomLeft.x + (distance * 2); x++)
+        {
+            for (int y = bottomLeft.y; y < bottomLeft.y + (distance * 2); y++)
+            {
+                if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(x, y)))
+                {
+                    if (MapManager.inst._allTilesRealized[new Vector2Int(x, y)].isDirty)
+                    {
+                        local.Add(MapManager.inst._allTilesRealized[new Vector2Int(x, y)].gameObject);
+                    }
+                }
+            }
+        }
+
+        return local;
+    }
+
+    /// <summary>
+    /// Checks all floor items in the map and returns the first one that isn't native to the environment.
+    /// </summary>
+    /// <returns>A floor item to pick up.</returns>
+    public GameObject CheckFloorItems()
+    {
+        foreach (Transform child in InventoryControl.inst.allFloorItems.transform)
+        {
+            if (child.GetComponent<Part>() && !child.GetComponent<Part>().native)
+            {
+                return child.gameObject;
+            }
+        }
+
+        return null;
+    }
 
     #endregion
 
