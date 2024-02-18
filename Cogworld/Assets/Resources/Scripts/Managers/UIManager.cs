@@ -4170,8 +4170,6 @@ public class UIManager : MonoBehaviour
     {
         if (state) // Enable Submode
         {
-            StartCoroutine(Scan_SubmodeAnimate());
-
             // Enable the sub text blocker
             scanSubParent.SetActive(true);
             scanSubTextA.enabled = true;
@@ -4184,9 +4182,13 @@ public class UIManager : MonoBehaviour
             scanButtonText[2].enabled = false;
             scanButtonText[3].enabled = false;
 
+            // NOTE: The highlight backing animation only plays for "important" objects like; actors, items, exits, and traps.
+
             // Now figure out what the focus object is
             if (focusObj.GetComponent<Actor>())
             {
+                StartCoroutine(Scan_SubmodeAnimate());
+
                 // - The square - here it represents the actor's current health
                 scanSubImage.enabled = true;
                 float currentIntegrity = (float)focusObj.GetComponent<Actor>().currentHealth / (float)focusObj.GetComponent<Actor>().maxHealth;
@@ -4223,8 +4225,38 @@ public class UIManager : MonoBehaviour
                 scanSubTextB.color = subGreen;
 
             }
+            else if (focusObj.GetComponent<TileBlock>())
+            {
+                // - The square - here it's disabled
+                scanSubImage.enabled = false;
+
+                // - The text - here line A is the name primary or branch access, and the secondary is where it leads
+                if (focusObj.GetComponent<AccessObject>().isBranch)
+                {
+                    scanSubTextA.text = "Branch Access";
+                }
+                else
+                {
+                    scanSubTextA.text = "Primary Access";
+                }
+                scanSubTextA.color = highGreen;
+
+                scanSubTextB.text = "> / ";
+                if (focusObj.GetComponent<AccessObject>().playerKnowsDestination)
+                {
+                    scanSubTextB.text += focusObj.GetComponent<AccessObject>().destName;
+                }
+                else
+                {
+                    scanSubTextB.text += "???";
+                }
+                scanSubTextB.color = highGreen;
+                
+            }
             else if (focusObj.GetComponent<Part>())
             {
+                StartCoroutine(Scan_SubmodeAnimate());
+
                 if (focusObj.GetComponent<Part>()._item.Id != 17)
                 {
                     // - The square - here it represents the item's current health
@@ -4309,8 +4341,10 @@ public class UIManager : MonoBehaviour
             }
             else if (focusObj.GetComponent<FloorTrap>())
             {
+                StartCoroutine(Scan_SubmodeAnimate());
+
                 // - The square - here it indicates if this trap is friendly or not
-                if(focusObj.GetComponent<FloorTrap>().alignment != BotRelation.Friendly) 
+                if (focusObj.GetComponent<FloorTrap>().alignment != BotRelation.Friendly) 
                 {
                     scanSubImage.color = dangerRed;
                     scanSubTextA.color = dangerRed;

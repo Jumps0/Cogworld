@@ -15,6 +15,8 @@ public class AccessObject : MonoBehaviour
     public int targetDestination;
     public string destName;
     public bool isBranch;
+    [Tooltip("Does the player know where this leads? If not will display as '???'")]
+    public bool playerKnowsDestination;
 
     public int locX;
     public int locY;

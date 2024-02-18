@@ -519,6 +519,7 @@ public class PlayerData : MonoBehaviour
 
         // - Flags -
         GameObject wall = null;
+        GameObject exit = null;
         GameObject bot = null;
         GameObject item = null;
         GameObject door = null;
@@ -533,6 +534,7 @@ public class PlayerData : MonoBehaviour
 
             // There is a heirarchy of what we want to display:
             // -A wall
+            // -An exit
             // -A bot
             // -An item
             // -A door
@@ -546,6 +548,11 @@ public class PlayerData : MonoBehaviour
             {
                 // A wall
                 wall = hit.collider.gameObject;
+            }
+            else if (hit.collider.GetComponent<AccessObject>())
+            {
+                // An exit
+                exit = hit.collider.gameObject;
             }
             else if (hit.collider.GetComponent<Actor>() && hit.collider.GetComponent<Actor>() != PlayerData.inst.GetComponent<Actor>())
             {
@@ -578,6 +585,11 @@ public class PlayerData : MonoBehaviour
         if (wall)
         {
             UIManager.inst.Scan_FlipSubmode(true, wall);
+            return;
+        }
+        else if (exit)
+        {
+            UIManager.inst.Scan_FlipSubmode(true, exit);
             return;
         }
         else if (bot)
