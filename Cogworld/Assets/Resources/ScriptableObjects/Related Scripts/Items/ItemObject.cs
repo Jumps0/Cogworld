@@ -321,6 +321,9 @@ public class ItemEffect
 
     [Header("Phasing")]
     public ItemPhasing phasingEffect;
+
+    [Header("Cloaking")]
+    public ItemCloaking cloakingEffect;
 }
 
 public enum ItemQuality
@@ -605,6 +608,19 @@ public class ItemPhasing
     [Header("0.## | Effect doubled while hovering or flying")]
     public float percentage;
     public bool stacks = false;
+}
+
+[System.Serializable]
+[Tooltip("Effective sight range of robots attempting to spot you reduced by #. Also -##% chance of being noticed by hostiles if passing through their field of view when not their turn.")]
+public class ItemCloaking
+{
+    public bool hasEffect = false;
+    [Tooltip("Effective sight range of robots attempting to spot you reduced by #.")]
+    public int rangedReduction;
+    [Tooltip("[In the form -0.##] -##% chance of being noticed by hostiles if passing through their field of view when not their turn.")]
+    public float noticeReduction;
+    [Tooltip("If multiple of this effect is applied, then then only half of that effect is added.")]
+    public bool halfStacks = true;
 }
 
 #endregion

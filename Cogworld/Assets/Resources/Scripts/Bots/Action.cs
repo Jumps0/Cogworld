@@ -43,7 +43,7 @@ public static class Action
     public static void MeleeAction(Actor source, Actor target)
     {
         float targetCoreExposure;
-        ItemObject weapon = FindMeleeWeapon(source);
+        Item weapon = FindMeleeWeapon(source);
 
         if (target.botInfo) // Bot
         {
@@ -160,8 +160,208 @@ public static class Action
         }
 
         // We are doing a ranged attack vs a target
+        float toHitChance = 0f;
+        bool noCrit = false;
+        List<ArmorType> types = new List<ArmorType>();
+        ItemShot shotData = weapon.itemData.shot;
+        ItemProjectile projData = weapon.itemData.projectile;
+        int projAmount = weapon.itemData.projectileAmount;
+
+        (toHitChance, noCrit, types) = Action.CalculateRangedHitChance(source, target, weapon);
+
+        float rand = Random.Range(0f, 1f);
+        if (rand < toHitChance) // Success, a hit!
+        {
+            // For both cases we want to:
+            // - Create an in-world projectile that goes to the target
+            Color projColor = Random.ColorHSV();
+            Color boxColor = new Color(projColor.r, projColor.g, projColor.b, 0.7f);
+            UIManager.inst.CreateGenericProjectile(source.transform, target.transform, projColor, boxColor, Random.Range(15f, 20f), true);
+            // - Play a shooting sound, from the source
+            source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
+
+            // Deal Damage to the target
+            int damageAmount = (int)Random.Range(projData.damage.x, projData.damage.y);
+
+            if (!noCrit && rand <= projData.critChance) // Critical hit?
+            {
+                // A crit!
+            }
+            if (target.GetComponent<PlayerData>()) // Player being attacked
+            {
+                if (rand < PlayerData.inst.currentCoreExposure) // Hits the core
+                {
+                    PlayerData.inst.currentHealth -= damageAmount;
+                }
+                else // Hits a part
+                {
+                    DamageRandomPart(target, damageAmount, types);
+                }
+
+                // Do a calc message
+                string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Hit";
+
+                UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange, UIManager.inst.warmYellow, false, true);
+
+                message = $"Recieved damage: {damageAmount}";
+                UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange, UIManager.inst.warmYellow, false, true);
+            }
+            else // Bot being attacked
+            {
+                if (rand < target.botInfo.coreExposure) // Hits the core
+                {
+                    target.currentHealth -= damageAmount;
+                }
+                /*
+                else // Hits a part
+                {
+                    DamageRandomPart(target, damageAmount, types);
+                }
+                */
+
+                // Show a popup that says how much damage occured
+                if (!target.GetComponent<PlayerData>())
+                {
+                    UI_CombatPopup(target, damageAmount);
+                }
+
+                // Do a calc message
+                string message = $"{weapon.itemData.name} ({toHitChance * 100}%) Hit";
+
+                UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+            }
+        }
+        else
+        {  // ---------------------------- // Failure, a miss.
+
+            // Create a projectile that will miss
+            Color projColor = Random.ColorHSV();
+            Color boxColor = new Color(projColor.r, projColor.g, projColor.b, 0.7f);
+            UIManager.inst.CreateGenericProjectile(source.transform, target.transform, projColor, boxColor, Random.Range(20f, 15f), false);
+
+            // Play a sound
+            source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
+
+
+            if (target.GetComponent<PlayerData>()) // Player being targeted
+            {
+                // Do a calc message
+                string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Miss";
+
+                UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange_faded, UIManager.inst.corruptOrange, false, true);
+            }
+            else // AI being targeted
+            {
+                // Do a calc message
+                string message = $"{weapon.itemData.name} ({toHitChance * 100}%) Miss";
+
+                UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.dullGreen, UIManager.inst.normalGreen, false, true);
+            }
+        }
+
+        // After we're done, we need to subtract the cost to fire the specified weapon from the attacker.
+        if (source.GetComponent<PlayerData>())
+        {
+            PlayerData.inst.currentHeat += shotData.shotHeat;
+            PlayerData.inst.currentMatter += shotData.shotMatter;
+            PlayerData.inst.currentEnergy += shotData.shotEnergy;
+        }
+        else
+        {
+            source.currentHeat += shotData.shotHeat;
+            source.currentMatter += shotData.shotMatter;
+            // energy?
+        }
+
+
+        TurnManager.inst.EndTurn(source);
+
+
+    }
+
+    public static void MovementAction(Actor actor, Vector2 direction)
+    {
+        //Debug.Log($"{actor.name} moves {direction}!");
+        actor.noMovementFor = 0;
+        actor.Move(direction);
+        actor.UpdateFieldOfView();
+
+        TurnManager.inst.EndTurn(actor);
+
+    }
+
+    public static void SkipAction(Actor actor)
+    {
+        TurnManager.inst.EndTurn(actor);
+    }
+
+    /// <summary>
+    /// "Shunt" (push) the specified target on tile away from the source.
+    /// </summary>
+    /// <param name="source">The source to be pushed away from.</param>
+    /// <param name="target">The actor being pushed.</param>
+    public static void ShuntAction(Actor source, Actor target)
+    {
+        // We need to move away from the source
+        List<GameObject> neighbors = HF.FindNeighbors((int)target.transform.position.x, (int)target.transform.position.y);
+
+        List<GameObject> validMoveLocations = new List<GameObject>();
+
+        foreach (var T in neighbors)
+        {
+            if (target.GetComponent<Actor>().IsUnoccupiedTile(T.GetComponent<TileBlock>()))
+            {
+                validMoveLocations.Add(T);
+            }
+        }
+
+        GameObject moveLocation = target.GetComponent<Actor>().GetBestFleeLocation(source.gameObject, target.gameObject, validMoveLocations);
+
+        if(moveLocation != null)
+        {
+            // Normalize move direction
+            Vector2Int moveDir = new Vector2Int(0, 0);
+            if (moveLocation.transform.position.x > target.transform.position.x)
+            {
+                moveDir.x++;
+            }
+            else if (moveLocation.transform.position.x < target.transform.position.x)
+            {
+                moveDir.x--;
+            }
+
+            if (moveLocation.transform.position.y > target.transform.position.y)
+            {
+                moveDir.y++;
+            }
+            else if (moveLocation.transform.position.y < target.transform.position.y)
+            {
+                moveDir.y--;
+            }
+
+            // Move here
+            MovementAction(target, moveDir);
+        }
+        else
+        {
+            // Don't move
+        }
+
+        // Neutral bots will flee temporarily (maybe change this later?)
+        if (HF.DetermineRelation(target, source) == BotRelation.Neutral)
+        {
+            target.GetComponent<BotAI>().FleeFromSource(source);
+        }
+
+        target.confirmCollision = false; // Unset the flag
+    }
+
+    #region HelperFunctions
+
+    public static (float, bool, List<ArmorType>) CalculateRangedHitChance(Actor source, Actor target, Item weapon)
+    {
         // The default to-hit chance is 60%, we need to calculate the actual chance, which is based on...
-        #region Hit Chance Calculation
+
         /*
          *  Hit Chance
          *  ------------
@@ -371,212 +571,24 @@ public static class Action
         (List<float> bonuses, bool noCrit, List<ArmorType> types) = DefenceBonus(target);
         toHitChance -= bonuses.Sum();
 
-        #endregion
-
-        float rand = Random.Range(0f, 1f);
-        if (rand < toHitChance) // Success, a hit!
-        {
-            // For both cases we want to:
-            // - Create an in-world projectile that goes to the target
-            Color projColor = Random.ColorHSV();
-            Color boxColor = new Color(projColor.r, projColor.g, projColor.b, 0.7f);
-            UIManager.inst.CreateGenericProjectile(source.transform, target.transform, projColor, boxColor, Random.Range(15f, 20f), true);
-            // - Play a shooting sound, from the source
-            source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
-
-            // Deal Damage to the target
-            int damageAmount = (int)Random.Range(projData.damage.x, projData.damage.y);
-
-            if (!noCrit && rand <= projData.critChance) // Critical hit?
-            {
-                // A crit!
-            }
-            if (target.GetComponent<PlayerData>()) // Player being attacked
-            {
-                if (rand < PlayerData.inst.currentCoreExposure) // Hits the core
-                {
-                    PlayerData.inst.currentHealth -= damageAmount;
-                }
-                else // Hits a part
-                {
-                    DamageRandomPart(target, damageAmount, types);
-                }
-
-                // Do a calc message
-                string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Hit";
-
-                UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange, UIManager.inst.warmYellow, false, true);
-
-                message = $"Recieved damage: {damageAmount}";
-                UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange, UIManager.inst.warmYellow, false, true);
-            }
-            else // Bot being attacked
-            {
-                if (rand < target.botInfo.coreExposure) // Hits the core
-                {
-                    target.currentHealth -= damageAmount;
-                }
-                /*
-                else // Hits a part
-                {
-                    DamageRandomPart(target, damageAmount, types);
-                }
-                */
-
-                // Show a popup that says how much damage occured
-                if (!target.GetComponent<PlayerData>())
-                {
-                    UI_CombatPopup(target, damageAmount);
-                }
-
-                // Do a calc message
-                string message = $"{weapon.itemData.name} ({toHitChance * 100}%) Hit";
-
-                UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
-            }
-        }
-        else
-        {  // ---------------------------- // Failure, a miss.
-
-            // Create a projectile that will miss
-            Color projColor = Random.ColorHSV();
-            Color boxColor = new Color(projColor.r, projColor.g, projColor.b, 0.7f);
-            UIManager.inst.CreateGenericProjectile(source.transform, target.transform, projColor, boxColor, Random.Range(20f, 15f), false);
-
-            // Play a sound
-            source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
-
-
-            if (target.GetComponent<PlayerData>()) // Player being targeted
-            {
-                // Do a calc message
-                string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Miss";
-
-                UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange_faded, UIManager.inst.corruptOrange, false, true);
-            }
-            else // AI being targeted
-            {
-                // Do a calc message
-                string message = $"{weapon.itemData.name} ({toHitChance * 100}%) Miss";
-
-                UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.dullGreen, UIManager.inst.normalGreen, false, true);
-            }
-        }
-
-        // After we're done, we need to subtract the cost to fire the specified weapon from the attacker.
-        if (source.GetComponent<PlayerData>())
-        {
-            PlayerData.inst.currentHeat += shotData.shotHeat;
-            PlayerData.inst.currentMatter += shotData.shotMatter;
-            PlayerData.inst.currentEnergy += shotData.shotEnergy;
-        }
-        else
-        {
-            source.currentHeat += shotData.shotHeat;
-            source.currentMatter += shotData.shotMatter;
-            // energy?
-        }
-
-
-        TurnManager.inst.EndTurn(source);
-
-
+        return (toHitChance, noCrit, types);
     }
 
-    public static void MovementAction(Actor actor, Vector2 direction)
+    public static Item FindMeleeWeapon(Actor actor)
     {
-        //Debug.Log($"{actor.name} moves {direction}!");
-        actor.noMovementFor = 0;
-        actor.Move(direction);
-        actor.UpdateFieldOfView();
-
-        TurnManager.inst.EndTurn(actor);
-
-    }
-
-    public static void SkipAction(Actor actor)
-    {
-        TurnManager.inst.EndTurn(actor);
-    }
-
-    /// <summary>
-    /// "Shunt" (push) the specified target on tile away from the source.
-    /// </summary>
-    /// <param name="source">The source to be pushed away from.</param>
-    /// <param name="target">The actor being pushed.</param>
-    public static void ShuntAction(Actor source, Actor target)
-    {
-        // We need to move away from the source
-        List<GameObject> neighbors = HF.FindNeighbors((int)target.transform.position.x, (int)target.transform.position.y);
-
-        List<GameObject> validMoveLocations = new List<GameObject>();
-
-        foreach (var T in neighbors)
-        {
-            if (target.GetComponent<Actor>().IsUnoccupiedTile(T.GetComponent<TileBlock>()))
-            {
-                validMoveLocations.Add(T);
-            }
-        }
-
-        GameObject moveLocation = target.GetComponent<Actor>().GetBestFleeLocation(source.gameObject, target.gameObject, validMoveLocations);
-
-        if(moveLocation != null)
-        {
-            // Normalize move direction
-            Vector2Int moveDir = new Vector2Int(0, 0);
-            if (moveLocation.transform.position.x > target.transform.position.x)
-            {
-                moveDir.x++;
-            }
-            else if (moveLocation.transform.position.x < target.transform.position.x)
-            {
-                moveDir.x--;
-            }
-
-            if (moveLocation.transform.position.y > target.transform.position.y)
-            {
-                moveDir.y++;
-            }
-            else if (moveLocation.transform.position.y < target.transform.position.y)
-            {
-                moveDir.y--;
-            }
-
-            // Move here
-            MovementAction(target, moveDir);
-        }
-        else
-        {
-            // Don't move
-        }
-
-        // Neutral bots will flee temporarily (maybe change this later?)
-        if (HF.DetermineRelation(target, source) == BotRelation.Neutral)
-        {
-            target.GetComponent<BotAI>().FleeFromSource(source);
-        }
-
-        target.confirmCollision = false; // Unset the flag
-    }
-
-    #region HelperFunctions
-
-    public static ItemObject FindMeleeWeapon(Actor actor)
-    {
-        ItemObject weapon = null;
+        Item weapon = null;
 
         // For this case, we consider any weapon with a range less than or equal to 2 a melee weapon.
 
-        if (actor.botInfo) // Bot
+        if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
             foreach (BotArmament item in actor.botInfo.armament)
             {
                 if (item._item.data.Id >= 0)
                 {
-                    if (item._item.shot.shotRange <= 2)
+                    if (item._item.meleeAttack.isMelee)
                     {
-                        weapon = item._item;
+                        weapon = item._item.data;
                         return weapon;
                     }
                 }
@@ -590,9 +602,9 @@ public static class Action
             {
                 if (item.item.Id >= 0)
                 {
-                    if (item.item.itemData.shot.shotRange <= 2 && item.item.state)
+                    if (item.item.itemData.meleeAttack.isMelee && item.item.state)
                     {
-                        weapon = item.item.itemData;
+                        weapon = item.item.itemData.data;
                         return weapon;
                     }
                 }
@@ -608,7 +620,7 @@ public static class Action
 
         // For this case, we consider any weapon with a range greater than 3 to be a ranged weapon.
 
-        if (actor.botInfo) // Bot
+        if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
             foreach (BotArmament item in actor.botInfo.armament)
             {
@@ -642,10 +654,62 @@ public static class Action
         return weapon;
     }
 
+    public static Item FindActiveWeapon(Actor actor)
+    {
+        Item activeItem = FindRangedWeapon(actor);
+
+        if(activeItem == null)
+        {
+            // Try melee weapons
+            activeItem = FindMeleeWeapon(actor);
+            if (activeItem == null)
+            {
+                return null; // No active weapon
+            }
+            else
+            {
+                return activeItem;
+            }
+        }
+        else
+        {
+            return activeItem;
+        }
+    }
+
+    /// <summary>
+    /// Finds the max range of the current weapon a bot has equipped.
+    /// </summary>
+    /// <param name="actor">The bot to focus on.</param>
+    /// <returns>The range (in int form) of the weapon.</returns>
+    public static int GetWeaponRange(Actor actor)
+    {
+        Item rangedWeapon = FindRangedWeapon(actor);
+
+        if(rangedWeapon == null)
+        {
+            // They don't have a ranged weapon equipped, try looking for a melee weapon.
+            Item meleeWeapon = FindMeleeWeapon(actor);
+
+            if(meleeWeapon == null) // This bot doesn't have any active weapons
+            {
+                return 0;
+            }
+            else
+            {
+                return 2; // Should be 1 but we want to visualize +1 range.
+            }
+        }
+        else
+        {
+            return rangedWeapon.itemData.shot.shotRange;
+        }
+    }
+
     #region Has Propulsion Type
     public static bool HasTreads(Actor actor)
     {
-        if (actor.botInfo) // Bot
+        if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
             foreach (BotArmament item in actor.botInfo.components)
             {
@@ -680,7 +744,7 @@ public static class Action
 
     public static bool HasLegs(Actor actor)
     {
-        if (actor.botInfo) // Bot
+        if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
             foreach (BotArmament item in actor.botInfo.components)
             {
@@ -715,7 +779,7 @@ public static class Action
 
     public static bool HasWheels(Actor actor)
     {
-        if (actor.botInfo) // Bot
+        if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
             foreach (BotArmament item in actor.botInfo.components)
             {
@@ -750,7 +814,7 @@ public static class Action
 
     public static bool HasHover(Actor actor)
     {
-        if (actor.botInfo) // Bot
+        if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
             foreach (BotArmament item in actor.botInfo.components)
             {
@@ -785,7 +849,7 @@ public static class Action
 
     public static bool HasFlight(Actor actor)
     {
-        if (actor.botInfo) // Bot
+        if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
             foreach (BotArmament item in actor.botInfo.components)
             {
@@ -826,7 +890,7 @@ public static class Action
         float bonus_melee = 0f;
         float bonus_ranged = 0f;
 
-        if (actor.botInfo) // Bot
+        if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
             foreach (BotArmament item in actor.botInfo.components)
             {
@@ -885,7 +949,7 @@ public static class Action
         bool stacks = true;
         bool noCrits = false;
 
-        if (actor.botInfo) // Bot
+        if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
             foreach (BotArmament item in actor.botInfo.components)
             {
@@ -951,7 +1015,7 @@ public static class Action
     {
         List<ItemObject> foundArmor = new List<ItemObject>();
 
-        if (actor.botInfo) // Bot
+        if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
             foreach (BotArmament item in actor.botInfo.components)
             {
@@ -986,7 +1050,7 @@ public static class Action
 
     public static (bool, float) HasResistanceTo(Actor actor, ItemDamageType resistance)
     {
-        if (actor.botInfo) // Bot
+        if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
             foreach (BotResistances res in actor.botInfo.resistances)
             {
@@ -1037,7 +1101,7 @@ public static class Action
         int totalMass = 0;
 
         // Items in inventory don't count!
-        if (actor.botInfo) // Bot
+        if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
             foreach (BotArmament item in actor.botInfo.armament)
             {
@@ -1114,7 +1178,7 @@ public static class Action
          * 
          */
 
-        if (actor.botInfo) // Bot
+        if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
             foreach (BotArmament item in actor.botInfo.components)
             {
@@ -1172,7 +1236,7 @@ public static class Action
         int support = PlayerData.inst.baseWeightSupport; // Just use 3 as default
         bool stacks = true;
 
-        if (actor.botInfo) // Bot
+        if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
             foreach (BotArmament item in actor.botInfo.components)
             {
@@ -1633,7 +1697,7 @@ public static class Action
         int evasionBonus4 = 0;
         int evasionBonus5 = 0;
 
-        if (actor.botInfo) // Bot
+        if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
             // -- Flight/Hover bonus -- //
 
@@ -1946,6 +2010,173 @@ public static class Action
         individualValues.Add(evasionBonus5);
 
         return (avoidance, individualValues);
+    }
+
+    /// <summary>
+    /// Calculates the two cloak bonuses the bot may have from cloaking items.
+    /// </summary>
+    /// <param name="actor">The bot in question.</param>
+    /// <returns>The range reducion (as int) and spot chance reduction (as -float).</returns>
+    public static (int, float) CalculateCloakEffectBonus(Actor actor)
+    {
+        int effects = 0; // Since some effects half stack, we need to track this.
+
+        int rangeReduction = 0;
+        float spotReduction = 0f;
+
+        if (actor != PlayerData.inst.GetComponent<Actor>()) // Not the player
+        {
+            foreach (BotArmament item in actor.botInfo.components)
+            {
+                if (item._item.data.Id >= 0 && item._item.data.state)
+                {
+                    foreach (ItemEffect effect in item._item.data.itemData.itemEffect)
+                    {
+                        if (effect.cloakingEffect.hasEffect)
+                        {
+                            if(effects > 0 && effect.cloakingEffect.halfStacks)
+                            {
+                                rangeReduction += (effect.cloakingEffect.rangedReduction / 2);
+                                spotReduction += (effect.cloakingEffect.noticeReduction / 2);
+                            }
+                            else
+                            {
+                                rangeReduction += effect.cloakingEffect.rangedReduction;
+                                spotReduction += effect.cloakingEffect.noticeReduction;
+                            }
+
+                            effects++;
+                        }
+                    }
+                }
+            }
+        }
+        else // The player
+        {
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items)
+            {
+                if (item.item.Id > 0 && item.item.state)
+                {
+                    if (item.item.itemData.type == ItemType.Device)
+                    {
+                        foreach (ItemEffect effect in item.item.itemData.itemEffect)
+                        {
+                            if (effect.cloakingEffect.hasEffect)
+                            {
+                                if (effects > 0 && effect.cloakingEffect.halfStacks)
+                                {
+                                    rangeReduction += (effect.cloakingEffect.rangedReduction / 2);
+                                    spotReduction += (effect.cloakingEffect.noticeReduction / 2);
+                                }
+                                else
+                                {
+                                    rangeReduction += effect.cloakingEffect.rangedReduction;
+                                    spotReduction += effect.cloakingEffect.noticeReduction;
+                                }
+
+                                effects++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return (rangeReduction, spotReduction);
+    }
+
+    /// <summary>
+    /// Will attempt to spot the player if they aren't already spotted.
+    /// </summary>
+    /// <param name="actor">The actor trying to spot the player.</param>
+    /// <returns>If the player gets spotted.</returns>
+    public static bool TrySpotPlayer(Actor actor)
+    {
+        int spotRangeMod = 0;
+        float spotChanceNoTurnMod = 0f;
+
+        float defaultSpotChance = 0.5f;
+        List<int> filler = new List<int>();
+        (defaultSpotChance, filler) = Action.CalculateAvoidance(PlayerData.inst.GetComponent<Actor>()); // We are just going to steal this.
+        defaultSpotChance = 1f - ((float)defaultSpotChance / 100); // Convert to float and invert it (ex: 80% chance to avoid -> 20% chance to spot)
+
+        (spotRangeMod, spotChanceNoTurnMod) = Action.CalculateCloakEffectBonus(actor);
+        float random = Random.Range(0f, 1f); // The spot RNG roll, used later.
+
+        bool playerInFOV = HF.PlayerInBotFOV(actor);
+
+        if (playerInFOV) // 1. Is the player within this bot's FOV?
+        {
+            // Yes? Move to the next check.
+            if(spotRangeMod > 0) // The player has a spot bonus (and probably a non-turn bonus too)
+            {
+                // 2. Is the player too far away to be spotted based on the range bonus reduction?
+                if(Vector2.Distance(HF.V3_to_V2I(actor.transform.position), HF.V3_to_V2I(PlayerData.inst.transform.position)) > (actor.fieldOfViewRange - spotRangeMod))
+                {
+                    // Yes? Failure.
+                    return false;
+                }
+                else
+                {
+                    // No? Continue.
+
+                    // 3. If it's not the bot's turn, apply the other bonus.
+                    if (!actor.GetComponent<BotAI>().isTurn)
+                    {
+                        defaultSpotChance += spotChanceNoTurnMod;
+
+                        // Now do the final roll.
+                        defaultSpotChance = Mathf.Clamp(defaultSpotChance, GlobalSettings.inst.minSpotChance, 1f); // There should always be a small chance of being spotted.
+                        if (random < defaultSpotChance)
+                        {
+                            // Spotted!
+                            return true;
+                        }
+                        else
+                        {
+                            // Not spotted.
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        // No bonus? Do the final roll.
+                        defaultSpotChance = Mathf.Clamp(defaultSpotChance, GlobalSettings.inst.minSpotChance, 1f); // There should always be a small chance of being spotted.
+                        if (random < defaultSpotChance)
+                        {
+                            // Spotted!
+                            return true;
+                        }
+                        else
+                        {
+                            // Not spotted.
+                            return false;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // Final roll
+                defaultSpotChance = Mathf.Clamp(defaultSpotChance, GlobalSettings.inst.minSpotChance, 1f); // There should always be a small chance of being spotted.
+                if(random < defaultSpotChance)
+                {
+                    // Spotted!
+                    return true;
+                }
+                else
+                {
+                    // Not spotted.
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            // No? Failure.
+            return false;
+        }
+
     }
 
     #endregion

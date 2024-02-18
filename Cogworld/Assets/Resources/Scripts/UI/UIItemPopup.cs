@@ -58,7 +58,8 @@ public class UIItemPopup : MonoBehaviour
         // - The bar + edge become black for a frame
         // - The bar + edge become a darker color of the bar color, and fade out (with the text)
 
-        StartCoroutine(FadeOut());
+        //StartCoroutine(FadeOut());
+        NoFade();
     }
 
     IEnumerator FadeIn()
@@ -107,6 +108,12 @@ public class UIItemPopup : MonoBehaviour
             yield return null;
         }
 
+        this.gameObject.SetActive(false);
+        Destroy(gameObject);
+    }
+
+    private void NoFade()
+    {
         this.gameObject.SetActive(false);
         Destroy(gameObject);
     }

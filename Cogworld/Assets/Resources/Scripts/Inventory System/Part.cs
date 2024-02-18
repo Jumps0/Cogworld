@@ -255,8 +255,8 @@ public class Part : MonoBehaviour
                     float HP = (float)_item.integrityCurrent / (float)_item.itemData.integrityMax;
                     if (HP >= 0.75) // Healthy
                     {
-                        b = UIManager.inst.activeGreen; // Special item = special color
-                        c = new Color(UIManager.inst.activeGreen.r, UIManager.inst.activeGreen.g, UIManager.inst.activeGreen.b, 0.7f);
+                        b = UIManager.inst.highGreen; // Special item = special color
+                        c = new Color(UIManager.inst.highGreen.r, UIManager.inst.highGreen.g, UIManager.inst.highGreen.b, 0.7f);
                     }
                     else if (HP < 0.75 && HP >= 0.5) // Minor Damage
                     {

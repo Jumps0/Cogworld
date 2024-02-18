@@ -318,6 +318,7 @@ public class PlayerData : MonoBehaviour
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector3 direction = mousePosition - this.gameObject.transform.position;
         float distance = Vector3.Distance(new Vector3Int((int)mousePosition.x, (int)mousePosition.y, 0), this.gameObject.transform.position);
+        //distance = Mathf.Clamp(distance, 0f, Action.GetWeaponRange(this.GetComponent<Actor>()));
         direction.Normalize();
         RaycastHit2D[] hits = Physics2D.RaycastAll(this.gameObject.transform.position, direction, distance);
 

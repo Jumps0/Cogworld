@@ -3277,4 +3277,14 @@ public static class HF
         return (PlayerData.inst.GetComponent<Actor>().FieldofView.Contains(new Vector3Int((int)actor.transform.position.x, (int)actor.transform.position.y, (int)actor.transform.position.z))
             && actor.GetComponent<Actor>().isVisible);
     }
+
+    /// <summary>
+    /// Determines if the actor in question has the player in their field of view (list).
+    /// </summary>
+    /// <param name="actor">The actor in question.</param>
+    /// <returns>If this actor has the player in their FOV. True/False</returns>
+    public static bool PlayerInBotFOV(Actor actor)
+    {
+        return actor.FieldofView.Contains(new Vector3Int((int)PlayerData.inst.transform.position.x, (int)PlayerData.inst.transform.position.y, (int)PlayerData.inst.transform.position.z));
+    }
 }

@@ -557,24 +557,41 @@ public class Actor : Entity
         }
         else
         {
+            BotRelation relation = HF.DetermineRelation(this, PlayerData.inst.GetComponent<Actor>());
+
             // If this is a hostile bot and is seeing the player for the first time, do the alert indicator
-            if(HF.DetermineRelation(this, PlayerData.inst.GetComponent<Actor>()) == BotRelation.Hostile && fieldOfView.Contains(new Vector3Int((int)PlayerData.inst.transform.position.x, (int)PlayerData.inst.transform.position.y, 0)))
+            if (relation == BotRelation.Hostile && this.GetComponent<BotAI>().state != BotAIState.Hunting)
             {
-                if (!firstTimeSeen)
+                // Try to spot the player
+                if (Action.TrySpotPlayer(this))
                 {
-                    // Flash the indicator
-                    FlashAlertIndicator();
-                    // Do a name readout
-                    DoBotPopup();
-                    firstTimeSeen = true;
+                    // Saw the player!
+
+                    this.GetComponent<BotAI>().memory = botInfo.memory; // Set memory to max
+                    this.GetComponent<BotAI>().state = BotAIState.Hunting; // Set to hunting mode
+
+                    if (!firstTimeSeen)
+                    {
+                        // Flash the indicator
+                        FlashAlertIndicator();
+                        // Do a name readout
+                        DoBotPopup();
+                        firstTimeSeen = true;
+                    }
+
+                    //PlayerData.inst.GetComponent<PotentialField>().enabled = true; // Enable the player's PF
+                    if (this.GetComponent<BotAI>().squadLeader)
+                        this.GetComponent<BotAI>().squadLeader.GetComponent<GroupLeader>().playerSpotted = true;
                 }
-                
-                //PlayerData.inst.GetComponent<PotentialField>().enabled = true; // Enable the player's PF
-                if(this.GetComponent<BotAI>().squadLeader)
-                    this.GetComponent<BotAI>().squadLeader.GetComponent<GroupLeader>().playerSpotted = true;
+                else
+                {
+                    // Didn't see the player
+                }
             }
+
+
             // If this is a friendly bot and is seeing the player for the first AND, has; dialogue, hasn't talked yet, isn't talking, THEN perform that dialogue.
-            if ((HF.DetermineRelation(this, PlayerData.inst.GetComponent<Actor>()) == BotRelation.Neutral || HF.DetermineRelation(this, PlayerData.inst.GetComponent<Actor>()) == BotRelation.Friendly) 
+            if ((relation == BotRelation.Neutral || relation == BotRelation.Friendly) 
                 && GetComponent<BotAI>().hasDialogue 
                 && !GetComponent<BotAI>().talking 
                 && !GetComponent<BotAI>().finishedTalking &&

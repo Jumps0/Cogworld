@@ -46,6 +46,7 @@ public class GlobalSettings : MonoBehaviour
     //
     public int startingWeight = 3;
     public int startingInvSize = 5;
+    [Tooltip("The minimum % chance the player can be spotted.")] public float minSpotChance = 0.1f;
 
     #endregion
 

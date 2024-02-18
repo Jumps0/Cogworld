@@ -12,6 +12,8 @@ using System;
 using Random = UnityEngine.Random;
 using Unity.Burst.CompilerServices;
 using System.Text;
+using static Unity.VisualScripting.Member;
+using static UnityEngine.GraphicsBuffer;
 //using static UnityEditor.Progress;
 
 public class UIManager : MonoBehaviour
@@ -3224,6 +3226,7 @@ public class UIManager : MonoBehaviour
     [Tooltip("The background images that highlight during animations.")] public List<Image> scanSubBackerImages = new List<Image>();
     [Tooltip("The upper text")] public TextMeshProUGUI scanSubTextA;
     [Tooltip("The lower text")] public TextMeshProUGUI scanSubTextB;
+    [Tooltip("The red !")] public TextMeshProUGUI scanSubDangerNotify;
     public GameObject scanSubParent;
     //
     // -      -
@@ -4221,8 +4224,19 @@ public class UIManager : MonoBehaviour
                     scanSubTextA.color = highGreen;
                 }
 
-                //scanSubTextB.text = focusObj.GetComponent<TileBlock>().tileInfo.armor.ToString(); // TODO: Base chance to hit?
+                float toHitChance = 0f;
+                bool noCrit = false;
+                List<ArmorType> types = new List<ArmorType>();
+                Item activeWeapon = Action.FindActiveWeapon(PlayerData.inst.GetComponent<Actor>());
+                if (activeWeapon != null)
+                {
+                    (toHitChance, noCrit, types) = Action.CalculateRangedHitChance(PlayerData.inst.GetComponent<Actor>(), focusObj.GetComponent<Actor>(), activeWeapon);
+                }
+
+                scanSubTextB.text = "Base Hit " + (int)(toHitChance * 100);
                 scanSubTextB.color = subGreen;
+
+                // And the "danger notification". This tells the player if the enemy bot knows the Player is there.
 
             }
             else if (focusObj.GetComponent<TileBlock>())
