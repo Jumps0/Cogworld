@@ -18,21 +18,23 @@ MonoBehaviour:
     Name: Com. Wheel
     Id: 37
     stackable: 0
+    amount: 1
     itemData: {fileID: 11400000}
+    state: 1
+    integrityCurrent: 0
   knowByPlayer: 1
-  floorDisplay: {fileID: 0}
-  inventoryDisplay: {fileID: 0}
+  floorDisplay: {fileID: 1529295200, guid: 1e763b4e9de4d1d49979f964b3615e31, type: 3}
+  inventoryDisplay: {fileID: 1529295200, guid: 1e763b4e9de4d1d49979f964b3615e31, type: 3}
   asciiRep: {fileID: -1087548489, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
-  itemColor: {r: 0.015686275, g: 0.82745105, b: 0.8000001, a: 1}
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
   type: 6
   slot: 1
+  slotsRequired: 1
   mass: 0
   rating: 1
   star: 0
-  integrityCurrent: 30
   integrityMax: 30
   coverage: 30
-  state: 0
   schematicDetails:
     hackable: 1
     location:
@@ -76,17 +78,31 @@ MonoBehaviour:
     damageType: 0
     critChance: 0
     critType: 0
-    penChance: 0
+    penChance: {x: 0, y: 0, z: 0}
     heatTrasfer: 0
     heatTransferDegree: 0
     spectrum: 0
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+  meleeAttack:
+    isMelee: 0
+    energy: 0
+    matter: 0
+    heat: 0
+    targeting: 0
+    delay: 0
+    damage: {x: 0, y: 0}
+    damageType: 6
+    critical: 0
+    critType: 0
+    disruption: 0
+    salvage: 0
   itemEffect: []
   quality: 2
   itemName: Com. Wheel
   description: A compact rolling wheel that provides moderate stability.
+  mechanicalDescription: 
   details:
     temp: 
   fabricationInfo:

@@ -18,22 +18,23 @@ MonoBehaviour:
     Name: 
     Id: 47
     stackable: 0
+    amount: 1
     itemData: {fileID: 11400000}
+    state: 1
+    integrityCurrent: 0
   knowByPlayer: 0
   floorDisplay: {fileID: -1005276438, guid: 1e5e9b467b6f8a04d9c70830a16f6e69, type: 3}
   inventoryDisplay: {fileID: -1005276438, guid: 1e5e9b467b6f8a04d9c70830a16f6e69, type: 3}
   asciiRep: {fileID: -1087548489, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
-  itemColor: {r: 0.015686275, g: 0.82745105, b: 0.8000001, a: 1}
+  itemColor: {r: 0, g: 1, b: 0.6864865, a: 1}
   type: 5
   slot: 1
   slotsRequired: 1
   mass: 0
   rating: 3
   star: 0
-  integrityCurrent: 110
   integrityMax: 110
   coverage: 80
-  state: 1
   schematicDetails:
     hackable: 1
     location:
@@ -231,9 +232,19 @@ MonoBehaviour:
       amount: 0
       integrityLossPer: 0
       parallel: 0
+    rcsEffect:
+      hasEffect: 0
+      percentage: 0
+      stacks: 0
+      momentumBonus: 1
+    phasingEffect:
+      hasEffect: 0
+      percentage: 0
+      stacks: 0
   quality: 2
   itemName: Carbon-Fiber Leg
   description: A sturdy carbon-fiber leg.
+  mechanicalDescription: 
   details:
     temp: 
   fabricationInfo:

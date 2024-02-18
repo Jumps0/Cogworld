@@ -18,22 +18,23 @@ MonoBehaviour:
     Name: 
     Id: 26
     stackable: 0
+    amount: 1
     itemData: {fileID: 11400000}
+    state: 1
+    integrityCurrent: 0
   knowByPlayer: 1
   floorDisplay: {fileID: 2078175397, guid: 9317a15c65d31344c83ab52f7cdbb9db, type: 3}
   inventoryDisplay: {fileID: 2078175397, guid: 9317a15c65d31344c83ab52f7cdbb9db, type: 3}
   asciiRep: {fileID: -923958525, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
-  itemColor: {r: 0.16470589, g: 0.70980394, b: 0.65882355, a: 1}
+  itemColor: {r: 0, g: 1, b: 0.6862745, a: 1}
   type: 12
   slot: 2
   slotsRequired: 1
   mass: 1
   rating: 1
   star: 0
-  integrityCurrent: 20
   integrityMax: 20
   coverage: 15
-  state: 0
   schematicDetails:
     hackable: 1
     location:
@@ -222,10 +223,20 @@ MonoBehaviour:
       amount: 0
       integrityLossPer: 0
       parallel: 0
+    rcsEffect:
+      hasEffect: 0
+      percentage: 0
+      stacks: 0
+      momentumBonus: 1
+    phasingEffect:
+      hasEffect: 0
+      percentage: 0
+      stacks: 0
   quality: 2
   itemName: Seismic Detector
   description: A device that enables real-time seismic detection and analysis up
     to a distance of 22.
+  mechanicalDescription: 
   details:
     temp: 
   fabricationInfo:

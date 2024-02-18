@@ -18,21 +18,23 @@ MonoBehaviour:
     Name: 
     Id: 42
     stackable: 0
+    amount: 1
     itemData: {fileID: 11400000}
+    state: 1
+    integrityCurrent: 0
   knowByPlayer: 0
-  floorDisplay: {fileID: -593278526, guid: de1bd95886cf7e3458436c5f8ca70a8d, type: 3}
-  inventoryDisplay: {fileID: -593278526, guid: de1bd95886cf7e3458436c5f8ca70a8d, type: 3}
+  floorDisplay: {fileID: -1202212350, guid: fab67cf9e23fdbf4e9bad070f3896ba8, type: 3}
+  inventoryDisplay: {fileID: -1202212350, guid: fab67cf9e23fdbf4e9bad070f3896ba8, type: 3}
   asciiRep: {fileID: -946019755, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
-  itemColor: {r: 0.043137256, g: 0.854902, b: 0.77647066, a: 1}
+  itemColor: {r: 0, g: 1, b: 0.6862745, a: 1}
   type: 16
   slot: 3
+  slotsRequired: 1
   mass: 4
   rating: 4
   star: 0
-  integrityCurrent: 85
   integrityMax: 85
   coverage: 60
-  state: 0
   schematicDetails:
     hackable: 1
     location:
@@ -69,17 +71,31 @@ MonoBehaviour:
     damageType: 1
     critChance: 0
     critType: 1
-    penChance: 0
+    penChance: {x: 0, y: 0, z: 0}
     heatTrasfer: 25
     heatTransferDegree: 1
     spectrum: 0
     hasSpectrum: 0
     disruption: 0
     salvage: -1
+  meleeAttack:
+    isMelee: 0
+    energy: 0
+    matter: 0
+    heat: 0
+    targeting: 0
+    delay: 0
+    damage: {x: 0, y: 0}
+    damageType: 6
+    critical: 0
+    critType: 0
+    disruption: 0
+    salvage: 0
   itemEffect: []
   quality: 2
   itemName: Gatling Laser
   description: A powerful energy weapon that shoots 3 thermal projectiles at once.
+  mechanicalDescription: 
   details:
     temp: 
   fabricationInfo:

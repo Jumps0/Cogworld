@@ -16,24 +16,25 @@ MonoBehaviour:
   amount: 1
   data:
     Name: 
-    Id: 24
+    Id: 96
     stackable: 0
+    amount: 1
     itemData: {fileID: 11400000}
-  knowByPlayer: 1
+    state: 1
+    integrityCurrent: 0
+  knowByPlayer: 0
   floorDisplay: {fileID: -24734676, guid: 9e5fd32a0821a894a9c4ce41b9aec735, type: 3}
   inventoryDisplay: {fileID: -24734676, guid: 9e5fd32a0821a894a9c4ce41b9aec735, type: 3}
   asciiRep: {fileID: -1087548489, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
-  itemColor: {r: 0.015686275, g: 0.82745105, b: 0.8000001, a: 1}
+  itemColor: {r: 0, g: 1, b: 0.6864865, a: 1}
   type: 7
   slot: 1
   slotsRequired: 1
   mass: 0
   rating: 5
   star: 1
-  integrityCurrent: 40
   integrityMax: 40
   coverage: 40
-  state: 0
   schematicDetails:
     hackable: 0
     location:
@@ -102,6 +103,7 @@ MonoBehaviour:
   itemName: Hover Unit
   description: A poorly made hover unit that provides support for smaller bots. Commonly
     used by derelicts.
+  mechanicalDescription: 
   details:
     temp: 
   fabricationInfo:

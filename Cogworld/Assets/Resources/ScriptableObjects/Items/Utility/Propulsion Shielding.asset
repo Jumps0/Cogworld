@@ -18,22 +18,23 @@ MonoBehaviour:
     Name: 
     Id: 13
     stackable: 0
+    amount: 1
     itemData: {fileID: 11400000}
+    state: 1
+    integrityCurrent: 0
   knowByPlayer: 1
   floorDisplay: {fileID: -32666557, guid: 9e5fd32a0821a894a9c4ce41b9aec735, type: 3}
   inventoryDisplay: {fileID: -32666557, guid: 9e5fd32a0821a894a9c4ce41b9aec735, type: 3}
   asciiRep: {fileID: -923958525, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
-  itemColor: {r: 0.16470589, g: 0.70980394, b: 0.65882355, a: 1}
+  itemColor: {r: 0, g: 1, b: 0.6862745, a: 1}
   type: 13
   slot: 2
   slotsRequired: 1
   mass: 1
   rating: 1
   star: 0
-  integrityCurrent: 50
   integrityMax: 50
   coverage: 0
-  state: 0
   schematicDetails:
     hackable: 1
     location:
@@ -222,9 +223,19 @@ MonoBehaviour:
       amount: 0
       integrityLossPer: 0
       parallel: 0
+    rcsEffect:
+      hasEffect: 0
+      percentage: 0
+      stacks: 0
+      momentumBonus: 1
+    phasingEffect:
+      hasEffect: 0
+      percentage: 0
+      stacks: 0
   quality: 2
   itemName: Propulsion Shielding
   description: Armored plates designed to protect propulsion systems.
+  mechanicalDescription: 
   details:
     temp: 
   fabricationInfo:
