@@ -338,6 +338,7 @@ public class PlayerData : MonoBehaviour
         // NOTE: This method looks awful but it works, any way to make this better in the future? Maybe not loop through every single tile on the map?
 
         // Clear specific tiles to make highlight thinner
+        #region Awful Line visual correction
         foreach (TileBlock tile in MapManager.inst._allTilesRealized.Values)
         {
             if (tile.targetingHighlight.activeInHierarchy)
@@ -499,6 +500,116 @@ public class PlayerData : MonoBehaviour
                 }
             }
         }
+        #endregion
+
+        #region Scan Window Indicator
+        // - Show what's being targeted up in the / SCAN / window. -
+
+        // We need to figure out what the player has their mouse over.
+        // Objects of interest are:
+        // -Walls, Doors, Bots, Machines, Floor items, traps
+
+        // We are going to copy over the raycast down method from UIManager
+        Vector3 lowerPosition = new Vector3(mousePosition.x, mousePosition.y, 2);
+        Vector3 upperPosition = new Vector3(mousePosition.x, mousePosition.y, -2);
+        direction = lowerPosition - upperPosition;
+        distance = Vector3.Distance(new Vector3Int((int)lowerPosition.x, (int)lowerPosition.y, 0), upperPosition);
+        direction.Normalize();
+        RaycastHit2D[] hits2 = Physics2D.RaycastAll(upperPosition, direction, distance);
+
+        // - Flags -
+        GameObject wall = null;
+        GameObject bot = null;
+        GameObject item = null;
+        GameObject door = null;
+        GameObject machine = null;
+        GameObject trap = null;
+
+        // Loop through all the hits and set the targeting highlight on each tile (ideally shouldn't loop that many times)
+        for (int i = 0; i < hits2.Length; i++)
+        {
+            RaycastHit2D hit = hits2[i];
+            // PROBLEM!!! This list of hits is unsorted and contains multiple things that violate the heirarchy below. This MUST be fixed!
+
+            // There is a heirarchy of what we want to display:
+            // -A wall
+            // -A bot
+            // -An item
+            // -A door
+            // -A machine
+            // -A trap
+
+            // We will solve this problem by setting flags. And then going back afterwards and using our heirarchy.
+
+            #region Hierarchy Flagging
+            if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Wall"))
+            {
+                // A wall
+                wall = hit.collider.gameObject;
+            }
+            else if (hit.collider.GetComponent<Actor>() && hit.collider.GetComponent<Actor>() != PlayerData.inst.GetComponent<Actor>())
+            {
+                // A bot
+                bot = hit.collider.gameObject;
+            }
+            else if (hit.collider.GetComponent<Part>())
+            {
+                // An item
+                item = hit.collider.gameObject;
+            }
+            else if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Door"))
+            {
+                // Door
+                door = hit.collider.gameObject;
+            }
+            else if (hit.collider.GetComponent<MachinePart>())
+            {
+                // Machine
+                machine = hit.collider.gameObject;
+            }
+            else if (hit.collider.GetComponent<FloorTrap>())
+            {
+                // Trap
+                trap = hit.collider.gameObject;
+            }
+            #endregion
+        }
+
+        if (wall)
+        {
+            UIManager.inst.Scan_FlipSubmode(true, wall);
+            return;
+        }
+        else if (bot)
+        {
+            UIManager.inst.Scan_FlipSubmode(true, bot);
+            return;
+        }
+        else if (item)
+        {
+            UIManager.inst.Scan_FlipSubmode(true, item);
+            return;
+        }
+        else if (door)
+        {
+            UIManager.inst.Scan_FlipSubmode(true, door);
+            return;
+        }
+        else if (machine)
+        {
+            UIManager.inst.Scan_FlipSubmode(true, machine);
+            return;
+        }
+        else if (trap)
+        {
+            UIManager.inst.Scan_FlipSubmode(true, trap);
+            return;
+        }
+        else
+        {
+            UIManager.inst.Scan_FlipSubmode(false);
+        }
+        #endregion
     }
 
     public void ClearTargeting()

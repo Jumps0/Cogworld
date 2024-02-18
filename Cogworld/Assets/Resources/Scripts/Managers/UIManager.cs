@@ -47,6 +47,7 @@ public class UIManager : MonoBehaviour
     //
     public Color activeGreen;
     public Color highlightGreen;
+    public Color highGreen;
     public Color normalGreen;
     public Color dullGreen;
     public Color subGreen;
@@ -3218,6 +3219,12 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI scanHeader_text; //: / S C A N /
     public GameObject scanButtonsParent; // Parent for the 4 buttons in the scan box
     public List<TextMeshProUGUI> scanButtonText = new List<TextMeshProUGUI>();
+    // - Scan subinfo components
+    [Tooltip("The box health indicator")] public Image scanSubImage;
+    [Tooltip("The background images that highlight during animations.")] public List<Image> scanSubBackerImages = new List<Image>();
+    [Tooltip("The upper text")] public TextMeshProUGUI scanSubTextA;
+    [Tooltip("The lower text")] public TextMeshProUGUI scanSubTextB;
+    public GameObject scanSubParent;
     //
     // -      -
 
@@ -3990,7 +3997,7 @@ public class UIManager : MonoBehaviour
 
     public void Scan_DetailTextFlip(bool detailedMode)
     {
-        if(detailedMode) // Colored text
+        if (detailedMode) // Colored text
         {
             string displayText = "";
             // (Dark green) [
@@ -4158,6 +4165,214 @@ public class UIManager : MonoBehaviour
 
         AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.UI_Clips[0]);
     }
+
+    public void Scan_FlipSubmode(bool state, GameObject focusObj = null)
+    {
+        if (state) // Enable Submode
+        {
+            StartCoroutine(Scan_SubmodeAnimate());
+
+            // Enable the sub text blocker
+            scanSubParent.SetActive(true);
+            scanSubTextA.enabled = true;
+            scanSubTextB.enabled = true;
+            scanSubBackerImages[0].enabled = true;
+            scanSubBackerImages[1].enabled = true;
+            // Disable the text
+            scanButtonText[0].enabled = false;
+            scanButtonText[1].enabled = false;
+            scanButtonText[2].enabled = false;
+            scanButtonText[3].enabled = false;
+
+            // Now figure out what the focus object is
+            if (focusObj.GetComponent<Actor>())
+            {
+                // - The square - here it represents the actor's current health
+                scanSubImage.enabled = true;
+                float currentIntegrity = (float)focusObj.GetComponent<Actor>().currentHealth / (float)focusObj.GetComponent<Actor>().maxHealth;
+                if (currentIntegrity >= 0.75f) // Green (>=75%)
+                {
+                    scanSubImage.color = activeGreen;
+                }
+                else if (currentIntegrity < 0.75f && currentIntegrity <= 0.50f) // Yellow (75-50%)
+                {
+                    scanSubImage.color = cautiousYellow;
+                }
+                else if (currentIntegrity < 0.5f && currentIntegrity <= 0.25f) // Orange (50-25%)
+                {
+                    scanSubImage.color = corruptOrange;
+                }
+                else // Red (25-0%)
+                {
+                    scanSubImage.color = dangerRed;
+                }
+                // - The text - here line A is the actors's name and line B is the base change to hit the actor (dark green)
+                scanSubTextA.text = focusObj.name;
+                if (HF.DetermineRelation(PlayerData.inst.GetComponent<Actor>(), focusObj.GetComponent<Actor>()) == BotRelation.Hostile)
+                {
+                    // Display it as red if the bot is hostile
+                    scanSubTextA.color = dangerRed;
+                }
+                else
+                {
+                    // Display it as green if not
+                    scanSubTextA.color = highGreen;
+                }
+
+                //scanSubTextB.text = focusObj.GetComponent<TileBlock>().tileInfo.armor.ToString(); // TODO: Base chance to hit?
+                scanSubTextB.color = subGreen;
+
+            }
+            else if (focusObj.GetComponent<Part>())
+            {
+                if (focusObj.GetComponent<Part>()._item.Id != 17)
+                {
+                    // - The square - here it represents the item's current health
+                    scanSubImage.enabled = true;
+                    float currentIntegrity = (float)focusObj.GetComponent<Part>()._item.integrityCurrent / (float)focusObj.GetComponent<Part>()._item.itemData.integrityMax;
+                    if (currentIntegrity >= 0.75f) // Green (>=75%)
+                    {
+                        scanSubImage.color = activeGreen;
+                    }
+                    else if (currentIntegrity < 0.75f && currentIntegrity <= 0.50f) // Yellow (75-50%)
+                    {
+                        scanSubImage.color = cautiousYellow;
+                    }
+                    else if (currentIntegrity < 0.5f && currentIntegrity <= 0.25f) // Orange (50-25%)
+                    {
+                        scanSubImage.color = corruptOrange;
+                    }
+                    else // Red (25-0%)
+                    {
+                        scanSubImage.color = dangerRed;
+                    }
+                    // - The text - here line A is the item's name (in full green) and line B is the items mechanical description (dark green)
+                    scanSubTextA.text = focusObj.GetComponent<Part>()._item.Name;
+                    scanSubTextA.color = highGreen;
+                }
+                else // We do something different for matter
+                {
+                    // The square is green
+                    scanSubImage.color = activeGreen;
+                    // The text is grayed out (## Matter)
+                    scanSubTextA.text = focusObj.GetComponent<Part>()._item.amount + " " + focusObj.GetComponent<Part>()._item.Name;
+                    scanSubTextA.color = inactiveGray;
+
+                    scanSubTextB.enabled = false;
+                    scanSubBackerImages[1].enabled = false;
+                }
+
+                if(focusObj.GetComponent<Part>()._item.itemData.mechanicalDescription.Length > 0)
+                {
+                    scanSubTextB.text = focusObj.GetComponent<Part>()._item.itemData.mechanicalDescription;
+                    scanSubTextB.color = subGreen;
+                }
+                else // Disable it if the item doesn't have a mechanical description
+                {
+                    scanSubTextB.enabled = false;
+                    scanSubBackerImages[1].enabled = false;
+                }
+            }
+            else if (focusObj.GetComponent<TileBlock>())
+            {
+                // - The square - here it's disabled
+                scanSubImage.enabled = false;
+                if (focusObj.GetComponent<DoorLogic>()) // Is this a door?
+                {
+                    scanSubTextA.text = focusObj.GetComponent<DoorLogic>()._tile.tileInfo.tileName;
+                    scanSubTextA.color = highGreen;
+
+                    scanSubTextB.enabled = false;
+                    scanSubBackerImages[1].enabled = false;
+                }
+                else // Its not a door
+                {
+                    // - The text - here line A is the tile's name (in full green) and line B is the tile's armor value (dark green)
+                    scanSubTextA.text = focusObj.GetComponent<TileBlock>().tileInfo.tileName;
+                    scanSubTextA.color = highGreen;
+
+                    scanSubTextB.text = focusObj.GetComponent<TileBlock>().tileInfo.armor.ToString();
+                    scanSubTextB.color = subGreen;
+                }
+            }
+            else if (focusObj.GetComponent<MachinePart>())
+            {
+                // Here the square is off
+                scanSubImage.enabled = false;
+
+                // The text shows its name, and then armor
+                scanSubTextA.text = focusObj.GetComponent<MachinePart>().displayName;
+                scanSubTextA.color = highGreen;
+
+                scanSubTextB.text = focusObj.GetComponent<MachinePart>().armor.ToString();
+                scanSubTextB.color = subGreen;
+            }
+            else if (focusObj.GetComponent<FloorTrap>())
+            {
+                // - The square - here it indicates if this trap is friendly or not
+                if(focusObj.GetComponent<FloorTrap>().alignment != BotRelation.Friendly) 
+                {
+                    scanSubImage.color = dangerRed;
+                    scanSubTextA.color = dangerRed;
+                }
+                else if (focusObj.GetComponent<FloorTrap>().alignment != BotRelation.Hostile)
+                {
+                    scanSubImage.color = activeGreen;
+                    scanSubTextA.color = highGreen;
+                }
+                // - The text - here line A is the actors's name
+                scanSubTextA.text = focusObj.GetComponent<FloorTrap>().fullName;
+
+                scanSubTextB.enabled = false;
+                scanSubBackerImages[1].enabled = false;
+            }
+
+
+            // Trim the two display strings, as we can only display at most 26 characters per line.
+            if (scanSubTextA.text.Length > 26)
+            {
+                scanSubTextA.text = scanSubTextA.text.Substring(0, 26);
+            }
+            if (scanSubBackerImages[1].enabled && scanSubTextB.text.Length > 26)
+            {
+                scanSubTextB.text = scanSubTextB.text.Substring(0, 26);
+            }
+        }
+        else // Disable Submode
+        {
+            // Disable sub text blocker
+            scanSubParent.SetActive(false);
+            // Re-enable the text
+            scanButtonText[0].enabled = true;
+            scanButtonText[1].enabled = true;
+            scanButtonText[2].enabled = true;
+            scanButtonText[3].enabled = true;
+        }
+
+        
+    }
+
+    private IEnumerator Scan_SubmodeAnimate()
+    {
+        // Basically just make the backer images go from black to dark green
+        scanSubBackerImages[0].color = Color.black;
+        scanSubBackerImages[1].color = Color.black;
+
+        float elapsedTime = 0f;
+        float duration = 0.5f;
+
+        while (elapsedTime < duration)
+        {
+            scanSubBackerImages[0].color = Color.Lerp(Color.black, highGreen, elapsedTime / duration);
+            scanSubBackerImages[1].color = Color.Lerp(Color.black, highGreen, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null; // Wait for the next frame
+        }
+        scanSubBackerImages[0].color = highGreen;
+        scanSubBackerImages[1].color = highGreen;
+    }
+
     #endregion
 
     #region Rightside - Evasion
