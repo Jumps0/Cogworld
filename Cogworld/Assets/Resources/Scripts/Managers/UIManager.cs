@@ -4354,12 +4354,12 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator Scan_SubmodeAnimate()
     {
-        // Basically just make the backer images go from black to dark green
+        // Basically just make the backer images go from black to high green to black
         scanSubBackerImages[0].color = Color.black;
         scanSubBackerImages[1].color = Color.black;
 
         float elapsedTime = 0f;
-        float duration = 0.5f;
+        float duration = 0.2f;
 
         while (elapsedTime < duration)
         {
@@ -4371,6 +4371,19 @@ public class UIManager : MonoBehaviour
         }
         scanSubBackerImages[0].color = highGreen;
         scanSubBackerImages[1].color = highGreen;
+
+        elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            scanSubBackerImages[0].color = Color.Lerp(highGreen, Color.black, elapsedTime / duration);
+            scanSubBackerImages[1].color = Color.Lerp(highGreen, Color.black, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null; // Wait for the next frame
+        }
+        scanSubBackerImages[0].color = Color.black;
+        scanSubBackerImages[1].color = Color.black;
     }
 
     #endregion
