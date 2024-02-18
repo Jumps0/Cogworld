@@ -559,11 +559,12 @@ public class Actor : Entity
         {
             BotRelation relation = HF.DetermineRelation(this, PlayerData.inst.GetComponent<Actor>());
 
+            // TODO: Expand this to include other bots hostile to this bot as well
             // If this is a hostile bot and is seeing the player for the first time, do the alert indicator
             if (relation == BotRelation.Hostile && this.GetComponent<BotAI>().state != BotAIState.Hunting)
             {
                 // Try to spot the player
-                if (Action.TrySpotPlayer(this))
+                if (Action.TrySpotActor(this, PlayerData.inst.GetComponent<Actor>()))
                 {
                     // Saw the player!
 

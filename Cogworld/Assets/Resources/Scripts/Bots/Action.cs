@@ -2086,24 +2086,25 @@ public static class Action
     }
 
     /// <summary>
-    /// Will attempt to spot the player if they aren't already spotted.
+    /// Will attempt the specified bot, and takes into account things like cloaking effects + evasion.
     /// </summary>
-    /// <param name="actor">The actor trying to spot the player.</param>
-    /// <returns>If the player gets spotted.</returns>
-    public static bool TrySpotPlayer(Actor actor)
+    /// <param name="spotter">The actor trying to spot.</param>
+    /// <param name="target">The actor being looked for.</param>
+    /// <returns>If the target gets spotted.</returns>
+    public static bool TrySpotActor(Actor spotter, Actor target)
     {
         int spotRangeMod = 0;
         float spotChanceNoTurnMod = 0f;
 
         float defaultSpotChance = 0.5f;
         List<int> filler = new List<int>();
-        (defaultSpotChance, filler) = Action.CalculateAvoidance(PlayerData.inst.GetComponent<Actor>()); // We are just going to steal this.
+        (defaultSpotChance, filler) = Action.CalculateAvoidance(target); // We are just going to steal this.
         defaultSpotChance = 1f - ((float)defaultSpotChance / 100); // Convert to float and invert it (ex: 80% chance to avoid -> 20% chance to spot)
 
-        (spotRangeMod, spotChanceNoTurnMod) = Action.CalculateCloakEffectBonus(actor);
+        (spotRangeMod, spotChanceNoTurnMod) = Action.CalculateCloakEffectBonus(target);
         float random = Random.Range(0f, 1f); // The spot RNG roll, used later.
 
-        bool playerInFOV = HF.PlayerInBotFOV(actor);
+        bool playerInFOV = HF.ActorInBotFOV(spotter, target);
 
         if (playerInFOV) // 1. Is the player within this bot's FOV?
         {
@@ -2111,7 +2112,7 @@ public static class Action
             if(spotRangeMod > 0) // The player has a spot bonus (and probably a non-turn bonus too)
             {
                 // 2. Is the player too far away to be spotted based on the range bonus reduction?
-                if(Vector2.Distance(HF.V3_to_V2I(actor.transform.position), HF.V3_to_V2I(PlayerData.inst.transform.position)) > (actor.fieldOfViewRange - spotRangeMod))
+                if(Vector2.Distance(HF.V3_to_V2I(spotter.transform.position), HF.V3_to_V2I(target.transform.position)) > (target.fieldOfViewRange - spotRangeMod))
                 {
                     // Yes? Failure.
                     return false;
@@ -2121,7 +2122,7 @@ public static class Action
                     // No? Continue.
 
                     // 3. If it's not the bot's turn, apply the other bonus.
-                    if (!actor.GetComponent<BotAI>().isTurn)
+                    if (!spotter.GetComponent<BotAI>().isTurn)
                     {
                         defaultSpotChance += spotChanceNoTurnMod;
 

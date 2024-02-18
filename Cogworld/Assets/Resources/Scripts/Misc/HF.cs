@@ -3279,12 +3279,13 @@ public static class HF
     }
 
     /// <summary>
-    /// Determines if the actor in question has the player in their field of view (list).
+    /// Determines if the target bot is in the spotter bot's FOV.
     /// </summary>
-    /// <param name="actor">The actor in question.</param>
-    /// <returns>If this actor has the player in their FOV. True/False</returns>
-    public static bool PlayerInBotFOV(Actor actor)
+    /// <param name="spotter">The actor doing the spotting.</param>
+    /// <param name="target">The target to look for.</param>
+    /// <returns></returns>
+    public static bool ActorInBotFOV(Actor spotter, Actor target)
     {
-        return actor.FieldofView.Contains(new Vector3Int((int)PlayerData.inst.transform.position.x, (int)PlayerData.inst.transform.position.y, (int)PlayerData.inst.transform.position.z));
+        return spotter.FieldofView.Contains(new Vector3Int((int)target.transform.position.x, (int)target.transform.position.y, (int)target.transform.position.z));
     }
 }

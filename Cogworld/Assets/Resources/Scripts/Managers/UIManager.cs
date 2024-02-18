@@ -4237,7 +4237,7 @@ public class UIManager : MonoBehaviour
                 scanSubTextB.color = subGreen;
 
                 // And the "danger notification". This tells the player if the enemy bot knows the Player is there.
-                if (HF.PlayerInBotFOV(focusObj.GetComponent<Actor>()) && focusObj.GetComponent<BotAI>().memory > 0)
+                if (HF.ActorInBotFOV(focusObj.GetComponent<Actor>(), PlayerData.inst.GetComponent<Actor>()) && focusObj.GetComponent<BotAI>().memory > 0)
                 {
                     scanSubDangerNotify.enabled = true;
                     scanSubDangerNotify.text = "!";
