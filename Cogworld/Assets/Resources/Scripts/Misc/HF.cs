@@ -3219,6 +3219,8 @@ public static class HF
         return character.ToString();
     }
 
+    #region Spotting
+
     public static bool LOSOnTarget(Actor source, Actor target)
     {
         bool LOS = true;
@@ -3288,4 +3290,6 @@ public static class HF
     {
         return spotter.FieldofView.Contains(new Vector3Int((int)target.transform.position.x, (int)target.transform.position.y, (int)target.transform.position.z));
     }
+
+    #endregion
 }

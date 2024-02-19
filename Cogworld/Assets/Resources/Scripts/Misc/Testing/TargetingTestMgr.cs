@@ -85,6 +85,12 @@ public class TargetingTestMgr : MonoBehaviour
             CleanAllTiles();
         }
 
+        if (Input.GetMouseButton(1))
+        {
+            CleanAllTiles();
+            FindLinePath();
+        }
+
         text_path.text = path.Count.ToString();
     }
 
@@ -130,6 +136,37 @@ public class TargetingTestMgr : MonoBehaviour
         StartCoroutine(Pathfind(HF.V3_to_V2I(playerPosition), HF.V3_to_V2I(mousePosition)));
     }
 
+    private IEnumerator Pathfind(Vector2 start, Vector2 finish)
+    {
+        pathFinished = false;
+        Vector2 currentPos = start;
+        Vector2 direction = (finish - start).normalized;
+
+        text_status.text = "Searching...";
+        text_status.color = Color.yellow;
+
+        while (Vector2.Distance(currentPos, finish) > 0.5f)
+        {
+            // Add current point to path
+            path.Add(world[HF.V3_to_V2I(currentPos)]);
+
+            // Move towards finish point in the calculated direction
+            currentPos += direction;
+
+            yield return null;
+        }
+
+        pathFinished = true;
+        MarkPath(); // Finish up by drawing the path
+
+        text_status.text = "Finished.";
+        text_status.color = Color.green;
+
+        world[HF.V3_to_V2I(finish)].GetComponent<SpriteRenderer>().color = Color.blue;
+
+    }
+    #region OLD METHOD
+    /*
     private IEnumerator Pathfind(Vector2Int start, Vector2Int finish)
     {
         pathFinished = false;
@@ -172,6 +209,8 @@ public class TargetingTestMgr : MonoBehaviour
         text_status.text = "Finished.";
         text_status.color = Color.green;
     }
+    */
+    #endregion
 
     private void MarkPath()
     {
@@ -179,6 +218,8 @@ public class TargetingTestMgr : MonoBehaviour
         {
             MarkTile(HF.V3_to_V2I(P.transform.position));
         }
+
+        CleanPath(); // Clean the path
     }
 
     private List<GameObject> FindNeighbors(int X, int Y)
@@ -223,6 +264,85 @@ public class TargetingTestMgr : MonoBehaviour
         }
 
         return neighbors;
+
+    }
+
+    private void CleanPath()
+    {
+        Vector2Int C = HF.V3_to_V2I(player.transform.position); // the player's position
+
+        // Sometimes the path can be a bit messy, lets fix that...
+        // We usually have 2 cases to fix.
+
+        // 1. Sometimes an additional tile is highlighted next to the player.
+        // - We need to check diagonals around the player
+        if(world[new Vector2Int(C.x + 1, C.y - 1)].GetComponent<SpriteRenderer>().color == lineColor) // [ DOWN-RIGHT ]
+        {
+            // Disable (Right & Down)
+            world[new Vector2Int(C.x + 1, C.y)].GetComponent<SpriteRenderer>().color = Color.white;
+            world[new Vector2Int(C.x, C.y - 1)].GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        if (world[new Vector2Int(C.x + 1, C.y + 1)].GetComponent<SpriteRenderer>().color == lineColor) // [ UP-RIGHT ]
+        {
+            // Disable (Right & Up)
+            world[new Vector2Int(C.x + 1, C.y)].GetComponent<SpriteRenderer>().color = Color.white;
+            world[new Vector2Int(C.x, C.y + 1)].GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        if (world[new Vector2Int(C.x - 1, C.y - 1)].GetComponent<SpriteRenderer>().color == lineColor) // [ DOWN-LEFT ]
+        {
+            // Disable (Left & Down)
+            world[new Vector2Int(C.x - 1, C.y)].GetComponent<SpriteRenderer>().color = Color.white;
+            world[new Vector2Int(C.x, C.y - 1)].GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        if (world[new Vector2Int(C.x - 1, C.y + 1)].GetComponent<SpriteRenderer>().color == lineColor) // [ UP-LEFT ]
+        {
+            // Disable (Left & Up)
+            world[new Vector2Int(C.x - 1, C.y)].GetComponent<SpriteRenderer>().color = Color.white;
+            world[new Vector2Int(C.x, C.y + 1)].GetComponent<SpriteRenderer>().color = Color.white;
+        }
+
+        // 2. Sometimes an additional tile is highlighted along a diagonal.
+        // - This is a bit more tricky to do as we need to check two tiles for each diagonal
+        /* - Like this:
+         *       ?
+         *   * []
+         *   [] *
+         *  ?
+         */
+
+        foreach (GameObject P in path)
+        {
+            Vector2Int loc = HF.V3_to_V2I(P.transform.position);
+
+            if (world[loc].GetComponent<SpriteRenderer>().color == lineColor
+            && world[new Vector2Int(loc.x + 1, loc.y - 1)].GetComponent<SpriteRenderer>().color == lineColor) // [ DOWN-RIGHT ]
+            {
+                // Disable (Right & Down)
+                world[new Vector2Int(loc.x + 1, loc.y)].GetComponent<SpriteRenderer>().color = Color.white;
+                world[new Vector2Int(loc.x, loc.y - 1)].GetComponent<SpriteRenderer>().color = Color.white;
+            }
+            if (world[loc].GetComponent<SpriteRenderer>().color == lineColor
+            && world[new Vector2Int(loc.x + 1, loc.y + 1)].GetComponent<SpriteRenderer>().color == lineColor) // [ UP-RIGHT ]
+            {
+                // Disable (Right & Up)
+                world[new Vector2Int(loc.x + 1, loc.y)].GetComponent<SpriteRenderer>().color = Color.white;
+                world[new Vector2Int(loc.x, loc.y + 1)].GetComponent<SpriteRenderer>().color = Color.white;
+            }
+            if (world[loc].GetComponent<SpriteRenderer>().color == lineColor
+            && world[new Vector2Int(loc.x - 1, loc.y - 1)].GetComponent<SpriteRenderer>().color == lineColor) // [ DOWN-LEFT ]
+            {
+                // Disable (Left & Down)
+                world[new Vector2Int(loc.x - 1, loc.y)].GetComponent<SpriteRenderer>().color = Color.white;
+                world[new Vector2Int(loc.x, loc.y - 1)].GetComponent<SpriteRenderer>().color = Color.white;
+            }
+            if (world[loc].GetComponent<SpriteRenderer>().color == lineColor
+            && world[new Vector2Int(loc.x - 1, loc.y + 1)].GetComponent<SpriteRenderer>().color == lineColor) // [ UP-LEFT ]
+            {
+                // Disable (Left & Up)
+                world[new Vector2Int(loc.x - 1, loc.y)].GetComponent<SpriteRenderer>().color = Color.white;
+                world[new Vector2Int(loc.x, loc.y + 1)].GetComponent<SpriteRenderer>().color = Color.white;
+            }
+        }
 
     }
 
