@@ -3245,7 +3245,7 @@ public static class HF
 
     #region Spotting
 
-    public static bool LOSOnTarget(Actor source, Actor target)
+    public static bool LOSOnTarget(GameObject source, GameObject target)
     {
         bool LOS = true;
 

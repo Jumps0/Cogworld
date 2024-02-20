@@ -18,12 +18,15 @@ public class MapManager : MonoBehaviour
         inst = this;
     }
 
-    [Header("References")]
+    [Header("Prefas")]
     public GameObject _playerPrefab;
     [SerializeField] private TileBlock _tilePrefab;
     [SerializeField] private GameObject _accessPrefab;
     [SerializeField] private GameObject debugPrefab;
     [SerializeField] private GameObject minePrefab;
+    public GameObject prefab_highlightedTile;
+
+    [Header("References")]
     public GameObject cameraRef;
     public GameObject playerRef;
     [SerializeField] private GameObject levelLoadCover;

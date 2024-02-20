@@ -4179,6 +4179,8 @@ public class UIManager : MonoBehaviour
             scanSubTextB.enabled = true;
             scanSubBackerImages[0].enabled = true;
             scanSubBackerImages[1].enabled = true;
+            scanSubBackerImages[0].color = Color.black;
+            scanSubBackerImages[1].color = Color.black;
             // Disable the text
             scanButtonText[0].enabled = false;
             scanButtonText[1].enabled = false;

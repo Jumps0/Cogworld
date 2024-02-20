@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -647,6 +648,50 @@ public class PlayerData : MonoBehaviour
             }
         }
     }
+
+
+    [SerializeField] private string highlightGreen = "#008407";
+    [SerializeField] private string highlightRed = "#840500";
+    private Dictionary<Vector2Int, GameObject> targetLine = new Dictionary<Vector2Int, GameObject>();
+    private void CreateHighlightTile(Vector2Int pos)
+    {
+        var spawnedTile = Instantiate(MapManager.inst.prefab_highlightedTile, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
+        spawnedTile.name = $"TargetLine: {pos.x},{pos.y}"; // Give grid based name
+        spawnedTile.transform.parent = this.transform;
+        targetLine.Add(pos, spawnedTile);
+    }
+
+    private void DestroyHighlightTile(Vector2Int pos)
+    {
+        Destroy(targetLine[pos]);
+
+        if(targetLine.ContainsKey(pos))
+            targetLine.Remove(pos);
+    }
+
+    private void SetHighlightColor(Vector2Int loc, string _color)
+    {
+        Color newCol;
+
+        if (targetLine.ContainsKey(loc))
+        {
+            if (UnityEngine.ColorUtility.TryParseHtmlString(_color, out newCol))
+            {
+                targetLine[loc].GetComponent<SpriteRenderer>().color = newCol;
+            }
+        }
+    }
+
+    private void ClearAllHighlights()
+    {
+        foreach (var T in targetLine.ToList())
+        {
+            Destroy(T.Value);
+        }
+
+        targetLine.Clear();
+    }
+
 
     public Actor GetMouseTarget()
     {
