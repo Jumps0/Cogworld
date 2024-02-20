@@ -29,7 +29,7 @@ public class TargetingTestMgr : MonoBehaviour
     [Header("UI")]
     public TextMeshProUGUI text_path;
     public TextMeshProUGUI text_status;
-
+    public TextMeshProUGUI text_coords;
 
     // Start is called before the first frame update
     void Start()
@@ -133,7 +133,13 @@ public class TargetingTestMgr : MonoBehaviour
         // There are multiple ways of finding a path from point A to point B.
         // -In this method we are going to find the next closest tile (neighbor) and set that as the next tile along the path.
 
-        StartCoroutine(Pathfind(HF.V3_to_V2I(playerPosition), HF.V3_to_V2I(mousePosition)));
+        Vector2Int start = new Vector2Int(Mathf.RoundToInt(playerPosition.x), Mathf.RoundToInt(playerPosition.y));
+        Vector2Int finish = new Vector2Int(Mathf.RoundToInt(mousePosition.x), Mathf.RoundToInt(mousePosition.y));
+
+        text_coords.text = start.ToString() + " to " + finish.ToString();
+
+        //StartCoroutine(Pathfind(HF.V3_to_V2I(playerPosition), HF.V3_to_V2I(mousePosition)));
+        FindPathNonIE(start, finish);
     }
 
     private IEnumerator Pathfind(Vector2 start, Vector2 finish)
@@ -145,7 +151,7 @@ public class TargetingTestMgr : MonoBehaviour
         text_status.text = "Searching...";
         text_status.color = Color.yellow;
 
-        while (Vector2.Distance(currentPos, finish) > 0.5f)
+        while (Vector2.Distance(currentPos, finish) > 0.25f)
         {
             // Add current point to path
             path.Add(world[HF.V3_to_V2I(currentPos)]);
@@ -157,7 +163,7 @@ public class TargetingTestMgr : MonoBehaviour
         }
 
         pathFinished = true;
-        MarkPath(); // Finish up by drawing the path
+        MarkPath(finish); // Finish up by drawing the path
 
         text_status.text = "Finished.";
         text_status.color = Color.green;
@@ -165,6 +171,52 @@ public class TargetingTestMgr : MonoBehaviour
         world[HF.V3_to_V2I(finish)].GetComponent<SpriteRenderer>().color = Color.blue;
 
     }
+
+    private void FindPathNonIE(Vector2 start, Vector2 finish)
+    {
+        // The function above but just not a Coroutine
+        pathFinished = false;
+        Vector2 currentPos = start;
+        Vector2 direction = (finish - start).normalized;
+        Vector2 lastDirection = direction; // Store the last direction
+
+        text_status.text = "Searching...";
+        text_status.color = Color.yellow;
+
+        while (Vector2.Distance(currentPos, finish) > 0.1f)
+        {
+            // Add current point to path
+            path.Add(world[HF.V3_to_V2I(currentPos)]);
+
+            // Move towards finish point in the calculated direction
+            currentPos += direction;
+
+            // Check if current position is out of bounds, if so, break the loop
+            if (currentPos.x < 0 || currentPos.y < 0 || currentPos.x >= mapSize.x - 2 || currentPos.y >= mapSize.y - 2)
+                break;
+
+            // Update direction towards finish point
+            direction = (finish - currentPos).normalized;
+
+            // Check if direction has changed (passed the finish point)
+            if (Vector2.Dot(direction, lastDirection) < 0)
+                break; // Stop if the direction changes
+
+            lastDirection = direction; // Update last direction
+        }
+
+        // Add the finish point to the path
+        path.Add(world[HF.V3_to_V2I(finish)]);
+
+        pathFinished = true;
+        MarkPath(finish); // Finish up by drawing the path
+
+        text_status.text = "Finished.";
+        text_status.color = Color.green;
+
+        world[HF.V3_to_V2I(finish)].GetComponent<SpriteRenderer>().color = Color.blue;
+    }
+
     #region OLD METHOD
     /*
     private IEnumerator Pathfind(Vector2Int start, Vector2Int finish)
@@ -212,59 +264,43 @@ public class TargetingTestMgr : MonoBehaviour
     */
     #endregion
 
-    private void MarkPath()
+    private void MarkPath(Vector2 end)
     {
         foreach(GameObject P in path) // Go through the path and mark each tile
         {
             MarkTile(HF.V3_to_V2I(P.transform.position));
         }
 
+        if (GapCheckHelper(HF.V3_to_V2I(end)))
+        {
+            GapCheck();
+        }
         CleanPath(); // Clean the path
     }
 
-    private List<GameObject> FindNeighbors(int X, int Y)
+    private void GapCheck()
     {
-        List<GameObject> neighbors = new List<GameObject>();
+        // Due to a quirk in the line generation, there is occasionally a gap in the path between the last tile along the path and the end tile.
+        // Here we will simply fill that 1 tile gap.
 
-        // We want to include diagonals into this.
-        if (X < mapSize.x - 1) // [ RIGHT ]
-        {
-            neighbors.Add(world[new Vector2Int(X + 1, Y)].gameObject);
-        }
-        if (X > 0) // [ LEFT ]
-        {
-            neighbors.Add(world[new Vector2Int(X - 1, Y)].gameObject);
-        }
-        if (Y < mapSize.y - 1) // [ UP ]
-        {
-            neighbors.Add(world[new Vector2Int(X, Y + 1)].gameObject);
-        }
-        if (Y > 0) // [ DOWN ]
-        {
-            neighbors.Add(world[new Vector2Int(X, Y - 1)].gameObject);
-        }
-        // -- 
-        // Diagonals
-        // --
-        if (X < mapSize.x - 1 && Y < mapSize.y - 1) // [ UP-RIGHT ]
-        {
-            neighbors.Add(world[new Vector2Int(X + 1, Y + 1)].gameObject);
-        }
-        if (Y < mapSize.y - 1 && X > 0) // [ UP-LEFT ]
-        {
-            neighbors.Add(world[new Vector2Int(X - 1, Y + 1)].gameObject);
-        }
-        if (Y > 0 && X > 0) // [ DOWN-LEFT ]
-        {
-            neighbors.Add(world[new Vector2Int(X - 1, Y - 1)].gameObject);
-        }
-        if (Y > 0 && X < mapSize.x - 1) // [ DOWN-RIGHT ]
-        {
-            neighbors.Add(world[new Vector2Int(X + 1, Y - 1)].gameObject);
-        }
+        // This issue doesn't appear to show up in diagonal lines, so we won't check the diagonal directions here.
 
-        return neighbors;
-
+        if (HF.GetDirection(HF.V3_to_V2I(path[path.Count - 1].transform.position), HF.V3_to_V2I(path[0].transform.position)) == Vector2.up)
+        {
+            world[HF.V3_to_V2I(path[path.Count - 1].transform.position) + Vector2Int.up].GetComponent<SpriteRenderer>().color = lineColor;
+        }
+        else if(HF.GetDirection(HF.V3_to_V2I(path[path.Count - 1].transform.position), HF.V3_to_V2I(path[0].transform.position)) == Vector2.down)
+        {
+            world[HF.V3_to_V2I(path[path.Count - 1].transform.position) + Vector2Int.down].GetComponent<SpriteRenderer>().color = lineColor;
+        }
+        else if (HF.GetDirection(HF.V3_to_V2I(path[path.Count - 1].transform.position), HF.V3_to_V2I(path[0].transform.position)) == Vector2.left)
+        {
+            world[HF.V3_to_V2I(path[path.Count - 1].transform.position) + Vector2Int.right].GetComponent<SpriteRenderer>().color = lineColor;
+        }
+        else if (HF.GetDirection(HF.V3_to_V2I(path[path.Count - 1].transform.position), HF.V3_to_V2I(path[0].transform.position)) == Vector2.right)
+        {
+            world[HF.V3_to_V2I(path[path.Count - 1].transform.position) + Vector2Int.left].GetComponent<SpriteRenderer>().color = lineColor;
+        }
     }
 
     private void CleanPath()
@@ -345,6 +381,74 @@ public class TargetingTestMgr : MonoBehaviour
         }
 
     }
+
+    private bool GapCheckHelper(Vector2Int end)
+    {
+        // Checks around in a circle of the finish point.
+        // If every tile surrounding the finish point is white, returns true.
+        if (world[end + Vector2Int.up].GetComponent<SpriteRenderer>().color == Color.white
+            && world[end + Vector2Int.down].GetComponent<SpriteRenderer>().color == Color.white
+            && world[end + Vector2Int.left].GetComponent<SpriteRenderer>().color == Color.white
+            && world[end + Vector2Int.right].GetComponent<SpriteRenderer>().color == Color.white
+            && world[end + Vector2Int.up + Vector2Int.left].GetComponent<SpriteRenderer>().color == Color.white
+            && world[end + Vector2Int.up + Vector2Int.right].GetComponent<SpriteRenderer>().color == Color.white
+            && world[end + Vector2Int.down + Vector2Int.left].GetComponent<SpriteRenderer>().color == Color.white
+            && world[end + Vector2Int.down + Vector2Int.right].GetComponent<SpriteRenderer>().color == Color.white)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+    private List<GameObject> FindNeighbors(int X, int Y)
+    {
+        List<GameObject> neighbors = new List<GameObject>();
+
+        // We want to include diagonals into this.
+        if (X < mapSize.x - 1) // [ RIGHT ]
+        {
+            neighbors.Add(world[new Vector2Int(X + 1, Y)].gameObject);
+        }
+        if (X > 0) // [ LEFT ]
+        {
+            neighbors.Add(world[new Vector2Int(X - 1, Y)].gameObject);
+        }
+        if (Y < mapSize.y - 1) // [ UP ]
+        {
+            neighbors.Add(world[new Vector2Int(X, Y + 1)].gameObject);
+        }
+        if (Y > 0) // [ DOWN ]
+        {
+            neighbors.Add(world[new Vector2Int(X, Y - 1)].gameObject);
+        }
+        // -- 
+        // Diagonals
+        // --
+        if (X < mapSize.x - 1 && Y < mapSize.y - 1) // [ UP-RIGHT ]
+        {
+            neighbors.Add(world[new Vector2Int(X + 1, Y + 1)].gameObject);
+        }
+        if (Y < mapSize.y - 1 && X > 0) // [ UP-LEFT ]
+        {
+            neighbors.Add(world[new Vector2Int(X - 1, Y + 1)].gameObject);
+        }
+        if (Y > 0 && X > 0) // [ DOWN-LEFT ]
+        {
+            neighbors.Add(world[new Vector2Int(X - 1, Y - 1)].gameObject);
+        }
+        if (Y > 0 && X < mapSize.x - 1) // [ DOWN-RIGHT ]
+        {
+            neighbors.Add(world[new Vector2Int(X + 1, Y - 1)].gameObject);
+        }
+
+        return neighbors;
+
+    }
+
 
     #endregion
 }

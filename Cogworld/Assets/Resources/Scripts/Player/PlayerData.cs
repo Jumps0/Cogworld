@@ -23,8 +23,8 @@ public class PlayerData : MonoBehaviour
     public int propulsionSlots;
     public int utilitySlots;
     public int weaponSlots;
-    //
-
+    
+    #region Key Values
     [Header("KeyValues")]
     [Header("  Top Right")]
     public int maxHealth;
@@ -101,13 +101,14 @@ public class PlayerData : MonoBehaviour
     public float hack_detectBonus = 0f;  // Chance to get detected while hacking (negative)
     //
     public List<TerminalCustomCode> customCodes = new List<TerminalCustomCode>();
-
+    #endregion
     [Header("Allies")]
     [Tooltip("Allies are bots that follow the player, and that the player can order around. They are blue.")]
     public List<Actor> allies = new List<Actor>();
     [Tooltip("Followers are bots that follow the player, but that the player can't directly control. They are usually white, red, purple, etc.")]
     public List<Actor> followers = new List<Actor>();
 
+    #region Stats
     [Header("Unique Alignments")]
     public bool hasRIF = false;
     public bool hasImprinted = false;
@@ -128,6 +129,7 @@ public class PlayerData : MonoBehaviour
     public bool uk_r17 = false;
 
     public SpecialTrait specialTrait; // FARCOM, CRM, Imprinted, RIF, etc.
+    #endregion
 
     // Update is called once per frame
     void Update()

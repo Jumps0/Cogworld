@@ -45,7 +45,7 @@ public class PlayerGridMovement : MonoBehaviour
         {
 
             // -- Mouse Movement --
-
+            #region Mouse Movement
             if (GameManager.inst.allowMouseMovement)
             {
                 if(GridManager.inst.astar == null) {
@@ -67,9 +67,9 @@ public class PlayerGridMovement : MonoBehaviour
                     }
                 }
             }
+            #endregion
 
-            // -- Arrow Key Movement --
-
+            #region Keyboard Movement
 
             // Diagonal Movement
             if (Input.GetKey(KeyCode.UpArrow) && !isMoving) // [UP-LEFT]
@@ -161,6 +161,7 @@ public class PlayerGridMovement : MonoBehaviour
                 //StartCoroutine(MovePlayer(Vector3.right));
                 return;
             }
+            #endregion
 
         }
         else if (inDialogueSequence)

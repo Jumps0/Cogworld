@@ -3219,6 +3219,30 @@ public static class HF
         return character.ToString();
     }
 
+    public static Vector2 GetDirection(Vector2 origin, Vector2 target)
+    {
+        Vector2 directionVector = target - origin;
+
+        float angle = Vector2.SignedAngle(Vector2.up, directionVector);
+
+        if (angle > -45 && angle <= 45)
+        {
+            return Vector2.up;
+        }
+        else if (angle > 45 && angle <= 135)
+        {
+            return Vector2.right;
+        }
+        else if (angle > -135 && angle <= -45)
+        {
+            return Vector2.left;
+        }
+        else
+        {
+            return Vector2.down;
+        }
+    }
+
     #region Spotting
 
     public static bool LOSOnTarget(Actor source, Actor target)

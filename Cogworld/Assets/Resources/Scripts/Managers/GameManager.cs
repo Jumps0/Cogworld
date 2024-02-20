@@ -146,6 +146,7 @@ public class GameManager : MonoBehaviour
     // Expand this later...
 
     [Header("Game Options")]
+    [Tooltip("If true, the mouse will be the primary way the player moves around. (As opposed to using the keyboard)")]
     public bool allowMouseMovement = true;
     [Tooltip("0 = Novice, 1 = Explorer, 2 = Rogue")]
     public int mode = 0;
