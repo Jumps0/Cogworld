@@ -303,7 +303,8 @@ public class PlayerData : MonoBehaviour
             }
             else
             {
-                ClearTargeting();
+                if(targetLine.Count > 0)
+                    ClearAllHighlights();
             }
         }
         else
@@ -314,10 +315,10 @@ public class PlayerData : MonoBehaviour
 
     public void DoTargeting()
     {
-        ClearTargeting();
+        ClearAllHighlights();
 
         // We want to draw a line from the player to their mouse cursor.
-        
+
         // Cast a ray from the player to the mouse position
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector3 direction = mousePosition - this.gameObject.transform.position;
@@ -334,180 +335,82 @@ public class PlayerData : MonoBehaviour
         for (int i = 0; i < hits.Length; i++)
         {
             RaycastHit2D hit = hits[i];
-            TileBlock tile = hit.collider.GetComponent<TileBlock>();
-            if (tile != null && MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int((int)tile.transform.position.x, (int)tile.transform.position.y)))
-            {
-                if (!tile.targetingHighlight.activeInHierarchy)
-                {
-                    tile.targetingHighlight.SetActive(true);
-                }
+
+            if (!targetLine.ContainsKey(HF.V3_to_V2I(hit.transform.position)))
+            { // Only make a new highlight if one doesn't exist at that location
+                CreateHighlightTile(HF.V3_to_V2I(hit.transform.position));
             }
         }
 
-        // NOTE: This method looks awful but it works, any way to make this better in the future? Maybe not loop through every single tile on the map?
-
         // Clear specific tiles to make highlight thinner
-        #region Awful Line visual correction
-        foreach (TileBlock tile in MapManager.inst._allTilesRealized.Values)
+        #region Line visual correction
+        foreach (var T in targetLine.ToList())
         {
-            if (tile.targetingHighlight.activeInHierarchy)
+            Vector2Int loc = T.Key;
+
+            // Horizontal Line
+            if (targetLine.ContainsKey(new Vector2Int(loc.x - 1, loc.y)) &&
+                targetLine.ContainsKey(new Vector2Int(loc.x + 1, loc.y)))
             {
-                Vector2Int tileCell = new Vector2Int(tile.locX, tile.locY);
-                TileBlock leftTile = null;
-                TileBlock rightTile = null;
-                TileBlock upTile = null;
-                TileBlock downTile = null;
-                TileBlock TL = null;
-                TileBlock TR = null;
-                TileBlock BL = null;
-                TileBlock BR = null;
-
-                // Check for adjacent highlighted tiles
-                if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(tileCell.x - 1, tileCell.y)))
+                if (targetLine.ContainsKey(new Vector2Int(loc.x - 1, loc.y + 1)))
                 {
-                    leftTile = MapManager.inst._allTilesRealized[new Vector2Int(tileCell.x - 1, tileCell.y)];
+                    DestroyHighlightTile(new Vector2Int(loc.x - 1, loc.y));
                 }
-                else
+                else if (targetLine.ContainsKey(new Vector2Int(loc.x - 1, loc.y - 1)))
                 {
-                    ClearTargeting();
-                    return;
+                    DestroyHighlightTile(new Vector2Int(loc.x - 1, loc.y));
+                }
+                if (targetLine.ContainsKey(new Vector2Int(loc.x + 1, loc.y - 1)))
+                {
+                    DestroyHighlightTile(new Vector2Int(loc.x + 1, loc.y));
+                }
+                else if (targetLine.ContainsKey(new Vector2Int(loc.x + 1, loc.y + 1)))
+                {
+                    DestroyHighlightTile(new Vector2Int(loc.x + 1, loc.y));
                 }
 
-                if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(tileCell.x + 1, tileCell.y)))
-                {
-                    rightTile = MapManager.inst._allTilesRealized[new Vector2Int(tileCell.x + 1, tileCell.y)];
-                }
-                else
-                {
-                    ClearTargeting();
-                    return;
-                }
+            }
 
-                if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(tileCell.x, tileCell.y + 1)))
+            // Vertical Line
+            if (targetLine.ContainsKey(new Vector2Int(loc.x, loc.y + 1)) &&
+                targetLine.ContainsKey(new Vector2Int(loc.x, loc.y - 1)))
+            {
+                if (targetLine.ContainsKey(new Vector2Int(loc.x - 1, loc.y + 1)))
                 {
-                    upTile = MapManager.inst._allTilesRealized[new Vector2Int(tileCell.x, tileCell.y + 1)];
+                    DestroyHighlightTile(new Vector2Int(loc.x, loc.y + 1));
                 }
-                else
+                else if (targetLine.ContainsKey(new Vector2Int(loc.x + 1, loc.y + 1)))
                 {
-                    ClearTargeting();
-                    return;
+                    DestroyHighlightTile(new Vector2Int(loc.x, loc.y + 1));
                 }
-
-                if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(tileCell.x, tileCell.y - 1)))
+                if (targetLine.ContainsKey(new Vector2Int(loc.x - 1, loc.y - 1)))
                 {
-                    downTile = MapManager.inst._allTilesRealized[new Vector2Int(tileCell.x, tileCell.y - 1)];
+                    DestroyHighlightTile(new Vector2Int(loc.x, loc.y - 1));
                 }
-                else
+                else if (targetLine.ContainsKey(new Vector2Int(loc.x + 1, loc.y - 1)))
                 {
-                    ClearTargeting();
-                    return;
-                }
-
-                if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(tileCell.x - 1, tileCell.y + 1)))
-                {
-                    TL = MapManager.inst._allTilesRealized[new Vector2Int(tileCell.x - 1, tileCell.y + 1)];
-                }
-                else
-                {
-                    ClearTargeting();
-                    return;
-                }
-
-                if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(tileCell.x + 1, tileCell.y + 1)))
-                {
-                    TR = MapManager.inst._allTilesRealized[new Vector2Int(tileCell.x + 1, tileCell.y + 1)];
-                }
-                else
-                {
-                    ClearTargeting();
-                    return;
-                }
-
-                if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(tileCell.x - 1, tileCell.y - 1)))
-                {
-                    BL = MapManager.inst._allTilesRealized[new Vector2Int(tileCell.x - 1, tileCell.y - 1)];
-                }
-                else
-                {
-                    ClearTargeting();
-                    return;
-                }
-
-                if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(tileCell.x + 1, tileCell.y - 1)))
-                {
-                    BR = MapManager.inst._allTilesRealized[new Vector2Int(tileCell.x + 1, tileCell.y - 1)];
-                }
-                else
-                {
-                    ClearTargeting();
-                    return;
-                }
-                //
-
-
-                // Horizontal Line
-                if (leftTile.gameObject.GetComponent<TileBlock>().targetingHighlight.activeInHierarchy &&
-                    rightTile.gameObject.GetComponent<TileBlock>().targetingHighlight.activeInHierarchy)
-                {
-                    if (TL.gameObject.GetComponent<TileBlock>().targetingHighlight.activeInHierarchy)
-                    {
-                        leftTile.gameObject.GetComponent<TileBlock>().targetingHighlight.SetActive(false);
-                    }
-                    else if (BL.gameObject.GetComponent<TileBlock>().targetingHighlight.activeInHierarchy)
-                    {
-                        leftTile.gameObject.GetComponent<TileBlock>().targetingHighlight.SetActive(false);
-                    }
-                    if (BR.gameObject.GetComponent<TileBlock>().targetingHighlight.activeInHierarchy)
-                    {
-                        rightTile.gameObject.GetComponent<TileBlock>().targetingHighlight.SetActive(false);
-                    }
-                    else if (TR.gameObject.GetComponent<TileBlock>().targetingHighlight.activeInHierarchy)
-                    {
-                        rightTile.gameObject.GetComponent<TileBlock>().targetingHighlight.SetActive(false);
-                    }
-
-                }
-
-                // Vertical Line
-                if (upTile.gameObject.GetComponent<TileBlock>().targetingHighlight.activeInHierarchy &&
-                    downTile.gameObject.GetComponent<TileBlock>().targetingHighlight.activeInHierarchy)
-                {
-                    if (TL.gameObject.GetComponent<TileBlock>().targetingHighlight.activeInHierarchy)
-                    {
-                        upTile.gameObject.GetComponent<TileBlock>().targetingHighlight.SetActive(false);
-                    }
-                    else if (TR.gameObject.GetComponent<TileBlock>().targetingHighlight.activeInHierarchy)
-                    {
-                        upTile.gameObject.GetComponent<TileBlock>().targetingHighlight.SetActive(false);
-                    }
-                    if (BL.gameObject.GetComponent<TileBlock>().targetingHighlight.activeInHierarchy)
-                    {
-                        downTile.gameObject.GetComponent<TileBlock>().targetingHighlight.SetActive(false);
-                    }
-                    else if (BR.gameObject.GetComponent<TileBlock>().targetingHighlight.activeInHierarchy)
-                    {
-                        downTile.gameObject.GetComponent<TileBlock>().targetingHighlight.SetActive(false);
-                    }
-                }
-
-                // Diagonal Line
-                if (TL.gameObject.GetComponent<TileBlock>().targetingHighlight.activeInHierarchy &&
-                    BR.gameObject.GetComponent<TileBlock>().targetingHighlight.activeInHierarchy)
-                {
-                    leftTile.gameObject.GetComponent<TileBlock>().targetingHighlight.SetActive(false);
-                    rightTile.gameObject.GetComponent<TileBlock>().targetingHighlight.SetActive(false);
-                    upTile.gameObject.GetComponent<TileBlock>().targetingHighlight.SetActive(false);
-                    downTile.gameObject.GetComponent<TileBlock>().targetingHighlight.SetActive(false);
-                }
-                else if (TR.gameObject.GetComponent<TileBlock>().targetingHighlight.activeInHierarchy &&
-                    BL.gameObject.GetComponent<TileBlock>().targetingHighlight.activeInHierarchy)
-                {
-                    leftTile.gameObject.GetComponent<TileBlock>().targetingHighlight.SetActive(false);
-                    rightTile.gameObject.GetComponent<TileBlock>().targetingHighlight.SetActive(false);
-                    upTile.gameObject.GetComponent<TileBlock>().targetingHighlight.SetActive(false);
-                    downTile.gameObject.GetComponent<TileBlock>().targetingHighlight.SetActive(false);
+                    DestroyHighlightTile(new Vector2Int(loc.x, loc.y - 1));
                 }
             }
+            
+            // Diagonal Line
+            if (targetLine.ContainsKey(new Vector2Int(loc.x - 1, loc.y + 1)) &&
+                targetLine.ContainsKey(new Vector2Int(loc.x - 1, loc.y - 1)))
+            {
+                DestroyHighlightTile(new Vector2Int(loc.x - 1, loc.y));
+                DestroyHighlightTile(new Vector2Int(loc.x + 1, loc.y));
+                DestroyHighlightTile(new Vector2Int(loc.x, loc.y + 1));
+                DestroyHighlightTile(new Vector2Int(loc.x, loc.y - 1));
+            }
+            else if (targetLine.ContainsKey(new Vector2Int(loc.x + 1, loc.y + 1)) &&
+                targetLine.ContainsKey(new Vector2Int(loc.x - 1, loc.y - 1)))
+            {
+                DestroyHighlightTile(new Vector2Int(loc.x - 1, loc.y));
+                DestroyHighlightTile(new Vector2Int(loc.x + 1, loc.y));
+                DestroyHighlightTile(new Vector2Int(loc.x, loc.y + 1));
+                DestroyHighlightTile(new Vector2Int(loc.x, loc.y - 1));
+            }
+            
         }
         #endregion
 
@@ -633,22 +536,6 @@ public class PlayerData : MonoBehaviour
         #endregion
     }
 
-    public void ClearTargeting()
-    {
-        foreach (KeyValuePair<Vector2Int, TileBlock> T in MapManager.inst._allTilesRealized)
-        {
-            T.Value.targetingHighlight.SetActive(false);
-        }
-
-        foreach (KeyValuePair<Vector2Int, GameObject> T in MapManager.inst._layeredObjsRealized)
-        {
-            if (T.Value.GetComponent<TileBlock>())
-            {
-                T.Value.GetComponent<TileBlock>().targetingHighlight.SetActive(false);
-            }
-        }
-    }
-
 
     [SerializeField] private string highlightGreen = "#008407";
     [SerializeField] private string highlightRed = "#840500";
@@ -663,10 +550,15 @@ public class PlayerData : MonoBehaviour
 
     private void DestroyHighlightTile(Vector2Int pos)
     {
-        Destroy(targetLine[pos]);
+        if (targetLine.ContainsKey(pos))
+        {
+            Destroy(targetLine[pos]);
 
-        if(targetLine.ContainsKey(pos))
-            targetLine.Remove(pos);
+            if (targetLine.ContainsKey(pos))
+            { // ^ Safety check
+                targetLine.Remove(pos);
+            }
+        }
     }
 
     private void SetHighlightColor(Vector2Int loc, string _color)
@@ -722,7 +614,7 @@ public class PlayerData : MonoBehaviour
                     StartCoroutine(AttackBuffer());
                     Action.RangedAttackAction(this.GetComponent<Actor>(), target, equippedWeapon);
 
-                    ClearTargeting();
+                    ClearAllHighlights();
                     doTargeting = false;
                 }
             }
