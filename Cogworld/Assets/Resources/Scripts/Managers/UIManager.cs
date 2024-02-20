@@ -4249,7 +4249,7 @@ public class UIManager : MonoBehaviour
                 }
 
             }
-            else if (focusObj.GetComponent<TileBlock>())
+            else if (focusObj.GetComponent<AccessObject>())
             {
                 // - The square - here it's disabled
                 scanSubImage.enabled = false;

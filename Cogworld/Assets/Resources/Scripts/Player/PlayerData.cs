@@ -108,7 +108,7 @@ public class PlayerData : MonoBehaviour
     [Tooltip("Followers are bots that follow the player, but that the player can't directly control. They are usually white, red, purple, etc.")]
     public List<Actor> followers = new List<Actor>();
 
-    #region Stats
+    #region Stat Variables
     [Header("Unique Alignments")]
     public bool hasRIF = false;
     public bool hasImprinted = false;
@@ -142,7 +142,7 @@ public class PlayerData : MonoBehaviour
     }
 
 
-
+    #region Stat Related
     public void SetDefaults()
     {
         powerSlots = GlobalSettings.inst.startingPowerSlots;
@@ -267,6 +267,7 @@ public class PlayerData : MonoBehaviour
         currentEnergy = maxEnergy;
         currentHeat = 0;
     }
+    #endregion
 
     #region Combat
 
@@ -319,6 +320,10 @@ public class PlayerData : MonoBehaviour
         // Cast a ray from the player to the mouse position
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector3 direction = mousePosition - this.gameObject.transform.position;
+
+        // End point correction due to sneaky rounding
+        mousePosition = new Vector3(Mathf.RoundToInt(mousePosition.x), Mathf.RoundToInt(mousePosition.y));
+
         float distance = Vector3.Distance(new Vector3Int((int)mousePosition.x, (int)mousePosition.y, 0), this.gameObject.transform.position);
         //distance = Mathf.Clamp(distance, 0f, Action.GetWeaponRange(this.GetComponent<Actor>()));
         direction.Normalize();
