@@ -574,11 +574,14 @@ public static class Action
         return (toHitChance, noCrit, types);
     }
 
+    /// <summary>
+    /// Searches an actor's ACTIVE weapons for a melee weapon. Returns that weapon if one is found.
+    /// </summary>
+    /// <param name="actor">The actor to focus on.</param>
+    /// <returns>The melee weapon in item form.</returns>
     public static Item FindMeleeWeapon(Actor actor)
     {
         Item weapon = null;
-
-        // For this case, we consider any weapon with a range less than or equal to 2 a melee weapon.
 
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {

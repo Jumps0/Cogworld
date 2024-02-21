@@ -3294,6 +3294,102 @@ public static class HF
     }
 
     /// <summary>
+    /// Basically *LOSOnTarget* but returns the first thing blocking line of sight if there is anything.
+    /// </summary>
+    /// <param name="source">The origin location.</param>
+    /// <param name="target">The target location.</param>
+    /// <param name="requireVision">If the player needs to be able to see the blocking object.</param>
+    /// <returns></returns>
+    public static GameObject ReturnObstacleInLOS(GameObject source, Vector3 target, bool requireVision = false)
+    {
+        GameObject blocker = null;
+
+        Vector2 targetDirection = target - source.transform.position;
+        float distance = Vector2.Distance(Action.V3_to_V2I(source.transform.position), Action.V3_to_V2I(target));
+
+        RaycastHit2D[] hits = Physics2D.RaycastAll(new Vector2(source.transform.position.x, source.transform.position.y), targetDirection.normalized, distance);
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            RaycastHit2D hit = hits[i];
+            TileBlock tile = hit.collider.GetComponent<TileBlock>();
+            DoorLogic door = hit.collider.GetComponent<DoorLogic>();
+            MachinePart machine = hit.collider.GetComponent<MachinePart>();
+
+            // (TODO: Expand this later when needed)
+            // If we encounter:
+            // - A wall
+            // - A closed door
+            // - A machine
+
+            // Then there is no LOS
+
+            if (tile != null && tile.tileInfo.type == TileType.Wall)
+            {
+                if (requireVision)
+                {
+                    if (tile.isExplored)
+                    {
+                        return tile.gameObject;
+                    }
+                    else
+                    {
+                        blocker = null;
+                    }
+                }
+                else
+                {
+                    return tile.gameObject;
+                }
+            }
+
+            if (door != null && tile.specialNoBlockVis == true)
+            {
+                blocker = null;
+            }
+            else if (door != null && tile.specialNoBlockVis == false)
+            {
+                if (requireVision)
+                {
+                    if (door.GetComponent<TileBlock>().isExplored)
+                    {
+                        return door.gameObject;
+                    }
+                    else
+                    {
+                        blocker = null;
+                    }
+                }
+                else
+                {
+                    return door.gameObject;
+                }
+            }
+
+            if (machine != null)
+            {
+                if (requireVision)
+                {
+                    if (machine.isExplored)
+                    {
+                        return machine.gameObject;
+                    }
+                    else
+                    {
+                        blocker = null;
+                    }
+                }
+                else
+                {
+                    return machine.gameObject;
+                }
+            }
+        }
+
+        return blocker;
+    }
+
+    /// <summary>
     /// Determines if the actor in question is within the players FOV (list).
     /// </summary>
     /// <param name="actor">The actor in question.</param>

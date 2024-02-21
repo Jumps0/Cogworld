@@ -349,69 +349,102 @@ public class PlayerData : MonoBehaviour
             Vector2Int loc = T.Key;
 
             // Horizontal Line
-            if (targetLine.ContainsKey(new Vector2Int(loc.x - 1, loc.y)) &&
-                targetLine.ContainsKey(new Vector2Int(loc.x + 1, loc.y)))
+            if (targetLine.ContainsKey(Vector2Int.left + loc) &&
+                targetLine.ContainsKey(Vector2Int.right + loc))
             {
-                if (targetLine.ContainsKey(new Vector2Int(loc.x - 1, loc.y + 1)))
+                if (targetLine.ContainsKey(Vector2Int.up + loc))
                 {
-                    DestroyHighlightTile(new Vector2Int(loc.x - 1, loc.y));
+                    DestroyHighlightTile(Vector2Int.left + loc);
                 }
-                else if (targetLine.ContainsKey(new Vector2Int(loc.x - 1, loc.y - 1)))
+                else if (targetLine.ContainsKey(Vector2Int.down + loc))
                 {
-                    DestroyHighlightTile(new Vector2Int(loc.x - 1, loc.y));
+                    DestroyHighlightTile(Vector2Int.left + loc);
                 }
-                if (targetLine.ContainsKey(new Vector2Int(loc.x + 1, loc.y - 1)))
+                if (targetLine.ContainsKey(Vector2Int.down + Vector2Int.right + loc))
                 {
-                    DestroyHighlightTile(new Vector2Int(loc.x + 1, loc.y));
+                    DestroyHighlightTile(Vector2Int.right + loc);
                 }
-                else if (targetLine.ContainsKey(new Vector2Int(loc.x + 1, loc.y + 1)))
+                else if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.right + loc))
                 {
-                    DestroyHighlightTile(new Vector2Int(loc.x + 1, loc.y));
+                    DestroyHighlightTile(Vector2Int.right + loc);
                 }
-
             }
 
             // Vertical Line
-            if (targetLine.ContainsKey(new Vector2Int(loc.x, loc.y + 1)) &&
-                targetLine.ContainsKey(new Vector2Int(loc.x, loc.y - 1)))
+            if (targetLine.ContainsKey(Vector2Int.up + loc) &&
+                targetLine.ContainsKey(Vector2Int.down + loc))
             {
-                if (targetLine.ContainsKey(new Vector2Int(loc.x - 1, loc.y + 1)))
+                if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.left + loc))
                 {
-                    DestroyHighlightTile(new Vector2Int(loc.x, loc.y + 1));
+                    DestroyHighlightTile(Vector2Int.up + loc);
                 }
-                else if (targetLine.ContainsKey(new Vector2Int(loc.x + 1, loc.y + 1)))
+                else if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.right + loc))
                 {
-                    DestroyHighlightTile(new Vector2Int(loc.x, loc.y + 1));
+                    DestroyHighlightTile(Vector2Int.up + loc);
                 }
-                if (targetLine.ContainsKey(new Vector2Int(loc.x - 1, loc.y - 1)))
+                if (targetLine.ContainsKey(Vector2Int.down + Vector2Int.left + loc))
                 {
-                    DestroyHighlightTile(new Vector2Int(loc.x, loc.y - 1));
+                    DestroyHighlightTile(Vector2Int.down + loc);
                 }
-                else if (targetLine.ContainsKey(new Vector2Int(loc.x + 1, loc.y - 1)))
+                else if (targetLine.ContainsKey(Vector2Int.down + Vector2Int.right + loc))
                 {
-                    DestroyHighlightTile(new Vector2Int(loc.x, loc.y - 1));
+                    DestroyHighlightTile(Vector2Int.down + loc);
                 }
             }
-            
+
             // Diagonal Line
-            if (targetLine.ContainsKey(new Vector2Int(loc.x - 1, loc.y + 1)) &&
-                targetLine.ContainsKey(new Vector2Int(loc.x - 1, loc.y - 1)))
-            {
-                DestroyHighlightTile(new Vector2Int(loc.x - 1, loc.y));
-                DestroyHighlightTile(new Vector2Int(loc.x + 1, loc.y));
-                DestroyHighlightTile(new Vector2Int(loc.x, loc.y + 1));
-                DestroyHighlightTile(new Vector2Int(loc.x, loc.y - 1));
+            // NOTE: This doesn't actually do what we want, but im okay with it as is.
+            if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.left + loc) &&  //  \
+                targetLine.ContainsKey(Vector2Int.down + Vector2Int.right + loc)) //   *
+            {                                                                     //    \
+                DestroyHighlightTile(Vector2Int.up + Vector2Int.right + loc);
+                DestroyHighlightTile(Vector2Int.down + Vector2Int.left + loc);
+                //DestroyHighlightTile(Vector2Int.up + Vector2Int.right + loc);
+                //DestroyHighlightTile(Vector2Int.down + Vector2Int.right + loc);
             }
-            else if (targetLine.ContainsKey(new Vector2Int(loc.x + 1, loc.y + 1)) &&
-                targetLine.ContainsKey(new Vector2Int(loc.x - 1, loc.y - 1)))
-            {
-                DestroyHighlightTile(new Vector2Int(loc.x - 1, loc.y));
-                DestroyHighlightTile(new Vector2Int(loc.x + 1, loc.y));
-                DestroyHighlightTile(new Vector2Int(loc.x, loc.y + 1));
-                DestroyHighlightTile(new Vector2Int(loc.x, loc.y - 1));
+            else if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.right + loc) && //    /
+                targetLine.ContainsKey(Vector2Int.down + Vector2Int.left + loc))       //   *
+            {                                                                          //  /
+                DestroyHighlightTile(Vector2Int.up + Vector2Int.left + loc);
+                //DestroyHighlightTile(Vector2Int.down + Vector2Int.left + loc);
+                //DestroyHighlightTile(Vector2Int.up + Vector2Int.right + loc);
+                DestroyHighlightTile(Vector2Int.down + Vector2Int.right + loc);
             }
-            
+
         }
+        #endregion
+
+        #region LOS Color check & Melee adjustment
+        // If the player is using a melee weapon, we want to visually let them know it has a super short range.
+        if (Action.FindMeleeWeapon(this.GetComponent<Actor>()) != null)
+        {
+            foreach (var T in targetLine)
+            {
+                if (Vector2.Distance(this.transform.position, T.Key) > 2.55f)
+                {
+                    SetHighlightColor(T.Key, highlightRed);
+                }
+            }
+        }
+
+
+        // Here we check if the player actually has line-of-sight on the target.
+        // -If yes, then the line is green, no changes necessary.
+        // -If no, then the line, starting PAST the blocking object, is red.
+        GameObject blocker = HF.ReturnObstacleInLOS(this.gameObject, mousePosition, true);
+        if (blocker != null) // There is an obstacle!
+        {
+            float dist = Vector2.Distance(this.transform.position, blocker.transform.position);
+            foreach (var T in targetLine)
+            {
+                // We only want to change the line colors past the blocking object
+                if(Vector2.Distance(this.transform.position, T.Key) - 0.4f > dist) // -0.4f added because distances are weird?
+                {
+                    SetHighlightColor(T.Key, highlightRed);
+                }
+            }
+        }
+
         #endregion
 
         #region Scan Window Indicator
@@ -536,9 +569,8 @@ public class PlayerData : MonoBehaviour
         #endregion
     }
 
-
-    [SerializeField] private string highlightGreen = "#008407";
-    [SerializeField] private string highlightRed = "#840500";
+    [SerializeField] private Color highlightGreen;
+    [SerializeField] private Color highlightRed;
     private Dictionary<Vector2Int, GameObject> targetLine = new Dictionary<Vector2Int, GameObject>();
     private void CreateHighlightTile(Vector2Int pos)
     {
@@ -561,16 +593,11 @@ public class PlayerData : MonoBehaviour
         }
     }
 
-    private void SetHighlightColor(Vector2Int loc, string _color)
+    private void SetHighlightColor(Vector2Int loc, Color _color)
     {
-        Color newCol;
-
         if (targetLine.ContainsKey(loc))
         {
-            if (UnityEngine.ColorUtility.TryParseHtmlString(_color, out newCol))
-            {
-                targetLine[loc].GetComponent<SpriteRenderer>().color = newCol;
-            }
+            targetLine[loc].GetComponent<SpriteRenderer>().color = _color;
         }
     }
 

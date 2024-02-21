@@ -4263,11 +4263,11 @@ public class UIManager : MonoBehaviour
                 }
                 else
                 {
-                    scanSubTextA.text = "Primary Access";
+                    scanSubTextA.text = "Level Access";
                 }
                 scanSubTextA.color = highGreen;
 
-                scanSubTextB.text = "> / ";
+                scanSubTextB.text = "< ";
                 if (focusObj.GetComponent<AccessObject>().playerKnowsDestination)
                 {
                     scanSubTextB.text += focusObj.GetComponent<AccessObject>().destName;
