@@ -304,7 +304,10 @@ public class PlayerData : MonoBehaviour
             else
             {
                 if(targetLine.Count > 0)
+                {
                     ClearAllHighlights();
+                    UIManager.inst.Evasion_Volley(false); // Close the /VOLLEY/ window
+                }
             }
         }
         else
@@ -567,6 +570,8 @@ public class PlayerData : MonoBehaviour
             UIManager.inst.Scan_FlipSubmode(false);
         }
         #endregion
+
+        UIManager.inst.Evasion_Volley(true); // Open the /VOLLEY/ window
     }
 
     [SerializeField] private Color highlightGreen;

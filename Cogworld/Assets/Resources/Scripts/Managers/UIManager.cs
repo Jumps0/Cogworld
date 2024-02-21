@@ -14,6 +14,10 @@ using Unity.Burst.CompilerServices;
 using System.Text;
 using static Unity.VisualScripting.Member;
 using static UnityEngine.GraphicsBuffer;
+using System.Numerics;
+using Vector3 = UnityEngine.Vector3;
+using Quaternion = UnityEngine.Quaternion;
+using Vector2 = UnityEngine.Vector2;
 //using static UnityEditor.Progress;
 
 public class UIManager : MonoBehaviour
@@ -97,6 +101,10 @@ public class UIManager : MonoBehaviour
                 }
             }
         }
+
+        // Volley check
+        if(volleyMain.activeInHierarchy)
+            Evasion_VolleyCheck();
     }
 
     #region > New Floor & Fresh Start Animations <
@@ -4572,12 +4580,17 @@ public class UIManager : MonoBehaviour
     {
         volleyMain.SetActive(showMenu);
         volleyV.SetActive(showMenu); // idk what this is for
+        evasionExtra.GetComponent<UIMouseBounds>().disabled = showMenu; // Disable/Enable opening detection
 
         if (showMenu)
         {
             volleyHeader.text = "/VOLLEY/";
 
             // Now we need to get a bunch of info from the mouse and what the player is actually targeting.
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            // End point correction due to sneaky rounding
+            mousePosition = new Vector3(Mathf.RoundToInt(mousePosition.x), Mathf.RoundToInt(mousePosition.y));
+
             #region Volley TLDR
             /*
              *    Description from the Cogmind manual:
@@ -4610,14 +4623,149 @@ public class UIManager : MonoBehaviour
             // - Where # = range and the letter inside changes to represent different things.
             // - The letter itself changes, so does its color.
             // - This line is always displayed
+            int range = Mathf.RoundToInt(Vector2.Distance(HF.V3_to_V2I(PlayerData.inst.transform.position), mousePosition));
+
+            volleyTextA.text = "R=" + range + " [";
+            List<KeyValuePair<string, Item>> weaponChars = new List<KeyValuePair<string, Item>>(); // List of individual characters that represent weapons.
+            // Gather up all active weapons (normally there should at least be one)
+            foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>()._invWeapon.Container.Items)
+            {
+                if (item.item.Id >= 0)
+                {
+                    if (item.item.state) // Only active weapons
+                    {
+                        string letter = HF.FindItemUILetter(item.item);
+                        if(letter != null)
+                        {
+                            weaponChars.Add(new KeyValuePair<string, Item>(letter, item.item));
+                        }
+                    }
+                }
+            }
+
+            // Go through all active weapons we previously gathered, and add in the letters + colors based on range
+            foreach (var W in weaponChars)
+            {
+                // "<color=#5B5B5B>" // gray
+                // "<color=#00D900>" // green
+
+                if ((W.Value.itemData.meleeAttack.isMelee && range > 2) || (W.Value.itemData.shot.shotRange > range))
+                {
+                    volleyTextA.text += "<color=#00D900>" + W.Key.ToLower() + "</color>"; // In range, so Green
+                }
+                else
+                {
+                    volleyTextA.text += "<color=#5B5B5B>" + W.Key.ToLower() + "</color>"; // Out of range, so Gray
+                }
+            }
+
+            volleyTextA.text += "]";
 
             // Line 2) Time ### E-## M-## H+##
             // - Where we display the time to shoot, energy/matter/heat costs.
-            // - This line is only displayed when a valid target is selected
+            // - This line is only displayed when atleast one weapon is in ranged.
+            // - All weapons that are in range (see line 1), will have their costs added to this line.
+            int time = 0, energy = 0, matter = 0, heat = 0;
+            volleyTextB.enabled = false;
+            foreach (var W in weaponChars)
+            {
+                if ((W.Value.itemData.meleeAttack.isMelee && range > 2) || (W.Value.itemData.shot.shotRange > range))
+                {
+                    volleyTextB.enabled = true;
+
+                    if (W.Value.itemData.meleeAttack.isMelee) // Melee weapon
+                    {
+                        time += W.Value.itemData.meleeAttack.delay;
+                        energy += W.Value.itemData.meleeAttack.energy;
+                        matter += W.Value.itemData.meleeAttack.matter;
+                        heat += W.Value.itemData.meleeAttack.heat;
+                    }
+                    else // Ranged weapon
+                    {
+                        time += W.Value.itemData.shot.shotDelay;
+                        energy += W.Value.itemData.shot.shotEnergy;
+                        matter += W.Value.itemData.shot.shotMatter;
+                        heat += W.Value.itemData.shot.shotHeat;
+                    }
+                }
+            }
+
+            // Now assemble the string (if the text is active)
+            if(volleyTextB.enabled == true)
+            {
+                volleyTextB.text = "Time ";
+                volleyTextB.text += time.ToString();
+                
+
+                if(energy >= 0)
+                {
+                    volleyTextB.text += " E+" + energy;
+                }
+                else if (energy == 0)
+                {
+                    volleyTextB.text += " E-" + energy;
+                }
+                else
+                {
+                    volleyTextB.text += " E" + energy;
+                }
+
+                if(matter > 0)
+                {
+                    volleyTextB.text += " M+" + matter;
+                }
+                else if (matter == 0)
+                {
+                    volleyTextB.text += " M-" + matter;
+                }
+                else
+                {
+                    volleyTextB.text += " M" + matter;
+                }
+
+                if(heat >= 0)
+                {
+                    volleyTextB.text += " H+" + heat;
+                }
+                else
+                {
+                    volleyTextB.text += " H" + heat;
+                }
+            }
+
+            // <color=#009700> // darker green
         }
         else
         {
             volleyHeader.text = "/EVASION/";
+
+
+        }
+    }
+
+    private void Evasion_VolleyCheck()
+    {
+        // Here we are just checking if the player presses the "V" key or not. This activates a special visual, and also changes the color of the "V".
+        if(Input.GetKeyDown(KeyCode.V))
+        {
+            Evasion_VolleyModeFlip();
+        }
+    }
+
+    private bool volleyMode = false;
+    private void Evasion_VolleyModeFlip()
+    {
+        volleyMode = !volleyMode; // Flip
+
+        if (volleyMode)
+        {
+            // Enable the special volley mode
+
+
+        }
+        else
+        {
+            // Disable the special volley mode
 
 
         }

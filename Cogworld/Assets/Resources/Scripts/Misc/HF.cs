@@ -2808,6 +2808,28 @@ public static class HF
 
     }
 
+    /// <summary>
+    /// Finds the assigned letter for an item on the UI Parts display.
+    /// </summary>
+    /// <param name="item">The item to search for.</param>
+    /// <returns>The letter assigned to that item.</returns>
+    public static string FindItemUILetter(Item item)
+    {
+        // Roundabout way of doing this since i'm not sure how to access the list directly
+        foreach (Transform child in UIManager.inst.partContentArea.transform)
+        {
+            if(child.GetComponent<InvDisplayItem>() && child.GetComponent<InvDisplayItem>()._assignedItem != null)
+            {
+                if (child.GetComponent<InvDisplayItem>()._assignedItem == item)
+                {
+                    return child.GetComponent<InvDisplayItem>()._assignedChar.ToString();
+                }
+            }
+        }
+        
+        return null;
+    }
+
     #endregion
 
     #region Floor Traps
