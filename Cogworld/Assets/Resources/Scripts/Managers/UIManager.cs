@@ -4461,6 +4461,12 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI evasionText5;
     public TextMeshProUGUI evasionMainText;
     public Image evasionImage;
+    [Header("RSUI - Evasion (Volley)")]
+    public GameObject volleyMain;
+    public TextMeshProUGUI volleyHeader;
+    public TextMeshProUGUI volleyTextA;
+    public TextMeshProUGUI volleyTextB;
+    public GameObject volleyV; // no idea what this is for but we'll have it anyways
 
     public void Evasion_ExpandMenu()
     {
@@ -4560,6 +4566,61 @@ public class UIManager : MonoBehaviour
         evasionExtra.GetComponent<UIMouseBounds>().disabled = false; // Allow opening
         evasion_hoverOpener.GetComponent<UIMouseBounds>().disabled = true; // Disabled closing detection
         evasionExtra.transform.GetChild(0).gameObject.SetActive(false);
+    }
+
+    public void Evasion_Volley(bool showMenu)
+    {
+        volleyMain.SetActive(showMenu);
+        volleyV.SetActive(showMenu); // idk what this is for
+
+        if (showMenu)
+        {
+            volleyHeader.text = "/VOLLEY/";
+
+            // Now we need to get a bunch of info from the mouse and what the player is actually targeting.
+            #region Volley TLDR
+            /*
+             *    Description from the Cogmind manual:
+             * While in firing mode, the evasion window is replaced with the volley window, 
+             * showing summary data for the volley if there are any active weapons. 
+             * 'R' indicates the range from your current position to the cursor. 
+             * Letters in brackets refer to all active weapons (using their parts list letter), 
+             * where those which are not currently within range of the cursor target (and therefore will not fire) are grayed out. 
+             * For all weapons that will fire, the total resource costs are listed in the second line: 
+             * time required to fire along with energy ('E'), matter ('M') and heat ('H'). 
+             * Energy and matter are displayed as total costs, 
+             * while heat is instead the amount generated per turn over the volley duration.
+             * 
+             * At the bottom of that window is a button for toggling a visualization of the volley range 
+             * (alternatively use the 'v' key) to highlight the area reachable by the current volley, 
+             * using different levels of brightness if multiple ranges are involved. Any visible terrain destroyable using the volley 
+             * (including generally taking into account all applicable damage modification from active utilities, 
+             * current momentum, resistances, etc.) will glow red, while any other terrain that could at least theoretically 
+             * be destroyed by currently inactive weapons or those in inventory will instead glow yellow. 
+             * The appearance of terrain you don't likely have the means to destroy at the moment remains unchanged. 
+             * Note that even in such a case, it may sometimes still be possible to destroy the terrain using other means, 
+             * since the system does not take into account inactive utilities or those in inventory, 
+             * special weapons, the environment, or other means to creatively destroy terrain, 
+             * but it is a useful way to quickly confirm that you already do have the capability.
+             */
+            #endregion
+
+            // -- This is what we need to display:
+            // Line 1) R=# [?]
+            // - Where # = range and the letter inside changes to represent different things.
+            // - The letter itself changes, so does its color.
+            // - This line is always displayed
+
+            // Line 2) Time ### E-## M-## H+##
+            // - Where we display the time to shoot, energy/matter/heat costs.
+            // - This line is only displayed when a valid target is selected
+        }
+        else
+        {
+            volleyHeader.text = "/EVASION/";
+
+
+        }
     }
 
     #endregion
