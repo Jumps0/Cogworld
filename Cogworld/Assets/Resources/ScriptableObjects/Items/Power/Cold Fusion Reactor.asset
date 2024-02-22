@@ -18,7 +18,10 @@ MonoBehaviour:
     Name: Imp. Deuterium Engine
     Id: 58
     stackable: 0
+    amount: 1
     itemData: {fileID: 11400000}
+    state: 1
+    integrityCurrent: 0
   knowByPlayer: 0
   floorDisplay: {fileID: -1884263998, guid: 6074c0389029dd34c9cd2fd482c26683, type: 3}
   inventoryDisplay: {fileID: -1884263998, guid: 6074c0389029dd34c9cd2fd482c26683, type: 3}
@@ -30,10 +33,8 @@ MonoBehaviour:
   mass: 12
   rating: 5
   star: 0
-  integrityCurrent: 150
   integrityMax: 150
   coverage: 60
-  state: 0
   schematicDetails:
     hackable: 1
     location:
@@ -213,10 +214,34 @@ MonoBehaviour:
       bypassArmor: 0
       coreExposureEffect: 0
       launcherAccuracy: 0
+    partIdent:
+      hasEffect: 0
+      amount: 0
+      parallel: 0
+    antiCorruption:
+      hasEffect: 0
+      amount: 0
+      integrityLossPer: 0
+      parallel: 0
+    rcsEffect:
+      hasEffect: 0
+      percentage: 0
+      stacks: 0
+      momentumBonus: 1
+    phasingEffect:
+      hasEffect: 0
+      percentage: 0
+      stacks: 0
+    cloakingEffect:
+      hasEffect: 0
+      rangedReduction: 0
+      noticeReduction: 0
+      halfStacks: 1
   quality: 2
   itemName: Cold Fusion Reactor
   description: A standard cold fusion reactor. Provides reliable power output and
     storage.
+  mechanicalDescription: 5 M12 E12
   details:
     temp: 
   fabricationInfo:

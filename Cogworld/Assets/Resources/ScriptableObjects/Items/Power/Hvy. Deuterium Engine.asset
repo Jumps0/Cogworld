@@ -18,7 +18,10 @@ MonoBehaviour:
     Name: Imp. Deuterium Engine
     Id: 21
     stackable: 0
+    amount: 1
     itemData: {fileID: 11400000}
+    state: 1
+    integrityCurrent: 0
   knowByPlayer: 0
   floorDisplay: {fileID: 1896401937, guid: fab67cf9e23fdbf4e9bad070f3896ba8, type: 3}
   inventoryDisplay: {fileID: 1896401937, guid: fab67cf9e23fdbf4e9bad070f3896ba8, type: 3}
@@ -30,10 +33,8 @@ MonoBehaviour:
   mass: 11
   rating: 4
   star: 0
-  integrityCurrent: 120
   integrityMax: 120
   coverage: 60
-  state: 0
   schematicDetails:
     hackable: 1
     location:
@@ -204,10 +205,43 @@ MonoBehaviour:
       chronoWheelEffect: 0
       deployableTurret: 0
       lifetimeDecay: 0
+    toHitBuffs:
+      hasEffect: 0
+      amount: 0
+      stacks: 0
+      halfStacks: 0
+      bonusCritChance: 0
+      bypassArmor: 0
+      coreExposureEffect: 0
+      launcherAccuracy: 0
+    partIdent:
+      hasEffect: 0
+      amount: 0
+      parallel: 0
+    antiCorruption:
+      hasEffect: 0
+      amount: 0
+      integrityLossPer: 0
+      parallel: 0
+    rcsEffect:
+      hasEffect: 0
+      percentage: 0
+      stacks: 0
+      momentumBonus: 1
+    phasingEffect:
+      hasEffect: 0
+      percentage: 0
+      stacks: 0
+    cloakingEffect:
+      hasEffect: 0
+      rangedReduction: 0
+      noticeReduction: 0
+      halfStacks: 1
   quality: 8
   itemName: Hvy. Deuterium Engine
   description: An heavy variant of the rugged Deuterium engine, providing more power
     output and storage at the cost of additional weight.
+  mechanicalDescription: 4 M11 E13
   details:
     temp: 
   fabricationInfo:

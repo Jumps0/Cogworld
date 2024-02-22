@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public enum ItemType
@@ -73,6 +74,63 @@ public class Item
         Id = item.data.Id;
         itemData = item;
         integrityCurrent = item.integrityMax;
+        SetupText();
+    }
+
+    public void SetupText()
+    {
+        // Here we set the mechanical descriptor text.
+        // Most of these follow a standard format,
+        // except Utilities which is done manually.
+        if(itemData.mechanicalDescription.Length == 0)
+        {
+            switch (itemData.slot)
+            {
+                case ItemSlot.Power: // [Rating] M[Mass] E[Supply]
+                    itemData.mechanicalDescription = itemData.rating.ToString();
+                    if (itemData.star)
+                        itemData.mechanicalDescription += "*";
+                    itemData.mechanicalDescription += " M";
+                    itemData.mechanicalDescription += itemData.mass;
+                    itemData.mechanicalDescription += " E";
+                    itemData.mechanicalDescription += itemData.supply;
+                    break;
+                case ItemSlot.Propulsion: // [Rating] T[Time to Move] S[Support]
+                    itemData.mechanicalDescription = itemData.rating.ToString();
+                    if (itemData.star)
+                        itemData.mechanicalDescription += "*";
+                    itemData.mechanicalDescription += " T";
+                    itemData.mechanicalDescription += itemData.propulsion[0].timeToMove;
+                    itemData.mechanicalDescription += " S";
+                    itemData.mechanicalDescription += itemData.propulsion[0].support;
+                    break;
+                case ItemSlot.Utilities:
+                    // This is too complex and has too many variables to do here.
+                    break;
+                case ItemSlot.Weapons: // [Rating] M[Mass] [Damage Range] [Damage Type (IN COLOR)]
+                    itemData.mechanicalDescription = itemData.rating.ToString();
+                    if (itemData.star)
+                        itemData.mechanicalDescription += "*";
+                    itemData.mechanicalDescription += " M";
+                    itemData.mechanicalDescription += itemData.mass;
+                    if (itemData.meleeAttack.isMelee)
+                    {
+                        itemData.mechanicalDescription += " ";
+                        itemData.mechanicalDescription += itemData.meleeAttack.damage.x + "-" + itemData.meleeAttack.damage.y + " ";
+                        itemData.mechanicalDescription += HF.ShortenDamageType(itemData.meleeAttack.damageType);
+                    }
+                    else
+                    {
+                        itemData.mechanicalDescription += " ";
+                        itemData.mechanicalDescription += itemData.projectile.damage.x + "-" + itemData.projectile.damage.y + " ";
+                        itemData.mechanicalDescription += HF.ShortenDamageType(itemData.projectile.damageType);
+                    }
+                    
+                    break;
+                case ItemSlot.Other:
+                    break;
+            }
+        }
     }
 }
 

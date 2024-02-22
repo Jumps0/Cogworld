@@ -232,10 +232,15 @@ MonoBehaviour:
       hasEffect: 0
       percentage: 0
       stacks: 0
+    cloakingEffect:
+      hasEffect: 0
+      rangedReduction: 0
+      noticeReduction: 0
+      halfStacks: 1
   quality: 1
   itemName: Imp. Ion Engine
   description: An improved variant of the reliable ion engine.
-  mechanicalDescription: 
+  mechanicalDescription: 2 M7 E7
   details:
     temp: 
   fabricationInfo:

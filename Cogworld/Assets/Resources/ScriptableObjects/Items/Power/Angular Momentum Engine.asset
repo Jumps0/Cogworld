@@ -18,7 +18,10 @@ MonoBehaviour:
     Name: 
     Id: 0
     stackable: 0
+    amount: 1
     itemData: {fileID: 11400000}
+    state: 1
+    integrityCurrent: 0
   knowByPlayer: 0
   floorDisplay: {fileID: 1896401937, guid: fab67cf9e23fdbf4e9bad070f3896ba8, type: 3}
   inventoryDisplay: {fileID: 1896401937, guid: fab67cf9e23fdbf4e9bad070f3896ba8, type: 3}
@@ -26,13 +29,12 @@ MonoBehaviour:
   itemColor: {r: 1, g: 1, b: 1, a: 1}
   type: 1
   slot: 0
+  slotsRequired: 1
   mass: 13
   rating: 5
   star: 0
-  integrityCurrent: 90
   integrityMax: 90
   coverage: 60
-  state: 0
   schematicDetails:
     hackable: 1
     location:
@@ -67,11 +69,24 @@ MonoBehaviour:
     damageType: 0
     critChance: 0
     critType: 0
-    penChance: 0
+    penChance: {x: 0, y: 0, z: 0}
     heatTrasfer: 0
     heatTransferDegree: 0
     spectrum: 0
     hasSpectrum: 0
+    disruption: 0
+    salvage: 0
+  meleeAttack:
+    isMelee: 0
+    energy: 0
+    matter: 0
+    heat: 0
+    targeting: 0
+    delay: 0
+    damage: {x: 0, y: 0}
+    damageType: 6
+    critical: 0
+    critType: 0
     disruption: 0
     salvage: 0
   itemEffect:
@@ -83,6 +98,8 @@ MonoBehaviour:
     fallOff: 12
     salvage: -6
     transferLevel: 0
+    disruption: 0
+    spectrum: 0
     doesHeatDissip: 0
     heatDissipation_perTurn: 0
     heatDissipation_stacks: 0
@@ -111,6 +128,7 @@ MonoBehaviour:
     armorEffect_preventCritStrikes: 0
     armorEffect_preventChainReactions: 0
     armorEffect_stacks: 0
+    armorEffect_resistances: []
     hasAccuracyBuff: 0
     accBuff_nonMelee: 0
     accBuff_melee: 0
@@ -153,6 +171,72 @@ MonoBehaviour:
       databaseLockoutBonus: 0
       hackFeedbackPreventBonus: 0
       allyHackDefenseBonus: 0
+      allyHackRange: 0
+    emitEffect:
+      hasEffect: 0
+      target: 0
+      turnTime: 5
+      range: 0
+    fireTimeEffect:
+      hasEffect: 0
+      fireTimeReduction: 0
+      capped: 0
+      cap: 0
+      stacks: 1
+      compatability: 0
+    transmissionJammingEffect:
+      hasEffect: 0
+      range: 0
+      preventReinforcementCall: 1
+      suppressAlarmTraps: 1
+    effectiveCorruptionEffect:
+      hasEffect: 0
+      amount: 0
+      stacks: 1
+    partRestoreEffect:
+      hasEffect: 0
+      percentChance: 0
+      canRepairAlienTech: 0
+      protoRepairCap: 0
+      canRunInParralel: 1
+    exilesEffects:
+      hasEffect: 0
+      isAutoWeapon: 0
+      chronoWheelEffect: 0
+      deployableTurret: 0
+      lifetimeDecay: 0
+    toHitBuffs:
+      hasEffect: 0
+      amount: 0
+      stacks: 0
+      halfStacks: 0
+      bonusCritChance: 0
+      bypassArmor: 0
+      coreExposureEffect: 0
+      launcherAccuracy: 0
+    partIdent:
+      hasEffect: 0
+      amount: 0
+      parallel: 0
+    antiCorruption:
+      hasEffect: 0
+      amount: 0
+      integrityLossPer: 0
+      parallel: 0
+    rcsEffect:
+      hasEffect: 0
+      percentage: 0
+      stacks: 0
+      momentumBonus: 1
+    phasingEffect:
+      hasEffect: 0
+      percentage: 0
+      stacks: 0
+    cloakingEffect:
+      hasEffect: 0
+      rangedReduction: 0
+      noticeReduction: 0
+      halfStacks: 1
   - chainExplode: 0
     damage: {x: 41, y: 83}
     chainDamageType: 4
@@ -161,6 +245,8 @@ MonoBehaviour:
     fallOff: 12
     salvage: -6
     transferLevel: 3
+    disruption: 0
+    spectrum: 0
     doesHeatDissip: 0
     heatDissipation_perTurn: 0
     heatDissipation_stacks: 0
@@ -189,6 +275,7 @@ MonoBehaviour:
     armorEffect_preventCritStrikes: 0
     armorEffect_preventChainReactions: 0
     armorEffect_stacks: 0
+    armorEffect_resistances: []
     hasAccuracyBuff: 0
     accBuff_nonMelee: 0
     accBuff_melee: 0
@@ -231,9 +318,76 @@ MonoBehaviour:
       databaseLockoutBonus: 0
       hackFeedbackPreventBonus: 0
       allyHackDefenseBonus: 0
+      allyHackRange: 0
+    emitEffect:
+      hasEffect: 0
+      target: 0
+      turnTime: 5
+      range: 0
+    fireTimeEffect:
+      hasEffect: 0
+      fireTimeReduction: 0
+      capped: 0
+      cap: 0
+      stacks: 1
+      compatability: 0
+    transmissionJammingEffect:
+      hasEffect: 0
+      range: 0
+      preventReinforcementCall: 1
+      suppressAlarmTraps: 1
+    effectiveCorruptionEffect:
+      hasEffect: 0
+      amount: 0
+      stacks: 1
+    partRestoreEffect:
+      hasEffect: 0
+      percentChance: 0
+      canRepairAlienTech: 0
+      protoRepairCap: 0
+      canRunInParralel: 1
+    exilesEffects:
+      hasEffect: 0
+      isAutoWeapon: 0
+      chronoWheelEffect: 0
+      deployableTurret: 0
+      lifetimeDecay: 0
+    toHitBuffs:
+      hasEffect: 0
+      amount: 0
+      stacks: 0
+      halfStacks: 0
+      bonusCritChance: 0
+      bypassArmor: 0
+      coreExposureEffect: 0
+      launcherAccuracy: 0
+    partIdent:
+      hasEffect: 0
+      amount: 0
+      parallel: 0
+    antiCorruption:
+      hasEffect: 0
+      amount: 0
+      integrityLossPer: 0
+      parallel: 0
+    rcsEffect:
+      hasEffect: 0
+      percentage: 0
+      stacks: 0
+      momentumBonus: 1
+    phasingEffect:
+      hasEffect: 0
+      percentage: 0
+      stacks: 0
+    cloakingEffect:
+      hasEffect: 0
+      rangedReduction: 0
+      noticeReduction: 0
+      halfStacks: 1
   quality: 2
   itemName: Angular Momentum Engine
   description: 
+  mechanicalDescription: 5 M13 E13
   details:
     temp: 
   fabricationInfo:

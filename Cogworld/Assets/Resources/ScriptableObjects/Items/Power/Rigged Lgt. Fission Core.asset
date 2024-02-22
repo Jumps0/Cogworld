@@ -18,7 +18,10 @@ MonoBehaviour:
     Name: Imp. Deuterium Engine
     Id: 74
     stackable: 0
+    amount: 1
     itemData: {fileID: 11400000}
+    state: 1
+    integrityCurrent: 0
   knowByPlayer: 0
   floorDisplay: {fileID: -1884263998, guid: 6074c0389029dd34c9cd2fd482c26683, type: 3}
   inventoryDisplay: {fileID: -1884263998, guid: 6074c0389029dd34c9cd2fd482c26683, type: 3}
@@ -30,10 +33,8 @@ MonoBehaviour:
   mass: 7
   rating: 5
   star: 0
-  integrityCurrent: 60
   integrityMax: 60
   coverage: 60
-  state: 0
   schematicDetails:
     hackable: 0
     location:
@@ -68,7 +69,7 @@ MonoBehaviour:
     damageType: 0
     critChance: 0
     critType: 0
-    penChance: 0
+    penChance: {x: 0, y: 0, z: 0}
     heatTrasfer: 0
     heatTransferDegree: 0
     spectrum: 0
@@ -198,10 +199,49 @@ MonoBehaviour:
       canRepairAlienTech: 0
       protoRepairCap: 0
       canRunInParralel: 1
+    exilesEffects:
+      hasEffect: 0
+      isAutoWeapon: 0
+      chronoWheelEffect: 0
+      deployableTurret: 0
+      lifetimeDecay: 0
+    toHitBuffs:
+      hasEffect: 0
+      amount: 0
+      stacks: 0
+      halfStacks: 0
+      bonusCritChance: 0
+      bypassArmor: 0
+      coreExposureEffect: 0
+      launcherAccuracy: 0
+    partIdent:
+      hasEffect: 0
+      amount: 0
+      parallel: 0
+    antiCorruption:
+      hasEffect: 0
+      amount: 0
+      integrityLossPer: 0
+      parallel: 0
+    rcsEffect:
+      hasEffect: 0
+      percentage: 0
+      stacks: 0
+      momentumBonus: 1
+    phasingEffect:
+      hasEffect: 0
+      percentage: 0
+      stacks: 0
+    cloakingEffect:
+      hasEffect: 0
+      rangedReduction: 0
+      noticeReduction: 0
+      halfStacks: 1
   quality: 15
   itemName: Rigged Lgt. Fission Core
   description: An ordinary Light Fission Core that has been rigged to explode when
     distrubed. Watch your step!
+  mechanicalDescription: 5 M7 E13
   details:
     temp: 
   fabricationInfo:

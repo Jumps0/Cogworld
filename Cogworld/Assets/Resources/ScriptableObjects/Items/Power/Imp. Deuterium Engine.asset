@@ -232,10 +232,15 @@ MonoBehaviour:
       hasEffect: 0
       percentage: 0
       stacks: 0
+    cloakingEffect:
+      hasEffect: 0
+      rangedReduction: 0
+      noticeReduction: 0
+      halfStacks: 1
   quality: 1
   itemName: Imp. Deuterium Engine
   description: An improved variant of the rugged Deuterium engine.
-  mechanicalDescription: 
+  mechanicalDescription: 4 M10 E11
   details:
     temp: 
   fabricationInfo:

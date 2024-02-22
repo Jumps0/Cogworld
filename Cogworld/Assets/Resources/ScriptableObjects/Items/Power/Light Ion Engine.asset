@@ -232,10 +232,15 @@ MonoBehaviour:
       hasEffect: 0
       percentage: 0
       stacks: 0
+    cloakingEffect:
+      hasEffect: 0
+      rangedReduction: 0
+      noticeReduction: 0
+      halfStacks: 1
   quality: 2
   itemName: Lgt. Ion Engine
   description: A basic lightweight engine.
-  mechanicalDescription: 
+  mechanicalDescription: 1 M3 E5
   details:
     temp: 
   fabricationInfo:
