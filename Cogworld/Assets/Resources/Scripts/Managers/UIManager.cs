@@ -4474,7 +4474,9 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI volleyHeader;
     public TextMeshProUGUI volleyTextA;
     public TextMeshProUGUI volleyTextB;
-    public GameObject volleyV; // no idea what this is for but we'll have it anyways
+    public GameObject volleyV;
+    [SerializeField] private TextMeshProUGUI volleyVText;
+    [SerializeField] private GameObject volley_prefab;
 
     public void Evasion_ExpandMenu()
     {
@@ -4738,8 +4740,7 @@ public class UIManager : MonoBehaviour
         else
         {
             volleyHeader.text = "/EVASION/";
-
-
+            // I don't think there is anything else we need to do here.
         }
     }
 
@@ -4752,24 +4753,146 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    #region /VOLLEY/ Animation
     private bool volleyMode = false;
-    private void Evasion_VolleyModeFlip()
+    public void Evasion_VolleyModeFlip()
     {
         volleyMode = !volleyMode; // Flip
 
         if (volleyMode)
         {
             // Enable the special volley mode
+            volleyVText.color = highlightGreen; // Change the "v" color
 
+            StartCoroutine(Evasion_VolleyAnimation()); // Do the animation
 
+            // Play the sound "SCAN_4" (ui-79)
+            AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[79]);
         }
         else
         {
             // Disable the special volley mode
+            volleyVText.color = subGreen; // Change the "v" color
 
+            Evasion_VolleyCleanup(); // Clean up the animation
 
+            // Play the sound "RANGE_OFF" (ui-74)
+            AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[74]);
         }
     }
+
+    private Dictionary<Vector2Int, GameObject> volleyTiles = new Dictionary<Vector2Int, GameObject>();
+
+    private IEnumerator Evasion_VolleyAnimation()
+    {
+        // Basically what we want to do here is a simple "scan" animation.
+        // This takes place entirely within the player's FOV.
+
+        // We are going make two scan lines (one going up, one going down) from the players position.
+        // The lines start full red but quickly go transparent.
+        // When the animation ends the transparent red squares stay within the player FOV.
+
+        // TLDR, we are basically just gonna steal from NFA_Scan() but make it slightly more complex.
+
+        float pingDuration = 0.35f;
+
+        // Calculate how many rows there are
+        int rowCount = 0;
+        HashSet<int> rowIndices = new HashSet<int>();
+
+        // Combine the NFA_squares dictionary with the secondary dictionary
+        Dictionary<Vector2Int, GameObject> NFA_merged = NFA_secondary;
+        NFA_squares.ToList().ForEach(x => NFA_merged[x.Key] = x.Value);
+
+        foreach (Vector2Int key in NFA_merged.Keys)
+        {
+            // Adding the y-coordinate to the HashSet to keep only unique rows
+            rowIndices.Add(key.y);
+        }
+
+        rowCount = rowIndices.Count;
+
+        // Organize the NFA_merged by *y* coordinate.
+        // Initialize the new dictionary
+        Dictionary<int, List<GameObject>> sortedDictionary = new Dictionary<int, List<GameObject>>();
+
+        // Iterate through the original dictionary
+        foreach (var kvp in NFA_merged)
+        {
+            // Get the y-coordinate
+            int yCoordinate = kvp.Key.y;
+
+            // Check if the y-coordinate is already a key in the sorted dictionary
+            if (!sortedDictionary.ContainsKey(yCoordinate))
+            {
+                sortedDictionary[yCoordinate] = new List<GameObject>();
+            }
+
+            // Add the GameObject to the list associated with the y-coordinate
+            sortedDictionary[yCoordinate].Add(kvp.Value);
+        }
+
+        // Create a sorted dictionary with keys sorted in descending order
+        var sortedKeys = new List<int>(sortedDictionary.Keys);
+        sortedKeys.Sort((a, b) => b.CompareTo(a));
+
+        // Create a new dictionary with sorted keys
+        Dictionary<int, List<GameObject>> sortedResult = new Dictionary<int, List<GameObject>>();
+        foreach (var key in sortedKeys)
+        {
+            sortedResult[key] = sortedDictionary[key];
+        }
+
+        for (int i = 0; i < 5; i++) // 5 times total
+        {
+            // Play the scanline sound. ("INTRO/MAPSCAN")
+            AudioManager.inst.PlayMiscSpecific(AudioManager.inst.INTRO_Clips[6]);
+
+            // Now go through each row, and ping every block in the row
+            foreach (var kvp in sortedResult)
+            {
+                foreach (GameObject entry in kvp.Value) // Loop through each object in the micro-list
+                {
+                    AnimTileBlock pingObj = entry.GetComponent<AnimTileBlock>();
+
+                    if (pingObj != null)
+                    {
+                        pingObj.Scan(); // Make it play the scan animation
+                    }
+                }
+
+                yield return new WaitForSeconds(pingDuration / rowCount); // Equal time between rows
+            }
+
+            foreach (KeyValuePair<Vector2Int, GameObject> obj in NFA_merged) // Probably uneccessary. Emergency stop
+            {
+                obj.Value.GetComponent<AnimTileBlock>().HaltScan();
+            }
+
+            yield return new WaitForSeconds(0.3f); // Short delay between scans
+        }
+
+        yield return null;
+    }
+
+    private void Evasion_VolleyCleanup()
+    {
+        // Nothing fancy here, just remove all the squares.
+
+        foreach (var item in volleyTiles.ToList())
+        {
+            Destroy(item.Value);
+        }
+
+        volleyTiles.Clear();
+    }
+
+    private void Evasion_VolleyMakeTile(Vector2Int loc)
+    {
+
+    }
+
+    #endregion
 
     #endregion
 

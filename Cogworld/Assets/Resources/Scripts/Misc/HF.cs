@@ -3083,6 +3083,38 @@ public static class HF
         return originalName;
     }
 
+    /// <summary>
+    /// Accepts a damage type and returns a shortened two character string respective to that damage type.
+    /// </summary>
+    /// <param name="damageType">The damage type (ItemDamageType).</param>
+    /// <returns>A two character string. example: "EM"</returns>
+    public static string ShortenDamageType(ItemDamageType damageType)
+    {
+        switch (damageType)
+        {
+            case ItemDamageType.Kinetic:
+                return "KI";
+            case ItemDamageType.Thermal:
+                return "TH";
+            case ItemDamageType.Explosive:
+                return "EX";
+            case ItemDamageType.EMP:
+                return "EM";
+            case ItemDamageType.Energy:
+                return "EN";
+            case ItemDamageType.Phasic:
+                return "PH";
+            case ItemDamageType.Impact:
+                return "IM";
+            case ItemDamageType.Slashing:
+                return "SL";
+            case ItemDamageType.Piercing:
+                return "PR";
+            default:
+                return "??";
+        }
+    }
+
     #endregion
 
     public static Color GetDarkerColor(Color originalColor, float percentage)
