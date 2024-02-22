@@ -18,6 +18,7 @@ using System.Numerics;
 using Vector3 = UnityEngine.Vector3;
 using Quaternion = UnityEngine.Quaternion;
 using Vector2 = UnityEngine.Vector2;
+using static UnityEditor.PlayerSettings;
 //using static UnityEditor.Progress;
 
 public class UIManager : MonoBehaviour
@@ -103,7 +104,7 @@ public class UIManager : MonoBehaviour
         }
 
         // Volley check
-        if(volleyMain.activeInHierarchy)
+        if((volleyMain.activeInHierarchy || volleyTiles.Count > 0) && !volleyAnimating)
             Evasion_VolleyCheck();
     }
 
@@ -4755,6 +4756,7 @@ public class UIManager : MonoBehaviour
 
     #region /VOLLEY/ Animation
     private bool volleyMode = false;
+    private bool volleyAnimating = false;
     public void Evasion_VolleyModeFlip()
     {
         volleyMode = !volleyMode; // Flip
@@ -4764,10 +4766,9 @@ public class UIManager : MonoBehaviour
             // Enable the special volley mode
             volleyVText.color = highlightGreen; // Change the "v" color
 
-            StartCoroutine(Evasion_VolleyAnimation()); // Do the animation
+            if(!volleyAnimating)
+                StartCoroutine(Evasion_VolleyAnimation()); // Do the animation
 
-            // Play the sound "SCAN_4" (ui-79)
-            AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[79]);
         }
         else
         {
@@ -4777,7 +4778,7 @@ public class UIManager : MonoBehaviour
             Evasion_VolleyCleanup(); // Clean up the animation
 
             // Play the sound "RANGE_OFF" (ui-74)
-            AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[74]);
+            AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[74]);
         }
     }
 
@@ -4785,6 +4786,8 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator Evasion_VolleyAnimation()
     {
+        volleyAnimating = true;
+
         // Basically what we want to do here is a simple "scan" animation.
         // This takes place entirely within the player's FOV.
 
@@ -4794,17 +4797,25 @@ public class UIManager : MonoBehaviour
 
         // TLDR, we are basically just gonna steal from NFA_Scan() but make it slightly more complex.
 
-        float pingDuration = 0.35f;
+        // Gather up the player's FOV
+        List<Vector3Int> fovD = PlayerData.inst.GetComponent<Actor>().FieldofView;
+        List<Vector3Int> fov = fovD.Distinct().ToList();
+
+        // Create a new tile for each FOV
+        foreach (Vector3Int L in fov)
+        {
+            Evasion_VolleyMakeTile(new Vector2Int(L.x, L.y));
+        }
+
+        Vector2Int playerLocation = HF.V3_to_V2I(PlayerData.inst.transform.position);
+
+        float pingDuration = 0.15f;
 
         // Calculate how many rows there are
         int rowCount = 0;
         HashSet<int> rowIndices = new HashSet<int>();
 
-        // Combine the NFA_squares dictionary with the secondary dictionary
-        Dictionary<Vector2Int, GameObject> NFA_merged = NFA_secondary;
-        NFA_squares.ToList().ForEach(x => NFA_merged[x.Key] = x.Value);
-
-        foreach (Vector2Int key in NFA_merged.Keys)
+        foreach (Vector2Int key in volleyTiles.Keys)
         {
             // Adding the y-coordinate to the HashSet to keep only unique rows
             rowIndices.Add(key.y);
@@ -4812,12 +4823,12 @@ public class UIManager : MonoBehaviour
 
         rowCount = rowIndices.Count;
 
-        // Organize the NFA_merged by *y* coordinate.
+        // Organize the volleyTiles by *y* coordinate.
         // Initialize the new dictionary
         Dictionary<int, List<GameObject>> sortedDictionary = new Dictionary<int, List<GameObject>>();
 
         // Iterate through the original dictionary
-        foreach (var kvp in NFA_merged)
+        foreach (var kvp in volleyTiles)
         {
             // Get the y-coordinate
             int yCoordinate = kvp.Key.y;
@@ -4832,47 +4843,71 @@ public class UIManager : MonoBehaviour
             sortedDictionary[yCoordinate].Add(kvp.Value);
         }
 
-        // Create a sorted dictionary with keys sorted in descending order
-        var sortedKeys = new List<int>(sortedDictionary.Keys);
-        sortedKeys.Sort((a, b) => b.CompareTo(a));
+        // Determine rows above and below the player's position
+        int playerRow = playerLocation.y;
+        int maxRow = sortedDictionary.Keys.Max();
+        int minRow = sortedDictionary.Keys.Min();
 
-        // Create a new dictionary with sorted keys
-        Dictionary<int, List<GameObject>> sortedResult = new Dictionary<int, List<GameObject>>();
-        foreach (var key in sortedKeys)
+        int rowsAbovePlayer = maxRow - playerRow;
+        int rowsBelowPlayer = playerRow - minRow;
+
+        // Create a sorted list of rows based on distance from the player
+        List<int> sortedRows = new List<int>();
+        sortedRows.Add(playerRow); // Start with the player's row
+
+        for (int i = 1; i <= Mathf.Max(rowsAbovePlayer, rowsBelowPlayer); i++)
         {
-            sortedResult[key] = sortedDictionary[key];
+            if (playerRow + i <= maxRow)
+            {
+                sortedRows.Add(playerRow + i); // Add rows below the player
+            }
+
+            if (playerRow - i >= minRow)
+            {
+                sortedRows.Add(playerRow - i); // Add rows above the player
+            }
         }
 
-        for (int i = 0; i < 5; i++) // 5 times total
+        // Play the sound "SCAN_4" (ui-79)
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[79]);
+
+        // Now go through each row, and ping every block in the row
+        foreach (int row in sortedRows)
         {
-            // Play the scanline sound. ("INTRO/MAPSCAN")
-            AudioManager.inst.PlayMiscSpecific(AudioManager.inst.INTRO_Clips[6]);
-
-            // Now go through each row, and ping every block in the row
-            foreach (var kvp in sortedResult)
+            if (sortedDictionary.ContainsKey(row))
             {
-                foreach (GameObject entry in kvp.Value) // Loop through each object in the micro-list
+                foreach (GameObject entry in sortedDictionary[row])
                 {
-                    AnimTileBlock pingObj = entry.GetComponent<AnimTileBlock>();
-
-                    if (pingObj != null)
-                    {
-                        pingObj.Scan(); // Make it play the scan animation
-                    }
+                    entry.GetComponent<Animator>().enabled = true;
+                    entry.GetComponent<Animator>().Play("VolleyTile");
                 }
-
-                yield return new WaitForSeconds(pingDuration / rowCount); // Equal time between rows
             }
 
-            foreach (KeyValuePair<Vector2Int, GameObject> obj in NFA_merged) // Probably uneccessary. Emergency stop
-            {
-                obj.Value.GetComponent<AnimTileBlock>().HaltScan();
-            }
-
-            yield return new WaitForSeconds(0.3f); // Short delay between scans
+            yield return new WaitForSeconds(pingDuration / rowCount); // Equal time between rows
         }
 
         yield return null;
+
+        // Now we replace all the animation tiles will non-animation tiles
+
+        Evasion_VolleyNonAnimation();
+        volleyAnimating = false;
+    }
+
+    private void Evasion_VolleyNonAnimation()
+    {
+        // No animation here we just fill the FOV with the prefabs
+        Evasion_VolleyCleanup();
+
+        // Gather up the player's FOV
+        List<Vector3Int> fovD = PlayerData.inst.GetComponent<Actor>().FieldofView;
+        List<Vector3Int> fov = fovD.Distinct().ToList();
+
+        // Create a new tile for each FOV
+        foreach (Vector3Int L in fov)
+        {
+            Evasion_VolleyMakeTile(new Vector2Int(L.x, L.y));
+        }
     }
 
     private void Evasion_VolleyCleanup()
@@ -4887,9 +4922,12 @@ public class UIManager : MonoBehaviour
         volleyTiles.Clear();
     }
 
-    private void Evasion_VolleyMakeTile(Vector2Int loc)
+    private void Evasion_VolleyMakeTile(Vector2Int pos)
     {
-
+        var spawnedTile = Instantiate(volley_prefab, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
+        spawnedTile.name = $"TargetLine: {pos.x},{pos.y}"; // Give grid based name
+        spawnedTile.transform.parent = this.transform;
+        volleyTiles.Add(pos, spawnedTile);
     }
 
     #endregion
