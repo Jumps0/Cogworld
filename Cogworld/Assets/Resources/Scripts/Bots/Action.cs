@@ -688,6 +688,51 @@ public static class Action
     }
 
     /// <summary>
+    /// Does this actor have a launcher weapon, and are they using it right now? Returns said weapon if they have it. Mostly for player targeting purposes.
+    /// </summary>
+    /// <param name="actor">The actor in question.</param>
+    /// <returns>Returns the launcher weapon if there is one, if not then returns null.</returns>
+    public static Item HasLauncher(Actor actor)
+    {
+        Item weapon = null;
+
+        // We are just checking to see that the explosion effect on their weapon has a radius greater than 0.
+
+        if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
+        {
+            foreach (BotArmament item in actor.botInfo.armament)
+            {
+                if (item._item.data.Id >= 0)
+                {
+                    if (item._item.explosion.radius > 0 && item._item.data.state)
+                    {
+                        weapon = item._item.data;
+                        return weapon;
+                    }
+                }
+
+
+            }
+        }
+        else // Player
+        {
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invWeapon.Container.Items)
+            {
+                if (item.item.Id >= 0)
+                {
+                    if (item.item.itemData.explosion.radius > 0 && item.item.state)
+                    {
+                        weapon = item.item;
+                        return weapon;
+                    }
+                }
+            }
+        }
+
+        return weapon;
+    }
+
+    /// <summary>
     /// Finds the max range of the current weapon a bot has equipped.
     /// </summary>
     /// <param name="actor">The bot to focus on.</param>

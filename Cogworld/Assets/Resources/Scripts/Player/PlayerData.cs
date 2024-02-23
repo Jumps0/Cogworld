@@ -450,6 +450,52 @@ public class PlayerData : MonoBehaviour
 
         #endregion
 
+        #region Launcher Indicator
+        // Here we handle the additional indicator needed for launcher weapons.
+        // If the player's weapon:
+        // 1) Is a launcher
+        // 2) Has LOS to wherever they are targeting
+        // 3) Is within the weapons range
+        // Then and only then will we show the special indicator.
+        Item launcher = Action.HasLauncher(this.GetComponent<Actor>());
+        if(launcher != null & blocker != null && distance <= launcher.itemData.shot.shotRange)
+        {
+            // Success! Lets draw it.
+
+            // =============================================================================================================== //
+            // This comprises of:                                                                                              //
+            // -A spheric, green highlighted area around the player's target tile, that indicates the radius of an explosion.  //
+            //      -Each tile becomes darker as it moves away from the target tile.                                           //
+            //      -The default brightness is about half of the normal target tile brightness.                                //
+            // -Two "brackets" which appear around the above area, indicating the overall size of the weapon (range * 2 + 1).  //
+            //      -These brackets appear on the sides furthest away from the Player                                          //
+            // -A "scan" effect of the green highlighted tiles that happens every couple of seconds                            //
+            // =============================================================================================================== //
+
+            // - First off lets gather all the tiles (in a square) that are around the target tile, and within range.
+            int range = launcher.itemData.shot.shotRange;
+            Vector2Int target = new Vector2Int((int)mousePosition.x, (int)mousePosition.y);
+            Vector2Int BL_corner = new Vector2Int(target.x - range + 1, target.y - range + 1);
+            List<GameObject> tiles = new List<GameObject>();
+            for (int x = 0 + BL_corner.x; x < (range * 2)+ 1 + BL_corner.x; x++)
+            {
+                for (int y = 0 + BL_corner.y; y < (range * 2) + 1 + BL_corner.y; y++)
+                {
+                    if(MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(x, y)))
+                    {
+                        tiles.Add(MapManager.inst._allTilesRealized[new Vector2Int(x, y)].gameObject);
+                    }
+                }
+            }
+            // - Now we need to go through the very fun process of refining this square into a circle.
+
+
+            // - When the player fires, ALL targeting effects should dissapear until the projectile they fired detonates
+
+        }
+
+        #endregion
+
         #region Scan Window Indicator
         // - Show what's being targeted up in the / SCAN / window. -
 
@@ -609,8 +655,8 @@ public class PlayerData : MonoBehaviour
         targetLine.Clear();
     }
 
-
-    public Actor GetMouseTarget()
+    // Turned private because it appears before GetComponent in search heirarchy. If this causes issues later turn it back to public.
+    private Actor GetMouseTarget()
     {
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 
