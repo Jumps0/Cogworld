@@ -530,40 +530,33 @@ public class PlayerData : MonoBehaviour
             #endregion
         }
 
-        if (wall)
+        if (wall && wall.GetComponent<TileBlock>().isExplored)
         {
             UIManager.inst.Scan_FlipSubmode(true, wall);
-            return;
         }
-        else if (exit)
+        else if (exit && exit.GetComponent<AccessObject>().isExplored)
         {
             UIManager.inst.Scan_FlipSubmode(true, exit);
-            return;
         }
-        else if (bot)
+        else if (bot && bot.GetComponent<Actor>().isExplored)
         {
             UIManager.inst.Scan_FlipSubmode(true, bot);
-            return;
         }
-        else if (item)
+        else if (item && item.GetComponent<Part>().isExplored)
         {
             UIManager.inst.Scan_FlipSubmode(true, item);
-            return;
         }
-        else if (door)
+        else if (door && door.GetComponent<TileBlock>().isExplored)
         {
             UIManager.inst.Scan_FlipSubmode(true, door);
-            return;
         }
-        else if (machine)
+        else if (machine && machine.GetComponent<MachinePart>().isExplored)
         {
             UIManager.inst.Scan_FlipSubmode(true, machine);
-            return;
         }
-        else if (trap)
+        else if (trap && trap.GetComponent<FloorTrap>().knowByPlayer && MapManager.inst._allTilesRealized[HF.V3_to_V2I(trap.transform.position)].isExplored)
         {
             UIManager.inst.Scan_FlipSubmode(true, trap);
-            return;
         }
         else
         {

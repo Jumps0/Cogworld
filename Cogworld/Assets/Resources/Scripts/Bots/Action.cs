@@ -281,11 +281,18 @@ public static class Action
 
     public static void MovementAction(Actor actor, Vector2 direction)
     {
-        //Debug.Log($"{actor.name} moves {direction}!");
         actor.noMovementFor = 0;
-        actor.Move(direction);
-        actor.UpdateFieldOfView();
+        actor.Move(direction); // Actually move the actor
+        actor.UpdateFieldOfView(); // Update their FOV
 
+        // -- Misc stuff --
+        if (actor == PlayerData.inst.GetComponent<Actor>() && UIManager.inst.volleyMode)
+        {
+            UIManager.inst.Evasion_VolleyNonAnimation(); // Re-draw volley visuals if its active
+        }
+        // --           --
+
+        // End the actor's turn
         TurnManager.inst.EndTurn(actor);
 
     }

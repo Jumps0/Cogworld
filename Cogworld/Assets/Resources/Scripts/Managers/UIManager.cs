@@ -4755,7 +4755,7 @@ public class UIManager : MonoBehaviour
     }
 
     #region /VOLLEY/ Animation
-    private bool volleyMode = false;
+    [HideInInspector] public bool volleyMode = false;
     private bool volleyAnimating = false;
     public void Evasion_VolleyModeFlip()
     {
@@ -4894,7 +4894,7 @@ public class UIManager : MonoBehaviour
         volleyAnimating = false;
     }
 
-    private void Evasion_VolleyNonAnimation()
+    public void Evasion_VolleyNonAnimation()
     {
         // No animation here we just fill the FOV with the prefabs
         Evasion_VolleyCleanup();
