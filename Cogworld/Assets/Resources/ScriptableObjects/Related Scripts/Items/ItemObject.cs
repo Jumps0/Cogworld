@@ -182,7 +182,6 @@ public abstract class ItemObject : ScriptableObject
     public bool power_HasStability = false;
     public int power_stability;
 
-    // Propulsion
     [Header("Propulsion")]
     public List<ItemPropulsion> propulsion = new List<ItemPropulsion>();
 
@@ -196,6 +195,9 @@ public abstract class ItemObject : ScriptableObject
     [Header("Melee - Attack/Hit")]
     public ItemMeleeAttack meleeAttack;
 
+    [Header("Explosion")]
+    public ItemExplosion explosion;
+
     // Effect
     [Header("Effect")]
     public List<ItemEffect> itemEffect;
@@ -206,7 +208,7 @@ public abstract class ItemObject : ScriptableObject
     public string itemName;
     [TextArea(3, 5)]
     public string description;
-    [Tooltip("Raw numbers of what this item effects.")]
+    [Tooltip("Raw numbers of what this item effects. This is usually filled in automatically, but not for Utility items.")]
     public string mechanicalDescription;
 
     public ItemDetails details;
@@ -423,6 +425,7 @@ public class ItemShot
     public int shotHeat;
     public int shotRecoil;
     public float shotTargeting;
+    [Tooltip("Each weapon incurs no additional time cost to attack aside from modifying the total attack time by half of their time delay (whether positive or negative).")]
     public int shotDelay;
     public int shotStability;
     public int shotArc;
@@ -501,11 +504,11 @@ public class ItemMeleeAttack
 public class ItemExplosion
 {
     // Explosion
-    public int radius;
+    public int radius = 0;
     public int damageLow;
     public int damageHigh;
     public int falloff;
-    public ItemDamageType damageType;
+    public ItemDamageType damageType = ItemDamageType.Explosive;
     public int spectrum;
     public bool hasSpectrum = false;
     public float disruption;

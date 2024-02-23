@@ -102,6 +102,11 @@ public abstract class BotObject : ScriptableObject
     [Header("Overview")]
     public BotClass _class;
     public BotSize _size;
+    [Tooltip("Targeting is actually tested on a finer grid than is visible onscreen. " +
+        "Each map space is divided into a 9x9 grid of squares, and as robot sizes vary (S/M/L), they may take up more or fewer of these squares. " +
+        "This has several implications, e.g. you may be able to hit a larger target before it has completely rounded a corner, " +
+        "while smaller targets may require a more direct line-of-sight. It also means that smaller targets are actually easier to shoot around than larger ones. " +
+        "As long as the targeting line is green Cogmind has a clear LOF to the target, even if it looks like it passes through another robot or obstacle.")]
     public BotProfile _profile;
     public int rating;
     public int tier;
