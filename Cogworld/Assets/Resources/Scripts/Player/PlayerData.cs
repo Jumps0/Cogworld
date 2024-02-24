@@ -500,11 +500,42 @@ public class PlayerData : MonoBehaviour
                 if (tileDistiance <= range)
                 {
                     // Tile is within the circle, create a prefab of it.
-                    var spawnedTile = Instantiate(UIManager.inst.prefab_launcherTargetTile, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
+                    var spawnedTile = Instantiate(UIManager.inst.prefab_basicTile, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
                     spawnedTile.name = $"LTH Tile: {pos.x},{pos.y}"; // Give grid based name
                     spawnedTile.transform.parent = mouseTracker.transform;
+                    spawnedTile.GetComponent<SpriteRenderer>().sortingOrder = 30;
                     lth_tiles.Add(spawnedTile);
                 }
+            }
+
+            // - We also need to assign them a unique color, as - starting from the center - the tiles will get darker and more transparent as it gets closer to the edge.
+            foreach(GameObject T in lth_tiles)
+            {
+                // Calculate the distance of the tile from the center
+                float tileDistiance = Vector2Int.Distance(HF.V3_to_V2I(T.transform.position), HF.V3_to_V2I(mousePosition));
+
+                // Calculate the normalized distance (0 to 1)
+                float normalizedDistance = Mathf.Clamp01(distance / (range + 1));
+
+                // Calculate the new color based on the normalized distance
+                Color A = Color.Lerp(UIManager.inst.highlightGreen, Color.black, normalizedDistance);
+
+                // Adjust transparency based on distance
+                float alpha = 1f - normalizedDistance;
+                A.a = alpha;
+
+                // We also need to pre-assign some values for the animation
+                float animationTime = 0.2f;
+
+                // - Set the starting color
+                T.GetComponent<SpriteRenderer>().color = A;
+
+                Color B = UIManager.inst.highlightGreen; // Mid point is green highlight
+
+                // - And assign the animation values.
+                // Starts from set color, goes to high green, then goes back to set color.
+                T.GetComponent<SimpleTileAnimator>().Init(A, B, animationTime);
+                T.GetComponent<SimpleTileAnimator>().InitChain(B, A, animationTime);
             }
 
             // ?
@@ -529,8 +560,10 @@ public class PlayerData : MonoBehaviour
 
             // - Finally, start the scan animation, and timer
             StopCoroutine(LTH_ScanTimer());
-            LTH_ScanSquare();
+            StopCoroutine(LTH_ScanSquare());
+
             StartCoroutine(LTH_ScanTimer());
+            StartCoroutine(LTH_ScanSquare());
 
 
             // - When the player fires, ALL targeting effects should dissapear until the projectile they fired detonates
@@ -705,6 +738,89 @@ public class PlayerData : MonoBehaviour
     public List<GameObject> lth_brackets = new List<GameObject>();
     public List<GameObject> lth_tiles = new List<GameObject>();
 
+    /// <summary>
+    /// This triggers the "scan" animation for the squares. Code stolen from UIManager
+    /// </summary>
+    private IEnumerator LTH_ScanSquare()
+    {
+        // First organize all the pre-existing tiles into a new Dictionary
+        Dictionary<Vector2Int, GameObject> tiles = new Dictionary<Vector2Int, GameObject>();
+        foreach (var tile in lth_tiles)
+        {
+            tiles.Add(HF.V3_to_V2I(tile.transform.position), tile);
+        }
+
+        float pingDuration = 0.25f;
+
+        // Calculate how many rows there are
+        int rowCount = 0;
+        HashSet<int> rowIndices = new HashSet<int>();
+
+        foreach (Vector2Int key in tiles.Keys)
+        {
+            // Adding the y-coordinate to the HashSet to keep only unique rows
+            rowIndices.Add(key.y);
+        }
+
+        rowCount = rowIndices.Count;
+
+        // Organize the tiles by *y* coordinate.
+        // Initialize the new dictionary
+        Dictionary<int, List<GameObject>> sortedDictionary = new Dictionary<int, List<GameObject>>();
+
+        // Iterate through the original dictionary
+        foreach (var kvp in tiles)
+        {
+            // Get the y-coordinate
+            int yCoordinate = kvp.Key.y;
+
+            // Check if the y-coordinate is already a key in the sorted dictionary
+            if (!sortedDictionary.ContainsKey(yCoordinate))
+            {
+                sortedDictionary[yCoordinate] = new List<GameObject>();
+            }
+
+            // Add the GameObject to the list associated with the y-coordinate
+            sortedDictionary[yCoordinate].Add(kvp.Value);
+        }
+
+        // Create a sorted dictionary with keys sorted in descending order
+        var sortedKeys = new List<int>(sortedDictionary.Keys);
+        sortedKeys.Sort((a, b) => b.CompareTo(a));
+
+        // Create a new dictionary with sorted keys
+        Dictionary<int, List<GameObject>> sortedResult = new Dictionary<int, List<GameObject>>();
+        foreach (var key in sortedKeys)
+        {
+            sortedResult[key] = sortedDictionary[key];
+        }
+
+
+        // Play the scanline sound. ("UI/SCAN 5")
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[80]);
+
+        // Now go through each row, and ping every block in the row
+        foreach (var kvp in sortedResult)
+        {
+            foreach (GameObject entry in kvp.Value) // Loop through each object in the micro-list
+            {
+                SimpleTileAnimator animObj = entry.GetComponent<SimpleTileAnimator>();
+
+                if (animObj != null)
+                {
+                    animObj.Animate(); // Make it play the scan animation
+                }
+            }
+
+            yield return new WaitForSeconds(pingDuration / rowCount); // Equal time between rows
+        }
+
+        foreach (KeyValuePair<Vector2Int, GameObject> obj in tiles) // Probably uneccessary. Emergency stop
+        {
+            obj.Value.GetComponent<SimpleTileAnimator>().Stop();
+        }
+    }
+
     private void LTH_PlaceLine(Vector2Int pos, Vector2 direction)
     {
         // Remember, default start state is:
@@ -743,14 +859,6 @@ public class PlayerData : MonoBehaviour
         lth_brackets.Add(spawnedTile);
 
         // Now we need to rotate this so it faces the correct direction. 
-    }
-
-    /// <summary>
-    /// This triggers the "scan" animation for the squares. Code stolen from UIManager
-    /// </summary>
-    private void LTH_ScanSquare()
-    {
-
     }
 
     private void LTH_Clear()
