@@ -18,6 +18,7 @@ public class PlayerData : MonoBehaviour
     }
 
     private GameObject playerGameObject;
+    [SerializeField] private GameObject mouseTracker;
 
     [Header("Inventory")]
     public int powerSlots;
@@ -472,6 +473,8 @@ public class PlayerData : MonoBehaviour
             // -A "scan" effect of the green highlighted tiles that happens every couple of seconds                            //
             // =============================================================================================================== //
 
+            LTH_Clear(); // Clear any pre-existing tiles
+
             // - First off lets gather all the tiles (in a square) that are around the target tile, and within range.
             int range = launcher.itemData.shot.shotRange;
             Vector2Int target = new Vector2Int((int)mousePosition.x, (int)mousePosition.y);
@@ -487,12 +490,53 @@ public class PlayerData : MonoBehaviour
                     }
                 }
             }
-            // - Now we need to go through the very fun process of refining this square into a circle.
+            // - Now we need to go through the very fun process of refining this square into a circle. While we're at it, we spawn the prefabs aswell.
+            foreach (GameObject T in tiles)
+            {
+                float tileDistiance = Vector2Int.Distance(HF.V3_to_V2I(T.transform.position), HF.V3_to_V2I(this.transform.position));
+                Vector2Int pos = HF.V3_to_V2I(T.transform.position);
+
+                // Check if the distance is within the radius of the circle
+                if (tileDistiance <= range)
+                {
+                    // Tile is within the circle, create a prefab of it.
+                    var spawnedTile = Instantiate(UIManager.inst.prefab_launcherTargetTile, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
+                    spawnedTile.name = $"LTH Tile: {pos.x},{pos.y}"; // Give grid based name
+                    spawnedTile.transform.parent = mouseTracker.transform;
+                    lth_tiles.Add(spawnedTile);
+                }
+            }
+
+            // ?
+
+
+
+            // - Now we need to add the outside brackets
+            // First lets find the two sides we need to put the brackets on.
+            Vector2 sideA = Vector2.zero, sideB = Vector2.zero;
+            (sideA, sideB) = HF.GetRelativePosition(HF.V3_to_V2I(this.transform.position), mousePosition);
+            // !!! REMEMBER THAT THESE NEED TO BE INVERTED !!!
+
+            // We now need to assemble these two brackets with our two prefabs stored in UIManager.
+            // We need to carefully rotate these to make sure they look correct.
+            // Remember that the default state of these prefabs is:
+            //
+            //       |            |
+            //       |     and    |
+            //   ____|            |
+            //
+
+
+            // - Finally, start the scan animation, and timer
+            StopCoroutine(LTH_ScanTimer());
+            LTH_ScanSquare();
+            StartCoroutine(LTH_ScanTimer());
 
 
             // - When the player fires, ALL targeting effects should dissapear until the projectile they fired detonates
 
         }
+
 
         #endregion
 
@@ -613,6 +657,7 @@ public class PlayerData : MonoBehaviour
         UIManager.inst.Evasion_Volley(true); // Open the /VOLLEY/ window
     }
 
+    #region Highlight Helper Functions
     [SerializeField] private Color highlightGreen;
     [SerializeField] private Color highlightRed;
     private Dictionary<Vector2Int, GameObject> targetLine = new Dictionary<Vector2Int, GameObject>();
@@ -654,6 +699,87 @@ public class PlayerData : MonoBehaviour
 
         targetLine.Clear();
     }
+    #endregion
+
+    #region Launcher Target Helper Functions
+    public List<GameObject> lth_brackets = new List<GameObject>();
+    public List<GameObject> lth_tiles = new List<GameObject>();
+
+    private void LTH_PlaceLine(Vector2Int pos, Vector2 direction)
+    {
+        // Remember, default start state is:
+        //
+        //       |
+        //       |  
+        //       |
+        //
+
+        var spawnedTile = Instantiate(UIManager.inst.prefab_launcherTargetLine, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
+        spawnedTile.name = $"LTH Line: {pos.x},{pos.y}"; // Give grid based name
+        spawnedTile.transform.parent = mouseTracker.transform;
+        lth_brackets.Add(spawnedTile);
+
+        // Now we need to rotate this so it faces the correct direction.
+    }
+
+    /// <summary>
+    /// Places the corner for the Launcher Targeting indicator's brackets.
+    /// </summary>
+    /// <param name="pos">The position to place this prefab.</param>
+    /// <param name="direction">The respective direction it should face (Up, Down, Left or Right).</param>
+    /// <param name="isEndcap">If this is the start of the bracket or end. Important for rotation.</param>
+    private void LTH_PlaceCorner(Vector2Int pos, Vector2 direction, bool isEndcap)
+    {
+        // Remember, default start state is:
+        //
+        //       |
+        //       |  
+        //   ____|
+        //
+
+        var spawnedTile = Instantiate(UIManager.inst.prefab_launcherTargetCorner, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
+        spawnedTile.name = $"LTH Line: {pos.x},{pos.y}"; // Give grid based name
+        spawnedTile.transform.parent = mouseTracker.transform;
+        lth_brackets.Add(spawnedTile);
+
+        // Now we need to rotate this so it faces the correct direction. 
+    }
+
+    /// <summary>
+    /// This triggers the "scan" animation for the squares. Code stolen from UIManager
+    /// </summary>
+    private void LTH_ScanSquare()
+    {
+
+    }
+
+    private void LTH_Clear()
+    {
+        StopCoroutine(LTH_ScanTimer());
+
+        foreach (var item in lth_brackets.ToList())
+        {
+            Destroy(item);
+        }
+
+        lth_brackets.Clear();
+
+        foreach (var item in lth_tiles.ToList())
+        {
+            Destroy(item);
+        }
+
+        lth_tiles.Clear();
+    }
+
+    private IEnumerator LTH_ScanTimer()
+    {
+        yield return new WaitForSeconds(3f);
+
+        LTH_ScanSquare();
+    }
+
+    #endregion
 
     // Turned private because it appears before GetComponent in search heirarchy. If this causes issues later turn it back to public.
     private Actor GetMouseTarget()

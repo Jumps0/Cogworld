@@ -3257,6 +3257,39 @@ public static class HF
         return (startCoords, endCoords);
     }
 
+    /// <summary>
+    /// Function to determine the relative position of the target in reference to the specified actor
+    /// </summary>
+    /// <param name="actorPosition">The actor in question.</param>
+    /// <param name="targetPosition">The target reference location.</param>
+    /// <returns>([Left or Right] Vector2, [Up or Down] Vector2) the two reference locations in the form of Vector2.???</returns>
+    public static (Vector2, Vector2) GetRelativePosition(Vector2 actorPosition, Vector2 targetPosition)
+    {
+        Vector2 relativeDirectionX = Vector2.zero;
+        Vector2 relativeDirectionY = Vector2.zero;
+
+        // Compare x coordinates
+        if (targetPosition.x < actorPosition.x)
+        {
+            relativeDirectionX = Vector2.left; // Target is to the left of the player
+        }
+        else if (targetPosition.x > actorPosition.x)
+        {
+            relativeDirectionX = Vector2.right; // Target is to the right of the player
+        }
+
+        // Compare y coordinates
+        if (targetPosition.y < actorPosition.y)
+        {
+            relativeDirectionY = Vector2.down; // Target is below the player
+        }
+        else if (targetPosition.y > actorPosition.y)
+        {
+            relativeDirectionY = Vector2.up; // Target is above the player
+        }
+
+        return (relativeDirectionX, relativeDirectionY);
+    }
 
     // Used in the Influence UI
     public static string AssignInfluenceLetter(int value)

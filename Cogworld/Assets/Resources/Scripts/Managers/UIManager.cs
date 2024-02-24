@@ -39,6 +39,11 @@ public class UIManager : MonoBehaviour
     //
     public GameObject itemPrefab;
     //
+    public GameObject prefab_launcherTargetLine;
+    public GameObject prefab_launcherTargetCorner;
+    public GameObject prefab_launcherTargetTile;
+    //
+    //
     //
     // -         -
 
