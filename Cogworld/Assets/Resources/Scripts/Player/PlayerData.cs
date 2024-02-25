@@ -476,7 +476,7 @@ public class PlayerData : MonoBehaviour
             LTH_Clear(); // Clear any pre-existing tiles
 
             // - First off lets gather all the tiles (in a square) that are around the target tile, and within range.
-            int range = launcher.itemData.shot.shotRange;
+            int range = launcher.itemData.explosion.radius;
             Vector2Int target = new Vector2Int((int)mousePosition.x, (int)mousePosition.y);
             Vector2Int BL_corner = new Vector2Int(target.x - range + 1, target.y - range + 1);
             List<GameObject> tiles = new List<GameObject>();
@@ -557,13 +557,72 @@ public class PlayerData : MonoBehaviour
             //   ____|            |
             //
 
+            Vector2Int TL_corner = new Vector2Int(target.x - range + 1, target.y + range + 1);
+            Vector2Int BR_corner = new Vector2Int(target.x + range + 1, target.y - range + 1);
+            Vector2Int TR_corner = new Vector2Int(target.x + range + 1, target.y + range + 1);
+            int length = (range * 2) + 1; // How long each bracket needs to be. Reminder that each end is a corner
+
+            // First we'll place the vertical line (left or right side)
+            if(sideA == Vector2.left) // Targeting is to the LEFT of the place. So we need to face RIGHT.
+            {
+                // First place the TOP corner, it needs to face right and down.
+                LTH_PlaceCorner(TL_corner + new Vector2Int(-1, 0), 180f);
+                // Then place the [length - 2] lines
+                for (int i = 0; i < length - 2; i++)
+                {
+                    // No rotation needed
+                    LTH_PlaceLine(BL_corner + new Vector2Int(-1, i + 1), 0f);
+                }
+                // Lastly, place the BOTTOM corner. It needs to face right and up.
+                LTH_PlaceCorner(TL_corner + new Vector2Int(-1, 0), 90f);
+            }
+            else if (sideA == Vector2.right) // Targeting is to the RIGHT of the place. So we need to face LEFT.
+            {
+                // First place the TOP corner, it needs to face left and down.
+                LTH_PlaceCorner(TL_corner + new Vector2Int(-1, 0), -90f);
+                // Then place the [length - 2] lines
+                for (int i = 0; i < length - 2; i++)
+                {
+                    // No rotation needed
+                    LTH_PlaceLine(BR_corner + new Vector2Int(1, i + 1), 0f);
+                }
+                // Lastly, place the BOTTOM corner. It needs to face left and up.
+                LTH_PlaceCorner(TL_corner + new Vector2Int(-1, 0), 0f);
+            }
+
+            // Then we place the horizontal line (top or bottom)
+
+            if (sideA == Vector2.up) // Targeting is ABOVE of the place. So we need to face DOWN.
+            {
+                // First place the LEFT corner, it needs to place right and down.
+                LTH_PlaceCorner(TL_corner + new Vector2Int(0, 1), 180f);
+                // Then place the [length - 2] lines
+                for (int i = 0; i < length - 2; i++)
+                {
+                    LTH_PlaceLine(TL_corner + new Vector2Int(i + 1, 1), 90f);
+                }
+                // Lastly, place the RIGHT corner. It needs to face left and down.
+                LTH_PlaceCorner(TR_corner + new Vector2Int(0, -1), -90f);
+            }
+            else if (sideA == Vector2.down) // Targeting is BELOW of the place. So we need to face UP.
+            {
+                // First place the LEFT corner, it needs to place right and up.
+                LTH_PlaceCorner(BL_corner + new Vector2Int(0, -1), 90f);
+                // Then place the [length - 2] lines
+                for (int i = 0; i < length - 2; i++)
+                {
+                    LTH_PlaceLine(BL_corner + new Vector2Int(i + 1, -1), 90f);
+                }
+                // Lastly, place the RIGHT corner. It needs to face left and up.
+                LTH_PlaceCorner(BR_corner + new Vector2Int(0, -1), 0f);
+            }
 
             // - Finally, start the scan animation, and timer
-            StopCoroutine(LTH_ScanTimer());
-            StopCoroutine(LTH_ScanSquare());
+            //StopCoroutine(LTH_ScanTimer());
+            //StopCoroutine(LTH_ScanSquare());
 
-            StartCoroutine(LTH_ScanTimer());
-            StartCoroutine(LTH_ScanSquare());
+            //StartCoroutine(LTH_ScanTimer());
+            //StartCoroutine(LTH_ScanSquare());
 
 
             // - When the player fires, ALL targeting effects should dissapear until the projectile they fired detonates
@@ -821,7 +880,7 @@ public class PlayerData : MonoBehaviour
         }
     }
 
-    private void LTH_PlaceLine(Vector2Int pos, Vector2 direction)
+    private void LTH_PlaceLine(Vector2Int pos, float rotation)
     {
         // Remember, default start state is:
         //
@@ -835,16 +894,16 @@ public class PlayerData : MonoBehaviour
         spawnedTile.transform.parent = mouseTracker.transform;
         lth_brackets.Add(spawnedTile);
 
-        // Now we need to rotate this so it faces the correct direction.
+        // Now we need to rotate this so it faces the correct direction. 
+        spawnedTile.transform.eulerAngles = new Vector3(spawnedTile.transform.eulerAngles.x, rotation, spawnedTile.transform.eulerAngles.z);
     }
 
     /// <summary>
     /// Places the corner for the Launcher Targeting indicator's brackets.
     /// </summary>
     /// <param name="pos">The position to place this prefab.</param>
-    /// <param name="direction">The respective direction it should face (Up, Down, Left or Right).</param>
-    /// <param name="isEndcap">If this is the start of the bracket or end. Important for rotation.</param>
-    private void LTH_PlaceCorner(Vector2Int pos, Vector2 direction, bool isEndcap)
+    /// <param name="rotation">The amount to rotate the object by. Should be in 90 degree increments.</param>
+    private void LTH_PlaceCorner(Vector2Int pos, float rotation)
     {
         // Remember, default start state is:
         //
@@ -859,6 +918,8 @@ public class PlayerData : MonoBehaviour
         lth_brackets.Add(spawnedTile);
 
         // Now we need to rotate this so it faces the correct direction. 
+        spawnedTile.transform.eulerAngles = new Vector3(spawnedTile.transform.eulerAngles.x, rotation, spawnedTile.transform.eulerAngles.z);
+
     }
 
     private void LTH_Clear()

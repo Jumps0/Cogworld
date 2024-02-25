@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Networking.Types;
-using UnityEngine.UIElements;
 using static StructureCTR;
 using Random = UnityEngine.Random;
 
@@ -655,6 +653,7 @@ public class MapManager : MonoBehaviour
 
                     SpawnItems(idsToSpawn, spawnArea, matterRNG);
 
+                    InventoryControl.inst.CreateItemInWorld(100, new Vector2Int(55, 55), true); // ONLY FOR TESTING. REMOVE LATER
                 }
 
 
@@ -2546,7 +2545,7 @@ public class MapManager : MonoBehaviour
 
         Vector2Int exitLoc = new Vector2Int(offset.x += Random.Range(4, 6), offset.y += Random.Range(1, 6));
 
-        PlaceLevelExit(exitLoc, false, 16); // ! CHANGE THIS BACK TO 0 LATER !
+        PlaceLevelExit(exitLoc, false, 0);
 
         // Then dirty up the tiles a bit
         foreach (KeyValuePair<Vector2Int, TileBlock> floor in _allTilesRealized)

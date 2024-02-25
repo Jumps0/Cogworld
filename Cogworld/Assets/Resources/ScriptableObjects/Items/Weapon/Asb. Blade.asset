@@ -23,10 +23,10 @@ MonoBehaviour:
     state: 1
     integrityCurrent: 0
   knowByPlayer: 0
-  floorDisplay: {fileID: -1932154928, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
-  inventoryDisplay: {fileID: -1932154928, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  floorDisplay: {fileID: 1832069135, guid: 707e95711a4c98246b820a5a5f6d1167, type: 3}
+  inventoryDisplay: {fileID: 1832069135, guid: 707e95711a4c98246b820a5a5f6d1167, type: 3}
   asciiRep: {fileID: -1932154928, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
-  itemColor: {r: 0, g: 1, b: 0.6862745, a: 1}
+  itemColor: {r: 0, g: 0.3371575, b: 1, a: 1}
   type: 20
   slot: 3
   slotsRequired: 1
@@ -90,6 +90,16 @@ MonoBehaviour:
     damageType: 7
     critical: 0.05
     critType: 4
+    disruption: 0
+    salvage: 0
+  explosion:
+    radius: 0
+    damageLow: 0
+    damageHigh: 0
+    falloff: 0
+    damageType: 2
+    spectrum: 0
+    hasSpectrum: 0
     disruption: 0
     salvage: 0
   itemEffect: []

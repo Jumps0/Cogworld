@@ -10,7 +10,7 @@ public class MouseTracker : MonoBehaviour
 {
     void Update()
     {
-        while (PlayerData.inst)
+        if (PlayerData.inst)
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mousePosition = new Vector3(Mathf.RoundToInt(mousePosition.x), Mathf.RoundToInt(mousePosition.y));
