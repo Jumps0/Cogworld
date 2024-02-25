@@ -459,7 +459,7 @@ public class PlayerData : MonoBehaviour
         // 3) Is within the weapons range
         // Then and only then will we show the special indicator.
         Item launcher = Action.HasLauncher(this.GetComponent<Actor>());
-        if(launcher != null & blocker != null && distance <= launcher.itemData.shot.shotRange)
+        if(launcher != null & blocker == null && distance <= launcher.itemData.shot.shotRange)
         {
             // Success! Lets draw it.
 
@@ -503,7 +503,7 @@ public class PlayerData : MonoBehaviour
                     var spawnedTile = Instantiate(UIManager.inst.prefab_basicTile, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
                     spawnedTile.name = $"LTH Tile: {pos.x},{pos.y}"; // Give grid based name
                     spawnedTile.transform.parent = mouseTracker.transform;
-                    spawnedTile.GetComponent<SpriteRenderer>().sortingOrder = 30;
+                    spawnedTile.GetComponent<SpriteRenderer>().sortingOrder = 31;
                     lth_tiles.Add(spawnedTile);
                 }
             }
@@ -515,7 +515,7 @@ public class PlayerData : MonoBehaviour
                 float tileDistiance = Vector2Int.Distance(HF.V3_to_V2I(T.transform.position), HF.V3_to_V2I(mousePosition));
 
                 // Calculate the normalized distance (0 to 1)
-                float normalizedDistance = Mathf.Clamp01(distance / (range + 1));
+                float normalizedDistance = Mathf.Clamp01(tileDistiance / (range + 1));
 
                 // Calculate the new color based on the normalized distance
                 Color A = Color.Lerp(UIManager.inst.highlightGreen, Color.black, normalizedDistance);
@@ -557,9 +557,10 @@ public class PlayerData : MonoBehaviour
             //   ____|            |
             //
 
-            Vector2Int TL_corner = new Vector2Int(target.x - range + 1, target.y + range + 1);
-            Vector2Int BR_corner = new Vector2Int(target.x + range + 1, target.y - range + 1);
-            Vector2Int TR_corner = new Vector2Int(target.x + range + 1, target.y + range + 1);
+            BL_corner = new Vector2Int(target.x - range + 1, target.y - range);
+            Vector2Int TL_corner = new Vector2Int(target.x - range + 1, target.y + range);
+            Vector2Int BR_corner = new Vector2Int(target.x + range + 1, target.y - range);
+            Vector2Int TR_corner = new Vector2Int(target.x + range + 1, target.y + range);
             int length = (range * 2) + 1; // How long each bracket needs to be. Reminder that each end is a corner
 
             // First we'll place the vertical line (left or right side)
@@ -574,12 +575,12 @@ public class PlayerData : MonoBehaviour
                     LTH_PlaceLine(BL_corner + new Vector2Int(-1, i + 1), 0f);
                 }
                 // Lastly, place the BOTTOM corner. It needs to face right and up.
-                LTH_PlaceCorner(TL_corner + new Vector2Int(-1, 0), 90f);
+                LTH_PlaceCorner(BL_corner + new Vector2Int(-1, 0), 90f);
             }
-            else if (sideA == Vector2.right) // Targeting is to the RIGHT of the place. So we need to face LEFT.
+            else if (sideA == Vector2.right || sideA == Vector2.zero) // Targeting is to the RIGHT of the place. So we need to face LEFT.
             {
                 // First place the TOP corner, it needs to face left and down.
-                LTH_PlaceCorner(TL_corner + new Vector2Int(-1, 0), -90f);
+                LTH_PlaceCorner(TR_corner + new Vector2Int(1, 0), 90f);
                 // Then place the [length - 2] lines
                 for (int i = 0; i < length - 2; i++)
                 {
@@ -587,12 +588,12 @@ public class PlayerData : MonoBehaviour
                     LTH_PlaceLine(BR_corner + new Vector2Int(1, i + 1), 0f);
                 }
                 // Lastly, place the BOTTOM corner. It needs to face left and up.
-                LTH_PlaceCorner(TL_corner + new Vector2Int(-1, 0), 0f);
+                LTH_PlaceCorner(BR_corner + new Vector2Int(1, 0), 0f);
             }
 
             // Then we place the horizontal line (top or bottom)
 
-            if (sideA == Vector2.up) // Targeting is ABOVE of the place. So we need to face DOWN.
+            if (sideB == Vector2.up) // Targeting is ABOVE of the place. So we need to face DOWN.
             {
                 // First place the LEFT corner, it needs to place right and down.
                 LTH_PlaceCorner(TL_corner + new Vector2Int(0, 1), 180f);
@@ -602,12 +603,12 @@ public class PlayerData : MonoBehaviour
                     LTH_PlaceLine(TL_corner + new Vector2Int(i + 1, 1), 90f);
                 }
                 // Lastly, place the RIGHT corner. It needs to face left and down.
-                LTH_PlaceCorner(TR_corner + new Vector2Int(0, -1), -90f);
+                LTH_PlaceCorner(TR_corner + new Vector2Int(1, 0), -90f);
             }
-            else if (sideA == Vector2.down) // Targeting is BELOW of the place. So we need to face UP.
+            else if (sideB == Vector2.down || sideB == Vector2.zero) // Targeting is BELOW of the place. So we need to face UP.
             {
                 // First place the LEFT corner, it needs to place right and up.
-                LTH_PlaceCorner(BL_corner + new Vector2Int(0, -1), 90f);
+                LTH_PlaceCorner(BL_corner + new Vector2Int(0, -1), -90f);
                 // Then place the [length - 2] lines
                 for (int i = 0; i < length - 2; i++)
                 {
@@ -626,7 +627,7 @@ public class PlayerData : MonoBehaviour
 
 
             // - When the player fires, ALL targeting effects should dissapear until the projectile they fired detonates
-
+            Debug.Break();
         }
 
 
@@ -758,6 +759,7 @@ public class PlayerData : MonoBehaviour
         var spawnedTile = Instantiate(MapManager.inst.prefab_highlightedTile, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
         spawnedTile.name = $"TargetLine: {pos.x},{pos.y}"; // Give grid based name
         spawnedTile.transform.parent = this.transform;
+        spawnedTile.GetComponent<SpriteRenderer>().color = highlightGreen; // Default green color
         targetLine.Add(pos, spawnedTile);
     }
 
@@ -895,7 +897,7 @@ public class PlayerData : MonoBehaviour
         lth_brackets.Add(spawnedTile);
 
         // Now we need to rotate this so it faces the correct direction. 
-        spawnedTile.transform.eulerAngles = new Vector3(spawnedTile.transform.eulerAngles.x, rotation, spawnedTile.transform.eulerAngles.z);
+        spawnedTile.transform.eulerAngles = new Vector3(spawnedTile.transform.eulerAngles.x, spawnedTile.transform.eulerAngles.y, rotation);
     }
 
     /// <summary>
@@ -913,12 +915,12 @@ public class PlayerData : MonoBehaviour
         //
 
         var spawnedTile = Instantiate(UIManager.inst.prefab_launcherTargetCorner, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
-        spawnedTile.name = $"LTH Line: {pos.x},{pos.y}"; // Give grid based name
+        spawnedTile.name = $"LTH Corner: {pos.x},{pos.y}"; // Give grid based name
         spawnedTile.transform.parent = mouseTracker.transform;
         lth_brackets.Add(spawnedTile);
 
         // Now we need to rotate this so it faces the correct direction. 
-        spawnedTile.transform.eulerAngles = new Vector3(spawnedTile.transform.eulerAngles.x, rotation, spawnedTile.transform.eulerAngles.z);
+        spawnedTile.transform.eulerAngles = new Vector3(spawnedTile.transform.eulerAngles.x, spawnedTile.transform.eulerAngles.y, rotation);
 
     }
 
@@ -926,14 +928,14 @@ public class PlayerData : MonoBehaviour
     {
         StopCoroutine(LTH_ScanTimer());
 
-        foreach (var item in lth_brackets.ToList())
+        foreach (GameObject item in lth_brackets.ToList())
         {
             Destroy(item);
         }
 
         lth_brackets.Clear();
 
-        foreach (var item in lth_tiles.ToList())
+        foreach (GameObject item in lth_tiles.ToList())
         {
             Destroy(item);
         }
