@@ -223,8 +223,8 @@ MonoBehaviour:
     CRM: 0
     imprinted: 0
     RIF: 0
-  highlightGreen: {r: 0, g: 1, b: 0, a: 0.78431374}
-  highlightRed: {r: 0.69803923, g: 0, b: 0.003921569, a: 0.78431374}
+  highlightGreen: {r: 0, g: 1, b: 0, a: 0.627451}
+  highlightRed: {r: 0.69803923, g: 0, b: 0.003921569, a: 0.627451}
   lth_brackets: []
   lth_tiles: []
 --- !u!61 &38123581663690283

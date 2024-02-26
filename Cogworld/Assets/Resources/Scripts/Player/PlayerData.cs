@@ -307,6 +307,7 @@ public class PlayerData : MonoBehaviour
                 if(targetLine.Count > 0)
                 {
                     ClearAllHighlights();
+                    LTH_Clear();
                     UIManager.inst.Evasion_Volley(false); // Close the /VOLLEY/ window
                 }
             }
@@ -317,437 +318,451 @@ public class PlayerData : MonoBehaviour
         }
     }
 
+    Vector3 oldMouseTarget = Vector3.zero;
     public void DoTargeting()
     {
-        ClearAllHighlights();
-
-        // We want to draw a line from the player to their mouse cursor.
-
-        // Cast a ray from the player to the mouse position
+        // - First off get where the mouse is. We don't want to keep re-drawing the same line every frame, only if the mouse position has changed.
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector3 direction = mousePosition - this.gameObject.transform.position;
-
         // End point correction due to sneaky rounding
         mousePosition = new Vector3(Mathf.RoundToInt(mousePosition.x), Mathf.RoundToInt(mousePosition.y));
 
-        float distance = Vector3.Distance(new Vector3Int((int)mousePosition.x, (int)mousePosition.y, 0), this.gameObject.transform.position);
-        //distance = Mathf.Clamp(distance, 0f, Action.GetWeaponRange(this.GetComponent<Actor>()));
-        direction.Normalize();
-        RaycastHit2D[] hits = Physics2D.RaycastAll(this.gameObject.transform.position, direction, distance);
-
-        // Loop through all the hits and set the targeting highlight on each tile
-        for (int i = 0; i < hits.Length; i++)
+        if(mousePosition != oldMouseTarget) // This is causing some issues. Why?
         {
-            RaycastHit2D hit = hits[i];
+            oldMouseTarget = mousePosition;
 
-            if (!targetLine.ContainsKey(HF.V3_to_V2I(hit.transform.position)))
-            { // Only make a new highlight if one doesn't exist at that location
-                CreateHighlightTile(HF.V3_to_V2I(hit.transform.position));
-            }
-        }
 
-        // Clear specific tiles to make highlight thinner
-        #region Line visual correction
-        foreach (var T in targetLine.ToList())
-        {
-            Vector2Int loc = T.Key;
+            ClearAllHighlights();
 
-            // Horizontal Line
-            if (targetLine.ContainsKey(Vector2Int.left + loc) &&
-                targetLine.ContainsKey(Vector2Int.right + loc))
+            // We want to draw a line from the player to their mouse cursor.
+            #region Basic Line Drawing
+            // Cast a ray from the player to the mouse position
+            Vector3 direction = mousePosition - this.gameObject.transform.position;
+
+            float distance = Vector3.Distance(new Vector3Int((int)mousePosition.x, (int)mousePosition.y, 0), this.gameObject.transform.position);
+            //distance = Mathf.Clamp(distance, 0f, Action.GetWeaponRange(this.GetComponent<Actor>()));
+            direction.Normalize();
+            RaycastHit2D[] hits = Physics2D.RaycastAll(this.gameObject.transform.position, direction, distance);
+
+            // Loop through all the hits and set the targeting highlight on each tile
+            for (int i = 0; i < hits.Length; i++)
             {
-                if (targetLine.ContainsKey(Vector2Int.up + loc))
-                {
-                    DestroyHighlightTile(Vector2Int.left + loc);
-                }
-                else if (targetLine.ContainsKey(Vector2Int.down + loc))
-                {
-                    DestroyHighlightTile(Vector2Int.left + loc);
-                }
-                if (targetLine.ContainsKey(Vector2Int.down + Vector2Int.right + loc))
-                {
-                    DestroyHighlightTile(Vector2Int.right + loc);
-                }
-                else if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.right + loc))
-                {
-                    DestroyHighlightTile(Vector2Int.right + loc);
+                RaycastHit2D hit = hits[i];
+
+                if (!targetLine.ContainsKey(HF.V3_to_V2I(hit.transform.position)))
+                { // Only make a new highlight if one doesn't exist at that location
+                    CreateHighlightTile(HF.V3_to_V2I(hit.transform.position));
                 }
             }
+            #endregion
 
-            // Vertical Line
-            if (targetLine.ContainsKey(Vector2Int.up + loc) &&
-                targetLine.ContainsKey(Vector2Int.down + loc))
+            // Clear specific tiles to make highlight thinner
+            #region Line visual correction
+            foreach (var T in targetLine.ToList())
             {
-                if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.left + loc))
+                Vector2Int loc = T.Key;
+
+                // Horizontal Line
+                if (targetLine.ContainsKey(Vector2Int.left + loc) &&
+                    targetLine.ContainsKey(Vector2Int.right + loc))
                 {
-                    DestroyHighlightTile(Vector2Int.up + loc);
-                }
-                else if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.right + loc))
-                {
-                    DestroyHighlightTile(Vector2Int.up + loc);
-                }
-                if (targetLine.ContainsKey(Vector2Int.down + Vector2Int.left + loc))
-                {
-                    DestroyHighlightTile(Vector2Int.down + loc);
-                }
-                else if (targetLine.ContainsKey(Vector2Int.down + Vector2Int.right + loc))
-                {
-                    DestroyHighlightTile(Vector2Int.down + loc);
-                }
-            }
-
-            // Diagonal Line
-            // NOTE: This doesn't actually do what we want, but im okay with it as is.
-            if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.left + loc) &&  //  \
-                targetLine.ContainsKey(Vector2Int.down + Vector2Int.right + loc)) //   *
-            {                                                                     //    \
-                DestroyHighlightTile(Vector2Int.up + Vector2Int.right + loc);
-                DestroyHighlightTile(Vector2Int.down + Vector2Int.left + loc);
-                //DestroyHighlightTile(Vector2Int.up + Vector2Int.right + loc);
-                //DestroyHighlightTile(Vector2Int.down + Vector2Int.right + loc);
-            }
-            else if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.right + loc) && //    /
-                targetLine.ContainsKey(Vector2Int.down + Vector2Int.left + loc))       //   *
-            {                                                                          //  /
-                DestroyHighlightTile(Vector2Int.up + Vector2Int.left + loc);
-                //DestroyHighlightTile(Vector2Int.down + Vector2Int.left + loc);
-                //DestroyHighlightTile(Vector2Int.up + Vector2Int.right + loc);
-                DestroyHighlightTile(Vector2Int.down + Vector2Int.right + loc);
-            }
-
-        }
-        #endregion
-
-        #region LOS Color check & Melee adjustment
-        // If the player is using a melee weapon, we want to visually let them know it has a super short range.
-        if (Action.FindMeleeWeapon(this.GetComponent<Actor>()) != null)
-        {
-            foreach (var T in targetLine)
-            {
-                if (Vector2.Distance(this.transform.position, T.Key) > 2.55f)
-                {
-                    SetHighlightColor(T.Key, highlightRed);
-                }
-            }
-        }
-
-
-        // Here we check if the player actually has line-of-sight on the target.
-        // -If yes, then the line is green, no changes necessary.
-        // -If no, then the line, starting PAST the blocking object, is red.
-        GameObject blocker = HF.ReturnObstacleInLOS(this.gameObject, mousePosition, true);
-        if (blocker != null) // There is an obstacle!
-        {
-            float dist = Vector2.Distance(this.transform.position, blocker.transform.position);
-            foreach (var T in targetLine)
-            {
-                // We only want to change the line colors past the blocking object
-                if(Vector2.Distance(this.transform.position, T.Key) - 0.4f > dist) // -0.4f added because distances are weird?
-                {
-                    SetHighlightColor(T.Key, highlightRed);
-                }
-            }
-        }
-
-        #endregion
-
-        #region Launcher Indicator
-        // Here we handle the additional indicator needed for launcher weapons.
-        // If the player's weapon:
-        // 1) Is a launcher
-        // 2) Has LOS to wherever they are targeting
-        // 3) Is within the weapons range
-        // Then and only then will we show the special indicator.
-        Item launcher = Action.HasLauncher(this.GetComponent<Actor>());
-        if(launcher != null & blocker == null && distance <= launcher.itemData.shot.shotRange)
-        {
-            // Success! Lets draw it.
-
-            // =============================================================================================================== //
-            // This comprises of:                                                                                              //
-            // -A spheric, green highlighted area around the player's target tile, that indicates the radius of an explosion.  //
-            //      -Each tile becomes darker as it moves away from the target tile.                                           //
-            //      -The default brightness is about half of the normal target tile brightness.                                //
-            // -Two "brackets" which appear around the above area, indicating the overall size of the weapon (range * 2 + 1).  //
-            //      -These brackets appear on the sides furthest away from the Player                                          //
-            // -A "scan" effect of the green highlighted tiles that happens every couple of seconds                            //
-            // =============================================================================================================== //
-
-            LTH_Clear(); // Clear any pre-existing tiles
-
-            // - First off lets gather all the tiles (in a square) that are around the target tile, and within range.
-            int range = launcher.itemData.explosion.radius;
-            Vector2Int target = new Vector2Int((int)mousePosition.x, (int)mousePosition.y);
-            Vector2Int BL_corner = new Vector2Int(target.x - range + 1, target.y - range + 1);
-            List<GameObject> tiles = new List<GameObject>();
-            for (int x = 0 + BL_corner.x; x < (range * 2)+ 1 + BL_corner.x; x++)
-            {
-                for (int y = 0 + BL_corner.y; y < (range * 2) + 1 + BL_corner.y; y++)
-                {
-                    if(MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(x, y)))
+                    if (targetLine.ContainsKey(Vector2Int.up + loc))
                     {
-                        tiles.Add(MapManager.inst._allTilesRealized[new Vector2Int(x, y)].gameObject);
+                        DestroyHighlightTile(Vector2Int.left + loc);
+                    }
+                    else if (targetLine.ContainsKey(Vector2Int.down + loc))
+                    {
+                        DestroyHighlightTile(Vector2Int.left + loc);
+                    }
+                    if (targetLine.ContainsKey(Vector2Int.down + Vector2Int.right + loc))
+                    {
+                        DestroyHighlightTile(Vector2Int.right + loc);
+                    }
+                    else if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.right + loc))
+                    {
+                        DestroyHighlightTile(Vector2Int.right + loc);
+                    }
+                }
+
+                // Vertical Line
+                if (targetLine.ContainsKey(Vector2Int.up + loc) &&
+                    targetLine.ContainsKey(Vector2Int.down + loc))
+                {
+                    if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.left + loc))
+                    {
+                        DestroyHighlightTile(Vector2Int.up + loc);
+                    }
+                    else if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.right + loc))
+                    {
+                        DestroyHighlightTile(Vector2Int.up + loc);
+                    }
+                    if (targetLine.ContainsKey(Vector2Int.down + Vector2Int.left + loc))
+                    {
+                        DestroyHighlightTile(Vector2Int.down + loc);
+                    }
+                    else if (targetLine.ContainsKey(Vector2Int.down + Vector2Int.right + loc))
+                    {
+                        DestroyHighlightTile(Vector2Int.down + loc);
+                    }
+                }
+
+                // Diagonal Line
+                // NOTE: This doesn't actually do what we want, but im okay with it as is.
+                if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.left + loc) &&  //  \
+                    targetLine.ContainsKey(Vector2Int.down + Vector2Int.right + loc)) //   *
+                {                                                                     //    \
+                    DestroyHighlightTile(Vector2Int.up + Vector2Int.right + loc);
+                    DestroyHighlightTile(Vector2Int.down + Vector2Int.left + loc);
+                    //DestroyHighlightTile(Vector2Int.up + Vector2Int.right + loc);
+                    //DestroyHighlightTile(Vector2Int.down + Vector2Int.right + loc);
+                }
+                else if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.right + loc) && //    /
+                    targetLine.ContainsKey(Vector2Int.down + Vector2Int.left + loc))       //   *
+                {                                                                          //  /
+                    DestroyHighlightTile(Vector2Int.up + Vector2Int.left + loc);
+                    //DestroyHighlightTile(Vector2Int.down + Vector2Int.left + loc);
+                    //DestroyHighlightTile(Vector2Int.up + Vector2Int.right + loc);
+                    DestroyHighlightTile(Vector2Int.down + Vector2Int.right + loc);
+                }
+
+            }
+            #endregion
+
+            #region LOS Color check & Melee adjustment
+            // If the player is using a melee weapon, we want to visually let them know it has a super short range.
+            if (Action.FindMeleeWeapon(this.GetComponent<Actor>()) != null)
+            {
+                foreach (var T in targetLine)
+                {
+                    if (Vector2.Distance(this.transform.position, T.Key) > 2.55f)
+                    {
+                        SetHighlightColor(T.Key, highlightRed);
                     }
                 }
             }
-            // - Now we need to go through the very fun process of refining this square into a circle. While we're at it, we spawn the prefabs aswell.
-            foreach (GameObject T in tiles)
-            {
-                float tileDistiance = Vector2Int.Distance(HF.V3_to_V2I(T.transform.position), HF.V3_to_V2I(this.transform.position));
-                Vector2Int pos = HF.V3_to_V2I(T.transform.position);
 
-                // Check if the distance is within the radius of the circle
-                if (tileDistiance <= range)
+
+            // Here we check if the player actually has line-of-sight on the target.
+            // -If yes, then the line is green, no changes necessary.
+            // -If no, then the line, starting PAST the blocking object, is red.
+            GameObject blocker = HF.ReturnObstacleInLOS(this.gameObject, mousePosition, true);
+            if (blocker != null) // There is an obstacle!
+            {
+                float dist = Vector2.Distance(this.transform.position, blocker.transform.position);
+                foreach (var T in targetLine)
                 {
-                    // Tile is within the circle, create a prefab of it.
-                    var spawnedTile = Instantiate(UIManager.inst.prefab_basicTile, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
-                    spawnedTile.name = $"LTH Tile: {pos.x},{pos.y}"; // Give grid based name
-                    spawnedTile.transform.parent = mouseTracker.transform;
-                    spawnedTile.GetComponent<SpriteRenderer>().sortingOrder = 31;
-                    lth_tiles.Add(spawnedTile);
+                    // We only want to change the line colors past the blocking object
+                    if (Vector2.Distance(this.transform.position, T.Key) - 0.4f > dist) // -0.4f added because distances are weird?
+                    {
+                        SetHighlightColor(T.Key, highlightRed);
+                    }
                 }
             }
 
-            // - We also need to assign them a unique color, as - starting from the center - the tiles will get darker and more transparent as it gets closer to the edge.
-            foreach(GameObject T in lth_tiles)
+            #endregion
+
+            #region Launcher Indicator
+            // Here we handle the additional indicator needed for launcher weapons.
+            // If the player's weapon:
+            // 1) Is a launcher
+            // 2) Has LOS to wherever they are targeting
+            // 3) Is within the weapons range
+            // Then and only then will we show the special indicator.
+            Item launcher = Action.HasLauncher(this.GetComponent<Actor>());
+            if (launcher != null & blocker == null && distance <= launcher.itemData.shot.shotRange)
             {
-                // Calculate the distance of the tile from the center
-                float tileDistiance = Vector2Int.Distance(HF.V3_to_V2I(T.transform.position), HF.V3_to_V2I(mousePosition));
+                // Success! Lets draw it.
 
-                // Calculate the normalized distance (0 to 1)
-                float normalizedDistance = Mathf.Clamp01(tileDistiance / (range + 1));
+                // =============================================================================================================== //
+                // This comprises of:                                                                                              //
+                // -A spheric, green highlighted area around the player's target tile, that indicates the radius of an explosion.  //
+                //      -Each tile becomes darker as it moves away from the target tile.                                           //
+                //      -The default brightness is about half of the normal target tile brightness.                                //
+                // -Two "brackets" which appear around the above area, indicating the overall size of the weapon (range * 2 + 1).  //
+                //      -These brackets appear on the sides furthest away from the Player                                          //
+                // -A "scan" effect of the green highlighted tiles that happens every couple of seconds                            //
+                // =============================================================================================================== //
 
-                // Calculate the new color based on the normalized distance
-                Color A = Color.Lerp(UIManager.inst.highlightGreen, Color.black, normalizedDistance);
+                LTH_Clear(); // Clear any pre-existing tiles
 
-                // Adjust transparency based on distance
-                float alpha = 1f - normalizedDistance;
-                A.a = alpha;
-
-                // We also need to pre-assign some values for the animation
-                float animationTime = 0.2f;
-
-                // - Set the starting color
-                T.GetComponent<SpriteRenderer>().color = A;
-
-                Color B = UIManager.inst.highlightGreen; // Mid point is green highlight
-
-                // - And assign the animation values.
-                // Starts from set color, goes to high green, then goes back to set color.
-                T.GetComponent<SimpleTileAnimator>().Init(A, B, animationTime);
-                T.GetComponent<SimpleTileAnimator>().InitChain(B, A, animationTime);
-            }
-
-            // ?
-
-
-
-            // - Now we need to add the outside brackets
-            // First lets find the two sides we need to put the brackets on.
-            Vector2 sideA = Vector2.zero, sideB = Vector2.zero;
-            (sideA, sideB) = HF.GetRelativePosition(HF.V3_to_V2I(this.transform.position), mousePosition);
-            // !!! REMEMBER THAT THESE NEED TO BE INVERTED !!!
-
-            // We now need to assemble these two brackets with our two prefabs stored in UIManager.
-            // We need to carefully rotate these to make sure they look correct.
-            // Remember that the default state of these prefabs is:
-            //
-            //       |            |
-            //       |     and    |
-            //   ____|            |
-            //
-
-            BL_corner = new Vector2Int(target.x - range + 1, target.y - range);
-            Vector2Int TL_corner = new Vector2Int(target.x - range + 1, target.y + range);
-            Vector2Int BR_corner = new Vector2Int(target.x + range + 1, target.y - range);
-            Vector2Int TR_corner = new Vector2Int(target.x + range + 1, target.y + range);
-            int length = (range * 2) + 1; // How long each bracket needs to be. Reminder that each end is a corner
-
-            // First we'll place the vertical line (left or right side)
-            if(sideA == Vector2.left) // Targeting is to the LEFT of the place. So we need to face RIGHT.
-            {
-                // First place the TOP corner, it needs to face right and down.
-                LTH_PlaceCorner(TL_corner + new Vector2Int(-1, 0), 180f);
-                // Then place the [length - 2] lines
-                for (int i = 0; i < length - 2; i++)
+                // - First off lets gather all the tiles (in a square) that are around the target tile, and within range.
+                int range = launcher.itemData.explosion.radius;
+                Vector2Int target = new Vector2Int(Mathf.RoundToInt(mousePosition.x), Mathf.RoundToInt(mousePosition.y));
+                Vector2Int BL_corner = new Vector2Int(target.x - range, target.y - range);
+                List<GameObject> tiles = new List<GameObject>();
+                for (int x = 0 + BL_corner.x; x < (range * 2) + 1 + BL_corner.x; x++)
                 {
-                    // No rotation needed
-                    LTH_PlaceLine(BL_corner + new Vector2Int(-1, i + 1), 0f);
+                    for (int y = 0 + BL_corner.y; y < (range * 2) + 1 + BL_corner.y; y++)
+                    {
+                        if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(x, y)))
+                        {
+                            tiles.Add(MapManager.inst._allTilesRealized[new Vector2Int(x, y)].gameObject);
+                        }
+                    }
                 }
-                // Lastly, place the BOTTOM corner. It needs to face right and up.
-                LTH_PlaceCorner(BL_corner + new Vector2Int(-1, 0), 90f);
-            }
-            else if (sideA == Vector2.right || sideA == Vector2.zero) // Targeting is to the RIGHT of the place. So we need to face LEFT.
-            {
-                // First place the TOP corner, it needs to face left and down.
-                LTH_PlaceCorner(TR_corner + new Vector2Int(1, 0), 90f);
-                // Then place the [length - 2] lines
-                for (int i = 0; i < length - 2; i++)
+
+                // - Now we need to go through the very fun process of refining this square into a circle. While we're at it, we spawn the prefabs aswell.
+                foreach (GameObject T in tiles)
                 {
-                    // No rotation needed
-                    LTH_PlaceLine(BR_corner + new Vector2Int(1, i + 1), 0f);
+                    float tileDistiance = Vector2Int.Distance(HF.V3_to_V2I(T.transform.position), target);
+                    Vector2Int pos = HF.V3_to_V2I(T.transform.position);
+
+                    // Check if the distance is within the radius of the circle
+                    if (tileDistiance <= range)
+                    {
+                        // Tile is within the circle, create a prefab of it.
+                        var spawnedTile = Instantiate(UIManager.inst.prefab_basicTile, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
+                        spawnedTile.name = $"LTH Tile: {pos.x},{pos.y}"; // Give grid based name
+                        spawnedTile.transform.parent = mouseTracker.transform;
+                        spawnedTile.GetComponent<SpriteRenderer>().sortingOrder = 31;
+                        lth_tiles.Add(spawnedTile);
+                    }
                 }
-                // Lastly, place the BOTTOM corner. It needs to face left and up.
-                LTH_PlaceCorner(BR_corner + new Vector2Int(1, 0), 0f);
-            }
 
-            // Then we place the horizontal line (top or bottom)
-
-            if (sideB == Vector2.up) // Targeting is ABOVE of the place. So we need to face DOWN.
-            {
-                // First place the LEFT corner, it needs to place right and down.
-                LTH_PlaceCorner(TL_corner + new Vector2Int(0, 1), 180f);
-                // Then place the [length - 2] lines
-                for (int i = 0; i < length - 2; i++)
+                // - We also need to assign them a unique color, as - starting from the center - the tiles will get darker and more transparent as it gets closer to the edge.
+                foreach (GameObject T in lth_tiles)
                 {
-                    LTH_PlaceLine(TL_corner + new Vector2Int(i + 1, 1), 90f);
+                    // Calculate the distance of the tile from the center
+                    float tileDistiance = Vector2Int.Distance(HF.V3_to_V2I(T.transform.position), HF.V3_to_V2I(mousePosition));
+
+                    // Calculate the normalized distance (0 to 1)
+                    float normalizedDistance = Mathf.Clamp01(tileDistiance / (range + 1));
+
+                    // Calculate the new color based on the normalized distance
+                    Color A = Color.Lerp(UIManager.inst.highlightGreen, Color.black, normalizedDistance);
+
+                    // Adjust transparency based on distance
+                    float alpha = 1f - normalizedDistance;
+                    A.a = alpha;
+
+                    // We also need to pre-assign some values for the animation
+                    float animationTime = 0.2f;
+
+                    // - Set the starting color
+                    T.GetComponent<SpriteRenderer>().color = A;
+
+                    Color B = UIManager.inst.highlightGreen; // Mid point is green highlight
+
+                    // - And assign the animation values.
+                    // Starts from set color, goes to high green, then goes back to set color.
+                    T.GetComponent<SimpleTileAnimator>().Init(A, B, animationTime);
+                    T.GetComponent<SimpleTileAnimator>().InitChain(B, A, animationTime);
                 }
-                // Lastly, place the RIGHT corner. It needs to face left and down.
-                LTH_PlaceCorner(TR_corner + new Vector2Int(1, 0), -90f);
-            }
-            else if (sideB == Vector2.down || sideB == Vector2.zero) // Targeting is BELOW of the place. So we need to face UP.
-            {
-                // First place the LEFT corner, it needs to place right and up.
-                LTH_PlaceCorner(BL_corner + new Vector2Int(0, -1), -90f);
-                // Then place the [length - 2] lines
-                for (int i = 0; i < length - 2; i++)
+
+                // ?
+
+
+
+                // - Now we need to add the outside brackets
+                // First lets find the two sides we need to put the brackets on.
+                Vector2 sideA = Vector2.zero, sideB = Vector2.zero;
+                (sideA, sideB) = HF.GetRelativePosition(HF.V3_to_V2I(this.transform.position), mousePosition);
+                // !!! REMEMBER THAT THESE NEED TO BE INVERTED !!!
+
+                // We now need to assemble these two brackets with our two prefabs stored in UIManager.
+                // We need to carefully rotate these to make sure they look correct.
+                // Remember that the default state of these prefabs is:
+                //
+                //       |            |
+                //       |     and    |
+                //   ____|            |
+                //
+
+                Vector2Int TL_corner = new Vector2Int(target.x - range, target.y + range);
+                Vector2Int BR_corner = new Vector2Int(target.x + range, target.y - range);
+                Vector2Int TR_corner = new Vector2Int(target.x + range, target.y + range);
+                Debug.Log("Center: " + target + " -- TL: " + TL_corner + " -- TR: " + TR_corner + " -- BL: " + BL_corner + " -- BR: " + BR_corner);
+                int length = (range * 2) + 1; // How long each bracket needs to be. Reminder that each end is a corner
+
+                // First we'll place the vertical line (left or right side)
+                if (sideA == Vector2.left) // Targeting is to the LEFT of the place. So we need to face RIGHT.
                 {
-                    LTH_PlaceLine(BL_corner + new Vector2Int(i + 1, -1), 90f);
+                    // First place the TOP corner, it needs to face right and down.
+                    LTH_PlaceCorner(TL_corner + new Vector2Int(-1, 0), 180f);
+                    // Then place the [length - 2] lines
+                    for (int i = 0; i < length - 2; i++)
+                    {
+                        // No rotation needed
+                        LTH_PlaceLine(BL_corner + new Vector2Int(-1, i + 1), 0f);
+                    }
+                    // Lastly, place the BOTTOM corner. It needs to face right and up.
+                    LTH_PlaceCorner(BL_corner + new Vector2Int(-1, 0), 90f);
                 }
-                // Lastly, place the RIGHT corner. It needs to face left and up.
-                LTH_PlaceCorner(BR_corner + new Vector2Int(0, -1), 0f);
+                else if (sideA == Vector2.right || sideA == Vector2.zero) // Targeting is to the RIGHT of the place. So we need to face LEFT.
+                {
+                    // First place the TOP corner, it needs to face left and down.
+                    LTH_PlaceCorner(TR_corner + new Vector2Int(1, 0), 90f);
+                    // Then place the [length - 2] lines
+                    for (int i = 0; i < length - 2; i++)
+                    {
+                        // No rotation needed
+                        LTH_PlaceLine(BR_corner + new Vector2Int(1, i + 1), 0f);
+                    }
+                    // Lastly, place the BOTTOM corner. It needs to face left and up.
+                    LTH_PlaceCorner(BR_corner + new Vector2Int(1, 0), 0f);
+                }
+
+                // Then we place the horizontal line (top or bottom)
+
+                if (sideB == Vector2.up) // Targeting is ABOVE of the place. So we need to face DOWN.
+                {
+                    // First place the LEFT corner, it needs to place right and down.
+                    LTH_PlaceCorner(TL_corner + new Vector2Int(0, 1), 180f);
+                    // Then place the [length - 2] lines
+                    for (int i = 0; i < length - 2; i++)
+                    {
+                        LTH_PlaceLine(TL_corner + new Vector2Int(i + 1, 1), 90f);
+                    }
+                    // Lastly, place the RIGHT corner. It needs to face left and down.
+                    LTH_PlaceCorner(TR_corner + new Vector2Int(0, 1), 90f);
+                }
+                else if (sideB == Vector2.down || sideB == Vector2.zero) // Targeting is BELOW of the place. So we need to face UP.
+                {
+                    // First place the LEFT corner, it needs to place right and up.
+                    LTH_PlaceCorner(BL_corner + new Vector2Int(0, -1), -90f);
+                    // Then place the [length - 2] lines
+                    for (int i = 0; i < length - 2; i++)
+                    {
+                        LTH_PlaceLine(BL_corner + new Vector2Int(i + 1, -1), 90f);
+                    }
+                    // Lastly, place the RIGHT corner. It needs to face left and up.
+                    LTH_PlaceCorner(BR_corner + new Vector2Int(0, -1), 0f);
+                }
+
+                // - Finally, start the scan animation, and timer
+                //StopCoroutine(LTH_ScanTimer());
+                //StopCoroutine(LTH_ScanSquare());
+
+                //StartCoroutine(LTH_ScanTimer());
+                //StartCoroutine(LTH_ScanSquare());
+
+
+                // - When the player fires, ALL targeting effects should dissapear until the projectile they fired detonates
+                //Debug.Break();
+            }
+            else
+            {
+                LTH_Clear(); // Clear any pre-existing tiles
             }
 
-            // - Finally, start the scan animation, and timer
-            //StopCoroutine(LTH_ScanTimer());
-            //StopCoroutine(LTH_ScanSquare());
 
-            //StartCoroutine(LTH_ScanTimer());
-            //StartCoroutine(LTH_ScanSquare());
+            #endregion
 
+            #region Scan Window Indicator
+            // - Show what's being targeted up in the / SCAN / window. -
 
-            // - When the player fires, ALL targeting effects should dissapear until the projectile they fired detonates
-            Debug.Break();
-        }
+            // We need to figure out what the player has their mouse over.
+            // Objects of interest are:
+            // -Walls, Doors, Bots, Machines, Floor items, traps
 
+            // We are going to copy over the raycast down method from UIManager
+            Vector3 lowerPosition = new Vector3(mousePosition.x, mousePosition.y, 2);
+            Vector3 upperPosition = new Vector3(mousePosition.x, mousePosition.y, -2);
+            direction = lowerPosition - upperPosition;
+            distance = Vector3.Distance(new Vector3Int((int)lowerPosition.x, (int)lowerPosition.y, 0), upperPosition);
+            direction.Normalize();
+            RaycastHit2D[] hits2 = Physics2D.RaycastAll(upperPosition, direction, distance);
 
-        #endregion
+            // - Flags -
+            GameObject wall = null;
+            GameObject exit = null;
+            GameObject bot = null;
+            GameObject item = null;
+            GameObject door = null;
+            GameObject machine = null;
+            GameObject trap = null;
 
-        #region Scan Window Indicator
-        // - Show what's being targeted up in the / SCAN / window. -
-
-        // We need to figure out what the player has their mouse over.
-        // Objects of interest are:
-        // -Walls, Doors, Bots, Machines, Floor items, traps
-
-        // We are going to copy over the raycast down method from UIManager
-        Vector3 lowerPosition = new Vector3(mousePosition.x, mousePosition.y, 2);
-        Vector3 upperPosition = new Vector3(mousePosition.x, mousePosition.y, -2);
-        direction = lowerPosition - upperPosition;
-        distance = Vector3.Distance(new Vector3Int((int)lowerPosition.x, (int)lowerPosition.y, 0), upperPosition);
-        direction.Normalize();
-        RaycastHit2D[] hits2 = Physics2D.RaycastAll(upperPosition, direction, distance);
-
-        // - Flags -
-        GameObject wall = null;
-        GameObject exit = null;
-        GameObject bot = null;
-        GameObject item = null;
-        GameObject door = null;
-        GameObject machine = null;
-        GameObject trap = null;
-
-        // Loop through all the hits and set the targeting highlight on each tile (ideally shouldn't loop that many times)
-        for (int i = 0; i < hits2.Length; i++)
-        {
-            RaycastHit2D hit = hits2[i];
-            // PROBLEM!!! This list of hits is unsorted and contains multiple things that violate the heirarchy below. This MUST be fixed!
-
-            // There is a heirarchy of what we want to display:
-            // -A wall
-            // -An exit
-            // -A bot
-            // -An item
-            // -A door
-            // -A machine
-            // -A trap
-
-            // We will solve this problem by setting flags. And then going back afterwards and using our heirarchy.
-
-            #region Hierarchy Flagging
-            if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Wall"))
+            // Loop through all the hits and set the targeting highlight on each tile (ideally shouldn't loop that many times)
+            for (int i = 0; i < hits2.Length; i++)
             {
-                // A wall
-                wall = hit.collider.gameObject;
+                RaycastHit2D hit = hits2[i];
+                // PROBLEM!!! This list of hits is unsorted and contains multiple things that violate the heirarchy below. This MUST be fixed!
+
+                // There is a heirarchy of what we want to display:
+                // -A wall
+                // -An exit
+                // -A bot
+                // -An item
+                // -A door
+                // -A machine
+                // -A trap
+
+                // We will solve this problem by setting flags. And then going back afterwards and using our heirarchy.
+
+                #region Hierarchy Flagging
+                if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Wall"))
+                {
+                    // A wall
+                    wall = hit.collider.gameObject;
+                }
+                else if (hit.collider.GetComponent<AccessObject>())
+                {
+                    // An exit
+                    exit = hit.collider.gameObject;
+                }
+                else if (hit.collider.GetComponent<Actor>() && hit.collider.GetComponent<Actor>() != PlayerData.inst.GetComponent<Actor>())
+                {
+                    // A bot
+                    bot = hit.collider.gameObject;
+                }
+                else if (hit.collider.GetComponent<Part>())
+                {
+                    // An item
+                    item = hit.collider.gameObject;
+                }
+                else if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Door"))
+                {
+                    // Door
+                    door = hit.collider.gameObject;
+                }
+                else if (hit.collider.GetComponent<MachinePart>())
+                {
+                    // Machine
+                    machine = hit.collider.gameObject;
+                }
+                else if (hit.collider.GetComponent<FloorTrap>())
+                {
+                    // Trap
+                    trap = hit.collider.gameObject;
+                }
+                #endregion
             }
-            else if (hit.collider.GetComponent<AccessObject>())
+
+            if (wall && wall.GetComponent<TileBlock>().isExplored)
             {
-                // An exit
-                exit = hit.collider.gameObject;
+                UIManager.inst.Scan_FlipSubmode(true, wall);
             }
-            else if (hit.collider.GetComponent<Actor>() && hit.collider.GetComponent<Actor>() != PlayerData.inst.GetComponent<Actor>())
+            else if (exit && exit.GetComponent<AccessObject>().isExplored)
             {
-                // A bot
-                bot = hit.collider.gameObject;
+                UIManager.inst.Scan_FlipSubmode(true, exit);
             }
-            else if (hit.collider.GetComponent<Part>())
+            else if (bot && bot.GetComponent<Actor>().isExplored)
             {
-                // An item
-                item = hit.collider.gameObject;
+                UIManager.inst.Scan_FlipSubmode(true, bot);
             }
-            else if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Door"))
+            else if (item && item.GetComponent<Part>().isExplored)
             {
-                // Door
-                door = hit.collider.gameObject;
+                UIManager.inst.Scan_FlipSubmode(true, item);
             }
-            else if (hit.collider.GetComponent<MachinePart>())
+            else if (door && door.GetComponent<TileBlock>().isExplored)
             {
-                // Machine
-                machine = hit.collider.gameObject;
+                UIManager.inst.Scan_FlipSubmode(true, door);
             }
-            else if (hit.collider.GetComponent<FloorTrap>())
+            else if (machine && machine.GetComponent<MachinePart>().isExplored)
             {
-                // Trap
-                trap = hit.collider.gameObject;
+                UIManager.inst.Scan_FlipSubmode(true, machine);
+            }
+            else if (trap && trap.GetComponent<FloorTrap>().knowByPlayer && MapManager.inst._allTilesRealized[HF.V3_to_V2I(trap.transform.position)].isExplored)
+            {
+                UIManager.inst.Scan_FlipSubmode(true, trap);
+            }
+            else
+            {
+                UIManager.inst.Scan_FlipSubmode(false);
             }
             #endregion
-        }
 
-        if (wall && wall.GetComponent<TileBlock>().isExplored)
-        {
-            UIManager.inst.Scan_FlipSubmode(true, wall);
+            UIManager.inst.Evasion_Volley(true); // Open the /VOLLEY/ window
         }
-        else if (exit && exit.GetComponent<AccessObject>().isExplored)
-        {
-            UIManager.inst.Scan_FlipSubmode(true, exit);
-        }
-        else if (bot && bot.GetComponent<Actor>().isExplored)
-        {
-            UIManager.inst.Scan_FlipSubmode(true, bot);
-        }
-        else if (item && item.GetComponent<Part>().isExplored)
-        {
-            UIManager.inst.Scan_FlipSubmode(true, item);
-        }
-        else if (door && door.GetComponent<TileBlock>().isExplored)
-        {
-            UIManager.inst.Scan_FlipSubmode(true, door);
-        }
-        else if (machine && machine.GetComponent<MachinePart>().isExplored)
-        {
-            UIManager.inst.Scan_FlipSubmode(true, machine);
-        }
-        else if (trap && trap.GetComponent<FloorTrap>().knowByPlayer && MapManager.inst._allTilesRealized[HF.V3_to_V2I(trap.transform.position)].isExplored)
-        {
-            UIManager.inst.Scan_FlipSubmode(true, trap);
-        }
-        else
-        {
-            UIManager.inst.Scan_FlipSubmode(false);
-        }
-        #endregion
-
-        UIManager.inst.Evasion_Volley(true); // Open the /VOLLEY/ window
     }
 
     #region Highlight Helper Functions
