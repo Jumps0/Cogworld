@@ -4,21 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Linq;
-using System.Drawing;
 using Color = UnityEngine.Color;
-using JetBrains.Annotations;
-using Unity.VisualScripting;
-using System;
 using Random = UnityEngine.Random;
-using Unity.Burst.CompilerServices;
 using System.Text;
-using static Unity.VisualScripting.Member;
-using static UnityEngine.GraphicsBuffer;
-using System.Numerics;
 using Vector3 = UnityEngine.Vector3;
 using Quaternion = UnityEngine.Quaternion;
 using Vector2 = UnityEngine.Vector2;
-using static UnityEditor.PlayerSettings;
 //using static UnityEditor.Progress;
 
 public class UIManager : MonoBehaviour
