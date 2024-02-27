@@ -330,7 +330,6 @@ public class PlayerData : MonoBehaviour
         {
             oldMouseTarget = mousePosition;
 
-
             ClearAllHighlights();
 
             // We want to draw a line from the player to their mouse cursor.
@@ -488,6 +487,7 @@ public class PlayerData : MonoBehaviour
                 int range = launcher.itemData.explosion.radius;
                 Vector2Int target = new Vector2Int(Mathf.RoundToInt(mousePosition.x), Mathf.RoundToInt(mousePosition.y));
                 Vector2Int BL_corner = new Vector2Int(target.x - range, target.y - range);
+
                 List<GameObject> tiles = new List<GameObject>();
                 for (int x = 0 + BL_corner.x; x < (range * 2) + 1 + BL_corner.x; x++)
                 {
@@ -512,7 +512,7 @@ public class PlayerData : MonoBehaviour
                         // Tile is within the circle, create a prefab of it.
                         var spawnedTile = Instantiate(UIManager.inst.prefab_basicTile, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
                         spawnedTile.name = $"LTH Tile: {pos.x},{pos.y}"; // Give grid based name
-                        spawnedTile.transform.parent = mouseTracker.transform;
+                        spawnedTile.transform.parent = this.transform;
                         spawnedTile.GetComponent<SpriteRenderer>().sortingOrder = 31;
                         lth_tiles.Add(spawnedTile);
                     }
@@ -570,7 +570,7 @@ public class PlayerData : MonoBehaviour
                 Vector2Int TL_corner = new Vector2Int(target.x - range, target.y + range);
                 Vector2Int BR_corner = new Vector2Int(target.x + range, target.y - range);
                 Vector2Int TR_corner = new Vector2Int(target.x + range, target.y + range);
-                Debug.Log("Center: " + target + " -- TL: " + TL_corner + " -- TR: " + TR_corner + " -- BL: " + BL_corner + " -- BR: " + BR_corner);
+                //Debug.Log("Center: " + target + " -- TL: " + TL_corner + " -- TR: " + TR_corner + " -- BL: " + BL_corner + " -- BR: " + BR_corner);
                 int length = (range * 2) + 1; // How long each bracket needs to be. Reminder that each end is a corner
 
                 // First we'll place the vertical line (left or right side)
@@ -629,12 +629,10 @@ public class PlayerData : MonoBehaviour
                 }
 
                 // - Finally, start the scan animation, and timer
-                //StopCoroutine(LTH_ScanTimer());
-                //StopCoroutine(LTH_ScanSquare());
-
-                //StartCoroutine(LTH_ScanTimer());
-                //StartCoroutine(LTH_ScanSquare());
-
+                if(LTH_timerRoutine == null)
+                {
+                    LTH_timerRoutine = StartCoroutine(LTH_ScanTimer());
+                }
 
                 // - When the player fires, ALL targeting effects should dissapear until the projectile they fired detonates
                 //Debug.Break();
@@ -880,6 +878,11 @@ public class PlayerData : MonoBehaviour
         {
             foreach (GameObject entry in kvp.Value) // Loop through each object in the micro-list
             {
+                if(entry == null) // Lovely race condition here
+                {
+                    yield break;
+                }
+
                 SimpleTileAnimator animObj = entry.GetComponent<SimpleTileAnimator>();
 
                 if (animObj != null)
@@ -908,7 +911,7 @@ public class PlayerData : MonoBehaviour
 
         var spawnedTile = Instantiate(UIManager.inst.prefab_launcherTargetLine, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
         spawnedTile.name = $"LTH Line: {pos.x},{pos.y}"; // Give grid based name
-        spawnedTile.transform.parent = mouseTracker.transform;
+        spawnedTile.transform.parent = this.transform;
         lth_brackets.Add(spawnedTile);
 
         // Now we need to rotate this so it faces the correct direction. 
@@ -931,7 +934,7 @@ public class PlayerData : MonoBehaviour
 
         var spawnedTile = Instantiate(UIManager.inst.prefab_launcherTargetCorner, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
         spawnedTile.name = $"LTH Corner: {pos.x},{pos.y}"; // Give grid based name
-        spawnedTile.transform.parent = mouseTracker.transform;
+        spawnedTile.transform.parent = this.transform;
         lth_brackets.Add(spawnedTile);
 
         // Now we need to rotate this so it faces the correct direction. 
@@ -941,7 +944,7 @@ public class PlayerData : MonoBehaviour
 
     private void LTH_Clear()
     {
-        StopCoroutine(LTH_ScanTimer());
+        LTH_Stop();
 
         foreach (GameObject item in lth_brackets.ToList())
         {
@@ -958,11 +961,59 @@ public class PlayerData : MonoBehaviour
         lth_tiles.Clear();
     }
 
+    private Coroutine LTH_timerRoutine;
     private IEnumerator LTH_ScanTimer()
     {
+        // Get current mouse position (this could change later we need to track it)
+        Vector3 lastTile = oldMouseTarget;
+
+        yield return new WaitForSeconds(0.5f);
+
+        Coroutine LTH_animationRoutine = null;
+
+        // Get the current mouse position
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition = new Vector3(Mathf.RoundToInt(mousePosition.x), Mathf.RoundToInt(mousePosition.y));
+
+        // Has the mouse moved?
+        if (lastTile == mousePosition)
+        {
+            // No? Continue, and play the animation.
+            LTH_animationRoutine = StartCoroutine(LTH_ScanSquare());
+        }
+        else
+        {
+            // It has, stop.
+            LTH_Stop();
+        }
+
         yield return new WaitForSeconds(3f);
 
-        LTH_ScanSquare();
+        // Get the current mouse position
+        mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition = new Vector3(Mathf.RoundToInt(mousePosition.x), Mathf.RoundToInt(mousePosition.y));
+
+        // Has the mouse moved?
+        if(lastTile == mousePosition)
+        {
+            // No? Go again!
+            LTH_timerRoutine = StartCoroutine(LTH_ScanTimer());
+        }
+        else
+        {
+            // It has, stop.
+            LTH_Stop();
+            StopCoroutine(LTH_animationRoutine);
+        }
+    }
+
+    private void LTH_Stop()
+    {
+        if (LTH_timerRoutine != null)
+        {
+            StopCoroutine(LTH_timerRoutine);
+            LTH_timerRoutine = null;
+        }
     }
 
     #endregion

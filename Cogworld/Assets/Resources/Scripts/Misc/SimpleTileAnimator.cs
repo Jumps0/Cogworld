@@ -8,7 +8,7 @@ using UnityEngine;
 public class SimpleTileAnimator : MonoBehaviour
 {
     [Header("References")]
-    private SpriteRenderer sprite;
+    public SpriteRenderer sprite;
 
     [Header("Assignments")]
     public Color startColor;
@@ -22,13 +22,6 @@ public class SimpleTileAnimator : MonoBehaviour
     public float chain_animationTime;
     [Tooltip("Is there any delay between the first animation ending and the second animation starting? 0 by default.")]
     public float chain_delay;
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        sprite = this.GetComponent<SpriteRenderer>();
-    }
 
     public void Init(Color startC, Color endC, float time)
     {
