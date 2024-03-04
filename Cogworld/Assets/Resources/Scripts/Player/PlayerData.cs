@@ -1,8 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.Tilemaps;
 
 /// <summary>
@@ -333,6 +336,10 @@ public class PlayerData : MonoBehaviour
             ClearAllHighlights();
 
             // We want to draw a line from the player to their mouse cursor.
+
+
+            #region A) Line Drawing via Raycast
+            
             #region Basic Line Drawing
             // Cast a ray from the player to the mouse position
             Vector3 direction = mousePosition - this.gameObject.transform.position;
@@ -356,74 +363,157 @@ public class PlayerData : MonoBehaviour
 
             // Clear specific tiles to make highlight thinner
             #region Line visual correction
-            foreach (var T in targetLine.ToList())
+            foreach (var T in targetLine)
             {
                 Vector2Int loc = T.Key;
-
+                
                 // Horizontal Line
-                if (targetLine.ContainsKey(Vector2Int.left + loc) &&
+                if (targetLine.ContainsKey(Vector2Int.left + loc) && //  - * -
                     targetLine.ContainsKey(Vector2Int.right + loc))
                 {
-                    if (targetLine.ContainsKey(Vector2Int.up + loc))
+                    if (targetLine.ContainsKey(Vector2Int.up + loc) && targetLine[Vector2Int.up + loc].GetComponent<SpriteRenderer>().enabled)
                     {
-                        DestroyHighlightTile(Vector2Int.left + loc);
+                        //DestroyHighlightTile(Vector2Int.up + loc);
+                        targetLine[Vector2Int.up + loc].GetComponent<SpriteRenderer>().enabled = false;
                     }
-                    else if (targetLine.ContainsKey(Vector2Int.down + loc))
+                    else if (targetLine.ContainsKey(Vector2Int.down + loc) && targetLine[Vector2Int.down + loc].GetComponent<SpriteRenderer>().enabled)
                     {
-                        DestroyHighlightTile(Vector2Int.left + loc);
-                    }
-                    if (targetLine.ContainsKey(Vector2Int.down + Vector2Int.right + loc))
-                    {
-                        DestroyHighlightTile(Vector2Int.right + loc);
-                    }
-                    else if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.right + loc))
-                    {
-                        DestroyHighlightTile(Vector2Int.right + loc);
+                        //DestroyHighlightTile(Vector2Int.left + loc);
+                        targetLine[Vector2Int.down + loc].GetComponent<SpriteRenderer>().enabled = false;
                     }
                 }
-
+                
                 // Vertical Line
                 if (targetLine.ContainsKey(Vector2Int.up + loc) &&
                     targetLine.ContainsKey(Vector2Int.down + loc))
                 {
-                    if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.left + loc))
+                    if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.left + loc) && targetLine[Vector2Int.up + Vector2Int.left + loc].GetComponent<SpriteRenderer>().enabled)
                     {
-                        DestroyHighlightTile(Vector2Int.up + loc);
+                        //DestroyHighlightTile(Vector2Int.up + loc);
+                        targetLine[Vector2Int.up + loc].GetComponent<SpriteRenderer>().enabled = false;
                     }
-                    else if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.right + loc))
+                    else if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.right + loc) && targetLine[Vector2Int.up + Vector2Int.right + loc].GetComponent<SpriteRenderer>().enabled)
                     {
-                        DestroyHighlightTile(Vector2Int.up + loc);
+                        //DestroyHighlightTile(Vector2Int.up + loc);
+                        targetLine[Vector2Int.up + loc].GetComponent<SpriteRenderer>().enabled = false;
                     }
-                    if (targetLine.ContainsKey(Vector2Int.down + Vector2Int.left + loc))
+                    if (targetLine.ContainsKey(Vector2Int.down + Vector2Int.left + loc) && targetLine[Vector2Int.down + Vector2Int.left + loc].GetComponent<SpriteRenderer>().enabled)
                     {
-                        DestroyHighlightTile(Vector2Int.down + loc);
+                        //DestroyHighlightTile(Vector2Int.down + loc);
+                        targetLine[Vector2Int.down + loc].GetComponent<SpriteRenderer>().enabled = false;
                     }
-                    else if (targetLine.ContainsKey(Vector2Int.down + Vector2Int.right + loc))
+                    else if (targetLine.ContainsKey(Vector2Int.down + Vector2Int.right + loc) && targetLine[Vector2Int.down + Vector2Int.right + loc].GetComponent<SpriteRenderer>().enabled)
                     {
-                        DestroyHighlightTile(Vector2Int.down + loc);
+                        //DestroyHighlightTile(Vector2Int.down + loc);
+                        targetLine[Vector2Int.down + loc].GetComponent<SpriteRenderer>().enabled = false;
                     }
                 }
-
+                
                 // Diagonal Line
                 // NOTE: This doesn't actually do what we want, but im okay with it as is.
-                if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.left + loc) &&  //  \
-                    targetLine.ContainsKey(Vector2Int.down + Vector2Int.right + loc)) //   *
-                {                                                                     //    \
-                    DestroyHighlightTile(Vector2Int.up + Vector2Int.right + loc);
-                    DestroyHighlightTile(Vector2Int.down + Vector2Int.left + loc);
+                if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.left + loc) &&
+                    targetLine.ContainsKey(Vector2Int.down + Vector2Int.right + loc)) 
+                {
+                    //  \
+                    //   *
+                    //    \
+
+
                     //DestroyHighlightTile(Vector2Int.up + Vector2Int.right + loc);
-                    //DestroyHighlightTile(Vector2Int.down + Vector2Int.right + loc);
-                }
-                else if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.right + loc) && //    /
-                    targetLine.ContainsKey(Vector2Int.down + Vector2Int.left + loc))       //   *
-                {                                                                          //  /
-                    DestroyHighlightTile(Vector2Int.up + Vector2Int.left + loc);
                     //DestroyHighlightTile(Vector2Int.down + Vector2Int.left + loc);
-                    //DestroyHighlightTile(Vector2Int.up + Vector2Int.right + loc);
-                    DestroyHighlightTile(Vector2Int.down + Vector2Int.right + loc);
+                    ////DestroyHighlightTile(Vector2Int.up + Vector2Int.right + loc); // no?
+                    ////DestroyHighlightTile(Vector2Int.down + Vector2Int.right + loc); // no?
+
+                    if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.right + loc))
+                        targetLine[Vector2Int.up + Vector2Int.right + loc].GetComponent<SpriteRenderer>().enabled = false;
+                    if (targetLine.ContainsKey(Vector2Int.down + Vector2Int.left + loc))
+                        targetLine[Vector2Int.down + Vector2Int.left + loc].GetComponent<SpriteRenderer>().enabled = false;
+                }
+                else if (targetLine.ContainsKey(Vector2Int.up + Vector2Int.right + loc) && targetLine[Vector2Int.up + Vector2Int.right + loc].GetComponent<SpriteRenderer>().enabled &&
+                    targetLine.ContainsKey(Vector2Int.down + Vector2Int.left + loc) && targetLine[Vector2Int.down + Vector2Int.left + loc].GetComponent<SpriteRenderer>().enabled)    
+                {                                                                          
+                    //     /
+                    //    *
+                    //   /
+
+
+                    //DestroyHighlightTile(Vector2Int.up + Vector2Int.left + loc);
+                    ////DestroyHighlightTile(Vector2Int.down + Vector2Int.left + loc); // no?
+                    ////DestroyHighlightTile(Vector2Int.up + Vector2Int.right + loc); // no?
+                    //DestroyHighlightTile(Vector2Int.down + Vector2Int.right + loc);
+
+                    if(targetLine.ContainsKey(Vector2Int.up + Vector2Int.left + loc))
+                        targetLine[Vector2Int.up + Vector2Int.left + loc].GetComponent<SpriteRenderer>().enabled = false;
+                    if (targetLine.ContainsKey(Vector2Int.down + Vector2Int.right + loc))
+                        targetLine[Vector2Int.down + Vector2Int.right + loc].GetComponent<SpriteRenderer>().enabled = false;
                 }
 
             }
+            #endregion
+            
+            #endregion
+
+            #region B) Line Drawing via "Dart"
+            // I'm not 100% happy with this method, but as implemented, it works better than raycasting (especially the line trimming).
+            /*
+            // - Explainer -
+            // With this method we are imagining a "dart" which starts at the player, and is shot towards the target position.
+            // The closest tile to the dart's closest position is added to the path.
+            // We finish when we "reach" the end point.
+            // There are some safety rails in place to make sure the "dart" doesn't shoot past the edge of the map, but honestly I
+            // don't 100% trust it, so there is probably like a 0.1% chance when the player is aiming an error happens.
+
+            path = new List<Vector3>();
+
+            Vector2 start = new Vector2Int(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y));
+            Vector2 finish = mousePosition;
+
+            Vector2 currentPos = start;
+            Vector2 direction = (finish - start).normalized;
+            Vector2 lastDirection = direction; // Store the last direction
+            float distance = Vector2.Distance(start, finish);
+
+            while (Vector2.Distance(currentPos, finish) > 0.1f)
+            {
+                // Add current point to path
+                path.Add(currentPos);
+
+                // Move towards finish point in the calculated direction
+                currentPos += direction;
+
+                // Check if current position is out of bounds, if so, break the loop
+                if (currentPos.x < 0 || currentPos.y < 0 || currentPos.x >= MapManager.inst._mapSizeX - 2 || currentPos.y >= MapManager.inst._mapSizeY - 2)
+                    break;
+
+                // Update direction towards finish point
+                direction = (finish - currentPos).normalized;
+
+                // Check if direction has changed (passed the finish point)
+                if (Vector2.Dot(direction, lastDirection) < 0)
+                    break; // Stop if the direction changes
+
+                lastDirection = direction; // Update last direction
+            }
+
+            // Add the finish point to the path
+            path.Add(finish);
+
+            // - Now "draw" the path -
+
+            foreach (var P in path) // Go through the path and mark each tile
+            {
+                if (!targetLine.ContainsKey(HF.V3_to_V2I(P)))
+                {
+                    CreateHighlightTile(HF.V3_to_V2I(P));
+                }
+            }
+
+            if (GapCheckHelper(HF.V3_to_V2I(finish)))
+            {
+                GapCheck();
+            }
+            CleanPath(); // Clean the path
+            */
             #endregion
 
             #region LOS Color check & Melee adjustment
@@ -767,6 +857,7 @@ public class PlayerData : MonoBehaviour
     [SerializeField] private Color highlightGreen;
     [SerializeField] private Color highlightRed;
     private Dictionary<Vector2Int, GameObject> targetLine = new Dictionary<Vector2Int, GameObject>();
+    List<Vector3> path = new List<Vector3>();
     private void CreateHighlightTile(Vector2Int pos)
     {
         var spawnedTile = Instantiate(MapManager.inst.prefab_highlightedTile, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
@@ -806,6 +897,148 @@ public class PlayerData : MonoBehaviour
 
         targetLine.Clear();
     }
+
+    #region "Dart" Target-line Helpers
+    private void GapCheck()
+    {
+        // Due to a quirk in the line generation, there is occasionally a gap in the path between the last tile along the path and the end tile.
+        // Here we will simply fill that 1 tile gap.
+
+        // This issue doesn't appear to show up in diagonal lines, so we won't check the diagonal directions here.
+
+        if (HF.GetDirection(HF.V3_to_V2I(path[path.Count - 1]), HF.V3_to_V2I(path[0])) == Vector2.up)
+        {
+            CreateHighlightTile(HF.V3_to_V2I(path[path.Count - 1] + new Vector3(0, 1)));
+        }
+        else if (HF.GetDirection(HF.V3_to_V2I(path[path.Count - 1]), HF.V3_to_V2I(path[0])) == Vector2.down)
+        {
+            CreateHighlightTile(HF.V3_to_V2I(path[path.Count - 1] + new Vector3(0, -1)));
+        }
+        else if (HF.GetDirection(HF.V3_to_V2I(path[path.Count - 1]), HF.V3_to_V2I(path[0])) == Vector2.left)
+        {
+            CreateHighlightTile(HF.V3_to_V2I(path[path.Count - 1] + new Vector3(-1, 0)));
+        }
+        else if (HF.GetDirection(HF.V3_to_V2I(path[path.Count - 1]), HF.V3_to_V2I(path[0])) == Vector2.right)
+        {
+            CreateHighlightTile(HF.V3_to_V2I(path[path.Count - 1] + new Vector3(1, 0)));
+        }
+    }
+
+    private bool GapCheckHelper(Vector2Int end)
+    {
+        // Checks around in a circle of the finish point.
+        // If there are no tiles surrounding the finish tile (island), returns true.
+        if (!targetLine.ContainsKey(end + Vector2Int.up)
+            && !targetLine.ContainsKey(end + Vector2Int.down)
+            && !targetLine.ContainsKey(end + Vector2Int.left)
+            && !targetLine.ContainsKey(end + Vector2Int.right)
+            && !targetLine.ContainsKey(end + Vector2Int.up + Vector2Int.left)
+            && !targetLine.ContainsKey(end + Vector2Int.up + Vector2Int.right)
+            && !targetLine.ContainsKey(end + Vector2Int.down + Vector2Int.left)
+            && !targetLine.ContainsKey(end + Vector2Int.down + Vector2Int.right))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private void CleanPath()
+    {
+        Vector2Int C = HF.V3_to_V2I(this.transform.position); // the player's position
+
+        // Sometimes the path can be a bit messy, lets fix that...
+        // We usually have 2 cases to fix.
+
+        // 1. Sometimes an additional tile is highlighted next to the player.
+        // - We need to check diagonals around the player
+        if (targetLine.ContainsKey(new Vector2Int(C.x + 1, C.y - 1))) // [ DOWN-RIGHT ]
+        {
+            // Destroy (Right & Down)
+            DestroyHighlightTile(new Vector2Int(C.x + 1, C.y));
+            DestroyHighlightTile(new Vector2Int(C.x, C.y - 1));
+        }
+        if (targetLine.ContainsKey(new Vector2Int(C.x + 1, C.y + 1))) // [ UP-RIGHT ]
+        {
+            // Destroy (Right & Up)
+            DestroyHighlightTile(new Vector2Int(C.x + 1, C.y));
+            DestroyHighlightTile(new Vector2Int(C.x, C.y + 1));
+        }
+        if (targetLine.ContainsKey(new Vector2Int(C.x - 1, C.y - 1))) // [ DOWN-LEFT ]
+        {
+            // Destroy (Left & Down)
+            DestroyHighlightTile(new Vector2Int(C.x - 1, C.y));
+            DestroyHighlightTile(new Vector2Int(C.x, C.y - 1));
+        }
+        if (targetLine.ContainsKey(new Vector2Int(C.x - 1, C.y + 1))) // [ UP-LEFT ]
+        {
+            // Destroy (Left & Up)
+            DestroyHighlightTile(new Vector2Int(C.x - 1, C.y));
+            DestroyHighlightTile(new Vector2Int(C.x, C.y + 1));
+        }
+
+        // 2. Sometimes an additional tile is highlighted along a diagonal.
+        // - This is a bit more tricky to do as we need to check two tiles for each diagonal
+        /* - Like this:
+         *       ?
+         *   * []
+         *   [] *
+         *  ?
+         */
+
+        // This is also tricky because we need to be able to modify the list LIVE.
+        foreach (var P in targetLine)
+        {
+            Vector2Int loc = P.Key;
+
+            if (targetLine.ContainsKey(new Vector2Int(loc.x + 1, loc.y - 1)) && targetLine[new Vector2Int(loc.x + 1, loc.y - 1)].GetComponent<SpriteRenderer>().enabled) // [ DOWN-RIGHT ]
+            {
+                // Destroy (Right & Down)
+                //DestroyHighlightTile(new Vector2Int(loc.x + 1, loc.y));
+                //DestroyHighlightTile(new Vector2Int(loc.x, loc.y - 1));
+                if (targetLine.ContainsKey(new Vector2Int(loc.x + 1, loc.y)))
+                    targetLine[new Vector2Int(loc.x + 1, loc.y)].GetComponent<SpriteRenderer>().enabled = false;
+                if (targetLine.ContainsKey(new Vector2Int(loc.x, loc.y - 1)))
+                    targetLine[new Vector2Int(loc.x, loc.y - 1)].GetComponent<SpriteRenderer>().enabled = false;
+            }
+            if (targetLine.ContainsKey(new Vector2Int(loc.x + 1, loc.y + 1)) && targetLine[new Vector2Int(loc.x + 1, loc.y + 1)].GetComponent<SpriteRenderer>().enabled) // [ UP-RIGHT ]
+            {
+                // Destroy (Right & Up)
+                //DestroyHighlightTile(new Vector2Int(loc.x + 1, loc.y));
+                //DestroyHighlightTile(new Vector2Int(loc.x, loc.y + 1));
+                if (targetLine.ContainsKey(new Vector2Int(loc.x + 1, loc.y)))
+                    targetLine[new Vector2Int(loc.x + 1, loc.y)].GetComponent<SpriteRenderer>().enabled = false;
+                if (targetLine.ContainsKey(new Vector2Int(loc.x, loc.y + 1)))
+                    targetLine[new Vector2Int(loc.x, loc.y + 1)].GetComponent<SpriteRenderer>().enabled = false;
+            }
+            if (targetLine.ContainsKey(new Vector2Int(loc.x - 1, loc.y - 1)) && targetLine[new Vector2Int(loc.x - 1, loc.y - 1)].GetComponent<SpriteRenderer>().enabled) // [ DOWN-LEFT ]
+            {
+                // Destroy (Left & Down)
+                //DestroyHighlightTile(new Vector2Int(loc.x - 1, loc.y));
+                //DestroyHighlightTile(new Vector2Int(loc.x, loc.y - 1));
+                if (targetLine.ContainsKey(new Vector2Int(loc.x - 1, loc.y)))
+                    targetLine[new Vector2Int(loc.x - 1, loc.y)].GetComponent<SpriteRenderer>().enabled = false;
+                if (targetLine.ContainsKey(new Vector2Int(loc.x, loc.y - 1)))
+                    targetLine[new Vector2Int(loc.x, loc.y - 1)].GetComponent<SpriteRenderer>().enabled = false;
+            }
+            if (targetLine.ContainsKey(new Vector2Int(loc.x - 1, loc.y + 1)) && targetLine[new Vector2Int(loc.x - 1, loc.y + 1)].GetComponent<SpriteRenderer>().enabled) // [ UP-LEFT ]
+            {
+                // Destroy (Left & Up)
+                //DestroyHighlightTile(new Vector2Int(loc.x - 1, loc.y));
+                //DestroyHighlightTile(new Vector2Int(loc.x, loc.y + 1));
+                if (targetLine.ContainsKey(new Vector2Int(loc.x - 1, loc.y)))
+                    targetLine[new Vector2Int(loc.x - 1, loc.y)].GetComponent<SpriteRenderer>().enabled = false;
+                if (targetLine.ContainsKey(new Vector2Int(loc.x, loc.y + 1)))
+                    targetLine[new Vector2Int(loc.x, loc.y + 1)].GetComponent<SpriteRenderer>().enabled = false;
+            }
+        }
+
+    }
+    #endregion
+
+
     #endregion
 
     #region Launcher Target Helper Functions
