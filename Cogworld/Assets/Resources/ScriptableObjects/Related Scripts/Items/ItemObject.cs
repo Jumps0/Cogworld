@@ -474,6 +474,21 @@ public class ItemProjectile
     public bool hasSpectrum = false;
     public float disruption;
     public int salvage;
+    [Header("Projectile Color")]
+    public Color projectileColor = Color.red;
+    [Header("Penetration")]
+    [Tooltip("Each weapon specifies a maximum number of obstructions its projectiles can penetrate, " +
+        "along with a separate chance to pass through each consecutive obstruction. " +
+        "For example the basic Coil Gun can penetrate up to two objects, the first at a 60% chance, " +
+        "and the second at a 30% chance. A third object after that would still take damage, " +
+        "but the projectile would stop there. If any chance fails along the way, the projectile does " +
+        "not continue beyond the point of impact, even if it destroys the object. You don’t have to destroy " +
+        "something to penetrate it--the mechanic is completely independent of damage, meaning you can now " +
+        "even fire through walls to hit targets on the other side without taking down the wall itself.")]
+    public int penetrationCapability = 0; // How many things this can penetrate through
+    [Tooltip("The chance for each penetration event. This list should be equal to the amount of things this projectile can pen.")]
+    public List<float> penetrationChances = new List<float>();
+
 }
 
 [System.Serializable]

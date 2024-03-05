@@ -3392,6 +3392,7 @@ public static class HF
         GameObject blocker = null;
 
         Vector2 targetDirection = target - source.transform.position;
+        Debug.Log(targetDirection);
         float distance = Vector2.Distance(Action.V3_to_V2I(source.transform.position), Action.V3_to_V2I(target));
 
         RaycastHit2D[] hits = Physics2D.RaycastAll(new Vector2(source.transform.position.x, source.transform.position.y), targetDirection.normalized, distance);
@@ -3471,6 +3472,69 @@ public static class HF
                     return machine.gameObject;
                 }
             }
+        }
+
+        return blocker;
+    }
+
+    /// <summary>
+    /// Basically *ReturnObstacleInLOS* but refined for attack targeting.
+    /// </summary>
+    /// <param name="source">The origin location.</param>
+    /// <param name="target">The target location.</param>
+    /// <param name="requireVision">If the player needs to be able to see the blocking object.</param>
+    /// <returns>Returns the thing we are actually going to attack against.</returns>
+    public static GameObject DetermineAttackTarget(GameObject source, Vector3 target)
+    {
+        GameObject blocker = null;
+
+        Vector2 targetDirection = target - source.transform.position;
+        float distance = Vector2.Distance(Action.V3_to_V2I(source.transform.position), Action.V3_to_V2I(target));
+
+        RaycastHit2D[] hits = Physics2D.RaycastAll(new Vector2(source.transform.position.x, source.transform.position.y), targetDirection.normalized, distance);
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            RaycastHit2D hit = hits[i];
+            TileBlock tile = hit.collider.GetComponent<TileBlock>();
+            DoorLogic door = hit.collider.GetComponent<DoorLogic>();
+            MachinePart machine = hit.collider.GetComponent<MachinePart>();
+
+            // (TODO: Expand this later when needed)
+            // List of viable targets:
+            // - A wall
+            // - A closed door
+            // - A machine
+            // - A bot
+
+            if (tile != null && tile.tileInfo.type == TileType.Wall)
+            {
+                blocker = tile.gameObject;
+            }
+
+            if (door != null && tile.specialNoBlockVis == true)
+            {
+                blocker = null;
+            }
+            else if (door != null && tile.specialNoBlockVis == false)
+            {
+                blocker = door.gameObject;
+            }
+
+            if (machine != null)
+            {
+                blocker = machine.gameObject;
+            }
+        }
+
+        if(blocker == null)
+        {
+            // We have nothing blocking our LOS from player to where this mouse is, so we are probably targeting a floor tile right now.
+            // We need to keep going (recursively) past the mouse position until we actually hit something.
+
+            Vector2 direction = targetDirection;
+            direction.Normalize();
+            blocker = HF.DetermineAttackTarget(source, target + (Vector3)direction); // Recursion!
         }
 
         return blocker;

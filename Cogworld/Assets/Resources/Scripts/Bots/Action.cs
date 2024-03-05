@@ -28,7 +28,7 @@ public static class Action
             {
                 // Play collision sound
                 AudioManager.inst.PlayGlobalCombatSound(AudioManager.inst.GAME_Clips[7], 0.7f);
-                MeleeAction(actor, target);
+                MeleeAction(actor, target.gameObject);
                 ShuntAction(actor, target);
             }
             return false;
@@ -40,101 +40,213 @@ public static class Action
         }
     }
 
-    public static void MeleeAction(Actor source, Actor target)
+    public static void MeleeAction(Actor source, GameObject target)
     {
         float targetCoreExposure;
         Item weapon = FindMeleeWeapon(source);
 
-        if (target.botInfo) // Bot
+        // Are we attacking a bot or a structure?
+        if (target.GetComponent<Actor>())
         {
-            targetCoreExposure = target.botInfo.coreExposure;
-            //ItemObject weapon = target.botInfo.armament
-        }
-        else // Player
-        {
-            targetCoreExposure = PlayerData.inst.currentCoreExposure;
-        }
-
-        if (weapon == null)
-        {
-            // This is gonna be a ramming attack
-
-            /*
-             * As a last resort, Cogmind can ram other robots to damage and/or push them out of the way. 
-             * Damage is a random amount from 0 to (((10 + [mass]) / 5) + 1) * ([speed%] / 100) * [momentum], 
-             * where speed% is current speed as a percentage of average speed (100) and effective momentum is a combination of both Cogmind and the target's momentum. 
-             * However, the damage per attack is capped at 100 before the roll. Smashing into a robot headed straight for you can deal some serious damage, 
-             * though there are serious negative consequences to go with this unarmed attack, and half as much damage is inflicted on Cogmind as well. 
-             * Ramming increases the salvage potential of the target (by 3 for each hit), and also enables the collection of a small random amount of matter per collision. 
-             * Ramming with active treads or legs always avoids self-damage and destabilization. 
-             * Treads have a per-tread chance to instantly crush targets of medium size and below which have no more than 50 remaining core integrity. 
-             * Crushed robots have their salvage modified by -20. Legs have a 20% chance per leg to kick the target out of the way. (Not applicable against huge targets.)
-             * The time cost to ram is the greater (slower) of 100 and your current move speed.
-             */
-
-            if (target.botInfo) // Bot
+            if (target.GetComponent<Actor>().botInfo) // Bot
             {
-                // TODO: Bot attacking!
+                targetCoreExposure = target.GetComponent<Actor>().botInfo.coreExposure;
+                //ItemObject weapon = target.botInfo.armament
             }
             else // Player
             {
-                int momentum = PlayerData.inst.GetComponent<Actor>().momentum;
-                float attackHigh = (((10 + PlayerData.inst.currentWeight) / 5) + 1) * (PlayerData.inst.moveSpeed1 / 100) * momentum;
-
-                float damage = Random.Range(0, attackHigh);
-
-                if (damage > 100)
-                {
-                    damage = 100;
-                }
-
-                // Increase salvage potential
-                target.botInfo.salvagePotential += new Vector2Int(3, 3);
-
-                // Deal damage to the bot
-                // -Consider resistances
-                (bool hasRes, float resAmount) = HasResistanceTo(target, ItemDamageType.Impact);
-                if (hasRes)
-                {
-                    target.currentHealth -= (int)(damage - (damage * resAmount));
-                }
-                else
-                {
-                    target.currentHealth -= (int)damage;
-                }
-
-
-                // Deal half damage to player (if no legs/treads)
-                if (HasTreads(source) || HasLegs(source))
-                {
-                    PlayerData.inst.currentHealth -= (int)(damage / 2);
-                }
-                else
-                {
-                    PlayerData.inst.currentHealth -= (int)(damage);
-                }
-
-                UIManager.inst.CreateNewLogMessage("Slammed into " + target.botInfo.name + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
+                targetCoreExposure = PlayerData.inst.currentCoreExposure;
             }
-        }
-        else
-        {
-            // TODO: Melee attacks!
 
-            if (target.botInfo) // Bot
+            if (weapon == null) // -- RAMMING --
             {
-                // TODO: Bot attacking!
-            }
-            else{ // Player
+                // This is gonna be a ramming attack
 
+                /*
+                 * As a last resort, Cogmind can ram other robots to damage and/or push them out of the way. 
+                 * Damage is a random amount from 0 to (((10 + [mass]) / 5) + 1) * ([speed%] / 100) * [momentum], 
+                 * where speed% is current speed as a percentage of average speed (100) and effective momentum is a combination of both Cogmind and the target's momentum. 
+                 * However, the damage per attack is capped at 100 before the roll. Smashing into a robot headed straight for you can deal some serious damage, 
+                 * though there are serious negative consequences to go with this unarmed attack, and half as much damage is inflicted on Cogmind as well. 
+                 * Ramming increases the salvage potential of the target (by 3 for each hit), and also enables the collection of a small random amount of matter per collision. 
+                 * Ramming with active treads or legs always avoids self-damage and destabilization. 
+                 * Treads have a per-tread chance to instantly crush targets of medium size and below which have no more than 50 remaining core integrity. 
+                 * Crushed robots have their salvage modified by -20. Legs have a 20% chance per leg to kick the target out of the way. (Not applicable against huge targets.)
+                 * The time cost to ram is the greater (slower) of 100 and your current move speed.
+                 */
+
+                if (target.GetComponent<Actor>().botInfo) // Bot
+                {
+                    // TODO: Bot attacking!
+                }
+                else // Player
+                {
+                    int momentum = PlayerData.inst.GetComponent<Actor>().momentum;
+                    float attackHigh = (((10 + PlayerData.inst.currentWeight) / 5) + 1) * (PlayerData.inst.moveSpeed1 / 100) * momentum;
+
+                    float damage = Random.Range(0, attackHigh);
+
+                    if (damage > 100)
+                    {
+                        damage = 100;
+                    }
+
+                    // Increase salvage potential
+                    target.GetComponent<Actor>().botInfo.salvagePotential += new Vector2Int(3, 3);
+
+                    // Deal damage to the bot
+                    // -Consider resistances
+                    (bool hasRes, float resAmount) = HasResistanceTo(target.GetComponent<Actor>(), ItemDamageType.Impact);
+                    if (hasRes)
+                    {
+                        target.GetComponent<Actor>().currentHealth -= (int)(damage - (damage * resAmount));
+                    }
+                    else
+                    {
+                        target.GetComponent<Actor>().currentHealth -= (int)damage;
+                    }
+
+
+                    // Deal half damage to player (if no legs/treads)
+                    if (HasTreads(source) || HasLegs(source))
+                    {
+                        PlayerData.inst.currentHealth -= (int)(damage / 2);
+                    }
+                    else
+                    {
+                        PlayerData.inst.currentHealth -= (int)(damage);
+                    }
+
+                    UIManager.inst.CreateNewLogMessage("Slammed into " + target.GetComponent<Actor>().botInfo.name + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
+                }
+            }
+            else
+            {
+                // TODO: Melee attacks!
+
+                #region Explainer
+                /*
+                > Hit Chance
+                Melee attacks use the same hit chance calculations as ranged combat, with a few exceptions:
+                  -Base hit% is 70
+                  -No range modifier
+                  -No heat modifiers
+                  -Utility modifiers use those applicable to melee combat
+                > Momentum
+                All melee weapons benefit from greater momentum in the direction of the attack. 
+                Moving multiple consecutive spaces in a row prior to an attack adds additional momentum, 
+                up to a maximum of 3. Current momentum is displayed as a number at the end of the HUD's movement data readout.
+
+                The damage bonus on a successful melee hit is +1~40% for non-piercing weapons, or +2~80% for piercing weapons, 
+                calculated as: ([momentum] * [speed%] / 1200) * 40). For piercing attacks the multiplier is 80 instead of 40. 
+                Speed% is current speed as a percentage of average speed, 100. Thus the more momentum and speed with which you attack, 
+                the greater the damage. Your status page shows the damage bonus taking current momentum into account. 
+                Note that while some utilities help increase momentum, the maximum bonus damage for a given weapon type cannot be exceeded.
+
+                Stopping, performing a non-movement action, or otherwise moving in a direction that does not match the current
+                momentum resets your momentum to 0, except when moving diagonally in the same general direction (e.g. turning from southeast to south).
+                The latter case instead reduces total momentum by 1. Also note that technically any melee attack can take advantage
+                of previously accumulated momentum, regardless of direction. For example, approaching the southern side of a target
+                from the east and attacking northward while passing below it will apply whatever momentum value is displayed in the HUD.
+
+                >Sneak Attacks 
+                Melee attacking an enemy that has not yet noticed you gives a base hit chance of 120%, 
+                and a +100% damage bonus which stacks with any momentum bonus. Sneak attacks work on any non-fleeing neutral targets as well,
+                since they don't expect you'll suddenly attack them!
+
+                >Multi-Wielding
+                Although only one primary melee weapon can be active at a time, other attached but inactive melee
+                weapons have a chance to carry out "follow-up attacks" alongside the primary weapon. 
+                In Tactical HUD mode, that chance is shown next to each applicable melee weapon. 
+                Follow-up attacks are more likely when the primary weapon is slower than a given backup melee weapon. 
+                The chance may also be affected by supporting utilities.
+
+                Multiple follow-up attacks by different melee weapons are possible in the same action.
+                Each weapon is checked separately, and once confirmed any follow-up attack has a +10% to hit the target.
+                Each weapon incurs no additional time cost to attack aside from modifying the total attack time by half of their time delay
+                (whether positive or negative). Momentum bonuses that apply to the primary weapon all apply to follow-up attacks as well.
+                The benefits of all actuators also apply to every follow-up attack. If the target is destroyed by an earlier attack,
+                any remaining follow-up attacks will switch to another target in range if there is one.
+
+                Datajacks cannot be involved in follow-up attacks, and these attacks are only applicable against robot targets.
+                 */
+                #endregion
+
+                float hitChance = 0.7f;
+
+                if (target.GetComponent<Actor>().botInfo) // Bot
+                {
+                    // TODO: Bot attacking!
+                }
+                else
+                { // Player
+
+                }
             }
         }
+        else // Attacking a structure
+        {
+            // It's a structure, we cannot (and should not) miss.
 
+            // TODO | Copied from Ranged Attack (unfinished)
+            /*
+            int armor = 0; // The armor value of the target
+            int damageAmount = (int)Random.Range(projData.damage.x, projData.damage.y); // The damage we will do (must beat armor value to be effective).
 
+            // What are we attacking?
+            if (target.GetComponent<MachinePart>()) // Some type of machine
+            {
+                armor = target.GetComponent<MachinePart>().armor.y;
+            }
+            else if (target.GetComponent<TileBlock>()) // A wall or door
+            {
+                armor = target.GetComponent<TileBlock>().tileInfo.armor;
+            }
 
-        TurnManager.inst.EndTurn(source);
- 
-        
+            #region Beat the Armor?
+            if (damageAmount > armor) // Success! Destroy the structure
+            {
+                // - Create an in-world projectile that goes to the target
+                Color projColor = weapon.itemData.projectile.projectileColor;
+                Color boxColor = new Color(projColor.r, projColor.g, projColor.b, 0.7f);
+                UIManager.inst.CreateGenericProjectile(source.transform, target.transform, projColor, boxColor, Random.Range(15f, 20f), true);
+                // - Play a shooting sound, from the source
+                source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
+
+                // - Destroy the object
+                if (target.GetComponent<MachinePart>()) // Some type of machine
+                {
+                    target.GetComponent<MachinePart>().DestroyMe();
+
+                    // Do a calc message
+                    string message = $"{target.name} Destroyed ({damageAmount} > {armor})";
+
+                    UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+                }
+                else if (target.GetComponent<TileBlock>()) // A wall or door
+                {
+                    target.GetComponent<TileBlock>().DestroyMe();
+                }
+
+            }
+            else // Failure. Don't destroy the structure
+            {
+                // Create a projectile that will miss
+                Color projColor = weapon.itemData.projectile.projectileColor;
+                Color boxColor = new Color(projColor.r, projColor.g, projColor.b, 0.7f);
+                UIManager.inst.CreateGenericProjectile(source.transform, target.transform, projColor, boxColor, Random.Range(20f, 15f), false);
+
+                // Play a sound
+                source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
+
+                // Don't make a message about it
+            }
+            #endregion
+            */
+        }
+
+        TurnManager.inst.EndTurn(source); // Alter this later
+
     }
 
     /// <summary>
@@ -143,121 +255,195 @@ public static class Action
     /// <param name="source">The attacker.</param>
     /// <param name="target">The defender (being attacked).</param>
     /// <param name="weapon">The weapon being used to attack with.</param>
-    public static void RangedAttackAction(Actor source, Actor target, Item weapon)
+    public static void RangedAttackAction(Actor source, GameObject target, Item weapon)
     {
         if(weapon == null || target == null)
         {
 
-            TurnManager.inst.EndTurn(source);
+            TurnManager.inst.EndTurn(source); // Alter this later
 
             return;
         }
 
+        // Is this redundant?
         if(weapon.itemData.shot.shotRange < Vector2.Distance(Action.V3_to_V2I(source.gameObject.transform.position), Action.V3_to_V2I(source.gameObject.transform.position)))
         {
             Action.SkipAction(source);
             return;
         }
 
-        // We are doing a ranged attack vs a target
-        float toHitChance = 0f;
-        bool noCrit = false;
-        List<ArmorType> types = new List<ArmorType>();
         ItemShot shotData = weapon.itemData.shot;
-        ItemProjectile projData = weapon.itemData.projectile;
-        int projAmount = weapon.itemData.projectileAmount;
 
-        (toHitChance, noCrit, types) = Action.CalculateRangedHitChance(source, target, weapon);
-
-        float rand = Random.Range(0f, 1f);
-        if (rand < toHitChance) // Success, a hit!
+        // TODO: Add in functionality for AOE attacks because they are different!
+        if (weapon.itemData.explosion.radius > 0)
         {
-            // For both cases we want to:
-            // - Create an in-world projectile that goes to the target
-            Color projColor = Random.ColorHSV();
-            Color boxColor = new Color(projColor.r, projColor.g, projColor.b, 0.7f);
-            UIManager.inst.CreateGenericProjectile(source.transform, target.transform, projColor, boxColor, Random.Range(15f, 20f), true);
-            // - Play a shooting sound, from the source
-            source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
-
-            // Deal Damage to the target
-            int damageAmount = (int)Random.Range(projData.damage.x, projData.damage.y);
-
-            if (!noCrit && rand <= projData.critChance) // Critical hit?
-            {
-                // A crit!
-            }
-            if (target.GetComponent<PlayerData>()) // Player being attacked
-            {
-                if (rand < PlayerData.inst.currentCoreExposure) // Hits the core
-                {
-                    PlayerData.inst.currentHealth -= damageAmount;
-                }
-                else // Hits a part
-                {
-                    DamageRandomPart(target, damageAmount, types);
-                }
-
-                // Do a calc message
-                string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Hit";
-
-                UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange, UIManager.inst.warmYellow, false, true);
-
-                message = $"Recieved damage: {damageAmount}";
-                UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange, UIManager.inst.warmYellow, false, true);
-            }
-            else // Bot being attacked
-            {
-                if (rand < target.botInfo.coreExposure) // Hits the core
-                {
-                    target.currentHealth -= damageAmount;
-                }
-                /*
-                else // Hits a part
-                {
-                    DamageRandomPart(target, damageAmount, types);
-                }
-                */
-
-                // Show a popup that says how much damage occured
-                if (!target.GetComponent<PlayerData>())
-                {
-                    UI_CombatPopup(target, damageAmount);
-                }
-
-                // Do a calc message
-                string message = $"{weapon.itemData.name} ({toHitChance * 100}%) Hit";
-
-                UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
-            }
+            // Basically we need to gather up EVERYTHING within the explosion radius and handle that individually.
+            List<GameObject> targets = new List<GameObject>();
         }
         else
-        {  // ---------------------------- // Failure, a miss.
+        {
+            // We are doing a ranged attack vs a target
+            float toHitChance = 0f;
+            bool noCrit = false;
+            List<ArmorType> types = new List<ArmorType>();
+            ItemProjectile projData = weapon.itemData.projectile;
+            int projAmount = weapon.itemData.projectileAmount;
 
-            // Create a projectile that will miss
-            Color projColor = Random.ColorHSV();
-            Color boxColor = new Color(projColor.r, projColor.g, projColor.b, 0.7f);
-            UIManager.inst.CreateGenericProjectile(source.transform, target.transform, projColor, boxColor, Random.Range(20f, 15f), false);
-
-            // Play a sound
-            source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
-
-
-            if (target.GetComponent<PlayerData>()) // Player being targeted
+            if (target.GetComponent<Actor>()) // We are actually attacking a bot
             {
-                // Do a calc message
-                string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Miss";
+                (toHitChance, noCrit, types) = Action.CalculateRangedHitChance(source, target.GetComponent<Actor>(), weapon);
 
-                UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange_faded, UIManager.inst.corruptOrange, false, true);
+                #region Hit or Miss
+                float rand = Random.Range(0f, 1f);
+                if (rand < toHitChance) // Success, a hit!
+                {
+                    // For both cases we want to:
+                    // - Create an in-world projectile that goes to the target
+                    Color projColor = weapon.itemData.projectile.projectileColor;
+                    Color boxColor = new Color(projColor.r, projColor.g, projColor.b, 0.7f);
+                    UIManager.inst.CreateGenericProjectile(source.transform, target.transform, projColor, boxColor, Random.Range(15f, 20f), true);
+                    // - Play a shooting sound, from the source
+                    source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
+
+                    // Deal Damage to the target
+                    int damageAmount = (int)Random.Range(projData.damage.x, projData.damage.y);
+
+                    if (!noCrit && rand <= projData.critChance) // Critical hit?
+                    {
+                        // A crit!
+                    }
+                    if (target.GetComponent<PlayerData>()) // Player being attacked
+                    {
+                        if (rand < PlayerData.inst.currentCoreExposure) // Hits the core
+                        {
+                            PlayerData.inst.currentHealth -= damageAmount;
+                        }
+                        else // Hits a part
+                        {
+                            DamageRandomPart(target.GetComponent<Actor>(), damageAmount, types);
+                        }
+
+                        // Do a calc message
+                        string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Hit";
+
+                        UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange, UIManager.inst.warmYellow, false, true);
+
+                        message = $"Recieved damage: {damageAmount}";
+                        UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange, UIManager.inst.warmYellow, false, true);
+                    }
+                    else // Bot being attacked
+                    {
+                        if (rand < target.GetComponent<Actor>().botInfo.coreExposure) // Hits the core
+                        {
+                            target.GetComponent<Actor>().currentHealth -= damageAmount;
+                        }
+                        /*
+                        else // Hits a part
+                        {
+                            DamageRandomPart(target, damageAmount, types);
+                        }
+                        */
+
+                        // Show a popup that says how much damage occured
+                        if (!target.GetComponent<PlayerData>())
+                        {
+                            UI_CombatPopup(target.GetComponent<Actor>(), damageAmount);
+                        }
+
+                        // Do a calc message
+                        string message = $"{weapon.itemData.name} ({toHitChance * 100}%) Hit";
+
+                        UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+                    }
+                }
+                else
+                {  // ---------------------------- // Failure, a miss.
+
+                    // Create a projectile that will miss
+                    Color projColor = weapon.itemData.projectile.projectileColor;
+                    Color boxColor = new Color(projColor.r, projColor.g, projColor.b, 0.7f);
+                    UIManager.inst.CreateGenericProjectile(source.transform, target.transform, projColor, boxColor, Random.Range(20f, 15f), false);
+
+                    // Play a sound
+                    source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
+
+
+                    if (target.GetComponent<PlayerData>()) // Player being targeted
+                    {
+                        // Do a calc message
+                        string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Miss";
+
+                        UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange_faded, UIManager.inst.corruptOrange, false, true);
+                    }
+                    else // AI being targeted
+                    {
+                        // Do a calc message
+                        string message = $"{weapon.itemData.name} ({toHitChance * 100}%) Miss";
+
+                        UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.dullGreen, UIManager.inst.normalGreen, false, true);
+                    }
+                }
+                #endregion
             }
-            else // AI being targeted
+            else // We are attacking a structure
             {
-                // Do a calc message
-                string message = $"{weapon.itemData.name} ({toHitChance * 100}%) Miss";
+                // It's a structure, we cannot (and should not) miss.
 
-                UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.dullGreen, UIManager.inst.normalGreen, false, true);
+                int armor = 0; // The armor value of the target
+                int damageAmount = (int)Random.Range(projData.damage.x, projData.damage.y); // The damage we will do (must beat armor value to be effective).
+
+                // What are we attacking?
+                if (target.GetComponent<MachinePart>()) // Some type of machine
+                {
+                    armor = target.GetComponent<MachinePart>().armor.y;
+                }
+                else if (target.GetComponent<TileBlock>()) // A wall or door
+                {
+                    armor = target.GetComponent<TileBlock>().tileInfo.armor;
+                }
+
+                #region Beat the Armor?
+                if (damageAmount > armor) // Success! Destroy the structure
+                {
+                    // - Create an in-world projectile that goes to the target
+                    Color projColor = weapon.itemData.projectile.projectileColor;
+                    Color boxColor = new Color(projColor.r, projColor.g, projColor.b, 0.7f);
+                    UIManager.inst.CreateGenericProjectile(source.transform, target.transform, projColor, boxColor, Random.Range(15f, 20f), true);
+                    // - Play a shooting sound, from the source
+                    source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
+
+                    // - Destroy the object
+                    if (target.GetComponent<MachinePart>()) // Some type of machine
+                    {
+                        target.GetComponent<MachinePart>().DestroyMe();
+
+                        // Do a calc message
+                        string message = $"{target.name} Destroyed ({damageAmount} > {armor})";
+
+                        UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+                    }
+                    else if (target.GetComponent<TileBlock>()) // A wall or door
+                    {
+                        target.GetComponent<TileBlock>().DestroyMe();
+                    }
+
+                }
+                else // Failure. Don't destroy the structure
+                {
+                    // Create a projectile that will miss
+                    Color projColor = weapon.itemData.projectile.projectileColor;
+                    Color boxColor = new Color(projColor.r, projColor.g, projColor.b, 0.7f);
+                    UIManager.inst.CreateGenericProjectile(source.transform, target.transform, projColor, boxColor, Random.Range(20f, 15f), false);
+
+                    // Play a sound
+                    source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
+
+                    // Don't make a message about it
+                }
+                #endregion
             }
         }
+
 
         // After we're done, we need to subtract the cost to fire the specified weapon from the attacker.
         if (source.GetComponent<PlayerData>())
@@ -273,10 +459,7 @@ public static class Action
             // energy?
         }
 
-
-        TurnManager.inst.EndTurn(source);
-
-
+        TurnManager.inst.EndTurn(source); // Alter this later
     }
 
     public static void MovementAction(Actor actor, Vector2 direction)
@@ -299,6 +482,7 @@ public static class Action
 
     public static void SkipAction(Actor actor)
     {
+        actor.momentum = 0; // Stopped moving? Lose all momentum.
         TurnManager.inst.EndTurn(actor);
     }
 
@@ -688,6 +872,16 @@ public static class Action
     }
 
     /// <summary>
+    /// Checks to see if the specified item is a melee weapon or not.
+    /// </summary>
+    /// <param name="item">The item to check.</param>
+    /// <returns>If this weapon is (True) a melee weapon or not (False).</returns>
+    public static bool IsMeleeWeapon(Item item)
+    {
+        return item.itemData.meleeAttack.isMelee;
+    }
+
+    /// <summary>
     /// Does this actor have a launcher weapon, and are they using it right now? Returns said weapon if they have it. Mostly for player targeting purposes.
     /// </summary>
     /// <param name="actor">The actor in question.</param>
@@ -759,6 +953,11 @@ public static class Action
         {
             return rangedWeapon.itemData.shot.shotRange;
         }
+    }
+
+    public static bool WeaponHasPenetration(ItemObject item)
+    {
+        return item.projectile.penetrationCapability > 0;
     }
 
     #region Has Propulsion Type

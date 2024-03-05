@@ -322,7 +322,7 @@ public class TileBlock : MonoBehaviour
     /// <summary>
     /// Sets this tile to its destroyed state.
     /// </summary>
-    public void DamageMe()
+    public void DestroyMe()
     {
         // Change the sprite
         this.GetComponent<SpriteRenderer>().sprite = tileInfo.altSprite;
