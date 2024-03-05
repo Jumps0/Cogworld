@@ -2,10 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+/// <summary>
+/// LEGACY CODE. DO NOT USE
+/// </summary>
 [RequireComponent(typeof(AI_Melee))]
 public class Complex_Enemy : UnitAI
 {
+    /*
     [SerializeField] private AI_Melee AI_m;
     [SerializeField] private bool isFighting;
 
@@ -54,4 +57,5 @@ public class Complex_Enemy : UnitAI
 
         Action.SkipAction(this.GetComponent<Actor>());
     }
+    */
 }

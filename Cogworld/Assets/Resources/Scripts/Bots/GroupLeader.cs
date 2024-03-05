@@ -16,14 +16,14 @@ public class GroupLeader : MonoBehaviour
     public int pointInRoute = 0;
     public bool playerSpotted = false;
 
-    public HostileBotState _state;
+    public BotAIState _state;
 
     private void Awake()
     {
         _leader = GetComponent<Actor>();   // Make Self leader
         members.Add(GetComponent<Actor>());// Add self to list
 
-        _state = HostileBotState.Idle;
+        _state = BotAIState.Idle;
 
         CreatePatrolRoutes();
     }
@@ -32,19 +32,19 @@ public class GroupLeader : MonoBehaviour
     {
         switch (_state)
         {
-            case HostileBotState.Working:
+            case BotAIState.Working:
 
                 break;
-            case HostileBotState.Hunting:
+            case BotAIState.Hunting:
 
                 break;
-            case HostileBotState.Returning:
+            case BotAIState.Returning:
 
                 break;
-            case HostileBotState.Idle:
+            case BotAIState.Idle:
 
                 break;
-            case HostileBotState.Misc:
+            case BotAIState.Misc:
 
                 break;
             default:

@@ -11,6 +11,7 @@ using static UnityEngine.GraphicsBuffer;
 /// </summary>
 public class AI_Hostile : MonoBehaviour
 {
+    /*
     public HostileBotType _type;
     public HostileBotState _state;
 
@@ -76,7 +77,7 @@ public class AI_Hostile : MonoBehaviour
                 {
                     memory = 0;
                     // Attack the player!
-                    Action.RangedAttackAction(this.GetComponent<Actor>(), PlayerData.inst.GetComponent<Actor>(), Action.FindRangedWeapon(this.GetComponent<Actor>()));
+                    Action.RangedAttackAction(this.GetComponent<Actor>(), PlayerData.inst.gameObject, Action.FindRangedWeapon(this.GetComponent<Actor>()));
                 }
                 else // Can't see the player
                 {
@@ -174,9 +175,9 @@ public class AI_Hostile : MonoBehaviour
 
         return LOS;
     }
-
+    */
 }
-
+/*
 [System.Serializable]
 public enum HostileBotType
 {
@@ -196,3 +197,4 @@ public enum HostileBotState
     Idle,
     Misc
 }
+*/
