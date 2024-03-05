@@ -302,7 +302,7 @@ public class PlayerData : MonoBehaviour
             if (doTargeting)
             {
                 DoTargeting();
-                Actor target = GetMouseTarget();
+                GameObject target = HF.DetermineAttackTarget(this.gameObject, Camera.main.ScreenToWorldPoint(Input.mousePosition));
                 CheckForMouseAttack(target);
             }
             else
@@ -450,7 +450,7 @@ public class PlayerData : MonoBehaviour
 
             }
             #endregion
-            
+
             #endregion
 
             #region B) Line Drawing via "Dart"
@@ -517,6 +517,16 @@ public class PlayerData : MonoBehaviour
             #endregion
 
             #region LOS Color check & Melee adjustment
+            // First off, only the final target light is bright green. Everything else is darker
+            foreach (var T in targetLine)
+            {
+                Color darkGreen = new Color(highlightGreen.r, 0.7f, highlightGreen.b, highlightGreen.a);
+                SetHighlightColor(T.Key, darkGreen);
+            }
+            SetHighlightColor(targetLine.ToList()[targetLine.Count - 1].Key, highlightGreen); // Set the last highlight to the bright green.
+           
+
+
             // If the player is using a melee weapon, we want to visually let them know it has a super short range.
             if (Action.FindMeleeWeapon(this.GetComponent<Actor>()) != null)
             {
@@ -545,7 +555,10 @@ public class PlayerData : MonoBehaviour
                         SetHighlightColor(T.Key, highlightRed);
                     }
                 }
+
+                SetHighlightColor(HF.V3_to_V2I(blocker.transform.position), highlightGreen); // Set the blocker highlight
             }
+            
 
             #endregion
 
@@ -1269,17 +1282,26 @@ public class PlayerData : MonoBehaviour
         return null;
     }
 
-    public void CheckForMouseAttack(Actor target)
+    public void CheckForMouseAttack(GameObject target)
     {
         if (TurnManager.inst.isPlayerTurn)
         {
             if (Input.GetKey(KeyCode.Mouse0)) // Leftclick
             {
-                Item equippedWeapon = Action.FindRangedWeapon(this.GetComponent<Actor>());
+                Item equippedWeapon = Action.FindActiveWeapon(this.GetComponent<Actor>());
                 if (equippedWeapon != null && !attackBuffer)
                 {
                     StartCoroutine(AttackBuffer());
-                    Action.RangedAttackAction(this.GetComponent<Actor>(), target, equippedWeapon);
+
+                    Debug.Log("Attack!");
+                    if (Action.IsMeleeWeapon(equippedWeapon))
+                    {
+                        //Action.MeleeAction(this.GetComponent<Actor>(), target);
+                    }
+                    else
+                    {
+                        //Action.RangedAttackAction(this.GetComponent<Actor>(), target, equippedWeapon);
+                    }
 
                     ClearAllHighlights();
                     doTargeting = false;
