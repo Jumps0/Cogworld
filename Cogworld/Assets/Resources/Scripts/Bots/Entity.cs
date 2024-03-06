@@ -21,6 +21,7 @@ public class Entity : MonoBehaviour
     public int heatDissipation;
     public int energyGeneration;
     public int currentMatter = 0; // Probably won't matter?
+    public int currentEnergy = 100; // ?
     //
     public bool siegeMode = false;
     public bool inStatis = false;

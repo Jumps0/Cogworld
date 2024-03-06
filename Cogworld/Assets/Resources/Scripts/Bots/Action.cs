@@ -172,15 +172,49 @@ public static class Action
                  */
                 #endregion
 
+                float toHit = Random.Range(0f, 1f);
+
                 float hitChance = 0.7f;
+                float utilityBonus, b;
+                (b, utilityBonus) = Action.HasToHitBonus(source); // Get melee bonus
+                int momentum = source.momentum;
 
                 if (target.GetComponent<Actor>().botInfo) // Bot
                 {
                     // TODO: Bot attacking!
+
+
+                    if(toHit <= hitChance) // Hit!
+                    {
+
+
+                        // - Deal damage -
+
+                        // -- Now for this visuals and audio --
+
+                        // - We need to spawn a visual on top of the target. Where the line is facing from the player to the target.
+
+                        // - Play a melee sound, from the source
+                        source.GetComponent<AudioSource>().PlayOneShot(weapon.itemData.shot.shotSound[Random.Range(0, weapon.itemData.shot.shotSound.Count - 1)]);
+                    }
+                    else // Miss.
+                    {
+
+                    }
                 }
                 else
                 { // Player
 
+
+
+                    if (toHit <= hitChance) // Hit!
+                    {
+
+                    }
+                    else // Miss.
+                    {
+
+                    }
                 }
             }
         }
@@ -245,6 +279,22 @@ public static class Action
             */
         }
 
+        // Finally, subtract the attack cost
+        if (source.GetComponent<PlayerData>())
+        {
+            PlayerData.inst.currentHeat += weapon.itemData.meleeAttack.heat;
+            PlayerData.inst.currentMatter += weapon.itemData.meleeAttack.matter;
+            PlayerData.inst.currentEnergy += weapon.itemData.meleeAttack.energy;
+        }
+        else
+        {
+            source.currentHeat += weapon.itemData.meleeAttack.heat;
+            source.currentMatter += weapon.itemData.meleeAttack.matter;
+            source.currentEnergy += weapon.itemData.meleeAttack.energy;
+            // energy?
+        }
+
+        source.momentum = 0;
         TurnManager.inst.EndTurn(source); // Alter this later
 
     }
@@ -278,7 +328,61 @@ public static class Action
         if (weapon.itemData.explosion.radius > 0)
         {
             // Basically we need to gather up EVERYTHING within the explosion radius and handle that individually.
+            #region Target Gathering
             List<GameObject> targets = new List<GameObject>();
+
+            int falloff = weapon.itemData.explosion.falloff;
+
+            // - First off lets gather all the tiles (in a square) that are around the target tile, and within range.
+            int range = weapon.itemData.explosion.radius;
+            Vector2Int center = new Vector2Int(Mathf.RoundToInt(target.transform.position.x), Mathf.RoundToInt(target.transform.position.y));
+            Vector2Int BL_corner = new Vector2Int(center.x - range, center.y - range);
+
+            List<GameObject> tiles = new List<GameObject>();
+            for (int x = 0 + BL_corner.x; x < (range * 2) + 1 + BL_corner.x; x++)
+            {
+                for (int y = 0 + BL_corner.y; y < (range * 2) + 1 + BL_corner.y; y++)
+                {
+                    if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(x, y)))
+                    {
+                        tiles.Add(MapManager.inst._allTilesRealized[new Vector2Int(x, y)].gameObject);
+                    }
+                }
+            }
+
+            // - Now we need to go through the very fun process of refining this square into a circle.
+            foreach (GameObject T in tiles)
+            {
+                float tileDistiance = Vector2Int.Distance(HF.V3_to_V2I(T.transform.position), center);
+                Vector2Int pos = HF.V3_to_V2I(T.transform.position);
+
+                // Check if the distance is within the radius of the circle
+                if (tileDistiance <= range)
+                {
+                    // This is in the radius, start gathering victims
+                    if (MapManager.inst._allTilesRealized.ContainsKey(pos))
+                    {
+                        targets.Add(MapManager.inst._allTilesRealized[pos].gameObject);
+                    }
+                    if (MapManager.inst._layeredObjsRealized.ContainsKey(pos))
+                    {
+                        targets.Add(MapManager.inst._layeredObjsRealized[pos]);
+                    }
+                }
+            }
+            #endregion
+
+            // Then go through each of the targets and deal with them individually
+            foreach(GameObject T in targets)
+            {
+                float f_distance = Vector2.Distance(HF.V3_to_V2I(T.transform.position), center);
+                int distance = Mathf.RoundToInt(f_distance);
+
+                int flatDamage = Random.Range(weapon.itemData.explosion.damageLow, weapon.itemData.explosion.damageHigh); // First find the flat damage
+                int damage = flatDamage + (distance * falloff); // Then handle the damage falloff.
+                
+
+            }
         }
         else
         {
@@ -456,9 +560,10 @@ public static class Action
         {
             source.currentHeat += shotData.shotHeat;
             source.currentMatter += shotData.shotMatter;
-            // energy?
+            source.currentEnergy += shotData.shotEnergy;
         }
 
+        source.momentum = 0;
         TurnManager.inst.EndTurn(source); // Alter this later
     }
 
@@ -545,6 +650,17 @@ public static class Action
         }
 
         target.confirmCollision = false; // Unset the flag
+    }
+
+    /// <summary>
+    /// Part of a larger AOE attack. This will indivudally target something and handle what happens independently.
+    /// </summary>
+    /// <param name="source">The attacker.</param>
+    /// <param name="target">The thing being attacked.</param>
+    /// <param name="weapon">The weapon being used.</param>
+    public static void IndividualAOEAttack(Actor source, GameObject target, Item weapon)
+    {
+
     }
 
     #region HelperFunctions
@@ -1137,7 +1253,11 @@ public static class Action
     }
     #endregion
 
-    // To hit bonus from utilities, first return is ranged bonus, second is melee
+    /// <summary>
+    /// To hit bonus from utilities, first return is ranged bonus, second is melee
+    /// </summary>
+    /// <param name="actor">The bot to focus on.</param>
+    /// <returns>1. Ranged Bonus 2. Melee Bonus</returns>
     public static (float, float) HasToHitBonus(Actor actor)
     {
         bool stacks = true;
