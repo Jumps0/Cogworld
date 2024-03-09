@@ -190,16 +190,30 @@ public static class Action
 
                         // - Deal damage -
 
+
                         // -- Now for this visuals and audio --
-
                         // - We need to spawn a visual on top of the target. Where the line is facing from the player to the target.
-
-                        // - Play a melee sound, from the source
-                        source.GetComponent<AudioSource>().PlayOneShot(weapon.itemData.shot.shotSound[Random.Range(0, weapon.itemData.shot.shotSound.Count - 1)]);
+                        // Calculate direction vector from object A to object B
+                        Vector3 direction = target.transform.position - source.transform.position;
+                        // Calculate angle in radians
+                        float angleRad = Mathf.Atan2(direction.y, direction.x);
+                        // Convert angle from radians to degrees
+                        float angleDeg = angleRad * Mathf.Rad2Deg;
+                        GameManager.inst.CreateMeleeAttackIndicator(HF.V3_to_V2I(target.transform.position), angleDeg, weapon);
+                        // - Sound is taken care of in ^ -
                     }
                     else // Miss.
                     {
-
+                        // -- Now for this visuals and audio --
+                        // - We need to spawn a visual on top of the target. Where the line is facing from the player to the target.
+                        // Calculate direction vector from object A to object B
+                        Vector3 direction = target.transform.position - source.transform.position;
+                        // Calculate angle in radians
+                        float angleRad = Mathf.Atan2(direction.y, direction.x);
+                        // Convert angle from radians to degrees
+                        float angleDeg = angleRad * Mathf.Rad2Deg;
+                        GameManager.inst.CreateMeleeAttackIndicator(HF.V3_to_V2I(target.transform.position), angleDeg, weapon);
+                        // - Sound is taken care of in ^ -
                     }
                 }
                 else
@@ -209,11 +223,32 @@ public static class Action
 
                     if (toHit <= hitChance) // Hit!
                     {
+                        // - Deal damage -
 
+
+                        // -- Now for this visuals and audio --
+                        // - We need to spawn a visual on top of the target. Where the line is facing from the player to the target.
+                        // Calculate direction vector from object A to object B
+                        Vector3 direction = target.transform.position - source.transform.position;
+                        // Calculate angle in radians
+                        float angleRad = Mathf.Atan2(direction.y, direction.x);
+                        // Convert angle from radians to degrees
+                        float angleDeg = angleRad * Mathf.Rad2Deg;
+                        GameManager.inst.CreateMeleeAttackIndicator(HF.V3_to_V2I(target.transform.position), angleDeg, weapon);
+                        // - Sound is taken care of in ^ -
                     }
                     else // Miss.
                     {
-
+                        // -- Now for this visuals and audio --
+                        // - We need to spawn a visual on top of the target. Where the line is facing from the player to the target.
+                        // Calculate direction vector from object A to object B
+                        Vector3 direction = target.transform.position - source.transform.position;
+                        // Calculate angle in radians
+                        float angleRad = Mathf.Atan2(direction.y, direction.x);
+                        // Convert angle from radians to degrees
+                        float angleDeg = angleRad * Mathf.Rad2Deg;
+                        GameManager.inst.CreateMeleeAttackIndicator(HF.V3_to_V2I(target.transform.position), angleDeg, weapon);
+                        // - Sound is taken care of in ^ -
                     }
                 }
             }
@@ -222,7 +257,6 @@ public static class Action
         {
             // It's a structure, we cannot (and should not) miss.
 
-            // TODO | Copied from Ranged Attack (unfinished)
             /*
             int armor = 0; // The armor value of the target
             int damageAmount = (int)Random.Range(projData.damage.x, projData.damage.y); // The damage we will do (must beat armor value to be effective).

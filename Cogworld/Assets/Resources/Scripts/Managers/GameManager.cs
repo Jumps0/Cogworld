@@ -1107,6 +1107,17 @@ public class GameManager : MonoBehaviour
     }
 
     #endregion
+
+    public void CreateMeleeAttackIndicator(Vector2Int pos, float rotation, Item weapon, bool hit = true)
+    {
+        var go = Instantiate(UIManager.inst.prefab_meleeIndicator, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
+        go.name = $"Melee Indicator: {pos.x},{pos.y}"; // Give grid based name
+
+        if(PlayerData.inst)
+            go.transform.parent = PlayerData.inst.transform;
+
+        go.GetComponent<MeleeAttackIndicator>().Init(weapon, rotation, hit); // Init
+    }
 }
 
 #region Global Actions

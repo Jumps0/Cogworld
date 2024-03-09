@@ -39690,6 +39690,7 @@ MonoBehaviour:
   prefab_launcherTargetLine: {fileID: 4154184038389373425, guid: d697e27dda015964d9a0d8cd361f5972, type: 3}
   prefab_launcherTargetCorner: {fileID: 4154184038389373425, guid: b01bc926502d6b343a97f03c1e9a33dd, type: 3}
   prefab_basicTile: {fileID: 757329426654254245, guid: 19309d78453aaf34e86dad6d66876310, type: 3}
+  prefab_meleeIndicator: {fileID: 4154184038389373425, guid: 3ae2034d6fd3ae04db3fea05db273712, type: 3}
   highSecRed: {r: 0.69803923, g: 0, b: 0, a: 1}
   dangerRed: {r: 0.5568628, g: 0.039215688, b: 0.1137255, a: 1}
   corruptOrange: {r: 0.5764706, g: 0.33333334, b: 0.14901961, a: 1}

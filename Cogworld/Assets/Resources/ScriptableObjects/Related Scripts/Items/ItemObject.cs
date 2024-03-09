@@ -513,6 +513,10 @@ public class ItemMeleeAttack
     public float disruption;
     public int salvage;
 
+    [Tooltip("When animated, how long does this attack's visual last?")]
+    public float visualAttackTime = 0.5f;
+    public List<AudioClip> missSound;
+
 }
 
 [System.Serializable]
