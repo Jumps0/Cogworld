@@ -94,6 +94,7 @@ public class Actor : Entity
 
             algorithm = new AdamMilVisibility();
             allegances = GlobalSettings.inst.GenerateDefaultAllengances(botInfo);
+            this.GetComponent<BotAI>().relationToPlayer = HF.DetermineRelation(this, PlayerData.inst.GetComponent<Actor>());
 
             if (GetComponent<PlayerData>())
             {
@@ -557,11 +558,10 @@ public class Actor : Entity
         }
         else
         {
-            BotRelation relation = HF.DetermineRelation(this, PlayerData.inst.GetComponent<Actor>());
 
             // TODO: Expand this to include other bots hostile to this bot as well
             // If this is a hostile bot and is seeing the player for the first time, do the alert indicator
-            if (relation == BotRelation.Hostile && this.GetComponent<BotAI>().state != BotAIState.Hunting)
+            if (this.GetComponent<BotAI>().relationToPlayer == BotRelation.Hostile && this.GetComponent<BotAI>().state != BotAIState.Hunting)
             {
                 // Try to spot the player
                 if (Action.TrySpotActor(this, PlayerData.inst.GetComponent<Actor>()))
@@ -570,6 +570,7 @@ public class Actor : Entity
 
                     this.GetComponent<BotAI>().memory = botInfo.memory; // Set memory to max
                     this.GetComponent<BotAI>().state = BotAIState.Hunting; // Set to hunting mode
+                    this.GetComponent<BotAI>().canSeePlayer = true;
 
                     if (!firstTimeSeen)
                     {
@@ -592,7 +593,7 @@ public class Actor : Entity
 
 
             // If this is a friendly bot and is seeing the player for the first AND, has; dialogue, hasn't talked yet, isn't talking, THEN perform that dialogue.
-            if ((relation == BotRelation.Neutral || relation == BotRelation.Friendly) 
+            if ((this.GetComponent<BotAI>().relationToPlayer == BotRelation.Neutral || this.GetComponent<BotAI>().relationToPlayer == BotRelation.Friendly) 
                 && GetComponent<BotAI>().hasDialogue 
                 && !GetComponent<BotAI>().talking 
                 && !GetComponent<BotAI>().finishedTalking &&
@@ -602,6 +603,20 @@ public class Actor : Entity
                 {
                     StartCoroutine(GetComponent<BotAI>().PerformScriptedDialogue());
                     firstTimeSeen = true;
+                }
+            }
+
+            if (this.GetComponent<BotAI>().canSeePlayer) // If we have previously seen the player, we need to check if we can see them still
+            {
+                if (HF.LOSOnTarget(this.gameObject, PlayerData.inst.gameObject))
+                {
+                    // Yes we can still see them directly.
+                }
+                else
+                {
+                    this.GetComponent<BotAI>().canSeePlayer = false; // Can no longer directly see them.
+                    if (this.GetComponent<BotAI>().memory > 0) // Decrement memory
+                        this.GetComponent<BotAI>().memory--;
                 }
             }
         }

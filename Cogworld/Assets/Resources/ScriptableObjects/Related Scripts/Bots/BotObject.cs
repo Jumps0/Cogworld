@@ -281,6 +281,19 @@ public class Allegance
     {
         alleganceTree = aT;
     }
+
+    public BotRelation GetRelation(BotAlignment alignment)
+    {
+        foreach (var relation in alleganceTree)
+        {
+            if(relation.Item1 == alignment)
+            {
+                return relation.Item2;
+            }
+        }
+
+        return BotRelation.Neutral;
+    }
 }
 
 [System.Serializable]

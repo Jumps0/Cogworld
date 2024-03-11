@@ -21,7 +21,11 @@ public class BotAI : MonoBehaviour
     [Header("Relevant Actions")]
     public BotAIState state = BotAIState.Working;
     public bool isTurn = false;
+
+    [Header("Vision")]
     public int memory = 0;
+    public bool canSeePlayer = false;
+    public BotRelation relationToPlayer = BotRelation.Neutral;
 
     [Header("Pathing")]
     public List<Vector2Int> pointsOfInterest = new List<Vector2Int>(); // Bot will visit these

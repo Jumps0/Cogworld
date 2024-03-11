@@ -184,7 +184,18 @@ public static class Action
                 int bonus_minDamage = (int)meleeBonuses[3];
                 float bonus_attackTime = meleeBonuses[4];
 
-                
+                if(source.gameObject != PlayerData.inst.gameObject && !target.GetComponent<BotAI>().canSeePlayer) // Not the player and (currently) can't see the player
+                {
+                    hitChance = 1.2f; // Base hit chance is increased!
+                }
+
+                #region Hit Chance Calculation
+
+
+
+                #endregion
+
+
 
                 if (toHit <= hitChance) // Hit!
                 {
@@ -235,13 +246,9 @@ public static class Action
                     }
 
                     // Now for sneak attacks
-                    if(HF.DetermineRelation(source, target.GetComponent<Actor>()) == BotRelation.Neutral || HF.DetermineRelation(source, target.GetComponent<Actor>()) == BotRelation.Friendly)
-                    { // Friendly or neutral?
-
-                        if(target.gameObject != PlayerData.inst.gameObject && target.GetComponent<BotAI>().state != BotAIState.Fleeing) // And not fleeing?
-                        {
-
-                        }
+                    if (source.gameObject != PlayerData.inst.gameObject && !target.GetComponent<BotAI>().canSeePlayer) // Not the player and (currently) can't see the player
+                    {
+                        damage *= 2; // +100% damage (so x2)
                     }
 
                     #endregion
