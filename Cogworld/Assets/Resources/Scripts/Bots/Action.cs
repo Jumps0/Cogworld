@@ -174,10 +174,15 @@ public static class Action
 
                 float toHit = Random.Range(0f, 1f);
 
-                float hitChance = 0.7f;
-                float utilityBonus, b;
-                (b, utilityBonus) = Action.HasToHitBonus(source); // Get melee bonus
-                int momentum = source.momentum;
+                float hitChance = 0.7f; // Default hit chance is 70%
+                int momentum = source.momentum; // Get momentum
+                // Calculate and assign the various melee bonuses
+                List<float> meleeBonuses = Action.GetMeleeBonuses(source.GetComponent<Actor>(), weapon);
+                float bonus_followups = meleeBonuses[0];
+                float bonus_maxDamage = meleeBonuses[1];
+                float bonus_accuracy = meleeBonuses[2];
+                int bonus_minDamage = (int)meleeBonuses[3];
+                float bonus_attackTime = meleeBonuses[4];
 
                 if (target.GetComponent<Actor>().botInfo) // Bot
                 {
@@ -1347,6 +1352,110 @@ public static class Action
         }
 
         return (bonus_melee, bonus_ranged);
+    }
+
+    public static List<float> GetMeleeBonuses(Actor actor, Item weapon)
+    {
+        List<float> bonuses = new List<float>();
+
+        // == There are a bunch of melee bonuses we need to gather, these are: ==
+        // - per-weapon chance of follow-up melee attacks (Actuator Array's)
+        // - melee weapon maximum damage by +##%, and decreases melee attack accuracy by -##% (Force Booster's)
+        // - melee attack accuracy by +##%, and minimum damage by # (cannot exceed weapon's maximum damage). (Melee Analysis Suite)
+        // - reduces melee attack time by 50%. <stacks, capped at 50 % > (-actuationors)
+
+        float bonus_followups = 0f;
+        float bonus_maxDamage = 0f;
+        float bonus_accuracy = 0f;
+        int bonus_minDamage = 0;
+        float bonus_attackTime = 0f;
+
+        int stackTrack = 0;
+
+        if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
+        {
+            foreach (BotArmament item in actor.botInfo.components)
+            {
+                if (item._item.data.Id >= 0)
+                {
+                    if (item._item.itemEffect.Count > 0 && item._item.itemEffect[0].meleeBonus.hasEffect)
+                    {
+                        bonus_followups += item._item.itemEffect[0].meleeBonus.melee_followUpChance;
+                        bonus_maxDamage += item._item.itemEffect[0].meleeBonus.melee_maxDamageBoost;
+                        bonus_accuracy += item._item.itemEffect[0].meleeBonus.melee_accuracyIncrease;
+                        bonus_accuracy += item._item.itemEffect[0].meleeBonus.melee_accuracyDecrease;
+                        bonus_minDamage += item._item.itemEffect[0].meleeBonus.melee_minDamageBoost;
+
+
+                        if (item._item.itemEffect[0].meleeBonus.actuator_stacks) // This effect should stack
+                        {
+                            if(stackTrack == 0) // No decrease
+                            {
+                                bonus_attackTime += item._item.itemEffect[0].meleeBonus.melee_attackTimeDecrease;
+                                stackTrack++;
+                            }
+                            else // Decrease by specified amount
+                            {
+                                // (Maybe do this different? i.e.: use previous item's stack decrease. idk)
+                                bonus_attackTime += (item._item.itemEffect[0].meleeBonus.melee_attackTimeDecrease * item._item.itemEffect[0].meleeBonus.actuator_cap);
+                                stackTrack++;
+                            }
+                        }
+                        else // This effect shouldn't stack
+                        {
+                            
+                        }
+                    }
+                }
+            }
+        }
+        else // Player
+        {
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items)
+            {
+                if (item.item.Id >= 0)
+                {
+                    if (item.item.itemData.itemEffect.Count > 0 && item.item.itemData.itemEffect[0].meleeBonus.hasEffect)
+                    {
+                        bonus_followups += item.item.itemData.itemEffect[0].meleeBonus.melee_followUpChance;
+                        bonus_maxDamage += item.item.itemData.itemEffect[0].meleeBonus.melee_maxDamageBoost;
+                        bonus_accuracy += item.item.itemData.itemEffect[0].meleeBonus.melee_accuracyIncrease;
+                        bonus_accuracy += item.item.itemData.itemEffect[0].meleeBonus.melee_accuracyDecrease;
+                        bonus_minDamage += item.item.itemData.itemEffect[0].meleeBonus.melee_minDamageBoost;
+
+
+                        if (item.item.itemData.itemEffect[0].meleeBonus.actuator_stacks) // This effect should stack
+                        {
+                            if (stackTrack == 0) // No decrease
+                            {
+                                bonus_attackTime += item.item.itemData.itemEffect[0].meleeBonus.melee_attackTimeDecrease;
+                                stackTrack++;
+                            }
+                            else // Decrease by specified amount
+                            {
+                                // (Maybe do this different? i.e.: use previous item's stack decrease. idk)
+                                bonus_attackTime += (item.item.itemData.itemEffect[0].meleeBonus.melee_attackTimeDecrease * item.item.itemData.itemEffect[0].meleeBonus.actuator_cap);
+                                stackTrack++;
+                            }
+                        }
+                        else // This effect shouldn't stack
+                        {
+
+                        }
+                    }
+                }
+
+            }
+        }
+
+        // Finally pack them all into a list
+        bonuses.Add(bonus_followups);
+        bonuses.Add(bonus_maxDamage);
+        bonuses.Add(bonus_accuracy);
+        bonuses.Add(bonus_minDamage);
+        bonuses.Add(bonus_attackTime);
+
+        return bonuses;
     }
 
     // Defence bonus from utilities, first return is list of defense bonuses, second is prevents crits, third is list of protected slot types

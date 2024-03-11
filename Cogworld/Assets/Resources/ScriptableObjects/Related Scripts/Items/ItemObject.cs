@@ -384,6 +384,9 @@ public class ItemEffect
 
     [Header("Cloaking")]
     public ItemCloaking cloakingEffect;
+
+    [Header("Melee Bonuses")]
+    public ItemMeleeBonus meleeBonus;
 }
 
 public enum ItemQuality
@@ -701,6 +704,32 @@ public class ItemCloaking
     public float noticeReduction;
     [Tooltip("If multiple of this effect is applied, then then only half of that effect is added.")]
     public bool halfStacks = true;
+}
+
+[System.Serializable]
+[Tooltip("Various to melee related bonuses")]
+public class ItemMeleeBonus
+{
+    public bool hasEffect = false;
+    // - per-weapon chance of follow-up melee attacks (Actuator Array's)
+    // - melee weapon maximum damage by +##%, and decreases melee attack accuracy by -##% (Force Booster's)
+    // - melee attack accuracy by +##%, and minimum damage by # (cannot exceed weapon's maximum damage). (Melee Analysis Suite)
+    // - reduces melee attack time by 50%. <stacks, capped at 50 % > (-actuationors)
+
+    [Header("Actuator Array Effects")]
+    public float melee_followUpChance = 0f;
+    [Header("Force Booster Effects")]
+    public float melee_maxDamageBoost = 0;
+    [Tooltip("Should be negative.")]
+    public float melee_accuracyDecrease = 0f;
+    [Header("Melee Analysis Suite Effects")]
+    public float melee_accuracyIncrease = 0f;
+    public int melee_minDamageBoost = 0;
+    [Header("Microactuator Effects")] // Micro, Femto, Nano, etc.
+    public float melee_attackTimeDecrease = 0f;
+    public bool actuator_stacks = true;
+    public float actuator_cap = 0.5f;
+
 }
 
 #endregion
