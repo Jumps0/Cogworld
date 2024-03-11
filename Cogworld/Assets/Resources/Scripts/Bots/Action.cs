@@ -184,78 +184,93 @@ public static class Action
                 int bonus_minDamage = (int)meleeBonuses[3];
                 float bonus_attackTime = meleeBonuses[4];
 
-                if (target.GetComponent<Actor>().botInfo) // Bot
+                
+
+                if (toHit <= hitChance) // Hit!
                 {
-                    // TODO: Bot attacking!
+                    #region Damage Calculation
+                    // - Deal damage -
+                    int damage = 0;
 
-
-                    if(toHit <= hitChance) // Hit!
+                    Vector2Int lowHigh = weapon.itemData.meleeAttack.damage; // First get the flat damage rolls from the weapon
+                    // Then modify the minimum and maximum values if needed
+                    if(bonus_maxDamage > 0)
                     {
-
-
-                        // - Deal damage -
-
-
-                        // -- Now for this visuals and audio --
-                        // - We need to spawn a visual on top of the target. Where the line is facing from the player to the target.
-                        // Calculate direction vector from object A to object B
-                        Vector3 direction = target.transform.position - source.transform.position;
-                        // Calculate angle in radians
-                        float angleRad = Mathf.Atan2(direction.y, direction.x);
-                        // Convert angle from radians to degrees
-                        float angleDeg = angleRad * Mathf.Rad2Deg;
-                        GameManager.inst.CreateMeleeAttackIndicator(HF.V3_to_V2I(target.transform.position), angleDeg, weapon);
-                        // - Sound is taken care of in ^ -
+                        lowHigh.y = Mathf.RoundToInt(lowHigh.y + (lowHigh.y * bonus_maxDamage));
                     }
-                    else // Miss.
+                    if (bonus_minDamage > 0)
                     {
-                        // -- Now for this visuals and audio --
-                        // - We need to spawn a visual on top of the target. Where the line is facing from the player to the target.
-                        // Calculate direction vector from object A to object B
-                        Vector3 direction = target.transform.position - source.transform.position;
-                        // Calculate angle in radians
-                        float angleRad = Mathf.Atan2(direction.y, direction.x);
-                        // Convert angle from radians to degrees
-                        float angleDeg = angleRad * Mathf.Rad2Deg;
-                        GameManager.inst.CreateMeleeAttackIndicator(HF.V3_to_V2I(target.transform.position), angleDeg, weapon);
-                        // - Sound is taken care of in ^ -
+                        lowHigh.x = Mathf.RoundToInt(lowHigh.x + (lowHigh.x * bonus_minDamage));
                     }
+
+                    // Then get the new flat damage (semi-random)
+                    damage = Random.Range(lowHigh.x, lowHigh.y);
+
+                    // Then modify based on momentum
+                    if(momentum > 0)
+                    {
+                        float momentumBonus = 0;
+
+                        // Determine the mult
+                        int mult = 40;
+                        if(weapon.itemData.meleeAttack.damageType == ItemDamageType.Piercing)
+                        {
+                            mult = 80;
+                        }
+                        // Get the speed
+                        float speed;
+                        if (source.GetComponent<PlayerData>())
+                        {
+                            speed = PlayerData.inst.moveSpeed1;
+                        }
+                        else
+                        {
+                            speed = target.GetComponent<Actor>().botInfo._movement.moveSpeedPercent;
+                        }
+                        // Calculate using: ([momentum] * [speed%] / 1200) * 40)
+                        momentumBonus = (momentum * speed / 1200 * mult);
+
+                        // Apply the momentum bonus
+                        damage = Mathf.RoundToInt(damage + (damage * momentumBonus));
+                    }
+
+                    // Now for sneak attacks
+                    if(HF.DetermineRelation(source, target.GetComponent<Actor>()) == BotRelation.Neutral || HF.DetermineRelation(source, target.GetComponent<Actor>()) == BotRelation.Friendly)
+                    { // Friendly or neutral?
+
+                        if(target.gameObject != PlayerData.inst.gameObject && target.GetComponent<BotAI>().state != BotAIState.Fleeing) // And not fleeing?
+                        {
+
+                        }
+                    }
+
+                    #endregion
+
+                    // -- Now for this visuals and audio --
+                    // - We need to spawn a visual on top of the target. Where the line is facing from the player to the target.
+                    // Calculate direction vector from object A to object B
+                    Vector3 direction = target.transform.position - source.transform.position;
+                    // Calculate angle in radians
+                    float angleRad = Mathf.Atan2(direction.y, direction.x);
+                    // Convert angle from radians to degrees
+                    float angleDeg = angleRad * Mathf.Rad2Deg;
+                    GameManager.inst.CreateMeleeAttackIndicator(HF.V3_to_V2I(target.transform.position), angleDeg, weapon);
+                    // - Sound is taken care of in ^ -
                 }
-                else
-                { // Player
-
-
-
-                    if (toHit <= hitChance) // Hit!
-                    {
-                        // - Deal damage -
-
-
-                        // -- Now for this visuals and audio --
-                        // - We need to spawn a visual on top of the target. Where the line is facing from the player to the target.
-                        // Calculate direction vector from object A to object B
-                        Vector3 direction = target.transform.position - source.transform.position;
-                        // Calculate angle in radians
-                        float angleRad = Mathf.Atan2(direction.y, direction.x);
-                        // Convert angle from radians to degrees
-                        float angleDeg = angleRad * Mathf.Rad2Deg;
-                        GameManager.inst.CreateMeleeAttackIndicator(HF.V3_to_V2I(target.transform.position), angleDeg, weapon);
-                        // - Sound is taken care of in ^ -
-                    }
-                    else // Miss.
-                    {
-                        // -- Now for this visuals and audio --
-                        // - We need to spawn a visual on top of the target. Where the line is facing from the player to the target.
-                        // Calculate direction vector from object A to object B
-                        Vector3 direction = target.transform.position - source.transform.position;
-                        // Calculate angle in radians
-                        float angleRad = Mathf.Atan2(direction.y, direction.x);
-                        // Convert angle from radians to degrees
-                        float angleDeg = angleRad * Mathf.Rad2Deg;
-                        GameManager.inst.CreateMeleeAttackIndicator(HF.V3_to_V2I(target.transform.position), angleDeg, weapon);
-                        // - Sound is taken care of in ^ -
-                    }
+                else // Miss.
+                {
+                    // -- Now for this visuals and audio --
+                    // - We need to spawn a visual on top of the target. Where the line is facing from the player to the target.
+                    // Calculate direction vector from object A to object B
+                    Vector3 direction = target.transform.position - source.transform.position;
+                    // Calculate angle in radians
+                    float angleRad = Mathf.Atan2(direction.y, direction.x);
+                    // Convert angle from radians to degrees
+                    float angleDeg = angleRad * Mathf.Rad2Deg;
+                    GameManager.inst.CreateMeleeAttackIndicator(HF.V3_to_V2I(target.transform.position), angleDeg, weapon);
+                    // - Sound is taken care of in ^ -
                 }
+                
             }
         }
         else // Attacking a structure
