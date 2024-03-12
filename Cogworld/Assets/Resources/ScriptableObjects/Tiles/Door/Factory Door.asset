@@ -17,6 +17,7 @@ MonoBehaviour:
   tileName: Factory Door
   type: 2
   altSprite: {fileID: 1365937539, guid: 39169aeda5af12542a7067234993ee9d, type: 3}
+  destroyedSprite: {fileID: 1411414500, guid: 584229b3f588c1c4c9f168abe700b2de, type: 3}
   asciiRep: {fileID: 921198686, guid: 14ab35a0b2c4fc84681e675af9facbe5, type: 3}
   asciiColor: {r: 1, g: 0.5019608, b: 0, a: 1}
   isDirty: 0

@@ -325,7 +325,7 @@ public class TileBlock : MonoBehaviour
     public void DestroyMe()
     {
         // Change the sprite
-        this.GetComponent<SpriteRenderer>().sprite = tileInfo.altSprite;
+        this.GetComponent<SpriteRenderer>().sprite = tileInfo.destroyedSprite;
 
         // Activate the "danger roof will collapse" red indicator (if needed)
         if (tileInfo.type == TileType.Wall)

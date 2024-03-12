@@ -17,6 +17,7 @@ MonoBehaviour:
   tileName: Waste Wall
   type: 1
   altSprite: {fileID: 0}
+  destroyedSprite: {fileID: 378825528, guid: 42a2036963460eb4197828f13297a2de, type: 3}
   asciiRep: {fileID: 1342612219, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
   asciiColor: {r: 0.3529412, g: 0.28627452, b: 0.1764706, a: 1}
   isDirty: 0

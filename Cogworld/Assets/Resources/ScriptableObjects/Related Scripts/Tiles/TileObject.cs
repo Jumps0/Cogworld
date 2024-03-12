@@ -25,7 +25,10 @@ public abstract class TileObject : ScriptableObject
     public TileType type;
     public TileDetails details;
 
+    [Tooltip("Used for things like the open sprite of doors.")]
     public Sprite altSprite;
+    [Tooltip("What should be shown when this sprite is destroyed.")]
+    public Sprite destroyedSprite;
 
     public Sprite asciiRep;
     public Color asciiColor;

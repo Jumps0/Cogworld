@@ -17,6 +17,7 @@ MonoBehaviour:
   tileName: Cave Floor
   type: 0
   altSprite: {fileID: 1721558278, guid: 0669e38ad5cf6a74b85a00b903976e80, type: 3}
+  destroyedSprite: {fileID: -1631056861, guid: d5ad05e7c7495e643a98821a567988a6, type: 3}
   asciiRep: {fileID: 1434353351, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
   asciiColor: {r: 0.32156864, g: 0.32156864, b: 0.32156864, a: 1}
   isDirty: 0

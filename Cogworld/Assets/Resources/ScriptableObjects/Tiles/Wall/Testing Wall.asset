@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6ec149692851794295060569572dd78, type: 3}
   m_Name: Testing Wall
   m_EditorClassIdentifier: 
-  Id: 18
+  Id: 19
   displaySprite: {fileID: 2100701913, guid: 5655130b9fc3fae49bf77dbe42958bb0, type: 3}
   tileName: Wall
   type: 1
   altSprite: {fileID: 0}
+  destroyedSprite: {fileID: 378825528, guid: 42a2036963460eb4197828f13297a2de, type: 3}
   asciiRep: {fileID: 1342612219, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
   asciiColor: {r: 0, g: 0.7735849, b: 0, a: 1}
   isDirty: 0
