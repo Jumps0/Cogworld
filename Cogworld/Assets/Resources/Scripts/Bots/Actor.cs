@@ -92,13 +92,16 @@ public class Actor : Entity
                 StartCoroutine(SetBotName());
             }
 
-            algorithm = new AdamMilVisibility();
-            allegances = GlobalSettings.inst.GenerateDefaultAllengances(botInfo);
-            this.GetComponent<BotAI>().relationToPlayer = HF.DetermineRelation(this, PlayerData.inst.GetComponent<Actor>());
+            algorithm = new AdamMilVisibility(); // Set visual algo
+            allegances = GlobalSettings.inst.GenerateDefaultAllengances(botInfo); // Set allegances
 
             if (GetComponent<PlayerData>())
             {
                 UpdateFieldOfView();
+            }
+            else
+            {
+                this.GetComponent<BotAI>().relationToPlayer = HF.DetermineRelation(this, PlayerData.inst.GetComponent<Actor>()); // Set relation to player
             }
         }
         else
