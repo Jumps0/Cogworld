@@ -211,8 +211,6 @@ public abstract class ItemObject : ScriptableObject
     [Tooltip("Raw numbers of what this item effects. This is usually filled in automatically, but not for Utility items.")]
     public string mechanicalDescription;
 
-    public ItemDetails details;
-
     [Header("Fabrication Details")]
     public ItemFabInfo fabricationInfo;
 
@@ -221,13 +219,6 @@ public abstract class ItemObject : ScriptableObject
         Item newItem = new Item(this);
         return newItem;
     }
-}
-
-[System.Serializable]
-public class ItemDetails
-{
-    public string temp;
-
 }
 
 [System.Serializable]
