@@ -198,8 +198,8 @@ MonoBehaviour:
   _highlight: {fileID: 1646736230279944977}
   _highlightPerm: {fileID: 537430693379749784}
   _debrisSprite: {fileID: 3358479945113562065}
-  _collapseSprite: {fileID: 0}
-  _collapseAnim: {fileID: 0}
+  _collapseSprite: {fileID: 6201539841297180227}
+  _collapseAnim: {fileID: 6749864060239302422}
   isDirty: 0
   dosLetter: {fileID: 0}
   subTile: {fileID: 3502561631040395862}

@@ -3392,7 +3392,7 @@ public static class HF
         GameObject blocker = null;
 
         Vector2 targetDirection = target - source.transform.position;
-        Debug.Log(targetDirection);
+
         float distance = Vector2.Distance(Action.V3_to_V2I(source.transform.position), Action.V3_to_V2I(target));
 
         RaycastHit2D[] hits = Physics2D.RaycastAll(new Vector2(source.transform.position.x, source.transform.position.y), targetDirection.normalized, distance);
@@ -3482,7 +3482,6 @@ public static class HF
     /// </summary>
     /// <param name="source">The origin location.</param>
     /// <param name="target">The target location.</param>
-    /// <param name="requireVision">If the player needs to be able to see the blocking object.</param>
     /// <returns>Returns the thing we are actually going to attack against.</returns>
     public static GameObject DetermineAttackTarget(GameObject source, Vector3 target)
     {
@@ -3538,6 +3537,91 @@ public static class HF
         }
 
         return blocker;
+    }
+
+    public static GameObject GetTargetAtPosition(Vector2Int pos)
+    {
+        Vector3 lowerPosition = new Vector3(pos.x, pos.y, 2);
+        Vector3 upperPosition = new Vector3(pos.x, pos.y, -2);
+        Vector3 direction = lowerPosition - upperPosition;
+        float distance = Vector3.Distance(new Vector3Int((int)lowerPosition.x, (int)lowerPosition.y, 0), upperPosition);
+        direction.Normalize();
+        RaycastHit2D[] hits = Physics2D.RaycastAll(upperPosition, direction, distance);
+
+        // - Flags -
+        GameObject wall = null;
+        GameObject bot = null;
+        GameObject door = null;
+        GameObject machine = null;
+        GameObject floor = null;
+
+        // Loop through all the hits and set the targeting highlight on each tile (ideally shouldn't loop that many times)
+        for (int i = 0; i < hits.Length; i++)
+        {
+            RaycastHit2D hit = hits[i];
+            // PROBLEM!!! This list of hits is unsorted and contains multiple things that violate the heirarchy below. This MUST be fixed!
+
+            // There is a heirarchy of what we want to display:
+            // -A wall
+            // -A bot
+            // -A door
+            // -A machine
+            // -A floor tile
+
+            // We will solve this problem by setting flags. And then going back afterwards and using our heirarchy.
+
+            #region Hierarchy Flagging
+            if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Wall"))
+            {
+                // A wall
+                wall = hit.collider.gameObject;
+            }
+            else if (hit.collider.GetComponent<Actor>())
+            {
+                // A bot
+                bot = hit.collider.gameObject;
+            }
+            else if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Door"))
+            {
+                // Door
+                door = hit.collider.gameObject;
+            }
+            else if (hit.collider.GetComponent<MachinePart>()) // maybe refine this later
+            {
+                // Machine
+                machine = hit.collider.gameObject;
+            }
+            else if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Floor"))
+            {
+                // Dirty floor tile
+                floor = hit.collider.gameObject;
+            }
+
+            #endregion
+        }
+
+        if(wall != null)
+        {
+            return wall;
+        }
+        else if (bot != null)
+        {
+            return bot;
+        }
+        else if (door != null)
+        {
+            return door;
+        }
+        else if (machine != null)
+        {
+            return machine;
+        }
+        else if (floor != null)
+        {
+            return floor;
+        }
+
+        return null;
     }
 
     /// <summary>

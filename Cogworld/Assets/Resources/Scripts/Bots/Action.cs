@@ -42,6 +42,8 @@ public static class Action
 
     public static void MeleeAction(Actor source, GameObject target)
     {
+        // TODO: Factor in attack time, and followup attacks.
+
         float targetCoreExposure;
         Item weapon = FindMeleeWeapon(source);
 
@@ -122,8 +124,6 @@ public static class Action
             }
             else
             {
-                // TODO: Melee attacks!
-
                 #region Explainer
                 /*
                 > Hit Chance
@@ -190,17 +190,19 @@ public static class Action
                 }
 
                 #region Hit Chance Calculation
+                toHit += bonus_accuracy; // Modify by accuracy
 
-
-
+                bool noCrit = false;
+                List<ArmorType> types = new List<ArmorType>();
+                ItemProjectile projData = weapon.itemData.projectile;
+                // Use the to-hit function
+                (hitChance, noCrit, types) = Action.CalculateMeleeHitChance(source, target.GetComponent<Actor>(), weapon, hitChance);
                 #endregion
-
-
 
                 if (toHit <= hitChance) // Hit!
                 {
                     #region Damage Calculation
-                    // - Deal damage -
+                    // - Calculate the Damage -
                     int damage = 0;
 
                     Vector2Int lowHigh = weapon.itemData.meleeAttack.damage; // First get the flat damage rolls from the weapon
@@ -253,6 +255,57 @@ public static class Action
 
                     #endregion
 
+                    #region Damage Dealing
+                    // - Deal the damage -
+                    if (!noCrit && Random.Range(0f,1f) <= projData.critChance) // Critical hit?
+                    {
+                        // A crit!
+                        // TODO: Crits
+                    }
+                    if (target.GetComponent<PlayerData>()) // Player being attacked
+                    {
+                        if (Random.Range(0f, 1f) < PlayerData.inst.currentCoreExposure) // Hits the core
+                        {
+                            PlayerData.inst.currentHealth -= damage;
+                        }
+                        else // Hits a part
+                        {
+                            DamageRandomPart(target.GetComponent<Actor>(), damage, types);
+                        }
+
+                        // Do a calc message
+                        string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHit * 100}%) Hit";
+
+                        UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange, UIManager.inst.warmYellow, false, true);
+
+                        message = $"Recieved damage: {damage}";
+                        UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange, UIManager.inst.warmYellow, false, true);
+                    }
+                    else // Bot being attacked
+                    {
+                        if (Random.Range(0f, 1f) < target.GetComponent<Actor>().botInfo.coreExposure) // Hits the core
+                        {
+                            target.GetComponent<Actor>().currentHealth -= damage;
+                        }
+                        else // Hits a part
+                        {
+                            DamageRandomPart(target.GetComponent<Actor>(), damage, types);
+                        }
+
+
+                        // Show a popup that says how much damage occured
+                        if (!target.GetComponent<PlayerData>())
+                        {
+                            UI_CombatPopup(target.GetComponent<Actor>(), damage);
+                        }
+
+                        // Do a calc message
+                        string message = $"{weapon.itemData.name} ({toHit * 100}%) Hit";
+
+                        UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+                    }
+                    #endregion
+
                     // -- Now for this visuals and audio --
                     // - We need to spawn a visual on top of the target. Where the line is facing from the player to the target.
                     // Calculate direction vector from object A to object B
@@ -274,7 +327,7 @@ public static class Action
                     float angleRad = Mathf.Atan2(direction.y, direction.x);
                     // Convert angle from radians to degrees
                     float angleDeg = angleRad * Mathf.Rad2Deg;
-                    GameManager.inst.CreateMeleeAttackIndicator(HF.V3_to_V2I(target.transform.position), angleDeg, weapon);
+                    GameManager.inst.CreateMeleeAttackIndicator(HF.V3_to_V2I(target.transform.position), angleDeg, weapon, false);
                     // - Sound is taken care of in ^ -
                 }
                 
@@ -282,11 +335,78 @@ public static class Action
         }
         else // Attacking a structure
         {
+            // First off, are we attacking an empty floor tile?
+            if(target.GetComponent<TileBlock>() && target.GetComponent<TileBlock>().tileInfo.type == TileType.Floor)
+            {
+                // Cancel early
+                return;
+            }
+
             // It's a structure, we cannot (and should not) miss.
 
-            /*
+            int momentum = source.momentum; // Get momentum
+                                            // Calculate and assign the various melee bonuses
+            List<float> meleeBonuses = Action.GetMeleeBonuses(source.GetComponent<Actor>(), weapon);
+            float bonus_followups = meleeBonuses[0];
+            float bonus_maxDamage = meleeBonuses[1];
+            int bonus_minDamage = (int)meleeBonuses[3];
+            float bonus_attackTime = meleeBonuses[4];
+
             int armor = 0; // The armor value of the target
-            int damageAmount = (int)Random.Range(projData.damage.x, projData.damage.y); // The damage we will do (must beat armor value to be effective).
+
+            #region Damage Calculation
+            // - Calculate the Damage -
+            int damage = 0;
+
+            Vector2Int lowHigh = weapon.itemData.meleeAttack.damage; // First get the flat damage rolls from the weapon
+                                                                     // Then modify the minimum and maximum values if needed
+            if (bonus_maxDamage > 0)
+            {
+                lowHigh.y = Mathf.RoundToInt(lowHigh.y + (lowHigh.y * bonus_maxDamage));
+            }
+            if (bonus_minDamage > 0)
+            {
+                lowHigh.x = Mathf.RoundToInt(lowHigh.x + (lowHigh.x * bonus_minDamage));
+            }
+
+            // Then get the new flat damage (semi-random)
+            damage = Random.Range(lowHigh.x, lowHigh.y);
+
+            // Then modify based on momentum
+            if (momentum > 0)
+            {
+                float momentumBonus = 0;
+
+                // Determine the mult
+                int mult = 40;
+                if (weapon.itemData.meleeAttack.damageType == ItemDamageType.Piercing)
+                {
+                    mult = 80;
+                }
+                // Get the speed
+                float speed;
+                if (source.GetComponent<PlayerData>())
+                {
+                    speed = PlayerData.inst.moveSpeed1;
+                }
+                else
+                {
+                    speed = target.GetComponent<Actor>().botInfo._movement.moveSpeedPercent;
+                }
+                // Calculate using: ([momentum] * [speed%] / 1200) * 40)
+                momentumBonus = (momentum * speed / 1200 * mult);
+
+                // Apply the momentum bonus
+                damage = Mathf.RoundToInt(damage + (damage * momentumBonus));
+            }
+
+            // Now for sneak attacks
+            if (source.gameObject != PlayerData.inst.gameObject && !target.GetComponent<BotAI>().canSeePlayer) // Not the player and (currently) can't see the player
+            {
+                damage *= 2; // +100% damage (so x2)
+            }
+
+            #endregion
 
             // What are we attacking?
             if (target.GetComponent<MachinePart>()) // Some type of machine
@@ -299,14 +419,18 @@ public static class Action
             }
 
             #region Beat the Armor?
-            if (damageAmount > armor) // Success! Destroy the structure
+            if (damage > armor) // Success! Destroy the structure
             {
-                // - Create an in-world projectile that goes to the target
-                Color projColor = weapon.itemData.projectile.projectileColor;
-                Color boxColor = new Color(projColor.r, projColor.g, projColor.b, 0.7f);
-                UIManager.inst.CreateGenericProjectile(source.transform, target.transform, projColor, boxColor, Random.Range(15f, 20f), true);
-                // - Play a shooting sound, from the source
-                source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
+                // -- Now for this visuals and audio --
+                // - We need to spawn a visual on top of the target. Where the line is facing from the player to the target.
+                // Calculate direction vector from object A to object B
+                Vector3 direction = target.transform.position - source.transform.position;
+                // Calculate angle in radians
+                float angleRad = Mathf.Atan2(direction.y, direction.x);
+                // Convert angle from radians to degrees
+                float angleDeg = angleRad * Mathf.Rad2Deg;
+                GameManager.inst.CreateMeleeAttackIndicator(HF.V3_to_V2I(target.transform.position), angleDeg, weapon);
+                // - Sound is taken care of in ^ -
 
                 // - Destroy the object
                 if (target.GetComponent<MachinePart>()) // Some type of machine
@@ -314,7 +438,7 @@ public static class Action
                     target.GetComponent<MachinePart>().DestroyMe();
 
                     // Do a calc message
-                    string message = $"{target.name} Destroyed ({damageAmount} > {armor})";
+                    string message = $"{target.name} Destroyed ({damage} > {armor})";
 
                     UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
                 }
@@ -326,18 +450,21 @@ public static class Action
             }
             else // Failure. Don't destroy the structure
             {
-                // Create a projectile that will miss
-                Color projColor = weapon.itemData.projectile.projectileColor;
-                Color boxColor = new Color(projColor.r, projColor.g, projColor.b, 0.7f);
-                UIManager.inst.CreateGenericProjectile(source.transform, target.transform, projColor, boxColor, Random.Range(20f, 15f), false);
-
-                // Play a sound
-                source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
+                // -- Now for this visuals and audio --
+                // - We need to spawn a visual on top of the target. Where the line is facing from the player to the target.
+                // Calculate direction vector from object A to object B
+                Vector3 direction = target.transform.position - source.transform.position;
+                // Calculate angle in radians
+                float angleRad = Mathf.Atan2(direction.y, direction.x);
+                // Convert angle from radians to degrees
+                float angleDeg = angleRad * Mathf.Rad2Deg;
+                GameManager.inst.CreateMeleeAttackIndicator(HF.V3_to_V2I(target.transform.position), angleDeg, weapon, false);
+                // - Sound is taken care of in ^ -
 
                 // Don't make a message about it
             }
             #endregion
-            */
+
         }
 
         // Finally, subtract the attack cost
@@ -476,6 +603,7 @@ public static class Action
                     if (!noCrit && rand <= projData.critChance) // Critical hit?
                     {
                         // A crit!
+                        // TODO: Crits
                     }
                     if (target.GetComponent<PlayerData>()) // Player being attacked
                     {
@@ -502,12 +630,11 @@ public static class Action
                         {
                             target.GetComponent<Actor>().currentHealth -= damageAmount;
                         }
-                        /*
                         else // Hits a part
                         {
-                            DamageRandomPart(target, damageAmount, types);
+                            DamageRandomPart(target.GetComponent<Actor>(), damageAmount, types);
                         }
-                        */
+                        
 
                         // Show a popup that says how much damage occured
                         if (!target.GetComponent<PlayerData>())
@@ -924,6 +1051,109 @@ public static class Action
         }
 
         toHitChance += (botsHit.Count * -0.20f);
+
+        // - Player has analysis of target -- //
+        if (source.GetComponent<PlayerData>())
+        {
+            if (target.botInfo.playerHasAnalysisData)
+            {
+                toHitChance += 0.05f;
+            }
+        }
+
+
+        // - Defender utility bonuses - // (also important later)
+        (List<float> bonuses, bool noCrit, List<ArmorType> types) = DefenceBonus(target);
+        toHitChance -= bonuses.Sum();
+
+        return (toHitChance, noCrit, types);
+    }
+
+    public static (float, bool, List<ArmorType>) CalculateMeleeHitChance(Actor source, Actor target, Item weapon, float startingHitChance)
+    {
+        // Melee to hit chance is slightly different but mostly the same. So a lot of this is copied from CalculateRangedHitChance
+
+        /*
+         *  Hit Chance
+         *  ------------
+         *  Many factors affect the chance to hit a target.  
+         *  
+         *  
+         *  Modifiers:
+         *  +10% if attacker didn't move for the last 2 actions
+         *  +10%/+30% for large/huge targets
+         *  +10% if defender immobile
+         *  +5% w/robot analysis data
+         *  -1~15% if defender moved last action, where faster = harder to hit
+         *  -5~15% if defender running on legs (not overweight)
+         *      (5% evasion for each level of momentum)
+         *  -10%/-30% for small/tiny targets
+         *  -10%/-5% if target is flying/hovering (and not overweight or in stasis)
+         *  -5% against Cogmind by robots for which have analysis data
+         *  -defender utility bonuses
+         */
+
+        ItemShot shotData = weapon.itemData.shot;
+        ItemProjectile projData = weapon.itemData.projectile;
+        int projAmount = weapon.itemData.projectileAmount;
+
+        float toHitChance = startingHitChance;
+        // First factor in the target's evasion/avoidance rate
+        float avoidance = 0f;
+        List<int> unused = new List<int>();
+        (avoidance, unused) = Action.CalculateAvoidance(target);
+        toHitChance -= (avoidance / 100);
+
+        // - No Movement past 2 turns - //
+        if (source.noMovementFor >= 2)
+        {
+            toHitChance += 0.10f;
+        }
+
+        // - Large/Huge target (doesn't apply to player) - //
+        if (source.GetComponent<PlayerData>())
+        {
+            if (target.botInfo._size == BotSize.Large)
+            {
+                toHitChance += 0.10f;
+            }
+            else if (target.botInfo._size == BotSize.Huge)
+            {
+                toHitChance += 0.30f;
+            }
+        }
+
+        // - Last move + speed - //
+        if (target.noMovementFor > 0)
+        {
+            if (source.GetComponent<PlayerData>())
+            {
+                toHitChance += Mathf.RoundToInt(Mathf.Clamp(Mathf.Log(100 * (100 / PlayerData.inst.moveSpeed1), 2) * -2f, -15f, -1f));
+            }
+            else
+            {
+                toHitChance += Mathf.RoundToInt(Mathf.Clamp(Mathf.Log(100 * (100 / target.botInfo._movement.moveSpeedPercent), 2) * -2f, -15f, -1f));
+            }
+        }
+
+        // - Target has legs - //
+        if (HasLegs(target))
+        {
+            toHitChance += -0.05f;
+        }
+
+        // - Target is Small/Tiny - //
+        if (!target.GetComponent<PlayerData>()) // Applies to bots only
+        {
+            if (target.botInfo._size == BotSize.Tiny)
+            {
+                toHitChance += -0.30f;
+            }
+            else if (target.botInfo._size == BotSize.Small)
+            {
+                toHitChance += -0.10f;
+            }
+        }
 
         // - Player has analysis of target -- //
         if (source.GetComponent<PlayerData>())
@@ -1867,6 +2097,8 @@ public static class Action
 
     public static void DamageRandomPart(Actor target, int damage, List<ArmorType> protection)
     {
+        // TODO: Finish this ?
+
         if (target.botInfo) // Bot
         {
             foreach (BotArmament item in target.botInfo.armament)

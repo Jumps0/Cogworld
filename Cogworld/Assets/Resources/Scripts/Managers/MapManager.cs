@@ -654,6 +654,7 @@ public class MapManager : MonoBehaviour
                     SpawnItems(idsToSpawn, spawnArea, matterRNG);
 
                     InventoryControl.inst.CreateItemInWorld(100, new Vector2Int(57, 57), true); // ONLY FOR TESTING. REMOVE LATER
+                    InventoryControl.inst.CreateItemInWorld(101, new Vector2Int(56, 57), true); // ONLY FOR TESTING. REMOVE LATER
                 }
 
 

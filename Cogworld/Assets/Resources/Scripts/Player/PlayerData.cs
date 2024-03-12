@@ -302,8 +302,8 @@ public class PlayerData : MonoBehaviour
             if (doTargeting)
             {
                 DoTargeting();
-                GameObject target = HF.DetermineAttackTarget(this.gameObject, Camera.main.ScreenToWorldPoint(Input.mousePosition));
-                CheckForMouseAttack(target);
+
+                CheckForMouseAttack();
             }
             else
             {
@@ -517,28 +517,17 @@ public class PlayerData : MonoBehaviour
             #endregion
 
             #region LOS Color check & Melee adjustment
-            // First off, only the final target light is bright green. Everything else is darker
-            foreach (var T in targetLine)
-            {
-                Color darkGreen = new Color(highlightGreen.r, 0.7f, highlightGreen.b, highlightGreen.a);
-                SetHighlightColor(T.Key, darkGreen);
-            }
-            SetHighlightColor(targetLine.ToList()[targetLine.Count - 1].Key, highlightGreen); // Set the last highlight to the bright green.
-           
-
-
             // If the player is using a melee weapon, we want to visually let them know it has a super short range.
             if (Action.FindMeleeWeapon(this.GetComponent<Actor>()) != null)
             {
                 foreach (var T in targetLine)
                 {
-                    if (Vector2.Distance(this.transform.position, T.Key) > 2.55f)
+                    if (Vector2.Distance(this.transform.position, T.Key) > 1.55f)
                     {
                         SetHighlightColor(T.Key, highlightRed);
                     }
                 }
             }
-
 
             // Here we check if the player actually has line-of-sight on the target.
             // -If yes, then the line is green, no changes necessary.
@@ -556,9 +545,27 @@ public class PlayerData : MonoBehaviour
                     }
                 }
 
-                SetHighlightColor(HF.V3_to_V2I(blocker.transform.position), highlightGreen); // Set the blocker highlight
+                if(!TargetLineContainsHighlight())
+                    SetHighlightColor(HF.V3_to_V2I(blocker.transform.position), highlightGreen); // Set the blocker highlight
             }
-            
+
+            // Only the final target light is bright green. Everything else is darker
+            for (int i = 0; i < targetLine.ToList().Count; i++)
+            {
+                if (targetLine.ToList()[i].Value.GetComponent<SpriteRenderer>().color == highlightGreen) // Only change bright green tiles
+                {
+                    Color darkGreen = new Color(highlightGreen.r, 0.7f, highlightGreen.b, highlightGreen.a);
+                    SetHighlightColor(targetLine.ToList()[i].Key, darkGreen);
+
+                    
+                    // Is this the last tile before some kind of blocker? Change it back to bright green
+                    if (i + 1 < targetLine.ToList().Count && targetLine.ToList()[i + 1].Value.GetComponent<SpriteRenderer>().color == highlightRed)
+                    {
+                        SetHighlightColor(targetLine.ToList()[i].Key, highlightGreen); // Set the last highlight to the bright green.
+                    }
+                    
+                }
+            }
 
             #endregion
 
@@ -909,6 +916,19 @@ public class PlayerData : MonoBehaviour
         }
 
         targetLine.Clear();
+    }
+
+    private bool TargetLineContainsHighlight()
+    {
+        foreach(var T in targetLine)
+        {
+            if(T.Value.GetComponent<SpriteRenderer>().color == highlightGreen)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     #region "Dart" Target-line Helpers
@@ -1264,7 +1284,7 @@ public class PlayerData : MonoBehaviour
 
     #endregion
 
-    // Turned private because it appears before GetComponent in search heirarchy. If this causes issues later turn it back to public.
+    
     private Actor GetMouseTarget()
     {
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
@@ -1278,11 +1298,11 @@ public class PlayerData : MonoBehaviour
                 return actor;
             }
         }
-
+        
         return null;
     }
 
-    public void CheckForMouseAttack(GameObject target)
+    public void CheckForMouseAttack()
     {
         if (TurnManager.inst.isPlayerTurn)
         {
@@ -1293,14 +1313,17 @@ public class PlayerData : MonoBehaviour
                 {
                     StartCoroutine(AttackBuffer());
 
-                    Debug.Log("Attack!");
                     if (Action.IsMeleeWeapon(equippedWeapon))
                     {
-                        //Action.MeleeAction(this.GetComponent<Actor>(), target);
+                        GameObject target = HF.GetTargetAtPosition(HF.V3_to_V2I(Camera.main.ScreenToWorldPoint(Input.mousePosition))); // Use ray-line to get target
+
+                        Action.MeleeAction(this.GetComponent<Actor>(), target);
                     }
                     else
                     {
-                        //Action.RangedAttackAction(this.GetComponent<Actor>(), target, equippedWeapon);
+                        GameObject target = HF.DetermineAttackTarget(this.gameObject, Camera.main.ScreenToWorldPoint(Input.mousePosition)); // Use ray-line to get target
+
+                        Action.RangedAttackAction(this.GetComponent<Actor>(), target, equippedWeapon);
                     }
 
                     ClearAllHighlights();
