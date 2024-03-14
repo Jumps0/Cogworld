@@ -339,7 +339,7 @@ public class PlayerData : MonoBehaviour
 
 
             #region A) Line Drawing via Raycast
-            
+            /*
             #region Basic Line Drawing
             // Cast a ray from the player to the mouse position
             Vector3 direction = mousePosition - this.gameObject.transform.position;
@@ -450,12 +450,12 @@ public class PlayerData : MonoBehaviour
 
             }
             #endregion
-
+            */
             #endregion
 
             #region B) Line Drawing via "Dart"
             // I'm not 100% happy with this method, but as implemented, it works better than raycasting (especially the line trimming).
-            /*
+            
             // - Explainer -
             // With this method we are imagining a "dart" which starts at the player, and is shot towards the target position.
             // The closest tile to the dart's closest position is added to the path.
@@ -475,6 +475,7 @@ public class PlayerData : MonoBehaviour
 
             while (Vector2.Distance(currentPos, finish) > 0.1f)
             {
+
                 // Add current point to path
                 path.Add(currentPos);
 
@@ -512,8 +513,8 @@ public class PlayerData : MonoBehaviour
             {
                 GapCheck();
             }
-            CleanPath(); // Clean the path
-            */
+            //CleanPath(); // Clean the path
+            
             #endregion
 
             #region LOS Color check & Melee adjustment
@@ -949,11 +950,11 @@ public class PlayerData : MonoBehaviour
         }
         else if (HF.GetDirection(HF.V3_to_V2I(path[path.Count - 1]), HF.V3_to_V2I(path[0])) == Vector2.left)
         {
-            CreateHighlightTile(HF.V3_to_V2I(path[path.Count - 1] + new Vector3(-1, 0)));
+            CreateHighlightTile(HF.V3_to_V2I(path[path.Count - 1] + new Vector3(1, 0)));
         }
         else if (HF.GetDirection(HF.V3_to_V2I(path[path.Count - 1]), HF.V3_to_V2I(path[0])) == Vector2.right)
         {
-            CreateHighlightTile(HF.V3_to_V2I(path[path.Count - 1] + new Vector3(1, 0)));
+            CreateHighlightTile(HF.V3_to_V2I(path[path.Count - 1] + new Vector3(-1, 0)));
         }
     }
 

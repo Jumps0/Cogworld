@@ -140,6 +140,8 @@ public class TargetingTestMgr : MonoBehaviour
 
         //StartCoroutine(Pathfind(HF.V3_to_V2I(playerPosition), HF.V3_to_V2I(mousePosition)));
         FindPathNonIE(start, finish);
+        //FindPathGreedy(start, finish);
+        //FindPathSegments(start, finish);
     }
 
     private IEnumerator Pathfind(Vector2 start, Vector2 finish)
@@ -172,6 +174,204 @@ public class TargetingTestMgr : MonoBehaviour
 
     }
 
+    #region Path Segment Method
+
+    private void FindPathSegments(Vector2 start, Vector2 finish)
+    {
+        pathFinished = false;
+
+        text_status.text = "Searching...";
+        text_status.color = Color.yellow;
+
+        // Calculate the distance and direction between start and finish points
+        Vector2 direction = (finish - start).normalized;
+        float distance = Vector2.Distance(start, finish);
+
+        // Determine the number of segments for horizontal and vertical movement
+        int horizontalSegments = Mathf.RoundToInt(Mathf.Abs(direction.x * distance));
+        int verticalSegments = Mathf.RoundToInt(Mathf.Abs(direction.y * distance));
+
+        // Calculate the step size for each segment
+        Vector2 horizontalStep = new Vector2(direction.x, 0) * (distance / horizontalSegments);
+        Vector2 verticalStep = new Vector2(0, direction.y) * (distance / verticalSegments);
+
+        bool isFlat = horizontalSegments > verticalSegments; // Do we have flat segments or tall segments?
+
+        Debug.Log($"Horizontal: {horizontalSegments} Vertical: {verticalSegments}");
+
+        // Start at the origin point
+        Vector2 currentPos = start;
+
+        // Add the origin point to the path
+        path.Add(world[HF.V3_to_V2I(currentPos)]);
+
+        if(isFlat) // Flat segments (Based on Horizontal)
+        {
+            // Start by moving vertically
+            currentPos += verticalStep;
+            path.Add(world[HF.V3_to_V2I(currentPos)]);
+
+            int length = Mathf.RoundToInt(horizontalSegments / 3);
+
+            for (int i = 0; i < length; i++)
+            {
+                for (int j = 0; j < verticalSegments; j++)
+                {
+                    // Move horizontally
+                    currentPos += horizontalStep;
+                    path.Add(world[HF.V3_to_V2I(currentPos)]);
+                }
+
+                // Move vertically
+                currentPos += verticalStep;
+                path.Add(world[HF.V3_to_V2I(currentPos)]);
+            }
+        }
+        else // Tall segments (Based on Vertical)
+        {
+            // Start by moving horizontally
+            currentPos += horizontalStep;
+            path.Add(world[HF.V3_to_V2I(currentPos)]);
+
+            int length = Mathf.RoundToInt(verticalSegments / 3);
+
+            for (int i = 0; i < length; i++)
+            {
+                for (int j = 0; j < horizontalSegments; j++)
+                {
+                    // Move vertically
+                    currentPos += verticalStep;
+                    path.Add(world[HF.V3_to_V2I(currentPos)]);
+                }
+
+                // Move horizontally
+                currentPos += horizontalStep;
+                path.Add(world[HF.V3_to_V2I(currentPos)]);
+            }
+        }
+
+        /*
+        // Add horizontal segments
+        for (int i = 0; i < horizontalSegments; i++)
+        {
+            // Move horizontally
+            currentPos += horizontalStep;
+            path.Add(world[HF.V3_to_V2I(currentPos)]);
+
+            // Check if vertical adjustment is needed
+            if (Mathf.Abs(currentPos.y - finish.y) > 0.5f)
+            {
+                // Adjust vertically towards the target point
+                float verticalDirection = Mathf.Sign(finish.y - currentPos.y);
+                currentPos.y += verticalDirection;
+                path.Add(world[HF.V3_to_V2I(currentPos)]);
+            }
+        }
+
+        // Add vertical segments
+        for (int i = 0; i < verticalSegments; i++)
+        {
+            // Move vertically
+            currentPos += verticalStep;
+            path.Add(world[HF.V3_to_V2I(currentPos)]);
+
+            // Check if horizontal adjustment is needed
+            if (Mathf.Abs(currentPos.x - finish.x) > 0.5f)
+            {
+                // Adjust horizontally towards the target point
+                float horizontalDirection = Mathf.Sign(finish.x - currentPos.x);
+                currentPos.x += horizontalDirection;
+                path.Add(world[HF.V3_to_V2I(currentPos)]);
+            }
+        }
+        */
+        // Add the finish point to the path
+        path.Add(world[HF.V3_to_V2I(finish)]);
+
+        pathFinished = true;
+        MarkPath(finish); // Finish up by drawing the path
+
+        text_status.text = "Finished.";
+        text_status.color = Color.green;
+
+        world[HF.V3_to_V2I(finish)].GetComponent<SpriteRenderer>().color = Color.blue;
+    }
+
+    #endregion
+
+    #region Path Greedy Method
+    private void FindPathGreedy(Vector2 start, Vector2 finish)
+    {
+        pathFinished = false;
+        Vector2 currentPos = start;
+
+        text_status.text = "Searching...";
+        text_status.color = Color.yellow;
+
+        while (Vector2.Distance(currentPos, finish) > 0.1f)
+        {
+            // Add current point to path
+            path.Add(world[HF.V3_to_V2I(currentPos)]);
+
+            // Get the neighboring tiles
+            List<Vector2> neighbors = GetNeighbors(currentPos, finish);
+
+            // Find the closest neighbor to the finish point
+            Vector2 closestNeighbor = GetClosestNeighbor(neighbors, finish);
+
+            // Move towards the closest neighbor
+            currentPos = closestNeighbor;
+        }
+
+        // Add the finish point to the path
+        path.Add(world[HF.V3_to_V2I(finish)]);
+
+        pathFinished = true;
+        MarkPath(finish); // Finish up by drawing the path
+
+        text_status.text = "Finished.";
+        text_status.color = Color.green;
+
+        world[HF.V3_to_V2I(finish)].GetComponent<SpriteRenderer>().color = Color.blue;
+    }
+
+    private List<Vector2> GetNeighbors(Vector2 position, Vector2 target)
+    {
+        // You can define your own logic to get neighboring tiles.
+        // For simplicity, let's assume we're only considering adjacent tiles.
+        List<Vector2> neighbors = new List<Vector2>();
+
+        // Add adjacent tiles (up, down, left, right)
+        neighbors.Add(position + Vector2.up);
+        neighbors.Add(position + Vector2.down);
+        neighbors.Add(position + Vector2.left);
+        neighbors.Add(position + Vector2.right);
+
+        return neighbors;
+    }
+
+    private Vector2 GetClosestNeighbor(List<Vector2> neighbors, Vector2 target)
+    {
+        // Find the neighbor closest to the target
+        Vector2 closestNeighbor = neighbors[0];
+        float closestDistance = Vector2.Distance(neighbors[0], target);
+
+        for (int i = 1; i < neighbors.Count; i++)
+        {
+            float distance = Vector2.Distance(neighbors[i], target);
+            if (distance < closestDistance)
+            {
+                closestNeighbor = neighbors[i];
+                closestDistance = distance;
+            }
+        }
+
+        return closestNeighbor;
+    }
+
+    #endregion
+
+    #region OG Path Method
     private void FindPathNonIE(Vector2 start, Vector2 finish)
     {
         // The function above but just not a Coroutine
@@ -216,6 +416,7 @@ public class TargetingTestMgr : MonoBehaviour
 
         world[HF.V3_to_V2I(finish)].GetComponent<SpriteRenderer>().color = Color.blue;
     }
+    #endregion
 
     #region OLD METHOD
     /*
@@ -271,11 +472,14 @@ public class TargetingTestMgr : MonoBehaviour
             MarkTile(HF.V3_to_V2I(P.transform.position));
         }
 
+        
         if (GapCheckHelper(HF.V3_to_V2I(end)))
         {
             GapCheck();
         }
-        CleanPath(); // Clean the path
+        
+        //CleanPath(); // Clean the path
+        
     }
 
     private void GapCheck()
