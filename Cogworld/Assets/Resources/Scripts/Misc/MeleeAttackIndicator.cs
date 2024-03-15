@@ -10,7 +10,7 @@ public class MeleeAttackIndicator : MonoBehaviour
 
     public void Init(Item weapon, float rotation, bool hit)
     {
-        strikeline.transform.rotation = Quaternion.Euler(0f, 0f, rotation); // Rotate it (in radians)
+        strikeline.transform.rotation = Quaternion.Euler(0f, 0f, rotation * -45f);
         _weapon = weapon; // Set weapon var
         didHit = hit;
 
@@ -24,11 +24,11 @@ public class MeleeAttackIndicator : MonoBehaviour
         // Play the sound
         if(didHit) // Hit sound
         {
-            AudioManager.inst.CreateTempClip(this.transform.position, _weapon.itemData.shot.shotSound[Random.Range(0, _weapon.itemData.shot.shotSound.Count - 1)]);
+            AudioManager.inst.CreateTempClip(this.transform.position, _weapon.itemData.shot.shotSound[Random.Range(0, _weapon.itemData.shot.shotSound.Count - 1)], 0.7f);
         }
         else // Miss sound
         {
-            AudioManager.inst.CreateTempClip(this.transform.position, _weapon.itemData.meleeAttack.missSound[Random.Range(0, _weapon.itemData.meleeAttack.missSound.Count - 1)]);
+            AudioManager.inst.CreateTempClip(this.transform.position, _weapon.itemData.meleeAttack.missSound[Random.Range(0, _weapon.itemData.meleeAttack.missSound.Count - 1)], 0.7f);
         }
         
 

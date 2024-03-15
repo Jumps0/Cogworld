@@ -2951,5 +2951,27 @@ public static class Action
 
     }
 
+    /// <summary>
+    /// Determines if the specified weapon has the range to attack the given target from the specified positon.
+    /// </summary>
+    /// <param name="attacker">The position of the attacker.</param>
+    /// <param name="target">The position of the target.</param>
+    /// <param name="weapon">The weapon (Item) being used.</param>
+    /// <returns>If the target is within range. [True/False]</returns>
+    public static bool IsTargetWithinRange(Vector2Int attacker, Vector2Int target, Item weapon)
+    {
+        float weaponRange = 0f;
+        if (weapon.itemData.meleeAttack.isMelee)
+        {
+            weaponRange = 2; // Melee weapons have a range of "2";
+        }
+        else
+        {
+            weaponRange = weapon.itemData.shot.shotRange;
+        }
+
+        return Vector2.Distance(attacker, target) <= weaponRange;
+    }
+
     #endregion
 }

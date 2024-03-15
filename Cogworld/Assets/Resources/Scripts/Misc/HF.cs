@@ -21,7 +21,10 @@ public static class HF
     #region Vector Conversions
     public static Vector2Int V3_to_V2I(Vector3 v3)
     {
-        return new Vector2Int((int)v3.x, (int)v3.y);
+        Vector2Int vector = new Vector2Int(Mathf.RoundToInt(v3.x), Mathf.RoundToInt(v3.y));
+        return vector;
+
+        //return new Vector2Int((int)v3.x, (int)v3.y);
     }
 
     public static Vector2Int IV2_to_V2I(IntVector2 v2)
@@ -3547,7 +3550,7 @@ public static class HF
         float distance = Vector3.Distance(new Vector3Int((int)lowerPosition.x, (int)lowerPosition.y, 0), upperPosition);
         direction.Normalize();
         RaycastHit2D[] hits = Physics2D.RaycastAll(upperPosition, direction, distance);
-
+        Debug.Log(pos);
         // - Flags -
         GameObject wall = null;
         GameObject bot = null;

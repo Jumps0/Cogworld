@@ -187,10 +187,16 @@ public class AudioManager : MonoBehaviour
         {
             newAudio.GetComponent<AudioSource>().volume = volume;
         }
+        else
+        {
+            newAudio.GetComponent<AudioSource>().volume = 1f;
+        }
         newAudio.GetComponent<AudioSource>().playOnAwake = false;
         newAudio.GetComponent<AudioSource>().loop = false;
+        newAudio.GetComponent<AudioSource>().clip = clip;
 
-        newAudio.GetComponent<AudioSource>().PlayOneShot(clip, volume);
+        //newAudio.GetComponent<AudioSource>().PlayOneShot(clip, volume);
+        newAudio.GetComponent<AudioSource>().Play();
 
         StartCoroutine(DestroyTempClip(newAudio));
     }

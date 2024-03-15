@@ -1312,12 +1312,18 @@ public class PlayerData : MonoBehaviour
                 Item equippedWeapon = Action.FindActiveWeapon(this.GetComponent<Actor>());
                 if (equippedWeapon != null && !attackBuffer)
                 {
-                    StartCoroutine(AttackBuffer());
+                    Vector2Int mousePosition = HF.V3_to_V2I(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+
+                    if (!Action.IsTargetWithinRange(HF.V3_to_V2I(this.transform.position), mousePosition, equippedWeapon)) // Does this weapon have the range to reach the target?
+                    {
+                        return; // Don't attack if the target is not within range.
+                    }
+
+                    StartCoroutine(AttackBuffer()); // Activate the attacking (interaction) cooldown.
 
                     if (Action.IsMeleeWeapon(equippedWeapon))
                     {
-                        GameObject target = HF.GetTargetAtPosition(HF.V3_to_V2I(Camera.main.ScreenToWorldPoint(Input.mousePosition))); // Use ray-line to get target
-
+                        GameObject target = HF.GetTargetAtPosition(mousePosition); // Use ray-line to get target
                         Action.MeleeAction(this.GetComponent<Actor>(), target);
                     }
                     else
