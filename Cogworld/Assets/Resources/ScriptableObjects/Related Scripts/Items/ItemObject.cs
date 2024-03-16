@@ -511,6 +511,8 @@ public class ItemMeleeAttack
     public float visualAttackTime = 0.5f;
     public List<AudioClip> missSound;
 
+    public bool canDatajack = false; // Can do what datajacks do.
+
 }
 
 [System.Serializable]

@@ -332,7 +332,7 @@ public class TileBlock : MonoBehaviour
         {
             _collapseSprite.SetActive(true);
             _collapseAnim.enabled = true;
-            _collapseAnim.Play("");
+            _collapseAnim.Play("TileAnimCollapse");
         }
 
         // Change walkablility if needed

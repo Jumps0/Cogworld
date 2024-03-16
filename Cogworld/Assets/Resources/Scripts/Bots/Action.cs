@@ -184,6 +184,9 @@ public static class Action
                 int bonus_minDamage = (int)meleeBonuses[3];
                 float bonus_attackTime = meleeBonuses[4];
 
+                int attackTime = weapon.itemData.meleeAttack.delay;
+                attackTime = Mathf.RoundToInt(attackTime + (attackTime *  bonus_attackTime));
+
                 if(source.gameObject != PlayerData.inst.gameObject && !target.GetComponent<BotAI>().canSeePlayer) // Not the player and (currently) can't see the player
                 {
                     hitChance = 1.2f; // Base hit chance is increased!
@@ -330,7 +333,163 @@ public static class Action
                     GameManager.inst.CreateMeleeAttackIndicator(HF.V3_to_V2I(target.transform.position), angleDeg, weapon, false);
                     // - Sound is taken care of in ^ -
                 }
-                
+
+                #region Followups
+                List<Item> tertiaryWeapons = Action.GetMultiwieldingWeapons(source); // Look for any tertiary weapons
+
+                if (tertiaryWeapons.Count > 0) // Has tertiary weapons
+                {
+                    foreach (Item SW in tertiaryWeapons)
+                    {
+                        hitChance = hitChance + (hitChance * 0.1f); // +10% bonus
+                        hitChance = hitChance + (hitChance * bonus_followups); // Follow-ups bonuses
+
+                        attackTime = Mathf.RoundToInt(attackTime + (attackTime * (weapon.itemData.meleeAttack.delay / 2))); // Halved attack time
+
+                        #region Hit or Miss
+                        toHit = Random.Range(0f, 1f);
+                        if (toHit <= hitChance) // Hit!
+                        {
+                            // First of all, is the original target still alive?
+                            if (target != null)
+                            { // Yes continue.
+                                continue;
+                            }
+                            else // Uh oh, we need a new target!
+                            {
+                                Actor neighbor = Action.FindNewNeighboringEnemy(source);
+
+                                if(neighbor != null)
+                                {
+                                    target = neighbor.gameObject;
+                                }
+                                else
+                                {
+                                    // No valid neighbors. Bail out.
+                                    break;
+                                }
+                            }
+
+                            #region Damage Calculation
+                            // - Calculate the Damage -
+                            int damage = 0;
+
+                            Vector2Int lowHigh = weapon.itemData.meleeAttack.damage; // First get the flat damage rolls from the weapon
+                                                                                     // Then modify the minimum and maximum values if needed
+                            if (bonus_maxDamage > 0)
+                            {
+                                lowHigh.y = Mathf.RoundToInt(lowHigh.y + (lowHigh.y * bonus_maxDamage));
+                            }
+                            if (bonus_minDamage > 0)
+                            {
+                                lowHigh.x = Mathf.RoundToInt(lowHigh.x + (lowHigh.x * bonus_minDamage));
+                            }
+
+                            // Then get the new flat damage (semi-random)
+                            damage = Random.Range(lowHigh.x, lowHigh.y);
+
+                            // Then modify based on momentum
+                            if (momentum > 0)
+                            {
+                                float momentumBonus = 0;
+
+                                // Determine the mult
+                                int mult = 40;
+                                if (weapon.itemData.meleeAttack.damageType == ItemDamageType.Piercing)
+                                {
+                                    mult = 80;
+                                }
+                                // Get the speed
+                                float speed;
+                                if (source.GetComponent<PlayerData>())
+                                {
+                                    speed = PlayerData.inst.moveSpeed1;
+                                }
+                                else
+                                {
+                                    speed = target.GetComponent<Actor>().botInfo._movement.moveSpeedPercent;
+                                }
+                                // Calculate using: ([momentum] * [speed%] / 1200) * 40)
+                                momentumBonus = (momentum * speed / 1200 * mult);
+
+                                // Apply the momentum bonus
+                                damage = Mathf.RoundToInt(damage + (damage * momentumBonus));
+                            }
+
+                            // Now for sneak attacks
+                            if (source.gameObject != PlayerData.inst.gameObject && !target.GetComponent<BotAI>().canSeePlayer) // Not the player and (currently) can't see the player
+                            {
+                                damage *= 2; // +100% damage (so x2)
+                            }
+
+                            #endregion
+
+                            #region Damage Dealing
+                            // - Deal the damage -
+                            if (!noCrit && Random.Range(0f, 1f) <= projData.critChance) // Critical hit?
+                            {
+                                // A crit!
+                                // TODO: Crits
+                            }
+                            if (target.GetComponent<PlayerData>()) // Player being attacked
+                            {
+                                if (Random.Range(0f, 1f) < PlayerData.inst.currentCoreExposure) // Hits the core
+                                {
+                                    PlayerData.inst.currentHealth -= damage;
+                                }
+                                else // Hits a part
+                                {
+                                    DamageRandomPart(target.GetComponent<Actor>(), damage, types);
+                                }
+
+                                // Do a calc message
+                                string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHit * 100}%) Hit";
+
+                                UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange, UIManager.inst.warmYellow, false, true);
+
+                                message = $"Recieved damage: {damage}";
+                                UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange, UIManager.inst.warmYellow, false, true);
+                            }
+                            else // Bot being attacked
+                            {
+                                if (Random.Range(0f, 1f) < target.GetComponent<Actor>().botInfo.coreExposure) // Hits the core
+                                {
+                                    target.GetComponent<Actor>().currentHealth -= damage;
+                                }
+                                else // Hits a part
+                                {
+                                    DamageRandomPart(target.GetComponent<Actor>(), damage, types);
+                                }
+
+
+                                // Show a popup that says how much damage occured
+                                if (!target.GetComponent<PlayerData>())
+                                {
+                                    UI_CombatPopup(target.GetComponent<Actor>(), damage);
+                                }
+
+                                // Do a calc message
+                                string message = $"{weapon.itemData.name} ({toHit * 100}%) Hit";
+
+                                UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+                            }
+                            #endregion
+
+                            // - No additional visuals/audio
+                        }
+                        else // Miss.
+                        {
+                            // - No additional visuals/audio
+                        }
+
+                        // Subtract cost
+                        Action.DoWeaponAttackCost(source, weapon);
+
+                        #endregion
+                    }
+                }
+
+                #endregion
             }
         }
         else // Attacking a structure
@@ -347,10 +506,12 @@ public static class Action
             int momentum = source.momentum; // Get momentum
                                             // Calculate and assign the various melee bonuses
             List<float> meleeBonuses = Action.GetMeleeBonuses(source.GetComponent<Actor>(), weapon);
-            float bonus_followups = meleeBonuses[0];
             float bonus_maxDamage = meleeBonuses[1];
             int bonus_minDamage = (int)meleeBonuses[3];
             float bonus_attackTime = meleeBonuses[4];
+
+            int attackTime = weapon.itemData.meleeAttack.delay;
+            attackTime = Mathf.RoundToInt(attackTime + (attackTime * bonus_attackTime));
 
             int armor = 0; // The armor value of the target
 
@@ -465,22 +626,11 @@ public static class Action
             }
             #endregion
 
+            // No follow-ups for structures
         }
 
         // Finally, subtract the attack cost
-        if (source.GetComponent<PlayerData>())
-        {
-            PlayerData.inst.currentHeat += weapon.itemData.meleeAttack.heat;
-            PlayerData.inst.currentMatter += weapon.itemData.meleeAttack.matter;
-            PlayerData.inst.currentEnergy += weapon.itemData.meleeAttack.energy;
-        }
-        else
-        {
-            source.currentHeat += weapon.itemData.meleeAttack.heat;
-            source.currentMatter += weapon.itemData.meleeAttack.matter;
-            source.currentEnergy += weapon.itemData.meleeAttack.energy;
-            // energy?
-        }
+        Action.DoWeaponAttackCost(source, weapon);
 
         source.momentum = 0;
         TurnManager.inst.EndTurn(source); // Alter this later
@@ -738,18 +888,7 @@ public static class Action
 
 
         // After we're done, we need to subtract the cost to fire the specified weapon from the attacker.
-        if (source.GetComponent<PlayerData>())
-        {
-            PlayerData.inst.currentHeat += shotData.shotHeat;
-            PlayerData.inst.currentMatter += shotData.shotMatter;
-            PlayerData.inst.currentEnergy += shotData.shotEnergy;
-        }
-        else
-        {
-            source.currentHeat += shotData.shotHeat;
-            source.currentMatter += shotData.shotMatter;
-            source.currentEnergy += shotData.shotEnergy;
-        }
+        Action.DoWeaponAttackCost(source, weapon);
 
         source.momentum = 0;
         TurnManager.inst.EndTurn(source); // Alter this later
@@ -1286,6 +1425,51 @@ public static class Action
     public static bool IsMeleeWeapon(Item item)
     {
         return item.itemData.meleeAttack.isMelee;
+    }
+
+    /// <summary>
+    /// Locates equipped but not enabled melee weapons tertiary to an enabled one for multi-wielding. Returns a list of any found weapons.
+    /// </summary>
+    /// <param name="actor">The bot to look inside of.</param>
+    /// <returns>A list of equipped but non-enabled weapons.</returns>
+    public static List<Item> GetMultiwieldingWeapons(Actor actor)
+    {
+        List<Item> weapons = new List<Item>();
+        Item mainWeapon = Action.FindMeleeWeapon(actor);
+
+        if (mainWeapon != null) // Has a melee weapon already in use
+        {
+            if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
+            {
+                foreach (BotArmament item in actor.botInfo.armament)
+                {
+                    if (item._item.data.Id >= 0)
+                    {
+                        if (item._item.meleeAttack.isMelee && item._item.data != mainWeapon && !item._item.meleeAttack.canDatajack) // Is a melee weapon, isn't the main weapon, and isn't a datajack
+                        {
+                            weapons.Add(item._item.data);
+                        }
+                    }
+
+
+                }
+            }
+            else // Player
+            {
+                foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invWeapon.Container.Items)
+                {
+                    if (item.item.Id >= 0)
+                    {
+                        if (item.item.itemData.meleeAttack.isMelee && item.item != mainWeapon && !item.item.itemData.meleeAttack.canDatajack) // Is a melee weapon, isn't the main weapon, and isn't a datajack
+                        {
+                            weapons.Add(item.item);
+                        }
+                    }
+                }
+            }
+        }
+
+        return weapons;
     }
 
     /// <summary>
@@ -2971,6 +3155,62 @@ public static class Action
         }
 
         return Vector2.Distance(attacker, target) <= weaponRange;
+    }
+
+    /// <summary>
+    /// Searches for a new (directly) neighboring enemy of the source actor. Used for follow-up melee attacks.
+    /// </summary>
+    /// <param name="source">The actor attacking (which we check for neighbors around).</param>
+    /// <returns>A new target actor if possible.</returns>
+    public static Actor FindNewNeighboringEnemy(Actor source)
+    {
+        foreach (Entity E in GameManager.inst.entities)
+        {
+            if(Vector2.Distance(HF.V3_to_V2I(source.transform.position), HF.V3_to_V2I(E.transform.position)) < 1.55f) // Is a neighbor (could probably be done better).
+            {
+                if(HF.DetermineRelation(source, E.GetComponent<Actor>()) == BotRelation.Hostile) // Is an enemy.
+                { // NOTE: This avoids comical situations where the player follows up into attacking a neutral bot which is probably a good thing.
+                    return E.GetComponent<Actor>(); // We've found one.
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public static void DoWeaponAttackCost(Actor source, Item weapon)
+    {
+        if (weapon.itemData.meleeAttack.isMelee)
+        {
+            if (source.GetComponent<PlayerData>())
+            {
+                PlayerData.inst.currentHeat += weapon.itemData.meleeAttack.heat;
+                PlayerData.inst.currentMatter += weapon.itemData.meleeAttack.matter;
+                PlayerData.inst.currentEnergy += weapon.itemData.meleeAttack.energy;
+            }
+            else
+            {
+                source.currentHeat += weapon.itemData.meleeAttack.heat;
+                source.currentMatter += weapon.itemData.meleeAttack.matter;
+                source.currentEnergy += weapon.itemData.meleeAttack.energy;
+                // energy?
+            }
+        }
+        else
+        {
+            if (source.GetComponent<PlayerData>())
+            {
+                PlayerData.inst.currentHeat += weapon.itemData.shot.shotHeat;
+                PlayerData.inst.currentMatter += weapon.itemData.shot.shotMatter;
+                PlayerData.inst.currentEnergy += weapon.itemData.shot.shotEnergy;
+            }
+            else
+            {
+                source.currentHeat += weapon.itemData.shot.shotHeat;
+                source.currentMatter += weapon.itemData.shot.shotMatter;
+                source.currentEnergy += weapon.itemData.shot.shotEnergy;
+            }
+        }
     }
 
     #endregion
