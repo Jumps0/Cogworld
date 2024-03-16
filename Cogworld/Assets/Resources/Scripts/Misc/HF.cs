@@ -3542,6 +3542,11 @@ public static class HF
         return blocker;
     }
 
+    /// <summary>
+    /// Attempts to locate the most relevant object to target at the specified position. Walls, bots, doors, machines, floors, etc.
+    /// </summary>
+    /// <param name="pos">The location to check at.</param>
+    /// <returns>The most relevant game object at the specified position. Most common scenario is a floor/wall.</returns>
     public static GameObject GetTargetAtPosition(Vector2Int pos)
     {
         Vector3 lowerPosition = new Vector3(pos.x, pos.y, 2);
@@ -3647,6 +3652,24 @@ public static class HF
     public static bool ActorInBotFOV(Actor spotter, Actor target)
     {
         return spotter.FieldofView.Contains(new Vector3Int((int)target.transform.position.x, (int)target.transform.position.y, (int)target.transform.position.z));
+    }
+
+    /// <summary>
+    /// Tries to locate an entity inside GameManager's entity list based on a specified position. Returns that actor.
+    /// </summary>
+    /// <param name="pos">The position to search for.</param>
+    /// <returns>The actor found at the position (if one is found).</returns>
+    public static Actor FindActorAtPosition(Vector2 pos)
+    {
+        foreach (Entity E in GameManager.inst.entities)
+        {
+            if(HF.V3_to_V2I(E.transform.position) == pos)
+            {
+                return E as Actor;
+            }
+        }
+
+        return null;
     }
 
     #endregion

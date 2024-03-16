@@ -665,15 +665,30 @@ public static class Action
         // TODO: Add in functionality for AOE attacks because they are different!
         if (weapon.itemData.explosion.radius > 0)
         {
-            // Basically we need to gather up EVERYTHING within the explosion radius and handle that individually.
-            #region Target Gathering
+            
             List<GameObject> targets = new List<GameObject>();
 
             int falloff = weapon.itemData.explosion.falloff;
-
-            // - First off lets gather all the tiles (in a square) that are around the target tile, and within range.
             int range = weapon.itemData.explosion.radius;
             Vector2Int center = new Vector2Int(Mathf.RoundToInt(target.transform.position.x), Mathf.RoundToInt(target.transform.position.y));
+
+            // == We are going to start in the center and then work outwards, dealing with any obstructions as we go. ==
+            // The general idea that we will follow is:
+            // - Bots will NEVER block explosion "waves", it goes straight through them (same with floor tiles, duh).
+            // - Machines will initally block explosions unless they are destroyed by said explosion.
+            // - Walls will block explosions unless they are destroyed by said explosion.
+            // - Doors act similar to walls (unless they are open).
+
+
+            // > Uniquely we will do the center tile alone incase the user shoots into a wall too strong for them to kill.
+            bool centerAttack = Action.IndividualAOEAttack(source, HF.GetTargetAtPosition(center), weapon);
+
+
+
+
+            // ------ OLD CODE BELOW -----
+            // - First off lets gather all the tiles (in a square) that are around the target tile, and within range.
+
             Vector2Int BL_corner = new Vector2Int(center.x - range, center.y - range);
 
             List<GameObject> tiles = new List<GameObject>();
@@ -706,9 +721,14 @@ public static class Action
                     {
                         targets.Add(MapManager.inst._layeredObjsRealized[pos]);
                     }
+                    Actor victim = HF.FindActorAtPosition(pos);
+                    if(victim != null)
+                    {
+                        targets.Add(victim.gameObject);
+                    }
                 }
             }
-            #endregion
+            
 
             // Then go through each of the targets and deal with them individually
             foreach(GameObject T in targets)
@@ -985,9 +1005,19 @@ public static class Action
     /// <param name="source">The attacker.</param>
     /// <param name="target">The thing being attacked.</param>
     /// <param name="weapon">The weapon being used.</param>
-    public static void IndividualAOEAttack(Actor source, GameObject target, Item weapon)
+    /// <returns>Returns if the attack is able to pass through the target object.</returns>
+    public static bool IndividualAOEAttack(Actor source, GameObject target, Item weapon)
     {
+        bool permiable = true;
 
+        // There are a couple things we could be attacking here:
+        // - Walls
+        // - Bots
+        // - Machines
+        // - Doors
+        // - The floor
+
+        return true;
     }
 
     #region HelperFunctions
