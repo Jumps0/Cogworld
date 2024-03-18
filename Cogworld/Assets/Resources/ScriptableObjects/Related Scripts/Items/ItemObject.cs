@@ -378,6 +378,9 @@ public class ItemEffect
 
     [Header("Melee Bonuses")]
     public ItemMeleeBonus meleeBonus;
+
+    [Header("Launcher Bonuses")]
+    public ItemLauncherBonuses launcherBonus;
 }
 
 public enum ItemQuality
@@ -640,8 +643,6 @@ public class ItemBetterHitEffects
     public bool bypassArmor = false;
     [Tooltip("Increases target core exposure. Applies to only gun, cannon, and melee attacks.")]
     public bool coreExposureEffect = false;
-    [Tooltip("Increases launcher accuracy by ##%. Also prevents launcher misfires caused by system corruption.")]
-    public bool launcherAccuracy = false;
 }
 
 [System.Serializable]
@@ -723,6 +724,19 @@ public class ItemMeleeBonus
     public bool actuator_stacks = true;
     public float actuator_cap = 0.5f;
 
+}
+
+[System.Serializable]
+[Tooltip("Various bonuses related to launchers.")]
+public class ItemLauncherBonuses
+{
+    public bool hasEffect = false;
+
+    [Tooltip("Increases launcher accuracy by ##% (0.##). Also prevents launcher misfires caused by system corruption.")]
+    public float launcherAccuracy = 0f;
+    [Tooltip("Reduces firing time for any launcher by ##%, if fired alone. Incompatible with Weapon Cyclers and autonomous or overloaded weapons.")]
+    public float launcherLoading = 0f;
+    public bool stacks = false;
 }
 
 #endregion

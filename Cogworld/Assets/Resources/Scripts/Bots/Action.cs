@@ -687,6 +687,7 @@ public static class Action
 
 
             // ------ OLD CODE BELOW -----
+            #region OLD CODE - DONT USE THIS
             // - First off lets gather all the tiles (in a square) that are around the target tile, and within range.
 
             Vector2Int BL_corner = new Vector2Int(center.x - range, center.y - range);
@@ -741,6 +742,7 @@ public static class Action
                 
 
             }
+            #endregion
         }
         else
         {
@@ -1017,7 +1019,102 @@ public static class Action
         // - Doors
         // - The floor
 
-        return true;
+        // > Get launcher loader/accuracy bonuses <
+        float bonus_launcherAccuracy = 0f;
+        float bonus_launcherLoading = 0f;
+        #region Loader/Accuarcy bonuses
+
+        int activeWeapons = Action.CountActiveWeapons(source); // Some bonuses only apply with a single weapon active.
+        bool stacks = true;
+
+        if (source != PlayerData.inst.GetComponent<Actor>()) // Bot
+        {
+            foreach (BotArmament item in source.botInfo.components)
+            {
+                if (item._item.data.Id >= 0 && stacks)
+                {
+                    if (item._item.itemEffect.Count > 0 && item._item.itemEffect[0].launcherBonus.hasEffect)
+                    {
+                        bonus_launcherAccuracy += item._item.itemEffect[0].launcherBonus.launcherAccuracy;
+                        if(activeWeapons == 1)
+                            bonus_launcherLoading += item._item.itemEffect[0].launcherBonus.launcherLoading;
+
+                        if (item._item.itemEffect[0].launcherBonus.stacks)
+                        {
+                            stacks = true;
+                        }
+                        else
+                        {
+                            stacks = false;
+                        }
+                    }
+                }
+            }
+        }
+        else // Player
+        {
+            foreach (InventorySlot item in source.GetComponent<PartInventory>()._invUtility.Container.Items)
+            {
+                if (item.item.Id >= 0 && stacks)
+                {
+                    if (item.item.itemData.itemEffect.Count > 0 && item.item.itemData.itemEffect[0].launcherBonus.hasEffect)
+                    {
+                        bonus_launcherAccuracy += item.item.itemData.itemEffect[0].launcherBonus.launcherAccuracy;
+                        if (activeWeapons == 1)
+                            bonus_launcherLoading += item.item.itemData.itemEffect[0].launcherBonus.launcherLoading;
+
+                        if (item.item.itemData.itemEffect[0].launcherBonus.stacks)
+                        {
+                            stacks = true;
+                        }
+                        else
+                        {
+                            stacks = false;
+                        }
+                    }
+                }
+
+            }
+        }
+        #endregion
+
+        if (target.GetComponent<Actor>()) // We are attacking a bot
+        {
+            // We need to do standard hit/miss for this.
+
+            permiable = true; // Bots are always permiable
+
+
+        }
+        else if(target.GetComponent<MachinePart>()) // We are attacking a machine
+        {
+            // For machines we can't miss, we just need to check if the damage we do beats the machine's armor.
+
+            permiable = false; // Machines block explosions unless they are destroyed
+
+        }
+        else if (target.GetComponent<TileBlock>()) // Some kind of tile
+        {
+            // For structures we can't miss, we just need to check if the damage we do beats the structure's armor.
+            if(target.GetComponent<TileBlock>().tileInfo.type == TileType.Door) // A door
+            {
+                // Is the door open?
+                permiable = target.GetComponent<DoorLogic>().state; // Also if this is destroyed it becomes permiable either way
+
+            }
+            else if (target.GetComponent<TileBlock>().tileInfo.type == TileType.Wall) // A wall
+            {
+                permiable = false; // Wall's will block the explosion (unless they are destroyed)
+
+            }
+            else if (target.GetComponent<TileBlock>().tileInfo.type == TileType.Floor) // A floor
+            {
+                permiable = true; // Floor tiles won't block the explosion
+
+            }
+        }
+
+        return permiable;
     }
 
     #region HelperFunctions
@@ -1445,6 +1542,45 @@ public static class Action
         {
             return activeItem;
         }
+    }
+
+    /// <summary>
+    /// Counts the number of currently ACTIVE weapons this bot has.
+    /// </summary>
+    /// <param name="actor">The bot in question.</param>
+    /// <returns>The ammount of currently ACTIVE weapons this bot has.</returns>
+    public static int CountActiveWeapons(Actor actor)
+    {
+        int activeWeapons = 0;
+
+        if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
+        {
+            foreach (BotArmament item in actor.botInfo.armament)
+            {
+                if (item._item.data.Id >= 0)
+                {
+                    if (item._item.data.state)
+                    {
+                        activeWeapons++;
+                    }
+                }
+            }
+        }
+        else // Player
+        {
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invWeapon.Container.Items)
+            {
+                if (item.item.Id >= 0)
+                {
+                    if (item.item.state)
+                    {
+                        activeWeapons++;
+                    }
+                }
+            }
+        }
+
+        return activeWeapons;
     }
 
     /// <summary>
