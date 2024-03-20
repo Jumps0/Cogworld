@@ -671,6 +671,7 @@ public static class Action
             int falloff = weapon.itemData.explosion.falloff;
             int radius = weapon.itemData.explosion.radius;
             Vector2Int center = new Vector2Int(Mathf.RoundToInt(target.transform.position.x), Mathf.RoundToInt(target.transform.position.y));
+            List<Vector2Int> effectedTiles = new List<Vector2Int>();
 
             // == We are going to start in the center and then work outwards, dealing with any obstructions as we go. ==
             // The general idea that we will follow is:
@@ -719,6 +720,8 @@ public static class Action
                         // Perform AOE attack on the current tile
                         bool blocksExplosion = Action.IndividualAOEAttack(source, HF.GetTargetAtPosition(tilePosition), weapon);
                         blockingTiles.Add(tilePosition, blocksExplosion);
+
+                        effectedTiles.Add(tilePosition);
                     }
                 }
 
@@ -737,6 +740,7 @@ public static class Action
             #region Visuals & Audio
             // - Create the visuals on each effected tile. These vary greatly per weapon.
             // TODO: Explosion visuals
+            CFXManager.inst.CreateExplosionFX(center, weapon.itemData, effectedTiles);
             // - Play the explosion sound where the attack lands.
             AudioManager.inst.CreateTempClip(new Vector3(center.x, center.y, 0f), weapon.itemData.explosion.explosionSound);
             #endregion

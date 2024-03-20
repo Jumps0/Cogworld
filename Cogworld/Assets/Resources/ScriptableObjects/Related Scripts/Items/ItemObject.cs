@@ -534,6 +534,9 @@ public class ItemExplosion
 
     [Header("Audio")]
     public AudioClip explosionSound;
+    [Header("Visuals")]
+    public ExplosionGFX explosionGFX;
+
 }
 
 #region Misc Effects
