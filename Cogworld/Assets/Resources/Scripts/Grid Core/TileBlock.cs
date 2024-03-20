@@ -10,6 +10,9 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+/// <summary>
+/// A script used for the physical *real world* tiles used to build the world. What this tile is gets determined by its "tileInfo" (a TileObject variable).
+/// </summary>
 public class TileBlock : MonoBehaviour
 {
     [SerializeField] private Color _baseColor, _offsetColor;
@@ -336,7 +339,7 @@ public class TileBlock : MonoBehaviour
         }
 
         // Change walkablility if needed
-        if(tileInfo.type == TileType.Wall || tileInfo.type == TileType.Machine)
+        if(tileInfo.type == TileType.Wall || tileInfo.type == TileType.Machine || tileInfo.type == TileType.Door)
         {
             walkable = true;
         }
@@ -363,11 +366,17 @@ public class TileBlock : MonoBehaviour
         {
             _collapseSprite.SetActive(false);
             _collapseAnim.enabled = false;
+        }
+
+        // Change walkablility if needed
+        if (tileInfo.type == TileType.Wall || tileInfo.type == TileType.Machine || tileInfo.type == TileType.Door)
+        {
             walkable = false;
         }
 
         // Remove from MapManager list
-        MapManager.inst.damagedStructures.Remove(this.gameObject);
+        if(MapManager.inst.damagedStructures.Contains(this.gameObject))
+            MapManager.inst.damagedStructures.Remove(this.gameObject);
 
     }
 

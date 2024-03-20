@@ -3633,6 +3633,29 @@ public static class HF
     }
 
     /// <summary>
+    /// Similar to GetTargetAtPosition except it returns the neighboring targets AROUND the specified position as a list.
+    /// </summary>
+    /// <param name="pos">The center position.</param>
+    /// <returns>A list of (most relevant) neighboring gameObjects.</returns>
+    public static List<GameObject> GetNeighboringTargetsAtPosition(Vector2Int pos)
+    {
+        List<GameObject> neighbors = new List<GameObject>();
+
+        neighbors.Add(HF.GetTargetAtPosition(pos + Vector2Int.up));
+        neighbors.Add(HF.GetTargetAtPosition(pos + Vector2Int.down));
+        neighbors.Add(HF.GetTargetAtPosition(pos + Vector2Int.left));
+        neighbors.Add(HF.GetTargetAtPosition(pos + Vector2Int.right));
+
+        // Diagonals
+        neighbors.Add(HF.GetTargetAtPosition(pos + Vector2Int.up + Vector2Int.left));
+        neighbors.Add(HF.GetTargetAtPosition(pos + Vector2Int.up + Vector2Int.right));
+        neighbors.Add(HF.GetTargetAtPosition(pos + Vector2Int.down + Vector2Int.left));
+        neighbors.Add(HF.GetTargetAtPosition(pos + Vector2Int.down + Vector2Int.right));
+
+        return neighbors;
+    }
+
+    /// <summary>
     /// Determines if the actor in question is within the players FOV (list).
     /// </summary>
     /// <param name="actor">The actor in question.</param>

@@ -531,6 +531,9 @@ public class ItemExplosion
     public bool hasSpectrum = false;
     public float disruption;
     public int salvage;
+
+    [Header("Audio")]
+    public AudioClip explosionSound;
 }
 
 #region Misc Effects

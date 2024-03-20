@@ -669,7 +669,7 @@ public static class Action
             List<GameObject> targets = new List<GameObject>();
 
             int falloff = weapon.itemData.explosion.falloff;
-            int range = weapon.itemData.explosion.radius;
+            int radius = weapon.itemData.explosion.radius;
             Vector2Int center = new Vector2Int(Mathf.RoundToInt(target.transform.position.x), Mathf.RoundToInt(target.transform.position.y));
 
             // == We are going to start in the center and then work outwards, dealing with any obstructions as we go. ==
@@ -683,65 +683,62 @@ public static class Action
             // > Uniquely we will do the center tile alone incase the user shoots into a wall too strong for them to kill.
             bool centerAttack = Action.IndividualAOEAttack(source, HF.GetTargetAtPosition(center), weapon);
 
+            // Create a dictionary to keep track of blocking tiles
+            Dictionary<Vector2Int, bool> blockingTiles = new Dictionary<Vector2Int, bool>();
 
+            // Polar coordinates
+            int x = 0;
+            int y = 0;
+            int dx = 0;
+            int dy = -1;
+            int t = Mathf.Max(radius * radius, radius * radius * radius) / 2;
 
-
-            // ------ OLD CODE BELOW -----
-            #region OLD CODE - DONT USE THIS
-            // - First off lets gather all the tiles (in a square) that are around the target tile, and within range.
-
-            Vector2Int BL_corner = new Vector2Int(center.x - range, center.y - range);
-
-            List<GameObject> tiles = new List<GameObject>();
-            for (int x = 0 + BL_corner.x; x < (range * 2) + 1 + BL_corner.x; x++)
+            // We will loop through in a spiral pattern outward from the center.
+            for (int i = 0; i < radius * radius; i++)
             {
-                for (int y = 0 + BL_corner.y; y < (range * 2) + 1 + BL_corner.y; y++)
+                if (-radius / 2 <= x && x <= radius / 2 && -radius / 2 <= y && y <= radius / 2) // Within range
                 {
-                    if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(x, y)))
+                    Vector2Int tilePosition = new Vector2Int(Mathf.RoundToInt(center.x) + x, Mathf.RoundToInt(center.y) + y);
+
+                    // Next check if this position is blocked by another tile via raycast
+                    RaycastHit2D[] hits = Physics2D.RaycastAll(center, tilePosition);
+                    bool clear = true;
+
+                    foreach (var H in hits) // Go through the hits and see if there are any obstructions.
                     {
-                        tiles.Add(MapManager.inst._allTilesRealized[new Vector2Int(x, y)].gameObject);
+                        Vector2Int hPos = new Vector2Int(Mathf.RoundToInt(H.transform.position.x), Mathf.RoundToInt(H.transform.position.y));
+
+                        if (blockingTiles.ContainsKey(hPos) && blockingTiles[hPos] == false)
+                        {
+                            clear = false;
+                        }
+                    }
+
+                    if (clear) // Our path is clear
+                    {
+                        // Perform AOE attack on the current tile
+                        bool blocksExplosion = Action.IndividualAOEAttack(source, HF.GetTargetAtPosition(tilePosition), weapon);
+                        blockingTiles.Add(tilePosition, blocksExplosion);
                     }
                 }
-            }
 
-            // - Now we need to go through the very fun process of refining this square into a circle.
-            foreach (GameObject T in tiles)
-            {
-                float tileDistiance = Vector2Int.Distance(HF.V3_to_V2I(T.transform.position), center);
-                Vector2Int pos = HF.V3_to_V2I(T.transform.position);
-
-                // Check if the distance is within the radius of the circle
-                if (tileDistiance <= range)
+                if (--t == 0)
                 {
-                    // This is in the radius, start gathering victims
-                    if (MapManager.inst._allTilesRealized.ContainsKey(pos))
-                    {
-                        targets.Add(MapManager.inst._allTilesRealized[pos].gameObject);
-                    }
-                    if (MapManager.inst._layeredObjsRealized.ContainsKey(pos))
-                    {
-                        targets.Add(MapManager.inst._layeredObjsRealized[pos]);
-                    }
-                    Actor victim = HF.FindActorAtPosition(pos);
-                    if(victim != null)
-                    {
-                        targets.Add(victim.gameObject);
-                    }
+                    t = radius * radius;
+                    int temp = dx;
+                    dx = -dy;
+                    dy = temp;
                 }
+                x += dx;
+                y += dy;
             }
-            
 
-            // Then go through each of the targets and deal with them individually
-            foreach(GameObject T in targets)
-            {
-                float f_distance = Vector2.Distance(HF.V3_to_V2I(T.transform.position), center);
-                int distance = Mathf.RoundToInt(f_distance);
-
-                int flatDamage = Random.Range(weapon.itemData.explosion.damageLow, weapon.itemData.explosion.damageHigh); // First find the flat damage
-                int damage = flatDamage + (distance * falloff); // Then handle the damage falloff.
-                
-
-            }
+            // > Visuals & Audio <
+            #region Visuals & Audio
+            // - Create the visuals on each effected tile. These vary greatly per weapon.
+            // TODO: Explosion visuals
+            // - Play the explosion sound where the attack lands.
+            AudioManager.inst.CreateTempClip(new Vector3(center.x, center.y, 0f), weapon.itemData.explosion.explosionSound);
             #endregion
         }
         else
@@ -1084,7 +1081,83 @@ public static class Action
 
             permiable = true; // Bots are always permiable
 
+            float toHitChance = 0f;
+            bool noCrit = false;
+            List<ArmorType> types = new List<ArmorType>();
+            ItemProjectile projData = weapon.itemData.projectile;
+            int projAmount = weapon.itemData.projectileAmount;
 
+            (toHitChance, noCrit, types) = Action.CalculateRangedHitChance(source, target.GetComponent<Actor>(), weapon);
+
+            #region Hit or Miss
+            float rand = Random.Range(0f, 1f);
+            if (rand < toHitChance) // Success, a hit!
+            {
+                // Deal Damage to the target
+                int damageAmount = (int)Random.Range(projData.damage.x, projData.damage.y);
+
+                if (target.GetComponent<PlayerData>()) // Player being attacked
+                {
+                    if (rand < PlayerData.inst.currentCoreExposure) // Hits the core
+                    {
+                        PlayerData.inst.currentHealth -= damageAmount;
+                    }
+                    else // Hits a part
+                    {
+                        DamageRandomPart(target.GetComponent<Actor>(), damageAmount, types);
+                    }
+
+                    // Do a calc message
+                    string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Hit";
+
+                    UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange, UIManager.inst.warmYellow, false, true);
+
+                    message = $"Recieved damage: {damageAmount}";
+                    UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange, UIManager.inst.warmYellow, false, true);
+                }
+                else // Bot being attacked
+                {
+                    if (rand < target.GetComponent<Actor>().botInfo.coreExposure) // Hits the core
+                    {
+                        target.GetComponent<Actor>().currentHealth -= damageAmount;
+                    }
+                    else // Hits a part
+                    {
+                        DamageRandomPart(target.GetComponent<Actor>(), damageAmount, types);
+                    }
+
+
+                    // Show a popup that says how much damage occured
+                    if (!target.GetComponent<PlayerData>())
+                    {
+                        UI_CombatPopup(target.GetComponent<Actor>(), damageAmount);
+                    }
+
+                    // Do a calc message
+                    string message = $"{weapon.itemData.name} ({toHitChance * 100}%) Hit";
+
+                    UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+                }
+            }
+            else
+            {  // ---------------------------- // Failure, a miss.
+
+                if (target.GetComponent<PlayerData>()) // Player being targeted
+                {
+                    // Do a calc message
+                    string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Miss";
+
+                    UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange_faded, UIManager.inst.corruptOrange, false, true);
+                }
+                else // AI being targeted
+                {
+                    // Do a calc message
+                    string message = $"{weapon.itemData.name} ({toHitChance * 100}%) Miss";
+
+                    UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.dullGreen, UIManager.inst.normalGreen, false, true);
+                }
+            }
+            #endregion
         }
         else if(target.GetComponent<MachinePart>()) // We are attacking a machine
         {
