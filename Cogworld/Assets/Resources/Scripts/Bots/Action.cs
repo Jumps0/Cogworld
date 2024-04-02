@@ -665,7 +665,6 @@ public static class Action
         // TODO: Add in functionality for AOE attacks because they are different!
         if (weapon.itemData.explosion.radius > 0)
         {
-            
             List<GameObject> targets = new List<GameObject>();
 
             int falloff = weapon.itemData.explosion.falloff;
@@ -682,7 +681,7 @@ public static class Action
 
 
             // > Uniquely we will do the center tile alone incase the user shoots into a wall too strong for them to kill.
-            bool centerAttack = Action.IndividualAOEAttack(source, HF.GetTargetAtPosition(center), weapon);
+            bool centerAttack = Action.IndividualAOEAttack(source, HF.GetTargetAtPosition(center), weapon, 0);
 
             // Create a dictionary to keep track of blocking tiles
             Dictionary<Vector2Int, bool> blockingTiles = new Dictionary<Vector2Int, bool>();
@@ -700,6 +699,7 @@ public static class Action
                 if (-radius / 2 <= x && x <= radius / 2 && -radius / 2 <= y && y <= radius / 2) // Within range
                 {
                     Vector2Int tilePosition = new Vector2Int(Mathf.RoundToInt(center.x) + x, Mathf.RoundToInt(center.y) + y);
+                    int distFromCenter = Mathf.RoundToInt(Vector2.Distance(new Vector2(x, y), center));
 
                     // Next check if this position is blocked by another tile via raycast
                     RaycastHit2D[] hits = Physics2D.RaycastAll(center, tilePosition);
@@ -718,7 +718,7 @@ public static class Action
                     if (clear) // Our path is clear
                     {
                         // Perform AOE attack on the current tile
-                        bool blocksExplosion = Action.IndividualAOEAttack(source, HF.GetTargetAtPosition(tilePosition), weapon);
+                        bool blocksExplosion = Action.IndividualAOEAttack(source, HF.GetTargetAtPosition(tilePosition), weapon, (distFromCenter * falloff));
                         blockingTiles.Add(tilePosition, blocksExplosion);
 
                         effectedTiles.Add(tilePosition);
@@ -854,18 +854,10 @@ public static class Action
             {
                 // It's a structure, we cannot (and should not) miss.
 
-                int armor = 0; // The armor value of the target
                 int damageAmount = (int)Random.Range(projData.damage.x, projData.damage.y); // The damage we will do (must beat armor value to be effective).
 
-                // What are we attacking?
-                if (target.GetComponent<MachinePart>()) // Some type of machine
-                {
-                    armor = target.GetComponent<MachinePart>().armor.y;
-                }
-                else if (target.GetComponent<TileBlock>()) // A wall or door
-                {
-                    armor = target.GetComponent<TileBlock>().tileInfo.armor;
-                }
+                // Get the armor value
+                int armor = HF.TryGetStructureArmor(target);
 
                 #region Beat the Armor?
                 if (damageAmount > armor) // Success! Destroy the structure
@@ -883,9 +875,12 @@ public static class Action
                         target.GetComponent<MachinePart>().DestroyMe();
 
                         // Do a calc message
-                        string message = $"{target.name} Destroyed ({damageAmount} > {armor})";
+                        if (target.GetComponent<MachinePart>().parentPart == target.GetComponent<MachinePart>()) // Only if this is the parent part
+                        {
+                            string message = $"{target.name} Destroyed ({damageAmount} > {armor})";
 
-                        UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+                            UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+                        }
                     }
                     else if (target.GetComponent<TileBlock>()) // A wall or door
                     {
@@ -1009,10 +1004,10 @@ public static class Action
     /// <param name="target">The thing being attacked.</param>
     /// <param name="weapon">The weapon being used.</param>
     /// <returns>Returns if the attack is able to pass through the target object.</returns>
-    public static bool IndividualAOEAttack(Actor source, GameObject target, Item weapon)
+    public static bool IndividualAOEAttack(Actor source, GameObject target, Item weapon, int falloff)
     {
         bool permiable = true;
-
+        Debug.Log("Individual attack");
         // There are a couple things we could be attacking here:
         // - Walls
         // - Bots
@@ -1079,6 +1074,10 @@ public static class Action
         }
         #endregion
 
+        // Get the armor value if this is a structure
+        int armor = HF.TryGetStructureArmor(target);
+        ItemExplosion attackData = weapon.itemData.explosion;
+
         if (target.GetComponent<Actor>()) // We are attacking a bot
         {
             // We need to do standard hit/miss for this.
@@ -1088,7 +1087,6 @@ public static class Action
             float toHitChance = 0f;
             bool noCrit = false;
             List<ArmorType> types = new List<ArmorType>();
-            ItemProjectile projData = weapon.itemData.projectile;
             int projAmount = weapon.itemData.projectileAmount;
 
             (toHitChance, noCrit, types) = Action.CalculateRangedHitChance(source, target.GetComponent<Actor>(), weapon);
@@ -1098,7 +1096,10 @@ public static class Action
             if (rand < toHitChance) // Success, a hit!
             {
                 // Deal Damage to the target
-                int damageAmount = (int)Random.Range(projData.damage.x, projData.damage.y);
+                int damageAmount = (int)Random.Range(attackData.damageLow, attackData.damageHigh);
+                damageAmount += falloff; // Apply damage falloff if any (remember it's negative).
+                if(damageAmount < 1)
+                    damageAmount = 1; // Minimum 1 damage
 
                 if (target.GetComponent<PlayerData>()) // Player being attacked
                 {
@@ -1169,25 +1170,92 @@ public static class Action
 
             permiable = false; // Machines block explosions unless they are destroyed
 
+            // Calculate Damage
+            int damageAmount = (int)Random.Range(attackData.damageLow, attackData.damageHigh);
+            damageAmount += falloff; // Apply damage falloff if any (remember it's negative).
+            if (damageAmount < 1)
+                damageAmount = 1; // Minimum 1 damage
+
+            #region Beat the Armor?
+            if (damageAmount > armor) // Success! Destroy the structure
+            {
+                target.GetComponent<MachinePart>().DestroyMe();
+
+                // Do a calc message
+                if(target.GetComponent<MachinePart>().parentPart == target.GetComponent<MachinePart>()) // Only if this is the parent part
+                {
+                    string message = $"{target.name} Destroyed ({damageAmount} > {armor})";
+
+                    UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+                }
+
+                permiable = true; // Destroyed so pass through
+            }
+            else // Failure, do nothing.
+            {
+
+            }
+            #endregion
+
         }
         else if (target.GetComponent<TileBlock>()) // Some kind of tile
         {
+            // Calculate Damage
+            int damageAmount = (int)Random.Range(attackData.damageLow, attackData.damageHigh);
+            damageAmount += falloff; // Apply damage falloff if any (remember it's negative).
+            if (damageAmount < 1)
+                damageAmount = 1; // Minimum 1 damage
+
             // For structures we can't miss, we just need to check if the damage we do beats the structure's armor.
-            if(target.GetComponent<TileBlock>().tileInfo.type == TileType.Door) // A door
+            if (target.GetComponent<TileBlock>().tileInfo.type == TileType.Door) // A door
             {
                 // Is the door open?
                 permiable = target.GetComponent<DoorLogic>().state; // Also if this is destroyed it becomes permiable either way
 
+                #region Beat the Armor?
+                if (damageAmount > armor) // Success! Destroy the structure
+                {
+                    target.GetComponent<TileBlock>().DestroyMe();
+
+                    permiable = true; // Destroyed so pass through
+                }
+                else // Failure, do nothing.
+                {
+
+                }
+                #endregion
             }
             else if (target.GetComponent<TileBlock>().tileInfo.type == TileType.Wall) // A wall
             {
                 permiable = false; // Wall's will block the explosion (unless they are destroyed)
 
+                #region Beat the Armor?
+                if (damageAmount > armor) // Success! Destroy the structure
+                {
+                    target.GetComponent<TileBlock>().DestroyMe();
+
+                    permiable = true; // Destroyed so pass through
+                }
+                else // Failure, do nothing.
+                {
+
+                }
+                #endregion
             }
             else if (target.GetComponent<TileBlock>().tileInfo.type == TileType.Floor) // A floor
             {
                 permiable = true; // Floor tiles won't block the explosion
 
+                #region Beat the Armor?
+                if (damageAmount > armor) // Success! Destroy the structure
+                {
+                    target.GetComponent<TileBlock>().DestroyMe();
+                }
+                else // Failure, do nothing.
+                {
+
+                }
+                #endregion
             }
         }
 

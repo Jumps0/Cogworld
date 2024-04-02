@@ -9,6 +9,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.Windows;
+using static UnityEngine.GraphicsBuffer;
 using Random = UnityEngine.Random;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
@@ -2833,6 +2834,27 @@ public static class HF
         return null;
     }
 
+    /// <summary>
+    /// Attempts to retrieve a structures armor value. This structure could be a machine, a door, a tile, etc.
+    /// </summary>
+    /// <param name="structure">The structure gameObject to try to retrieve the armor value of.</param>
+    /// <returns>The INT armor value of the specified structure.</returns>
+    public static int TryGetStructureArmor(GameObject structure)
+    {
+        int armor = 0;
+
+        if (structure.GetComponent<MachinePart>())
+        {
+            armor = structure.GetComponent<MachinePart>().armor.y;
+        }
+        else if (structure.GetComponent<TileBlock>())
+        {
+            armor = structure.GetComponent<TileBlock>().tileInfo.armor;
+        }
+
+        return armor;
+    }
+
     #endregion
 
     #region Floor Traps
@@ -3555,7 +3577,7 @@ public static class HF
         float distance = Vector3.Distance(new Vector3Int((int)lowerPosition.x, (int)lowerPosition.y, 0), upperPosition);
         direction.Normalize();
         RaycastHit2D[] hits = Physics2D.RaycastAll(upperPosition, direction, distance);
-        Debug.Log(pos);
+
         // - Flags -
         GameObject wall = null;
         GameObject bot = null;

@@ -17,12 +17,13 @@ MonoBehaviour:
   tileName: 
   type: 4
   altSprite: {fileID: 0}
+  destroyedSprite: {fileID: 0}
   asciiRep: {fileID: 1434353351, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
   asciiColor: {r: 0, g: 0, b: 0, a: 0}
   isDirty: 0
   impassable: 0
   health: {x: 10, y: 10}
-  armor: 10
+  armor: 1
   currentVis: 0
   destructionClips:
   - {fileID: 8300000, guid: 3cf17984fbc0f91449b416d547c34253, type: 3}

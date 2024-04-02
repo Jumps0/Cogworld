@@ -10,6 +10,8 @@ using System.Text;
 using Vector3 = UnityEngine.Vector3;
 using Quaternion = UnityEngine.Quaternion;
 using Vector2 = UnityEngine.Vector2;
+using static UnityEngine.GraphicsBuffer;
+using static UnityEngine.UI.Image;
 //using static UnityEditor.Progress;
 
 public class UIManager : MonoBehaviour
@@ -1334,13 +1336,14 @@ public class UIManager : MonoBehaviour
     #region Combat Projectiles
 
     [Header("Combat Projectiles")]
-    public GameObject genericProjectile_prefab;
+    public GameObject projectilePrefab_generic;
+    public GameObject projectilePrefab_launcher;
     public List<GameObject> genericProjectiles = new List<GameObject>();
 
     public void CreateGenericProjectile(Transform origin, Transform target, Color projColor, Color highlightColor, float speed, bool accurate)
     {
         // Instantiate it & Assign it to parent
-        GameObject newProjectile = Instantiate(genericProjectile_prefab, origin.position, Quaternion.identity);
+        GameObject newProjectile = Instantiate(projectilePrefab_generic, origin.position, Quaternion.identity);
         newProjectile.transform.SetParent(origin.transform);
         newProjectile.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         newProjectile.GetComponent<Canvas>().sortingOrder = 23;
@@ -1348,7 +1351,19 @@ public class UIManager : MonoBehaviour
         genericProjectiles.Add(newProjectile);
         // Assign Details
         newProjectile.GetComponentInChildren<Projectile_Generic>().Setup(origin, target, projColor, highlightColor, speed, accurate);
+    }
 
+    public void CreateLauncherProjectile(Transform origin, Transform target, Color projColor, Color highlightColor, float speed)
+    {
+        // Instantiate it & Assign it to parent
+        GameObject newProjectile = Instantiate(projectilePrefab_launcher, origin.position, Quaternion.identity);
+        newProjectile.transform.SetParent(origin.transform);
+        newProjectile.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+        newProjectile.GetComponent<Canvas>().sortingOrder = 23;
+        // Add it to list
+        genericProjectiles.Add(newProjectile);
+        // Assign Details
+        newProjectile.GetComponentInChildren<Projectile_Launcher>().Setup(origin, target, projColor, highlightColor, speed);
     }
 
     #endregion

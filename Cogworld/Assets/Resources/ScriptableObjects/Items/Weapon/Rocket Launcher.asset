@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
-  m_Name: Grenade Launcher
+  m_Name: Rocket Launcher
   m_EditorClassIdentifier: 
   instantUnique: 0
   amount: 1
   data:
     Name: 
-    Id: 100
+    Id: 102
     stackable: 0
     amount: 1
     itemData: {fileID: 11400000}
@@ -30,15 +30,15 @@ MonoBehaviour:
   type: 19
   slot: 3
   slotsRequired: 1
-  mass: 3
-  rating: 1
+  mass: 4
+  rating: 2
   star: 0
-  integrityMax: 60
+  integrityMax: 70
   coverage: 110
   schematicDetails:
     hackable: 1
     location:
-    - {x: 1, y: -10}
+    - {x: 1, y: -9}
     - {x: 2, y: -10}
     - {x: 3, y: -10}
   hasUpkeep: 0
@@ -51,20 +51,20 @@ MonoBehaviour:
   power_stability: 0
   propulsion: []
   shot:
-    shotRange: 10
+    shotRange: 14
     shotEnergy: 0
-    shotMatter: -10
-    shotHeat: 30
+    shotMatter: -11
+    shotHeat: 33
     shotRecoil: 0
-    shotTargeting: 0.15
+    shotTargeting: 0
     shotDelay: 0
     shotStability: 0
     shotArc: 0
     hasStability: 0
     hasArc: 0
     shotSound:
-    - {fileID: 8300000, guid: ab2117c9c4909ca49bedcd3bf24d1a62, type: 3}
-    - {fileID: 8300000, guid: 07cef1c0501e79344ac0655a8dc57368, type: 3}
+    - {fileID: 8300000, guid: 3aba9c4b8ffe5b14cbaa3635d01f9579, type: 3}
+    - {fileID: 8300000, guid: 4615a04452aacae4790d9f8a0098aca1, type: 3}
   projectileAmount: 1
   projectile:
     damage: {x: 20, y: 48}
@@ -99,25 +99,24 @@ MonoBehaviour:
     canDatajack: 0
   explosion:
     radius: 4
-    damageLow: 20
-    damageHigh: 48
+    damageLow: 25
+    damageHigh: 57
     falloff: -8
     damageType: 2
     spectrum: 0
     hasSpectrum: 0
     disruption: 0
-    salvage: -8
-    explosionSound: {fileID: 0}
+    salvage: -9
+    explosionSound: {fileID: 8300000, guid: ed297f9d80b302c4c877cba72fb23870, type: 3}
     explosionGFX: 0
   itemEffect: []
   quality: 2
-  itemName: Grenade Launcher
-  description: A simple but effected grenade launcher, effective at taking out lightly
-    armored groups of enemies.
+  itemName: Rocket Launcher
+  description: A standard rocket launcher capable of effective AOE damage.
   mechanicalDescription: 1 M3 20-48 EX
   fabricationInfo:
     canBeFabricated: 1
     amountMadePer: 1
-    fabTime: {x: 51, y: 25, z: 17}
-    matterCost: 30
+    fabTime: {x: 62, y: 31, z: 20}
+    matterCost: 60
     componenetsRequired: []

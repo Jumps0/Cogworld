@@ -134,6 +134,7 @@ MonoBehaviour:
   projColor: {r: 0.86666673, g: 0.91372555, b: 0.10980393, a: 1}
   highlightColor: {r: 0.93350255, g: 1, b: 0, a: 0.6509804}
   _speed: 0.5
+  _accurate: 0
 --- !u!1 &7308777045394364362
 GameObject:
   m_ObjectHideFlags: 0
@@ -217,7 +218,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &7308777045394364365
 MonoBehaviour:
   m_ObjectHideFlags: 0

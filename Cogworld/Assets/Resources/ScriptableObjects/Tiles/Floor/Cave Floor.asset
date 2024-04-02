@@ -23,7 +23,7 @@ MonoBehaviour:
   isDirty: 0
   impassable: 0
   health: {x: 10, y: 10}
-  armor: 10
+  armor: 1
   currentVis: 2
   destructionClips:
   - {fileID: 8300000, guid: 3cf17984fbc0f91449b416d547c34253, type: 3}

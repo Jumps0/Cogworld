@@ -1328,12 +1328,32 @@ public class PlayerData : MonoBehaviour
                     }
                     else
                     {
-                        GameObject target = HF.DetermineAttackTarget(this.gameObject, Camera.main.ScreenToWorldPoint(Input.mousePosition)); // Use ray-line to get target
+                        // Is this is standard ranged attack or an AOE attack?
+                        if (equippedWeapon.itemData.explosion.radius > 0) // It's an AOE attack, we need to handle things slightly differently.
+                        {
+                            // Firstly, the target is wherever the player's mouse is.
+                            GameObject target = HF.GetTargetAtPosition(HF.V3_to_V2I(Camera.main.ScreenToWorldPoint(Input.mousePosition)));
+                            // Second, the attack only attack happens when the projectile we are firing reaches the target.
 
-                        Action.RangedAttackAction(this.GetComponent<Actor>(), target, equippedWeapon);
+                            /*
+                            // - Create an in-world projectile that goes to the target
+                            Color projColor = weapon.itemData.projectile.projectileColor;
+                            Color boxColor = new Color(projColor.r, projColor.g, projColor.b, 0.7f);
+                            UIManager.inst.CreateGenericProjectile(source.transform, target.transform, projColor, boxColor, Random.Range(15f, 20f), true);
+                            // - Play a shooting sound, from the source
+                            source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
+                            */
+                        }
+                        else // Normal attack
+                        {
+                            GameObject target = HF.DetermineAttackTarget(this.gameObject, Camera.main.ScreenToWorldPoint(Input.mousePosition)); // Use ray-line to get target
+
+                            Action.RangedAttackAction(this.GetComponent<Actor>(), target, equippedWeapon);
+                        }
                     }
 
                     ClearAllHighlights();
+                    LTH_Clear();
                     doTargeting = false;
                 }
             }
