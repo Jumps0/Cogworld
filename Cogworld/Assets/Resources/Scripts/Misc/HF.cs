@@ -3142,6 +3142,11 @@ public static class HF
 
     #endregion
 
+    public static AudioClip RandomClip(List<AudioClip> clips)
+    {
+        return clips[Random.Range(0, clips.Count - 1)];
+    }
+
     public static Color GetDarkerColor(Color originalColor, float percentage)
     {
         // Make sure the percentage is within the range [0, 100].

@@ -638,7 +638,7 @@ public static class Action
     }
 
     /// <summary>
-    /// Performs a Ranged Weapon Attack vs a specific target, with a specific weapon/
+    /// Performs a Ranged Weapon Attack vs a specific target, with a specific weapon. (This also handles AOE attacks).
     /// </summary>
     /// <param name="source">The attacker.</param>
     /// <param name="target">The defender (being attacked).</param>
@@ -742,7 +742,7 @@ public static class Action
             // TODO: Explosion visuals
             CFXManager.inst.CreateExplosionFX(center, weapon.itemData, effectedTiles);
             // - Play the explosion sound where the attack lands.
-            AudioManager.inst.CreateTempClip(new Vector3(center.x, center.y, 0f), weapon.itemData.explosion.explosionSound);
+            AudioManager.inst.CreateTempClip(new Vector3(center.x, center.y, 0f), HF.RandomClip(weapon.itemData.explosion.explosionSounds));
             #endregion
         }
         else
@@ -764,9 +764,7 @@ public static class Action
                 {
                     // For both cases we want to:
                     // - Create an in-world projectile that goes to the target
-                    Color projColor = weapon.itemData.projectile.projectileColor;
-                    Color boxColor = new Color(projColor.r, projColor.g, projColor.b, 0.7f);
-                    UIManager.inst.CreateGenericProjectile(source.transform, target.transform, projColor, boxColor, Random.Range(15f, 20f), true);
+                    UIManager.inst.CreateGenericProjectile(source.transform, target.transform, weapon.itemData.projectile, Random.Range(15f, 20f), true);
                     // - Play a shooting sound, from the source
                     source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
 
@@ -825,9 +823,7 @@ public static class Action
                 {  // ---------------------------- // Failure, a miss.
 
                     // Create a projectile that will miss
-                    Color projColor = weapon.itemData.projectile.projectileColor;
-                    Color boxColor = new Color(projColor.r, projColor.g, projColor.b, 0.7f);
-                    UIManager.inst.CreateGenericProjectile(source.transform, target.transform, projColor, boxColor, Random.Range(20f, 15f), false);
+                    UIManager.inst.CreateGenericProjectile(source.transform, target.transform, weapon.itemData.projectile, Random.Range(20f, 15f), false);
 
                     // Play a sound
                     source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
@@ -863,9 +859,7 @@ public static class Action
                 if (damageAmount > armor) // Success! Destroy the structure
                 {
                     // - Create an in-world projectile that goes to the target
-                    Color projColor = weapon.itemData.projectile.projectileColor;
-                    Color boxColor = new Color(projColor.r, projColor.g, projColor.b, 0.7f);
-                    UIManager.inst.CreateGenericProjectile(source.transform, target.transform, projColor, boxColor, Random.Range(15f, 20f), true);
+                    UIManager.inst.CreateGenericProjectile(source.transform, target.transform, weapon.itemData.projectile, Random.Range(15f, 20f), true);
                     // - Play a shooting sound, from the source
                     source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
 
@@ -891,9 +885,7 @@ public static class Action
                 else // Failure. Don't destroy the structure
                 {
                     // Create a projectile that will miss
-                    Color projColor = weapon.itemData.projectile.projectileColor;
-                    Color boxColor = new Color(projColor.r, projColor.g, projColor.b, 0.7f);
-                    UIManager.inst.CreateGenericProjectile(source.transform, target.transform, projColor, boxColor, Random.Range(20f, 15f), false);
+                    UIManager.inst.CreateGenericProjectile(source.transform, target.transform, weapon.itemData.projectile, Random.Range(20f, 15f), false);
 
                     // Play a sound
                     source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);

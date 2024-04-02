@@ -1338,9 +1338,9 @@ public class UIManager : MonoBehaviour
     [Header("Combat Projectiles")]
     public GameObject projectilePrefab_generic;
     public GameObject projectilePrefab_launcher;
-    public List<GameObject> genericProjectiles = new List<GameObject>();
+    public List<GameObject> projectiles = new List<GameObject>();
 
-    public void CreateGenericProjectile(Transform origin, Transform target, Color projColor, Color highlightColor, float speed, bool accurate)
+    public void CreateGenericProjectile(Transform origin, Transform target, ItemProjectile weapon, float speed, bool accurate)
     {
         // Instantiate it & Assign it to parent
         GameObject newProjectile = Instantiate(projectilePrefab_generic, origin.position, Quaternion.identity);
@@ -1348,12 +1348,12 @@ public class UIManager : MonoBehaviour
         newProjectile.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         newProjectile.GetComponent<Canvas>().sortingOrder = 23;
         // Add it to list
-        genericProjectiles.Add(newProjectile);
+        projectiles.Add(newProjectile);
         // Assign Details
-        newProjectile.GetComponentInChildren<Projectile_Generic>().Setup(origin, target, projColor, highlightColor, speed, accurate);
+        newProjectile.GetComponentInChildren<Projectile_Generic>().Setup(origin, target, weapon, speed, accurate);
     }
 
-    public void CreateLauncherProjectile(Transform origin, Transform target, Color projColor, Color highlightColor, float speed)
+    public void CreateLauncherProjectile(Transform origin, Transform target, ItemObject weapon)
     {
         // Instantiate it & Assign it to parent
         GameObject newProjectile = Instantiate(projectilePrefab_launcher, origin.position, Quaternion.identity);
@@ -1361,9 +1361,9 @@ public class UIManager : MonoBehaviour
         newProjectile.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         newProjectile.GetComponent<Canvas>().sortingOrder = 23;
         // Add it to list
-        genericProjectiles.Add(newProjectile);
+        projectiles.Add(newProjectile);
         // Assign Details
-        newProjectile.GetComponentInChildren<Projectile_Launcher>().Setup(origin, target, projColor, highlightColor, speed);
+        newProjectile.GetComponentInChildren<Projectile_Launcher>().Setup(origin, target, weapon);
     }
 
     #endregion

@@ -39736,7 +39736,7 @@ MonoBehaviour:
   botPopup_prefab: {fileID: 7308777045394364362, guid: 8585ee6b7f883e0489c7491a3dcc63dd, type: 3}
   projectilePrefab_generic: {fileID: 7308777045394364362, guid: 0f7306ce67eb1d1429011677f253f1d3, type: 3}
   projectilePrefab_launcher: {fileID: 7308777045394364362, guid: cf0d070afdc73854d8c89fc9ac2661fc, type: 3}
-  genericProjectiles: []
+  projectiles: []
   dialogueBoxRef: {fileID: 899398655}
   dialogueCloseBox: {fileID: 557232907}
   dialogueTransmitBox: {fileID: 712725394}

@@ -19,17 +19,18 @@ public class Projectile_Generic : MonoBehaviour
     public float _speed = 0.5f;
     public bool _accurate;
 
-    public void Setup(Transform origin, Transform target, Color proj, Color highlight, float speed, bool isAccurate)
+    public void Setup(Transform origin, Transform target, ItemProjectile weapon, float speed, bool isAccurate)
     {
         _origin = origin;
         _target = target;
-        projColor = proj;
-        highlightColor = highlight;
         _speed = speed;
         _accurate = isAccurate;
 
-        _projectile.GetComponent<Image>().color = proj;
-        _highlight.GetComponent<Image>().color = highlight;
+        projColor = weapon.projectileColor;
+        Color boxColor = new Color(projColor.r, projColor.g, projColor.b, 0.7f);
+
+        _projectile.GetComponent<Image>().color = projColor;
+        _highlight.GetComponent<Image>().color = boxColor;
 
         StartCoroutine(MoveProjectile());
         StartCoroutine(LifetimeDestroy());
@@ -103,7 +104,7 @@ public class Projectile_Generic : MonoBehaviour
 
     public void OnReachTarget()
     {
-        UIManager.inst.genericProjectiles.Remove(this.gameObject);
+        UIManager.inst.projectiles.Remove(this.gameObject);
         Destroy(this.gameObject);
     }
 

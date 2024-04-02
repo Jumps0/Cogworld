@@ -1335,14 +1335,12 @@ public class PlayerData : MonoBehaviour
                             GameObject target = HF.GetTargetAtPosition(HF.V3_to_V2I(Camera.main.ScreenToWorldPoint(Input.mousePosition)));
                             // Second, the attack only attack happens when the projectile we are firing reaches the target.
 
-                            /*
-                            // - Create an in-world projectile that goes to the target
-                            Color projColor = weapon.itemData.projectile.projectileColor;
-                            Color boxColor = new Color(projColor.r, projColor.g, projColor.b, 0.7f);
-                            UIManager.inst.CreateGenericProjectile(source.transform, target.transform, projColor, boxColor, Random.Range(15f, 20f), true);
-                            // - Play a shooting sound, from the source
-                            source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
-                            */
+                            // - Calculate the travel time
+                            float distance = Vector3.Distance(this.transform.position, target.transform.position);
+                            float travelTime = distance / 10f; // distance / speed
+
+                            // Now we need to launch the projectile, and stall until it reaches its target.
+                            StartCoroutine(StalledAOEAttack(travelTime, target, equippedWeapon));
                         }
                         else // Normal attack
                         {
@@ -1358,6 +1356,16 @@ public class PlayerData : MonoBehaviour
                 }
             }
         }
+    }
+
+    private IEnumerator StalledAOEAttack(float waitTime, GameObject target, Item equippedWeapon)
+    {
+        // - Create an in-world projectile that goes to the target
+        UIManager.inst.CreateLauncherProjectile(this.transform, target.transform, equippedWeapon.itemData);
+
+        yield return new WaitForSeconds(waitTime); // Wait until it gets there
+
+        Action.RangedAttackAction(this.GetComponent<Actor>(), target, equippedWeapon);
     }
 
     bool attackBuffer = false;

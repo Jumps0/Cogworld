@@ -8,26 +8,30 @@ public class Projectile_Launcher : MonoBehaviour
     [Header("References")]
     public GameObject _projectile;
     public GameObject _highlight;
+    [SerializeField] private AudioSource _source;
 
     [Header("Values")]
     public Transform _target;
     public Transform _origin;
+    private ItemObject _weapon;
     //
     public Color projColor;
     public Color highlightColor;
     //
-    public float _speed = 0.5f;
+    private float _speed = 10f;
 
-    public void Setup(Transform origin, Transform target, Color proj, Color highlight, float speed)
+    public void Setup(Transform origin, Transform target, ItemObject weapon)
     {
         _origin = origin;
         _target = target;
-        projColor = proj;
-        highlightColor = highlight;
-        _speed = speed;
+        projColor = weapon.projectile.projectileColor;
+        highlightColor = Color.black;
 
-        _projectile.GetComponent<Image>().color = proj;
-        _highlight.GetComponent<Image>().color = highlight;
+        _projectile.GetComponent<Image>().sprite = weapon.projectile.projectileSprite;
+        _projectile.GetComponent<Image>().color = projColor;
+        _highlight.GetComponent<Image>().color = highlightColor;
+
+        _weapon = weapon;
 
         StartCoroutine(MoveProjectile());
         StartCoroutine(LifetimeDestroy());
@@ -35,6 +39,9 @@ public class Projectile_Launcher : MonoBehaviour
 
     private IEnumerator MoveProjectile()
     {
+        // While moving this projectile should play its sound
+        _source.PlayOneShot(_weapon.shot.shotSound[Random.Range(0, _weapon.shot.shotSound.Count - 1)]);
+
         // calculate the direction towards the target
         Vector3 direction = _target.position - _projectile.transform.position;
         direction.z = 0f; // ensure the projectile stays in the 2D plane
@@ -89,7 +96,8 @@ public class Projectile_Launcher : MonoBehaviour
 
     public void OnReachTarget()
     {
-        UIManager.inst.genericProjectiles.Remove(this.gameObject);
+        _source.Stop();
+        UIManager.inst.projectiles.Remove(this.gameObject);
         Destroy(this.gameObject);
     }
 

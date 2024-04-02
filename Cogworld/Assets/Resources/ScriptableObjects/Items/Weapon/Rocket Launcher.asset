@@ -78,7 +78,8 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: 0
-    projectileColor: {r: 1, g: 0, b: 0, a: 1}
+    projectileColor: {r: 1, g: 1, b: 1, a: 1}
+    projectileSprite: {fileID: -1402500874, guid: 3228f975bfca7294d974b889963ffc7a, type: 3}
     penetrationCapability: 0
     penetrationChances: []
   meleeAttack:
@@ -107,7 +108,10 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: -9
-    explosionSound: {fileID: 8300000, guid: ed297f9d80b302c4c877cba72fb23870, type: 3}
+    explosionSounds:
+    - {fileID: 8300000, guid: 4ebf28e3bbf25b444a4ea32715b941c2, type: 3}
+    - {fileID: 8300000, guid: 3a519d90f410ff940a0c3c79e8c2e6a6, type: 3}
+    - {fileID: 8300000, guid: 678ee75683b75eb4bb0a6134495ffc90, type: 3}
     explosionGFX: 0
   itemEffect: []
   quality: 2

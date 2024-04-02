@@ -450,7 +450,7 @@ public class ItemPropulsion
 // Weapon classes
 
 [System.Serializable]
-public class ItemProjectile
+public class ItemProjectile // (Disregarded in AOE attacks except for projectile visuals)
 {
     // Projectile
     [Tooltip("Low-High")]
@@ -473,6 +473,8 @@ public class ItemProjectile
     public int salvage;
     [Header("Projectile Color")]
     public Color projectileColor = Color.red;
+    public Sprite projectileSprite;
+    //public ??? projectileStyle = ???; TODO
     [Header("Penetration")]
     [Tooltip("Each weapon specifies a maximum number of obstructions its projectiles can penetrate, " +
         "along with a separate chance to pass through each consecutive obstruction. " +
@@ -533,7 +535,7 @@ public class ItemExplosion
     public int salvage;
 
     [Header("Audio")]
-    public AudioClip explosionSound;
+    public List<AudioClip> explosionSounds;
     [Header("Visuals")]
     public ExplosionGFX explosionGFX;
 
