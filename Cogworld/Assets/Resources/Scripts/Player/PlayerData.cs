@@ -1337,7 +1337,7 @@ public class PlayerData : MonoBehaviour
 
                             // - Calculate the travel time
                             float distance = Vector3.Distance(this.transform.position, target.transform.position);
-                            float travelTime = distance / 10f; // distance / speed
+                            float travelTime = distance / 20f; // distance / speed
 
                             // Now we need to launch the projectile, and stall until it reaches its target.
                             StartCoroutine(StalledAOEAttack(travelTime, target, equippedWeapon));

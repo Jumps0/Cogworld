@@ -330,6 +330,12 @@ public class TileBlock : MonoBehaviour
         // Change the sprite
         this.GetComponent<SpriteRenderer>().sprite = tileInfo.destroyedSprite;
 
+        if(tileInfo.type == TileType.Floor)
+        {
+            // Clean your floors with this simple trick!
+            CleanSpriteDebris();
+        }
+
         // Activate the "danger roof will collapse" red indicator (if needed)
         if (tileInfo.type == TileType.Wall)
         {

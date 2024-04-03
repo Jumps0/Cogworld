@@ -2843,13 +2843,16 @@ public static class HF
     {
         int armor = 0;
 
-        if (structure.GetComponent<MachinePart>())
+        if (structure)
         {
-            armor = structure.GetComponent<MachinePart>().armor.y;
-        }
-        else if (structure.GetComponent<TileBlock>())
-        {
-            armor = structure.GetComponent<TileBlock>().tileInfo.armor;
+            if (structure.GetComponent<MachinePart>())
+            {
+                armor = structure.GetComponent<MachinePart>().armor.y;
+            }
+            else if (structure.GetComponent<TileBlock>())
+            {
+                armor = structure.GetComponent<TileBlock>().tileInfo.armor;
+            }
         }
 
         return armor;
@@ -3635,28 +3638,30 @@ public static class HF
             #endregion
         }
 
+        GameObject retObject = null;
+
         if(wall != null)
         {
-            return wall;
+            retObject = wall;
         }
         else if (bot != null)
         {
-            return bot;
+            retObject = bot;
         }
         else if (door != null)
         {
-            return door;
+            retObject = door;
         }
         else if (machine != null)
         {
-            return machine;
+            retObject = machine;
         }
         else if (floor != null)
         {
-            return floor;
+            retObject = floor;
         }
 
-        return null;
+        return retObject;
     }
 
     /// <summary>

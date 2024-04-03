@@ -18,7 +18,7 @@ public class Projectile_Launcher : MonoBehaviour
     public Color projColor;
     public Color highlightColor;
     //
-    private float _speed = 10f;
+    private float _speed = 20f;
 
     public void Setup(Transform origin, Transform target, ItemObject weapon)
     {

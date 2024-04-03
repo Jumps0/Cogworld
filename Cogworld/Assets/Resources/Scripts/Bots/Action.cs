@@ -3,11 +3,13 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.VisualScripting;
 using UnityEngine;
+using Color = UnityEngine.Color;
 
 public static class Action
 {
@@ -686,54 +688,51 @@ public static class Action
             // Create a dictionary to keep track of blocking tiles
             Dictionary<Vector2Int, bool> blockingTiles = new Dictionary<Vector2Int, bool>();
 
-            // Polar coordinates
-            int x = 0;
-            int y = 0;
-            int dx = 0;
-            int dy = -1;
-            int t = Mathf.Max(radius * radius, radius * radius * radius) / 2;
+            // Create a list of points to check
+            List<Vector2Int> points = new List<Vector2Int>();
+            Vector2Int bottomLeft = new Vector2Int(center.x - radius, center.y - radius);
+            for (int x = bottomLeft.x; x < bottomLeft.x + (radius * 2); x++)
+            {
+                for (int y = bottomLeft.y; y < bottomLeft.y + (radius * 2); y++)
+                {
+                    Vector2Int point = new Vector2Int(x, y);
+                    if(Vector2.Distance(point, center) <= radius && point != center)
+                    {
+                        points.Add(point);
+                    }
+                }
+            }
+
+            points.Sort((v1, v2) => (v1 - center).sqrMagnitude.CompareTo((v2 - center).sqrMagnitude)); // Sort list based on distance from center
 
             // We will loop through in a spiral pattern outward from the center.
-            for (int i = 0; i < radius * radius; i++)
+            foreach (Vector2Int P in points)
             {
-                if (-radius / 2 <= x && x <= radius / 2 && -radius / 2 <= y && y <= radius / 2) // Within range
+                Vector2Int tilePosition = P;
+                int distFromCenter = Mathf.RoundToInt(Vector2.Distance(new Vector2(P.x, P.y), center));
+
+                // Next check if this position is blocked by another tile via raycast
+                RaycastHit2D[] hits = Physics2D.RaycastAll(center, tilePosition);
+                bool clear = true;
+
+                foreach (var H in hits) // Go through the hits and see if there are any obstructions.
                 {
-                    Vector2Int tilePosition = new Vector2Int(Mathf.RoundToInt(center.x) + x, Mathf.RoundToInt(center.y) + y);
-                    int distFromCenter = Mathf.RoundToInt(Vector2.Distance(new Vector2(x, y), center));
+                    Vector2Int hPos = new Vector2Int(Mathf.RoundToInt(H.transform.position.x), Mathf.RoundToInt(H.transform.position.y));
 
-                    // Next check if this position is blocked by another tile via raycast
-                    RaycastHit2D[] hits = Physics2D.RaycastAll(center, tilePosition);
-                    bool clear = true;
-
-                    foreach (var H in hits) // Go through the hits and see if there are any obstructions.
+                    if (blockingTiles.ContainsKey(hPos) && blockingTiles[hPos] == false)
                     {
-                        Vector2Int hPos = new Vector2Int(Mathf.RoundToInt(H.transform.position.x), Mathf.RoundToInt(H.transform.position.y));
-
-                        if (blockingTiles.ContainsKey(hPos) && blockingTiles[hPos] == false)
-                        {
-                            clear = false;
-                        }
-                    }
-
-                    if (clear) // Our path is clear
-                    {
-                        // Perform AOE attack on the current tile
-                        bool blocksExplosion = Action.IndividualAOEAttack(source, HF.GetTargetAtPosition(tilePosition), weapon, (distFromCenter * falloff));
-                        blockingTiles.Add(tilePosition, blocksExplosion);
-
-                        effectedTiles.Add(tilePosition);
+                        clear = false;
                     }
                 }
 
-                if (--t == 0)
+                if (clear) // Our path is clear
                 {
-                    t = radius * radius;
-                    int temp = dx;
-                    dx = -dy;
-                    dy = temp;
+                    // Perform AOE attack on the current tile
+                    bool blocksExplosion = Action.IndividualAOEAttack(source, HF.GetTargetAtPosition(tilePosition), weapon, (distFromCenter * falloff));
+                    blockingTiles.Add(tilePosition, blocksExplosion);
+
+                    effectedTiles.Add(tilePosition);
                 }
-                x += dx;
-                y += dy;
             }
 
             // > Visuals & Audio <
@@ -999,7 +998,7 @@ public static class Action
     public static bool IndividualAOEAttack(Actor source, GameObject target, Item weapon, int falloff)
     {
         bool permiable = true;
-        Debug.Log("Individual attack");
+
         // There are a couple things we could be attacking here:
         // - Walls
         // - Bots
