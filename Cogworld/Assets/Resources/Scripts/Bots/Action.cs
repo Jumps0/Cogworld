@@ -684,6 +684,7 @@ public static class Action
 
             // > Uniquely we will do the center tile alone incase the user shoots into a wall too strong for them to kill.
             bool centerAttack = Action.IndividualAOEAttack(source, HF.GetTargetAtPosition(center), weapon, 0);
+            effectedTiles.Add(center);
 
             // Create a dictionary to keep track of blocking tiles
             Dictionary<Vector2Int, bool> blockingTiles = new Dictionary<Vector2Int, bool>();
@@ -739,10 +740,12 @@ public static class Action
             #region Visuals & Audio
             // - Create the visuals on each effected tile. These vary greatly per weapon.
             // TODO: Explosion visuals
-            CFXManager.inst.CreateExplosionFX(center, weapon.itemData, effectedTiles);
+            CFXManager.inst.CreateExplosionFX(center, weapon.itemData, effectedTiles, center);
             // - Play the explosion sound where the attack lands.
             AudioManager.inst.CreateTempClip(new Vector3(center.x, center.y, 0f), HF.RandomClip(weapon.itemData.explosion.explosionSounds));
             #endregion
+
+            TurnManager.inst.AllEntityVisUpdate();
         }
         else
         {

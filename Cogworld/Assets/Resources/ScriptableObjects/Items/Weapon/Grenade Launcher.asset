@@ -112,7 +112,7 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 286dae22c1e35d943892fc93e30c5941, type: 3}
     - {fileID: 8300000, guid: 20c1b8cac17df7f4787ffebb3dfb5e51, type: 3}
     - {fileID: 8300000, guid: e208c50b4d6b61e4d930ab469cd9528b, type: 3}
-    explosionGFX: 0
+    explosionGFX: 1
   itemEffect: []
   quality: 2
   itemName: Grenade Launcher

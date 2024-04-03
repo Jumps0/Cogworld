@@ -19,9 +19,13 @@ public class CFXManager : MonoBehaviour
     [Header("Prefabs")]
     public GameObject prefab_tile;
 
+    [Header("Colors")]
+    public Color e_yellow;
+    public Color e_orange;
+
 
     #region Explosion FX
-    public void CreateExplosionFX(Vector2Int pos, ItemObject weapon, List<Vector2Int> tiles)
+    public void CreateExplosionFX(Vector2Int pos, ItemObject weapon, List<Vector2Int> tiles, Vector2Int center)
     {
         Dictionary<Vector2Int, GameObject> allTiles = new Dictionary<Vector2Int, GameObject>();
 
@@ -65,16 +69,72 @@ public class CFXManager : MonoBehaviour
                 break;
         }
 
-        StartCoroutine(AnimateExplosionFX(weapon, allTiles));
+        StartCoroutine(AnimateExplosionFX(weapon, allTiles, center));
     }
 
-    private IEnumerator AnimateExplosionFX(ItemObject weapon, Dictionary<Vector2Int, GameObject> tiles)
+    private IEnumerator AnimateExplosionFX(ItemObject weapon, Dictionary<Vector2Int, GameObject> tiles, Vector2Int center)
     {
         switch (weapon.explosion.explosionGFX)
         {
             case ExplosionGFX.Generic:
                 break;
             case ExplosionGFX.Light:
+                /*
+                 *  Generally this is split into two parts:
+                 *  1. The explosion appears to radiate outwards from the center with the main tile being yellow and the surrounding tiles
+                 *  being orange though becoming darker (randomly) as they get further away. 
+                 *  The appearance is uniform until halfway through, where it becomes a bit random.
+                 *  2. All tiles fade out in a uniform manner.
+                 */
+
+                List<Vector2Int> distList = new List<Vector2Int>();
+
+                // Put dictionary into list
+                foreach (KeyValuePair<Vector2Int, GameObject> kvp in tiles)
+                {
+                    kvp.Value.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0); // Set all tiles to transparent
+                    distList.Add(kvp.Key);
+                }
+                distList.Sort((v1, v2) => (v1 - center).sqrMagnitude.CompareTo((v2 - center).sqrMagnitude)); // Sort list based on distance from center
+
+                float animationSpeed = 0.1f;
+
+                float fadeInDuration = animationSpeed / distList.Count;
+
+                // Go through the tiles and assign them a semi-random shade of orange based on their distance to the center point
+                foreach (Vector2Int tilePos in distList)
+                {
+                    GameObject tileObject = tiles[tilePos];
+                    float distance = Vector2Int.Distance(tilePos, center);
+                    float normalizedDistance = distance / weapon.explosion.radius;
+
+                    Color tileColor = AdjustColor(e_orange, normalizedDistance); // Tiles are orange
+
+                    if(tilePos == center) // Center is yellow
+                    {
+                        tileColor = e_yellow;
+                    }
+
+                    SetTileColor(tileObject, new Color(tileColor.r, tileColor.g, tileColor.b, 0f)); // Start with fully transparent
+
+                    // Fade in this tile before moving to the next one
+                    StartCoroutine(IndividualFade(tileObject, true));
+                    yield return new WaitForSeconds(fadeInDuration);
+                }
+
+                yield return null;
+
+                // Now fade out
+                float fadeOutDuration = animationSpeed / distList.Count;
+
+                foreach (Vector2Int tilePos in distList)
+                {
+                    GameObject tileObject = tiles[tilePos];
+
+                    StartCoroutine(IndividualFade(tileObject, false));
+                    yield return new WaitForSeconds(fadeOutDuration);
+                }
+
                 break;
             case ExplosionGFX.Neutron:
                 break;
@@ -89,8 +149,6 @@ public class CFXManager : MonoBehaviour
         yield return null;
 
         // Destroy all animated tiles
-
-        yield return new WaitForSeconds(5f);
         ClearAllTiles(tiles);
     }
 
@@ -116,11 +174,12 @@ public class CFXManager : MonoBehaviour
         }
     }
 
-    private void SetTileColor(Vector2Int loc, Color _color, Dictionary<Vector2Int, GameObject> tiles)
+    private void SetTileColor(GameObject tileObject, Color color)
     {
-        if (tiles.ContainsKey(loc))
+        SpriteRenderer renderer = tileObject.GetComponent<SpriteRenderer>();
+        if (renderer != null)
         {
-            tiles[loc].GetComponent<SpriteRenderer>().color = _color;
+            renderer.color = color;
         }
     }
 
@@ -134,6 +193,50 @@ public class CFXManager : MonoBehaviour
         tiles.Clear();
     }
 
+    private Color AdjustColor(Color baseColor, float normalizedDistance)
+    {
+        // Adjust brightness based on distance
+        float brightness = Mathf.Lerp(0.5f, 1f, 1f - normalizedDistance); // Adjust these values for the desired range of brightness
+
+        // Add a bit of randomness to the brightness
+        brightness += Random.Range(-0.1f, 0.1f);
+
+        // Create and return the adjusted color
+        return new Color(brightness, baseColor.g, baseColor.b);
+    }
+
+    private IEnumerator IndividualFade(GameObject tile, bool fadeIn)
+    {
+        float A = 1f, B = 1f;
+        if (fadeIn)
+        {
+            A = 0f;
+        }
+        else
+        {
+            B = 0f;
+        }
+
+        float elapsedTime = 0f;
+
+        float duration = 0.25f;
+        while (elapsedTime < duration)
+        {
+            if(tile != null)
+            {
+                Color setColor = tile.GetComponent<SpriteRenderer>().color;
+                setColor.a = Mathf.Lerp(A, B, elapsedTime / duration);
+                tile.GetComponent<SpriteRenderer>().color = setColor;
+
+                elapsedTime += Time.deltaTime;
+                yield return null; // Wait for the next frame
+            }
+            else
+            { // In case we delete this tile while its animating
+                yield break;
+            }
+        }
+    }
 
     #endregion
 }

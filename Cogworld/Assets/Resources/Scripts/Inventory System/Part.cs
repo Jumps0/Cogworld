@@ -346,7 +346,7 @@ public class Part : MonoBehaviour
 
             if (slotAvailable) // There is space, we can add it!
             {
-                Debug.Log(">> Adding " + this._item.itemData.itemName + " - " + this._item + " - " + this._item.itemData.type + " - to inventory.");
+                //Debug.Log(">> Adding " + this._item.itemData.itemName + " - " + this._item + " - " + this._item.itemData.type + " - to inventory.");
                 switch (_item.itemData.slot)
                 {
                     case ItemSlot.Power:
