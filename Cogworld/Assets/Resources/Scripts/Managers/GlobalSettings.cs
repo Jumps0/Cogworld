@@ -52,6 +52,7 @@ public class GlobalSettings : MonoBehaviour
 
     [Header("UI")]
     public float itemPopupLifetime = 5;
+    public float globalTextSpeed = 0.35f;
     public List<TMP_FontAsset> fonts = new List<TMP_FontAsset>();
 
     [Header("Settings")]

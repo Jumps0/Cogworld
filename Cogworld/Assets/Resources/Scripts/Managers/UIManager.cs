@@ -1558,6 +1558,8 @@ public class UIManager : MonoBehaviour
         */
         #endregion
 
+        #region Temp Code
+        /*
         List<string> revealVariants = GenerateRevealVariants(text.speech);
 
         float delay = 0.1f; // This value doesn't really matter
@@ -1572,7 +1574,32 @@ public class UIManager : MonoBehaviour
         yield return new WaitForSeconds(delay);
 
         dialogue_text.text = text.speech;
+        */
+        #endregion
 
+        // Look at that, a solution that works!
+
+        List<string> revealVariants = GenerateRevealVariants(text.speech);
+
+        float delay = 0f;
+        float perDelay = 0.25f / revealVariants.Count;
+
+        foreach (string variant in revealVariants)
+        {
+            StartCoroutine(DelayedTextReveal(dialogue_text, variant, delay += perDelay));
+
+            // Lower Dots
+            if (hasMoreDialogue)
+            {
+                string dot = "...";
+                dialogueLower_text.text = ReplaceCharAtIndex(dialogueLower_text.text, Random.Range(0, 2), dot[0]);
+            }
+
+            // Wait
+            //yield return new WaitForSeconds(0.5f / revealVariants.Count);
+        }
+
+        yield return new WaitForSeconds(delay);
 
         // Just in case it hasn't finished yet
         if (hasMoreDialogue)
@@ -1580,6 +1607,13 @@ public class UIManager : MonoBehaviour
             dialogueLower_text.text = "...";
         }
         dialogue_text.text = text.speech;
+    }
+
+    private IEnumerator DelayedTextReveal(TextMeshProUGUI UI, string text, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        UI.text = text;
     }
 
     // Function to generate reveal variants of the input text

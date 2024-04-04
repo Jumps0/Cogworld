@@ -3363,6 +3363,22 @@ public static class HF
         }
     }
 
+    public static List<string> StringToList(string input)
+    {
+        List<string> resultList = new List<string>();
+
+        // Iterate over each character in the input string
+        for (int i = 0; i <= input.Length; i++)
+        {
+            // Extract the substring from the beginning up to the current character
+            string substring = input.Substring(0, i);
+            // Add the substring to the result list
+            resultList.Add(substring);
+        }
+
+        return resultList;
+    }
+
     #region Spotting
 
     public static bool LOSOnTarget(GameObject source, GameObject target)

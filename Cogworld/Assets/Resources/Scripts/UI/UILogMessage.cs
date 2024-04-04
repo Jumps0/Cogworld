@@ -51,12 +51,20 @@ public class UILogMessage : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         }
 
         int len = _message.Length;
+
+        float delay = 0f;
+        float perDelay = GlobalSettings.inst.globalTextSpeed / len;
+
         _text.text = "";
-        for (int i = 0; i < len; i++)
+
+        List<string> segments = HF.StringToList(_message);
+
+        foreach (string segment in segments)
         {
-            _text.text += _message[i];
-            yield return new WaitForSeconds(textSpeed * Time.deltaTime);
+            StartCoroutine(DelayedSetText(_text, segment, delay += perDelay));
         }
+
+        yield return new WaitForSeconds(delay);
 
         if (hasAudioPlayout)
         {
@@ -64,6 +72,13 @@ public class UILogMessage : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             AudioManager.inst.StopMiscSpecific();
         }
         
+    }
+
+    private IEnumerator DelayedSetText(TextMeshProUGUI UI, string text, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        UI.text = text;
     }
 
     public void HoverOn()
