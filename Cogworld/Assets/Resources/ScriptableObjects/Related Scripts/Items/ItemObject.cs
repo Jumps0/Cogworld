@@ -471,9 +471,12 @@ public class ItemProjectile // (Disregarded in AOE attacks except for projectile
     public bool hasSpectrum = false;
     public float disruption;
     public int salvage;
-    [Header("Projectile Color")]
+    [Header("Projectile Visuals")]
     public Color projectileColor = Color.red;
     public Sprite projectileSprite;
+    public bool projectileRotates = true;
+    [Tooltip("0 = None | 1 = Rocket Minor | 2 = Rocket Major")]
+    public int projectileTrail = 0;
     //public ??? projectileStyle = ???; TODO
     [Header("Penetration")]
     [Tooltip("Each weapon specifies a maximum number of obstructions its projectiles can penetrate, " +

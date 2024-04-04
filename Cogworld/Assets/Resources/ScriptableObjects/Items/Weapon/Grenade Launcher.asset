@@ -80,6 +80,7 @@ MonoBehaviour:
     salvage: 0
     projectileColor: {r: 1, g: 1, b: 1, a: 1}
     projectileSprite: {fileID: 1152634424, guid: 3228f975bfca7294d974b889963ffc7a, type: 3}
+    projectileRotates: 0
     penetrationCapability: 0
     penetrationChances: []
   meleeAttack:

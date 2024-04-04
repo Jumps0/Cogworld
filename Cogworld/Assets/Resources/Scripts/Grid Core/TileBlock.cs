@@ -342,12 +342,15 @@ public class TileBlock : MonoBehaviour
             _collapseSprite.SetActive(true);
             _collapseAnim.enabled = true;
             _collapseAnim.Play("TileAnimCollapse");
+
+            specialNoBlockVis = true;
         }
 
         // Change walkablility if needed
         if(tileInfo.type == TileType.Wall || tileInfo.type == TileType.Machine || tileInfo.type == TileType.Door)
         {
             walkable = true;
+            occupied = false;
         }
 
         // Play a sound
@@ -372,6 +375,11 @@ public class TileBlock : MonoBehaviour
         // Change the sprite
         this.GetComponent<SpriteRenderer>().sprite = tileInfo.displaySprite;
 
+        if(tileInfo.type == TileType.Wall)
+        {
+            specialNoBlockVis = false; // Revert special state
+        }
+
         // De-active the "danger roof will collapse" red indicator (if its active)
         if (_collapseSprite.activeInHierarchy)
         {
@@ -383,6 +391,7 @@ public class TileBlock : MonoBehaviour
         if (tileInfo.type == TileType.Wall || tileInfo.type == TileType.Machine || tileInfo.type == TileType.Door)
         {
             walkable = false;
+            occupied = true;
         }
 
         // Remove from MapManager list

@@ -43,7 +43,7 @@ public class Projectile_Launcher : MonoBehaviour
         _source.PlayOneShot(_weapon.shot.shotSound[Random.Range(0, _weapon.shot.shotSound.Count - 1)]);
 
         // calculate the direction towards the target
-        Vector3 direction = _target.position - _projectile.transform.position;
+        Vector3 direction = _target.position - this.transform.position;
         direction.z = 0f; // ensure the projectile stays in the 2D plane
 
         while (true)
@@ -54,31 +54,43 @@ public class Projectile_Launcher : MonoBehaviour
             }
 
             // rotate the projectile towards the target
-            _projectile.transform.up = direction.normalized;
+            this.transform.up = direction.normalized;
 
             // calculate the distance to the target
             float distanceToTarget = direction.magnitude;
 
             if (distanceToTarget <= 0.01f)
             {
-                _projectile.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
+                if (_weapon.projectile.projectileRotates)
+                {
+                    _projectile.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
+                }
+                else
+                {
+                    _projectile.transform.rotation = Quaternion.identity; // No rotation
+                }
+                    
                 _highlight.transform.position = new Vector3(Mathf.RoundToInt(_target.position.x), Mathf.RoundToInt(_target.position.y), _target.position.z);
-
+                
                 // destroy the projectile if it has reached the target
                 OnReachTarget();
                 yield break;
             }
             else
             {
+                if(!_weapon.projectile.projectileRotates)
+                    _projectile.transform.rotation = Quaternion.identity; // No rotation
+
                 // move the projectile towards the target at the specified speed
                 float step = _speed * Time.deltaTime;
-                _projectile.transform.position = Vector3.MoveTowards(_projectile.transform.position, _target.position, step);
+                this.transform.position = Vector3.MoveTowards(this.transform.position, _target.position, step);
 
-                // snap the highlight to the nearest whole (int) number
-                Vector3 snapPosition = _projectile.transform.position;
+                // Snap the highlight & projectile to the nearest whole (int) number
+                Vector3 snapPosition = this.transform.position;
                 snapPosition.x = Mathf.Round(snapPosition.x);
                 snapPosition.y = Mathf.Round(snapPosition.y);
                 _highlight.transform.position = snapPosition;
+                _projectile.transform.position = snapPosition;
 
                 yield return null;
             }
@@ -89,7 +101,7 @@ public class Projectile_Launcher : MonoBehaviour
             }
 
             // update the direction towards the target every frame
-            direction = _target.position - _projectile.transform.position;
+            direction = _target.position - this.transform.position;
             direction.z = 0f; // ensure the projectile stays in the 2D plane
         }
     }
