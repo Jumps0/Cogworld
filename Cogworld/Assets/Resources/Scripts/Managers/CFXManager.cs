@@ -74,6 +74,8 @@ public class CFXManager : MonoBehaviour
 
     private IEnumerator AnimateExplosionFX(ItemObject weapon, Dictionary<Vector2Int, GameObject> tiles, Vector2Int center)
     {
+        float delay = 0f;
+
         switch (weapon.explosion.explosionGFX)
         {
             case ExplosionGFX.Generic:
@@ -100,6 +102,9 @@ public class CFXManager : MonoBehaviour
                 float animationSpeed = 0.1f;
 
                 float fadeInDuration = animationSpeed / distList.Count;
+                delay = 0f;
+
+                distList = ShuffleList(distList);
 
                 // Go through the tiles and assign them a semi-random shade of orange based on their distance to the center point
                 foreach (Vector2Int tilePos in distList)
@@ -118,21 +123,23 @@ public class CFXManager : MonoBehaviour
                     SetTileColor(tileObject, new Color(tileColor.r, tileColor.g, tileColor.b, 0f)); // Start with fully transparent
 
                     // Fade in this tile before moving to the next one
-                    StartCoroutine(IndividualFade(tileObject, true));
-                    yield return new WaitForSeconds(fadeInDuration);
+                    StartCoroutine(IndividualFade(tileObject, true, 0.2f, delay += fadeInDuration));
+                    //yield return new WaitForSeconds(fadeInDuration);
                 }
 
-                yield return null;
+                //yield return null;
+                yield return new WaitForSeconds(0.5f);
 
                 // Now fade out
                 float fadeOutDuration = animationSpeed / distList.Count;
+                delay = 0f;
 
                 foreach (Vector2Int tilePos in distList)
                 {
                     GameObject tileObject = tiles[tilePos];
 
-                    StartCoroutine(IndividualFade(tileObject, false));
-                    yield return new WaitForSeconds(fadeOutDuration);
+                    StartCoroutine(IndividualFade(tileObject, false, 0.2f, delay += fadeInDuration));
+                    //yield return new WaitForSeconds(fadeOutDuration);
                 }
 
                 break;
@@ -146,7 +153,7 @@ public class CFXManager : MonoBehaviour
                 break;
         }
 
-        yield return null;
+        yield return new WaitForSeconds(delay);
 
         // Destroy all animated tiles
         ClearAllTiles(tiles);
@@ -205,7 +212,7 @@ public class CFXManager : MonoBehaviour
         return new Color(brightness, baseColor.g, baseColor.b);
     }
 
-    private IEnumerator IndividualFade(GameObject tile, bool fadeIn)
+    private IEnumerator IndividualFade(GameObject tile, bool fadeIn, float animTime, float delay = 0f)
     {
         float A = 1f, B = 1f;
         if (fadeIn)
@@ -217,9 +224,11 @@ public class CFXManager : MonoBehaviour
             B = 0f;
         }
 
+        yield return new WaitForSeconds(delay);
+
         float elapsedTime = 0f;
 
-        float duration = 0.25f;
+        float duration = animTime;
         while (elapsedTime < duration)
         {
             if(tile != null)
@@ -238,6 +247,26 @@ public class CFXManager : MonoBehaviour
         }
     }
 
+    private List<Vector2Int> ShuffleList(List<Vector2Int> inputList)
+    {    //take any list of points and return it with Fischer-Yates shuffle
+        int i = 0;
+        int t = inputList.Count;
+        int r = 0;
+        Vector2Int p = Vector2Int.zero;
+        List<Vector2Int> tempList = new List<Vector2Int>();
+        tempList.AddRange(inputList);
+
+        while (i < t)
+        {
+            r = Random.Range(i, tempList.Count);
+            p = tempList[i];
+            tempList[i] = tempList[r];
+            tempList[r] = p;
+            i++;
+        }
+
+        return tempList;
+    }
     #endregion
 }
 

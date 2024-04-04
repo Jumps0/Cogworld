@@ -177,11 +177,17 @@ public class AudioManager : MonoBehaviour
         globalTypingSource.Stop();
     }
 
+    public List<AudioClip> activeTempClips = new List<AudioClip>();
+
     public void CreateTempClip(Vector3 location, AudioClip clip, float volume = -1)
     {
+        // Create new temp gameObject
         GameObject newAudio = new GameObject();
         newAudio.transform.position = location;
         newAudio.AddComponent<AudioSource>();
+
+        // Add to temp list
+        activeTempClips.Add(clip);
 
         if (volume != -1)
         {
@@ -208,6 +214,10 @@ public class AudioManager : MonoBehaviour
             yield return null;
         }
 
+        if(activeTempClips.Contains(clip.GetComponent<AudioSource>().clip))
+            activeTempClips.Remove(clip.GetComponent<AudioSource>().clip); // Remove from list
+
+        // Destroy it
         Destroy(clip);
     }
 }

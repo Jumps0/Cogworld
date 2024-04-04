@@ -351,7 +351,12 @@ public class TileBlock : MonoBehaviour
         }
 
         // Play a sound
-        AudioManager.inst.CreateTempClip(this.transform.position, tileInfo.destructionClips[Random.Range(0, tileInfo.destructionClips.Count - 1)]);
+
+        AudioClip clip = HF.RandomClip(tileInfo.destructionClips);
+        if(!AudioManager.inst.activeTempClips.Contains(clip))
+        { // We do this so we don't blow the player's ears out by stacking up the same clip
+            AudioManager.inst.CreateTempClip(this.transform.position, clip);
+        }
 
             // Add to MapManager list
         if (tileInfo.type != TileType.Machine) // Machines don't get repaired
