@@ -21,4 +21,7 @@ public class MiscSpriteStorage : MonoBehaviour
 
     [Header("Misc Machine Part Sprites")]
     public List<Sprite> machinePartSprites = new List<Sprite>();
+
+    [Header("Projectile Sprites")]
+    public List<Sprite> projectileSprites = new List<Sprite>();
 }

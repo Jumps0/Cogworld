@@ -3324,6 +3324,81 @@ public static class HF
         return (relativeDirectionX, relativeDirectionY);
     }
 
+    public static Sprite GetProjectileSprite(Vector3 origin, Vector3 target)
+    {
+        // Calculate the direction vector from origin to target
+        Vector3 direction = target - origin;
+
+        /*  -- Currently the sprites are organized as follows:
+         *  /  \  |  -
+         */
+
+        // Flags
+        int sprite = 0;
+        bool up = false;
+        bool left = false;
+
+        if (direction.y > 0)
+            up = true;
+
+        if(direction.x < 0)
+            left = true;
+
+        if(Mathf.Abs(direction.x) > Mathf.Abs(direction.y) && Mathf.Abs(direction.y) < 2) // This isn't the best but it works
+        {
+            // - sideways
+            sprite = 3;
+        }
+        else
+        {
+            if (up)
+            {
+                if (Mathf.Abs(direction.y) > Mathf.Abs(direction.x))
+                {
+                    // | straight up
+                    sprite = 2;
+                }
+                else // diagonal (/ or \)
+                {
+                    if (left)
+                    {
+                        // up-left \
+                        sprite = 1;
+                    }
+                    else
+                    {
+                        // up-right /
+                        sprite = 0;
+                    }
+                }
+            }
+            else
+            {
+                if (Mathf.Abs(direction.y) > Mathf.Abs(direction.x))
+                {
+                    // | straight up
+                    sprite = 2;
+                }
+                else // diagonal (/ or \)
+                {
+                    if (left)
+                    {
+                        // up-right /
+                        sprite = 0;
+                    }
+                    else
+                    {
+                        // up-left \
+                        sprite = 1;
+                    }
+                }
+            }
+        }
+
+        // Return the sprite from the global list based on the determined index
+        return MiscSpriteStorage.inst.projectileSprites[sprite];
+    }
+
     // Used in the Influence UI
     public static string AssignInfluenceLetter(int value)
     {

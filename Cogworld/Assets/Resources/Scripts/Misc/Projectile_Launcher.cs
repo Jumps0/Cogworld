@@ -53,6 +53,11 @@ public class Projectile_Launcher : MonoBehaviour
         Vector3 direction = _target.position - this.transform.position;
         direction.z = 0f; // ensure the projectile stays in the 2D plane
 
+        // Determine which direction the projectile should face
+        #region Projectile Orientation
+        _projectile.GetComponent<Image>().sprite = HF.GetProjectileSprite(_origin.transform.position, _target.transform.position);
+        #endregion
+
         while (true)
         {
             if (_target == null || _origin == null || _projectile == null || _highlight == null)
@@ -76,14 +81,6 @@ public class Projectile_Launcher : MonoBehaviour
 
             if (distanceToTarget <= 0.01f)
             {
-                if (_weapon.projectile.projectileRotates)
-                {
-                    _projectile.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
-                }
-                else
-                {
-                    _projectile.transform.rotation = Quaternion.identity; // No rotation
-                }
                     
                 _highlight.transform.position = new Vector3(Mathf.RoundToInt(_target.position.x), Mathf.RoundToInt(_target.position.y), _target.position.z);
 
@@ -94,8 +91,6 @@ public class Projectile_Launcher : MonoBehaviour
             }
             else
             {
-                if(!_weapon.projectile.projectileRotates)
-                    _projectile.transform.rotation = Quaternion.identity; // No rotation
 
                 // move the projectile towards the target at the specified speed
                 float step = _speed * Time.deltaTime;
@@ -107,6 +102,9 @@ public class Projectile_Launcher : MonoBehaviour
                 snapPosition.y = Mathf.Round(snapPosition.y);
                 _highlight.transform.position = snapPosition;
                 _projectile.transform.position = snapPosition;
+
+                _highlight.transform.rotation = Quaternion.identity;
+                _projectile.transform.rotation = Quaternion.identity;
 
                 yield return null;
             }
@@ -139,7 +137,7 @@ public class Projectile_Launcher : MonoBehaviour
             yield return null;
         }
 
-        Destroy(this.gameObject);
+        Destroy(this.gameObject.transform.parent.gameObject);
     }
 
     IEnumerator LifetimeDestroy()
@@ -185,70 +183,145 @@ public class Projectile_Launcher : MonoBehaviour
 
     private IEnumerator AnimateTrailObj(GameObject obj, bool flair)
     {
-        /*
-         * 1. The sprite starts red, and stays red for a little bit,
-         * 2. then changes to gray
-         * 3. and quickly fades out
-         * 4. Then (if it is every other), they grey returns briefly before fading out again
-         */
-
         SpriteRenderer sr = obj.GetComponent<SpriteRenderer>();
-
-        // 1
-        sr.color = CFXManager.inst.t_red;
-
-        yield return new WaitForSeconds(0.1f);
-
-        // 2
-        sr.color = CFXManager.inst.t_gray;
-
-        // 3
         float elapsedTime = 0f;
         float duration = 0.2f;
 
-        while (elapsedTime < duration)
+        switch (_weapon.projectile.projectileTrail)
         {
-            if (obj != null)
-            {
-                Color setColor = obj.GetComponent<SpriteRenderer>().color;
-                setColor.a = Mathf.Lerp(1f, 0f, elapsedTime / duration);
-                obj.GetComponent<SpriteRenderer>().color = setColor;
+            case ProjectileTrailStyle.MissileMinor:
+                /*
+                 * 1. The sprite starts red, and stays red for a little bit,
+                 * 2. then changes to gray
+                 * 3. and quickly fades out
+                 * 4. Then (if it is every other), they grey returns briefly before fading out again
+                 */
 
-                elapsedTime += Time.deltaTime;
-                yield return null; // Wait for the next frame
-            }
-            else
-            { // In case we delete this tile while its animating
-                yield break;
-            }
-        }
+                // 1
+                sr.color = CFXManager.inst.t_red;
 
-        // 4
-        if (flair)
-        {
-            yield return new WaitForSeconds(0.05f);
+                yield return new WaitForSeconds(0.05f);
 
-            sr.color = CFXManager.inst.t_gray;
+                // 2
+                sr.color = CFXManager.inst.t_gray;
 
-            elapsedTime = 0f;
+                // 3
+                elapsedTime = 0f;
+                duration = 0.2f;
 
-            while (elapsedTime < duration)
-            {
-                if (obj != null)
+                while (elapsedTime < duration)
                 {
-                    Color setColor = obj.GetComponent<SpriteRenderer>().color;
-                    setColor.a = Mathf.Lerp(1f, 0f, elapsedTime / duration);
-                    obj.GetComponent<SpriteRenderer>().color = setColor;
+                    if (obj != null)
+                    {
+                        Color setColor = obj.GetComponent<SpriteRenderer>().color;
+                        setColor.a = Mathf.Lerp(1f, 0f, elapsedTime / duration);
+                        obj.GetComponent<SpriteRenderer>().color = setColor;
 
-                    elapsedTime += Time.deltaTime;
-                    yield return null; // Wait for the next frame
+                        elapsedTime += Time.deltaTime;
+                        yield return null; // Wait for the next frame
+                    }
+                    else
+                    { // In case we delete this tile while its animating
+                        yield break;
+                    }
                 }
-                else
-                { // In case we delete this tile while its animating
-                    yield break;
+
+                // 4
+                if (flair)
+                {
+                    yield return new WaitForSeconds(0.05f);
+
+                    sr.color = CFXManager.inst.t_gray;
+
+                    elapsedTime = 0f;
+
+                    while (elapsedTime < duration)
+                    {
+                        if (obj != null)
+                        {
+                            Color setColor = obj.GetComponent<SpriteRenderer>().color;
+                            setColor.a = Mathf.Lerp(1f, 0f, elapsedTime / duration);
+                            obj.GetComponent<SpriteRenderer>().color = setColor;
+
+                            elapsedTime += Time.deltaTime;
+                            yield return null; // Wait for the next frame
+                        }
+                        else
+                        { // In case we delete this tile while its animating
+                            yield break;
+                        }
+                    }
                 }
-            }
+                break;
+            case ProjectileTrailStyle.MissileMajor:
+                /*
+                 * 1. The sprite starts red, and stays red for a little bit,
+                 * 2. then changes to gray
+                 * 3. and quickly fades out
+                 * 4. Then (if it is every other), they grey returns briefly before fading out again
+                 */
+
+                // 1
+                sr.color = CFXManager.inst.t_red;
+
+                yield return new WaitForSeconds(0.1f);
+
+                // 2
+                sr.color = CFXManager.inst.t_gray;
+
+                // 3
+                elapsedTime = 0f;
+                elapsedTime = 0.2f;
+
+                while (elapsedTime < duration)
+                {
+                    if (obj != null)
+                    {
+                        Color setColor = obj.GetComponent<SpriteRenderer>().color;
+                        setColor.a = Mathf.Lerp(1f, 0f, elapsedTime / duration);
+                        obj.GetComponent<SpriteRenderer>().color = setColor;
+
+                        elapsedTime += Time.deltaTime;
+                        yield return null; // Wait for the next frame
+                    }
+                    else
+                    { // In case we delete this tile while its animating
+                        yield break;
+                    }
+                }
+
+                // 4
+                if (flair)
+                {
+                    yield return new WaitForSeconds(0.05f);
+
+                    sr.color = CFXManager.inst.t_gray;
+
+                    elapsedTime = 0f;
+
+                    while (elapsedTime < duration)
+                    {
+                        if (obj != null)
+                        {
+                            Color setColor = obj.GetComponent<SpriteRenderer>().color;
+                            setColor.a = Mathf.Lerp(1f, 0f, elapsedTime / duration);
+                            obj.GetComponent<SpriteRenderer>().color = setColor;
+
+                            elapsedTime += Time.deltaTime;
+                            yield return null; // Wait for the next frame
+                        }
+                        else
+                        { // In case we delete this tile while its animating
+                            yield break;
+                        }
+                    }
+                }
+                break;
+            case ProjectileTrailStyle.None:
+                break;
         }
+        
+        yield return null;
 
         trailObjects.Remove(HF.V3_to_V2I(obj.transform.position));
         Destroy(obj);

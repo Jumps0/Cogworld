@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.UIElements;
+using System.Drawing;
+using Color = UnityEngine.Color;
 
 /// <summary>
 /// Custom FX Manager. Manages things like the visuals of an explosion. (Not named GFXManager because it starts with G and that will pop-up above GameObject in the search).
@@ -78,21 +80,24 @@ public class CFXManager : MonoBehaviour
     private IEnumerator AnimateExplosionFX(ItemObject weapon, Dictionary<Vector2Int, GameObject> tiles, Vector2Int center)
     {
         float delay = 0f;
+        float animationSpeed = 0f;
+        float fadeInDuration = 0f;
+        float fadeOutDuration = 0f;
+
+        List<Vector2Int> distList = new List<Vector2Int>();
 
         switch (weapon.explosion.explosionGFX)
         {
             case ExplosionGFX.Generic:
-                break;
-            case ExplosionGFX.Light:
                 /*
                  *  Generally this is split into two parts:
-                 *  1. The explosion appears to radiate outwards from the center with the main tile being yellow and the surrounding tiles
+                 *  1. The explosion appears to radiate outwards from the center with the main tile being yellow with a few yellow neighbors and the surrounding tiles
                  *  being orange though becoming darker (randomly) as they get further away. 
                  *  The appearance is uniform until halfway through, where it becomes a bit random.
                  *  2. All tiles fade out in a uniform manner.
                  */
 
-                List<Vector2Int> distList = new List<Vector2Int>();
+                distList = new List<Vector2Int>();
 
                 // Put dictionary into list
                 foreach (KeyValuePair<Vector2Int, GameObject> kvp in tiles)
@@ -102,9 +107,73 @@ public class CFXManager : MonoBehaviour
                 }
                 distList.Sort((v1, v2) => (v1 - center).sqrMagnitude.CompareTo((v2 - center).sqrMagnitude)); // Sort list based on distance from center
 
-                float animationSpeed = 0.1f;
+                animationSpeed = 0.1f;
 
-                float fadeInDuration = animationSpeed / distList.Count;
+                fadeInDuration = animationSpeed / distList.Count;
+                delay = 0f;
+
+                distList = ShuffleList(distList);
+
+                int ticker = Random.Range(3, 6);
+
+                // Go through the tiles and assign them a semi-random shade of orange based on their distance to the center point
+                foreach (Vector2Int tilePos in distList)
+                {
+                    GameObject tileObject = tiles[tilePos];
+                    float distance = Vector2Int.Distance(tilePos, center);
+                    float normalizedDistance = distance / weapon.explosion.radius;
+
+                    Color tileColor = AdjustColor(e_orange, normalizedDistance); // Tiles are orange
+
+                    if (ticker > 0 && Vector2.Distance(tilePos, center) < 1.5f) // Center is yellow
+                    {
+                        tileColor = AdjustColor(e_yellow, normalizedDistance);
+                    }
+
+                    SetTileColor(tileObject, new Color(tileColor.r, tileColor.g, tileColor.b, 0f)); // Start with fully transparent
+
+                    // Fade in this tile before moving to the next one
+                    StartCoroutine(IndividualFade(tileObject, true, 0.2f, delay += fadeInDuration));
+                    //yield return new WaitForSeconds(fadeInDuration);
+
+                    ticker--;
+                }
+
+                //yield return null;
+                yield return new WaitForSeconds(0.5f);
+
+                // Now fade out
+                fadeOutDuration = animationSpeed / distList.Count;
+                delay = 0f;
+
+                foreach (Vector2Int tilePos in distList)
+                {
+                    GameObject tileObject = tiles[tilePos];
+
+                    StartCoroutine(IndividualFade(tileObject, false, 0.2f, delay += fadeInDuration));
+                    //yield return new WaitForSeconds(fadeOutDuration);
+                }
+                break;
+            case ExplosionGFX.Light:
+                /*
+                 *  Generally this is split into two parts:
+                 *  1. The explosion appears to radiate outwards from the center with the main tile being yellow and the surrounding tiles
+                 *  being orange though becoming darker (randomly) as they get further away. We throw in some debris too.
+                 *  The appearance is uniform until halfway through, where it becomes a bit random.
+                 *  2. All tiles fade out in a uniform manner.
+                 */
+
+                // Put dictionary into list
+                foreach (KeyValuePair<Vector2Int, GameObject> kvp in tiles)
+                {
+                    kvp.Value.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0); // Set all tiles to transparent
+                    distList.Add(kvp.Key);
+                }
+                distList.Sort((v1, v2) => (v1 - center).sqrMagnitude.CompareTo((v2 - center).sqrMagnitude)); // Sort list based on distance from center
+
+                animationSpeed = 0.1f;
+
+                fadeInDuration = animationSpeed / distList.Count;
                 delay = 0f;
 
                 distList = ShuffleList(distList);
@@ -127,6 +196,11 @@ public class CFXManager : MonoBehaviour
 
                     // Fade in this tile before moving to the next one
                     StartCoroutine(IndividualFade(tileObject, true, 0.2f, delay += fadeInDuration));
+
+                    // Random debris
+                    if (Random.Range(0f, 1f) > 0.75f)
+                        StartCoroutine(RandomDebris(tilePos, delay));
+
                     //yield return new WaitForSeconds(fadeInDuration);
                 }
 
@@ -134,7 +208,7 @@ public class CFXManager : MonoBehaviour
                 yield return new WaitForSeconds(0.5f);
 
                 // Now fade out
-                float fadeOutDuration = animationSpeed / distList.Count;
+                fadeOutDuration = animationSpeed / distList.Count;
                 delay = 0f;
 
                 foreach (Vector2Int tilePos in distList)
@@ -167,7 +241,7 @@ public class CFXManager : MonoBehaviour
         var spawnedTile = Instantiate(prefab_tile, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
         spawnedTile.name = $"ExplosionFX: {pos.x},{pos.y}"; // Give grid based name
         spawnedTile.transform.parent = this.transform;
-        spawnedTile.GetComponent<SpriteRenderer>().color = color; // Default green color
+        spawnedTile.GetComponent<SpriteRenderer>().color = color; // Set color
         tiles.Add(pos, spawnedTile);
     }
 
@@ -250,6 +324,24 @@ public class CFXManager : MonoBehaviour
         }
     }
 
+    private IEnumerator RandomDebris(Vector2Int pos, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        // Create Debris
+        var debris = Instantiate(prefab_tile, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
+        debris.name = $"DebrisFX: {pos.x},{pos.y}"; // Give grid based name
+        debris.transform.parent = this.transform;
+        debris.GetComponent<SpriteRenderer>().color = Color.white; // Default white color
+        debris.GetComponent<SpriteRenderer>().sprite = MiscSpriteStorage.inst.ASCII_debrisSprites[Random.Range(0, MiscSpriteStorage.inst.ASCII_debrisSprites.Count)]; // Random sprite
+        debris.GetComponent<SpriteRenderer>().sortingOrder--;
+
+        yield return new WaitForSeconds(0.5f);
+
+        // Destroy Debris
+        Destroy(debris);
+
+    }
     private List<Vector2Int> ShuffleList(List<Vector2Int> inputList)
     {    //take any list of points and return it with Fischer-Yates shuffle
         int i = 0;
