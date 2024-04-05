@@ -833,15 +833,29 @@ public static class HF
                 case TerminalCommandType.Analysis:
                     break;
                 case TerminalCommandType.Schematic:
-                    command.item.knowByPlayer = true;
+                    if(item != null)
+                    {
+                        command.item.knowByPlayer = true;
 
-                    return "Downloading schematic...\n    " + HF.ExtractText(parsedName) + "\n    Rating: "
-                        + item.rating + "\n    Schematic downloaded.";
+                        return "Downloading schematic...\n    " + HF.ExtractText(parsedName) + "\n    Rating: "
+                            + item.rating + "\n    Schematic downloaded.";
+                    }
+                    else if(bot != null)
+                    {
+                        command.bot.schematicDetails.knowByPlayer = true;
+
+                        return "Downloading schematic...\n    " + HF.ExtractText(parsedName) + "\n    Rating: "
+                            + bot.rating + "\n    Schematic downloaded.";
+                    }
+                    Debug.LogError("ERROR: No <Item> or <Bot> has been set for this command!");
+                    return null;
+
                 case TerminalCommandType.Download:
                     break;
                 case TerminalCommandType.Couplers:
                     break;
                 case TerminalCommandType.Seal:
+                    // TODO
                     // We want to:
                     // -print the statement (see below)
                     // -play the closing sound
@@ -856,29 +870,60 @@ public static class HF
                 case TerminalCommandType.Load:
                     int buildTime = 0;
                     int secLvl = GetMachineSecLvl(UIManager.inst.terminal_targetTerm);
-                    if (secLvl == 1)
+
+                    if(item != null)
                     {
-                        buildTime = item.fabricationInfo.fabTime.x;
+                        if (secLvl == 1)
+                        {
+                            buildTime = item.fabricationInfo.fabTime.x;
+                        }
+                        else if (secLvl == 2)
+                        {
+                            buildTime = item.fabricationInfo.fabTime.y;
+                        }
+                        else if (secLvl == 3)
+                        {
+                            buildTime = item.fabricationInfo.fabTime.z;
+                        }
+                        string p = "";
+                        if (item.star)
+                        {
+                            p = "p";
+                        }
+
+                        UIManager.inst.terminal_targetTerm.GetComponent<Fabricator>().Load(buildTime, item);
+
+                        return "Uploading " + HF.ExtractText(parsedName) + " schematic...\nLoaded successfully:\n    " + HF.ExtractText(parsedName) + "\n    Rating: "
+                            + item.rating + p + "\n    Time: " + buildTime.ToString() + "\nInitiate build sequence.";
                     }
-                    else if (secLvl == 2)
+                    else if(bot != null)
                     {
-                        buildTime = item.fabricationInfo.fabTime.y;
-                    }
-                    else if (secLvl == 3)
-                    {
-                        buildTime = item.fabricationInfo.fabTime.z;
-                    }
-                    string p = "";
-                    if (item.star)
-                    {
-                        p = "p";
+                        if (secLvl == 1)
+                        {
+                            buildTime = bot.fabricationInfo.fabTime.x;
+                        }
+                        else if (secLvl == 2)
+                        {
+                            buildTime = bot.fabricationInfo.fabTime.y;
+                        }
+                        else if (secLvl == 3)
+                        {
+                            buildTime = bot.fabricationInfo.fabTime.z;
+                        }
+                        string p = "";
+                        if (bot.star)
+                        {
+                            p = "p";
+                        }
+
+                        UIManager.inst.terminal_targetTerm.GetComponent<Fabricator>().Load(buildTime, null, bot);
+
+                        return "Uploading " + HF.ExtractText(parsedName) + " schematic...\nLoaded successfully:\n    " + HF.ExtractText(parsedName) + "\n    Rating: "
+                            + bot.rating + p + "\n    Time: " + buildTime.ToString() + "\nInitiate build sequence.";
                     }
 
-
-                    UIManager.inst.terminal_targetTerm.GetComponent<Fabricator>().Load(item, buildTime);
-
-                    return "Uploading " + HF.ExtractText(parsedName) + " schematic...\nLoaded successfully:\n    " + HF.ExtractText(parsedName) + "\n    Rating: " 
-                        + item.rating + p + "\n    Time: " +  buildTime.ToString() + "\nInitiate build sequence.";
+                    Debug.LogError("ERROR: No <Item> or <Bot> has been set for this command!");
+                    return null;
                 case TerminalCommandType.Build:
 
                     UIManager.inst.terminal_targetTerm.GetComponent<Fabricator>().Build();
@@ -2856,6 +2901,19 @@ public static class HF
         }
 
         return armor;
+    }
+
+    public static string GetNextLetter(string lastLetter)
+    {
+        // Convert the last letter to a character
+        char lastChar = lastLetter[0];
+
+        // Increment the ASCII value of the last letter to get the next letter
+        // If the last letter is 'z', wrap around to 'a'
+        char nextChar = (char)(lastChar == 'z' ? 'a' : lastChar + 1);
+
+        // Convert the next character back to a string and return it
+        return nextChar.ToString();
     }
 
     #endregion

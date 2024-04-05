@@ -35,6 +35,12 @@ public class RepairStation : MonoBehaviour
     public ItemObject targetPart = null;
     public int timeToComplete;
 
+    public void Init()
+    {
+        // We need to load this machine with the following commands:
+
+    }
+
     public void Scan(ItemObject item, int time)
     {
         targetPart = item;

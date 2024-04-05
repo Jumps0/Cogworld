@@ -109,6 +109,7 @@ public abstract class BotObject : ScriptableObject
         "As long as the targeting line is green Cogmind has a clear LOF to the target, even if it looks like it passes through another robot or obstacle.")]
     public BotProfile _profile;
     public int rating;
+    public bool star;
     public int tier;
     public int threat;
     public int value;

@@ -53,7 +53,7 @@ public class UIHackTarget : MonoBehaviour
         assignedLetter = commandToUse.assignedChar;
         setText = commandToUse.command;
         optText = commandToUse.secondaryText;
-        available = DetermineIfAvaiable();
+        available = DetermineIfAvaiable(commandToUse);
         SetKey();
 
         // Set # Amount & Color (chance of success)
@@ -167,7 +167,15 @@ public class UIHackTarget : MonoBehaviour
         {
             this.gameObject.name = assignedKey + " - " + command.command;
         }
-        StartCoroutine(AnimateReveal());
+
+        if (available)
+        {
+            StartCoroutine(AnimateReveal());
+        }
+        else
+        {
+            SetAsUsed();
+        }
     }
 
     IEnumerator AnimateReveal()
@@ -348,12 +356,40 @@ public class UIHackTarget : MonoBehaviour
 
     }
 
-    private bool DetermineIfAvaiable()
+    private bool DetermineIfAvaiable(TerminalCommand command)
     {
-        // This needs to a bunch of research stuff
         // Usually its true, but will sometimes be false if:
         // - The command is for a record the player already has
         // - The command is for a schematic / analysis the player already has
+        // - Is of type NONE (Like "No Schematic Loaded")
+
+        if(command.subType == TerminalCommandType.NONE) // These are unavailable by default
+        {
+            return false;
+        }
+        else if (command.subType == TerminalCommandType.Schematic)
+        {
+            if (command.bot)
+            {
+                return !command.item.schematicDetails.knowByPlayer;
+            }
+            else if (command.item)
+            {
+                return !command.item.knowByPlayer;
+            }
+        }
+        else if (command.subType == TerminalCommandType.Analysis)
+        {
+            if (command.bot)
+            {
+                return !command.bot.playerHasAnalysisData;
+            }
+        }
+        else if (command.subType == TerminalCommandType.Query)
+        {
+            return !command.knowledge.knowByPlayer;
+        }
+
 
         return true;
     }

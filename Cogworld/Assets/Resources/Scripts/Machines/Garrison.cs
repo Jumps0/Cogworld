@@ -38,6 +38,12 @@ public class Garrison : MonoBehaviour
     public bool trojan_redirect = false;
     public bool trojan_reprogram = false;
 
+    public void Init()
+    {
+        // We need to load this machine with the following commands:
+
+    }
+
     public void UnlockAccess()
     {
         doorRevealed = true;

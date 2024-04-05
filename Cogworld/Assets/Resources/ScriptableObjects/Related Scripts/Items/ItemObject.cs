@@ -775,6 +775,9 @@ public class SchematicInfo
     public bool hackable = true;
     [Tooltip("Min Terminal Sec lvl / Depth")]
     public List<Vector2Int> location = new List<Vector2Int>();
+
+    [Tooltip("Does the player have this schematic?")]
+    public bool knowByPlayer = false;
 }
 
 [System.Serializable]

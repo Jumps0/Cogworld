@@ -34,4 +34,10 @@ public class Scanalyzer : MonoBehaviour
     [Header("Items")]
     public ItemObject targetPart = null;
 
+
+    public void Init()
+    {
+        // We need to load this machine with the following commands:
+
+    }
 }

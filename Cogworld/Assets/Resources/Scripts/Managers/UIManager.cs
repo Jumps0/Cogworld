@@ -2438,6 +2438,117 @@ public class UIManager : MonoBehaviour
         yield return null;
     }
 
+    public void Terminal_RefreshHackingOptions()
+    {
+        // First we need to clear up all the old options
+        foreach (var option in terminal_hackTargetsList.ToList())
+        {
+            if (option.GetComponent<UIHackTarget>())
+            {
+                option.GetComponent<UIHackTarget>().ShutDown();
+            }
+        }
+
+        terminal_hackTargetsList.Clear();
+
+        // Then we need to put in the new ones again
+        #region New options
+        // Generate the hacking target options
+        List<TerminalCommand> commands = new List<TerminalCommand>();
+        int secLvl = 0;
+        if (terminal_targetTerm.GetComponent<Terminal>()) // Open Terminal
+        {
+            commands = terminal_targetTerm.GetComponent<Terminal>().avaiableCommands;
+            secLvl = terminal_targetTerm.GetComponent<Terminal>().secLvl;
+        }
+        else if (terminal_targetTerm.GetComponent<Fabricator>()) // Open Fabricator
+        {
+            commands = terminal_targetTerm.GetComponent<Fabricator>().avaiableCommands;
+            secLvl = terminal_targetTerm.GetComponent<Fabricator>().secLvl;
+        }
+        else if (terminal_targetTerm.GetComponent<Scanalyzer>()) // Open Scanalyzer
+        {
+            commands = terminal_targetTerm.GetComponent<Scanalyzer>().avaiableCommands;
+            secLvl = terminal_targetTerm.GetComponent<Scanalyzer>().secLvl;
+        }
+        else if (terminal_targetTerm.GetComponent<RepairStation>()) // Open Repair Station
+        {
+            commands = terminal_targetTerm.GetComponent<RepairStation>().avaiableCommands;
+            secLvl = terminal_targetTerm.GetComponent<RepairStation>().secLvl;
+        }
+        else if (terminal_targetTerm.GetComponent<RecyclingUnit>()) // Open Recycling Unit
+        {
+            commands = terminal_targetTerm.GetComponent<RecyclingUnit>().avaiableCommands;
+            secLvl = terminal_targetTerm.GetComponent<RecyclingUnit>().secLvl;
+        }
+        else if (terminal_targetTerm.GetComponent<Garrison>()) // Open Garrison
+        {
+            commands = terminal_targetTerm.GetComponent<Garrison>().avaiableCommands;
+            secLvl = terminal_targetTerm.GetComponent<Garrison>().secLvl;
+        }
+        else if (terminal_targetTerm.GetComponent<TerminalCustom>()) // Open Custom Terminal
+        {
+            commands = terminal_targetTerm.GetComponent<TerminalCustom>().avaiableCommands;
+            secLvl = terminal_targetTerm.GetComponent<TerminalCustom>().secLvl;
+        }
+
+
+        int i = 0;
+        foreach (TerminalCommand command in commands)
+        {
+            GameObject targetCommand = Instantiate(terminal_hackoption_prefab, terminal_hackOptionsArea.transform.position, Quaternion.identity);
+            targetCommand.transform.SetParent(terminal_hackOptionsArea.transform);
+            targetCommand.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+            // Add it to list
+            terminal_hackTargetsList.Add(targetCommand);
+            // Assign Details
+            bool drawLine = false;
+            if (i % 2 == 0)
+                drawLine = true;
+
+            // (Off topic) -- Calculate Chance of Success --
+            float chance = 0f;
+            if (secLvl == 0)
+            {
+                chance = 1f; // Open System
+            }
+            else
+            {
+                HackObject hack = command.hack;
+                float baseChance = 1f;
+                if (secLvl == 1) // We are using direct chance because indirect is done somewhere else
+                {
+                    baseChance = (float)((float)hack.directChance.x / 100f);
+                }
+                else if (secLvl == 2)
+                {
+                    baseChance = (float)((float)hack.directChance.y / 100f);
+                }
+                else if (secLvl == 3)
+                {
+                    baseChance = (float)((float)hack.directChance.z / 100f);
+                }
+                chance = HF.CalculateHackSuccessChance(baseChance);
+            }
+
+            targetCommand.GetComponent<UIHackTarget>().Setup(command, drawLine, chance);
+            i++;
+        }
+
+        // Lastly, initiate the manual command
+        GameObject manualCommand = Instantiate(terminal_hackoption_prefab, terminal_hackOptionsArea.transform.position, Quaternion.identity);
+        manualCommand.transform.SetParent(terminal_hackOptionsArea.transform);
+        manualCommand.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+        // Add it to list
+        terminal_hackTargetsList.Add(manualCommand);
+        // Assign Details
+        bool drawLine2 = false;
+        if (i % 2 == 0)
+            drawLine2 = true;
+        manualCommand.GetComponent<UIHackTarget>().SetupAsManualCommand(drawLine2);
+        #endregion
+    }
+
     public void Terminal_CreateResult(string text, Color setColor, string whiteText, bool tryDetection = false)
     {
         GameObject header = Instantiate(terminal_hackResults_prefab, terminal_hackResultsArea.transform.position, Quaternion.identity);

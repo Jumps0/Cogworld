@@ -570,6 +570,7 @@ public class MapManager : MonoBehaviour
         PlaceIndividualMachine(new Vector2Int(bl.x + 4, bl.y + 7), 0, 11); // Static Machine (Outpost Generator)
         PlaceIndividualMachine(new Vector2Int(bl.x + 8, bl.y + 4), 0, 0); // Static Machine (Recharging Bay)
 
+        PlaceIndividualMachine(new Vector2Int(bl.x + 3, bl.y + 13), 2, 2); // Fabricator 4x2 "Alice"
 
         // # - Test bot
         Actor testBot = PlaceBot(new Vector2Int(bl.x + 12, bl.y + 5), 9);
@@ -2150,6 +2151,31 @@ public class MapManager : MonoBehaviour
                     }
                 }
             }
+        }
+
+        foreach(GameObject obj in machines_fabricators)
+        {
+            obj.GetComponentInChildren<Fabricator>().Init();
+        }
+
+        foreach (GameObject obj in machines_garrisons)
+        {
+            obj.GetComponentInChildren<Garrison>().Init();
+        }
+
+        foreach (GameObject obj in machines_recyclingUnits)
+        {
+            obj.GetComponentInChildren<RecyclingUnit>().Init();
+        }
+
+        foreach (GameObject obj in machines_repairStation)
+        {
+            obj.GetComponentInChildren<RepairStation>().Init();
+        }
+
+        foreach (GameObject obj in machines_scanalyzers)
+        {
+            obj.GetComponentInChildren<Scanalyzer>().Init();
         }
     }
 
