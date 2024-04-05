@@ -22,6 +22,9 @@ public class CFXManager : MonoBehaviour
     [Header("Colors")]
     public Color e_yellow;
     public Color e_orange;
+    // For launcher trails
+    public Color t_red;
+    public Color t_gray;
 
 
     #region Explosion FX

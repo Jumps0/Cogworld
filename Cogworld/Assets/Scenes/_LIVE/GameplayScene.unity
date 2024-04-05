@@ -87107,6 +87107,8 @@ MonoBehaviour:
   prefab_tile: {fileID: 757329426654254245, guid: 0b0103138bcd2b04784d2d4a5ce435b5, type: 3}
   e_yellow: {r: 0.9960785, g: 1, b: 0.043137256, a: 1}
   e_orange: {r: 0.93725497, g: 0.3921569, b: 0, a: 1}
+  t_red: {r: 0.9490197, g: 0.027450982, b: 0, a: 1}
+  t_gray: {r: 0.5529412, g: 0.5529412, b: 0.5529412, a: 1}
 --- !u!1 &1624344255
 GameObject:
   m_ObjectHideFlags: 0

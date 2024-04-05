@@ -476,7 +476,7 @@ public class ItemProjectile // (Disregarded in AOE attacks except for projectile
     public Sprite projectileSprite;
     public bool projectileRotates = true;
     [Tooltip("0 = None | 1 = Rocket Minor | 2 = Rocket Major")]
-    public int projectileTrail = 0;
+    public ProjectileTrailStyle projectileTrail = ProjectileTrailStyle.None;
     //public ??? projectileStyle = ???; TODO
     [Header("Penetration")]
     [Tooltip("Each weapon specifies a maximum number of obstructions its projectiles can penetrate, " +
@@ -829,6 +829,14 @@ public enum ArmorType
     Utility,
     Weapon,
     General,
+    None
+}
+
+[System.Serializable]
+public enum ProjectileTrailStyle
+{
+    MissileMinor,
+    MissileMajor,
     None
 }
 
