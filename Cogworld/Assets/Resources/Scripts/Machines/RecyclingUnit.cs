@@ -31,13 +31,18 @@ public class RecyclingUnit : MonoBehaviour
     public bool trojan_botnet = false;
     public bool trojan_detonate = false;
 
-    [Header("Items")]
+    [Header("Operation")]
     public ItemObject targetPart = null;
-
+    public bool working = false;
 
     public void Init()
     {
         // We need to load this machine with the following commands:
+
+    }
+
+    public void Check()
+    {
 
     }
 }

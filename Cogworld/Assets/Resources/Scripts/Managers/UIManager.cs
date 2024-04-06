@@ -3157,6 +3157,90 @@ public class UIManager : MonoBehaviour
 
     #endregion
 
+    #region Schematics
+
+    [Header("Schematics")]
+    public List<GameObject> schematics_objects = new List<GameObject>();
+    public GameObject schematics_prefab;
+    public GameObject schematics_parent;
+    public GameObject schematics_contentArea;
+    [SerializeField] private Image schematics_backer;
+
+    public void Schematics_Open()
+    {
+        // Enable the menu
+        schematics_parent.SetActive(true);
+
+        // Populate it with know schematics (items then bots)
+        List<ItemObject> knownItems = HF.GetKnownItemSchematics();
+        List<BotObject> knownBots = HF.GetKnownBotSchematics();
+
+        char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+        alphabet = alpha.ToList(); // Fill alphabet list
+
+        foreach (ItemObject item in knownItems)
+        {
+            if(schematics_objects.Count < 25) // Don't go over 26, we don't have that many letters
+            {
+                // Instantiate it & Assign it to the area
+                GameObject schematicOption = Instantiate(schematics_prefab, schematics_contentArea.transform.position, Quaternion.identity);
+                schematicOption.transform.SetParent(schematics_contentArea.transform);
+                schematicOption.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+                // Add it to list
+                schematics_objects.Add(schematicOption);
+                // Assign Details
+                schematicOption.GetComponent<UISchematicOption>().Init(alphabet[0].ToString().ToLower(), item);
+
+                alphabet.Remove(alphabet[0]);
+            }
+        }
+
+        foreach (BotObject bot in knownBots)
+        {
+            if (schematics_objects.Count < 25) // Don't go over 26, we don't have that many letters
+            {
+                // Instantiate it & Assign it to the area
+                GameObject schematicOption = Instantiate(schematics_prefab, schematics_contentArea.transform.position, Quaternion.identity);
+                schematicOption.transform.SetParent(schematics_contentArea.transform);
+                schematicOption.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+                // Add it to list
+                schematics_objects.Add(schematicOption);
+                // Assign Details
+                schematicOption.GetComponent<UISchematicOption>().Init(alphabet[0].ToString().ToLower(), null, bot);
+
+                alphabet.Remove(alphabet[0]);
+            }
+        }
+
+        StartCoroutine(Schematics_OpenAnim());
+    }
+
+    private IEnumerator Schematics_OpenAnim()
+    {
+        // Animate the header box
+        float elapsedTime = 0f;
+        float duration = 0.5f;
+        while (elapsedTime < duration) // Green -> Black
+        {
+            schematics_backer.color = Color.Lerp(highlightGreen, Color.black, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null; // Wait for the next frame
+        }
+        schematics_backer.color = Color.black;
+
+    }
+
+    public void Schematics_Close()
+    {
+        // Remove all the options
+
+        // Disable the menu
+        schematics_parent.SetActive(false);
+    }
+
+    #endregion
+
     [Header("Bar Collection")]
     [Tooltip("Collection of all bar images that make up the UI boxes.")]
     public List<Image> boxBars = new List<Image>();

@@ -37,6 +37,7 @@ public class Fabricator : MonoBehaviour
     public ItemObject targetPart = null;
     public BotObject targetBot = null;
     public int buildTime;
+    public bool working = false;
 
     public void Init()
     {
@@ -62,9 +63,9 @@ public class Fabricator : MonoBehaviour
         letter = alphabet[0].ToString().ToLower();
         alphabet.Remove(alphabet[0]);
 
-        hack = MapManager.inst.hackDatabase.Hack[26];
+        hack = MapManager.inst.hackDatabase.Hack[185];
 
-        newCommand = new TerminalCommand(letter, "Load Schematic", TerminalCommandType.Load, "", hack);
+        newCommand = new TerminalCommand(letter, "Load Schematic", TerminalCommandType.LoadIndirect, "", hack);
 
         avaiableCommands.Add(newCommand);
 
@@ -183,9 +184,29 @@ public class Fabricator : MonoBehaviour
     }
 
     // -- Build -- //
+    public int begunBuildTime = 0;
+
     public void Build()
     {
+        begunBuildTime = TurnManager.inst.globalTime;
+        working = true;
+    }
 
+    public void FinishBuild()
+    {
+        working = false;
+
+    }
+
+    public void Check()
+    {
+        if (working)
+        {
+            if(begunBuildTime + buildTime >= TurnManager.inst.globalTime)
+            {
+                FinishBuild();
+            }
+        }
     }
     
 }

@@ -867,14 +867,12 @@ public static class HF
                     return "Access door sealed.";
                 case TerminalCommandType.Unlock:
                     break;
+                case TerminalCommandType.LoadIndirect: // This opens up the schematic menu
+                    if(!UIManager.inst.schematics_parent.activeInHierarchy)
+                        UIManager.inst.Schematics_Open();
+
+                    break;
                 case TerminalCommandType.Load:
-
-                    /* TODO
-                     * 
-                     * NOTE: This is wrong. It should open the schematics menu instead, and then when one of those gets clicked all this stuff should happen.
-                     * 
-                     */
-
 
                     int buildTime = 0;
                     int secLvl = GetMachineSecLvl(UIManager.inst.terminal_targetTerm);
@@ -3014,6 +3012,57 @@ public static class HF
         return nextChar.ToString();
     }
 
+    public static List<ItemObject> GetKnownItemSchematics()
+    {
+        List<ItemObject> items = new List<ItemObject>();
+
+        foreach (var item in MapManager.inst.itemDatabase.Items)
+        {
+            if (item.schematicDetails.hasSchematic)
+            {
+                items.Add(item);
+            }
+        }
+
+        return items;
+    }
+
+    public static List<BotObject> GetKnownBotSchematics()
+    {
+        List<BotObject> bots = new List<BotObject>();
+
+        foreach (var bot in MapManager.inst.botDatabase.Bots)
+        {
+            if (bot.schematicDetails.hasSchematic)
+            {
+                bots.Add(bot);
+            }
+        }
+
+        return bots;
+    }
+
+    public static (int, bool) GetTierAndP(string gameObjectName)
+    {
+        int tier = 0;
+        bool hasP = false;
+
+        // Define the regular expression pattern to match "Tier #" or "Rating #P" in the GameObject name.
+        string pattern = @"(?:Tier|Rating)\s+(\d+)(P?)";
+
+        // Use Regex to find matches in the GameObject name.
+        Match match = Regex.Match(gameObjectName, pattern, RegexOptions.IgnoreCase);
+
+        if (match.Success)
+        {
+            // Extract the tier/rating number and check for "P".
+            tier = int.Parse(match.Groups[1].Value);
+            hasP = !string.IsNullOrEmpty(match.Groups[2].Value);
+        }
+
+        return (tier, hasP);
+    }
+
     #endregion
 
     #region Floor Traps
@@ -3301,50 +3350,6 @@ public static class HF
 
     #endregion
 
-    public static AudioClip RandomClip(List<AudioClip> clips)
-    {
-        return clips[Random.Range(0, clips.Count - 1)];
-    }
-
-    public static Color GetDarkerColor(Color originalColor, float percentage)
-    {
-        // Make sure the percentage is within the range [0, 100].
-        percentage = Mathf.Clamp(percentage, 0f, 100f) / 100f;
-
-        // Calculate the darker color components.
-        float r = originalColor.r - originalColor.r * percentage;
-        float g = originalColor.g - originalColor.g * percentage;
-        float b = originalColor.b - originalColor.b * percentage;
-
-        // Make sure the color components are within the range [0, 1].
-        r = Mathf.Clamp01(r);
-        g = Mathf.Clamp01(g);
-        b = Mathf.Clamp01(b);
-
-        return new Color(r, g, b, originalColor.a);
-    }
-
-    public static (int, bool) GetTierAndP(string gameObjectName)
-    {
-        int tier = 0;
-        bool hasP = false;
-
-        // Define the regular expression pattern to match "Tier #" or "Rating #P" in the GameObject name.
-        string pattern = @"(?:Tier|Rating)\s+(\d+)(P?)";
-
-        // Use Regex to find matches in the GameObject name.
-        Match match = Regex.Match(gameObjectName, pattern, RegexOptions.IgnoreCase);
-
-        if (match.Success)
-        {
-            // Extract the tier/rating number and check for "P".
-            tier = int.Parse(match.Groups[1].Value);
-            hasP = !string.IsNullOrEmpty(match.Groups[2].Value);
-        }
-
-        return (tier, hasP);
-    }
-
     #region Highlighted Path Pruning
     // Function to prune the highlighted tiles based on A* pathfinding
     public static List<GameObject> PrunePath(List<GameObject> path)
@@ -3380,6 +3385,8 @@ public static class HF
         return Mathf.Abs(position1.x - position2.x) > 0 && Mathf.Abs(position1.y - position2.y) > 0;
     }
     #endregion
+
+    #region Misc
 
     /// <summary>
     /// Function to rotate coordinates in 90-degree increments. Used primarily in *DungeonGeneratorCTR*
@@ -3609,6 +3616,49 @@ public static class HF
 
         return resultList;
     }
+
+    public static AudioClip RandomClip(List<AudioClip> clips)
+    {
+        return clips[Random.Range(0, clips.Count - 1)];
+    }
+
+    public static Color GetDarkerColor(Color originalColor, float percentage)
+    {
+        // Make sure the percentage is within the range [0, 100].
+        percentage = Mathf.Clamp(percentage, 0f, 100f) / 100f;
+
+        // Calculate the darker color components.
+        float r = originalColor.r - originalColor.r * percentage;
+        float g = originalColor.g - originalColor.g * percentage;
+        float b = originalColor.b - originalColor.b * percentage;
+
+        // Make sure the color components are within the range [0, 1].
+        r = Mathf.Clamp01(r);
+        g = Mathf.Clamp01(g);
+        b = Mathf.Clamp01(b);
+
+        return new Color(r, g, b, originalColor.a);
+    }
+
+    public static string RecolorPrefix(ItemObject item, string color)
+    {
+        // Recolor is made up of two parts:
+        // "<color=#009700>"
+        // "</color>"
+
+        string name = item.itemName;
+
+        if (item.quality != ItemQuality.Standard)
+        {
+            string[] split = name.Split(". ");
+
+            name = "<color=#" + color + ">" + split[0] + ". </color>" + split[1];
+        }
+
+        return name;
+    }
+
+    #endregion
 
     #region Spotting
 

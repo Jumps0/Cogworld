@@ -34,6 +34,7 @@ public class RepairStation : MonoBehaviour
     [Header("Operation")]
     public ItemObject targetPart = null;
     public int timeToComplete;
+    public bool working = false;
 
     public void Init()
     {
@@ -48,6 +49,11 @@ public class RepairStation : MonoBehaviour
     }
 
     public void Repair()
+    {
+
+    }
+
+    public void Check()
     {
 
     }

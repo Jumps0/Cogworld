@@ -259,11 +259,14 @@ public class UIHackInputfield : MonoBehaviour
             string header = ">>" + HF.ParseHackName(hack, right);
             string rewardString = HF.MachineReward_PrintPLUSAction(command);
 
-            // Create result in terminal
-            UIManager.inst.Terminal_CreateResult(rewardString, lowDetColor, header);
-            // Create log messages
-            UIManager.inst.CreateNewLogMessage(header, lowDetColor, darkGreenColor, true);
-            UIManager.inst.CreateNewLogMessage(rewardString, UIManager.inst.deepInfoBlue, UIManager.inst.infoBlue, true, true);
+            if (rewardString.Length > 0)
+            {
+                // Create result in terminal
+                UIManager.inst.Terminal_CreateResult(rewardString, lowDetColor, header);
+                // Create log messages
+                UIManager.inst.CreateNewLogMessage(header, lowDetColor, darkGreenColor, true);
+                UIManager.inst.CreateNewLogMessage(rewardString, UIManager.inst.deepInfoBlue, UIManager.inst.infoBlue, true, true);
+            }
         }
         else // FAILURE
         {

@@ -197,6 +197,7 @@ public class TurnManager : MonoBehaviour
         // Do stuff
         globalTime += 1;
         UIManager.inst.UpdateTimer(globalTime);
+        GameManager.inst.MachineTimerUpdate();
     }
 
     /*

@@ -38,6 +38,12 @@ public class GameManager : MonoBehaviour
 
         gameDifficulty = data.mode;
         hardDiff = data.difficulty;
+
+        GameManager.inst.GrantSchematicKnowledge(MapManager.inst.itemDatabase.Items[2]);
+        GameManager.inst.GrantSchematicKnowledge(MapManager.inst.itemDatabase.Items[3]);
+        GameManager.inst.GrantSchematicKnowledge(MapManager.inst.itemDatabase.Items[4]);
+        GameManager.inst.GrantSchematicKnowledge(MapManager.inst.itemDatabase.Items[5]);
+        GameManager.inst.GrantSchematicKnowledge(null, MapManager.inst.botDatabase.Bots[2]);
     }
 
     #region File I/O (.json)
@@ -1117,6 +1123,53 @@ public class GameManager : MonoBehaviour
             go.transform.parent = PlayerData.inst.transform;
 
         go.GetComponent<MeleeAttackIndicator>().Init(weapon, rotation, hit); // Init
+    }
+
+    public void MachineTimerUpdate() // Do a production check on any working machines
+    {
+        foreach (GameObject obj in MapManager.inst.machines_fabricators)
+        {
+            if (obj.GetComponentInChildren<Fabricator>().working)
+            {
+                obj.GetComponentInChildren<Fabricator>().Check();
+            }
+        }
+
+        foreach (GameObject obj in MapManager.inst.machines_scanalyzers)
+        {
+            if (obj.GetComponentInChildren<Scanalyzer>().working)
+            {
+                obj.GetComponentInChildren<Scanalyzer>().Check();
+            }
+        }
+
+        foreach (GameObject obj in MapManager.inst.machines_repairStation)
+        {
+            if (obj.GetComponentInChildren<RepairStation>().working)
+            {
+                obj.GetComponentInChildren<RepairStation>().Check();
+            }
+        }
+
+        foreach (GameObject obj in MapManager.inst.machines_recyclingUnits)
+        {
+            if (obj.GetComponentInChildren<RecyclingUnit>().working)
+            {
+                obj.GetComponentInChildren<RecyclingUnit>().Check();
+            }
+        }
+    }
+
+    public void GrantSchematicKnowledge(ItemObject item = null, BotObject bot = null)
+    {
+        if(item != null)
+        {
+            item.schematicDetails.hasSchematic = true;
+        }
+        else if(bot != null)
+        {
+            bot.schematicDetails.hasSchematic = true;
+        }
     }
 }
 

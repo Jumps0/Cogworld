@@ -128,7 +128,8 @@ public enum TerminalCommandType
     Couplers,
     Seal,
     Unlock,
-    // - Terminal Part 2
+    // - Fabricator
+    LoadIndirect,
     Load,
     Build,
     Network,

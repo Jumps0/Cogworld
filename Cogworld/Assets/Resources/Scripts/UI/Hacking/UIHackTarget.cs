@@ -134,12 +134,16 @@ public class UIHackTarget : MonoBehaviour
 
                 string header = ">>" + HF.ParseHackName(command.hack, fill);
                 string rewardString = HF.MachineReward_PrintPLUSAction(command);
-                SetAsUsed();
-                // Create result in terminal
-                UIManager.inst.Terminal_CreateResult(rewardString, lowDetColor, header);
-                // Create log messages
-                UIManager.inst.CreateNewLogMessage(header, lowDetColor, darkGreenColor, true);
-                UIManager.inst.CreateNewLogMessage(rewardString, UIManager.inst.deepInfoBlue, UIManager.inst.infoBlue, true, true);
+
+                if(rewardString.Length > 0)
+                {
+                    SetAsUsed();
+                    // Create result in terminal
+                    UIManager.inst.Terminal_CreateResult(rewardString, lowDetColor, header);
+                    // Create log messages
+                    UIManager.inst.CreateNewLogMessage(header, lowDetColor, darkGreenColor, true);
+                    UIManager.inst.CreateNewLogMessage(rewardString, UIManager.inst.deepInfoBlue, UIManager.inst.infoBlue, true, true);
+                }
             }
             else // FAILURE
             {
