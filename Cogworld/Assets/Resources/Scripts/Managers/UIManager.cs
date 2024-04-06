@@ -4638,14 +4638,17 @@ public class UIManager : MonoBehaviour
 
     public void Evasion_ExpandMenu()
     {
-        //StopCoroutine(Evasion_ExpandMenu_Animation());
+        if (PlayerData.inst) // Should only be able to open the menu when the player exists
+        {
+            //StopCoroutine(Evasion_ExpandMenu_Animation());
 
-        //evasionExtra.transform.GetChild(0).gameObject.SetActive(true);
-        evasionExtra.GetComponent<UIMouseBounds>().disabled = true; // Disable opening detection
-        evasion_hoverOpener.GetComponent<UIMouseBounds>().disabled = false; // Allow closing
+            //evasionExtra.transform.GetChild(0).gameObject.SetActive(true);
+            evasionExtra.GetComponent<UIMouseBounds>().disabled = true; // Disable opening detection
+            evasion_hoverOpener.GetComponent<UIMouseBounds>().disabled = false; // Allow closing
 
-        evasionAnimator.GetComponent<UIEvasionAnimation>().OpenMenu();
-        //StartCoroutine(Evasion_ExpandMenu_Animation());
+            evasionAnimator.GetComponent<UIEvasionAnimation>().OpenMenu();
+            //StartCoroutine(Evasion_ExpandMenu_Animation());
+        }
     }
 
     /*
@@ -4664,6 +4667,7 @@ public class UIManager : MonoBehaviour
 
     public void Evasion_UpdateUI()
     {
+
         // Flight/Hover Bonus
         if (PlayerData.inst.evasion1 > 0)
         {

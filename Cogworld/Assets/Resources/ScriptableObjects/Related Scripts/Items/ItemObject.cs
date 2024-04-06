@@ -777,7 +777,7 @@ public class SchematicInfo
     public List<Vector2Int> location = new List<Vector2Int>();
 
     [Tooltip("Does the player have this schematic?")]
-    public bool knowByPlayer = false;
+    public bool hasSchematic = false;
 }
 
 [System.Serializable]

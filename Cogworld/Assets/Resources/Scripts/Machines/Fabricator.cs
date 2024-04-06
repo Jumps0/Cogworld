@@ -52,7 +52,9 @@ public class Fabricator : MonoBehaviour
         string letter = alphabet[0].ToString().ToLower();
         alphabet.Remove(alphabet[0]);
 
-        TerminalCommand newCommand = new TerminalCommand(letter, "Network Status", TerminalCommandType.Network);
+        HackObject hack = MapManager.inst.hackDatabase.Hack[27];
+
+        TerminalCommand newCommand = new TerminalCommand(letter, "Network Status", TerminalCommandType.Network, "", hack);
 
         avaiableCommands.Add(newCommand);
 
@@ -60,7 +62,9 @@ public class Fabricator : MonoBehaviour
         letter = alphabet[0].ToString().ToLower();
         alphabet.Remove(alphabet[0]);
 
-        newCommand = new TerminalCommand(letter, "Load Schematic", TerminalCommandType.Load);
+        hack = MapManager.inst.hackDatabase.Hack[26];
+
+        newCommand = new TerminalCommand(letter, "Load Schematic", TerminalCommandType.Load, "", hack);
 
         avaiableCommands.Add(newCommand);
 
@@ -92,24 +96,30 @@ public class Fabricator : MonoBehaviour
             {
                 bot = HF.FindBotOfTier(tier);
 
+                hack = MapManager.inst.hackDatabase.Hack[16 + tier]; // bot commands actually start at 17 but the lowest tier can be is 1 so 16 + 1 = 17.
+
                 displayText += bot.name;
 
-                newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Build, "", null, null, null, bot);
+                newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Build, "", hack, null, null, bot);
             }
             else // 70% chance to be an item
             {
-                item = HF.FindItemOfTier(tier);
+                item = HF.FindItemOfTier(tier, false);
 
                 displayText += item.itemName;
 
-                newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Build, "", null, null, null, null, item);
+                hack = HF.HackBuildParser(tier, item.star);
+
+                newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Build, "", hack, null, null, null, item);
             }
 
             avaiableCommands.Add(newCommand);
         }
         else // We need to show the "No Schematic Loaded" false command
         {
-            newCommand = new TerminalCommand(letter, "No Schematic Loaded", TerminalCommandType.NONE);
+            hack = MapManager.inst.hackDatabase.Hack[26];
+
+            newCommand = new TerminalCommand(letter, "No Schematic Loaded", TerminalCommandType.NONE, "", hack);
 
             avaiableCommands.Add(newCommand);
         }

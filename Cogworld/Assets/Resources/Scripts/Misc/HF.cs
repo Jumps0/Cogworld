@@ -842,7 +842,7 @@ public static class HF
                     }
                     else if(bot != null)
                     {
-                        command.bot.schematicDetails.knowByPlayer = true;
+                        command.bot.schematicDetails.hasSchematic = true;
 
                         return "Downloading schematic...\n    " + HF.ExtractText(parsedName) + "\n    Rating: "
                             + bot.rating + "\n    Schematic downloaded.";
@@ -868,6 +868,14 @@ public static class HF
                 case TerminalCommandType.Unlock:
                     break;
                 case TerminalCommandType.Load:
+
+                    /* TODO
+                     * 
+                     * NOTE: This is wrong. It should open the schematics menu instead, and then when one of those gets clicked all this stuff should happen.
+                     * 
+                     */
+
+
                     int buildTime = 0;
                     int secLvl = GetMachineSecLvl(UIManager.inst.terminal_targetTerm);
 
@@ -1428,6 +1436,95 @@ public static class HF
         }
     }
 
+    /// <summary>
+    /// A quick and clunky way of converting a tier and potential star to the relative hack command object.
+    /// </summary>
+    /// <param name="tier">The tier number of this part.</param>
+    /// <param name="star">If this part is a * part.</param>
+    /// <returns>The relevant HackObject to build for.</returns>
+    public static HackObject HackBuildParser(int tier, bool star)
+    {
+        switch (tier)
+        {
+            case 1:
+                return MapManager.inst.hackDatabase.Hack[0];
+            case 2:
+                if (!star)
+                {
+                    return MapManager.inst.hackDatabase.Hack[1];
+                }
+                else
+                {
+                    return MapManager.inst.hackDatabase.Hack[2];
+                }
+            case 3:
+                if (!star)
+                {
+                    return MapManager.inst.hackDatabase.Hack[3];
+                }
+                else
+                {
+                    return MapManager.inst.hackDatabase.Hack[4];
+                }
+            case 4:
+                if (!star)
+                {
+                    return MapManager.inst.hackDatabase.Hack[5];
+                }
+                else
+                {
+                    return MapManager.inst.hackDatabase.Hack[6];
+                }
+            case 5:
+                if (!star)
+                {
+                    return MapManager.inst.hackDatabase.Hack[7];
+                }
+                else
+                {
+                    return MapManager.inst.hackDatabase.Hack[8];
+                }
+            case 6:
+                if (!star)
+                {
+                    return MapManager.inst.hackDatabase.Hack[9];
+                }
+                else
+                {
+                    return MapManager.inst.hackDatabase.Hack[10];
+                }
+            case 7:
+                if (!star)
+                {
+                    return MapManager.inst.hackDatabase.Hack[11];
+                }
+                else
+                {
+                    return MapManager.inst.hackDatabase.Hack[12];
+                }
+            case 8:
+                if (!star)
+                {
+                    return MapManager.inst.hackDatabase.Hack[13];
+                }
+                else
+                {
+                    return MapManager.inst.hackDatabase.Hack[14];
+                }
+            case 9:
+                if (!star)
+                {
+                    return MapManager.inst.hackDatabase.Hack[15];
+                }
+                else
+                {
+                    return MapManager.inst.hackDatabase.Hack[16];
+                }
+            default:
+                return MapManager.inst.hackDatabase.Hack[0];
+        }
+    }
+
     #endregion
 
     /// <summary>
@@ -1540,13 +1637,14 @@ public static class HF
             return bots[Random.Range(0, bots.Count - 1)];
         }
 
-        return null;
+        return MapManager.inst.botDatabase.Bots[0]; // Failsafe
     }
 
     /// <summary>
     /// Finds a random item (in the database) of a specified tier (1-10).
     /// </summary>
     /// <param name="tier">The specified tier to search for. 1 to 10</param>
+    /// <param name="isUnknown">Whether the item shouldn't be known to the player or not (aka a Prototype).</param>
     /// <returns></returns>
     public static ItemObject FindItemOfTier(int tier, bool isUnknown = true)
     {
@@ -1575,7 +1673,7 @@ public static class HF
             return items[Random.Range(0, items.Count - 1)];
         }
 
-        return null;
+        return MapManager.inst.itemDatabase.Items[0]; // Failsafe
     }
 
     /// <summary>

@@ -174,6 +174,23 @@ public class UIHackTarget : MonoBehaviour
         }
         else
         {
+            string combinedText = optText + " " + setText;
+
+            try
+            {
+                lineText.text = string.Concat(Enumerable.Repeat("-", (30 - combinedText.Length)));
+            }
+            catch (System.Exception)
+            {
+                lineText.text = "-------"; // Failsafe
+            }
+
+            // Set the backer text
+            backerText.text = "<mark=#000000>" + combinedText + "</mark>"; // Mark highlights it as pure black
+
+            primaryText.text = setText;
+            optionalText.text = optText;
+
             SetAsUsed();
         }
     }
@@ -371,7 +388,7 @@ public class UIHackTarget : MonoBehaviour
         {
             if (command.bot)
             {
-                return !command.item.schematicDetails.knowByPlayer;
+                return !command.item.schematicDetails.hasSchematic;
             }
             else if (command.item)
             {

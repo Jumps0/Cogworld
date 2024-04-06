@@ -79,6 +79,18 @@ public class TerminalCommand
     public BotObject bot;       // Bot
     public ItemObject item;     // Item (Prototype)
 
+    /// <summary>
+    /// Create a new terminal command.
+    /// </summary>
+    /// <param name="letter">The letter that will represent this command (to the side), and the keybind that can automatically attempt it.</param>
+    /// <param name="displayText">The display text of this command (what text you see in the commands list).</param>
+    /// <param name="type">The command type (see list).</param>
+    /// <param name="subText">Dark green text that will appear before the command's text (ex. Schematic, Record, etc.)</param>
+    /// <param name="hackN">The assigned HackObject for this command. MUST BE ASSIGNED!!!</param>
+    /// <param name="knowN">A knowledge reward object for this command. Optional.</param>
+    /// <param name="action">A global action that happens if this hack succeeds. Optional.</param>
+    /// <param name="botNew">An assigned bot object to this command. Optional.</param>
+    /// <param name="itemNew">An assigned item object to this command. Optional.</param>
     public TerminalCommand(string letter, string displayText, TerminalCommandType type, string subText = "", HackObject hackN = null, KnowledgeObject knowN = null, GlobalActions action = null, BotObject botNew = null, ItemObject itemNew = null)
     {
         assignedChar = letter;
