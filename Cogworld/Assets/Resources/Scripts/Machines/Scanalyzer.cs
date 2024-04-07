@@ -23,6 +23,7 @@ public class Scanalyzer : MonoBehaviour
     public float detectionChance;
     public float traceProgress;
     public bool detected;
+    public bool locked = false; // No longer accessable
 
     [Header("Trojans")]
     public int trojans = 0;
@@ -34,6 +35,8 @@ public class Scanalyzer : MonoBehaviour
     [Header("Operation")]
     public ItemObject targetPart = null;
     public bool working = false;
+    [Tooltip("Where completed components get spawned.")]
+    public Transform ejectionSpot;
 
     public void Init()
     {

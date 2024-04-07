@@ -50,7 +50,7 @@ public class Actor : Entity
     [Header("Following Flags")]
     [Tooltip("If true, will be under the player's direct control, appearing in 'allies' tab.")]
     public bool directPlayerAlly = false;
-    [Tooltip("If true, the bot will always try to be close to and fight with the player.")]
+    [Tooltip("If true, the bot will always try to be close to and fight with the player. Useful for non-allied but friendly bot followers.")]
     public bool followThePlayer = false;
 
     private void OnValidate()
@@ -533,11 +533,16 @@ public class Actor : Entity
         fieldOfView.Clear();
 
         // Remove from lists
-        if(GameManager.inst)
+        if (GameManager.inst)
+        {
             GameManager.inst.entities.Remove(this);
-        if(TurnManager.inst)
+        }
+            
+        if (TurnManager.inst)
+        {
             TurnManager.inst.actors.Remove(this);
             TurnManager.inst.actorNum -= 1;
+        }
     }
 
     #endregion

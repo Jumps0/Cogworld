@@ -25,6 +25,7 @@ public class Garrison : MonoBehaviour
     public float detectionChance;
     public float traceProgress;
     public bool detected;
+    public bool locked = false; // No longer accessable
 
     [Header("Trojans")]
     public int trojans = 0;
@@ -37,6 +38,10 @@ public class Garrison : MonoBehaviour
     public bool trojan_decoy = false;
     public bool trojan_redirect = false;
     public bool trojan_reprogram = false;
+
+    [Header("Operation")]
+    [Tooltip("Where arriving bots are spawned, or the access point is created.")]
+    public Transform ejectionSpot;
 
     public void Init()
     {

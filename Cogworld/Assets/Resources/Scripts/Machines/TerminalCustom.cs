@@ -23,6 +23,7 @@ public class TerminalCustom : MonoBehaviour
     public float detectionChance;
     public float traceProgress;
     public bool detected;
+    public bool locked = false; // No longer accessable
 
     [Header("Trojans")]
     public int trojans = 0;

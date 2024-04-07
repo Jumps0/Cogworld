@@ -459,66 +459,13 @@ public class InventoryControl : MonoBehaviour
         // We want to drop the item as close to the player as possible
         TileBlock dropTile = PlayerData.inst.GetComponent<PlayerGridMovement>().GetCurrentPlayerTile();
         
-        if(dropTile._partOnTop == null) // Success!
-        {
-            PlayDropSound(_item.itemData.itemName);
-            PlaceItemIntoWorld(_item, new Vector2Int(dropTile.locX, dropTile.locY), dropTile);
-            UIManager.inst.CreateNewLogMessage("Dropped " + _item.itemData.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
-            return;
-        }
-        else // We need to search neighboring tiles
-        {
-            List<GameObject> neighbors = HF.FindNeighbors(dropTile.locX, dropTile.locY);
-            bool success = false;
+        Vector2Int dropLocation = HF.LocateFreeSpace(HF.V3_to_V2I(dropTile.transform.position)); // Find nearest free space
+        dropTile = MapManager.inst._allTilesRealized[dropLocation];
 
-            foreach (var T in neighbors)
-            {
-                if(T.GetComponent<TileBlock>()._partOnTop == null)
-                {
-                    dropTile = T.GetComponent<TileBlock>();
-                    success = true;
-                    break;
-                }
-            }
-
-            if (success) // Success!
-            {
-                PlayDropSound(_item.itemData.itemName);
-                PlaceItemIntoWorld(_item, new Vector2Int(dropTile.locX, dropTile.locY), dropTile);
-                UIManager.inst.CreateNewLogMessage("Dropped " + _item.itemData.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
-                return;
-            }
-            else // Keep going...
-            {
-                List<GameObject> neighbors_new = new List<GameObject>();
-                foreach (var T in neighbors.ToList())
-                {
-                    neighbors_new = HF.FindNeighbors(T.GetComponent<TileBlock>().locX, T.GetComponent<TileBlock>().locY);
-                }
-
-                foreach (var T in neighbors_new)
-                {
-                    if (T.GetComponent<TileBlock>()._partOnTop == null)
-                    {
-                        dropTile = T.GetComponent<TileBlock>();
-                        success = true;
-                        break;
-                    }
-                }
-
-                if (success) // Success!
-                {
-                    PlayDropSound(_item.itemData.itemName);
-                    PlaceItemIntoWorld(_item, new Vector2Int(dropTile.locX, dropTile.locY), dropTile);
-                    UIManager.inst.CreateNewLogMessage("Dropped " + _item.itemData.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
-                    return;
-                }
-                else
-                {
-                    Debug.LogError("Failed to find a valid tile to drop to within set time.");
-                }
-            }
-        }
+        PlayDropSound(_item.itemData.itemName);
+        PlaceItemIntoWorld(_item, new Vector2Int(dropTile.locX, dropTile.locY), dropTile);
+        UIManager.inst.CreateNewLogMessage("Dropped " + _item.itemData.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
+        return;
     }
 
     public void PlayDropSound(string iName)

@@ -18773,6 +18773,7 @@ GameObject:
   - component: {fileID: 462778040}
   - component: {fileID: 462778039}
   - component: {fileID: 462778038}
+  - component: {fileID: 462778041}
   m_Layer: 5
   m_Name: X-Main
   m_TagString: Untagged
@@ -18895,6 +18896,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 462778036}
   m_CullTransparentMesh: 1
+--- !u!114 &462778041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 462778036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18e28887307e25c46a104c6da133c6e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetRectTransform: {fileID: 462778037}
+  referenceRectTransform: {fileID: 1375963476}
 --- !u!1 &466668067
 GameObject:
   m_ObjectHideFlags: 0
@@ -31289,6 +31304,7 @@ MonoBehaviour:
   prefab_launcherTargetCorner: {fileID: 4154184038389373425, guid: b01bc926502d6b343a97f03c1e9a33dd, type: 3}
   prefab_basicTile: {fileID: 757329426654254245, guid: 19309d78453aaf34e86dad6d66876310, type: 3}
   prefab_meleeIndicator: {fileID: 4154184038389373425, guid: 3ae2034d6fd3ae04db3fea05db273712, type: 3}
+  prefab_machineTimer: {fileID: 7308777045394364362, guid: 759c42ecf7da95447bbd2b78ab6ba45d, type: 3}
   highSecRed: {r: 0.69803923, g: 0, b: 0, a: 1}
   dangerRed: {r: 0.5568628, g: 0.039215688, b: 0.1137255, a: 1}
   corruptOrange: {r: 0.5764706, g: 0.33333334, b: 0.14901961, a: 1}
@@ -31399,6 +31415,7 @@ MonoBehaviour:
   schematics_prefab: {fileID: 8519707058798226528, guid: bdd3366b0d38fe04cb746316a0e2b563, type: 3}
   schematics_parent: {fileID: 901855579}
   schematics_contentArea: {fileID: 81741505}
+  schematics_closer: {fileID: 462778036}
   schematics_backer: {fileID: 722345112}
   boxBars: []
   logMessage_prefab: {fileID: 8519707058798226528, guid: 552c5927d631a9a4a9ccc335da9497e3, type: 3}

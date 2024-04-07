@@ -6,6 +6,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.Windows;
@@ -874,58 +875,80 @@ public static class HF
                     break;
                 case TerminalCommandType.Load:
 
-                    int buildTime = 0;
-                    int secLvl = GetMachineSecLvl(UIManager.inst.terminal_targetTerm);
-
+                    int matterCost = 0;
+                    string name = "";
                     if(item != null)
                     {
-                        if (secLvl == 1)
-                        {
-                            buildTime = item.fabricationInfo.fabTime.x;
-                        }
-                        else if (secLvl == 2)
-                        {
-                            buildTime = item.fabricationInfo.fabTime.y;
-                        }
-                        else if (secLvl == 3)
-                        {
-                            buildTime = item.fabricationInfo.fabTime.z;
-                        }
-                        string p = "";
-                        if (item.star)
-                        {
-                            p = "p";
-                        }
-
-                        UIManager.inst.terminal_targetTerm.GetComponent<Fabricator>().Load(buildTime, item);
-
-                        return "Uploading " + HF.ExtractText(parsedName) + " schematic...\nLoaded successfully:\n    " + HF.ExtractText(parsedName) + "\n    Rating: "
-                            + item.rating + p + "\n    Time: " + buildTime.ToString() + "\nInitiate build sequence.";
+                        matterCost = item.fabricationInfo.matterCost;
+                        name = item.itemName;
                     }
                     else if(bot != null)
                     {
-                        if (secLvl == 1)
-                        {
-                            buildTime = bot.fabricationInfo.fabTime.x;
-                        }
-                        else if (secLvl == 2)
-                        {
-                            buildTime = bot.fabricationInfo.fabTime.y;
-                        }
-                        else if (secLvl == 3)
-                        {
-                            buildTime = bot.fabricationInfo.fabTime.z;
-                        }
-                        string p = "";
-                        if (bot.star)
-                        {
-                            p = "p";
-                        }
+                        matterCost = bot.fabricationInfo.matterCost;
+                        name = bot.name;
+                    }
 
-                        UIManager.inst.terminal_targetTerm.GetComponent<Fabricator>().Load(buildTime, null, bot);
+                    if(PlayerData.inst.currentMatter >= matterCost)
+                    {
+                        int buildTime = 0;
+                        int secLvl = GetMachineSecLvl(UIManager.inst.terminal_targetTerm);
+                        Debug.Log(HF.ExtractText(parsedName) + " / " + parsedName);
+                        if (item != null)
+                        {
+                            if (secLvl == 1)
+                            {
+                                buildTime = item.fabricationInfo.fabTime.x;
+                            }
+                            else if (secLvl == 2)
+                            {
+                                buildTime = item.fabricationInfo.fabTime.y;
+                            }
+                            else if (secLvl == 3)
+                            {
+                                buildTime = item.fabricationInfo.fabTime.z;
+                            }
+                            string p = "";
+                            if (item.star)
+                            {
+                                p = "p";
+                            }
 
-                        return "Uploading " + HF.ExtractText(parsedName) + " schematic...\nLoaded successfully:\n    " + HF.ExtractText(parsedName) + "\n    Rating: "
-                            + bot.rating + p + "\n    Time: " + buildTime.ToString() + "\nInitiate build sequence.";
+                            UIManager.inst.terminal_targetTerm.GetComponent<Fabricator>().Load(buildTime, item);
+                            UIManager.inst.Schematics_Close();
+
+                            return "Uploading " + name + " schematic...\nLoaded successfully:\n    " + name + "\n    Rating: "
+                                + item.rating + p + "\n    Time: " + buildTime.ToString() + "\nInitiate build sequence.";
+                        }
+                        else if (bot != null)
+                        {
+                            if (secLvl == 1)
+                            {
+                                buildTime = bot.fabricationInfo.fabTime.x;
+                            }
+                            else if (secLvl == 2)
+                            {
+                                buildTime = bot.fabricationInfo.fabTime.y;
+                            }
+                            else if (secLvl == 3)
+                            {
+                                buildTime = bot.fabricationInfo.fabTime.z;
+                            }
+                            string p = "";
+                            if (bot.star)
+                            {
+                                p = "p";
+                            }
+
+                            UIManager.inst.terminal_targetTerm.GetComponent<Fabricator>().Load(buildTime, null, bot);
+                            UIManager.inst.Schematics_Close();
+
+                            return "Uploading " + name + " schematic...\nLoaded successfully:\n    " + name + "\n    Rating: "
+                                + bot.rating + p + "\n    Time: " + buildTime.ToString() + "\nInitiate build sequence.";
+                        }
+                    }
+                    else
+                    {
+                        return "Not enough matter to consturct selected schematic. \n Missing " + (matterCost - PlayerData.inst.currentMatter) + " matter.";
                     }
 
                     Debug.LogError("ERROR: No <Item> or <Bot> has been set for this command!");
@@ -1133,7 +1156,7 @@ public static class HF
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
                     }
 
-                    break; // ---------- NOT DONE
+                    break; // ---------- NOT DONE: TODO
                 case TerminalCommandType.Force:
                     if (parsedName.Contains("Extract"))
                     {
@@ -1167,7 +1190,7 @@ public static class HF
                     {
                         return "";
                     }
-                    break;  // ---------- NOT DONE
+                    break;  // ---------- NOT DONE: TODO
             }
         }
 
@@ -1276,8 +1299,6 @@ public static class HF
 
     public static void TraceHacking(GameObject machine)
     {
-        Debug.Log("Attempting to trace...");
-
         float detectionChance = 0f;
         float traceProgress = 0f;
         bool detected = false;
@@ -1521,6 +1542,45 @@ public static class HF
             default:
                 return MapManager.inst.hackDatabase.Hack[0];
         }
+    }
+
+    /// <summary>
+    /// Determines if the specified machine is locked and unusuable. Returns true/false.
+    /// </summary>
+    /// <param name="machine">The machine gameObject to investigate.</param>
+    /// <returns>True/False if the machine is locked.</returns>
+    public static bool IsMachineLocked(GameObject machine)
+    {
+        if (machine.GetComponent<Terminal>()) // Terminal
+        {
+            return machine.GetComponent<Terminal>().locked;
+        }
+        else if (machine.GetComponent<Fabricator>()) // Fabricator
+        {
+            return machine.GetComponent<Fabricator>().locked;
+        }
+        else if (machine.GetComponent<Scanalyzer>()) // Scanalyzer
+        {
+            return machine.GetComponent<Scanalyzer>().locked;
+        }
+        else if (machine.GetComponent<RepairStation>()) // Repair Station
+        {
+            return machine.GetComponent<RepairStation>().locked;
+        }
+        else if (machine.GetComponent<RecyclingUnit>()) // Recycling Unit
+        {
+            return machine.GetComponent<RecyclingUnit>().locked;
+        }
+        else if (machine.GetComponent<Garrison>()) // Garrison
+        {
+            return machine.GetComponent<Garrison>().locked || machine.GetComponent<Garrison>().g_sealed;
+        }
+        else if (machine.GetComponent<TerminalCustom>()) // Custom Terminal
+        {
+            return machine.GetComponent<TerminalCustom>().locked;
+        }
+
+        return true;
     }
 
     #endregion
@@ -3063,6 +3123,60 @@ public static class HF
         return (tier, hasP);
     }
 
+    /// <summary>
+    /// Will attempt to locate the nearest free space to the specified location. Usually used for item placement on the floor.
+    /// </summary>
+    /// <param name="center">The start location to perform the search.</param>
+    /// <returns>A free position (Vector2Int) that has been found.</returns>
+    public static Vector2Int LocateFreeSpace(Vector2Int center)
+    {
+        HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
+        Queue<Vector2Int> queue = new Queue<Vector2Int>();
+        queue.Enqueue(center);
+
+        while (queue.Count > 0)
+        {
+            Vector2Int currentPos = queue.Dequeue();
+            if (IsOpenSpace(currentPos))
+            {
+                return currentPos;
+            }
+
+            // Add adjacent tiles to the queue if they haven't been visited yet
+            foreach (Vector2Int adjacentPos in GetAdjacentPositions(currentPos))
+            {
+                if (!visited.Contains(adjacentPos))
+                {
+                    visited.Add(adjacentPos);
+                    queue.Enqueue(adjacentPos);
+                }
+            }
+        }
+
+        // If no open space is found, return the start position
+        return center;
+    }
+
+    public static bool IsOpenSpace(Vector2Int position)
+    {
+        if (MapManager.inst._allTilesRealized.TryGetValue(position, out TileBlock tileBlock))
+        {
+            return tileBlock._partOnTop == null && !tileBlock.occupied;
+        }
+
+        return false;
+    }
+
+    public static List<Vector2Int> GetAdjacentPositions(Vector2Int position)
+    {
+        List<Vector2Int> adjacentPositions = new List<Vector2Int>();
+        adjacentPositions.Add(new Vector2Int(position.x + 1, position.y));
+        adjacentPositions.Add(new Vector2Int(position.x - 1, position.y));
+        adjacentPositions.Add(new Vector2Int(position.x, position.y + 1));
+        adjacentPositions.Add(new Vector2Int(position.x, position.y - 1));
+        return adjacentPositions;
+    }
+
     #endregion
 
     #region Floor Traps
@@ -3656,6 +3770,23 @@ public static class HF
         }
 
         return name;
+    }
+
+    public static void ModifyBotAllegance(Actor bot, List<BotRelation> rList)
+    {
+        bot.allegances.alleganceTree.Clear();
+
+        bot.allegances.alleganceTree.Add((BotAlignment.Complex, rList[0]));
+        bot.allegances.alleganceTree.Add((BotAlignment.Derelict, rList[1]));
+        bot.allegances.alleganceTree.Add((BotAlignment.Assembled, rList[2]));
+        bot.allegances.alleganceTree.Add((BotAlignment.Warlord, rList[3]));
+        bot.allegances.alleganceTree.Add((BotAlignment.Zion, rList[4]));
+        bot.allegances.alleganceTree.Add((BotAlignment.Exiles, rList[5]));
+        bot.allegances.alleganceTree.Add((BotAlignment.Architect, rList[6]));
+        bot.allegances.alleganceTree.Add((BotAlignment.Subcaves, rList[7]));
+        bot.allegances.alleganceTree.Add((BotAlignment.SubcavesHostile, rList[8]));
+        bot.allegances.alleganceTree.Add((BotAlignment.Player, rList[9]));
+        bot.allegances.alleganceTree.Add((BotAlignment.None, rList[10]));
     }
 
     #endregion

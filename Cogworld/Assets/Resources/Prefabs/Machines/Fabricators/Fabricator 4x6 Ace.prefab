@@ -124,6 +124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
   armor: {x: 0, y: 0}
   state: 1
   resistances: []
@@ -143,6 +144,14 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    explosionSounds: []
+    explosionGFX: 0
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -283,6 +292,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
   armor: {x: 0, y: 0}
   state: 1
   resistances: []
@@ -302,6 +312,14 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    explosionSounds: []
+    explosionGFX: 0
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -442,6 +460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
   armor: {x: 0, y: 0}
   state: 1
   resistances: []
@@ -461,6 +480,14 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    explosionSounds: []
+    explosionGFX: 0
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -601,6 +628,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
   armor: {x: 0, y: 0}
   state: 1
   resistances: []
@@ -620,6 +648,14 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    explosionSounds: []
+    explosionGFX: 0
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -760,6 +796,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
   armor: {x: 0, y: 0}
   state: 1
   resistances: []
@@ -779,6 +816,14 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    explosionSounds: []
+    explosionGFX: 0
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -919,6 +964,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
   armor: {x: 0, y: 0}
   state: 1
   resistances: []
@@ -938,6 +984,14 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    explosionSounds: []
+    explosionGFX: 0
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -1078,6 +1132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
   armor: {x: 0, y: 0}
   state: 1
   resistances: []
@@ -1097,6 +1152,14 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    explosionSounds: []
+    explosionGFX: 0
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -1113,6 +1176,37 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+--- !u!1 &2752777528068958073
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3058687296054962991}
+  m_Layer: 0
+  m_Name: ~EjectionSpot~
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3058687296054962991
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2752777528068958073}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9163113434371694507}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2980775115617159500
 GameObject:
   m_ObjectHideFlags: 0
@@ -1237,6 +1331,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
   armor: {x: 0, y: 0}
   state: 1
   resistances: []
@@ -1256,6 +1351,14 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    explosionSounds: []
+    explosionGFX: 0
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -1396,6 +1499,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
   armor: {x: 0, y: 0}
   state: 1
   resistances: []
@@ -1415,6 +1519,14 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    explosionSounds: []
+    explosionGFX: 0
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -1555,6 +1667,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
   armor: {x: 0, y: 0}
   state: 1
   resistances: []
@@ -1574,6 +1687,14 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    explosionSounds: []
+    explosionGFX: 0
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -1714,6 +1835,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
   armor: {x: 0, y: 0}
   state: 1
   resistances: []
@@ -1733,6 +1855,14 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    explosionSounds: []
+    explosionGFX: 0
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -1873,6 +2003,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
   armor: {x: 0, y: 0}
   state: 1
   resistances: []
@@ -1892,6 +2023,14 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    explosionSounds: []
+    explosionGFX: 0
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -2032,6 +2171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
   armor: {x: 0, y: 0}
   state: 1
   resistances: []
@@ -2051,6 +2191,14 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    explosionSounds: []
+    explosionGFX: 0
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -2191,6 +2339,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
   armor: {x: 0, y: 0}
   state: 1
   resistances: []
@@ -2210,6 +2359,14 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    explosionSounds: []
+    explosionGFX: 0
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -2255,6 +2412,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 894120197535800149}
+  - {fileID: 3058687296054962991}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2382,6 +2540,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
   armor: {x: 0, y: 0}
   state: 1
   resistances: []
@@ -2401,6 +2560,14 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    explosionSounds: []
+    explosionGFX: 0
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -2563,16 +2730,25 @@ MonoBehaviour:
   _size: {x: 4, y: 6}
   fullName: 
   systemType: 
+  avaiableCommands: []
   restrictedAccess: 1
   secLvl: 1
   detectionChance: 0
   traceProgress: 0
   detected: 0
+  locked: 0
   trojans: 0
   trojan_track: 0
   trojan_assimilate: 0
   trojan_botnet: 0
   trojan_detonate: 0
+  targetPart: {fileID: 0}
+  targetBot: {fileID: 0}
+  buildTime: 0
+  working: 0
+  ejectionSpot: {fileID: 3058687296054962991}
+  begunBuildTime: 0
+  timerObject: {fileID: 0}
 --- !u!114 &457395203926888844
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2585,6 +2761,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
   armor: {x: 15, y: 15}
   state: 1
   resistances:
@@ -2625,6 +2802,14 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: -8
+    explosionSounds: []
+    explosionGFX: 0
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 0, g: 0.5, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -2869,6 +3054,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
   armor: {x: 0, y: 0}
   state: 1
   resistances: []
@@ -2888,6 +3074,14 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    explosionSounds: []
+    explosionGFX: 0
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -3028,6 +3222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
   armor: {x: 0, y: 0}
   state: 1
   resistances: []
@@ -3047,6 +3242,14 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    explosionSounds: []
+    explosionGFX: 0
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}

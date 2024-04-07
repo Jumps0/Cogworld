@@ -25,6 +25,7 @@ public class Fabricator : MonoBehaviour
     public float detectionChance;
     public float traceProgress;
     public bool detected;
+    public bool locked = false; // No longer accessable
 
     [Header("Trojans")]
     public int trojans = 0;
@@ -36,8 +37,11 @@ public class Fabricator : MonoBehaviour
     [Header("Operation")]
     public ItemObject targetPart = null;
     public BotObject targetBot = null;
+    [Tooltip("How long it will take to build the specified componenet.")]
     public int buildTime;
     public bool working = false;
+    [Tooltip("Where completed components get spawned.")]
+    public Transform ejectionSpot;
 
     public void Init()
     {
@@ -135,11 +139,22 @@ public class Fabricator : MonoBehaviour
         string letter = HF.GetNextLetter(avaiableCommands[avaiableCommands.Count - 1].assignedChar);
         string displayText = "Build ";
 
+        // Remove the old preloaded build option if its there
+        foreach (var command in avaiableCommands.ToList())
+        {
+            if (command.subType == TerminalCommandType.Build)
+            {
+                avaiableCommands.Remove(command);
+            }
+        }
+
         if (item != null)
         {
             displayText += item.itemName;
 
-            TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Build, "", null, null, null, null, item);
+            HackObject hack = HF.HackBuildParser(item.rating, item.star);
+
+            TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Build, "", hack, null, null, null, item);
 
             avaiableCommands.Add(newCommand);
         }
@@ -147,7 +162,9 @@ public class Fabricator : MonoBehaviour
         {
             displayText += bot.name;
 
-            TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Build, "", null, null, null, bot);
+            HackObject hack = MapManager.inst.hackDatabase.Hack[16 + bot.rating];
+
+            TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Build, "", hack, null, null, bot);
 
             avaiableCommands.Add(newCommand);
         }
@@ -185,28 +202,96 @@ public class Fabricator : MonoBehaviour
 
     // -- Build -- //
     public int begunBuildTime = 0;
+    public GameObject timerObject = null;
 
     public void Build()
     {
         begunBuildTime = TurnManager.inst.globalTime;
         working = true;
+
+        timerObject = Instantiate(UIManager.inst.prefab_machineTimer, this.transform.position, Quaternion.identity);
+        timerObject.transform.SetParent(this.transform);
+        timerObject.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+        // Assign Details
+        timerObject.GetComponent<UITimerMachine>().Init(buildTime);
     }
 
     public void FinishBuild()
     {
         working = false;
 
+        Vector2Int dropLocation = HF.LocateFreeSpace(HF.V3_to_V2I(ejectionSpot.transform.position));
+
+        if(targetPart != null)
+        {
+            // Spawn in this part on the floor
+            InventoryControl.inst.CreateItemInWorld(targetPart.data.Id, dropLocation, true);
+        }
+        else if(targetBot != null)
+        {
+            // Spawn in a new ALLIED bot at this location
+            Actor newBot = MapManager.inst.PlaceBot(dropLocation, targetBot.Id);
+            newBot.directPlayerAlly = true;
+
+            // Modify relations to be friendly to the player and neutral to some other functions
+            List<BotRelation> relationList = new List<BotRelation>();
+
+            relationList.Add(BotRelation.Hostile); // Complex
+            relationList.Add(BotRelation.Neutral); // Derelict
+            relationList.Add(BotRelation.Hostile); // Assembled
+            relationList.Add(BotRelation.Neutral); // Warlord
+            relationList.Add(BotRelation.Neutral); // Zion
+            relationList.Add(BotRelation.Neutral); // Exiles
+            relationList.Add(BotRelation.Hostile); // Architect
+            relationList.Add(BotRelation.Neutral); // Subcaves
+            relationList.Add(BotRelation.Hostile); // Subcaves Hostile
+            relationList.Add(BotRelation.Friendly); // Player
+            relationList.Add(BotRelation.Neutral); // None
+
+            HF.ModifyBotAllegance(newBot, relationList);
+        }
+
+        Destroy(timerObject);
+
+        targetPart = null;
+        targetBot = null;
+        buildTime = 0;
+        begunBuildTime = 0;
     }
 
+    /// <summary>
+    /// Called in GameManager every turn.
+    /// </summary>
     public void Check()
     {
         if (working)
         {
+            timerObject.GetComponent<UITimerMachine>().Tick();
+
             if(begunBuildTime + buildTime >= TurnManager.inst.globalTime)
             {
                 FinishBuild();
             }
         }
     }
-    
+
+    #region Hacks
+    public void Force()
+    {
+        locked = true;
+
+        // Recolor to gray, this terminal is now locked
+        foreach (var P in this.GetComponent<MachinePart>().connectedParts)
+        {
+            P.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        this.GetComponent<MachinePart>().parentPart.GetComponent<SpriteRenderer>().color = Color.white;
+
+        if(targetBot != null || targetPart != null)
+        {
+            Build();
+        }
+    }
+
+    #endregion
 }

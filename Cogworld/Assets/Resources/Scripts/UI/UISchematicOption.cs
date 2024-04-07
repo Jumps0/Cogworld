@@ -24,24 +24,26 @@ public class UISchematicOption : MonoBehaviour
     public Color highDetColor;
     public Color colorGreen;
 
-    public void Init(string _letter, ItemObject item = null, BotObject bot = null)
+    public void Init(string _letter, float delay, ItemObject _item = null, BotObject _bot = null)
     {
         letter = _letter;
         text_letter.text = letter + "-";
 
-        if(item != null )
+        if(_item != null )
         {
-            text_main.text = HF.RecolorPrefix(item, "034000");
+            text_main.text = HF.RecolorPrefix(_item, "034000");
         }
-        else if(bot != null )
+        else if(_bot != null )
         {
-            text_main.text = bot.name;
+            text_main.text = _bot.name;
         }
 
         this.GetComponent<RectTransform>().sizeDelta = new Vector2(350, this.GetComponent<RectTransform>().sizeDelta.y); // Un-stretch the rectTransform
 
         // Calculate chance of success
-        command = new TerminalCommand(letter, "Load Schematic", TerminalCommandType.Load, "", MapManager.inst.hackDatabase.Hack[26], null, null, bot, item);
+        item = _item;
+        bot = _bot;
+        command = new TerminalCommand(letter, "Load Schematic", TerminalCommandType.Load, "", MapManager.inst.hackDatabase.Hack[26], null, null, _bot, _item);
 
         int secLvl = UIManager.inst.terminal_targetTerm.GetComponent<Fabricator>().secLvl; // A bit risky but this should usually always work
         float chance = 0f;
@@ -69,16 +71,17 @@ public class UISchematicOption : MonoBehaviour
         }
         chanceOfSuccess = chance;
 
-        StartCoroutine(AnimateAppear());
+        StartCoroutine(AnimateAppear(delay));
     }
 
     //Color unmarkedColor = new Color(0 / 255f, 173 / 255f, 0 / 255f);
     Color unmarkedColor = new Color(0f, 0f, 0f, 0f);
     float transitionDuration = 0.35f;
 
-    private IEnumerator AnimateAppear()
+    private IEnumerator AnimateAppear(float delay = 0f)
     {
-        /*
+        yield return new WaitForSeconds(delay);
+
         float elapsedTime = 0f;
         float duration = 0.5f;
         while (elapsedTime < duration) // Black -> Green
@@ -98,9 +101,10 @@ public class UISchematicOption : MonoBehaviour
             yield return null; // Wait for the next frame
         }
         image_backer.color = Color.black;
-        */
+        
 
         #region Fancy Method
+        /*
         // Get the text from TextMeshPro
         string text = text_main.text;
 
@@ -149,6 +153,7 @@ public class UISchematicOption : MonoBehaviour
 
         // Update the TextMeshPro text to the final text
         text_main.text = finalText;
+        */
         #endregion
     }
 
@@ -180,8 +185,18 @@ public class UISchematicOption : MonoBehaviour
         if (random <= chanceOfSuccess)
         { // SUCCESS
 
+            string name = "";
+            if(item != null)
+            {
+                name = item.itemName;
+            }
+            else if(bot != null)
+            {
+                name = bot.name;
+            }
+
             string rewardString = HF.MachineReward_PrintPLUSAction(command, item, bot);
-            string header = ">>" + HF.ParseHackName(command.hack, "Load Schematic");
+            string header = ">>" + HF.ParseHackName(command.hack, name);
 
             // Create result in terminal
             UIManager.inst.Terminal_CreateResult(rewardString, lowDetColor, header);

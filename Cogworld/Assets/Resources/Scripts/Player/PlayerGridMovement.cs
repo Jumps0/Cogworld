@@ -298,7 +298,7 @@ public class PlayerGridMovement : MonoBehaviour
         // -- Machine Interaction (Parsing) --
 
         // Theres a lot here [0 = Static, 1 = Terminal, 2 = Fabricator, 3 = Scanalyzer, 4 = Repair Station, 5 = Recycling Unit, 6 = Garrison, 7 = Custom Terminal]
-        if(machineInteraction != null)
+        if(machineInteraction != null && !HF.IsMachineLocked(machineInteraction))
         {
             if (machineInteraction.GetComponent<Terminal>()) // Open Terminal
             {

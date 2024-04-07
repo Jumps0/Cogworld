@@ -2436,7 +2436,7 @@ public class MapManager : MonoBehaviour
     }
 
     public List<GameObject> bots = new List<GameObject>();
-    private Actor PlaceBot(Vector2Int pos, int type, GameObject _reference = null)
+    public Actor PlaceBot(Vector2Int pos, int type, GameObject _reference = null)
     {
         var spawnedBot = Instantiate(bots[type], new Vector3(pos.x * GridManager.inst.globalScale, pos.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
         spawnedBot.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling

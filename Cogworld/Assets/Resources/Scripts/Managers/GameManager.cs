@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
         GameManager.inst.GrantSchematicKnowledge(MapManager.inst.itemDatabase.Items[3]);
         GameManager.inst.GrantSchematicKnowledge(MapManager.inst.itemDatabase.Items[4]);
         GameManager.inst.GrantSchematicKnowledge(MapManager.inst.itemDatabase.Items[5]);
-        GameManager.inst.GrantSchematicKnowledge(null, MapManager.inst.botDatabase.Bots[2]);
+        //GameManager.inst.GrantSchematicKnowledge(null, MapManager.inst.botDatabase.Bots[2]);
     }
 
     #region File I/O (.json)

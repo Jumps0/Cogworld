@@ -38,6 +38,7 @@ public class UIManager : MonoBehaviour
     //
     public GameObject prefab_meleeIndicator;
     //
+    public GameObject prefab_machineTimer;
     //
     // -         -
 
@@ -2279,7 +2280,6 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator Terminal_TraceOpener()
     {
-        Debug.Log("Tracing");
         // We want to open up the trance progress
         // -- "Estimated Trace Progress" --
         GameObject hackEstTrace = Instantiate(terminal_hackinfoV1_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
@@ -3164,6 +3164,7 @@ public class UIManager : MonoBehaviour
     public GameObject schematics_prefab;
     public GameObject schematics_parent;
     public GameObject schematics_contentArea;
+    [SerializeField] private GameObject schematics_closer;
     [SerializeField] private Image schematics_backer;
 
     public void Schematics_Open()
@@ -3178,6 +3179,9 @@ public class UIManager : MonoBehaviour
         char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
         alphabet = alpha.ToList(); // Fill alphabet list
 
+        float delay = 0f;
+        float delaySpacing = 0.08f;
+
         foreach (ItemObject item in knownItems)
         {
             if(schematics_objects.Count < 25) // Don't go over 26, we don't have that many letters
@@ -3189,7 +3193,7 @@ public class UIManager : MonoBehaviour
                 // Add it to list
                 schematics_objects.Add(schematicOption);
                 // Assign Details
-                schematicOption.GetComponent<UISchematicOption>().Init(alphabet[0].ToString().ToLower(), item);
+                schematicOption.GetComponent<UISchematicOption>().Init(alphabet[0].ToString().ToLower(), delay += delaySpacing, item);
 
                 alphabet.Remove(alphabet[0]);
             }
@@ -3206,12 +3210,13 @@ public class UIManager : MonoBehaviour
                 // Add it to list
                 schematics_objects.Add(schematicOption);
                 // Assign Details
-                schematicOption.GetComponent<UISchematicOption>().Init(alphabet[0].ToString().ToLower(), null, bot);
+                schematicOption.GetComponent<UISchematicOption>().Init(alphabet[0].ToString().ToLower(), delay += delaySpacing, null, bot);
 
                 alphabet.Remove(alphabet[0]);
             }
         }
 
+        // Play the animation
         StartCoroutine(Schematics_OpenAnim());
     }
 
@@ -3229,11 +3234,18 @@ public class UIManager : MonoBehaviour
         }
         schematics_backer.color = Color.black;
 
+        // Update the X's position
+        schematics_closer.GetComponent<UIRectAligner>().AlignToBottomRight();
     }
 
     public void Schematics_Close()
     {
         // Remove all the options
+        foreach (GameObject prefab in schematics_objects.ToList())
+        {
+            Destroy(prefab);
+        }
+        schematics_objects.Clear();
 
         // Disable the menu
         schematics_parent.SetActive(false);
@@ -4722,7 +4734,7 @@ public class UIManager : MonoBehaviour
 
     public void Evasion_ExpandMenu()
     {
-        if (PlayerData.inst) // Should only be able to open the menu when the player exists
+        if (PlayerData.inst && terminal_targetTerm == null) // Should only be able to open the menu when the player exists & not in terminal menu
         {
             //StopCoroutine(Evasion_ExpandMenu_Animation());
 
