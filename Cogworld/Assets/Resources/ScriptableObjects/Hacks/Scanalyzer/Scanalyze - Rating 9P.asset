@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Scanalyze - Rating 9P
   m_EditorClassIdentifier: 
   Id: 0
+  trueName: 
   relatedMachine: 4
-  hackType: 26
+  hackType: 28
   directChance: {x: 28, y: 14, z: 7}
   indirectChance: {x: 0, y: 0, z: 0}

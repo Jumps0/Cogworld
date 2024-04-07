@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 709c8031387567e43becdecce8b8477c, type: 3}
   m_Name: Network(Status)
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 27
   trueName: Network Status
   relatedMachine: 0
-  hackType: 16
+  hackType: 21
   directChance: {x: 70, y: 35, z: 17}
   indirectChance: {x: 0, y: 0, z: 0}

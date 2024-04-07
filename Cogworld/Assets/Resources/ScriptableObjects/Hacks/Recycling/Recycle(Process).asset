@@ -15,6 +15,6 @@ MonoBehaviour:
   Id: 0
   trueName: Process
   relatedMachine: 2
-  hackType: 24
+  hackType: 26
   directChance: {x: 80, y: 40, z: 20}
   indirectChance: {x: 0, y: 0, z: 0}

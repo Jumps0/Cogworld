@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 709c8031387567e43becdecce8b8477c, type: 3}
   m_Name: Build - Robot Tier 1
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 17
+  trueName: 
   relatedMachine: 0
-  hackType: 15
+  hackType: 20
   directChance: {x: 46, y: 23, z: 11}
   indirectChance: {x: 0, y: 0, z: 0}

@@ -15,6 +15,6 @@ MonoBehaviour:
   Id: 0
   trueName: Report Inventory
   relatedMachine: 2
-  hackType: 24
+  hackType: 26
   directChance: {x: 90, y: 45, z: 22}
   indirectChance: {x: 0, y: 0, z: 0}

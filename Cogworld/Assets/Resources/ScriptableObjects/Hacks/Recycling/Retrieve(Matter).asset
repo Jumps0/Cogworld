@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 709c8031387567e43becdecce8b8477c, type: 3}
   m_Name: Retrieve(Matter)
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 35
   trueName: Retrieve Matter
   relatedMachine: 2
-  hackType: 23
+  hackType: 25
   directChance: {x: 60, y: 30, z: 15}
   indirectChance: {x: 0, y: 0, z: 0}

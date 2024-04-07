@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Repair - Rating 1
   m_EditorClassIdentifier: 
   Id: 0
+  trueName: 
   relatedMachine: 3
-  hackType: 21
+  hackType: 23
   directChance: {x: 67, y: 33, z: 16}
   indirectChance: {x: 0, y: 0, z: 0}

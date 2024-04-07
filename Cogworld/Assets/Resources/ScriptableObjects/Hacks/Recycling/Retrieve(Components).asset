@@ -15,6 +15,6 @@ MonoBehaviour:
   Id: 0
   trueName: Retrieve Components
   relatedMachine: 2
-  hackType: 23
+  hackType: 25
   directChance: {x: 40, y: 20, z: 10}
   indirectChance: {x: 0, y: 0, z: 0}

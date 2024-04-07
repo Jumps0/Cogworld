@@ -15,6 +15,6 @@ MonoBehaviour:
   Id: 0
   trueName: Recycle Component
   relatedMachine: 2
-  hackType: 24
+  hackType: 26
   directChance: {x: 85, y: 42, z: 21}
   indirectChance: {x: 0, y: 0, z: 0}

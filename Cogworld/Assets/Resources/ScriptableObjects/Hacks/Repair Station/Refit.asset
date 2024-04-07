@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 709c8031387567e43becdecce8b8477c, type: 3}
   m_Name: Refit
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 36
+  trueName: 
   relatedMachine: 3
-  hackType: 20
+  hackType: 22
   directChance: {x: 35, y: 17, z: 8}
   indirectChance: {x: 0, y: 0, z: 0}
