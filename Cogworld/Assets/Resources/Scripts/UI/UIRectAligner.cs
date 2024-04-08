@@ -13,18 +13,37 @@ public class UIRectAligner : MonoBehaviour
         AlignToBottomRight();
     }
 
+    private void Update()
+    {
+        if (referenceRectTransform.gameObject.activeInHierarchy)
+        {
+            AlignToBottomRight();
+        }
+    }
+
     public void AlignToBottomRight()
     {
         // Get the size of the reference RectTransform
         Vector2 referenceSize = referenceRectTransform.rect.size;
 
-        // Calculate the position of the bottom right corner of the reference RectTransform in world space
-        Vector3 referenceBottomRightWorld = referenceRectTransform.TransformPoint(referenceSize);
+        // Get the pivot points of both RectTransforms
+        Vector2 referencePivot = referenceRectTransform.pivot;
+        Vector2 targetPivot = targetRectTransform.pivot;
 
-        // Convert the world position of the bottom right corner to local position of the target RectTransform
+        // Calculate the local position of the bottom right corner of the reference RectTransform
+        Vector2 referenceBottomRightLocal = new Vector2(referenceSize.x * (1f - referencePivot.x), -referenceSize.y * referencePivot.y);
+
+        // Convert the local position to world space
+        Vector3 referenceBottomRightWorld = referenceRectTransform.TransformPoint(referenceBottomRightLocal);
+
+        // Convert the world position to local position of the target RectTransform
         Vector3 targetLocalPosition = targetRectTransform.parent.InverseTransformPoint(referenceBottomRightWorld);
 
+        // Offset the local position by the pivot of the target RectTransform
+        Vector2 targetSize = targetRectTransform.rect.size;
+        targetLocalPosition -= new Vector3(targetSize.x * targetPivot.x, targetSize.y * targetPivot.y, 0f);
+
         // Set the position of the target RectTransform to be at the calculated position
-        targetRectTransform.localPosition = targetLocalPosition;
+        targetRectTransform.localPosition = targetLocalPosition + new Vector3(-8, 13);
     }
 }

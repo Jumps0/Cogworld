@@ -18774,6 +18774,8 @@ GameObject:
   - component: {fileID: 462778039}
   - component: {fileID: 462778038}
   - component: {fileID: 462778041}
+  - component: {fileID: 462778043}
+  - component: {fileID: 462778042}
   m_Layer: 5
   m_Name: X-Main
   m_TagString: Untagged
@@ -18858,6 +18860,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 462778043}
+        m_TargetAssemblyTypeName: SetColor, Assembly-CSharp
+        m_MethodName: SetColorB
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &462778039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18910,6 +18924,64 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetRectTransform: {fileID: 462778037}
   referenceRectTransform: {fileID: 1375963476}
+--- !u!114 &462778042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 462778036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 791ce37c04165484993474e30dbf35ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onHoverStart:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 462778043}
+        m_TargetAssemblyTypeName: SetColor, Assembly-CSharp
+        m_MethodName: SetColorA
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onHoverEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 462778043}
+        m_TargetAssemblyTypeName: SetColor, Assembly-CSharp
+        m_MethodName: SetColorB
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  disabled: 0
+--- !u!114 &462778043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 462778036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dda62d46dd4de24188bcf14d9b06bb5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colorA: {r: 0, g: 0.18431373, b: 0, a: 1}
+  colorB: {r: 0, g: 0, b: 0, a: 1}
+  target: {fileID: 462778039}
 --- !u!1 &466668067
 GameObject:
   m_ObjectHideFlags: 0
