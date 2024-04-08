@@ -275,7 +275,7 @@ public static class Action
                         }
                         else // Hits a part
                         {
-                            DamageRandomPart(target.GetComponent<Actor>(), damage, types);
+                            DamageRandomPart(target.GetComponent<Actor>(), damage, types, HF.GetDamageType(weapon.itemData));
                         }
 
                         // Do a calc message
@@ -294,7 +294,7 @@ public static class Action
                         }
                         else // Hits a part
                         {
-                            DamageRandomPart(target.GetComponent<Actor>(), damage, types);
+                            DamageRandomPart(target.GetComponent<Actor>(), damage, types, HF.GetDamageType(weapon.itemData));
                         }
 
 
@@ -441,7 +441,7 @@ public static class Action
                                 }
                                 else // Hits a part
                                 {
-                                    DamageRandomPart(target.GetComponent<Actor>(), damage, types);
+                                    DamageRandomPart(target.GetComponent<Actor>(), damage, types, HF.GetDamageType(weapon.itemData));
                                 }
 
                                 // Do a calc message
@@ -460,7 +460,7 @@ public static class Action
                                 }
                                 else // Hits a part
                                 {
-                                    DamageRandomPart(target.GetComponent<Actor>(), damage, types);
+                                    DamageRandomPart(target.GetComponent<Actor>(), damage, types, HF.GetDamageType(weapon.itemData));
                                 }
 
 
@@ -775,6 +775,8 @@ public static class Action
 
                     if (!noCrit && rand <= projData.critChance) // Critical hit?
                     {
+                        // "Unlike other parts, armor can never be instantly destroyed by critical strikes, taking 20% more damage instead."
+
                         // A crit!
                         // TODO: Crits
                     }
@@ -786,7 +788,18 @@ public static class Action
                         }
                         else // Hits a part
                         {
-                            DamageRandomPart(target.GetComponent<Actor>(), damageAmount, types);
+                            /* Damage Overflow
+                            -----------------
+                            When a part is destroyed by damage that exceeds its remaining integrity, 
+                            the surplus damage is then applied directly to the core or another part as chosen by standard coverage/exposure rules. 
+                            No additional defenses are applied against that damage. Exceptions: 
+                            There is no damage overflow if the destroyed part itself is armor, 
+                            and overflow damage always targets armor first if there is any. 
+                            Critical strikes that outright destroy a part can still cause overflow if their original damage amount exceeded the part's integrity anyway. 
+                            Damage overflow is caused by all weapons except those of the "gun" type, and can overflow through multiple destroyed parts if there is sufficient damage.
+                             */
+
+                            int overflow = DamageRandomPart(target.GetComponent<Actor>(), damageAmount, types, HF.GetDamageType(weapon.itemData));
                         }
 
                         // Do a calc message
@@ -805,7 +818,7 @@ public static class Action
                         }
                         else // Hits a part
                         {
-                            DamageRandomPart(target.GetComponent<Actor>(), damageAmount, types);
+                            DamageRandomPart(target.GetComponent<Actor>(), damageAmount, types, HF.GetDamageType(weapon.itemData));
                         }
                         
 
@@ -1103,7 +1116,7 @@ public static class Action
                     }
                     else // Hits a part
                     {
-                        DamageRandomPart(target.GetComponent<Actor>(), damageAmount, types);
+                        DamageRandomPart(target.GetComponent<Actor>(), damageAmount, types, HF.GetDamageType(weapon.itemData));
                     }
 
                     // Do a calc message
@@ -1122,7 +1135,7 @@ public static class Action
                     }
                     else // Hits a part
                     {
-                        DamageRandomPart(target.GetComponent<Actor>(), damageAmount, types);
+                        DamageRandomPart(target.GetComponent<Actor>(), damageAmount, types, HF.GetDamageType(weapon.itemData));
                     }
 
 
@@ -2213,11 +2226,11 @@ public static class Action
             {
                 if (item._item.data.Id >= 0)
                 {
-                    if (item._item.itemEffect.Count > 0 && item._item.itemEffect[0].armorEffect && stacks)
+                    if (item._item.itemEffect.Count > 0 && item._item.itemEffect[0].armorProjectionEffects.hasEffect && stacks)
                     {
-                        bonuses.Add(item._item.itemEffect[0].armorEffect_absorbtion);
+                        bonuses.Add(item._item.itemEffect[0].armorProjectionEffects.armorEffect_absorbtion);
 
-                        if (item._item.itemEffect[0].armorEffect_stacks)
+                        if (item._item.itemEffect[0].armorProjectionEffects.stacks)
                         {
                             stacks = true;
                         }
@@ -2226,12 +2239,12 @@ public static class Action
                             stacks = false;
                         }
 
-                        if (item._item.itemEffect[0].armorEffect_preventCritStrikes)
+                        if (item._item.itemEffect[0].armorProjectionEffects.armorEffect_preventCritStrikesVSSlot)
                         {
                             noCrits = true;
                         }
 
-                        types.Add(item._item.itemEffect[0].armorEffect_slotType);
+                        types.Add(item._item.itemEffect[0].armorProjectionEffects.armorEffect_slotType);
                     }
                 }
             }
@@ -2242,11 +2255,11 @@ public static class Action
             {
                 if (item.item.Id >= 0)
                 {
-                    if (item.item.itemData.itemEffect.Count > 0 && item.item.itemData.itemEffect[0].armorEffect && stacks)
+                    if (item.item.itemData.itemEffect.Count > 0 && item.item.itemData.itemEffect[0].armorProjectionEffects.hasEffect && stacks)
                     {
-                        bonuses.Add(item.item.itemData.itemEffect[0].armorEffect_absorbtion);
+                        bonuses.Add(item.item.itemData.itemEffect[0].armorProjectionEffects.armorEffect_absorbtion);
 
-                        if (item.item.itemData.itemEffect[0].armorEffect_stacks)
+                        if (item.item.itemData.itemEffect[0].armorProjectionEffects.stacks)
                         {
                             stacks = true;
                         }
@@ -2255,12 +2268,12 @@ public static class Action
                             stacks = false;
                         }
 
-                        if (item.item.itemData.itemEffect[0].armorEffect_preventCritStrikes)
+                        if (item.item.itemData.itemEffect[0].armorProjectionEffects.armorEffect_preventCritStrikesVSSlot)
                         {
                             noCrits = true;
                         }
 
-                        types.Add(item.item.itemData.itemEffect[0].armorEffect_slotType);
+                        types.Add(item.item.itemData.itemEffect[0].armorProjectionEffects.armorEffect_slotType);
                     }
                 }
 
@@ -2584,9 +2597,10 @@ public static class Action
         UIManager.inst.CreateCombatPopup(actor.gameObject, _message, a, b, c);
     }
 
-    public static void DamageRandomPart(Actor target, int damage, List<ArmorType> protection)
+    public static int DamageRandomPart(Actor target, int damage, List<ArmorType> protection, ItemDamageType damageType)
     {
         // TODO: Finish this ?
+        int surplusDamage = 0;
 
         if (target.botInfo) // Bot
         {
@@ -2622,10 +2636,11 @@ public static class Action
                         item._item.data.integrityCurrent -= damage;
                         if (item._item.data.integrityCurrent <= 0)
                         {
+                            surplusDamage += item._item.data.integrityCurrent * -1;
+
                             item._item.data.Id = -1; // Destroy it
-                            // And play a sound ?
                         }
-                        return;
+                        return surplusDamage;
                     }
                 }
             }
@@ -2640,50 +2655,55 @@ public static class Action
                         item._item.data.integrityCurrent -= damage;
                         if (item._item.data.integrityCurrent <= 0)
                         {
+                            surplusDamage += item._item.data.integrityCurrent * -1;
+
                             item._item.data.Id = -1; // Destroy it
-                            // And play a sound ?
                         }
-                        return;
+                        return surplusDamage;
                     }
                     else if (item._item.slot == ItemSlot.Propulsion && protection.Contains(ArmorType.Propulsion))
                     {
                         item._item.data.integrityCurrent -= damage;
                         if (item._item.data.integrityCurrent <= 0)
                         {
+                            surplusDamage += item._item.data.integrityCurrent * -1;
+
                             item._item.data.Id = -1; // Destroy it
-                            // And play a sound ?
                         }
-                        return;
+                        return surplusDamage;
                     }
                     else if (item._item.slot == ItemSlot.Utilities && protection.Contains(ArmorType.Utility))
                     {
                         item._item.data.integrityCurrent -= damage;
                         if (item._item.data.integrityCurrent <= 0)
                         {
+                            surplusDamage += item._item.data.integrityCurrent * -1;
+
                             item._item.data.Id = -1; // Destroy it
-                            // And play a sound ?
                         }
-                        return;
+                        return surplusDamage;
                     }
                     else if (item._item.slot == ItemSlot.Weapons && protection.Contains(ArmorType.Weapon))
                     {
                         item._item.data.integrityCurrent -= damage;
                         if (item._item.data.integrityCurrent <= 0)
                         {
+                            surplusDamage += item._item.data.integrityCurrent * -1;
+
                             item._item.data.Id = -1; // Destroy it
-                            // And play a sound ?
                         }
-                        return;
+                        return surplusDamage;
                     }
                     else if (protection.Contains(ArmorType.General))
                     {
                         item._item.data.integrityCurrent -= damage;
                         if (item._item.data.integrityCurrent <= 0)
                         {
+                            surplusDamage += item._item.data.integrityCurrent * -1;
+
                             item._item.data.Id = -1; // Destroy it
-                            // And play a sound ?
                         }
-                        return;
+                        return surplusDamage;
                     }
                 }
             }
@@ -2722,10 +2742,12 @@ public static class Action
                         item.item.integrityCurrent -= damage;
                         if (item.item.integrityCurrent <= 0)
                         {
+                            surplusDamage += item.item.integrityCurrent * -1;
+
                             item.item.Id = -1; // Destroy it
-                            // And play a sound ?
+                            // Animate the UI element dying & play a sound
                         }
-                        return;
+                        return surplusDamage;
                     }
                 }
             }
@@ -2761,10 +2783,12 @@ public static class Action
                         item.item.integrityCurrent -= damage;
                         if (item.item.integrityCurrent <= 0)
                         {
+                            surplusDamage += item.item.integrityCurrent * -1;
+
                             item.item.Id = -1; // Destroy it
-                            // And play a sound ?
+                            // Animate the UI element dying & play a sound
                         }
-                        return;
+                        return surplusDamage;
                     }
                 }
             }
@@ -2800,10 +2824,12 @@ public static class Action
                         item.item.integrityCurrent -= damage;
                         if (item.item.integrityCurrent <= 0)
                         {
+                            surplusDamage += item.item.integrityCurrent * -1;
+
                             item.item.Id = -1; // Destroy it
-                            // And play a sound ?
+                            // Animate the UI element dying & play a sound
                         }
-                        return;
+                        return surplusDamage;
                     }
                 }
             }
@@ -2817,50 +2843,60 @@ public static class Action
                         item.item.integrityCurrent -= damage;
                         if (item.item.integrityCurrent <= 0)
                         {
+                            surplusDamage += item.item.integrityCurrent * -1;
+
                             item.item.Id = -1; // Destroy it
-                            // And play a sound ?
+                            // Animate the UI element dying & play a sound
                         }
-                        return;
+                        return surplusDamage;
                     }
                     else if (item.item.itemData.slot == ItemSlot.Propulsion && protection.Contains(ArmorType.Propulsion))
                     {
                         item.item.integrityCurrent -= damage;
                         if (item.item.integrityCurrent <= 0)
                         {
+                            surplusDamage += item.item.integrityCurrent * -1;
+
                             item.item.Id = -1; // Destroy it
-                            // And play a sound ?
+                            // Animate the UI element dying & play a sound
                         }
-                        return;
+                        return surplusDamage;
                     }
                     else if (item.item.itemData.slot == ItemSlot.Utilities && protection.Contains(ArmorType.Utility))
                     {
                         item.item.integrityCurrent -= damage;
                         if (item.item.integrityCurrent <= 0)
                         {
+                            surplusDamage += item.item.integrityCurrent * -1;
+
                             item.item.Id = -1; // Destroy it
-                            // And play a sound ?
+                            // Animate the UI element dying & play a sound
                         }
-                        return;
+                        return surplusDamage;
                     }
                     else if (item.item.itemData.slot == ItemSlot.Weapons && protection.Contains(ArmorType.Weapon))
                     {
                         item.item.integrityCurrent -= damage;
                         if (item.item.integrityCurrent <= 0)
                         {
+                            surplusDamage += item.item.integrityCurrent * -1;
+
                             item.item.Id = -1; // Destroy it
-                            // And play a sound ?
+                            // Animate the UI element dying & play a sound
                         }
-                        return;
+                        return surplusDamage;
                     }
                     else if (protection.Contains(ArmorType.General))
                     {
                         item.item.integrityCurrent -= damage;
                         if (item.item.integrityCurrent <= 0)
                         {
+                            surplusDamage += item.item.integrityCurrent * -1;
+
                             item.item.Id = -1; // Destroy it
-                            // And play a sound ?
+                            // Animate the UI element dying & play a sound
                         }
-                        return;
+                        return surplusDamage;
                     }
                 }
             }
@@ -2873,9 +2909,11 @@ public static class Action
                 target.GetComponent<PartInventory>()._invUtility.Container.Items[random].item.Id = -1; // Destroy it
                                     // And play a sound ?
             }
-            return;
+            return surplusDamage;
             
         }
+
+        return surplusDamage;
     }
 
     public static Vector2Int NormalizeMovement(Transform obj, Vector3 destination)

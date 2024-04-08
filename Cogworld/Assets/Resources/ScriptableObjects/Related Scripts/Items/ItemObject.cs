@@ -279,16 +279,7 @@ public class ItemEffect
     public bool stab_KnockbackImmune = false;
 
     [Header("Armor")]
-    public bool armorEffect = false;
-    [Tooltip("Other == General Purpose")]
-    public ArmorType armorEffect_slotType;
-    [Tooltip("Percent so: 0.##")]
-    public float armorEffect_absorbtion = 0f;
-    public bool armorEffect_preventCritStrikes = false;
-    [Tooltip("Prevents chain reactions due to electromagnetic damage")]
-    public bool armorEffect_preventChainReactions = false;
-    public bool armorEffect_stacks = false;
-    public List<ItemDamageResistance> armorEffect_resistances;
+    public ItemProtectionEffect armorProjectionEffects;
 
     [Header("Accurracy Buffs")]
     public bool hasAccuracyBuff = false;
@@ -381,6 +372,12 @@ public class ItemEffect
 
     [Header("Launcher Bonuses")]
     public ItemLauncherBonuses launcherBonus;
+
+    [Header("Heat Dissipation")]
+    public ItemHeatDissipation heatDissipation;
+
+    [Header("Bonus Slots")]
+    public ItemBonusSlots bonusSlots;
 }
 
 public enum ItemQuality
@@ -546,12 +543,90 @@ public class ItemExplosion
 
 #region Misc Effects
 [System.Serializable]
-public class ItemDamageResistance
+[Tooltip("Various protection effects for armor pieces and similar items.")]
+public class ItemProtectionEffect
 {
-    public ItemDamageType damageType;
-    [Header("0.##")]
-    public float percentage;
+    public bool hasEffect = false;
+
+    [Header("General Protection")]
+    [Tooltip("Other == Core")]
+    public ArmorType armorEffect_slotType;
+    [Tooltip("Absorbs 0.##% of damage that would otherwise affect <Slot Type>.")]
+    public float armorEffect_absorbtion = 0f;
+    [Tooltip("Negates extra effects of critical strikes against <Slot Type>.")]
+    public bool armorEffect_preventCritStrikesVSSlot = false;
+    [Tooltip("Prevents chain reactions due to electromagnetic damage.")]
+    public bool armorEffect_preventChainReactions = false;
+    [Tooltip("Can(not) protect against overflow damage.")]
+    public bool armorEffect_preventOverflowDamage = false;
+
+    [Header("Protection Exchange")]
+    public bool projectionExchange = false;
+    [Tooltip("Blocks 0.##%")]
+    public float pe_blockPercent = 0f;
+    [Tooltip("Blocks ##% of damage to this part in exchange for energy loss at a #:# ratio (no effect if insufficient energy).")]
+    public Vector2 pe_exchange = new Vector2(1, 1);
+
+    [Header("High Coverage")]
+    [Tooltip("Protects other parts via high coverage.")]
+    public bool highCoverage = false;
+
+    [Header("Type Damage Resistance")]
+    public bool type_hasTypeResistance = false;
+    public ItemDamageType type_damageType;
+    [Tooltip("0.##")]
+    public float type_percentage;
+    public bool type_allTypes = false;
+
+    [Header("Scrap Shield")]
+    public bool scrapShield = false;
+
+    [Header("Self Repair")]
+    [Tooltip("Regenerates integrity at a rate of # per turn.")]
+    public bool selfRepair = false;
+    public int selfRepair_amount = 0;
+
     public bool stacks = false;
+}
+
+[System.Serializable]
+public class ItemBonusSlots
+{
+    public bool hasEffect = false;
+    public ItemSlot slotType;
+    public int slots;
+}
+
+[System.Serializable]
+public class ItemHeatDissipation
+{
+    public bool hasEffect = false;
+    [Header("Per Turn")]
+    public int dissipationPerTurn = 0;
+
+    [Header("Lower Base")]
+    public int lowerBaseTemp = 0;
+    public bool preventPowerShutdown = false;
+    [Tooltip("has a 0.##% chance to prevent other types of overheating side effects.")]
+    public float preventOverheatSideEffects = 0f;
+
+    [Header("Integrity Loss")]
+    public int integrityLossPerTurn = 0;
+    public int minTempToActivate = 0;
+
+    [Header("Heat to Power")]
+    [Tooltip("Generates # energy per # surplus heat every turn.")]
+    public int energyGeneration = 0;
+    public int heatToEnergyAmount = 0;
+
+    [Tooltip("Dissipates heat each turn, losing # integrity per ## heat dissipated, " +
+        "applied after all standard heat dissipation and any injectors, " +
+        "and only when heat levels rise above ###. If multiple similar parts attached, " +
+        "heat is distributed among them equally where possible.")]
+    public bool abalativeArmorEffect = false;
+
+    public bool parallel = false;
+    public bool stacks = true;
 }
 
 [System.Serializable]

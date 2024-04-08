@@ -1686,6 +1686,18 @@ public static class HF
 
     #region Find & Get
 
+    public static ItemDamageType GetDamageType(ItemObject weapon)
+    {
+        if (weapon.meleeAttack.isMelee)
+        {
+            return weapon.meleeAttack.damageType;
+        }
+        else
+        {
+            return weapon.projectile.damageType;
+        }
+    }
+
     /// <summary>
     /// Finds a random bot (in the database) of a specified tier (1-10).
     /// </summary>

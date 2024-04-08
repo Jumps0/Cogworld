@@ -18,7 +18,10 @@ MonoBehaviour:
     Name: Imp. Light Armor Plating
     Id: 53
     stackable: 0
+    amount: 1
     itemData: {fileID: 11400000}
+    state: 1
+    integrityCurrent: 0
   knowByPlayer: 0
   floorDisplay: {fileID: 2078175397, guid: 9317a15c65d31344c83ab52f7cdbb9db, type: 3}
   inventoryDisplay: {fileID: 2078175397, guid: 9317a15c65d31344c83ab52f7cdbb9db, type: 3}
@@ -26,19 +29,19 @@ MonoBehaviour:
   itemColor: {r: 0.70980394, g: 0.16470586, b: 0.5273403, a: 1}
   type: 13
   slot: 2
+  slotsRequired: 1
   mass: 18
   rating: 9
   star: 1
-  integrityCurrent: 120
   integrityMax: 120
   coverage: 750
-  state: 0
   schematicDetails:
     hackable: 0
     location:
     - {x: 1, y: -8}
     - {x: 2, y: -9}
     - {x: 3, y: -10}
+    hasSchematic: 0
   hasUpkeep: 0
   energyUpkeep: 0
   matterUpkeep: 0
@@ -67,13 +70,47 @@ MonoBehaviour:
     damageType: 0
     critChance: 0
     critType: 0
-    penChance: 0
+    penChance: {x: 0, y: 0, z: 0}
     heatTrasfer: 0
     heatTransferDegree: 0
     spectrum: 0
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    projectileColor: {r: 1, g: 0, b: 0, a: 1}
+    projectileSprite: {fileID: 0}
+    projectileRotates: 1
+    projectileTrail: 2
+    penetrationCapability: 0
+    penetrationChances: []
+  meleeAttack:
+    isMelee: 0
+    energy: 0
+    matter: 0
+    heat: 0
+    targeting: 0
+    delay: 0
+    damage: {x: 0, y: 0}
+    damageType: 6
+    critical: 0
+    critType: 0
+    disruption: 0
+    salvage: 0
+    visualAttackTime: 0.5
+    missSound: []
+    canDatajack: 0
+  explosion:
+    radius: 0
+    damageLow: 0
+    damageHigh: 0
+    falloff: 0
+    damageType: 2
+    spectrum: 0
+    hasSpectrum: 0
+    disruption: 0
+    salvage: 0
+    explosionSounds: []
+    explosionGFX: 0
   itemEffect:
   - chainExplode: 0
     damage: {x: 0, y: 0}
@@ -83,6 +120,8 @@ MonoBehaviour:
     fallOff: 0
     salvage: 0
     transferLevel: 0
+    disruption: 0
+    spectrum: 0
     doesHeatDissip: 0
     heatDissipation_perTurn: 0
     heatDissipation_stacks: 0
@@ -105,15 +144,23 @@ MonoBehaviour:
     hasStabEffect: 0
     stab_recoilPerWeapon: 0
     stab_KnockbackImmune: 0
-    armorEffect: 1
-    armorEffect_slotType: 4
-    armorEffect_absorbtion: 0
-    armorEffect_preventCritStrikes: 0
-    armorEffect_preventChainReactions: 0
-    armorEffect_stacks: 0
-    armorEffect_resistances:
-    - damageType: 1
-      percentage: 0.9
+    armorProjectionEffects:
+      hasEffect: 1
+      armorEffect_slotType: 0
+      armorEffect_absorbtion: 0
+      armorEffect_preventCritStrikesVSSlot: 0
+      armorEffect_preventOverflowDamage: 0
+      projectionExchange: 0
+      pe_blockPercent: 0
+      pe_exchange: {x: 1, y: 1}
+      highCoverage: 0
+      type_hasTypeResistance: 1
+      type_damageType: 1
+      type_percentage: 0.9
+      type_allTypes: 0
+      scrapShield: 0
+      selfRepair: 0
+      selfRepair_amount: 0
       stacks: 0
     hasAccuracyBuff: 0
     accBuff_nonMelee: 0
@@ -157,12 +204,108 @@ MonoBehaviour:
       databaseLockoutBonus: 0
       hackFeedbackPreventBonus: 0
       allyHackDefenseBonus: 0
+      allyHackRange: 0
+    emitEffect:
+      hasEffect: 0
+      target: 0
+      turnTime: 5
+      range: 0
+    fireTimeEffect:
+      hasEffect: 0
+      fireTimeReduction: 0
+      capped: 0
+      cap: 0
+      stacks: 1
+      compatability: 0
+    transmissionJammingEffect:
+      hasEffect: 0
+      range: 0
+      preventReinforcementCall: 1
+      suppressAlarmTraps: 1
+    effectiveCorruptionEffect:
+      hasEffect: 0
+      amount: 0
+      stacks: 1
+    partRestoreEffect:
+      hasEffect: 0
+      percentChance: 0
+      canRepairAlienTech: 0
+      protoRepairCap: 0
+      canRunInParralel: 1
+    exilesEffects:
+      hasEffect: 0
+      isAutoWeapon: 0
+      chronoWheelEffect: 0
+      deployableTurret: 0
+      lifetimeDecay: 0
+    toHitBuffs:
+      hasEffect: 0
+      amount: 0
+      stacks: 0
+      halfStacks: 0
+      bonusCritChance: 0
+      bypassArmor: 0
+      coreExposureEffect: 0
+    partIdent:
+      hasEffect: 0
+      amount: 0
+      parallel: 0
+    antiCorruption:
+      hasEffect: 0
+      amount: 0
+      integrityLossPer: 0
+      parallel: 0
+    rcsEffect:
+      hasEffect: 0
+      percentage: 0
+      stacks: 0
+      momentumBonus: 1
+    phasingEffect:
+      hasEffect: 0
+      percentage: 0
+      stacks: 0
+    cloakingEffect:
+      hasEffect: 0
+      rangedReduction: 0
+      noticeReduction: 0
+      halfStacks: 1
+    meleeBonus:
+      hasEffect: 0
+      melee_followUpChance: 0
+      melee_maxDamageBoost: 0
+      melee_accuracyDecrease: 0
+      melee_accuracyIncrease: 0
+      melee_minDamageBoost: 0
+      melee_attackTimeDecrease: 0
+      actuator_stacks: 1
+      actuator_cap: 0.5
+    launcherBonus:
+      hasEffect: 0
+      launcherAccuracy: 0
+      launcherLoading: 0
+      stacks: 0
+    heatDissipation:
+      hasEffect: 0
+      dissipationPerTurn: 0
+      lowerBaseTemp: 0
+      preventPowerShutdown: 0
+      preventOverheatSideEffects: 0
+      integrityLossPerTurn: 0
+      minTempToActivate: 0
+      energyGeneration: 0
+      heatToEnergyAmount: 0
+      abalativeArmorEffect: 0
+      parallel: 0
+      stacks: 1
+    bonusSlots:
+      hasEffect: 0
+      slotType: 0
+      slots: 0
   quality: 2
   itemName: 8R-AWN's Armor/TH
   description: A set of sturdy armored plates that are extremely resistant to Thermal
     Damage. Made by the EXILES.
-  details:
-    temp: 
+  mechanicalDescription: 
   fabricationInfo:
     canBeFabricated: 0
     amountMadePer: 0

@@ -18,7 +18,10 @@ MonoBehaviour:
     Name: Imp. Light Armor Plating
     Id: 22
     stackable: 0
+    amount: 1
     itemData: {fileID: 11400000}
+    state: 1
+    integrityCurrent: 0
   knowByPlayer: 0
   floorDisplay: {fileID: -32666557, guid: 9e5fd32a0821a894a9c4ce41b9aec735, type: 3}
   inventoryDisplay: {fileID: -32666557, guid: 9e5fd32a0821a894a9c4ce41b9aec735, type: 3}
@@ -30,16 +33,15 @@ MonoBehaviour:
   mass: 3
   rating: 3
   star: 0
-  integrityCurrent: 180
   integrityMax: 180
   coverage: 150
-  state: 0
   schematicDetails:
     hackable: 1
     location:
     - {x: 1, y: -8}
     - {x: 2, y: -9}
     - {x: 3, y: -10}
+    hasSchematic: 0
   hasUpkeep: 0
   energyUpkeep: 0
   matterUpkeep: 0
@@ -75,6 +77,12 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    projectileColor: {r: 1, g: 0, b: 0, a: 1}
+    projectileSprite: {fileID: 0}
+    projectileRotates: 1
+    projectileTrail: 2
+    penetrationCapability: 0
+    penetrationChances: []
   meleeAttack:
     isMelee: 0
     energy: 0
@@ -88,6 +96,21 @@ MonoBehaviour:
     critType: 0
     disruption: 0
     salvage: 0
+    visualAttackTime: 0.5
+    missSound: []
+    canDatajack: 0
+  explosion:
+    radius: 0
+    damageLow: 0
+    damageHigh: 0
+    falloff: 0
+    damageType: 2
+    spectrum: 0
+    hasSpectrum: 0
+    disruption: 0
+    salvage: 0
+    explosionSounds: []
+    explosionGFX: 0
   itemEffect:
   - chainExplode: 0
     damage: {x: 0, y: 0}
@@ -121,13 +144,24 @@ MonoBehaviour:
     hasStabEffect: 0
     stab_recoilPerWeapon: 0
     stab_KnockbackImmune: 0
-    armorEffect: 1
-    armorEffect_slotType: 4
-    armorEffect_absorbtion: 0.5
-    armorEffect_preventCritStrikes: 1
-    armorEffect_preventChainReactions: 0
-    armorEffect_stacks: 1
-    armorEffect_resistances: []
+    armorProjectionEffects:
+      hasEffect: 1
+      armorEffect_slotType: 0
+      armorEffect_absorbtion: 0
+      armorEffect_preventCritStrikesVSSlot: 0
+      armorEffect_preventOverflowDamage: 0
+      projectionExchange: 0
+      pe_blockPercent: 0
+      pe_exchange: {x: 1, y: 1}
+      highCoverage: 1
+      type_hasTypeResistance: 0
+      type_damageType: 0
+      type_percentage: 0
+      type_allTypes: 0
+      scrapShield: 0
+      selfRepair: 0
+      selfRepair_amount: 0
+      stacks: 0
     hasAccuracyBuff: 0
     accBuff_nonMelee: 0
     accBuff_melee: 0
@@ -212,7 +246,6 @@ MonoBehaviour:
       bonusCritChance: 0
       bypassArmor: 0
       coreExposureEffect: 0
-      launcherAccuracy: 0
     partIdent:
       hasEffect: 0
       amount: 0
@@ -222,11 +255,56 @@ MonoBehaviour:
       amount: 0
       integrityLossPer: 0
       parallel: 0
+    rcsEffect:
+      hasEffect: 0
+      percentage: 0
+      stacks: 0
+      momentumBonus: 1
+    phasingEffect:
+      hasEffect: 0
+      percentage: 0
+      stacks: 0
+    cloakingEffect:
+      hasEffect: 0
+      rangedReduction: 0
+      noticeReduction: 0
+      halfStacks: 1
+    meleeBonus:
+      hasEffect: 0
+      melee_followUpChance: 0
+      melee_maxDamageBoost: 0
+      melee_accuracyDecrease: 0
+      melee_accuracyIncrease: 0
+      melee_minDamageBoost: 0
+      melee_attackTimeDecrease: 0
+      actuator_stacks: 1
+      actuator_cap: 0.5
+    launcherBonus:
+      hasEffect: 0
+      launcherAccuracy: 0
+      launcherLoading: 0
+      stacks: 0
+    heatDissipation:
+      hasEffect: 0
+      dissipationPerTurn: 0
+      lowerBaseTemp: 0
+      preventPowerShutdown: 0
+      preventOverheatSideEffects: 0
+      integrityLossPerTurn: 0
+      minTempToActivate: 0
+      energyGeneration: 0
+      heatToEnergyAmount: 0
+      abalativeArmorEffect: 0
+      parallel: 0
+      stacks: 1
+    bonusSlots:
+      hasEffect: 0
+      slotType: 0
+      slots: 0
   quality: 1
   itemName: Imp. Light Armor Plating
   description: An improved varianted of a set of lightweight armor plates.
-  details:
-    temp: 
+  mechanicalDescription: 
   fabricationInfo:
     canBeFabricated: 1
     amountMadePer: 2
