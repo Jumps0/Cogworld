@@ -84,7 +84,7 @@ public class UISchematicOption : MonoBehaviour
         yield return new WaitForSeconds(delay);
 
         float elapsedTime = 0f;
-        float duration = 0.5f;
+        float duration = 0.35f;
         while (elapsedTime < duration) // Black -> Green
         {
             image_backer.color = Color.Lerp(Color.black, colorGreen, elapsedTime / duration);
@@ -95,7 +95,7 @@ public class UISchematicOption : MonoBehaviour
         }
         image_backer.color = colorGreen;
         image_buttonindicator.color = colorGreen;
-        duration = 0.5f;
+        duration = 0.35f;
         while (elapsedTime < duration) // Green -> Black
         {
             image_backer.color = Color.Lerp(colorGreen, Color.black, elapsedTime / duration);

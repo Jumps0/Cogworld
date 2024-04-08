@@ -27,6 +27,10 @@ public class UITimerMachine : MonoBehaviour
         currentTime = _start;
 
         timer_text.text = _start.ToString();
+
+        this.GetComponent<Canvas>().sortingOrder = 15;
+
+        backer.color = c_orange;
     }
 
     public void Tick()
@@ -34,9 +38,16 @@ public class UITimerMachine : MonoBehaviour
         currentTime--;
         timer_text.text = currentTime.ToString();
 
-        backer.color = Color.Lerp(c_orange, c_green, currentTime / startTime);
+        // Calculate the total duration
+        float totalDuration = startTime - currentTime;
 
-        if(currentTime <= 0)
+        // Calculate the interpolation factor
+        float t = Mathf.Clamp01(currentTime / totalDuration);
+
+        // Interpolate between orange and green based on the interpolation factor
+        backer.color = Color.Lerp(c_green, c_orange, t);
+
+        if (currentTime <= 0)
         {
             Destroy(this.gameObject);
         }

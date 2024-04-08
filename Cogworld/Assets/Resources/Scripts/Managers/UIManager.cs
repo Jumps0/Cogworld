@@ -1918,6 +1918,22 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator Terminal_OpenAnim()
     {
+        // In-case this menu is being re-opened, we need to make all the images un-transparent again
+        #region Image Transparency Reset
+        Image[] i1 = terminal_hackingAreaRef.GetComponentsInChildren<Image>();
+        Image[] i2 = terminal_targetresultsAreaRef.GetComponentsInChildren<Image>();
+        Image[] i3 = terminal_hackinfoArea1.GetComponentsInChildren<Image>();
+
+        var i12 = i1.Concat(i2).ToArray();
+        var iFinal = i12.Concat(i3).ToArray();
+
+        foreach (Image I in iFinal)
+        {
+            Color setColor = I.color;
+            I.color = new Color(setColor.r, setColor.g, setColor.b, 1f);
+        }
+        #endregion
+
         float delay = 0.05f;
 
         // First, the hacking window opens
@@ -2668,12 +2684,15 @@ public class UIManager : MonoBehaviour
 
     public void Terminal_Close()
     {
+        AudioManager.inst.CreateTempClip(terminal_targetTerm.transform.position, AudioManager.inst.UI_Clips[17]); // Play close sound
+
         StartCoroutine(Terminal_CloseAnim());
     }
 
     private IEnumerator Terminal_CloseAnim()
     {
         // Do a fade out animation
+        #region Image Fade-out
         Image[] i1 = terminal_hackingAreaRef.GetComponentsInChildren<Image>();
         Image[] i2 = terminal_targetresultsAreaRef.GetComponentsInChildren<Image>();
         Image[] i3 = terminal_hackinfoArea1.GetComponentsInChildren<Image>();
@@ -2719,6 +2738,7 @@ public class UIManager : MonoBehaviour
             Color setColor = I.color;
             I.color = new Color(setColor.r, setColor.g, setColor.b, 0f);
         }
+        #endregion
 
         yield return null;
 
@@ -2780,7 +2800,13 @@ public class UIManager : MonoBehaviour
         terminal_hackTargetsList.Clear();
         terminal_hackResultsList.Clear();
         terminal_hackCodesList.Clear();
-        // We won't go through and delete them because they will delete themselves
+        // Most of the prefabs will delete themselves
+
+        // The spacers however do not, so this is a fallback.
+        foreach (Transform child in terminal_hackinfoArea1.transform)
+        {
+            Destroy(child.gameObject);
+        }
 
         // Close window
         terminal_hackingAreaRef.SetActive(false);

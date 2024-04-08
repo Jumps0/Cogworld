@@ -233,8 +233,6 @@ public class Fabricator : MonoBehaviour
 
     public void Build()
     {
-        Debug.Log("Build!");
-
         // Set values
         begunBuildTime = TurnManager.inst.globalTime;
         working = true;
@@ -268,8 +266,11 @@ public class Fabricator : MonoBehaviour
         working = false;
 
         Vector2Int dropLocation = HF.LocateFreeSpace(HF.V3_to_V2I(ejectionSpot.transform.position));
+        Debug.Log("Finish! - " + dropLocation);
 
-        if(targetPart != null)
+        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.GAME_Clips[29]); // Play fabrication complete sound
+
+        if (targetPart != null)
         {
             // Spawn in this part on the floor
             InventoryControl.inst.CreateItemInWorld(targetPart.data.Id, dropLocation, true);
@@ -298,6 +299,8 @@ public class Fabricator : MonoBehaviour
             HF.ModifyBotAllegance(newBot, relationList);
         }
 
+        PlayerData.inst.GetComponent<Actor>().UpdateFieldOfView();
+
         Destroy(timerObject);
 
         targetPart = null;
@@ -315,7 +318,7 @@ public class Fabricator : MonoBehaviour
         {
             timerObject.GetComponent<UITimerMachine>().Tick();
 
-            if(begunBuildTime + buildTime >= TurnManager.inst.globalTime)
+            if(TurnManager.inst.globalTime >= begunBuildTime + buildTime)
             {
                 FinishBuild();
             }

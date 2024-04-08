@@ -641,6 +641,9 @@ public class Actor : Entity
     public bool isVisible;
     public SpriteRenderer fow_sprite;
 
+    /// <summary>
+    /// Updates the visual state of a bot based on their flags. Ignores player.
+    /// </summary>
     public void CheckVisibility()
     {
         if (this.GetComponent<PlayerData>())

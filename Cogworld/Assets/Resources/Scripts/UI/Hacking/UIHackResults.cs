@@ -51,7 +51,7 @@ public class UIHackResults : MonoBehaviour
         AudioManager.inst.PlayTyping();
 
         float delay = 0f;
-        float characterDelay = 0.02f;
+        float characterDelay = 0.01f;
 
         string _message = setText;
         int len = _message.Length;
