@@ -269,14 +269,7 @@ public static class Action
                     }
                     if (target.GetComponent<PlayerData>()) // Player being attacked
                     {
-                        if (Random.Range(0f, 1f) < PlayerData.inst.currentCoreExposure) // Hits the core
-                        {
-                            PlayerData.inst.currentHealth -= damage;
-                        }
-                        else // Hits a part
-                        {
-                            DamageRandomPart(target.GetComponent<Actor>(), damage, types, HF.GetDamageType(weapon.itemData));
-                        }
+                        DamageBot(target.GetComponent<Actor>(), damage, types, HF.GetDamageType(weapon.itemData));
 
                         // Do a calc message
                         string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHit * 100}%) Hit";
@@ -288,14 +281,7 @@ public static class Action
                     }
                     else // Bot being attacked
                     {
-                        if (Random.Range(0f, 1f) < target.GetComponent<Actor>().botInfo.coreExposure) // Hits the core
-                        {
-                            target.GetComponent<Actor>().currentHealth -= damage;
-                        }
-                        else // Hits a part
-                        {
-                            DamageRandomPart(target.GetComponent<Actor>(), damage, types, HF.GetDamageType(weapon.itemData));
-                        }
+                        DamageBot(target.GetComponent<Actor>(), damage, types, HF.GetDamageType(weapon.itemData));
 
 
                         // Show a popup that says how much damage occured
@@ -435,14 +421,7 @@ public static class Action
                             }
                             if (target.GetComponent<PlayerData>()) // Player being attacked
                             {
-                                if (Random.Range(0f, 1f) < PlayerData.inst.currentCoreExposure) // Hits the core
-                                {
-                                    PlayerData.inst.currentHealth -= damage;
-                                }
-                                else // Hits a part
-                                {
-                                    DamageRandomPart(target.GetComponent<Actor>(), damage, types, HF.GetDamageType(weapon.itemData));
-                                }
+                                DamageBot(target.GetComponent<Actor>(), damage, types, HF.GetDamageType(weapon.itemData));
 
                                 // Do a calc message
                                 string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHit * 100}%) Hit";
@@ -454,14 +433,7 @@ public static class Action
                             }
                             else // Bot being attacked
                             {
-                                if (Random.Range(0f, 1f) < target.GetComponent<Actor>().botInfo.coreExposure) // Hits the core
-                                {
-                                    target.GetComponent<Actor>().currentHealth -= damage;
-                                }
-                                else // Hits a part
-                                {
-                                    DamageRandomPart(target.GetComponent<Actor>(), damage, types, HF.GetDamageType(weapon.itemData));
-                                }
+                                DamageBot(target.GetComponent<Actor>(), damage, types, HF.GetDamageType(weapon.itemData));
 
 
                                 // Show a popup that says how much damage occured
@@ -782,13 +754,7 @@ public static class Action
                     }
                     if (target.GetComponent<PlayerData>()) // Player being attacked
                     {
-                        if (rand < PlayerData.inst.currentCoreExposure) // Hits the core
-                        {
-                            PlayerData.inst.currentHealth -= damageAmount;
-                        }
-                        else // Hits a part
-                        {
-                            /* Damage Overflow
+                        /* Damage Overflow
                             -----------------
                             When a part is destroyed by damage that exceeds its remaining integrity, 
                             the surplus damage is then applied directly to the core or another part as chosen by standard coverage/exposure rules. 
@@ -797,10 +763,9 @@ public static class Action
                             and overflow damage always targets armor first if there is any. 
                             Critical strikes that outright destroy a part can still cause overflow if their original damage amount exceeded the part's integrity anyway. 
                             Damage overflow is caused by all weapons except those of the "gun" type, and can overflow through multiple destroyed parts if there is sufficient damage.
-                             */
+                        */
 
-                            int overflow = DamageRandomPart(target.GetComponent<Actor>(), damageAmount, types, HF.GetDamageType(weapon.itemData));
-                        }
+                        int overflow = DamageBot(target.GetComponent<Actor>(), damageAmount, types, HF.GetDamageType(weapon.itemData));
 
                         // Do a calc message
                         string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Hit";
@@ -812,15 +777,8 @@ public static class Action
                     }
                     else // Bot being attacked
                     {
-                        if (rand < target.GetComponent<Actor>().botInfo.coreExposure) // Hits the core
-                        {
-                            target.GetComponent<Actor>().currentHealth -= damageAmount;
-                        }
-                        else // Hits a part
-                        {
-                            DamageRandomPart(target.GetComponent<Actor>(), damageAmount, types, HF.GetDamageType(weapon.itemData));
-                        }
-                        
+                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, HF.GetDamageType(weapon.itemData));
+
 
                         // Show a popup that says how much damage occured
                         if (!target.GetComponent<PlayerData>())
@@ -1110,14 +1068,7 @@ public static class Action
 
                 if (target.GetComponent<PlayerData>()) // Player being attacked
                 {
-                    if (rand < PlayerData.inst.currentCoreExposure) // Hits the core
-                    {
-                        PlayerData.inst.currentHealth -= damageAmount;
-                    }
-                    else // Hits a part
-                    {
-                        DamageRandomPart(target.GetComponent<Actor>(), damageAmount, types, HF.GetDamageType(weapon.itemData));
-                    }
+                    DamageBot(target.GetComponent<Actor>(), damageAmount, types, HF.GetDamageType(weapon.itemData));
 
                     // Do a calc message
                     string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Hit";
@@ -1135,7 +1086,7 @@ public static class Action
                     }
                     else // Hits a part
                     {
-                        DamageRandomPart(target.GetComponent<Actor>(), damageAmount, types, HF.GetDamageType(weapon.itemData));
+                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, HF.GetDamageType(weapon.itemData));
                     }
 
 
@@ -2597,9 +2548,211 @@ public static class Action
         UIManager.inst.CreateCombatPopup(actor.gameObject, _message, a, b, c);
     }
 
-    public static int DamageRandomPart(Actor target, int damage, List<ArmorType> protection, ItemDamageType damageType)
+    public static int DamageBot(Actor target, int damage, List<ArmorType> protection, ItemDamageType damageType)
     {
+        #region Explanation
+        /*
+         * Coverage/Exposure
+        -------------------
+        Each part has a "coverage" rating which determines its likeliness to be hit by an incoming attack. 
+        Values are relative, so attacks are weighted towards hitting parts with higher coverage. 
+        Robot cores also have their own "exposure" rating which determines their likeliness to be hit; 
+        this value is considered along with part coverage when determining whether an attack will strike the core. 
+        The exact chance of a core/part to be hit is shown in parenthesis after its exposure/coverage on the relevant info screen. 
+        You can also press 'c' to have the main HUD's parts list display a visualization of relative coverage, i.e. longer bars represent a greater chance for a given part to be hit.
+
+        Some examples of how coverage determines hit locations will help understand how that stat actually works.
+
+        Example 1: Cogmind's core has an exposure of 100. Say you equip only one part, 
+        a weapon which also has a coverage of 100. Their total value is 200 (100+100), 
+        so if you are hit by a projectile, each one has a 50% (100/200) chance to be hit.
+
+        Example 2: You have the following parts attached:
+            Ion Engine (60)
+            Light Treads (120)
+            Light Treads (120)
+            Medium Laser (60)
+            Assault Rifle (100)
+        With your core (100), the total is 560, so the chance to hit each location is:
+            Ion Engine: 60/560=10.7%
+            Light Treads: 120/560=21.4% (each)
+            Medium Laser: 60/560=10.7%
+            Assault Rifle: 100/560=17.9%
+            Core: 100/560=17.9%
+
+        Enemy robots work the same way, so the more parts you blow off, 
+        the more likely you are to hit and destroy their core. 
+        Armor plating has a very high coverage, so it's more likely to be hit, 
+        while tiny utilities such as embedded processors have very low coverage, 
+        so you can expect them to last much longer (unless you have little or nothing else covering you). 
+        As you progress, your core will become more and more protected by attached parts, 
+        because you'll have many more of them, but by that time there are other dangers such as system corruption.
+         */
+        #endregion
+
+        #region Exposure
+        int coreExposure = 0;
+        float coreHitChance = 0f;
+        if (target.botInfo)
+        {
+            //coreExposure = target.botInfo.coreExposure; // This is a percent value in the game files and I don't know how to calculate the true value. Fun!
+            coreExposure = 100;
+            coreHitChance = target.botInfo.coreExposure;
+        }
+        else
+        {
+            coreExposure = PlayerData.inst.currentCoreExposure;
+        }
+
+        List<ItemObject> items = new List<ItemObject>();
+        List<ItemObject> protectiveItems = new List<ItemObject>();
+
+        // Collect up all the items
+        if (target.botInfo) // Bot
+        {
+            foreach (BotArmament item in target.botInfo.armament)
+            {
+                if (item._item.data.Id >= 0)
+                {
+                    items.Add(item._item);
+                }
+            }
+
+            foreach(BotArmament item in target.botInfo.components)
+            {
+                if (item._item.data.Id >= 0)
+                {
+                    items.Add(item._item);
+                }
+            }
+        }
+        else // Player
+        {
+            foreach (InventorySlot item in target.GetComponent<PartInventory>()._invPower.Container.Items)
+            {
+                if (item.item.itemData.data.Id >= 0)
+                {
+                    items.Add(item.item.itemData);
+                }
+            }
+
+            foreach (InventorySlot item in target.GetComponent<PartInventory>()._invPropulsion.Container.Items)
+            {
+                if (item.item.itemData.data.Id >= 0)
+                {
+                    items.Add(item.item.itemData);
+                }
+            }
+
+            foreach (InventorySlot item in target.GetComponent<PartInventory>()._invUtility.Container.Items)
+            {
+                if (item.item.itemData.data.Id >= 0)
+                {
+                    items.Add(item.item.itemData);
+                }
+            }
+
+            foreach (InventorySlot item in target.GetComponent<PartInventory>()._invWeapon.Container.Items)
+            {
+                if (item.item.itemData.data.Id >= 0)
+                {
+                    items.Add(item.item.itemData);
+                }
+            }
+        }
+
+        // Calculate max exposure
+        int totalExposure = 0;
+
+        foreach (var item in items)
+        {
+            totalExposure += item.coverage;
+
+            // Gather up all protective items (we use this later)
+            if (item.itemEffect[0].armorProjectionEffects.hasEffect)
+            {
+                protectiveItems.Add(item);
+            }
+        }
+        totalExposure += coreExposure;
+
+        // Calculate individual chances to hit each object
+        List<KeyValuePair<ItemObject, float>> pairs = new List<KeyValuePair<ItemObject, float>>();
+
+        foreach (var item in items)
+        {
+            pairs.Add(new KeyValuePair<ItemObject, float>(item, item.coverage / totalExposure));
+        }
+
+        // Calculate to hit chance for player
+        if (!target.botInfo)
+        {
+            coreHitChance = coreExposure / totalExposure;
+        }
+        #endregion
+
+        // Modify damage value if target has resistances
+        if (target.botInfo)
+        {
+            foreach (var R in target.botInfo.resistances)
+            {
+                if(damageType == R.damageType)
+                {
+                    damage = Mathf.RoundToInt(damage + (float)(damage * R.resistanceAmount));
+                }
+            }
+        }
+
+        // Modify damage value if target has certain types of protective armor
+        bool stacks = true;
+        foreach (var P in protectiveItems)
+        {
+            if (P.itemEffect[0].armorProjectionEffects.type_hasTypeResistance) // Has a resistance to a type
+            {
+                if (P.itemEffect[0].armorProjectionEffects.type_allTypes || P.itemEffect[0].armorProjectionEffects.type_damageType == damageType) // Has damage resist or generalist resist
+                {
+                    if (stacks)
+                    {
+                        damage = Mathf.RoundToInt(damage + (float)(damage * P.itemEffect[0].armorProjectionEffects.type_percentage)); // Modify damage
+                    }
+
+                    stacks = P.itemEffect[0].armorProjectionEffects.stacks;
+                }
+            }
+        }
+
+        // Roll to what we will hit
+        float rand = Random.Range(0f, 1f);
+
+        List<float> cumulativeProbabilities = new List<float>();
+        float cumulativeProbability = 0f;
+
+        foreach (var pair in pairs)
+        {
+            cumulativeProbability += pair.Value;
+            cumulativeProbabilities.Add(cumulativeProbability);
+        }
+
+        // Check which range the random number falls into ||| TODO: WE HERE RN
+        for (int i = 0; i < cumulativeProbabilities.Count; i++)
+        {
+            if (rand < cumulativeProbabilities[i])
+            {
+                // Item i is hit
+                Debug.Log("Hit item: " + pairs[i].Key.name);
+                //return;
+            }
+        }
+
+        // If none of the items are hit, the core is hit
+        Debug.Log("Hit core");
+
+
+
+
+
         // TODO: Finish this ?
+        #region OLD STUFF
         int surplusDamage = 0;
 
         if (target.botInfo) // Bot
@@ -2912,6 +3065,7 @@ public static class Action
             return surplusDamage;
             
         }
+        #endregion
 
         return surplusDamage;
     }
