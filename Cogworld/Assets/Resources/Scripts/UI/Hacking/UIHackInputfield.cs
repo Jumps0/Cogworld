@@ -257,7 +257,7 @@ public class UIHackInputfield : MonoBehaviour
             right = right.Substring(0, right.Length - 1); // Remove the ")", now: inside
 
             string header = ">>" + HF.ParseHackName(hack, right);
-            string rewardString = HF.MachineReward_PrintPLUSAction(command);
+            string rewardString = HF.MachineReward_PrintPLUSAction(command, command.item, command.bot);
 
             if (rewardString.Length > 0)
             {

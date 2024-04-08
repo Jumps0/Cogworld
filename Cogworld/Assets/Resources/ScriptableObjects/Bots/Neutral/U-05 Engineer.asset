@@ -47,7 +47,7 @@ MonoBehaviour:
     - {x: 1, y: -10}
     - {x: 2, y: -10}
     - {x: 3, y: -10}
-    hasSchematic: 0
+    hasSchematic: 1
   armament:
   - _item: {fileID: 11400000, guid: 93748e9da2d4dbe4bbecd7bacb7c9b44, type: 2}
     dropChance: 0.21

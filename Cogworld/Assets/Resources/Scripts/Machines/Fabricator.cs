@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using static UnityEditor.Progress;
 
@@ -106,6 +107,19 @@ public class Fabricator : MonoBehaviour
                 displayText += bot.name;
 
                 newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Build, "", hack, null, null, bot);
+
+                if(secLvl == 1)
+                {
+                    buildTime = bot.fabricationInfo.fabTime.x;
+                }
+                else if(secLvl == 2)
+                {
+                    buildTime = bot.fabricationInfo.fabTime.y;
+                }
+                else if( secLvl == 3)
+                {
+                    buildTime = bot.fabricationInfo.fabTime.z;
+                }
             }
             else // 70% chance to be an item
             {
@@ -116,6 +130,19 @@ public class Fabricator : MonoBehaviour
                 hack = HF.HackBuildParser(tier, item.star);
 
                 newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Build, "", hack, null, null, null, item);
+
+                if (secLvl == 1)
+                {
+                    buildTime = item.fabricationInfo.fabTime.x;
+                }
+                else if (secLvl == 2)
+                {
+                    buildTime = item.fabricationInfo.fabTime.y;
+                }
+                else if (secLvl == 3)
+                {
+                    buildTime = item.fabricationInfo.fabTime.z;
+                }
             }
 
             avaiableCommands.Add(newCommand);
@@ -206,14 +233,34 @@ public class Fabricator : MonoBehaviour
 
     public void Build()
     {
+        Debug.Log("Build!");
+
+        // Set values
         begunBuildTime = TurnManager.inst.globalTime;
         working = true;
 
+        // Create physical timer
         timerObject = Instantiate(UIManager.inst.prefab_machineTimer, this.transform.position, Quaternion.identity);
         timerObject.transform.SetParent(this.transform);
         timerObject.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Assign Details
         timerObject.GetComponent<UITimerMachine>().Init(buildTime);
+
+        // Remove old build command
+        foreach (var command in avaiableCommands.ToList())
+        {
+            if (command.subType == TerminalCommandType.Build)
+            {
+                avaiableCommands.Remove(command);
+            }
+        }
+
+        // Add placeholder (empty) command
+        HackObject hack = MapManager.inst.hackDatabase.Hack[26];
+
+        TerminalCommand newCommand = new TerminalCommand(HF.GetNextLetter(avaiableCommands[avaiableCommands.Count - 1].assignedChar), "No Schematic Loaded", TerminalCommandType.NONE, "", hack);
+
+        avaiableCommands.Add(newCommand);
     }
 
     public void FinishBuild()

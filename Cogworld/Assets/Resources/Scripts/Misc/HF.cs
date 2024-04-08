@@ -287,13 +287,28 @@ public static class HF
     public static int MachineSecLvl()
     {
         float random = Random.Range(0f, 1f);
-        if (MapManager.inst.currentLevel < -9)
+        if (MapManager.inst.currentLevel < -9) // -11 to -10
+        {
+            if (random >= 0.95) // 5% - High Sec
+            {
+                return 3;
+            }
+            else if (random < 0.95 && random >= 0.60) // 35% - Medium Sec
+            {
+                return 2;
+            }
+            else // 60% - Low Sec
+            {
+                return 1;
+            }
+        }
+        else if (MapManager.inst.currentLevel < -6) // -9 to -7
         {
             if (random >= 0.80) // 20% - High Sec
             {
                 return 3;
             }
-            else if (random < 0.80 && random >= 0.35) // 35% - Medium Sec
+            else if (random < 0.80 && random >= 0.45) // 35% - Medium Sec
             {
                 return 2;
             }
@@ -302,28 +317,13 @@ public static class HF
                 return 1;
             }
         }
-        else if (MapManager.inst.currentLevel < -6)
+        else if (MapManager.inst.currentLevel < -3) // -6 to -4
         {
             if (random >= 0.70) // 30% - High Sec
             {
                 return 3;
             }
-            else if (random < 0.70 && random >= 0.35) // 35% - Medium Sec
-            {
-                return 2;
-            }
-            else // 35% - Low Sec
-            {
-                return 1;
-            }
-        }
-        else if (MapManager.inst.currentLevel < -3)
-        {
-            if (random >= 0.65) // 35% - High Sec
-            {
-                return 3;
-            }
-            else if (random < 0.65 && random >= 0.25) // 40% - Medium Sec
+            else if (random < 0.70 && random >= 0.25) // 50% - Medium Sec
             {
                 return 2;
             }
@@ -332,7 +332,7 @@ public static class HF
                 return 1;
             }
         }
-        else
+        else // -3 to -1
         {
             if (random >= 0.60) // 40% - High Sec
             {
@@ -892,7 +892,7 @@ public static class HF
                     {
                         int buildTime = 0;
                         int secLvl = GetMachineSecLvl(UIManager.inst.terminal_targetTerm);
-                        Debug.Log(HF.ExtractText(parsedName) + " / " + parsedName);
+
                         if (item != null)
                         {
                             if (secLvl == 1)
@@ -954,10 +954,19 @@ public static class HF
                     Debug.LogError("ERROR: No <Item> or <Bot> has been set for this command!");
                     return null;
                 case TerminalCommandType.Build:
+                    string bName = "";
+                    if (item != null)
+                    {
+                        bName = item.itemName;
+                    }
+                    else if (bot != null)
+                    {
+                        bName = bot.name;
+                    }
 
                     UIManager.inst.terminal_targetTerm.GetComponent<Fabricator>().Build();
 
-                    return "Building " + HF.ExtractText(parsedName) + "...\nETC: " + UIManager.inst.terminal_targetTerm.GetComponent<Fabricator>().buildTime;
+                    return "Building " + bName + "...\nETC: " + UIManager.inst.terminal_targetTerm.GetComponent<Fabricator>().buildTime;
                 case TerminalCommandType.Network:
                     break;
                 case TerminalCommandType.Refit:
@@ -1220,6 +1229,10 @@ public static class HF
             // Remove the brackets and their content
             result = result.Remove(bracketStartIndex, bracketEndIndex - bracketStartIndex + 1);
         }
+
+        // Remove any left over "()"
+        string[] split = result.Split("(");
+        result = split[0];
 
         // Trim any leading or trailing spaces
         result = result.Trim();
@@ -3460,6 +3473,24 @@ public static class HF
             default:
                 return "??";
         }
+    }
+
+    public static string GenerateMarkedString(string input)
+    {
+        // Split the input string into words
+        string[] words = input.Split(new char[] { ' ', '\t' }, System.StringSplitOptions.RemoveEmptyEntries);
+
+        // Initialize a StringBuilder to construct the marked string
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+        // Add <mark> tags around each word and append them to the StringBuilder
+        foreach (string word in words)
+        {
+            sb.Append($"<mark=#000000>{word}</mark>");
+        }
+
+        // Return the final marked string
+        return sb.ToString();
     }
 
     #endregion

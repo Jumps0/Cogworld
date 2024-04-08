@@ -35,6 +35,11 @@ public class PlayerGridMovement : MonoBehaviour
             int currentY = currentTile.locY;
             Debug.Log(MapManager.inst._allTilesRealized[new Vector2Int(currentX, currentY)] + " <> " + GridManager.inst.grid[currentX,currentY]);
         }
+
+        if(Input.GetAxis("Mouse ScrollWheel") != 0f)
+        {
+            TurnManager.inst.AdvanceTime();
+        }
     }
 
     #region Movement

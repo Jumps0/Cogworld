@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 using System.Linq;
-using static System.Net.Mime.MediaTypeNames;
 
 /// <summary>
 /// Used for the printed out results during hacking.
@@ -51,6 +50,9 @@ public class UIHackResults : MonoBehaviour
     {
         AudioManager.inst.PlayTyping();
 
+        float delay = 0f;
+        float characterDelay = 0.02f;
+
         string _message = setText;
         int len = _message.Length;
         primaryText.text = "";
@@ -62,12 +64,9 @@ public class UIHackResults : MonoBehaviour
                 yield break;
             }
 
-            // Set the primary text
-            primaryText.text += _message[i];
-            // Set the backer text
-            backerText.text = "<mark=#000000>" + primaryText.text + "</mark><br><br>"; // Mark highlights it as pure black | br br for spacing
+            StartCoroutine(TextUpdater(_message[i].ToString(), delay += characterDelay));
 
-            yield return new WaitForSeconds(textSpeed * Time.deltaTime);
+            //yield return new WaitForSeconds(textSpeed * Time.deltaTime);
 
             if (instantFinish)
             {
@@ -77,7 +76,7 @@ public class UIHackResults : MonoBehaviour
 
         this.gameObject.name = _message;
 
-        primaryText.text += "<br><br>";
+        //primaryText.text += "<br><br>";
         /*
         if (doDialogue) // !!! - Now rendundant, the log readout does the audio now. - !!!
         {
@@ -93,6 +92,17 @@ public class UIHackResults : MonoBehaviour
         AudioManager.inst.StopTyping();
     }
 
+    private IEnumerator TextUpdater(string text, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        // Set the primary text
+        primaryText.text += text;
+        // Set the backer text
+        //backerText.text = HF.GenerateMarkedString(primaryText.text) + "<br><br>"; // Mark highlights it as pure black | br br for spacing
+        backerText.text = "<mark=#000000>" + primaryText.text + "</mark><br><br>"; // Mark highlights it as pure black | br br for spacing
+    }
+
     private bool instantFinish = false;
     public void InstantFinish()
     {
@@ -101,6 +111,7 @@ public class UIHackResults : MonoBehaviour
         primaryText.text = setText;
         this.gameObject.name = setText;
         backerText.text = "<mark=#000000>" + primaryText.text + "</mark><br><br>";
+        //backerText.text = HF.GenerateMarkedString(primaryText.text) + "<br><br>";
         primaryText.text += "<br><br>";
 
         primaryText.ForceMeshUpdate();

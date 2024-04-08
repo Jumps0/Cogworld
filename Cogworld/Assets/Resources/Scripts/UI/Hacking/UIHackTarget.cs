@@ -133,7 +133,7 @@ public class UIHackTarget : MonoBehaviour
                 }
 
                 string header = ">>" + HF.ParseHackName(command.hack, fill);
-                string rewardString = HF.MachineReward_PrintPLUSAction(command);
+                string rewardString = HF.MachineReward_PrintPLUSAction(command, command.item, command.bot);
 
                 if(rewardString.Length > 0)
                 {
@@ -190,7 +190,7 @@ public class UIHackTarget : MonoBehaviour
             }
 
             // Set the backer text
-            backerText.text = "<mark=#000000>" + combinedText + "</mark>"; // Mark highlights it as pure black
+            backerText.text = HF.GenerateMarkedString(combinedText); // Mark highlights it as pure black
 
             primaryText.text = setText;
             optionalText.text = optText;
@@ -227,7 +227,7 @@ public class UIHackTarget : MonoBehaviour
         
 
         // Set the backer text
-        backerText.text = "<mark=#000000>" + combinedText + "</mark>"; // Mark highlights it as pure black
+        backerText.text = HF.GenerateMarkedString(combinedText); // Mark highlights it as pure black
         Color percentColor = percentChanceText.color;
 
         primaryText.text = setText;

@@ -10,6 +10,7 @@ public class UISchematicOption : MonoBehaviour
     public TextMeshProUGUI text_letter;
     public TextMeshProUGUI text_main;
     public Image image_backer;
+    public Image image_buttonindicator;
 
     [Header("Assignment")]
     [HideInInspector]public ItemObject item = null;
@@ -87,21 +88,25 @@ public class UISchematicOption : MonoBehaviour
         while (elapsedTime < duration) // Black -> Green
         {
             image_backer.color = Color.Lerp(Color.black, colorGreen, elapsedTime / duration);
+            image_buttonindicator.color = Color.Lerp(Color.black, colorGreen, elapsedTime / duration);
 
             elapsedTime += Time.deltaTime;
             yield return null; // Wait for the next frame
         }
         image_backer.color = colorGreen;
+        image_buttonindicator.color = colorGreen;
         duration = 0.5f;
         while (elapsedTime < duration) // Green -> Black
         {
             image_backer.color = Color.Lerp(colorGreen, Color.black, elapsedTime / duration);
+            image_buttonindicator.color = Color.Lerp(colorGreen, Color.black, elapsedTime / duration);
 
             elapsedTime += Time.deltaTime;
             yield return null; // Wait for the next frame
         }
         image_backer.color = Color.black;
-        
+        image_buttonindicator.color = Color.black;
+
 
         #region Fancy Method
         /*
