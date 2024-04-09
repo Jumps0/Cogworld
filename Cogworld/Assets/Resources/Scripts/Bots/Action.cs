@@ -10,6 +10,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEditor.Progress;
+using static UnityEngine.GraphicsBuffer;
 using Color = UnityEngine.Color;
 
 public static class Action
@@ -225,8 +226,11 @@ public static class Action
                     // Then get the new flat damage (semi-random)
                     damage = Random.Range(lowHigh.x, lowHigh.y);
 
+                    // Consider any flat damage bonuses
+                    damage = Action.AddFlatDamageBonuses(damage, source, weapon);
+
                     // Then modify based on momentum
-                    if(momentum > 0)
+                    if (momentum > 0)
                     {
                         float momentumBonus = 0;
 
@@ -270,7 +274,7 @@ public static class Action
                     }
                     if (target.GetComponent<PlayerData>()) // Player being attacked
                     {
-                        DamageBot(target.GetComponent<Actor>(), damage, types, HF.GetDamageType(weapon.itemData));
+                        DamageBot(target.GetComponent<Actor>(), damage, types, weapon.itemData);
 
                         // Do a calc message
                         string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHit * 100}%) Hit";
@@ -282,7 +286,7 @@ public static class Action
                     }
                     else // Bot being attacked
                     {
-                        DamageBot(target.GetComponent<Actor>(), damage, types, HF.GetDamageType(weapon.itemData));
+                        DamageBot(target.GetComponent<Actor>(), damage, types, weapon.itemData);
 
 
                         // Show a popup that says how much damage occured
@@ -377,6 +381,9 @@ public static class Action
                             // Then get the new flat damage (semi-random)
                             damage = Random.Range(lowHigh.x, lowHigh.y);
 
+                            // Consider any flat damage bonuses
+                            damage = Action.AddFlatDamageBonuses(damage, source, weapon);
+
                             // Then modify based on momentum
                             if (momentum > 0)
                             {
@@ -422,7 +429,7 @@ public static class Action
                             }
                             if (target.GetComponent<PlayerData>()) // Player being attacked
                             {
-                                DamageBot(target.GetComponent<Actor>(), damage, types, HF.GetDamageType(weapon.itemData));
+                                DamageBot(target.GetComponent<Actor>(), damage, types, weapon.itemData);
 
                                 // Do a calc message
                                 string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHit * 100}%) Hit";
@@ -434,7 +441,7 @@ public static class Action
                             }
                             else // Bot being attacked
                             {
-                                DamageBot(target.GetComponent<Actor>(), damage, types, HF.GetDamageType(weapon.itemData));
+                                DamageBot(target.GetComponent<Actor>(), damage, types, weapon.itemData);
 
 
                                 // Show a popup that says how much damage occured
@@ -492,7 +499,7 @@ public static class Action
 
             #region Damage Calculation
             // - Calculate the Damage -
-            int damage = 0;
+            int damageAmount = 0;
 
             Vector2Int lowHigh = weapon.itemData.meleeAttack.damage; // First get the flat damage rolls from the weapon
                                                                      // Then modify the minimum and maximum values if needed
@@ -506,7 +513,10 @@ public static class Action
             }
 
             // Then get the new flat damage (semi-random)
-            damage = Random.Range(lowHigh.x, lowHigh.y);
+            damageAmount = Random.Range(lowHigh.x, lowHigh.y);
+
+            // Consider any flat damage bonuses
+            damageAmount = Action.AddFlatDamageBonuses(damageAmount, source, weapon);
 
             // Then modify based on momentum
             if (momentum > 0)
@@ -533,13 +543,13 @@ public static class Action
                 momentumBonus = (momentum * speed / 1200 * mult);
 
                 // Apply the momentum bonus
-                damage = Mathf.RoundToInt(damage + (damage * momentumBonus));
+                damageAmount = Mathf.RoundToInt(damageAmount + (damageAmount * momentumBonus));
             }
 
             // Now for sneak attacks
             if (source.gameObject != PlayerData.inst.gameObject && !target.GetComponent<BotAI>().canSeePlayer) // Not the player and (currently) can't see the player
             {
-                damage *= 2; // +100% damage (so x2)
+                damageAmount *= 2; // +100% damage (so x2)
             }
 
             #endregion
@@ -555,7 +565,7 @@ public static class Action
             }
 
             #region Beat the Armor?
-            if (damage > armor) // Success! Destroy the structure
+            if (damageAmount > armor) // Success! Destroy the structure
             {
                 // -- Now for this visuals and audio --
                 // - We need to spawn a visual on top of the target. Where the line is facing from the player to the target.
@@ -574,7 +584,7 @@ public static class Action
                     target.GetComponent<MachinePart>().DestroyMe();
 
                     // Do a calc message
-                    string message = $"{target.name} Destroyed ({damage} > {armor})";
+                    string message = $"{target.name} Destroyed ({damageAmount} > {armor})";
 
                     UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
                 }
@@ -743,8 +753,26 @@ public static class Action
                     // - Play a shooting sound, from the source
                     source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
 
+                    #region Damage Calculation
                     // Deal Damage to the target
                     int damageAmount = (int)Random.Range(projData.damage.x, projData.damage.y);
+
+                    // Consider if the weapon is overloaded
+                    /*
+                     *  Overloading
+                        -------------
+                        Some energy weapons are capable of overloading, which doubles damage and energy cost while generating triple the heat. 
+                        Overloaded projectile heat transfer is also one level higher than usual where applicable. 
+                        However, firing an overloaded weapon has a chance to cause negative side effects, as reflected in that weapon's "stability" stat.
+                     */
+                    if (weapon.isOverloaded)
+                    {
+                        damageAmount *= 2;
+                    }
+
+                    // Consider any flat damage bonuses
+                    damageAmount = Action.AddFlatDamageBonuses(damageAmount, source, weapon);
+                    #endregion
 
                     if (!noCrit && rand <= projData.critChance) // Critical hit?
                     {
@@ -755,7 +783,7 @@ public static class Action
                     }
                     if (target.GetComponent<PlayerData>()) // Player being attacked
                     {
-                        int overflow = DamageBot(target.GetComponent<Actor>(), damageAmount, types, HF.GetDamageType(weapon.itemData));
+                        int overflow = DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData);
 
                         // Do a calc message
                         string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Hit";
@@ -767,7 +795,7 @@ public static class Action
                     }
                     else // Bot being attacked
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, HF.GetDamageType(weapon.itemData));
+                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData);
 
 
                         // Show a popup that says how much damage occured
@@ -813,7 +841,18 @@ public static class Action
             {
                 // It's a structure, we cannot (and should not) miss.
 
+                #region Damage Calculation
                 int damageAmount = (int)Random.Range(projData.damage.x, projData.damage.y); // The damage we will do (must beat armor value to be effective).
+
+                // Consider any flat damage bonuses
+                damageAmount = Action.AddFlatDamageBonuses(damageAmount, source, weapon);
+
+                // Consider overloading
+                if (weapon.isOverloaded)
+                {
+                    damageAmount *= 2;
+                }
+                #endregion
 
                 // Get the armor value
                 int armor = HF.TryGetStructureArmor(target);
@@ -1050,15 +1089,22 @@ public static class Action
             float rand = Random.Range(0f, 1f);
             if (rand < toHitChance) // Success, a hit!
             {
+
+                #region Damage Calculation
                 // Deal Damage to the target
                 int damageAmount = (int)Random.Range(attackData.damageLow, attackData.damageHigh);
+
+                // Consider any flat damage bonuses
+                damageAmount = Action.AddFlatDamageBonuses(damageAmount, source, weapon);
+
                 damageAmount += falloff; // Apply damage falloff if any (remember it's negative).
                 if(damageAmount < 1)
                     damageAmount = 1; // Minimum 1 damage
+                #endregion
 
                 if (target.GetComponent<PlayerData>()) // Player being attacked
                 {
-                    DamageBot(target.GetComponent<Actor>(), damageAmount, types, HF.GetDamageType(weapon.itemData));
+                    DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData);
 
                     // Do a calc message
                     string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Hit";
@@ -1076,7 +1122,7 @@ public static class Action
                     }
                     else // Hits a part
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, HF.GetDamageType(weapon.itemData));
+                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData);
                     }
 
 
@@ -1118,11 +1164,17 @@ public static class Action
 
             permiable = false; // Machines block explosions unless they are destroyed
 
+            #region Damage Calculation
             // Calculate Damage
             int damageAmount = (int)Random.Range(attackData.damageLow, attackData.damageHigh);
+
+            // Consider any flat damage bonuses
+            damageAmount = Action.AddFlatDamageBonuses(damageAmount, source, weapon);
+
             damageAmount += falloff; // Apply damage falloff if any (remember it's negative).
             if (damageAmount < 1)
                 damageAmount = 1; // Minimum 1 damage
+            #endregion
 
             #region Beat the Armor?
             if (damageAmount > armor) // Success! Destroy the structure
@@ -1148,11 +1200,17 @@ public static class Action
         }
         else if (target.GetComponent<TileBlock>()) // Some kind of tile
         {
+            #region Damage Calculation
             // Calculate Damage
             int damageAmount = (int)Random.Range(attackData.damageLow, attackData.damageHigh);
+
+            // Consider any flat damage bonuses
+            damageAmount = Action.AddFlatDamageBonuses(damageAmount, source, weapon);
+
             damageAmount += falloff; // Apply damage falloff if any (remember it's negative).
             if (damageAmount < 1)
                 damageAmount = 1; // Minimum 1 damage
+            #endregion
 
             // For structures we can't miss, we just need to check if the damage we do beats the structure's armor.
             if (target.GetComponent<TileBlock>().tileInfo.type == TileType.Door) // A door
@@ -1704,7 +1762,7 @@ public static class Action
                 {
                     if (item._item.itemData.data.Id >= 0)
                     {
-                        if (item._item.itemData.meleeAttack.isMelee && item._item.itemData.data != mainWeapon && !item._item.itemData.meleeAttack.canDatajack) // Is a melee weapon, isn't the main weapon, and isn't a datajack
+                        if (item._item.itemData.meleeAttack.isMelee && item._item.itemData.data != mainWeapon && !item._item.itemData.isSpecialAttack) // Is a melee weapon, isn't the main weapon, and isn't a datajack
                         {
                             weapons.Add(item._item.itemData.data);
                         }
@@ -1719,7 +1777,7 @@ public static class Action
                 {
                     if (item.item.Id >= 0)
                     {
-                        if (item.item.itemData.meleeAttack.isMelee && item.item != mainWeapon && !item.item.itemData.meleeAttack.canDatajack) // Is a melee weapon, isn't the main weapon, and isn't a datajack
+                        if (item.item.itemData.meleeAttack.isMelee && item.item != mainWeapon && !item.item.itemData.isSpecialAttack) // Is a melee weapon, isn't the main weapon, and isn't a datajack
                         {
                             weapons.Add(item.item);
                         }
@@ -2538,8 +2596,10 @@ public static class Action
         UIManager.inst.CreateCombatPopup(actor.gameObject, _message, a, b, c);
     }
 
-    public static int DamageBot(Actor target, int damage, List<ArmorType> protection, ItemDamageType damageType)
+    public static int DamageBot(Actor target, int damage, List<ArmorType> protection, ItemObject weapon)
     {
+        ItemDamageType damageType = HF.GetDamageType(weapon);
+
         #region Explanation
         /*
          * Coverage/Exposure
@@ -2818,7 +2878,7 @@ public static class Action
 
         if(hitPart && overflow > 0 && !armorDestroyed)
         {
-            Action.DamageBot(target, damage, protection, damageType); // Recursion! (This doesn't strictly target armor first but whatever).
+            Action.DamageBot(target, damage, protection, weapon); // Recursion! (This doesn't strictly target armor first but whatever).
         }
 
 
@@ -3245,6 +3305,40 @@ public static class Action
         }
 
         return (overflow, destroyed);
+    }
+
+    public static int AddFlatDamageBonuses(int initialDamage, Actor attacker, Item weapon)
+    {
+        int damage = initialDamage;
+
+        if (attacker.botInfo) // Bot
+        {
+            foreach (var item in attacker.botInfo.components)
+            {
+                if (item._item.Id >= 0 && item._item.itemData.itemEffect[0].flatDamageBonus.hasEffect) // Does it have the effect?
+                {
+                    if (item._item.itemData.itemEffect[0].flatDamageBonus.types.Contains(HF.GetDamageType(weapon.itemData))) // Same type?
+                    {
+                        damage = Mathf.RoundToInt(damage + (damage * item._item.itemData.itemEffect[0].flatDamageBonus.damageBonus));
+                    }
+                }
+            }
+        }
+        else // Player
+        {
+            foreach (InventorySlot item in attacker.GetComponent<PartInventory>()._invUtility.Container.Items)
+            {
+                if (item.item.itemData.data.Id >= 0 && item.item.itemData.itemEffect[0].flatDamageBonus.hasEffect) // Does it have the effect?
+                {
+                    if (item.item.itemData.itemEffect[0].flatDamageBonus.types.Contains(HF.GetDamageType(weapon.itemData))) // Same type?
+                    {
+                        damage = Mathf.RoundToInt(damage + (damage * item.item.itemData.itemEffect[0].flatDamageBonus.damageBonus));
+                    }
+                }
+            }
+        }
+
+        return damage;
     }
 
     public static Vector2Int NormalizeMovement(Transform obj, Vector3 destination)
@@ -3877,13 +3971,84 @@ public static class Action
                 PlayerData.inst.currentHeat += weapon.itemData.shot.shotHeat;
                 PlayerData.inst.currentMatter += weapon.itemData.shot.shotMatter;
                 PlayerData.inst.currentEnergy += weapon.itemData.shot.shotEnergy;
+
+                if (weapon.isOverloaded) // Overloading
+                {
+                    // Double the energy cost
+                    PlayerData.inst.currentEnergy += weapon.itemData.shot.shotEnergy;
+
+                    // Triple the heat production
+                    PlayerData.inst.currentHeat += weapon.itemData.shot.shotHeat;
+                    PlayerData.inst.currentHeat += weapon.itemData.shot.shotHeat;
+                }
             }
             else
             {
                 source.currentHeat += weapon.itemData.shot.shotHeat;
                 source.currentMatter += weapon.itemData.shot.shotMatter;
                 source.currentEnergy += weapon.itemData.shot.shotEnergy;
+
+                if (weapon.isOverloaded) // Overloading
+                {
+                    // Double the energy cost
+                    source.currentEnergy += weapon.itemData.shot.shotEnergy;
+
+                    // Triple the heat production
+                    source.currentHeat += weapon.itemData.shot.shotHeat;
+                    source.currentHeat += weapon.itemData.shot.shotHeat;
+                }
             }
+        }
+    }
+
+    public static bool HasResourcesToAttack(Actor attacker, Item weapon)
+    {
+        int matter = 0;
+        int energy = 0;
+
+        int cost_matter = 0;
+        int cost_energy = 0;
+
+        if (attacker.botInfo) // Bot
+        {
+            matter = attacker.currentMatter;
+            energy = attacker.currentEnergy;
+
+            if (Action.IsMeleeWeapon(weapon))
+            {
+                cost_matter = weapon.itemData.meleeAttack.matter;
+                cost_energy = weapon.itemData.meleeAttack.energy;
+            }
+            else
+            {
+                cost_matter = weapon.itemData.shot.shotMatter;
+                cost_energy = weapon.itemData.shot.shotEnergy;
+            }
+        }
+        else // Player
+        {
+            matter = PlayerData.inst.currentMatter;
+            energy = PlayerData.inst.currentEnergy;
+
+            if (Action.IsMeleeWeapon(weapon))
+            {
+                cost_matter = weapon.itemData.meleeAttack.matter;
+                cost_energy = weapon.itemData.meleeAttack.energy;
+            }
+            else
+            {
+                cost_matter = weapon.itemData.shot.shotMatter;
+                cost_energy = weapon.itemData.shot.shotEnergy;
+            }
+        }
+
+        if (matter >= cost_matter && energy >= cost_energy)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 

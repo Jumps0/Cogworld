@@ -1307,9 +1307,16 @@ public class PlayerData : MonoBehaviour
     {
         if (TurnManager.inst.isPlayerTurn)
         {
+            Item equippedWeapon = Action.FindActiveWeapon(this.GetComponent<Actor>());
+
+            // TODO: Have UIManager perform a little animation or whatever in the player's Matter/Energy bars to indicate how much this attack will cost
+            if(equippedWeapon != null)
+            {
+
+            }
+
             if (Input.GetKey(KeyCode.Mouse0)) // Leftclick
             {
-                Item equippedWeapon = Action.FindActiveWeapon(this.GetComponent<Actor>());
                 if (equippedWeapon != null && !attackBuffer)
                 {
                     Vector2Int mousePosition = HF.V3_to_V2I(Camera.main.ScreenToWorldPoint(Input.mousePosition));
@@ -1317,6 +1324,12 @@ public class PlayerData : MonoBehaviour
                     if (!Action.IsTargetWithinRange(HF.V3_to_V2I(this.transform.position), mousePosition, equippedWeapon)) // Does this weapon have the range to reach the target?
                     {
                         return; // Don't attack if the target is not within range.
+                    }
+
+                    // Does the player have the required resources to perform this attack?
+                    if (!Action.HasResourcesToAttack(this.GetComponent<Actor>(), equippedWeapon))
+                    {
+                        return;
                     }
 
                     StartCoroutine(AttackBuffer()); // Activate the attacking (interaction) cooldown.
@@ -1353,6 +1366,9 @@ public class PlayerData : MonoBehaviour
                     ClearAllHighlights();
                     LTH_Clear();
                     doTargeting = false;
+
+                    // TODO: Tell UIManager to stop doing the cost "animation"
+
                 }
             }
         }

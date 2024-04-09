@@ -62,6 +62,9 @@ public class Item
     [Tooltip("Current integrity of this item.")]
     public int integrityCurrent;
 
+    [Tooltip("Is this item currently overloaded?")]
+    public bool isOverloaded = false;
+
     public Item()
     {
         Name = "";
@@ -198,9 +201,16 @@ public abstract class ItemObject : ScriptableObject
     [Header("Explosion")]
     public ItemExplosion explosion;
 
+    [Header("Special Attacks")]
+    [Tooltip("A non-damaging special case such as Datajacks, Stasis Beams, Tearclaws, etc.")]
+    public bool isSpecialAttack = false; // TODO: Consider these
+    public ItemSpecialAttack specialAttack;
+
     // Effect
     [Header("Effect")]
     public List<ItemEffect> itemEffect;
+    [Tooltip("Certain power sources, propulsion units, and energy weapons can be overloaded. Performing better but with dangerous downsides.")]
+    public bool canOverload = false;
 
     [Header("Primary Details")]
     public ItemQuality quality;
@@ -378,6 +388,9 @@ public class ItemEffect
 
     [Header("Bonus Slots")]
     public ItemBonusSlots bonusSlots;
+
+    [Header("Flat Damage Bonuses")]
+    public ItemFlatDamageBonus flatDamageBonus;
 }
 
 public enum ItemQuality
@@ -516,8 +529,6 @@ public class ItemMeleeAttack
     public float visualAttackTime = 0.5f;
     public List<AudioClip> missSound;
 
-    public bool canDatajack = false; // Can do what datajacks do.
-
 }
 
 [System.Serializable]
@@ -538,6 +549,15 @@ public class ItemExplosion
     public List<AudioClip> explosionSounds;
     [Header("Visuals")]
     public ExplosionGFX explosionGFX;
+
+}
+
+[System.Serializable]
+public class ItemSpecialAttack
+{
+    public bool datajack = false;
+    public bool stasisBeam = false;
+    public bool tearClaw = false;
 
 }
 
@@ -823,6 +843,16 @@ public class ItemLauncherBonuses
     [Tooltip("Reduces firing time for any launcher by ##%, if fired alone. Incompatible with Weapon Cyclers and autonomous or overloaded weapons.")]
     public float launcherLoading = 0f;
     public bool stacks = false;
+}
+
+[System.Serializable]
+[Tooltip("Increases <Weapon Type> damage by ##%.")]
+public class ItemFlatDamageBonus
+{
+    public bool hasEffect = false;
+    public List<ItemDamageType> types = new List<ItemDamageType>();
+    [Tooltip("0.##%")]
+    public float damageBonus = 0f;
 }
 
 #endregion
