@@ -23,6 +23,7 @@ public class Actor : Entity
     public BotObject botInfo;
     public Allegance allegances;
     public BotClassRefined _class = BotClassRefined.None;
+    public bool wasFabricated = false;
 
     AdamMilVisibility algorithm;
 
@@ -52,6 +53,9 @@ public class Actor : Entity
     public bool directPlayerAlly = false;
     [Tooltip("If true, the bot will always try to be close to and fight with the player. Useful for non-allied but friendly bot followers.")]
     public bool followThePlayer = false;
+
+    [Header("Conditions")]
+    public List<ModHacks> hacked_mods = new List<ModHacks>();
 
     private void OnValidate()
     {
@@ -90,6 +94,9 @@ public class Actor : Entity
                 energyGeneration = botInfo.energyGeneration;
 
                 StartCoroutine(SetBotName());
+
+                // Create new inventory
+                inventory = new InventoryObject();
             }
 
             algorithm = new AdamMilVisibility(); // Set visual algo
@@ -408,7 +415,7 @@ public class Actor : Entity
         }
         else
         {
-            if (currentHealth <= 0)
+            if (currentHealth <= 0 || corruption >= 1f)
             {
                 Die();
                 PlayerData.inst.robotsKilled += 1; // TODO: CHANGE THIS LATER TO TELL IF THE PLAYER ACTUALLY GOT THE KILL (not killsteal)
@@ -473,16 +480,130 @@ public class Actor : Entity
 
     public void Die()
     {
-        // Make a log message
-        string botName = this.botInfo.name;
-        if (this.GetComponent<BotAI>().uniqueName != "")
-            botName = this.GetComponent<BotAI>().uniqueName;
-        UIManager.inst.CreateNewLogMessage(botName + " destroyed.", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
+        if (corruption >= 1f) // This is a corruption death, its kinda different!
+        {
+            // Make a log message
+            string botName = this.botInfo.name;
+            if (this.GetComponent<BotAI>().uniqueName != "")
+                botName = this.GetComponent<BotAI>().uniqueName;
+            UIManager.inst.CreateNewLogMessage(botName + " was utterly corrupted.", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
+
+            // == Drop any remaining parts (/w corruption consideration) == 
+            if (!wasFabricated)
+            {
+                List<Item> items = new List<Item>();
+
+                foreach (BotArmament item in this.botInfo.armament.ToList())
+                {
+                    items.Add(item._item);
+                }
+                foreach (BotArmament item in this.botInfo.components.ToList())
+                {
+                    items.Add(item._item);
+                }
+
+                foreach (var item in items)
+                {
+                    if (item.Id >= 0)
+                    {
+                        // HP Check
+                        float percentHP = item.integrityCurrent / item.itemData.integrityMax;
+                        float chance = ((percentHP / 2) + salvageModifier);
+
+                        if (Random.Range(0f, 1f) < chance) // Continue to next check
+                        {
+                            // Heat check
+                            chance = ((currentHeat - item.itemData.integrityMax) / 4);
+
+                            if(Random.Range(0f, 1f) < chance) // Continue to next check
+                            {
+                                // Corruption check
+                                chance = ((100 * corruption) - item.itemData.integrityMax) / 100;
+
+                                if (Random.Range(0f, 1f) < chance) // Continue to next check
+                                {
+                                    // Success! But will the item be corrupted?
+                                    if (Random.Range(0f, 1f) < corruption)
+                                    { // This should really be "1 to (10*[corruption]/100)" but I have no idea how that math works out
+                                      // Corrupted!
+                                        item.corrupted = true;
+                                        InventoryControl.inst.DropItemOnFloor(item, this, null);
+                                    }
+
+                                    // Drop the item
+                                    InventoryControl.inst.DropItemOnFloor(item, this, null);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // TODO: There is probably some other corruption death stuff here but im not sure what it is
+        }
+        else
+        {
+            // Make a log message
+            string botName = this.botInfo.name;
+            if (this.GetComponent<BotAI>().uniqueName != "")
+                botName = this.GetComponent<BotAI>().uniqueName;
+            UIManager.inst.CreateNewLogMessage(botName + " destroyed.", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
+
+            // == Drop any remaining parts ==
+            /* The chance for the robot's parts to survive, checked individually for each part, 
+             * is ([percent_remaining_integrity / 2] + [salvage_modifier]), thus more damaged parts are more likely to be 
+             * destroyed completely along with the robot. But even if that check succeeds, there are still two more possible 
+             * factors that may prevent a given part from dropping. If the robot has any residual heat, parts can be melted, 
+             * the chance of which is ([heat - max_integrity] / 4), so again less likely to affect large parts 
+             * (though still possible, especially at very high heat levels). If the robot was corrupted, parts can be "fried," 
+             * the chance of which is [system_corruption - max_integrity]; by the numbers, this will generally only affect 
+             * small electronic components like processors, and sometimes devices. Each salvageable part left by a corrupted 
+             * robot also has a corruption% chance to itself be corrupted, specifically by a random amount from 1 to (10*[corruption]/100), 
+             * and when attached will increase Cogmind's system corruption by the same value as well as possibly cause another side effect.
+
+               Note that robots built by a fabricator do not leave salvageable parts. 
+               Also, anything in a robot's inventory (not attached) is always dropped to the ground, regardless of salvage modifiers or other factors.
+             */
+            if (!wasFabricated)
+            {
+                List<Item> items = new List<Item>();
+
+                foreach (BotArmament item in this.botInfo.armament.ToList())
+                {
+                    items.Add(item._item);
+                }
+                foreach (BotArmament item in this.botInfo.components.ToList())
+                {
+                    items.Add(item._item);
+                }
+
+                foreach (var item in items)
+                {
+                    if (item.Id >= 0)
+                    {
+                        // HP Check
+                        float percentHP = item.integrityCurrent / item.itemData.integrityMax;
+                        float chance = ((percentHP / 2) + salvageModifier);
+
+                        if (Random.Range(0f, 1f) < chance) // Continue to next check
+                        {
+                            // Heat check
+                            chance = ((currentHeat - item.itemData.integrityMax) / 4);
+
+                            if (Random.Range(0f, 1f) < chance) // Success! Drop the item.
+                            {
+                                InventoryControl.inst.DropItemOnFloor(item, this, null);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         // Play a death sound
         if (botInfo._size == BotSize.Tiny || botInfo._size == BotSize.Small)
         {
-            this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.RobotDestruction_Clips[Random.Range(36,38)]);
+            this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.RobotDestruction_Clips[Random.Range(36, 38)]);
         }
         else if (botInfo._size == BotSize.Medium)
         {
@@ -493,25 +614,36 @@ public class Actor : Entity
             this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.RobotDestruction_Clips[Random.Range(25, 32)]);
         }
 
-        // Drop any remaining parts
-        foreach (BotArmament item in this.botInfo.armament.ToList())
+        // Drop all items in inventory
+        foreach (var I in inventory.Container.Items)
         {
-            float random = Random.Range(0f, 1f);
-
-            if (item._item.itemData.data.integrityCurrent > 0 && random <= item.dropChance)
-            {
-                InventoryControl.inst.DropItemOnFloor(item._item.itemData.data);
-            }
+            InventoryControl.inst.DropItemOnFloor(I.item, this, inventory);
         }
-        foreach (BotArmament item in this.botInfo.components.ToList())
+        inventory.Clear();
+        Destroy(inventory);
+
+        //  Drop some matter based on salvage mod
+        #region Matter Dropping
+        /* When a robot is destroyed, it leaves an amount of matter equivalent to its salvage potential 
+         * (usually a random range you can see on its info page), modified directly by the salvage modifier. 
+         * This means a large enough negative salvage modifier, e.g. from explosives or repeated cannon hits, 
+         * has the potential to reduce the amount of salvageable matter to zero. A positive salvage modifier 
+         * can never increase the resulting matter by more than the upper limit of a robot's salvage potential.
+         */
+        int randomPull = Random.Range(botInfo.salvagePotential.x, botInfo.salvagePotential.y);
+        // -Modify this value by the salvage modifier
+        randomPull += salvageModifier;
+        if (randomPull > 0)
         {
-            float random = Random.Range(0f, 1f);
-
-            if (item._item.itemData.data.integrityCurrent > 0 && random <= item.dropChance)
+            if (randomPull > botInfo.salvagePotential.y)
             {
-                InventoryControl.inst.DropItemOnFloor(item._item.itemData.data);
+                randomPull = botInfo.salvagePotential.y;
             }
+
+            // Drop some matter
+            InventoryControl.inst.CreateItemInWorld(17, HF.LocateFreeSpace(HF.V3_to_V2I(this.transform.position)), false, randomPull);
         }
+        #endregion
 
         // Set tile underneath as dirty
         MapManager.inst._allTilesRealized[Action.V3_to_V2I(this.transform.position)].SetToDirty();
@@ -542,6 +674,11 @@ public class Actor : Entity
         {
             TurnManager.inst.actors.Remove(this);
             TurnManager.inst.actorNum -= 1;
+        }
+
+        if (inventory)
+        { // Failsafe. We don't want infinite inventories cluttering up our file system.
+            Destroy(inventory);
         }
     }
 

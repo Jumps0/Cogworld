@@ -210,7 +210,7 @@ public static class Action
                 {
                     #region Damage Calculation
                     // - Calculate the Damage -
-                    int damage = 0;
+                    int damageAmount = 0;
 
                     Vector2Int lowHigh = weapon.itemData.meleeAttack.damage; // First get the flat damage rolls from the weapon
                     // Then modify the minimum and maximum values if needed
@@ -224,10 +224,25 @@ public static class Action
                     }
 
                     // Then get the new flat damage (semi-random)
-                    damage = Random.Range(lowHigh.x, lowHigh.y);
+                    damageAmount = Random.Range(lowHigh.x, lowHigh.y);
 
                     // Consider any flat damage bonuses
-                    damage = Action.AddFlatDamageBonuses(damage, source, weapon);
+                    damageAmount = Action.AddFlatDamageBonuses(damageAmount, source, weapon);
+
+                    // Player has analysis of target
+                    if (source.GetComponent<PlayerData>())
+                    {
+                        if (target.GetComponent<Actor>().botInfo.playerHasAnalysisData)
+                        {
+                            damageAmount = Mathf.RoundToInt(damageAmount + (float)(damageAmount * 0.10f)); // +10% damage bonus
+                        }
+                    }
+
+                    // link_complan damage bonus
+                    if (target.GetComponent<Actor>().botInfo && target.GetComponent<Actor>().hacked_mods.Contains(ModHacks.link_complan))
+                    {
+                        damageAmount = Mathf.RoundToInt(damageAmount + (damageAmount * 0.25f)); // +25%
+                    }
 
                     // Then modify based on momentum
                     if (momentum > 0)
@@ -254,13 +269,13 @@ public static class Action
                         momentumBonus = (momentum * speed / 1200 * mult);
 
                         // Apply the momentum bonus
-                        damage = Mathf.RoundToInt(damage + (damage * momentumBonus));
+                        damageAmount = Mathf.RoundToInt(damageAmount + (damageAmount * momentumBonus));
                     }
 
                     // Now for sneak attacks
                     if (source.gameObject != PlayerData.inst.gameObject && !target.GetComponent<BotAI>().canSeePlayer) // Not the player and (currently) can't see the player
                     {
-                        damage *= 2; // +100% damage (so x2)
+                        damageAmount *= 2; // +100% damage (so x2)
                     }
 
                     #endregion
@@ -274,25 +289,25 @@ public static class Action
                     }
                     if (target.GetComponent<PlayerData>()) // Player being attacked
                     {
-                        DamageBot(target.GetComponent<Actor>(), damage, types, weapon.itemData);
+                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData);
 
                         // Do a calc message
                         string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHit * 100}%) Hit";
 
                         UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange, UIManager.inst.warmYellow, false, true);
 
-                        message = $"Recieved damage: {damage}";
+                        message = $"Recieved damage: {damageAmount}";
                         UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange, UIManager.inst.warmYellow, false, true);
                     }
                     else // Bot being attacked
                     {
-                        DamageBot(target.GetComponent<Actor>(), damage, types, weapon.itemData);
+                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData);
 
 
                         // Show a popup that says how much damage occured
                         if (!target.GetComponent<PlayerData>())
                         {
-                            UI_CombatPopup(target.GetComponent<Actor>(), damage);
+                            UI_CombatPopup(target.GetComponent<Actor>(), damageAmount);
                         }
 
                         // Do a calc message
@@ -365,7 +380,7 @@ public static class Action
 
                             #region Damage Calculation
                             // - Calculate the Damage -
-                            int damage = 0;
+                            int damageAmount = 0;
 
                             Vector2Int lowHigh = weapon.itemData.meleeAttack.damage; // First get the flat damage rolls from the weapon
                                                                                      // Then modify the minimum and maximum values if needed
@@ -379,10 +394,25 @@ public static class Action
                             }
 
                             // Then get the new flat damage (semi-random)
-                            damage = Random.Range(lowHigh.x, lowHigh.y);
+                            damageAmount = Random.Range(lowHigh.x, lowHigh.y);
 
                             // Consider any flat damage bonuses
-                            damage = Action.AddFlatDamageBonuses(damage, source, weapon);
+                            damageAmount = Action.AddFlatDamageBonuses(damageAmount, source, weapon);
+
+                            // Player has analysis of target
+                            if (source.GetComponent<PlayerData>())
+                            {
+                                if (target.GetComponent<Actor>().botInfo.playerHasAnalysisData)
+                                {
+                                    damageAmount = Mathf.RoundToInt(damageAmount + (float)(damageAmount * 0.10f)); // +10% damage bonus
+                                }
+                            }
+
+                            // link_complan damage bonus
+                            if (target.GetComponent<Actor>().botInfo && target.GetComponent<Actor>().hacked_mods.Contains(ModHacks.link_complan))
+                            {
+                                damageAmount = Mathf.RoundToInt(damageAmount + (damageAmount * 0.25f)); // +25%
+                            }
 
                             // Then modify based on momentum
                             if (momentum > 0)
@@ -409,13 +439,13 @@ public static class Action
                                 momentumBonus = (momentum * speed / 1200 * mult);
 
                                 // Apply the momentum bonus
-                                damage = Mathf.RoundToInt(damage + (damage * momentumBonus));
+                                damageAmount = Mathf.RoundToInt(damageAmount + (damageAmount * momentumBonus));
                             }
 
                             // Now for sneak attacks
                             if (source.gameObject != PlayerData.inst.gameObject && !target.GetComponent<BotAI>().canSeePlayer) // Not the player and (currently) can't see the player
                             {
-                                damage *= 2; // +100% damage (so x2)
+                                damageAmount *= 2; // +100% damage (so x2)
                             }
 
                             #endregion
@@ -429,25 +459,25 @@ public static class Action
                             }
                             if (target.GetComponent<PlayerData>()) // Player being attacked
                             {
-                                DamageBot(target.GetComponent<Actor>(), damage, types, weapon.itemData);
+                                DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData);
 
                                 // Do a calc message
                                 string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHit * 100}%) Hit";
 
                                 UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange, UIManager.inst.warmYellow, false, true);
 
-                                message = $"Recieved damage: {damage}";
+                                message = $"Recieved damage: {damageAmount}";
                                 UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange, UIManager.inst.warmYellow, false, true);
                             }
                             else // Bot being attacked
                             {
-                                DamageBot(target.GetComponent<Actor>(), damage, types, weapon.itemData);
+                                DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData);
 
 
                                 // Show a popup that says how much damage occured
                                 if (!target.GetComponent<PlayerData>())
                                 {
-                                    UI_CombatPopup(target.GetComponent<Actor>(), damage);
+                                    UI_CombatPopup(target.GetComponent<Actor>(), damageAmount);
                                 }
 
                                 // Do a calc message
@@ -517,6 +547,15 @@ public static class Action
 
             // Consider any flat damage bonuses
             damageAmount = Action.AddFlatDamageBonuses(damageAmount, source, weapon);
+
+            // Player has analysis of target
+            if (source.GetComponent<PlayerData>())
+            {
+                if (target.GetComponent<Actor>().botInfo.playerHasAnalysisData)
+                {
+                    damageAmount = Mathf.RoundToInt(damageAmount + (float)(damageAmount * 0.10f)); // +10% damage bonus
+                }
+            }
 
             // Then modify based on momentum
             if (momentum > 0)
@@ -647,8 +686,7 @@ public static class Action
 
         ItemShot shotData = weapon.itemData.shot;
 
-        // TODO: Add in functionality for AOE attacks because they are different!
-        if (weapon.itemData.explosion.radius > 0)
+        if (weapon.itemData.explosion.radius > 0) // AOE Attacks
         {
             List<GameObject> targets = new List<GameObject>();
 
@@ -730,7 +768,7 @@ public static class Action
 
             TurnManager.inst.AllEntityVisUpdate();
         }
-        else
+        else // Normal Ranged attacks
         {
             // We are doing a ranged attack vs a target
             float toHitChance = 0f;
@@ -772,6 +810,21 @@ public static class Action
 
                     // Consider any flat damage bonuses
                     damageAmount = Action.AddFlatDamageBonuses(damageAmount, source, weapon);
+
+                    // Player has analysis of target
+                    if (source.GetComponent<PlayerData>())
+                    {
+                        if (target.GetComponent<Actor>().botInfo.playerHasAnalysisData)
+                        {
+                            damageAmount = Mathf.RoundToInt(damageAmount + (float)(damageAmount * 0.10f)); // +10% damage bonus
+                        }
+                    }
+
+                    // link_complan damage bonus
+                    if (target.GetComponent<Actor>().botInfo && target.GetComponent<Actor>().hacked_mods.Contains(ModHacks.link_complan))
+                    {
+                        damageAmount = Mathf.RoundToInt(damageAmount + (damageAmount * 0.25f)); // +25%
+                    }
                     #endregion
 
                     if (!noCrit && rand <= projData.critChance) // Critical hit?
@@ -783,7 +836,7 @@ public static class Action
                     }
                     if (target.GetComponent<PlayerData>()) // Player being attacked
                     {
-                        int overflow = DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData);
+                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData);
 
                         // Do a calc message
                         string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Hit";
@@ -1100,6 +1153,21 @@ public static class Action
                 damageAmount += falloff; // Apply damage falloff if any (remember it's negative).
                 if(damageAmount < 1)
                     damageAmount = 1; // Minimum 1 damage
+
+                // Player has analysis of target
+                if (source.GetComponent<PlayerData>())
+                {
+                    if (target.GetComponent<Actor>().botInfo.playerHasAnalysisData)
+                    {
+                        damageAmount = Mathf.RoundToInt(damageAmount + (float)(damageAmount * 0.10f)); // +10% damage bonus
+                    }
+                }
+
+                // link_complan damage bonus
+                if (target.GetComponent<Actor>().botInfo && target.GetComponent<Actor>().hacked_mods.Contains(ModHacks.link_complan))
+                {
+                    damageAmount = Mathf.RoundToInt(damageAmount + (damageAmount * 0.25f)); // +25%
+                }
                 #endregion
 
                 if (target.GetComponent<PlayerData>()) // Player being attacked
@@ -1482,6 +1550,105 @@ public static class Action
         // - Defender utility bonuses - // (also important later)
         (List<float> bonuses, bool noCrit, List<ArmorType> types) = DefenceBonus(target);
         toHitChance -= bonuses.Sum();
+
+        #region AI Only Afflictions (ModHacks)
+        // (AI Only) Afflicted with "scatter_targeting" condition
+        if (source.botInfo)
+        {
+            if (source.hacked_mods.Contains(ModHacks.scatter_targeting))
+            {
+                toHitChance /= 2; // Halved
+            }
+        }
+
+        // (AI Only) Afflicted with "mark_system" condition
+        if(target.botInfo && !source.botInfo && PlayerData.inst.allies.Contains(source)) // Target is AI, Attacker is player, & Attacker is ally of player.
+        {
+            if (target.hacked_mods.Contains(ModHacks.mark_system))
+            {
+                toHitChance = toHitChance + (toHitChance * 0.10f);
+            }
+        }
+
+        // Afflicted with "link_complan" condition (Increases your accuracy and damage against this bot by 25% while also impairing its accuracy against you by 25%)
+        if (source.botInfo)
+        {
+            if (source.hacked_mods.Contains(ModHacks.link_complan))
+            {
+                toHitChance = toHitChance - (toHitChance * 0.25f); // -25%
+            }
+        }
+        else
+        {
+            if (target.botInfo && target.hacked_mods.Contains(ModHacks.link_complan))
+            {
+                toHitChance = toHitChance + (toHitChance * 0.25f); // +25%
+            }
+        }
+
+        // (AI Only) Afflicted with "broadcast_data" condition (or neighbor has it). (Gives yourself and all allies 25% better accuracy against this and all 0b10 combat bots within a range of 3.)
+        if (target.botInfo && target.allegances.GetRelation(BotAlignment.Complex) == BotRelation.Friendly)
+        {
+            // Does this bot, or any nearby bots have this affliction?
+            // (This kinda sucks performance wise cause we will be doing this a lot and 99% percent of the time the bot won't have this affliction! ;_;)
+
+            bool afflicted = false;
+            if (target.hacked_mods.Contains(ModHacks.broadcast_data))
+            {
+                afflicted = true;
+            }
+
+            if (!afflicted)
+            {
+                List<Actor> neighbors = HF.FindBotsWithinRange(target, 3);
+
+                foreach (Actor a in neighbors)
+                {
+                    if (a.botInfo && a.allegances.GetRelation(BotAlignment.Complex) == BotRelation.Friendly && a.hacked_mods.Contains(ModHacks.broadcast_data))
+                    {
+                        afflicted = true;
+                    }
+                }
+            }
+
+            if (afflicted)
+            {
+                toHitChance = toHitChance + (toHitChance * 0.25f); // +25%
+            }
+        }
+
+        // (AI Only) Afflicted with "disrupt_area" condition (or neighbor has it). (Reduces the accuracy of this bot by 25%, and that of all 0b10 combat bots within a range of 3.)
+        if (source.botInfo && source.allegances.GetRelation(BotAlignment.Complex) == BotRelation.Friendly)
+        {
+            // Does this bot, or any nearby bots have this affliction?
+            // (This kinda sucks performance wise cause we will be doing this a lot and 99% percent of the time the bot won't have this affliction! ;_;)
+
+            bool afflicted = false;
+            if (source.hacked_mods.Contains(ModHacks.broadcast_data))
+            {
+                afflicted = true;
+            }
+
+            if (!afflicted)
+            {
+                List<Actor> neighbors = HF.FindBotsWithinRange(source, 3);
+
+                foreach (Actor a in neighbors)
+                {
+                    if (a.botInfo && a.allegances.GetRelation(BotAlignment.Complex) == BotRelation.Friendly && a.hacked_mods.Contains(ModHacks.broadcast_data))
+                    {
+                        afflicted = true;
+                    }
+                }
+            }
+
+            if (afflicted)
+            {
+                toHitChance = toHitChance - (toHitChance * 0.25f); // -25%
+            }
+        }
+
+        #endregion
 
         return (toHitChance, noCrit, types);
     }
@@ -2596,7 +2763,7 @@ public static class Action
         UIManager.inst.CreateCombatPopup(actor.gameObject, _message, a, b, c);
     }
 
-    public static int DamageBot(Actor target, int damage, List<ArmorType> protection, ItemObject weapon)
+    public static void DamageBot(Actor target, int damage, List<ArmorType> protection, ItemObject weapon)
     {
         ItemDamageType damageType = HF.GetDamageType(weapon);
 
@@ -2881,324 +3048,30 @@ public static class Action
             Action.DamageBot(target, damage, protection, weapon); // Recursion! (This doesn't strictly target armor first but whatever).
         }
 
+        #region Salvage Modifier
+        /* How much of a robot remains to salvage when it is destroyed depends on the value of its cumulative "salvage modifier" 
+         * which reflects everything that happened to it before that point. This internal value is initially set to zero, 
+         * and each projectile that impacts the robot will contribute its own weapon-based salvage modifier to the total. 
+         * Some weapons lower the value (most notably ballistic cannons), others have no meaningful effect on it (most guns), 
+         * while certain types may even raise it, ultimately increasing the likelihood of retrieving useful salvage.
+         */
 
-        // TODO: Finish this ?
-        #region OLD STUFF
-        int surplusDamage = 0;
-
-        if (target.botInfo) // Bot
+        int salvageMod = 0;
+        if (weapon.meleeAttack.isMelee)
         {
-            foreach (BotArmament item in target.botInfo.armament)
-            {
-                if (item._item.itemData.data.Id >= 0)
-                {
-                    if(protection.Count > 0)
-                    {
-                        if (item._item.itemData.slot == ItemSlot.Power && protection.Contains(ArmorType.Power))
-                        {
-                            // Don't damage this part, damage the armor itself
-                        }
-                        else if (item._item.itemData.slot == ItemSlot.Propulsion && protection.Contains(ArmorType.Propulsion))
-                        {
-                            // Don't damage this part, damage the armor itself
-                        }
-                        else if (item._item.itemData.slot == ItemSlot.Utilities && protection.Contains(ArmorType.Utility))
-                        {
-                            // Don't damage this part, damage the armor itself
-                        }
-                        else if (item._item.itemData.slot == ItemSlot.Weapons && protection.Contains(ArmorType.Weapon))
-                        {
-                            // Don't damage this part, damage the armor itself
-                        }
-                        else if (protection.Contains(ArmorType.General))
-                        {
-                            // Don't damage this part, damage the armor itself
-                        }
-                    }
-                    else
-                    {
-                        item._item.itemData.data.integrityCurrent -= damage;
-                        if (item._item.itemData.data.integrityCurrent <= 0)
-                        {
-                            surplusDamage += item._item.itemData.data.integrityCurrent * -1;
-
-                            item._item.itemData.data.Id = -1; // Destroy it
-                        }
-                        return surplusDamage;
-                    }
-                }
-            }
-
-            foreach (BotArmament item in target.botInfo.components)
-            {
-                if (item._item.itemData.data.Id >= 0)
-                {
-                    // If we got here, we need to damage some kind of armor
-                    if (item._item.itemData.slot == ItemSlot.Power && protection.Contains(ArmorType.Power))
-                    {
-                        item._item.itemData.data.integrityCurrent -= damage;
-                        if (item._item.itemData.data.integrityCurrent <= 0)
-                        {
-                            surplusDamage += item._item.itemData.data.integrityCurrent * -1;
-
-                            item._item.itemData.data.Id = -1; // Destroy it
-                        }
-                        return surplusDamage;
-                    }
-                    else if (item._item.itemData.slot == ItemSlot.Propulsion && protection.Contains(ArmorType.Propulsion))
-                    {
-                        item._item.itemData.data.integrityCurrent -= damage;
-                        if (item._item.itemData.data.integrityCurrent <= 0)
-                        {
-                            surplusDamage += item._item.itemData.data.integrityCurrent * -1;
-
-                            item._item.itemData.data.Id = -1; // Destroy it
-                        }
-                        return surplusDamage;
-                    }
-                    else if (item._item.itemData.slot == ItemSlot.Utilities && protection.Contains(ArmorType.Utility))
-                    {
-                        item._item.itemData.data.integrityCurrent -= damage;
-                        if (item._item.itemData.data.integrityCurrent <= 0)
-                        {
-                            surplusDamage += item._item.itemData.data.integrityCurrent * -1;
-
-                            item._item.itemData.data.Id = -1; // Destroy it
-                        }
-                        return surplusDamage;
-                    }
-                    else if (item._item.itemData.slot == ItemSlot.Weapons && protection.Contains(ArmorType.Weapon))
-                    {
-                        item._item.itemData.data.integrityCurrent -= damage;
-                        if (item._item.itemData.data.integrityCurrent <= 0)
-                        {
-                            surplusDamage += item._item.itemData.data.integrityCurrent * -1;
-
-                            item._item.itemData.data.Id = -1; // Destroy it
-                        }
-                        return surplusDamage;
-                    }
-                    else if (protection.Contains(ArmorType.General))
-                    {
-                        item._item.itemData.data.integrityCurrent -= damage;
-                        if (item._item.itemData.data.integrityCurrent <= 0)
-                        {
-                            surplusDamage += item._item.itemData.data.integrityCurrent * -1;
-
-                            item._item.itemData.data.Id = -1; // Destroy it
-                        }
-                        return surplusDamage;
-                    }
-                }
-            }
+            salvageMod = weapon.meleeAttack.salvage;
         }
-        else // Player
+        else
         {
-            foreach (InventorySlot item in target.GetComponent<PartInventory>()._invPower.Container.Items)
-            {
-                if (item.item.Id >= 0)
-                {
-                    if (protection.Count > 0)
-                    {
-                        if (item.item.itemData.slot == ItemSlot.Power && protection.Contains(ArmorType.Power))
-                        {
-                            // Don't damage this part, damage the armor itself
-                        }
-                        else if (item.item.itemData.slot == ItemSlot.Propulsion && protection.Contains(ArmorType.Propulsion))
-                        {
-                            // Don't damage this part, damage the armor itself
-                        }
-                        else if (item.item.itemData.slot == ItemSlot.Utilities && protection.Contains(ArmorType.Utility))
-                        {
-                            // Don't damage this part, damage the armor itself
-                        }
-                        else if (item.item.itemData.slot == ItemSlot.Weapons && protection.Contains(ArmorType.Weapon))
-                        {
-                            // Don't damage this part, damage the armor itself
-                        }
-                        else if (protection.Contains(ArmorType.General))
-                        {
-                            // Don't damage this part, damage the armor itself
-                        }
-                    }
-                    else
-                    {
-                        item.item.integrityCurrent -= damage;
-                        if (item.item.integrityCurrent <= 0)
-                        {
-                            surplusDamage += item.item.integrityCurrent * -1;
-
-                            item.item.Id = -1; // Destroy it
-                            // Animate the UI element dying & play a sound
-                        }
-                        return surplusDamage;
-                    }
-                }
-            }
-            foreach (InventorySlot item in target.GetComponent<PartInventory>()._invPropulsion.Container.Items)
-            {
-                if (item.item.Id >= 0)
-                {
-                    if (protection.Count > 0)
-                    {
-                        if (item.item.itemData.slot == ItemSlot.Power && protection.Contains(ArmorType.Power))
-                        {
-                            // Don't damage this part, damage the armor itself
-                        }
-                        else if (item.item.itemData.slot == ItemSlot.Propulsion && protection.Contains(ArmorType.Propulsion))
-                        {
-                            // Don't damage this part, damage the armor itself
-                        }
-                        else if (item.item.itemData.slot == ItemSlot.Utilities && protection.Contains(ArmorType.Utility))
-                        {
-                            // Don't damage this part, damage the armor itself
-                        }
-                        else if (item.item.itemData.slot == ItemSlot.Weapons && protection.Contains(ArmorType.Weapon))
-                        {
-                            // Don't damage this part, damage the armor itself
-                        }
-                        else if (protection.Contains(ArmorType.General))
-                        {
-                            // Don't damage this part, damage the armor itself
-                        }
-                    }
-                    else
-                    {
-                        item.item.integrityCurrent -= damage;
-                        if (item.item.integrityCurrent <= 0)
-                        {
-                            surplusDamage += item.item.integrityCurrent * -1;
-
-                            item.item.Id = -1; // Destroy it
-                            // Animate the UI element dying & play a sound
-                        }
-                        return surplusDamage;
-                    }
-                }
-            }
-            foreach (InventorySlot item in target.GetComponent<PartInventory>()._invWeapon.Container.Items)
-            {
-                if (item.item.Id >= 0)
-                {
-                    if (protection.Count > 0)
-                    {
-                        if (item.item.itemData.slot == ItemSlot.Power && protection.Contains(ArmorType.Power))
-                        {
-                            // Don't damage this part, damage the armor itself
-                        }
-                        else if (item.item.itemData.slot == ItemSlot.Propulsion && protection.Contains(ArmorType.Propulsion))
-                        {
-                            // Don't damage this part, damage the armor itself
-                        }
-                        else if (item.item.itemData.slot == ItemSlot.Utilities && protection.Contains(ArmorType.Utility))
-                        {
-                            // Don't damage this part, damage the armor itself
-                        }
-                        else if (item.item.itemData.slot == ItemSlot.Weapons && protection.Contains(ArmorType.Weapon))
-                        {
-                            // Don't damage this part, damage the armor itself
-                        }
-                        else if (protection.Contains(ArmorType.General))
-                        {
-                            // Don't damage this part, damage the armor itself
-                        }
-                    }
-                    else
-                    {
-                        item.item.integrityCurrent -= damage;
-                        if (item.item.integrityCurrent <= 0)
-                        {
-                            surplusDamage += item.item.integrityCurrent * -1;
-
-                            item.item.Id = -1; // Destroy it
-                            // Animate the UI element dying & play a sound
-                        }
-                        return surplusDamage;
-                    }
-                }
-            }
-            foreach (InventorySlot item in target.GetComponent<PartInventory>()._invUtility.Container.Items)
-            {
-                if (item.item.Id >= 0)
-                {
-                    // If we got here, we need to damage some kind of armor
-                    if (item.item.itemData.slot == ItemSlot.Power && protection.Contains(ArmorType.Power))
-                    {
-                        item.item.integrityCurrent -= damage;
-                        if (item.item.integrityCurrent <= 0)
-                        {
-                            surplusDamage += item.item.integrityCurrent * -1;
-
-                            item.item.Id = -1; // Destroy it
-                            // Animate the UI element dying & play a sound
-                        }
-                        return surplusDamage;
-                    }
-                    else if (item.item.itemData.slot == ItemSlot.Propulsion && protection.Contains(ArmorType.Propulsion))
-                    {
-                        item.item.integrityCurrent -= damage;
-                        if (item.item.integrityCurrent <= 0)
-                        {
-                            surplusDamage += item.item.integrityCurrent * -1;
-
-                            item.item.Id = -1; // Destroy it
-                            // Animate the UI element dying & play a sound
-                        }
-                        return surplusDamage;
-                    }
-                    else if (item.item.itemData.slot == ItemSlot.Utilities && protection.Contains(ArmorType.Utility))
-                    {
-                        item.item.integrityCurrent -= damage;
-                        if (item.item.integrityCurrent <= 0)
-                        {
-                            surplusDamage += item.item.integrityCurrent * -1;
-
-                            item.item.Id = -1; // Destroy it
-                            // Animate the UI element dying & play a sound
-                        }
-                        return surplusDamage;
-                    }
-                    else if (item.item.itemData.slot == ItemSlot.Weapons && protection.Contains(ArmorType.Weapon))
-                    {
-                        item.item.integrityCurrent -= damage;
-                        if (item.item.integrityCurrent <= 0)
-                        {
-                            surplusDamage += item.item.integrityCurrent * -1;
-
-                            item.item.Id = -1; // Destroy it
-                            // Animate the UI element dying & play a sound
-                        }
-                        return surplusDamage;
-                    }
-                    else if (protection.Contains(ArmorType.General))
-                    {
-                        item.item.integrityCurrent -= damage;
-                        if (item.item.integrityCurrent <= 0)
-                        {
-                            surplusDamage += item.item.integrityCurrent * -1;
-
-                            item.item.Id = -1; // Destroy it
-                            // Animate the UI element dying & play a sound
-                        }
-                        return surplusDamage;
-                    }
-                }
-            }
-
-            int random = Random.Range(0, target.GetComponent<PartInventory>()._invUtility.Container.Items.Length - 1);
-            // As a failsafe, try to damage a random item in the utilities slot
-            target.GetComponent<PartInventory>()._invUtility.Container.Items[random].item.integrityCurrent -= damage;
-            if (target.GetComponent<PartInventory>()._invUtility.Container.Items[random].item.integrityCurrent <= 0)
-            {
-                target.GetComponent<PartInventory>()._invUtility.Container.Items[random].item.Id = -1; // Destroy it
-                                    // And play a sound ?
-            }
-            return surplusDamage;
-            
+            salvageMod = weapon.projectile.salvage;
         }
+
+        if (target.botInfo)
+        {
+            target.salvageModifier += salvageMod;
+        }
+
         #endregion
-
-        return surplusDamage;
     }
 
     public static (int, bool) DamageItem(Actor target, Item item, int damage)
@@ -3290,6 +3163,14 @@ public static class Action
                 // TODO:
                 // Play a little destruction animation in the UI
                 // Play a UI sound
+
+
+                // "Cogmind automatically recycles 5 matter from each attached part that is destroyed."
+                PlayerData.inst.currentMatter += 5;
+                if(PlayerData.inst.currentMatter > PlayerData.inst.maxMatter)
+                {
+                    PlayerData.inst.currentMatter = PlayerData.inst.maxMatter;
+                }
 
             }
 

@@ -279,6 +279,7 @@ public class Fabricator : MonoBehaviour
             // Spawn in a new ALLIED bot at this location
             Actor newBot = MapManager.inst.PlaceBot(dropLocation, targetBot.Id);
             newBot.directPlayerAlly = true;
+            newBot.wasFabricated = true;
 
             // Modify relations to be friendly to the player and neutral to some other functions
             List<BotRelation> relationList = new List<BotRelation>();

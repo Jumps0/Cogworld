@@ -1686,6 +1686,27 @@ public static class HF
 
     #region Find & Get
 
+    /// <summary>
+    /// Attempts to find bots within a specified ranged of a specified bot. Returns a list of any found bots.
+    /// </summary>
+    /// <param name="source">The actor we are searching around. This actor is NOT included in returned list.</param>
+    /// <param name="range">The radius around which we are searching the source bot.</param>
+    /// <returns>A list of actors that are within range of the specified bot.</returns>
+    public static List<Actor> FindBotsWithinRange(Actor source, int range)
+    {
+        List<Actor> bots = new List<Actor>();
+
+        foreach (var bot in GameManager.inst.entities)
+        {
+            if(bot != source && Vector2.Distance(source.transform.position, bot.transform.position) <= range)
+            {
+                bots.Add(bot.GetComponent<Actor>());
+            }
+        }
+
+        return bots;
+    }
+
     public static ItemDamageType GetDamageType(ItemObject weapon)
     {
         if (weapon.meleeAttack.isMelee)

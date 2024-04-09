@@ -64,6 +64,8 @@ public class Item
 
     [Tooltip("Is this item currently overloaded?")]
     public bool isOverloaded = false;
+    [Tooltip("Is this item corrupted?")]
+    public bool corrupted = false;
 
     public Item()
     {
@@ -203,14 +205,14 @@ public abstract class ItemObject : ScriptableObject
 
     [Header("Special Attacks")]
     [Tooltip("A non-damaging special case such as Datajacks, Stasis Beams, Tearclaws, etc.")]
-    public bool isSpecialAttack = false; // TODO: Consider these
+    public bool isSpecialAttack = false; // TODO: Consider these in attacks
     public ItemSpecialAttack specialAttack;
 
     // Effect
     [Header("Effect")]
     public List<ItemEffect> itemEffect;
     [Tooltip("Certain power sources, propulsion units, and energy weapons can be overloaded. Performing better but with dangerous downsides.")]
-    public bool canOverload = false;
+    public bool canOverload = false; // TODO: Complete functionality for relevant items
 
     [Header("Primary Details")]
     public ItemQuality quality;
