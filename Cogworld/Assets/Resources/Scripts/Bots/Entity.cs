@@ -22,6 +22,7 @@ public class Entity : MonoBehaviour
     public int energyGeneration;
     public int currentMatter = 0; // Probably won't matter?
     public int currentEnergy = 100; // ?
+    public float corruption = 0.0f;
     //
     public bool siegeMode = false;
     public bool inStatis = false;
@@ -31,11 +32,16 @@ public class Entity : MonoBehaviour
     public int weightCurrent;
     public int weightMax;
     //
+    public int salvageModifier = 0; // TODO: (See in manual under Salvage: https://www.gridsagegames.com/cogmind/manual.txt)
+    //
     [Tooltip("This bot hasn't moved for the past X times it could have.")]
     public int noMovementFor = 1;
     [Tooltip("If a bot continues to move in the same direction multiple times, their 'momentum' increases.")]
     public int momentum = 0;
     private Vector2 lastDirection = Vector2.zero;
+
+    [Header("Inventory")]
+    public InventoryObject inventory;
 
     public void Move(Vector2 direction)
     {

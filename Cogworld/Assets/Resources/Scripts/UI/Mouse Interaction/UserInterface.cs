@@ -109,7 +109,7 @@ public abstract class UserInterface : MonoBehaviour
         if(MouseData.interfaceMouseIsOver == null)
         {
             // Drop the item on the floor
-            InventoryControl.inst.DropItemOnFloor(obj.GetComponent<InvDisplayItem>()._assignedItem);
+            InventoryControl.inst.DropItemOnFloor(obj.GetComponent<InvDisplayItem>()._assignedItem, PlayerData.inst.GetComponent<Actor>(), _inventory);
 
             if (this.GetComponent<StaticInterface>())
             {  

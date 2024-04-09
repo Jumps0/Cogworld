@@ -454,17 +454,27 @@ public class InventoryControl : MonoBehaviour
         }
     }
 
-    public void DropItemOnFloor(Item _item)
+    public void DropItemOnFloor(Item _item, Actor source, InventoryObject sourceInventory)
     {
-        // We want to drop the item as close to the player as possible
-        TileBlock dropTile = PlayerData.inst.GetComponent<PlayerGridMovement>().GetCurrentPlayerTile();
-        
+        // Drop is as close to the source as possible
+        TileBlock dropTile = MapManager.inst._allTilesRealized[HF.V3_to_V2I(source.transform.position)];
+
         Vector2Int dropLocation = HF.LocateFreeSpace(HF.V3_to_V2I(dropTile.transform.position)); // Find nearest free space
         dropTile = MapManager.inst._allTilesRealized[dropLocation];
 
-        PlayDropSound(_item.itemData.itemName);
+        if (source.gameObject.GetComponent<PlayerData>()) // Is player?
+        {
+            PlayDropSound(_item.itemData.itemName); // Play the drop sound
+            UIManager.inst.CreateNewLogMessage("Dropped " + _item.itemData.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false); // Do a UI message
+        }
+
+        // Remove from inventory
+        if(sourceInventory != null)
+            sourceInventory.RemoveItem(_item);
+
+        // Place the item
         PlaceItemIntoWorld(_item, new Vector2Int(dropTile.locX, dropTile.locY), dropTile);
-        UIManager.inst.CreateNewLogMessage("Dropped " + _item.itemData.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
+
         return;
     }
 
