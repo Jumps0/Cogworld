@@ -164,11 +164,11 @@ public class BotProfile
 [System.Serializable]
 public class BotArmament
 {
-    public ItemObject _item;
+    public Item _item;
     [Tooltip("Float so 0.##")]
     public float dropChance;
     [Tooltip("Alternative Choices for this item")]
-    public List<ItemObject> _altChoices;
+    public List<Item> _altChoices; // TODO: Make this stuff functional
     [Tooltip("Float so 0.##")] public List<float> altChoicesDropChance;
 }
 

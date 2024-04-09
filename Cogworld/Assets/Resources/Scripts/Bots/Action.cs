@@ -9,6 +9,7 @@ using System.Net.NetworkInformation;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.Progress;
 using Color = UnityEngine.Color;
 
 public static class Action
@@ -754,17 +755,6 @@ public static class Action
                     }
                     if (target.GetComponent<PlayerData>()) // Player being attacked
                     {
-                        /* Damage Overflow
-                            -----------------
-                            When a part is destroyed by damage that exceeds its remaining integrity, 
-                            the surplus damage is then applied directly to the core or another part as chosen by standard coverage/exposure rules. 
-                            No additional defenses are applied against that damage. Exceptions: 
-                            There is no damage overflow if the destroyed part itself is armor, 
-                            and overflow damage always targets armor first if there is any. 
-                            Critical strikes that outright destroy a part can still cause overflow if their original damage amount exceeded the part's integrity anyway. 
-                            Damage overflow is caused by all weapons except those of the "gun" type, and can overflow through multiple destroyed parts if there is sufficient damage.
-                        */
-
                         int overflow = DamageBot(target.GetComponent<Actor>(), damageAmount, types, HF.GetDamageType(weapon.itemData));
 
                         // Do a calc message
@@ -992,15 +982,15 @@ public static class Action
         {
             foreach (BotArmament item in source.botInfo.components)
             {
-                if (item._item.data.Id >= 0 && stacks)
+                if (item._item.itemData.data.Id >= 0 && stacks)
                 {
-                    if (item._item.itemEffect.Count > 0 && item._item.itemEffect[0].launcherBonus.hasEffect)
+                    if (item._item.itemData.itemEffect.Count > 0 && item._item.itemData.itemEffect[0].launcherBonus.hasEffect)
                     {
-                        bonus_launcherAccuracy += item._item.itemEffect[0].launcherBonus.launcherAccuracy;
+                        bonus_launcherAccuracy += item._item.itemData.itemEffect[0].launcherBonus.launcherAccuracy;
                         if(activeWeapons == 1)
-                            bonus_launcherLoading += item._item.itemEffect[0].launcherBonus.launcherLoading;
+                            bonus_launcherLoading += item._item.itemData.itemEffect[0].launcherBonus.launcherLoading;
 
-                        if (item._item.itemEffect[0].launcherBonus.stacks)
+                        if (item._item.itemData.itemEffect[0].launcherBonus.stacks)
                         {
                             stacks = true;
                         }
@@ -1554,11 +1544,11 @@ public static class Action
         {
             foreach (BotArmament item in actor.botInfo.armament)
             {
-                if (item._item.data.Id >= 0)
+                if (item._item.itemData.data.Id >= 0)
                 {
-                    if (item._item.meleeAttack.isMelee)
+                    if (item._item.itemData.meleeAttack.isMelee)
                     {
-                        weapon = item._item.data;
+                        weapon = item._item.itemData.data;
                         return weapon;
                     }
                 }
@@ -1594,11 +1584,11 @@ public static class Action
         {
             foreach (BotArmament item in actor.botInfo.armament)
             {
-                if (item._item.data.Id >= 0)
+                if (item._item.itemData.data.Id >= 0)
                 {
-                    if (item._item.shot.shotRange > 3)
+                    if (item._item.itemData.shot.shotRange > 3)
                     {
-                        weapon = item._item.data;
+                        weapon = item._item.itemData.data;
                         return weapon;
                     }
                 }
@@ -1660,9 +1650,9 @@ public static class Action
         {
             foreach (BotArmament item in actor.botInfo.armament)
             {
-                if (item._item.data.Id >= 0)
+                if (item._item.itemData.data.Id >= 0)
                 {
-                    if (item._item.data.state)
+                    if (item._item.itemData.data.state)
                     {
                         activeWeapons++;
                     }
@@ -1712,11 +1702,11 @@ public static class Action
             {
                 foreach (BotArmament item in actor.botInfo.armament)
                 {
-                    if (item._item.data.Id >= 0)
+                    if (item._item.itemData.data.Id >= 0)
                     {
-                        if (item._item.meleeAttack.isMelee && item._item.data != mainWeapon && !item._item.meleeAttack.canDatajack) // Is a melee weapon, isn't the main weapon, and isn't a datajack
+                        if (item._item.itemData.meleeAttack.isMelee && item._item.itemData.data != mainWeapon && !item._item.itemData.meleeAttack.canDatajack) // Is a melee weapon, isn't the main weapon, and isn't a datajack
                         {
-                            weapons.Add(item._item.data);
+                            weapons.Add(item._item.itemData.data);
                         }
                     }
 
@@ -1756,11 +1746,11 @@ public static class Action
         {
             foreach (BotArmament item in actor.botInfo.armament)
             {
-                if (item._item.data.Id >= 0)
+                if (item._item.itemData.data.Id >= 0)
                 {
-                    if (item._item.explosion.radius > 0 && item._item.data.state)
+                    if (item._item.itemData.explosion.radius > 0 && item._item.itemData.data.state)
                     {
-                        weapon = item._item.data;
+                        weapon = item._item.itemData.data;
                         return weapon;
                     }
                 }
@@ -1827,9 +1817,9 @@ public static class Action
         {
             foreach (BotArmament item in actor.botInfo.components)
             {
-                if (item._item.data.Id >= 0)
+                if (item._item.itemData.data.Id >= 0)
                 {
-                    if (item._item.type == ItemType.Treads)
+                    if (item._item.itemData.type == ItemType.Treads)
                     {
                         return true;
                     }
@@ -1862,9 +1852,9 @@ public static class Action
         {
             foreach (BotArmament item in actor.botInfo.components)
             {
-                if (item._item.data.Id >= 0)
+                if (item._item.itemData.data.Id >= 0)
                 {
-                    if (item._item.type == ItemType.Legs)
+                    if (item._item.itemData.type == ItemType.Legs)
                     {
                         return true;
                     }
@@ -1897,9 +1887,9 @@ public static class Action
         {
             foreach (BotArmament item in actor.botInfo.components)
             {
-                if (item._item.data.Id >= 0)
+                if (item._item.itemData.data.Id >= 0)
                 {
-                    if (item._item.type == ItemType.Wheels)
+                    if (item._item.itemData.type == ItemType.Wheels)
                     {
                         return true;
                     }
@@ -1932,9 +1922,9 @@ public static class Action
         {
             foreach (BotArmament item in actor.botInfo.components)
             {
-                if (item._item.data.Id >= 0)
+                if (item._item.itemData.data.Id >= 0)
                 {
-                    if (item._item.type == ItemType.Hover)
+                    if (item._item.itemData.type == ItemType.Hover)
                     {
                         return true;
                     }
@@ -1967,9 +1957,9 @@ public static class Action
         {
             foreach (BotArmament item in actor.botInfo.components)
             {
-                if (item._item.data.Id >= 0)
+                if (item._item.itemData.data.Id >= 0)
                 {
-                    if (item._item.type == ItemType.Flight)
+                    if (item._item.itemData.type == ItemType.Flight)
                     {
                         return true;
                     }
@@ -2012,14 +2002,14 @@ public static class Action
         {
             foreach (BotArmament item in actor.botInfo.components)
             {
-                if (item._item.data.Id >= 0)
+                if (item._item.itemData.data.Id >= 0)
                 {
-                    if (item._item.itemEffect.Count > 0 && item._item.itemEffect[0].hasAccuracyBuff && stacks)
+                    if (item._item.itemData.itemEffect.Count > 0 && item._item.itemData.itemEffect[0].hasAccuracyBuff && stacks)
                     {
-                        bonus_melee += item._item.itemEffect[0].accBuff_melee;
-                        bonus_ranged += item._item.itemEffect[0].accBuff_nonMelee;
+                        bonus_melee += item._item.itemData.itemEffect[0].accBuff_melee;
+                        bonus_ranged += item._item.itemData.itemEffect[0].accBuff_nonMelee;
 
-                        if (item._item.itemEffect[0].accBuff_stacks)
+                        if (item._item.itemData.itemEffect[0].accBuff_stacks)
                         {
                             stacks = true;
                         }
@@ -2081,28 +2071,28 @@ public static class Action
         {
             foreach (BotArmament item in actor.botInfo.components)
             {
-                if (item._item.data.Id >= 0)
+                if (item._item.itemData.data.Id >= 0)
                 {
-                    if (item._item.itemEffect.Count > 0 && item._item.itemEffect[0].meleeBonus.hasEffect)
+                    if (item._item.itemData.itemEffect.Count > 0 && item._item.itemData.itemEffect[0].meleeBonus.hasEffect)
                     {
-                        bonus_followups += item._item.itemEffect[0].meleeBonus.melee_followUpChance;
-                        bonus_maxDamage += item._item.itemEffect[0].meleeBonus.melee_maxDamageBoost;
-                        bonus_accuracy += item._item.itemEffect[0].meleeBonus.melee_accuracyIncrease;
-                        bonus_accuracy += item._item.itemEffect[0].meleeBonus.melee_accuracyDecrease;
-                        bonus_minDamage += item._item.itemEffect[0].meleeBonus.melee_minDamageBoost;
+                        bonus_followups += item._item.itemData.itemEffect[0].meleeBonus.melee_followUpChance;
+                        bonus_maxDamage += item._item.itemData.itemEffect[0].meleeBonus.melee_maxDamageBoost;
+                        bonus_accuracy += item._item.itemData.itemEffect[0].meleeBonus.melee_accuracyIncrease;
+                        bonus_accuracy += item._item.itemData.itemEffect[0].meleeBonus.melee_accuracyDecrease;
+                        bonus_minDamage += item._item.itemData.itemEffect[0].meleeBonus.melee_minDamageBoost;
 
 
-                        if (item._item.itemEffect[0].meleeBonus.actuator_stacks) // This effect should stack
+                        if (item._item.itemData.itemEffect[0].meleeBonus.actuator_stacks) // This effect should stack
                         {
                             if(stackTrack == 0) // No decrease
                             {
-                                bonus_attackTime += item._item.itemEffect[0].meleeBonus.melee_attackTimeDecrease;
+                                bonus_attackTime += item._item.itemData.itemEffect[0].meleeBonus.melee_attackTimeDecrease;
                                 stackTrack++;
                             }
                             else // Decrease by specified amount
                             {
                                 // (Maybe do this different? i.e.: use previous item's stack decrease. idk)
-                                bonus_attackTime += (item._item.itemEffect[0].meleeBonus.melee_attackTimeDecrease * item._item.itemEffect[0].meleeBonus.actuator_cap);
+                                bonus_attackTime += (item._item.itemData.itemEffect[0].meleeBonus.melee_attackTimeDecrease * item._item.itemData.itemEffect[0].meleeBonus.actuator_cap);
                                 stackTrack++;
                             }
                         }
@@ -2175,13 +2165,13 @@ public static class Action
         {
             foreach (BotArmament item in actor.botInfo.components)
             {
-                if (item._item.data.Id >= 0)
+                if (item._item.itemData.data.Id >= 0)
                 {
-                    if (item._item.itemEffect.Count > 0 && item._item.itemEffect[0].armorProjectionEffects.hasEffect && stacks)
+                    if (item._item.itemData.itemEffect.Count > 0 && item._item.itemData.itemEffect[0].armorProtectionEffect.hasEffect && stacks)
                     {
-                        bonuses.Add(item._item.itemEffect[0].armorProjectionEffects.armorEffect_absorbtion);
+                        bonuses.Add(item._item.itemData.itemEffect[0].armorProtectionEffect.armorEffect_absorbtion);
 
-                        if (item._item.itemEffect[0].armorProjectionEffects.stacks)
+                        if (item._item.itemData.itemEffect[0].armorProtectionEffect.stacks)
                         {
                             stacks = true;
                         }
@@ -2190,12 +2180,12 @@ public static class Action
                             stacks = false;
                         }
 
-                        if (item._item.itemEffect[0].armorProjectionEffects.armorEffect_preventCritStrikesVSSlot)
+                        if (item._item.itemData.itemEffect[0].armorProtectionEffect.armorEffect_preventCritStrikesVSSlot)
                         {
                             noCrits = true;
                         }
 
-                        types.Add(item._item.itemEffect[0].armorProjectionEffects.armorEffect_slotType);
+                        types.Add(item._item.itemData.itemEffect[0].armorProtectionEffect.armorEffect_slotType);
                     }
                 }
             }
@@ -2206,11 +2196,11 @@ public static class Action
             {
                 if (item.item.Id >= 0)
                 {
-                    if (item.item.itemData.itemEffect.Count > 0 && item.item.itemData.itemEffect[0].armorProjectionEffects.hasEffect && stacks)
+                    if (item.item.itemData.itemEffect.Count > 0 && item.item.itemData.itemEffect[0].armorProtectionEffect.hasEffect && stacks)
                     {
-                        bonuses.Add(item.item.itemData.itemEffect[0].armorProjectionEffects.armorEffect_absorbtion);
+                        bonuses.Add(item.item.itemData.itemEffect[0].armorProtectionEffect.armorEffect_absorbtion);
 
-                        if (item.item.itemData.itemEffect[0].armorProjectionEffects.stacks)
+                        if (item.item.itemData.itemEffect[0].armorProtectionEffect.stacks)
                         {
                             stacks = true;
                         }
@@ -2219,12 +2209,12 @@ public static class Action
                             stacks = false;
                         }
 
-                        if (item.item.itemData.itemEffect[0].armorProjectionEffects.armorEffect_preventCritStrikesVSSlot)
+                        if (item.item.itemData.itemEffect[0].armorProtectionEffect.armorEffect_preventCritStrikesVSSlot)
                         {
                             noCrits = true;
                         }
 
-                        types.Add(item.item.itemData.itemEffect[0].armorProjectionEffects.armorEffect_slotType);
+                        types.Add(item.item.itemData.itemEffect[0].armorProtectionEffect.armorEffect_slotType);
                     }
                 }
 
@@ -2241,11 +2231,11 @@ public static class Action
         {
             foreach (BotArmament item in actor.botInfo.components)
             {
-                if (item._item.data.Id >= 0)
+                if (item._item.itemData.data.Id >= 0)
                 {
-                    if (item._item.type == ItemType.Armor)
+                    if (item._item.itemData.type == ItemType.Armor)
                     {
-                        foundArmor.Add(item._item);
+                        foundArmor.Add(item._item.itemData);
                     }
                 }
                 
@@ -2327,17 +2317,17 @@ public static class Action
         {
             foreach (BotArmament item in actor.botInfo.armament)
             {
-                if (item._item.data.Id >= 0)
+                if (item._item.itemData.data.Id >= 0)
                 {
-                    totalMass += item._item.mass;
+                    totalMass += item._item.itemData.mass;
                 }
             }
 
             foreach (BotArmament item in actor.botInfo.components)
             {
-                if (item._item.data.Id >= 0)
+                if (item._item.itemData.data.Id >= 0)
                 {
-                    totalMass += item._item.mass;
+                    totalMass += item._item.itemData.mass;
                 }
             }
         }
@@ -2404,13 +2394,13 @@ public static class Action
         {
             foreach (BotArmament item in actor.botInfo.components)
             {
-                if (item._item.data.Id >= 0) // There's something there
+                if (item._item.itemData.data.Id >= 0) // There's something there
                 {
-                    if (item._item.propulsion.Count > 0) // And its got propulsion data
+                    if (item._item.itemData.propulsion.Count > 0) // And its got propulsion data
                     {
-                        propulsionParts.Add(item._item.propulsion[0].timeToMove);
-                        energyCost += item._item.propulsion[0].propEnergy;
-                        heatCost += item._item.propulsion[0].propHeat;
+                        propulsionParts.Add(item._item.itemData.propulsion[0].timeToMove);
+                        energyCost += item._item.itemData.propulsion[0].propEnergy;
+                        heatCost += item._item.itemData.propulsion[0].propHeat;
                     }
                 }
             }
@@ -2462,17 +2452,17 @@ public static class Action
         {
             foreach (BotArmament item in actor.botInfo.components)
             {
-                if (item._item.data.Id >= 0) // There's something there
+                if (item._item.itemData.data.Id >= 0) // There's something there
                 {
-                    if (item._item.propulsion.Count > 0) // And its got propulsion data
+                    if (item._item.itemData.propulsion.Count > 0) // And its got propulsion data
                     {
-                        support += item._item.propulsion[0].support;
+                        support += item._item.itemData.propulsion[0].support;
                     }
 
-                    if (item._item.itemEffect[0].hasMassSupport && stacks)
+                    if (item._item.itemData.itemEffect[0].hasMassSupport && stacks)
                     {
-                        support += item._item.itemEffect[0].massSupport;
-                        if (item._item.itemEffect[0].massSupport_stacks)
+                        support += item._item.itemData.itemEffect[0].massSupport;
+                        if (item._item.itemData.itemEffect[0].massSupport_stacks)
                         {
                             stacks = true;
                         }
@@ -2612,17 +2602,17 @@ public static class Action
         {
             foreach (BotArmament item in target.botInfo.armament)
             {
-                if (item._item.data.Id >= 0)
+                if (item._item.itemData.data.Id >= 0)
                 {
-                    items.Add(item._item);
+                    items.Add(item._item.itemData);
                 }
             }
 
             foreach(BotArmament item in target.botInfo.components)
             {
-                if (item._item.data.Id >= 0)
+                if (item._item.itemData.data.Id >= 0)
                 {
-                    items.Add(item._item);
+                    items.Add(item._item.itemData);
                 }
             }
         }
@@ -2669,7 +2659,7 @@ public static class Action
             totalExposure += item.coverage;
 
             // Gather up all protective items (we use this later)
-            if (item.itemEffect[0].armorProjectionEffects.hasEffect)
+            if (item.itemEffect[0].armorProtectionEffect.hasEffect)
             {
                 protectiveItems.Add(item);
             }
@@ -2707,16 +2697,16 @@ public static class Action
         bool stacks = true;
         foreach (var P in protectiveItems)
         {
-            if (P.itemEffect[0].armorProjectionEffects.type_hasTypeResistance) // Has a resistance to a type
+            if (P.itemEffect[0].armorProtectionEffect.type_hasTypeResistance) // Has a resistance to a type
             {
-                if (P.itemEffect[0].armorProjectionEffects.type_allTypes || P.itemEffect[0].armorProjectionEffects.type_damageType == damageType) // Has damage resist or generalist resist
+                if (P.itemEffect[0].armorProtectionEffect.type_allTypes || P.itemEffect[0].armorProtectionEffect.type_damageType == damageType) // Has damage resist or generalist resist
                 {
                     if (stacks)
                     {
-                        damage = Mathf.RoundToInt(damage + (float)(damage * P.itemEffect[0].armorProjectionEffects.type_percentage)); // Modify damage
+                        damage = Mathf.RoundToInt(damage + (float)(damage * P.itemEffect[0].armorProtectionEffect.type_percentage)); // Modify damage
                     }
 
-                    stacks = P.itemEffect[0].armorProjectionEffects.stacks;
+                    stacks = P.itemEffect[0].armorProtectionEffect.stacks;
                 }
             }
         }
@@ -2733,22 +2723,103 @@ public static class Action
             cumulativeProbabilities.Add(cumulativeProbability);
         }
 
+        int overflow = 0;
+        bool hitPart = false;
+        bool armorDestroyed = false;
+
         // Check which range the random number falls into ||| TODO: WE HERE RN
         for (int i = 0; i < cumulativeProbabilities.Count; i++)
         {
             if (rand < cumulativeProbabilities[i])
             {
                 // Item i is hit
-                Debug.Log("Hit item: " + pairs[i].Key.name);
-                //return;
+
+                // Now before we deal damage to this item. We need to check if the target has slot specific protection, and deal damage to that aswell
+                ItemSlot slot = pairs[i].Key.slot;
+                int splitDamage = 0;
+                Item splitItem = null;
+                foreach (var A in protectiveItems)
+                {
+                    if (A.itemEffect[0].armorProtectionEffect.armorEffect_slotType.ToString().ToLower() == slot.ToString().ToLower()) // A bit of a janky way to convert
+                    {
+                        float percent = A.itemEffect[0].armorProtectionEffect.armorEffect_absorbtion;
+
+                        splitDamage = Mathf.RoundToInt(damage * percent);
+                        damage -= splitDamage;
+                        splitItem = A.data;
+                        break;
+                    }
+                }
+
+                // Damage the specific protection if it exists
+                if(splitItem != null)
+                {
+                    // Deal damage
+                    Action.DamageItem(target, splitItem, splitDamage);
+                }
+
+
+                // Deal damage
+                (overflow, armorDestroyed) = Action.DamageItem(target, pairs[i].Key.data, damage);
+
+                hitPart = true;
             }
         }
 
         // If none of the items are hit, the core is hit
-        Debug.Log("Hit core");
+        if (!hitPart)
+        {
+            // We also need to check if the player has a core shielding item
+            int splitDamage = 0;
+            Item splitItem = null;
+            foreach (var A in protectiveItems)
+            {
+                if (A.itemEffect[0].armorProtectionEffect.armorEffect_slotType == ArmorType.None)
+                {
+                    float percent = A.itemEffect[0].armorProtectionEffect.armorEffect_absorbtion;
 
+                    splitDamage = Mathf.RoundToInt(damage * percent);
+                    damage -= splitDamage;
+                    splitItem = A.data;
+                    break;
+                }
+            }
 
+            // Damage the specific protection if it exists
+            if (splitItem != null)
+            {
+                // Deal damage
+                (overflow, armorDestroyed) = Action.DamageItem(target, splitItem, splitDamage);
+            }
 
+            // Deal damage to the core
+            if (target.botInfo)
+            {
+                target.currentHealth -= damage;
+            }
+            else
+            {
+                PlayerData.inst.currentHealth -= damage;
+            }
+        }
+
+        /* Damage Overflow
+        -----------------
+        When a part is destroyed by damage that exceeds its remaining integrity, 
+        the surplus damage is then applied directly to the core or another part as chosen by standard coverage/exposure rules. 
+        No additional defenses are applied against that damage. 
+
+        Exceptions: 
+            -There is no damage overflow if the destroyed part itself is armor, 
+            and overflow damage always targets armor first if there is any. 
+            -Critical strikes that outright destroy a part can still cause overflow if their original damage amount exceeded the part's integrity anyway. 
+            Damage overflow is caused by all weapons except those of the "gun" type, and can overflow through multiple destroyed parts if there is sufficient damage.
+        */
+
+        if(hitPart && overflow > 0 && !armorDestroyed)
+        {
+            Action.DamageBot(target, damage, protection, damageType); // Recursion! (This doesn't strictly target armor first but whatever).
+        }
 
 
         // TODO: Finish this ?
@@ -2759,23 +2830,23 @@ public static class Action
         {
             foreach (BotArmament item in target.botInfo.armament)
             {
-                if (item._item.data.Id >= 0)
+                if (item._item.itemData.data.Id >= 0)
                 {
                     if(protection.Count > 0)
                     {
-                        if (item._item.slot == ItemSlot.Power && protection.Contains(ArmorType.Power))
+                        if (item._item.itemData.slot == ItemSlot.Power && protection.Contains(ArmorType.Power))
                         {
                             // Don't damage this part, damage the armor itself
                         }
-                        else if (item._item.slot == ItemSlot.Propulsion && protection.Contains(ArmorType.Propulsion))
+                        else if (item._item.itemData.slot == ItemSlot.Propulsion && protection.Contains(ArmorType.Propulsion))
                         {
                             // Don't damage this part, damage the armor itself
                         }
-                        else if (item._item.slot == ItemSlot.Utilities && protection.Contains(ArmorType.Utility))
+                        else if (item._item.itemData.slot == ItemSlot.Utilities && protection.Contains(ArmorType.Utility))
                         {
                             // Don't damage this part, damage the armor itself
                         }
-                        else if (item._item.slot == ItemSlot.Weapons && protection.Contains(ArmorType.Weapon))
+                        else if (item._item.itemData.slot == ItemSlot.Weapons && protection.Contains(ArmorType.Weapon))
                         {
                             // Don't damage this part, damage the armor itself
                         }
@@ -2786,12 +2857,12 @@ public static class Action
                     }
                     else
                     {
-                        item._item.data.integrityCurrent -= damage;
-                        if (item._item.data.integrityCurrent <= 0)
+                        item._item.itemData.data.integrityCurrent -= damage;
+                        if (item._item.itemData.data.integrityCurrent <= 0)
                         {
-                            surplusDamage += item._item.data.integrityCurrent * -1;
+                            surplusDamage += item._item.itemData.data.integrityCurrent * -1;
 
-                            item._item.data.Id = -1; // Destroy it
+                            item._item.itemData.data.Id = -1; // Destroy it
                         }
                         return surplusDamage;
                     }
@@ -2800,61 +2871,61 @@ public static class Action
 
             foreach (BotArmament item in target.botInfo.components)
             {
-                if (item._item.data.Id >= 0)
+                if (item._item.itemData.data.Id >= 0)
                 {
                     // If we got here, we need to damage some kind of armor
-                    if (item._item.slot == ItemSlot.Power && protection.Contains(ArmorType.Power))
+                    if (item._item.itemData.slot == ItemSlot.Power && protection.Contains(ArmorType.Power))
                     {
-                        item._item.data.integrityCurrent -= damage;
-                        if (item._item.data.integrityCurrent <= 0)
+                        item._item.itemData.data.integrityCurrent -= damage;
+                        if (item._item.itemData.data.integrityCurrent <= 0)
                         {
-                            surplusDamage += item._item.data.integrityCurrent * -1;
+                            surplusDamage += item._item.itemData.data.integrityCurrent * -1;
 
-                            item._item.data.Id = -1; // Destroy it
+                            item._item.itemData.data.Id = -1; // Destroy it
                         }
                         return surplusDamage;
                     }
-                    else if (item._item.slot == ItemSlot.Propulsion && protection.Contains(ArmorType.Propulsion))
+                    else if (item._item.itemData.slot == ItemSlot.Propulsion && protection.Contains(ArmorType.Propulsion))
                     {
-                        item._item.data.integrityCurrent -= damage;
-                        if (item._item.data.integrityCurrent <= 0)
+                        item._item.itemData.data.integrityCurrent -= damage;
+                        if (item._item.itemData.data.integrityCurrent <= 0)
                         {
-                            surplusDamage += item._item.data.integrityCurrent * -1;
+                            surplusDamage += item._item.itemData.data.integrityCurrent * -1;
 
-                            item._item.data.Id = -1; // Destroy it
+                            item._item.itemData.data.Id = -1; // Destroy it
                         }
                         return surplusDamage;
                     }
-                    else if (item._item.slot == ItemSlot.Utilities && protection.Contains(ArmorType.Utility))
+                    else if (item._item.itemData.slot == ItemSlot.Utilities && protection.Contains(ArmorType.Utility))
                     {
-                        item._item.data.integrityCurrent -= damage;
-                        if (item._item.data.integrityCurrent <= 0)
+                        item._item.itemData.data.integrityCurrent -= damage;
+                        if (item._item.itemData.data.integrityCurrent <= 0)
                         {
-                            surplusDamage += item._item.data.integrityCurrent * -1;
+                            surplusDamage += item._item.itemData.data.integrityCurrent * -1;
 
-                            item._item.data.Id = -1; // Destroy it
+                            item._item.itemData.data.Id = -1; // Destroy it
                         }
                         return surplusDamage;
                     }
-                    else if (item._item.slot == ItemSlot.Weapons && protection.Contains(ArmorType.Weapon))
+                    else if (item._item.itemData.slot == ItemSlot.Weapons && protection.Contains(ArmorType.Weapon))
                     {
-                        item._item.data.integrityCurrent -= damage;
-                        if (item._item.data.integrityCurrent <= 0)
+                        item._item.itemData.data.integrityCurrent -= damage;
+                        if (item._item.itemData.data.integrityCurrent <= 0)
                         {
-                            surplusDamage += item._item.data.integrityCurrent * -1;
+                            surplusDamage += item._item.itemData.data.integrityCurrent * -1;
 
-                            item._item.data.Id = -1; // Destroy it
+                            item._item.itemData.data.Id = -1; // Destroy it
                         }
                         return surplusDamage;
                     }
                     else if (protection.Contains(ArmorType.General))
                     {
-                        item._item.data.integrityCurrent -= damage;
-                        if (item._item.data.integrityCurrent <= 0)
+                        item._item.itemData.data.integrityCurrent -= damage;
+                        if (item._item.itemData.data.integrityCurrent <= 0)
                         {
-                            surplusDamage += item._item.data.integrityCurrent * -1;
+                            surplusDamage += item._item.itemData.data.integrityCurrent * -1;
 
-                            item._item.data.Id = -1; // Destroy it
+                            item._item.itemData.data.Id = -1; // Destroy it
                         }
                         return surplusDamage;
                     }
@@ -3070,6 +3141,112 @@ public static class Action
         return surplusDamage;
     }
 
+    public static (int, bool) DamageItem(Actor target, Item item, int damage)
+    {
+        int overflow = 0;
+        bool destroyed = false;
+
+        item.integrityCurrent -= damage;
+
+        if (item.integrityCurrent <= 0) // Item destroyed
+        {
+            // If an item is destroyed we want to:
+            // 1. Set the item's id to -1
+            // 2. Remove the item from wherever its being stored (list)
+
+            overflow = -1 * item.integrityCurrent;
+            destroyed = true;
+
+            if (target.botInfo) // Bot
+            {
+                foreach (var I in target.botInfo.components.ToList())
+                {
+                    if (I._item.Id >= 0 && I._item == item)
+                    {
+                        target.botInfo.components.Remove(I); // Remove the item
+                        break;
+                    }
+                }
+
+                foreach (var I in target.botInfo.armament.ToList())
+                {
+                    if (I._item.Id >= 0 && I._item == item)
+                    {
+                        target.botInfo.components.Remove(I); // Remove the item
+                        break;
+                    }
+                }
+            }
+            else // Player
+            {
+                foreach (InventorySlot I in target.GetComponent<PartInventory>()._invPower.Container.Items.ToList())
+                {
+                    if (I.item.itemData.data.Id >= 0)
+                    {
+                        if (I.item == item)
+                        {
+                            target.GetComponent<PartInventory>()._invPower.RemoveItem(I.item);
+                            break;
+                        }
+                    }
+                }
+
+                foreach (InventorySlot I in target.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
+                {
+                    if (I.item.itemData.data.Id >= 0)
+                    {
+                        if (I.item == item)
+                        {
+                            target.GetComponent<PartInventory>()._invPropulsion.RemoveItem(I.item);
+                            break;
+                        }
+                    }
+                }
+
+                foreach (InventorySlot I in target.GetComponent<PartInventory>()._invUtility.Container.Items.ToList())
+                {
+                    if (I.item.itemData.data.Id >= 0)
+                    {
+                        if (I.item == item)
+                        {
+                            target.GetComponent<PartInventory>()._invUtility.RemoveItem(I.item);
+                            break;
+                        }
+                    }
+                }
+
+                foreach (InventorySlot I in target.GetComponent<PartInventory>()._invWeapon.Container.Items.ToList())
+                {
+                    if (I.item.itemData.data.Id >= 0)
+                    {
+                        if (I.item == item)
+                        {
+                            target.GetComponent<PartInventory>()._invWeapon.RemoveItem(I.item);
+                            break;
+                        }
+                    }
+                }
+
+                // TODO:
+                // Play a little destruction animation in the UI
+                // Play a UI sound
+
+            }
+
+            item.Id = -1;
+        }
+        else
+        {
+            if (!target.botInfo) // Player
+            {
+                // Update the UI and do a little animation
+                // Play a sound?
+            }
+        }
+
+        return (overflow, destroyed);
+    }
+
     public static Vector2Int NormalizeMovement(Transform obj, Vector3 destination)
     {
         // Normalize move direction
@@ -3161,16 +3338,16 @@ public static class Action
             {
                 foreach (BotArmament item in actor.botInfo.components)
                 {
-                    if (item._item.data.Id >= 0)
+                    if (item._item.itemData.data.Id >= 0)
                     {
                         // I still have no idea how this is actually calculated, this is just a guess
-                        if (item._item.type == ItemType.Flight)
+                        if (item._item.itemData.type == ItemType.Flight)
                         {
-                            evasionBonus1 += (int)(1.5f * item._item.slotsRequired);
+                            evasionBonus1 += (int)(1.5f * item._item.itemData.slotsRequired);
                         }
-                        else if (item._item.type == ItemType.Hover)
+                        else if (item._item.itemData.type == ItemType.Hover)
                         {
-                            evasionBonus1 += (int)(1 * item._item.slotsRequired);
+                            evasionBonus1 += (int)(1 * item._item.itemData.slotsRequired);
                         }
                     }
                 }
@@ -3215,13 +3392,13 @@ public static class Action
             BotMoveType myMoveType = DetermineBotMoveType(actor);
             foreach (BotArmament item in actor.botInfo.components)
             {
-                if (item._item.data.Id >= 0)
+                if (item._item.itemData.data.Id >= 0)
                 {
                     if(actor.momentum > 0)
                     {
-                        if (item._item.type == ItemType.Legs)
+                        if (item._item.itemData.type == ItemType.Legs)
                         {
-                            foreach (ItemEffect effect in item._item.itemEffect)
+                            foreach (ItemEffect effect in item._item.itemData.itemEffect)
                             {
                                 if (effect.hasLegEffect)
                                 {
@@ -3240,9 +3417,9 @@ public static class Action
                         }
                     }
 
-                    if(item._item.type == ItemType.Device && actor.weightCurrent <= actor.weightMax && rcsStack)
+                    if(item._item.itemData.type == ItemType.Device && actor.weightCurrent <= actor.weightMax && rcsStack)
                     {
-                        foreach (ItemEffect effect in item._item.itemEffect)
+                        foreach (ItemEffect effect in item._item.itemData.itemEffect)
                         {
                             if (effect.rcsEffect.hasEffect 
                                 && (myMoveType == BotMoveType.Walking || myMoveType == BotMoveType.Flying || myMoveType == BotMoveType.Hovering))
@@ -3267,9 +3444,9 @@ public static class Action
             bool phasingStack = true;
             foreach (BotArmament item in actor.botInfo.components)
             {
-                if(item._item.data.Id > 0 && item._item.type == ItemType.Device)
+                if(item._item.itemData.data.Id > 0 && item._item.itemData.type == ItemType.Device)
                 {
-                    foreach (ItemEffect effect in item._item.itemEffect)
+                    foreach (ItemEffect effect in item._item.itemData.itemEffect)
                     {
                         if (effect.phasingEffect.hasEffect && phasingStack)
                         {
@@ -3480,9 +3657,9 @@ public static class Action
         {
             foreach (BotArmament item in actor.botInfo.components)
             {
-                if (item._item.data.Id >= 0 && item._item.data.state)
+                if (item._item.itemData.data.Id >= 0 && item._item.itemData.data.state)
                 {
-                    foreach (ItemEffect effect in item._item.data.itemData.itemEffect)
+                    foreach (ItemEffect effect in item._item.itemData.data.itemData.itemEffect)
                     {
                         if (effect.cloakingEffect.hasEffect)
                         {

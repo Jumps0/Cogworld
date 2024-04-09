@@ -279,7 +279,7 @@ public class ItemEffect
     public bool stab_KnockbackImmune = false;
 
     [Header("Armor")]
-    public ItemProtectionEffect armorProjectionEffects;
+    public ItemProtectionEffect armorProtectionEffect;
 
     [Header("Accurracy Buffs")]
     public bool hasAccuracyBuff = false;
@@ -549,7 +549,7 @@ public class ItemProtectionEffect
     public bool hasEffect = false;
 
     [Header("General Protection")]
-    [Tooltip("Other == Core")]
+    [Tooltip("None == Core")]
     public ArmorType armorEffect_slotType;
     [Tooltip("Absorbs 0.##% of damage that would otherwise affect <Slot Type>.")]
     public float armorEffect_absorbtion = 0f;

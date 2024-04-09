@@ -498,18 +498,18 @@ public class Actor : Entity
         {
             float random = Random.Range(0f, 1f);
 
-            if (item._item.data.integrityCurrent > 0 && random <= item.dropChance)
+            if (item._item.itemData.data.integrityCurrent > 0 && random <= item.dropChance)
             {
-                InventoryControl.inst.DropItemOnFloor(item._item.data);
+                InventoryControl.inst.DropItemOnFloor(item._item.itemData.data);
             }
         }
         foreach (BotArmament item in this.botInfo.components.ToList())
         {
             float random = Random.Range(0f, 1f);
 
-            if (item._item.data.integrityCurrent > 0 && random <= item.dropChance)
+            if (item._item.itemData.data.integrityCurrent > 0 && random <= item.dropChance)
             {
-                InventoryControl.inst.DropItemOnFloor(item._item.data);
+                InventoryControl.inst.DropItemOnFloor(item._item.itemData.data);
             }
         }
 
