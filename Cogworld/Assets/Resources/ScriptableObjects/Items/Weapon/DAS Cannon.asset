@@ -18,7 +18,12 @@ MonoBehaviour:
     Name: 
     Id: 81
     stackable: 0
+    amount: 1
     itemData: {fileID: 11400000}
+    state: 1
+    integrityCurrent: 0
+    isOverloaded: 0
+    corrupted: 0
   knowByPlayer: 0
   floorDisplay: {fileID: -1211677490, guid: b3493236a11a6f94cbdaeccb12a50cea, type: 3}
   inventoryDisplay: {fileID: -1211677490, guid: b3493236a11a6f94cbdaeccb12a50cea, type: 3}
@@ -30,16 +35,15 @@ MonoBehaviour:
   mass: 30
   rating: 7
   star: 1
-  integrityCurrent: 300
   integrityMax: 300
   coverage: 220
-  state: 0
   schematicDetails:
     hackable: 0
     location:
     - {x: 1, y: -10}
     - {x: 2, y: -10}
     - {x: 3, y: -10}
+    hasSchematic: 0
   hasUpkeep: 0
   energyUpkeep: 0
   matterUpkeep: 0
@@ -70,14 +74,20 @@ MonoBehaviour:
     damage: {x: 40, y: 70}
     damageType: 0
     critChance: 0.05
-    critType: 5
-    penChance: 0
+    critType: 4
+    penChance: {x: 0, y: 0, z: 0}
     heatTrasfer: 0
     heatTransferDegree: 0
     spectrum: 0
     hasSpectrum: 0
     disruption: 0
     salvage: -10
+    projectileColor: {r: 1, g: 0, b: 0, a: 1}
+    projectileSprite: {fileID: 0}
+    projectileRotates: 1
+    projectileTrail: 2
+    penetrationCapability: 0
+    penetrationChances: []
   meleeAttack:
     isMelee: 0
     energy: 0
@@ -91,12 +101,31 @@ MonoBehaviour:
     critType: 0
     disruption: 0
     salvage: 0
+    visualAttackTime: 0.5
+    missSound: []
+  explosion:
+    radius: 0
+    damageLow: 0
+    damageHigh: 0
+    falloff: 0
+    damageType: 2
+    spectrum: 0
+    hasSpectrum: 0
+    disruption: 0
+    salvage: 0
+    explosionSounds: []
+    explosionGFX: 0
+  isSpecialAttack: 0
+  specialAttack:
+    datajack: 0
+    stasisBeam: 0
+    tearClaw: 0
   itemEffect: []
+  canOverload: 0
   quality: 2
   itemName: DAS Cannon
   description: A large, high powered cannon used by automated turrets.
-  details:
-    temp: 
+  mechanicalDescription: 
   fabricationInfo:
     canBeFabricated: 0
     amountMadePer: 0

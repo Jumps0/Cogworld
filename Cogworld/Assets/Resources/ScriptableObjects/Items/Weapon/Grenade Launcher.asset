@@ -22,6 +22,8 @@ MonoBehaviour:
     itemData: {fileID: 11400000}
     state: 1
     integrityCurrent: 0
+    isOverloaded: 0
+    corrupted: 0
   knowByPlayer: 1
   floorDisplay: {fileID: -1062765988, guid: 888df3e4d78aa8747aa9841c000c889a, type: 3}
   inventoryDisplay: {fileID: -1062765988, guid: 888df3e4d78aa8747aa9841c000c889a, type: 3}
@@ -41,6 +43,7 @@ MonoBehaviour:
     - {x: 1, y: -10}
     - {x: 2, y: -10}
     - {x: 3, y: -10}
+    hasSchematic: 0
   hasUpkeep: 0
   energyUpkeep: 0
   matterUpkeep: 0
@@ -70,7 +73,7 @@ MonoBehaviour:
     damage: {x: 20, y: 48}
     damageType: 2
     critChance: 0
-    critType: 3
+    critType: 0
     penChance: {x: 0, y: 0, z: 0}
     heatTrasfer: 0
     heatTransferDegree: 0
@@ -99,7 +102,6 @@ MonoBehaviour:
     salvage: 0
     visualAttackTime: 0.5
     missSound: []
-    canDatajack: 0
   explosion:
     radius: 4
     damageLow: 20
@@ -115,7 +117,13 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 20c1b8cac17df7f4787ffebb3dfb5e51, type: 3}
     - {fileID: 8300000, guid: e208c50b4d6b61e4d930ab469cd9528b, type: 3}
     explosionGFX: 1
+  isSpecialAttack: 0
+  specialAttack:
+    datajack: 0
+    stasisBeam: 0
+    tearClaw: 0
   itemEffect: []
+  canOverload: 0
   quality: 2
   itemName: Grenade Launcher
   description: A simple but effected grenade launcher, effective at taking out lightly

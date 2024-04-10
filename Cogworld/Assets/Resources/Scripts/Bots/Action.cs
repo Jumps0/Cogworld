@@ -201,7 +201,6 @@ public static class Action
 
                 bool noCrit = false;
                 List<ArmorType> types = new List<ArmorType>();
-                ItemProjectile projData = weapon.itemData.projectile;
                 // Use the to-hit function
                 (hitChance, noCrit, types) = Action.CalculateMeleeHitChance(source, target.GetComponent<Actor>(), weapon, hitChance);
                 #endregion
@@ -282,14 +281,14 @@ public static class Action
 
                     #region Damage Dealing
                     // - Deal the damage -
-                    if (!noCrit && Random.Range(0f,1f) <= projData.critChance) // Critical hit?
+                    bool crit = false;
+                    if (!noCrit && weapon.itemData.meleeAttack.critType != CritType.Nothing && Random.Range(0f,1f) <= (weapon.itemData.meleeAttack.critical + Action.GatherCritBonuses(source))) // Critical hit?
                     {
-                        // A crit!
-                        // TODO: Crits
+                        crit = true;
                     }
                     if (target.GetComponent<PlayerData>()) // Player being attacked
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData);
+                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, crit);
 
                         // Do a calc message
                         string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHit * 100}%) Hit";
@@ -301,7 +300,7 @@ public static class Action
                     }
                     else // Bot being attacked
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData);
+                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, crit);
 
 
                         // Show a popup that says how much damage occured
@@ -452,14 +451,14 @@ public static class Action
 
                             #region Damage Dealing
                             // - Deal the damage -
-                            if (!noCrit && Random.Range(0f, 1f) <= projData.critChance) // Critical hit?
+                            bool crit = false;
+                            if (!noCrit && weapon.itemData.meleeAttack.critType != CritType.Nothing && Random.Range(0f, 1f) <= (weapon.itemData.meleeAttack.critical + Action.GatherCritBonuses(source))) // Critical hit?
                             {
-                                // A crit!
-                                // TODO: Crits
+                                crit = true;
                             }
                             if (target.GetComponent<PlayerData>()) // Player being attacked
                             {
-                                DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData);
+                                DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, crit);
 
                                 // Do a calc message
                                 string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHit * 100}%) Hit";
@@ -471,7 +470,7 @@ public static class Action
                             }
                             else // Bot being attacked
                             {
-                                DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData);
+                                DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, crit);
 
 
                                 // Show a popup that says how much damage occured
@@ -493,9 +492,6 @@ public static class Action
                         {
                             // - No additional visuals/audio
                         }
-
-                        // Subtract cost
-                        Action.DoWeaponAttackCost(source, weapon);
 
                         #endregion
                     }
@@ -655,6 +651,15 @@ public static class Action
 
         // Finally, subtract the attack cost
         Action.DoWeaponAttackCost(source, weapon);
+
+        // Heat transfer
+        Action.DealHeatTransfer(target.GetComponent<Actor>(), weapon);
+
+        // Overloaded consequences
+        if (weapon.isOverloaded)
+        {
+            Action.OverloadedConsequences(source, weapon);
+        }
 
         source.momentum = 0;
         TurnManager.inst.EndTurn(source); // Alter this later
@@ -827,16 +832,14 @@ public static class Action
                     }
                     #endregion
 
-                    if (!noCrit && rand <= projData.critChance) // Critical hit?
+                    bool crit = false;
+                    if (!noCrit && weapon.itemData.projectile.critType != CritType.Nothing && Random.Range(0f, 1f) <= (projData.critChance + Action.GatherCritBonuses(source))) // Critical hit?
                     {
-                        // "Unlike other parts, armor can never be instantly destroyed by critical strikes, taking 20% more damage instead."
-
-                        // A crit!
-                        // TODO: Crits
+                        crit = true;
                     }
                     if (target.GetComponent<PlayerData>()) // Player being attacked
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData);
+                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, crit);
 
                         // Do a calc message
                         string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Hit";
@@ -848,7 +851,7 @@ public static class Action
                     }
                     else // Bot being attacked
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData);
+                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, crit);
 
 
                         // Show a popup that says how much damage occured
@@ -954,6 +957,15 @@ public static class Action
 
         // After we're done, we need to subtract the cost to fire the specified weapon from the attacker.
         Action.DoWeaponAttackCost(source, weapon);
+
+        // Heat transfer
+        Action.DealHeatTransfer(target.GetComponent<Actor>(), weapon);
+
+        // Overloaded consequences
+        if (weapon.isOverloaded)
+        {
+            Action.OverloadedConsequences(source, weapon);
+        }
 
         source.momentum = 0;
         TurnManager.inst.EndTurn(source); // Alter this later
@@ -2763,7 +2775,7 @@ public static class Action
         UIManager.inst.CreateCombatPopup(actor.gameObject, _message, a, b, c);
     }
 
-    public static void DamageBot(Actor target, int damage, List<ArmorType> protection, ItemObject weapon)
+    public static void DamageBot(Actor target, int damage, List<ArmorType> protection, ItemObject weapon, bool crit = false)
     {
         ItemDamageType damageType = HF.GetDamageType(weapon);
 
@@ -2908,6 +2920,7 @@ public static class Action
         }
         #endregion
 
+        #region Damage Modification
         // Modify damage value if target has resistances
         if (target.botInfo)
         {
@@ -2937,7 +2950,9 @@ public static class Action
                 }
             }
         }
+        #endregion
 
+        #region Hitting Things
         // Roll to what we will hit
         float rand = Random.Range(0f, 1f);
 
@@ -2953,8 +2968,9 @@ public static class Action
         int overflow = 0;
         bool hitPart = false;
         bool armorDestroyed = false;
+        ItemSlot slotHit = ItemSlot.Other;
 
-        // Check which range the random number falls into ||| TODO: WE HERE RN
+        // Check which range the random number falls into
         for (int i = 0; i < cumulativeProbabilities.Count; i++)
         {
             if (rand < cumulativeProbabilities[i])
@@ -2988,7 +3004,7 @@ public static class Action
 
                 // Deal damage
                 (overflow, armorDestroyed) = Action.DamageItem(target, pairs[i].Key.data, damage);
-
+                slotHit = pairs[i].Key.slot;
                 hitPart = true;
             }
         }
@@ -3029,7 +3045,9 @@ public static class Action
                 PlayerData.inst.currentHealth -= damage;
             }
         }
+        #endregion
 
+        #region Damage Overflow
         /* Damage Overflow
         -----------------
         When a part is destroyed by damage that exceeds its remaining integrity, 
@@ -3043,10 +3061,98 @@ public static class Action
             Damage overflow is caused by all weapons except those of the "gun" type, and can overflow through multiple destroyed parts if there is sufficient damage.
         */
 
-        if(hitPart && overflow > 0 && !armorDestroyed)
+        if (hitPart && overflow > 0 && !armorDestroyed)
         {
             Action.DamageBot(target, damage, protection, weapon); // Recursion! (This doesn't strictly target armor first but whatever).
         }
+        #endregion
+
+        #region Crits
+        // https://www.gridsagegames.com/blog/2021/05/design-overhaul-3-damage-types-and-criticals/
+
+        // First off, is what we are targeting immune to crits?
+        foreach (var item in protectiveItems)
+        {
+            if (item.itemEffect[0].armorProtectionEffect.armorEffect_preventCritStrikesVSSlot) // Armor protection
+            {
+                if (item.itemEffect[0].armorProtectionEffect.armorEffect_slotType.ToString().ToLower() == slotHit.ToString().ToLower())
+                {
+                    crit = false;
+                    break;
+                }
+            }
+
+            if (item.itemEffect[0].armorProtectionEffect.critImmunity)
+            {
+                crit = false;
+                break;
+            }
+        }
+
+        if(crit == true && weapon.explosion.radius <= 0) // Is a crit & not an explosion
+        {
+            CritType type = CritType.Nothing;
+            if (weapon.meleeAttack.isMelee) // Melee
+            {
+                type = weapon.meleeAttack.critType;
+            }
+            else // Ranged
+            {
+                type = weapon.projectile.critType;
+            }
+
+            /*  Burn: Significantly increase heat transfer (TH guns)
+                Meltdown: Instantly melt target bot regardless of what part was hit (TH cannons)
+                Destroy: Destroy part/core outright (= the original critical effect) (KI guns)
+                Blast: Also damage a second part and knock it off target, as described above (KI cannons)
+                Corrupt: Maximize system corruption effect (EM guns/cannons)
+                Smash: As Destroy, but gets to also apply an equal amount of damage as overflow damage (impact weapons)
+                Sever: Sever target part, or if hit core also damages and severs a different part (slashing weapons)
+                Puncture: Half of damage automatically transferred to core (piercing weapons)
+                (there are four other crit types associated with the special damage types not covered in this article: Detonate, Sunder, Intensity, and Phase)
+             */
+
+            switch (type)
+            {
+                case CritType.Nothing:
+                    break;
+                case CritType.Burn:
+                    break;
+                case CritType.Meltdown:
+                    break;
+                case CritType.Destroy:
+                    break;
+                case CritType.Blast:
+                    break;
+                case CritType.Corrupt:
+                    break;
+                case CritType.Smash:
+                    break;
+                case CritType.Sever:
+                    /*  One crit of note in terms of design is the “Sever” effect, 
+                     *  which was originally a side effect of slashing damage (using the formula mentioned earlier, damage/3%), 
+                     *  but rather than having yet another separate effect tied to this weapon type, 
+                     *  the crit expansion was a good opportunity to both make it more obvious and decouple the effect from damage, 
+                     *  which is otherwise sometimes limiting when it comes to weapon design, as the ability to sever is then always 
+                     *  tied to the amount of damage dealt. Now it can be a separate static value that’s easier to control for, 
+                     *  naturally at the cost of somewhat nerfing slashing weapons where it was possible to increase raw damage 
+                     *  (and therefore severing chance) via momentum or other buffs.
+                     */
+
+                    break;
+                case CritType.Puncture:
+                    break;
+                case CritType.Detonate:
+                    break;
+                case CritType.Sunder:
+                    break;
+                case CritType.Intensity:
+                    break;
+                case CritType.Phase:
+                    break;
+            }
+        }
+        #endregion
 
         #region Salvage Modifier
         /* How much of a robot remains to salvage when it is destroyed depends on the value of its cumulative "salvage modifier" 
@@ -3056,18 +3162,41 @@ public static class Action
          * while certain types may even raise it, ultimately increasing the likelihood of retrieving useful salvage.
          */
 
-        int salvageMod = 0;
-        if (weapon.meleeAttack.isMelee)
-        {
-            salvageMod = weapon.meleeAttack.salvage;
-        }
-        else
-        {
-            salvageMod = weapon.projectile.salvage;
-        }
-
         if (target.botInfo)
         {
+            int salvageMod = 0;
+            if (weapon.meleeAttack.isMelee) // Melee
+            {
+                salvageMod = weapon.meleeAttack.salvage;
+            }
+            else if(weapon.explosion.radius > 0) // Explosion
+            {
+                salvageMod = weapon.explosion.salvage;
+            }
+            else // Ranged
+            {
+                salvageMod = weapon.projectile.salvage;
+            }
+
+            // Salvage Mod Items
+            foreach (var item in items)
+            {
+                if (item.itemEffect[0].salvageBonus.hasEffect)
+                {
+                    if (item.itemEffect[0].salvageBonus.gunTypeOnly && weapon.type == ItemType.Gun)
+                    {
+                        if (weapon.projectileAmount == 1)
+                        {
+                            salvageMod += item.itemEffect[0].salvageBonus.bonus;
+                        }
+                    }
+                    else if (!item.itemEffect[0].salvageBonus.gunTypeOnly)
+                    {
+                        salvageMod += item.itemEffect[0].salvageBonus.bonus;
+                    }
+                }
+            }
+
             target.salvageModifier += salvageMod;
         }
 
@@ -3186,6 +3315,46 @@ public static class Action
         }
 
         return (overflow, destroyed);
+    }
+
+    public static float GatherCritBonuses(Actor actor)
+    {
+        float bonus = 0f;
+        List<Item> items = Action.CollectAllBotItems(actor);
+
+        bool first = true;
+        bool stacks = true;
+        bool half_stacks = false;
+        foreach (var item in items)
+        {
+            if (item.itemData.itemEffect[0].toHitBuffs.hasEffect)
+            {
+                if (item.itemData.itemEffect[0].toHitBuffs.bonusCritChance)
+                {
+                    float amount = item.itemData.itemEffect[0].toHitBuffs.amount;
+
+                    if (!first && stacks)
+                    {
+                        if (half_stacks)
+                        {
+                            amount /= 2;
+                        }
+
+                        bonus += amount;
+                    }
+
+                    if (first)
+                    {
+                        first = false;
+                    }
+
+                    stacks = item.itemData.itemEffect[0].toHitBuffs.stacks;
+                    half_stacks = item.itemData.itemEffect[0].toHitBuffs.halfStacks;
+                }
+            }
+        }
+
+        return bonus;
     }
 
     public static int AddFlatDamageBonuses(int initialDamage, Actor attacker, Item weapon)
@@ -3882,6 +4051,119 @@ public static class Action
         }
     }
 
+    public static void DealHeatTransfer(Actor victim, Item weapon)
+    {
+        /*  Thermal weapons attempt to transfer ([damageForHeatTransfer] / [originalDamage])% of the maximum heat transfer rating, 
+         *  and also check for possible robot meltdown (the effect of which might be delayed until the robot's next turn).
+         */
+        // TODO: Figure out wtf this means ^
+
+        if (victim == null) // Bots only
+        {
+            return;
+        }
+
+        // Heat transfer goes from 0 --> 3 [None, Low, Medium, High]
+        int level = 0;
+        if (weapon.itemData.itemEffect[0].transferLevel != 0)
+        {
+            level = weapon.itemData.itemEffect[0].transferLevel;
+        }
+        else
+        {
+            return;
+        }
+
+        if(weapon.isOverloaded && level < 3) // Overloaded bonus
+        {
+            level++;
+        }
+
+        int heat = 0;
+        if (weapon.itemData.meleeAttack.isMelee)
+        {
+            heat = weapon.itemData.meleeAttack.heat;
+        }
+        else
+        {
+            heat = weapon.itemData.shot.shotHeat;
+        }
+
+        if(level == 1)
+        {
+            heat = Mathf.RoundToInt(heat * 0.25f); // 25%
+        }
+        else if(level == 2)
+        {
+            heat = Mathf.RoundToInt(heat * 0.5f); // 50%
+        }
+        else if(level == 3)
+        {
+            heat = Mathf.RoundToInt(heat * 0.75f); // 75%
+        }
+
+        // Deal the heat
+        if (victim.botInfo) // Bot
+        {
+            victim.currentHeat += heat;
+        }
+        else // Player
+        {
+            PlayerData.inst.currentHeat += heat;
+        }
+    }
+
+    public static void OverloadedConsequences(Actor actor, Item weapon)
+    {
+        #region Explanation
+        /*  Each such weapon also has a stability rating that determines how likely it is to malfunction if fired while overloaded. 
+         *  The chance is generally not high, but if it does happen the weapon could drain your energy reserves, 
+         *  cause a massive surge of heat, or short circuit other parts.
+         */
+
+        #endregion
+
+        // TODO
+        if (!weapon.itemData.meleeAttack.isMelee && weapon.itemData.shot.hasStability)
+        {
+            float stability = weapon.itemData.shot.shotStability;
+
+            if(Random.Range(0f, 1f) > stability)
+            { // Something happens!
+                string message = "";
+
+                float random = Random.Range(0f, 1f);
+
+                if(random >= 0.8f) // Short Circuit
+                {
+                    Item targetItem = null;
+
+
+                    message = weapon.itemData.itemName + " has caused a short circuit due to being overloaded, damaging " + targetItem.itemData.itemName;
+                }
+                else if (random < 0.8f && random >= 0.4f) // Heat Surge
+                {
+
+
+                    message = weapon.itemData.itemName + " has caused a massive surge in heat due to being overloaded.";
+                }
+                else // Energy Drain
+                {
+
+
+                    message = weapon.itemData.itemName + " has caused a massive drain in energy due to being overloaded.";
+                }
+
+
+                UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
+            }
+        }
+        else
+        {
+            return;
+        }
+    }
+
     public static bool HasResourcesToAttack(Actor attacker, Item weapon)
     {
         int matter = 0;
@@ -3931,6 +4213,67 @@ public static class Action
         {
             return false;
         }
+    }
+
+    public static List<Item> CollectAllBotItems(Actor actor)
+    {
+        List<Item> items = new List<Item>();
+
+        // Collect up all the items
+        if (actor.botInfo) // Bot
+        {
+            foreach (BotArmament item in actor.botInfo.armament)
+            {
+                if (item._item.itemData.data.Id >= 0)
+                {
+                    items.Add(item._item);
+                }
+            }
+
+            foreach (BotArmament item in actor.botInfo.components)
+            {
+                if (item._item.itemData.data.Id >= 0)
+                {
+                    items.Add(item._item);
+                }
+            }
+        }
+        else // Player
+        {
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPower.Container.Items)
+            {
+                if (item.item.itemData.data.Id >= 0)
+                {
+                    items.Add(item.item);
+                }
+            }
+
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items)
+            {
+                if (item.item.itemData.data.Id >= 0)
+                {
+                    items.Add(item.item);
+                }
+            }
+
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items)
+            {
+                if (item.item.itemData.data.Id >= 0)
+                {
+                    items.Add(item.item);
+                }
+            }
+
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invWeapon.Container.Items)
+            {
+                if (item.item.itemData.data.Id >= 0)
+                {
+                    items.Add(item.item);
+                }
+            }
+        }
+
+        return items;
     }
 
     #endregion

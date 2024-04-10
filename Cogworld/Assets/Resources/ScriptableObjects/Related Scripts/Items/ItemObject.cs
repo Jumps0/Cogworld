@@ -393,6 +393,9 @@ public class ItemEffect
 
     [Header("Flat Damage Bonuses")]
     public ItemFlatDamageBonus flatDamageBonus;
+
+    [Header("Salvage Bonuses")]
+    public ItemSalvageBonuses salvageBonus;
 }
 
 public enum ItemQuality
@@ -436,7 +439,8 @@ public class ItemShot
     public float shotTargeting;
     [Tooltip("Each weapon incurs no additional time cost to attack aside from modifying the total attack time by half of their time delay (whether positive or negative).")]
     public int shotDelay;
-    public int shotStability;
+    [Tooltip("0.##%")]
+    public float shotStability;
     public int shotArc;
     public bool hasStability = false;
     public bool hasArc = false;
@@ -470,9 +474,8 @@ public class ItemProjectile // (Disregarded in AOE attacks except for projectile
     public ItemDamageType damageType;
     [Tooltip("In percentage so: 0.##")]
     public float critChance;
-    [Header("Crit Types: 1 = Burn | 2 = Blast | 3 = Destroy \n 4 = Sever | 5 = Blast | 6 = Corrupt")]
-    [Tooltip("1 = Burn | 2 = Blast | 3 = Destroy | 4 = Sever | 5 = Blast | 6 = Corrupt")]
-    public int critType;
+    // https://www.gridsagegames.com/blog/2021/05/design-overhaul-3-damage-types-and-criticals/
+    public CritType critType;
     [Header("x# #/#")]
     [Tooltip("Multiplier - Amount / Amount")]
     public Vector3 penChance;
@@ -521,8 +524,7 @@ public class ItemMeleeAttack
     public ItemDamageType damageType = ItemDamageType.Impact;
     [Tooltip("0.##")]
     public float critical;
-    [Tooltip("1 = Burn | 2 = Blast | 3 = Destroy | 4 = Sever")]
-    public int critType;
+    public CritType critType;
     [Tooltip("0.##")]
     public float disruption;
     public int salvage;
@@ -571,7 +573,7 @@ public class ItemProtectionEffect
     public bool hasEffect = false;
 
     [Header("General Protection")]
-    [Tooltip("None == Core")]
+    [Tooltip("The slot type being protected. | None == Core")]
     public ArmorType armorEffect_slotType;
     [Tooltip("Absorbs 0.##% of damage that would otherwise affect <Slot Type>.")]
     public float armorEffect_absorbtion = 0f;
@@ -607,6 +609,9 @@ public class ItemProtectionEffect
     [Tooltip("Regenerates integrity at a rate of # per turn.")]
     public bool selfRepair = false;
     public int selfRepair_amount = 0;
+
+    [Header("Crit Immunity")] // Basically just Graphene Brace in here
+    public bool critImmunity = false;
 
     public bool stacks = false;
 }
@@ -857,6 +862,15 @@ public class ItemFlatDamageBonus
     public float damageBonus = 0f;
 }
 
+[System.Serializable]
+[Tooltip("Increases salvage recovered from targets, +# modifier. Compatible only with gun-type weapons that fire a single projectile.")]
+public class ItemSalvageBonuses
+{
+    public bool hasEffect = false;
+    public int bonus = 0;
+    public bool gunTypeOnly = true;
+}
+
 #endregion
 
 
@@ -948,6 +962,35 @@ public enum ProjectileTrailStyle
     MissileMinor,
     MissileMajor,
     None
+}
+
+[System.Serializable]
+public enum CritType
+{
+    /*  Burn: Significantly increase heat transfer (TH guns)
+        Meltdown: Instantly melt target bot regardless of what part was hit (TH cannons)
+        Destroy: Destroy part/core outright (= the original critical effect) (KI guns)
+        Blast: Also damage a second part and knock it off target, as described above (KI cannons)
+        Corrupt: Maximize system corruption effect (EM guns/cannons)
+        Smash: As Destroy, but gets to also apply an equal amount of damage as overflow damage (impact weapons)
+        Sever: Sever target part, or if hit core also damages and severs a different part (slashing weapons)
+        Puncture: Half of damage automatically transferred to core (piercing weapons)
+        (there are four other crit types associated with the special damage types not covered in this article: Detonate, Sunder, Intensity, and Phase)
+     */
+
+    Nothing, // Default
+    Burn,
+    Meltdown,
+    Destroy,
+    Blast,
+    Corrupt,
+    Smash,
+    Sever,
+    Puncture,
+    Detonate,
+    Sunder,
+    Intensity,
+    Phase
 }
 
 [System.Serializable]

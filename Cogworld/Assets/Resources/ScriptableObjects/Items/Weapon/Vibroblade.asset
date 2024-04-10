@@ -22,6 +22,8 @@ MonoBehaviour:
     itemData: {fileID: 11400000}
     state: 1
     integrityCurrent: 0
+    isOverloaded: 0
+    corrupted: 0
   knowByPlayer: 0
   floorDisplay: {fileID: 1832069135, guid: 707e95711a4c98246b820a5a5f6d1167, type: 3}
   inventoryDisplay: {fileID: 1832069135, guid: 707e95711a4c98246b820a5a5f6d1167, type: 3}
@@ -41,6 +43,7 @@ MonoBehaviour:
     - {x: 1, y: -3}
     - {x: 2, y: -4}
     - {x: 3, y: -5}
+    hasSchematic: 0
   hasUpkeep: 0
   energyUpkeep: 0
   matterUpkeep: 0
@@ -71,8 +74,8 @@ MonoBehaviour:
   projectile:
     damage: {x: 10, y: 15}
     damageType: 0
-    critChance: 0.01
-    critType: 3
+    critChance: 0.3
+    critType: 7
     penChance: {x: 0, y: 0, z: 0}
     heatTrasfer: 0
     heatTransferDegree: 0
@@ -81,6 +84,9 @@ MonoBehaviour:
     disruption: 0
     salvage: 0
     projectileColor: {r: 1, g: 0, b: 0, a: 1}
+    projectileSprite: {fileID: 0}
+    projectileRotates: 1
+    projectileTrail: 2
     penetrationCapability: 0
     penetrationChances: []
   meleeAttack:
@@ -110,7 +116,15 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    explosionSounds: []
+    explosionGFX: 0
+  isSpecialAttack: 0
+  specialAttack:
+    datajack: 0
+    stasisBeam: 0
+    tearClaw: 0
   itemEffect: []
+  canOverload: 0
   quality: 2
   itemName: Vibroblade
   description: A high damage slashing weapon comprised of a blade vibrating at extreme
