@@ -180,7 +180,6 @@ public class GameManager : MonoBehaviour
     [Tooltip("Goes from 0 to 1200+, see GameManager.cs for details")]
     public int alertValue = 0;
 
-
     public void AddEntity(Entity entity)
     {
         entities.Add(entity);

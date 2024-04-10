@@ -576,8 +576,8 @@ public class MapManager : MonoBehaviour
         Actor testBot = PlaceBot(new Vector2Int(bl.x + 12, bl.y + 5), 9);
         // test custom terminal
         PlaceIndividualMachine(new Vector2Int(bl.x + 9, bl.y + 11), 7, 0); // Terminal 1x1 Shop
-        // test mine
-        PlaceMine(new Vector2Int(bl.x + 5, bl.y + 11), TrapType.Blade);
+        // test trap
+        PlaceTrap(MapManager.inst.itemDatabase.Items[103], new Vector2Int(bl.x + 5, bl.y + 11));
     }
 
     #endregion
@@ -2890,13 +2890,13 @@ public class MapManager : MonoBehaviour
 
     #region Misc
 
-    public void PlaceMine(Vector2Int location, TrapType type, BotRelation alignment = BotRelation.Hostile)
+    public void PlaceTrap(ItemObject trapData, Vector2Int location, BotAlignment alignment = BotAlignment.Complex)
     {
         var spawnedMine = Instantiate(minePrefab, new Vector3(location.x * GridManager.inst.globalScale, location.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
         spawnedMine.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
-        spawnedMine.name = $"Floor Trap {location.x} {location.y} - {type}"; // Give grid based name
+        spawnedMine.name = $"Floor Trap {location.x} {location.y} - {trapData.deployableItem.trapType}"; // Give grid based name
 
-        spawnedMine.GetComponent<FloorTrap>().Setup(location, type, _allTilesRealized[location], alignment);
+        spawnedMine.GetComponent<FloorTrap>().Setup(trapData, location, _allTilesRealized[location], alignment);
 
         _layeredObjsRealized[location] = spawnedMine.gameObject;
 

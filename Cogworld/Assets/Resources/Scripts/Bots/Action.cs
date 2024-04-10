@@ -684,12 +684,12 @@ public static class Action
 
         ItemShot shotData = weapon.itemData.shot;
 
-        if (weapon.itemData.explosion.radius > 0) // AOE Attacks
+        if (weapon.itemData.explosionDetails.radius > 0) // AOE Attacks
         {
             List<GameObject> targets = new List<GameObject>();
 
-            int falloff = weapon.itemData.explosion.falloff;
-            int radius = weapon.itemData.explosion.radius;
+            int falloff = weapon.itemData.explosionDetails.fallOff;
+            int radius = weapon.itemData.explosionDetails.radius;
             Vector2Int center = new Vector2Int(Mathf.RoundToInt(target.transform.position.x), Mathf.RoundToInt(target.transform.position.y));
             List<Vector2Int> effectedTiles = new List<Vector2Int>();
 
@@ -1147,7 +1147,7 @@ public static class Action
 
                 #region Damage Calculation
                 // Deal Damage to the target
-                int damageAmount = (int)Random.Range(attackData.damageLow, attackData.damageHigh);
+                int damageAmount = (int)Random.Range(weapon.itemData.explosionDetails.damage.x, weapon.itemData.explosionDetails.damage.y);
 
                 // Consider any flat damage bonuses
                 damageAmount = Action.AddFlatDamageBonuses(damageAmount, source, weapon);
@@ -1236,7 +1236,7 @@ public static class Action
 
             #region Damage Calculation
             // Calculate Damage
-            int damageAmount = (int)Random.Range(attackData.damageLow, attackData.damageHigh);
+            int damageAmount = (int)Random.Range(weapon.itemData.explosionDetails.damage.x, weapon.itemData.explosionDetails.damage.y);
 
             // Consider any flat damage bonuses
             damageAmount = Action.AddFlatDamageBonuses(damageAmount, source, weapon);
@@ -1272,7 +1272,7 @@ public static class Action
         {
             #region Damage Calculation
             // Calculate Damage
-            int damageAmount = (int)Random.Range(attackData.damageLow, attackData.damageHigh);
+            int damageAmount = (int)Random.Range(weapon.itemData.explosionDetails.damage.x, weapon.itemData.explosionDetails.damage.y);
 
             // Consider any flat damage bonuses
             damageAmount = Action.AddFlatDamageBonuses(damageAmount, source, weapon);
@@ -1967,15 +1967,13 @@ public static class Action
     {
         Item weapon = null;
 
-        // We are just checking to see that the explosion effect on their weapon has a radius greater than 0.
-
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
             foreach (BotArmament item in actor.botInfo.armament)
             {
                 if (item._item.itemData.data.Id >= 0)
                 {
-                    if (item._item.itemData.explosion.radius > 0 && item._item.itemData.data.state)
+                    if (item._item.itemData.type == ItemType.Launcher && item._item.itemData.data.state)
                     {
                         weapon = item._item.itemData.data;
                         return weapon;
@@ -1991,7 +1989,7 @@ public static class Action
             {
                 if (item.item.Id >= 0)
                 {
-                    if (item.item.itemData.explosion.radius > 0 && item.item.state)
+                    if (item.item.itemData.type == ItemType.Launcher && item.item.state)
                     {
                         weapon = item.item;
                         return weapon;
@@ -3193,7 +3191,7 @@ public static class Action
 
         bool burnCrit = false;
         bool corruptCrit = false;
-        if(crit == true && weapon.explosion.radius <= 0) // Is a crit & not an explosion
+        if(crit == true && weapon.explosionDetails.radius <= 0) // Is a crit & not an explosion
         {
             CritType type = CritType.Nothing;
             if (weapon.meleeAttack.isMelee) // Melee
@@ -3406,19 +3404,7 @@ public static class Action
 
         if (target.botInfo)
         {
-            int salvageMod = 0;
-            if (weapon.meleeAttack.isMelee) // Melee
-            {
-                salvageMod = weapon.meleeAttack.salvage;
-            }
-            else if(weapon.explosion.radius > 0) // Explosion
-            {
-                salvageMod = weapon.explosion.salvage;
-            }
-            else // Ranged
-            {
-                salvageMod = weapon.projectile.salvage;
-            }
+            int salvageMod = HF.GetSalvageMod(weapon.data);
 
             // Salvage Mod Items
             foreach (var item in items)
@@ -4370,9 +4356,9 @@ public static class Action
 
         // Heat transfer goes from 0 --> 4 [None, Low, Medium, High, Massive]
         int level = 0;
-        if (weapon.itemData.itemEffect[0].transferLevel != 0)
+        if (weapon.itemData.itemEffect[0].heatTransfer != 0)
         {
-            level = weapon.itemData.itemEffect[0].transferLevel;
+            level = weapon.itemData.itemEffect[0].heatTransfer;
         }
         else
         {

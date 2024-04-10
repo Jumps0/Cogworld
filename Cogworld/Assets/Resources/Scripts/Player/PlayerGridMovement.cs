@@ -284,7 +284,7 @@ public class PlayerGridMovement : MonoBehaviour
                 {
                     // There is a trap here!
                     FloorTrap trap = MapManager.inst._layeredObjsRealized[moveTarget].GetComponent<FloorTrap>();
-                    if(trap.alignment != BotRelation.Friendly && trap.active && !trap.tripped)
+                    if(HF.RelationToTrap(this.GetComponent<Actor>(), trap) != BotRelation.Friendly && trap.active && !trap.tripped)
                     {
                         HF.AttemptTriggerTrap(trap, PlayerData.inst.gameObject);
                     }

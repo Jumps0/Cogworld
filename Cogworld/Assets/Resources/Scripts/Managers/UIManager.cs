@@ -4658,12 +4658,12 @@ public class UIManager : MonoBehaviour
                 StartCoroutine(Scan_SubmodeAnimate());
 
                 // - The square - here it indicates if this trap is friendly or not
-                if (focusObj.GetComponent<FloorTrap>().alignment != BotRelation.Friendly) 
+                if (HF.RelationToTrap(PlayerData.inst.GetComponent<Actor>(), focusObj.GetComponent<FloorTrap>()) != BotRelation.Friendly) 
                 {
                     scanSubImage.color = dangerRed;
                     scanSubTextA.color = dangerRed;
                 }
-                else if (focusObj.GetComponent<FloorTrap>().alignment != BotRelation.Hostile)
+                else if (HF.RelationToTrap(PlayerData.inst.GetComponent<Actor>(), focusObj.GetComponent<FloorTrap>()) != BotRelation.Hostile)
                 {
                     scanSubImage.color = activeGreen;
                     scanSubTextA.color = highGreen;

@@ -35,7 +35,7 @@ public class CFXManager : MonoBehaviour
         Dictionary<Vector2Int, GameObject> allTiles = new Dictionary<Vector2Int, GameObject>();
 
         ExplosionGFX gfx = weapon.explosion.explosionGFX;
-        int radius = weapon.explosion.radius;
+        int radius = weapon.explosionDetails.radius;
 
         /*
          *  >> We have many different types of explosion <<
@@ -121,7 +121,7 @@ public class CFXManager : MonoBehaviour
                 {
                     GameObject tileObject = tiles[tilePos];
                     float distance = Vector2Int.Distance(tilePos, center);
-                    float normalizedDistance = distance / weapon.explosion.radius;
+                    float normalizedDistance = distance / weapon.explosionDetails.radius;
 
                     Color tileColor = AdjustColor(e_orange, normalizedDistance); // Tiles are orange
 
@@ -183,7 +183,7 @@ public class CFXManager : MonoBehaviour
                 {
                     GameObject tileObject = tiles[tilePos];
                     float distance = Vector2Int.Distance(tilePos, center);
-                    float normalizedDistance = distance / weapon.explosion.radius;
+                    float normalizedDistance = distance / weapon.explosionDetails.radius;
 
                     Color tileColor = AdjustColor(e_orange, normalizedDistance); // Tiles are orange
 

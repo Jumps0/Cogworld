@@ -45,6 +45,7 @@ public enum ItemSlot
     Propulsion,
     Utilities,
     Weapons,
+    Inventory,
     Other // Mostly traps
 }
 
@@ -204,6 +205,10 @@ public abstract class ItemObject : ScriptableObject
 
     [Header("Explosion")]
     public ItemExplosion explosion;
+    public ExplosionGeneric explosionDetails;
+
+    [Header("Deployable Item")]
+    public ItemDeployable deployableItem;
 
     [Header("Special Attacks")]
     [Tooltip("A non-damaging special case such as Datajacks, Stasis Beams, Tearclaws, etc.")]
@@ -238,23 +243,12 @@ public abstract class ItemObject : ScriptableObject
 [System.Serializable]
 public class ItemEffect
 {
+    [Header("Heat Transfer Level")]
+    [Tooltip("Heat Transfer level: 0 --> 4 [None, Low, Medium, High, Massive]")]
+    public int heatTransfer = 0;
+
     [Header("Chain Reaction Explosive")]
     public bool chainExplode = false;
-    [Tooltip("How much damage this can do, low/high.")]
-    public Vector2 damage;
-    public ItemDamageType chainDamageType;
-    public int radius;
-    [Tooltip("??? A range of X --> Y")]
-    public Vector2 chunks;
-    public int fallOff;
-    public int salvage;
-    [Header("Heat Transfer")]
-    [Tooltip("Heat Transfer level: 0 --> 4 [None, Low, Medium, High, Massive]")]
-    public int transferLevel;
-    [Tooltip("0.##")]
-    public float disruption = 0f;
-    [Tooltip("0 = None, 1 = Short, 2 = Wide, 3 = Long")]
-    public int spectrum = 0;
 
     [Header("Heat Dissipation")]
     public bool doesHeatDissip = false;
@@ -540,22 +534,96 @@ public class ItemMeleeAttack
 [System.Serializable]
 public class ItemExplosion
 {
-    // Explosion
-    public int radius = 0;
-    public int damageLow;
-    public int damageHigh;
-    public int falloff;
-    public ItemDamageType damageType = ItemDamageType.Explosive;
-    public int spectrum;
-    public bool hasSpectrum = false;
-    public float disruption;
-    public int salvage;
-
     [Header("Audio")]
     public List<AudioClip> explosionSounds;
     [Header("Visuals")]
     public ExplosionGFX explosionGFX;
 
+}
+
+[System.Serializable]
+[Tooltip("Things like turrets, timed charges, and mines. Stored in the Inventory only.")]
+public class ItemDeployable
+{
+    [Header("Details")]
+    public bool deployable = false;
+    public DeployableType type;
+
+    /*
+    [Header("Turrets")]
+
+    [Header("Charges")]
+
+    */
+    [Header("Traps")]
+    public TrapType trapType;
+    // Sever
+    public bool canSever = false;
+    public Vector2Int sever_amount;
+    [Tooltip("0.##% | Damaging each by ##-##% of remaining integrity.")]
+    public Vector2 sever_damage;
+    // Shock
+    public bool canShock = false;
+    [Tooltip("Percent range of corruption dealt. 0.##%")]
+    public Vector2 shock_amount;
+    // Burn
+    public bool canBurn = false;
+    public Vector2Int burn_amount;
+    public Vector2Int burn_damage;
+    public Vector2Int burn_heat;
+    public bool burn_affectsNeighbors = false;
+    // Pierce
+    public bool canPierce = false;
+    public int pierce_amount;
+    public Vector2Int pierce_damage;
+    [Tooltip("0.##%")]
+    public float pierce_impaleChance;
+    // Stasis
+    public bool canStasis = false;
+    [Tooltip("Default is 100")]
+    public int stasis_strength;
+
+}
+
+[System.Serializable]
+public class ExplosionGeneric
+{
+    [Header("Explosion Type")]
+    [Tooltip("Usually for launchers and whatnot")]
+    public bool isGeneral = false;
+    [Tooltip("Explosion as an effect. Not that common.")]
+    public bool isEffect = false;
+    [Tooltip("For deployable things like mines and charges.")]
+    public bool isDeployable = false;
+
+    [Header("Details")]
+    public ItemDamageType damageType;
+    [Tooltip("Low-High")]
+    public Vector2Int damage;
+    public int radius = 0;
+    public int fallOff = 0;
+    public Vector2Int chunks;
+    public int salvage;
+    
+    [Tooltip("0.##")]
+    public float disruption = 0f;
+
+    public bool hasSpectrum = false;
+    [Tooltip("0 = None, 1 = Short, 2 = Wide, 3 = Long")]
+    public int spectrum = 0;
+
+    [Header("Directional")]
+    public bool directional = false;
+    public float d_arc; // Usually 90 degrees
+    public int d_distance;
+}
+
+[System.Serializable]
+public enum DeployableType
+{
+    Turret,
+    Charge,
+    Trap
 }
 
 [System.Serializable]

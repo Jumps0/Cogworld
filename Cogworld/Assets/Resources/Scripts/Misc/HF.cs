@@ -10,6 +10,7 @@ using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.Windows;
+using static Unity.VisualScripting.Member;
 using static UnityEngine.GraphicsBuffer;
 using Random = UnityEngine.Random;
 using Vector2 = UnityEngine.Vector2;
@@ -796,7 +797,7 @@ public static class HF
                             }
                             foreach (FloorTrap T in traps)
                             {
-                                T.SetAlignment(BotRelation.Friendly); // Delightfully devilish Seymour
+                                T.SetAlignment(BotAlignment.Player); // Delightfully devilish Seymour
                             }
 
                             return HF.RemoveTrailingNewline(print);
@@ -1678,6 +1679,24 @@ public static class HF
                 {
                     relationToTarget = T.Item2;
                 }
+            }
+        }
+
+        return relationToTarget;
+    }
+
+    public static BotRelation RelationToTrap(Actor bot, FloorTrap trap)
+    {
+        BotRelation relationToTarget = BotRelation.Neutral;
+
+        BotAlignment trapAlignment = trap.alignment;
+        Allegance tree = bot.allegances;
+
+        foreach ((BotAlignment, BotRelation) T in tree.alleganceTree)
+        {
+            if (T.Item1 == trapAlignment)
+            {
+                relationToTarget = T.Item2;
             }
         }
 
@@ -3270,6 +3289,31 @@ public static class HF
         }
 
         return null;
+    }
+
+    public static int GetSalvageMod(Item item)
+    {
+        int salvage = 0;
+
+        // We can find this salvage mod buried in various things:
+        // - Melee attacks
+        // - Projectile
+        // - Explosions
+
+        if (item.itemData.meleeAttack.isMelee)
+        {
+            salvage = item.itemData.meleeAttack.salvage;
+        }
+        else if (item.itemData.projectile.damage.x > 0)
+        {
+            salvage = item.itemData.projectile.salvage;
+        }
+        else if (item.itemData.explosionDetails.isGeneral || item.itemData.explosionDetails.isDeployable || item.itemData.explosionDetails.isEffect)
+        {
+            salvage = item.itemData.explosionDetails.salvage;
+        }
+
+        return salvage;
     }
 
     #endregion

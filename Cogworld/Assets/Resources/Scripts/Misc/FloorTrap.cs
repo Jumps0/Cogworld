@@ -15,11 +15,10 @@ public class FloorTrap : MonoBehaviour
 {
     [Header("Information")]
     public Vector2Int location;
-    public TrapType type;
     public string fullName;
     private Color setColor;
-    [Tooltip("Where belongs to: Hostile = 0b10 | Neutral = None(attacks all) | Friendly = Derelict/Player")]
-    public BotRelation alignment; // Hostile, Neutral, Friendly, Default
+    [Tooltip("What faction this trap belongs to, will detonate vs all other hostile factions via player's tree.")]
+    public BotAlignment alignment;
     public TerminalZone zone;
 
     public bool tripped = false;
@@ -29,6 +28,8 @@ public class FloorTrap : MonoBehaviour
     [Header("Assignments")]
     public TileBlock assignedTile;
     public SpriteRenderer _sprite;
+    public ItemObject trapData;
+    public TrapType type;
 
     [Header("Colors")]
     public Color C_alarm;
@@ -95,10 +96,11 @@ public class FloorTrap : MonoBehaviour
 
     #endregion
 
-    public void Setup(Vector2Int loc, TrapType setType, TileBlock tile, BotRelation alignmentN)
+    public void Setup(ItemObject data, Vector2Int loc, TileBlock tile, BotAlignment alignmentN)
     {
+        trapData = data;
         location = loc;
-        type = setType;
+        type = data.deployableItem.trapType;
         assignedTile = tile;
         alignment = alignmentN;
 
@@ -172,7 +174,7 @@ public class FloorTrap : MonoBehaviour
         AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[101]);
     }
 
-    public void SetAlignment(BotRelation newA)
+    public void SetAlignment(BotAlignment newA)
     {
         alignment = newA;
     }
@@ -270,7 +272,7 @@ public class FloorTrap : MonoBehaviour
     /// <summary>
     /// Arms a trap, making it a threat to whichever alignment it is set to.
     /// </summary>
-    public void ActivateTrap(BotRelation newA)
+    public void ActivateTrap(BotAlignment newA)
     {
         active = true;
         alignment = newA;

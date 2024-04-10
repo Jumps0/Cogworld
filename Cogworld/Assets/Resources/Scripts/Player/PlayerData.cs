@@ -595,7 +595,7 @@ public class PlayerData : MonoBehaviour
                 LTH_Clear(); // Clear any pre-existing tiles
 
                 // - First off lets gather all the tiles (in a square) that are around the target tile, and within range.
-                int range = launcher.itemData.explosion.radius;
+                int range = launcher.itemData.explosionDetails.radius;
                 Vector2Int target = new Vector2Int(Mathf.RoundToInt(mousePosition.x), Mathf.RoundToInt(mousePosition.y));
                 Vector2Int BL_corner = new Vector2Int(target.x - range, target.y - range);
 
@@ -1342,7 +1342,7 @@ public class PlayerData : MonoBehaviour
                     else
                     {
                         // Is this is standard ranged attack or an AOE attack?
-                        if (equippedWeapon.itemData.explosion.radius > 0) // It's an AOE attack, we need to handle things slightly differently.
+                        if (equippedWeapon.itemData.explosionDetails.radius > 0) // It's an AOE attack, we need to handle things slightly differently.
                         {
                             // Firstly, the target is wherever the player's mouse is.
                             GameObject target = HF.GetTargetAtPosition(HF.V3_to_V2I(Camera.main.ScreenToWorldPoint(Input.mousePosition)));

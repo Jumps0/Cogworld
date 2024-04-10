@@ -1,0 +1,158 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
+  m_Name: Blade Trap
+  m_EditorClassIdentifier: 
+  instantUnique: 0
+  amount: 1
+  data:
+    Name: 
+    Id: 103
+    stackable: 0
+    amount: 1
+    itemData: {fileID: 11400000}
+    state: 1
+    integrityCurrent: 0
+    isOverloaded: 0
+    corrupted: 0
+  knowByPlayer: 0
+  floorDisplay: {fileID: 1848404217, guid: 29b93740c1620a54b8cc50531ce485a5, type: 3}
+  inventoryDisplay: {fileID: 1848404217, guid: 29b93740c1620a54b8cc50531ce485a5, type: 3}
+  asciiRep: {fileID: -1108843116, guid: bbf1a054510493147ace67589225c41a, type: 3}
+  itemColor: {r: 0.5943396, g: 0.5943396, b: 0.5943396, a: 1}
+  type: 25
+  slot: 4
+  slotsRequired: 1
+  mass: 0
+  rating: 1
+  star: 0
+  prototype: 0
+  integrityMax: 10
+  coverage: 0
+  schematicDetails:
+    hackable: 0
+    location: []
+    hasSchematic: 0
+  hasUpkeep: 0
+  energyUpkeep: 0
+  matterUpkeep: 0
+  heatUpkeep: 0
+  supply: 0
+  storage: 0
+  power_HasStability: 0
+  power_stability: 0
+  propulsion: []
+  shot:
+    shotRange: 0
+    shotEnergy: 0
+    shotMatter: 0
+    shotHeat: 0
+    shotRecoil: 0
+    shotTargeting: 0
+    shotDelay: 0
+    shotStability: 0
+    shotArc: 0
+    hasStability: 0
+    hasArc: 0
+    shotSound: []
+  projectileAmount: 0
+  projectile:
+    damage: {x: 0, y: 0}
+    damageType: 0
+    critChance: 0.5
+    critType: 3
+    penChance: {x: 0, y: 0, z: 0}
+    heatTrasfer: 0
+    heatTransferDegree: 0
+    spectrum: 0
+    hasSpectrum: 0
+    disruption: 0
+    salvage: 4
+    projectileColor: {r: 1, g: 0, b: 0, a: 1}
+    projectileSprite: {fileID: 0}
+    projectileRotates: 1
+    projectileTrail: 2
+    penetrationCapability: 0
+    penetrationChances: []
+  meleeAttack:
+    isMelee: 0
+    energy: 0
+    matter: 0
+    heat: 0
+    targeting: 0
+    delay: 0
+    damage: {x: 0, y: 0}
+    damageType: 6
+    critical: 0
+    critType: 0
+    disruption: 0
+    salvage: 0
+    visualAttackTime: 0.5
+    missSound: []
+  explosion:
+    explosionSounds: []
+    explosionGFX: 0
+  explosionDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
+    damageType: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
+    salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+  deployableItem:
+    deployable: 1
+    type: 2
+    trapType: 1
+    canSever: 1
+    sever_amount: {x: 1, y: 3}
+    sever_damage: {x: 0.12, y: 0.2}
+    canShock: 0
+    shock_amount: {x: 0, y: 0}
+    canBurn: 0
+    burn_amount: {x: 0, y: 0}
+    burn_damage: {x: 0, y: 0}
+    burn_heat: {x: 0, y: 0}
+    burn_affectsNeighbors: 0
+    canPierce: 0
+    pierce_amount: 0
+    pierce_damage: {x: 0, y: 0}
+    pierce_impaleChance: 0
+    canStasis: 0
+    stasis_strength: 0
+  isSpecialAttack: 0
+  specialAttack:
+    datajack: 0
+    stasisBeam: 0
+    tearClaw: 0
+  itemEffect: []
+  canOverload: 0
+  quality: 2
+  itemName: Blade Trap
+  description: "Severs 1-3 components from victim, damaging each by 12-20% of remaining
+    integrity. Drop on the ground and use \u1433 or right-click on self to install
+    trap."
+  mechanicalDescription: 
+  fabricationInfo:
+    canBeFabricated: 1
+    amountMadePer: 4
+    fabTime: {x: 75, y: 50, z: 25}
+    matterCost: 50
+    componenetsRequired: []
