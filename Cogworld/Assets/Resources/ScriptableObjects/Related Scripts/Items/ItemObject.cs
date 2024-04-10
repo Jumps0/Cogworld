@@ -163,9 +163,11 @@ public abstract class ItemObject : ScriptableObject
     public int slotsRequired = 1;
 
     public int mass;
+    [Tooltip("Goes from 1 to 10")]
     public int rating;
     [Tooltip("If this item has a star * next to its rating, generally means it is better.")]
     public bool star = false;
+    public bool prototype = false;
     public int integrityMax;
     [Tooltip("Percentage value.")]
     public int coverage;
@@ -247,7 +249,7 @@ public class ItemEffect
     public int fallOff;
     public int salvage;
     [Header("Heat Transfer")]
-    [Tooltip("Heat Transfer level: 0 --> 3 [None, Low, Medium, High]")]
+    [Tooltip("Heat Transfer level: 0 --> 4 [None, Low, Medium, High, Massive]")]
     public int transferLevel;
     [Tooltip("0.##")]
     public float disruption = 0f;
@@ -480,7 +482,7 @@ public class ItemProjectile // (Disregarded in AOE attacks except for projectile
     [Tooltip("Multiplier - Amount / Amount")]
     public Vector3 penChance;
     public int heatTrasfer;
-    [Tooltip("1 = Low | 2 = Medium | 3 = High | 4 = Massive")]
+    [Tooltip("0 = None | 1 = Low | 2 = Medium | 3 = High | 4 = Massive")]
     public int heatTransferDegree;
     public int spectrum;
     public bool hasSpectrum = false;
@@ -584,12 +586,13 @@ public class ItemProtectionEffect
     [Tooltip("Can(not) protect against overflow damage.")]
     public bool armorEffect_preventOverflowDamage = false;
 
-    [Header("Protection Exchange")]
+    [Header("Protection Exchange (Shields)")]
     public bool projectionExchange = false;
     [Tooltip("Blocks 0.##%")]
     public float pe_blockPercent = 0f;
     [Tooltip("Blocks ##% of damage to this part in exchange for energy loss at a #:# ratio (no effect if insufficient energy).")]
     public Vector2 pe_exchange = new Vector2(1, 1);
+    public bool pe_includeVisibileAllies = false;
 
     [Header("High Coverage")]
     [Tooltip("Protects other parts via high coverage.")]
@@ -942,7 +945,8 @@ public enum ItemDamageType
     Phasic,
     Impact,
     Slashing,
-    Piercing
+    Piercing,
+    Entropic
 }
 
 [System.Serializable]
@@ -989,8 +993,9 @@ public enum CritType
     Puncture,
     Detonate,
     Sunder,
-    Intensity,
-    Phase
+    Intensify,
+    Phase,
+    Impale
 }
 
 [System.Serializable]

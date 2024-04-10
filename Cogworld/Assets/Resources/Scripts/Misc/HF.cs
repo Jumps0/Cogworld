@@ -3223,6 +3223,55 @@ public static class HF
         return adjacentPositions;
     }
 
+    public static InventoryObject FindPlayerInventoryFromItem(Item item)
+    {
+        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invPower.Container.Items.ToList())
+        {
+            if (I.item.itemData.data.Id >= 0)
+            {
+                if (I.item == item)
+                {
+                    return PlayerData.inst.GetComponent<PartInventory>()._invPower;
+                }
+            }
+        }
+
+        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
+        {
+            if (I.item.itemData.data.Id >= 0)
+            {
+                if (I.item == item)
+                {
+                    return PlayerData.inst.GetComponent<PartInventory>()._invPropulsion;
+                }
+            }
+        }
+
+        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invUtility.Container.Items.ToList())
+        {
+            if (I.item.itemData.data.Id >= 0)
+            {
+                if (I.item == item)
+                {
+                    return PlayerData.inst.GetComponent<PartInventory>()._invUtility;
+                }
+            }
+        }
+
+        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invWeapon.Container.Items.ToList())
+        {
+            if (I.item.itemData.data.Id >= 0)
+            {
+                if (I.item == item)
+                {
+                    return PlayerData.inst.GetComponent<PartInventory>()._invWeapon;
+                }
+            }
+        }
+
+        return null;
+    }
+
     #endregion
 
     #region Floor Traps
@@ -3836,7 +3885,7 @@ public static class HF
         return name;
     }
 
-    public static void ModifyBotAllegance(Actor bot, List<BotRelation> rList)
+    public static void ModifyBotAllegance(Actor bot, List<BotRelation> rList, BotAlignment newFaction)
     {
         bot.allegances.alleganceTree.Clear();
 
@@ -3851,6 +3900,68 @@ public static class HF
         bot.allegances.alleganceTree.Add((BotAlignment.SubcavesHostile, rList[8]));
         bot.allegances.alleganceTree.Add((BotAlignment.Player, rList[9]));
         bot.allegances.alleganceTree.Add((BotAlignment.None, rList[10]));
+
+        bot.myFaction = newFaction;
+    }
+
+    public static List<Actor> GatherVisibleAllies(Actor source)
+    {
+        List<Actor> bots = new List<Actor>();
+
+        List<Actor> visibileBots = new List<Actor>();
+
+        // Gather up all visible bots
+        foreach (Entity bot in GameManager.inst.entities)
+        {
+            if(HF.ActorInBotFOV(source, bot.GetComponent<Actor>()))
+            {
+                visibileBots.Add(bot.GetComponent<Actor>());
+            }
+        }
+
+        // Check if those bots are allied
+        foreach (var bot in visibileBots)
+        {
+            if(source.myFaction == bot.myFaction)
+            {
+                bots.Add(bot);
+            }
+        }
+
+        return bots;
+    }
+
+    public static void RemovePartFromBotInventory(Actor bot, Item item)
+    {
+        if (bot.botInfo) // Bot
+        {
+            foreach (var I in bot.botInfo.components.ToList())
+            {
+                if (I._item.Id >= 0 && I._item == item)
+                {
+                    bot.botInfo.components.Remove(I); // Remove the item
+                    return;
+                }
+            }
+
+            foreach (var I in bot.botInfo.armament.ToList())
+            {
+                if (I._item.Id >= 0 && I._item == item)
+                {
+                    bot.botInfo.components.Remove(I); // Remove the item
+                    return;
+                }
+            }
+
+            foreach (var I in bot.inventory.Container.Items.ToList())
+            {
+                if(I.item == item)
+                {
+                    bot.inventory.RemoveItem(item);
+                    return;
+                }
+            }
+        }
     }
 
     #endregion

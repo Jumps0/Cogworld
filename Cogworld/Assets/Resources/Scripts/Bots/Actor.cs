@@ -22,6 +22,7 @@ public class Actor : Entity
     public UnitAI AI;
     public BotObject botInfo;
     public Allegance allegances;
+    public BotAlignment myFaction;
     public BotClassRefined _class = BotClassRefined.None;
     public bool wasFabricated = false;
 
@@ -97,6 +98,8 @@ public class Actor : Entity
 
                 // Create new inventory
                 inventory = new InventoryObject();
+
+                myFaction = botInfo.locations.alignment;
             }
 
             algorithm = new AdamMilVisibility(); // Set visual algo
@@ -418,7 +421,6 @@ public class Actor : Entity
             if (currentHealth <= 0 || corruption >= 1f)
             {
                 Die();
-                PlayerData.inst.robotsKilled += 1; // TODO: CHANGE THIS LATER TO TELL IF THE PLAYER ACTUALLY GOT THE KILL (not killsteal)
             }
 
             // Shoving this in here too
@@ -478,15 +480,23 @@ public class Actor : Entity
         }
     }
 
-    public void Die()
+    public void Die(string deathMessage = "")
     {
+        PlayerData.inst.robotsKilled += 1; // TODO: CHANGE THIS LATER TO TELL IF THE PLAYER ACTUALLY GOT THE KILL (not killsteal)
+
         if (corruption >= 1f) // This is a corruption death, its kinda different!
         {
             // Make a log message
             string botName = this.botInfo.name;
             if (this.GetComponent<BotAI>().uniqueName != "")
                 botName = this.GetComponent<BotAI>().uniqueName;
-            UIManager.inst.CreateNewLogMessage(botName + " was utterly corrupted.", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
+            string message = botName + " was utterly corrupted.";
+            if(deathMessage != "")
+            {
+                message = deathMessage;
+            }
+
+            UIManager.inst.CreateNewLogMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
 
             // == Drop any remaining parts (/w corruption consideration) == 
             if (!wasFabricated)
@@ -547,7 +557,13 @@ public class Actor : Entity
             string botName = this.botInfo.name;
             if (this.GetComponent<BotAI>().uniqueName != "")
                 botName = this.GetComponent<BotAI>().uniqueName;
-            UIManager.inst.CreateNewLogMessage(botName + " destroyed.", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
+            string message = botName + " destroyed.";
+            if (deathMessage != "")
+            {
+                message = deathMessage;
+            }
+
+            UIManager.inst.CreateNewLogMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
 
             // == Drop any remaining parts ==
             /* The chance for the robot's parts to survive, checked individually for each part, 

@@ -3,13 +3,9 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Net.NetworkInformation;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Unity.VisualScripting;
+using UnityEditor.VersionControl;
 using UnityEngine;
-using static UnityEditor.Progress;
 using static UnityEngine.GraphicsBuffer;
 using Color = UnityEngine.Color;
 
@@ -652,9 +648,6 @@ public static class Action
         // Finally, subtract the attack cost
         Action.DoWeaponAttackCost(source, weapon);
 
-        // Heat transfer
-        Action.DealHeatTransfer(target.GetComponent<Actor>(), weapon);
-
         // Overloaded consequences
         if (weapon.isOverloaded)
         {
@@ -957,9 +950,6 @@ public static class Action
 
         // After we're done, we need to subtract the cost to fire the specified weapon from the attacker.
         Action.DoWeaponAttackCost(source, weapon);
-
-        // Heat transfer
-        Action.DealHeatTransfer(target.GetComponent<Actor>(), weapon);
 
         // Overloaded consequences
         if (weapon.isOverloaded)
@@ -2775,7 +2765,7 @@ public static class Action
         UIManager.inst.CreateCombatPopup(actor.gameObject, _message, a, b, c);
     }
 
-    public static void DamageBot(Actor target, int damage, List<ArmorType> protection, ItemObject weapon, bool crit = false)
+    public static Item DamageBot(Actor target, int damage, List<ArmorType> protection, ItemObject weapon, bool crit = false, int forcedOverflow = 0)
     {
         ItemDamageType damageType = HF.GetDamageType(weapon);
 
@@ -2950,6 +2940,108 @@ public static class Action
                 }
             }
         }
+        int damageA = damage; // Saved for later (Heat transfer)
+
+        // Shields
+        #region Shields
+        foreach (var P in protectiveItems)
+        {
+            if (P.itemEffect[0].armorProtectionEffect.projectionExchange)
+            {
+                float blocks = P.itemEffect[0].armorProtectionEffect.pe_blockPercent;
+                Vector2 exchange = P.itemEffect[0].armorProtectionEffect.pe_exchange;
+
+                // Calculate modification
+                int removed = Mathf.RoundToInt(damage * blocks);
+
+                // Subtract energy
+                int cost = Mathf.RoundToInt(removed * exchange.y);
+
+                int currentEnergy = 0;
+                if (target.botInfo) // Bot
+                {
+                    currentEnergy = target.currentEnergy;
+                }
+                else // Player
+                {
+                    currentEnergy = PlayerData.inst.currentEnergy;
+                }
+
+                // Does the target have the power to cover this?
+                if(currentEnergy >= cost)
+                {
+                    // Yes, alter the damage
+                    damage = damage - removed;
+                    // And remove the power
+                    if (target.botInfo) // Bot
+                    {
+                        target.currentEnergy -= cost;
+                    }
+                    else // Player
+                    {
+                       PlayerData.inst.currentEnergy -= cost;
+                    }
+                }
+            }
+        }
+
+        // Now consider allies with shields
+        List<Actor> allies = HF.GatherVisibleAllies(target);
+
+        // - This is a whole nightmare of nested for loops but we gotta check everything!
+        foreach (var bot in allies)
+        {
+            List<Item> allyItems = Action.CollectAllBotItems(bot);
+
+            foreach (var item in allyItems)
+            {
+                if (item.Id >= 0 && item.itemData.itemEffect[0].armorProtectionEffect.hasEffect && item.itemData.itemEffect[0].armorProtectionEffect.projectionExchange)
+                {
+                    if (item.itemData.itemEffect[0].armorProtectionEffect.pe_includeVisibileAllies)
+                    {
+                        float blocks = item.itemData.itemEffect[0].armorProtectionEffect.pe_blockPercent;
+                        Vector2 exchange = item.itemData.itemEffect[0].armorProtectionEffect.pe_exchange;
+
+                        // Calculate modification
+                        int removed = Mathf.RoundToInt(damage * blocks);
+
+                        // Subtract energy
+                        int cost = Mathf.RoundToInt(removed * exchange.y);
+
+                        int currentEnergy = 0;
+                        if (bot.botInfo) // Bot
+                        {
+                            currentEnergy = bot.currentEnergy;
+                        }
+                        else // Player
+                        {
+                            currentEnergy = PlayerData.inst.currentEnergy;
+                        }
+
+                        // Does the target have the power to cover this?
+                        if (currentEnergy >= cost)
+                        {
+                            // Yes, alter the damage
+                            damage = damage - removed;
+                            // And remove the power
+                            if (target.botInfo) // Bot
+                            {
+                                target.currentEnergy -= cost;
+                            }
+                            else // Player
+                            {
+                                PlayerData.inst.currentEnergy -= cost;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
+        int damageB = damage;
+
+
         #endregion
 
         #region Hitting Things
@@ -2969,6 +3061,7 @@ public static class Action
         bool hitPart = false;
         bool armorDestroyed = false;
         ItemSlot slotHit = ItemSlot.Other;
+        Item hitItem = null;
 
         // Check which range the random number falls into
         for (int i = 0; i < cumulativeProbabilities.Count; i++)
@@ -2998,11 +3091,13 @@ public static class Action
                 if(splitItem != null)
                 {
                     // Deal damage
+                    hitItem = splitItem;
                     Action.DamageItem(target, splitItem, splitDamage);
                 }
 
 
                 // Deal damage
+                hitItem = pairs[i].Key.data;
                 (overflow, armorDestroyed) = Action.DamageItem(target, pairs[i].Key.data, damage);
                 slotHit = pairs[i].Key.slot;
                 hitPart = true;
@@ -3061,6 +3156,11 @@ public static class Action
             Damage overflow is caused by all weapons except those of the "gun" type, and can overflow through multiple destroyed parts if there is sufficient damage.
         */
 
+        if(forcedOverflow > 0)
+        {
+            overflow += forcedOverflow;
+        }
+
         if (hitPart && overflow > 0 && !armorDestroyed)
         {
             Action.DamageBot(target, damage, protection, weapon); // Recursion! (This doesn't strictly target armor first but whatever).
@@ -3078,6 +3178,7 @@ public static class Action
                 if (item.itemEffect[0].armorProtectionEffect.armorEffect_slotType.ToString().ToLower() == slotHit.ToString().ToLower())
                 {
                     crit = false;
+                    UIManager.inst.CreateNewLogMessage("    " + item.itemName + " prevented critical effect.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                     break;
                 }
             }
@@ -3085,10 +3186,13 @@ public static class Action
             if (item.itemEffect[0].armorProtectionEffect.critImmunity)
             {
                 crit = false;
+                UIManager.inst.CreateNewLogMessage("    " + item.itemName + " prevented critical effect.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                 break;
             }
         }
 
+        bool burnCrit = false;
+        bool corruptCrit = false;
         if(crit == true && weapon.explosion.radius <= 0) // Is a crit & not an explosion
         {
             CritType type = CritType.Nothing;
@@ -3117,16 +3221,97 @@ public static class Action
                 case CritType.Nothing:
                     break;
                 case CritType.Burn:
+                    burnCrit = true;
+                    if (target.botInfo)
+                    {
+                        UIManager.inst.CreateNewCalcMessage(target.botInfo.name + " suffers critical burn.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                    }
+                    else
+                    {
+                        UIManager.inst.CreateNewCalcMessage("Critical heat increase detected.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                    }
                     break;
                 case CritType.Meltdown:
+                    if (target.botInfo)
+                    {
+                        target.Die(target.name + " suffers critical meltdown.");
+                    }
+                    else
+                    {
+                        PlayerData.inst.currentHealth = 0;
+                    }
                     break;
                 case CritType.Destroy:
+                    if (!hitPart)
+                    {
+                        // Destroy the core
+                        if (target.botInfo)
+                        {
+                            target.Die(target.name + "'s core has been completely destroyed.");
+                        }
+                        else
+                        {
+                            PlayerData.inst.currentHealth = 0;
+                        }
+                    }
+                    else
+                    {
+                        // Destroy the part if it hasn't been destroyed already
+                        if(hitItem.Id >= 0 && hitItem.integrityCurrent > 0)
+                        {
+                            Action.DestoyItem(target, hitItem);
+                        }
+                    }
                     break;
                 case CritType.Blast:
+                    // Roll again!
+                    Item part = Action.DamageBot(target, damage, protection, weapon, false);
+                    if(part != null)
+                    {
+                        // If the 2nd part survives, forcefully drop it.
+                        if (target.botInfo)
+                        {
+                            HF.RemovePartFromBotInventory(target, part);
+                            InventoryControl.inst.DropItemOnFloor(part, target, null);
+                            
+                        }
+                        else
+                        {
+                            InventoryControl.inst.DropItemOnFloor(part, target, HF.FindPlayerInventoryFromItem(part));
+                        }
+                        UIManager.inst.CreateNewCalcMessage(part.Name + " was blasted off.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                    }
+
                     break;
                 case CritType.Corrupt:
+                    corruptCrit = true;
+                    if (target.botInfo)
+                    {
+                        UIManager.inst.CreateNewCalcMessage(target.botInfo.name + " suffers critical corruption.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                    }
+                    else
+                    {
+                        UIManager.inst.CreateNewCalcMessage("Critical corruption increase detected.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                    }
                     break;
                 case CritType.Smash:
+                    // Roll again!
+                    Item part2 = Action.DamageBot(target, damage, protection, weapon, false, damage);
+                    if (part2 != null)
+                    {
+                        // If the 2nd part survives, forcefully drop it.
+                        if (target.botInfo)
+                        {
+                            HF.RemovePartFromBotInventory(target, part2);
+                            InventoryControl.inst.DropItemOnFloor(part2, target, null);
+                        }
+                        else
+                        {
+                            InventoryControl.inst.DropItemOnFloor(part2, target, HF.FindPlayerInventoryFromItem(part2));
+                        }
+
+                        UIManager.inst.CreateNewCalcMessage(part2.Name + " was smashed off.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                    }
                     break;
                 case CritType.Sever:
                     /*  One crit of note in terms of design is the “Sever” effect, 
@@ -3139,16 +3324,73 @@ public static class Action
                      *  (and therefore severing chance) via momentum or other buffs.
                      */
 
+                    if (!hitPart) // Hit core
+                    {
+                        // Roll again!
+                        Item part3 = Action.DamageBot(target, damage, protection, weapon, false);
+                        if (part3 != null)
+                        {
+                            // If the 2nd part survives, forcefully drop it.
+                            if (target.botInfo)
+                            {
+                                HF.RemovePartFromBotInventory(target, part3);
+                                InventoryControl.inst.DropItemOnFloor(part3, target, null);
+                            }
+                            else
+                            {
+                                InventoryControl.inst.DropItemOnFloor(part3, target, HF.FindPlayerInventoryFromItem(part3));
+                            }
+
+                            UIManager.inst.CreateNewCalcMessage(part3.Name + " was severed.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                        }
+                    }
+                    else // Hit part
+                    {
+                        if (hitItem != null)
+                        {
+                            // If the 2nd part survives, forcefully drop it.
+                            if (target.botInfo)
+                            {
+                                HF.RemovePartFromBotInventory(target, hitItem);
+                                InventoryControl.inst.DropItemOnFloor(hitItem, target, null);
+                            }
+                            else
+                            {
+                                InventoryControl.inst.DropItemOnFloor(hitItem, target, HF.FindPlayerInventoryFromItem(hitItem));
+                            }
+                        }
+                    }
+
                     break;
                 case CritType.Puncture:
+                    // Deal damage to the core
+                    if (target.botInfo)
+                    {
+                        target.currentHealth -= (damage / 2);
+
+                        UIManager.inst.CreateNewCalcMessage(target.botInfo.name + " suffers critical puncture.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                    }
+                    else
+                    {
+                        PlayerData.inst.currentHealth -= (damage / 2);
+
+                        UIManager.inst.CreateNewCalcMessage("Core has suffered critical puncture.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                    }
                     break;
-                case CritType.Detonate:
+                case CritType.Detonate: // Vortex Rail, Vortex Rifle & Vortex Shotgun has this // TODO: Figure out what these mean
+                    // "Entropic reaction triggered in %1."
+                    // "%1 blocked entropic reaction in %2." (shielding power, player only)
                     break;
-                case CritType.Sunder:
+                case CritType.Sunder: // BFG-9k Vortex Edition, Vortex Driver, Vortex Lancer & Vortex Cannon has this
+                    // "[name] %1 ripped off."
                     break;
-                case CritType.Intensity:
+                case CritType.Intensify: // Zio. Phaser-S/M/H have this
                     break;
-                case CritType.Phase:
+                case CritType.Phase: // L-Cannon, Drained L-Cannon, Zio. Alpha-Cannon & Zio. Alpha-Cannon MK.2 has this
+                    // "Damage phase-mirrored to [name] %1."
+                    break;
+                case CritType.Impale: // CR-A16's Behemoth Slayer & A bunch of other piercing weapons have this
+
                     break;
             }
         }
@@ -3201,9 +3443,64 @@ public static class Action
         }
 
         #endregion
+
+        #region EM Damage/Corruption
+        /*  Electromagnetic
+            -----------------
+            Electromagnetic (EM) weapons have less of an impact on integrity, but are capable of corrupting a target's computer systems. 
+            Anywhere from 50 to 150% of damage done is also applied as system corruption. (Cogmind is less susceptible to EM-caused corruption, 
+            but still has a damage% chance to suffer 1 point of system corruption per hit.) EM-based explosions only deal half damage to 
+            inactive items lying on the ground, but can also corrupt them.
+         */
+        if (damageType == ItemDamageType.EMP)
+        {
+            if (target.botInfo) // Bot
+            {
+                float amount = Random.Range(0.5f, 1.5f);
+                if (corruptCrit)
+                {
+                    amount = 1.5f; // Maximized due to crit
+                }
+
+                int corruption = Mathf.RoundToInt(damage * amount);
+                target.corruption += (corruption / 100);
+            }
+            else // Player
+            {
+                float amount = Random.Range(0.5f, 1.5f);
+                if (corruptCrit)
+                {
+                    amount = 1.5f; // Maximized due to crit
+                }
+
+                int corruption = Mathf.RoundToInt(damage * amount);
+                float chance = corruption / 100;
+
+                if(Random.Range(0f, 1f) < chance)
+                {
+                    PlayerData.inst.currentCorruption += 1;
+                }
+            }
+        }
+        #endregion
+
+        #region Heat Transfer
+        // Heat transfer
+        Action.DealHeatTransfer(target.GetComponent<Actor>(), weapon.data, new Vector2Int(damageA, damageB), burnCrit);
+        #endregion
+
+        // If the item has survived, return it
+        if(hitItem.Id >= 0 && hitItem.integrityCurrent > 0)
+        {
+            return hitItem;
+        }
+        else
+        {
+            return null;
+        }
     }
 
-    public static (int, bool) DamageItem(Actor target, Item item, int damage)
+    public static (int, bool) DamageItem(Actor target, Item item, int damage, bool crit = false)
     {
         int overflow = 0;
         bool destroyed = false;
@@ -3219,91 +3516,7 @@ public static class Action
             overflow = -1 * item.integrityCurrent;
             destroyed = true;
 
-            if (target.botInfo) // Bot
-            {
-                foreach (var I in target.botInfo.components.ToList())
-                {
-                    if (I._item.Id >= 0 && I._item == item)
-                    {
-                        target.botInfo.components.Remove(I); // Remove the item
-                        break;
-                    }
-                }
-
-                foreach (var I in target.botInfo.armament.ToList())
-                {
-                    if (I._item.Id >= 0 && I._item == item)
-                    {
-                        target.botInfo.components.Remove(I); // Remove the item
-                        break;
-                    }
-                }
-            }
-            else // Player
-            {
-                foreach (InventorySlot I in target.GetComponent<PartInventory>()._invPower.Container.Items.ToList())
-                {
-                    if (I.item.itemData.data.Id >= 0)
-                    {
-                        if (I.item == item)
-                        {
-                            target.GetComponent<PartInventory>()._invPower.RemoveItem(I.item);
-                            break;
-                        }
-                    }
-                }
-
-                foreach (InventorySlot I in target.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
-                {
-                    if (I.item.itemData.data.Id >= 0)
-                    {
-                        if (I.item == item)
-                        {
-                            target.GetComponent<PartInventory>()._invPropulsion.RemoveItem(I.item);
-                            break;
-                        }
-                    }
-                }
-
-                foreach (InventorySlot I in target.GetComponent<PartInventory>()._invUtility.Container.Items.ToList())
-                {
-                    if (I.item.itemData.data.Id >= 0)
-                    {
-                        if (I.item == item)
-                        {
-                            target.GetComponent<PartInventory>()._invUtility.RemoveItem(I.item);
-                            break;
-                        }
-                    }
-                }
-
-                foreach (InventorySlot I in target.GetComponent<PartInventory>()._invWeapon.Container.Items.ToList())
-                {
-                    if (I.item.itemData.data.Id >= 0)
-                    {
-                        if (I.item == item)
-                        {
-                            target.GetComponent<PartInventory>()._invWeapon.RemoveItem(I.item);
-                            break;
-                        }
-                    }
-                }
-
-                // TODO:
-                // Play a little destruction animation in the UI
-                // Play a UI sound
-
-
-                // "Cogmind automatically recycles 5 matter from each attached part that is destroyed."
-                PlayerData.inst.currentMatter += 5;
-                if(PlayerData.inst.currentMatter > PlayerData.inst.maxMatter)
-                {
-                    PlayerData.inst.currentMatter = PlayerData.inst.maxMatter;
-                }
-
-            }
-
-            item.Id = -1;
+            Action.DestoyItem(target, item, crit);
         }
         else
         {
@@ -3315,6 +3528,97 @@ public static class Action
         }
 
         return (overflow, destroyed);
+    }
+
+    public static void DestoyItem(Actor owner, Item item, bool crit = false)
+    {
+        if (owner.botInfo) // Bot
+        {
+            foreach (var I in owner.botInfo.components.ToList())
+            {
+                if (I._item.Id >= 0 && I._item == item)
+                {
+                    owner.botInfo.components.Remove(I); // Remove the item
+                    break;
+                }
+            }
+
+            foreach (var I in owner.botInfo.armament.ToList())
+            {
+                if (I._item.Id >= 0 && I._item == item)
+                {
+                    owner.botInfo.components.Remove(I); // Remove the item
+                    break;
+                }
+            }
+        }
+        else // Player
+        {
+            foreach (InventorySlot I in owner.GetComponent<PartInventory>()._invPower.Container.Items.ToList())
+            {
+                if (I.item.itemData.data.Id >= 0)
+                {
+                    if (I.item == item)
+                    {
+                        owner.GetComponent<PartInventory>()._invPower.RemoveItem(I.item);
+                        break;
+                    }
+                }
+            }
+
+            foreach (InventorySlot I in owner.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
+            {
+                if (I.item.itemData.data.Id >= 0)
+                {
+                    if (I.item == item)
+                    {
+                        owner.GetComponent<PartInventory>()._invPropulsion.RemoveItem(I.item);
+                        break;
+                    }
+                }
+            }
+
+            foreach (InventorySlot I in owner.GetComponent<PartInventory>()._invUtility.Container.Items.ToList())
+            {
+                if (I.item.itemData.data.Id >= 0)
+                {
+                    if (I.item == item)
+                    {
+                        owner.GetComponent<PartInventory>()._invUtility.RemoveItem(I.item);
+                        break;
+                    }
+                }
+            }
+
+            foreach (InventorySlot I in owner.GetComponent<PartInventory>()._invWeapon.Container.Items.ToList())
+            {
+                if (I.item.itemData.data.Id >= 0)
+                {
+                    if (I.item == item)
+                    {
+                        owner.GetComponent<PartInventory>()._invWeapon.RemoveItem(I.item);
+                        break;
+                    }
+                }
+            }
+
+            // TODO:
+            // Play a little destruction animation in the UI
+            // Play a UI sound
+
+            if(crit)
+                UIManager.inst.CreateNewLogMessage(item.Name + " has been completely destroyed.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
+
+            // "Cogmind automatically recycles 5 matter from each attached part that is destroyed."
+            PlayerData.inst.currentMatter += 5;
+            if (PlayerData.inst.currentMatter > PlayerData.inst.maxMatter)
+            {
+                PlayerData.inst.currentMatter = PlayerData.inst.maxMatter;
+            }
+
+        }
+
+        item.Id = -1;
     }
 
     public static float GatherCritBonuses(Actor actor)
@@ -4051,19 +4355,20 @@ public static class Action
         }
     }
 
-    public static void DealHeatTransfer(Actor victim, Item weapon)
+    public static void DealHeatTransfer(Actor victim, Item weapon, Vector2Int damage, bool burnCrit = false)
     {
         /*  Thermal weapons attempt to transfer ([damageForHeatTransfer] / [originalDamage])% of the maximum heat transfer rating, 
          *  and also check for possible robot meltdown (the effect of which might be delayed until the robot's next turn).
          */
-        // TODO: Figure out wtf this means ^
 
         if (victim == null) // Bots only
         {
             return;
         }
 
-        // Heat transfer goes from 0 --> 3 [None, Low, Medium, High]
+        float percent = damage.x / damage.y;
+
+        // Heat transfer goes from 0 --> 4 [None, Low, Medium, High, Massive]
         int level = 0;
         if (weapon.itemData.itemEffect[0].transferLevel != 0)
         {
@@ -4074,7 +4379,7 @@ public static class Action
             return;
         }
 
-        if(weapon.isOverloaded && level < 3) // Overloaded bonus
+        if(weapon.isOverloaded && level < 4) // Overloaded bonus
         {
             level++;
         }
@@ -4089,6 +4394,15 @@ public static class Action
             heat = weapon.itemData.shot.shotHeat;
         }
 
+        // Burn Crit effect
+        if (burnCrit)
+        {
+            if(level < 4)
+            {
+                level = 4;
+            }
+        }
+
         if(level == 1)
         {
             heat = Mathf.RoundToInt(heat * 0.25f); // 25%
@@ -4100,6 +4414,18 @@ public static class Action
         else if(level == 3)
         {
             heat = Mathf.RoundToInt(heat * 0.75f); // 75%
+        }
+        else if(level == 4)
+        {
+            heat = Mathf.RoundToInt(heat * 0.80f); // 80%
+        }
+
+        // Modify by initial percentage
+        heat = Mathf.RoundToInt((float)(percent * heat));
+
+        if (burnCrit)
+        {
+            heat *= 2;
         }
 
         // Deal the heat

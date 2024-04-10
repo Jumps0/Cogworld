@@ -296,7 +296,7 @@ public class Fabricator : MonoBehaviour
             relationList.Add(BotRelation.Friendly); // Player
             relationList.Add(BotRelation.Neutral); // None
 
-            HF.ModifyBotAllegance(newBot, relationList);
+            HF.ModifyBotAllegance(newBot, relationList, BotAlignment.Player);
         }
 
         PlayerData.inst.GetComponent<Actor>().UpdateFieldOfView();
