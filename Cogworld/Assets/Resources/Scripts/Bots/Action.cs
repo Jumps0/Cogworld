@@ -3375,20 +3375,92 @@ public static class Action
                         UIManager.inst.CreateNewCalcMessage("Core has suffered critical puncture.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
                     }
                     break;
-                case CritType.Detonate: // Vortex Rail, Vortex Rifle & Vortex Shotgun has this // TODO: Figure out what these mean
+                case CritType.Detonate: // Vortex Rail, Vortex Rifle & Vortex Shotgun has this
+                    // (Assumption): Destroy random [utility] part
                     // "Entropic reaction triggered in %1."
                     // "%1 blocked entropic reaction in %2." (shielding power, player only)
+                    Item shield = HF.DoesBotHaveSheild(target);
+                    Item itemTarget = Action.FindRandomItemOfSlot(target, ItemSlot.Utilities);
+                    if (!target.botInfo && shield != null)
+                    {
+                        UIManager.inst.CreateNewCalcMessage(shield.Name + " blocked entropic reaction in " + itemTarget.Name + ".", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                    }
+                    else
+                    {
+                        Action.DestoyItem(target, itemTarget);
+                        UIManager.inst.CreateNewCalcMessage("Entropic reaction triggered in " + itemTarget.Name + ".", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                    }
+
                     break;
                 case CritType.Sunder: // BFG-9k Vortex Edition, Vortex Driver, Vortex Lancer & Vortex Cannon has this
                     // "[name] %1 ripped off."
+                    // (Assumption): Damage & Remove random propulsion component
+                    Item item4 = Action.FindRandomItemOfSlot(target, ItemSlot.Propulsion);
+                    item4 = Action.DamageBot(target, damage, protection, weapon, false);
+                    if (item4 != null)
+                    {
+                        // If the 2nd part survives, forcefully drop it.
+                        if (target.botInfo)
+                        {
+                            HF.RemovePartFromBotInventory(target, item4);
+                            InventoryControl.inst.DropItemOnFloor(item4, target, null);
+                        }
+                        else
+                        {
+                            InventoryControl.inst.DropItemOnFloor(item4, target, HF.FindPlayerInventoryFromItem(item4));
+                        }
+
+                        UIManager.inst.CreateNewCalcMessage(item4.Name + " was ripped off.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                    }
                     break;
                 case CritType.Intensify: // Zio. Phaser-S/M/H have this
+                    // (Assumption): Double Damage
+                    if (hitItem.Id >= 0 && hitItem.integrityCurrent > 0)
+                    {
+                        Action.DamageBot(target, damage, protection, weapon, false);
+                    }
+                    string botName = "";
+                    if (target.botInfo)
+                    {
+                        botName = target.botInfo.name;
+                    }
+                    else
+                    {
+                        botName = "Cogmind";
+                    }
+
+                    UIManager.inst.CreateNewCalcMessage("Damage itensified against " + botName + " [" + damage + "].", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+
                     break;
                 case CritType.Phase: // L-Cannon, Drained L-Cannon, Zio. Alpha-Cannon & Zio. Alpha-Cannon MK.2 has this
                     // "Damage phase-mirrored to [name] %1."
+                    // (Assumption): Mirror damage to neighbor
+                    Actor neighbor = Action.FindNewNeighboringEnemy(target);
+                    DamageBot(neighbor, damage, protection, weapon, false);
+                    string botName2 = "";
+                    if (target.botInfo)
+                    {
+                        botName2 = target.botInfo.name;
+                    }
+                    else
+                    {
+                        botName2 = "Cogmind";
+                    }
+
+                    UIManager.inst.CreateNewCalcMessage("Damage phase-mirrored to " + botName2 + " [" + damage + "].", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
                     break;
                 case CritType.Impale: // CR-A16's Behemoth Slayer & A bunch of other piercing weapons have this
-
+                    // (Assumption): Insta-kill
+                    // Destroy the core
+                    if (target.botInfo)
+                    {
+                        UIManager.inst.CreateNewCalcMessage("Critical on " + target.botInfo.name + "'s core.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                        target.Die(target.name + "'s core has impaled by " + weapon.itemName + ", destroying it completely.");
+                    }
+                    else
+                    {
+                        PlayerData.inst.currentHealth = 0;
+                    }
                     break;
             }
         }
@@ -4586,6 +4658,23 @@ public static class Action
         }
 
         return items;
+    }
+
+    public static Item FindRandomItemOfSlot(Actor actor, ItemSlot slot)
+    {
+        List<Item> items = Action.CollectAllBotItems(actor);
+
+        List<Item> found = new List<Item>();
+
+        foreach (var item in items)
+        {
+            if(item.Id >= 0 && item.itemData.slot == slot)
+            {
+                found.Add(item);
+            }
+        }
+
+        return found[Random.Range(0, found.Count - 1)];
     }
 
     #endregion

@@ -1726,6 +1726,24 @@ public static class HF
         return bots;
     }
 
+    public static Item DoesBotHaveSheild(Actor actor)
+    {
+        List<Item> items = Action.CollectAllBotItems(actor);
+
+        foreach (var item in items)
+        {
+            if (item.itemData.itemEffect[0].armorProtectionEffect.hasEffect)
+            {
+                if (item.itemData.itemEffect[0].armorProtectionEffect.projectionExchange)
+                {
+                    return item;
+                }
+            }
+        }
+
+        return null;
+    }
+
     public static ItemDamageType GetDamageType(ItemObject weapon)
     {
         if (weapon.meleeAttack.isMelee)
