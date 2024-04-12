@@ -31418,6 +31418,7 @@ MonoBehaviour:
   itemPopup_prefab: {fileID: 7308777045394364362, guid: 8585ee6b7f883e0489c7491a3dcc63dd, type: 3}
   combatPopups: []
   combatPopup_prefab: {fileID: 7308777045394364362, guid: 8a7ad8c4a59f3d441ac458425451858c, type: 3}
+  combatPopupShort_prefab: {fileID: 7308777045394364362, guid: 288edce34e5f85b4781983b241dd9d36, type: 3}
   botPopups: []
   botPopup_prefab: {fileID: 7308777045394364362, guid: 8585ee6b7f883e0489c7491a3dcc63dd, type: 3}
   projectilePrefab_generic: {fileID: 7308777045394364362, guid: 0f7306ce67eb1d1429011677f253f1d3, type: 3}

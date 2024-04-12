@@ -1253,6 +1253,7 @@ public class UIManager : MonoBehaviour
 
     public List<GameObject> combatPopups = new List<GameObject>();
     public GameObject combatPopup_prefab;
+    public GameObject combatPopupShort_prefab;
 
     public void CreateCombatPopup(GameObject _parent, string setName, Color textColor, Color backingColor, Color edgeColor)
     {
@@ -1287,6 +1288,45 @@ public class UIManager : MonoBehaviour
         {
             item.GetComponent<UIItemPopup>().MessageOut();
         }
+    }
+
+    public void CreateShortCombatPopup(GameObject _parent, string message, Color mainColor, Color edgeColor, Actor actor = null)
+    {
+        // Instantiate it & Assign it to parent
+        GameObject newCombatPopup = Instantiate(combatPopup_prefab, _parent.transform.position, Quaternion.identity);
+        newCombatPopup.transform.SetParent(_parent.transform);
+        newCombatPopup.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+        newCombatPopup.GetComponent<Canvas>().sortingOrder = 27;
+
+        // Consider if an actor has been assigned. If so, color is related to the bot's health.
+        if(actor != null)
+        {
+            // Set color related to current item health
+            float HP = actor.currentHealth / actor.maxHealth;
+            if (HP >= 0.75) // Healthy
+            {
+                mainColor = UIManager.inst.activeGreen;
+                edgeColor = new Color(UIManager.inst.activeGreen.r, UIManager.inst.activeGreen.g, UIManager.inst.activeGreen.b, 0.7f);
+            }
+            else if (HP < 0.75 && HP >= 0.5) // Minor Damage
+            {
+                mainColor = UIManager.inst.cautiousYellow;
+                edgeColor = new Color(UIManager.inst.cautiousYellow.r, UIManager.inst.cautiousYellow.g, UIManager.inst.cautiousYellow.b, 0.7f);
+            }
+            else if (HP < 0.5 && HP >= 0.25) // Medium Damage
+            {
+                mainColor = UIManager.inst.slowOrange;
+                edgeColor = new Color(UIManager.inst.slowOrange.r, UIManager.inst.slowOrange.g, UIManager.inst.slowOrange.b, 0.7f);
+            }
+            else // Heavy Damage
+            {
+                mainColor = UIManager.inst.dangerRed;
+                edgeColor = new Color(UIManager.inst.dangerRed.r, UIManager.inst.dangerRed.g, UIManager.inst.dangerRed.b, 0.7f);
+            }
+        }
+
+        // Assign Details
+        newCombatPopup.GetComponentInChildren<UICombatPopupShort>().Setup(message, mainColor, edgeColor);
     }
 
     #endregion

@@ -339,6 +339,12 @@ public class Part : MonoBehaviour
                         slotAvailable = true;
                     }
                     break;
+                case ItemSlot.Inventory: // This one goes into inventory instead
+                    if (PlayerData.inst.GetComponent<PartInventory>()._inventory.EmptySlotCount > 0)
+                    {
+                        slotAvailable = true;
+                    }
+                    break;
                 default:
                     Debug.LogError("ERROR: Item slot type not set!");
                     break;
@@ -367,6 +373,10 @@ public class Part : MonoBehaviour
 
                         break;
                     case ItemSlot.Other: // This one goes into inventory instead
+                        InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>()._inventory);
+
+                        break;
+                    case ItemSlot.Inventory: // This one goes into inventory instead
                         InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>()._inventory);
 
                         break;

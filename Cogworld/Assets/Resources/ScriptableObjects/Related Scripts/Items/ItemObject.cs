@@ -67,6 +67,8 @@ public class Item
     public bool isOverloaded = false;
     [Tooltip("Is this item corrupted?")]
     public bool corrupted = false;
+    [Tooltip("If > 0, this item is disabled for the specified turns.")]
+    public int disabledTimer = 0;
 
     public Item()
     {

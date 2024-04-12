@@ -214,11 +214,18 @@ public class BotResistances
 public class BotResistancesExtra
 {
     [Header("Checked = IMMUNE")]
+    [Tooltip("Immune to any core-affecting effects from critical strikes (including Destroy, Blast, Smash, Puncture, Phase), as well as the effect of core analyzers.")]
     public bool coring = false;
+    [Tooltip("Immune to any part removal effects from critical strikes (including Blast, Sever, Sunder).")]
+    public bool dismemberment = false;
+    [Tooltip("Immune to the special feature of EM attacks where a random part or ever the core can be disabled for a short time.")]
     public bool disruption = false;
+    public bool hacking = false; // TODO: Consider this
+    public bool jamming = false; // TODO: Consider this
+    [Tooltip("Immune to the meltdown effect.")]
     public bool meltdown = false;
-    public bool hacking = false;
-    public bool jamming = false;
+    [Tooltip("Total immunity to all criticals.")]
+    public bool criticals = false;
 }
 
 [System.Serializable]

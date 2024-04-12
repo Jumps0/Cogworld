@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.VersionControl;
 using UnityEngine;
+using static UnityEditor.Progress;
 using static UnityEngine.GraphicsBuffer;
 using Color = UnityEngine.Color;
 
@@ -298,11 +299,10 @@ public static class Action
                     {
                         DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, crit);
 
-
                         // Show a popup that says how much damage occured
                         if (!target.GetComponent<PlayerData>())
                         {
-                            UI_CombatPopup(target.GetComponent<Actor>(), damageAmount);
+                            UI_CombatPopup(target.GetComponent<Actor>(), damageAmount.ToString());
                         }
 
                         // Do a calc message
@@ -472,7 +472,7 @@ public static class Action
                                 // Show a popup that says how much damage occured
                                 if (!target.GetComponent<PlayerData>())
                                 {
-                                    UI_CombatPopup(target.GetComponent<Actor>(), damageAmount);
+                                    UI_CombatPopup(target.GetComponent<Actor>(), damageAmount.ToString());
                                 }
 
                                 // Do a calc message
@@ -850,7 +850,7 @@ public static class Action
                         // Show a popup that says how much damage occured
                         if (!target.GetComponent<PlayerData>())
                         {
-                            UI_CombatPopup(target.GetComponent<Actor>(), damageAmount);
+                            UI_CombatPopup(target.GetComponent<Actor>(), damageAmount.ToString());
                         }
 
                         // Do a calc message
@@ -1056,6 +1056,7 @@ public static class Action
     public static bool IndividualAOEAttack(Actor source, GameObject target, Item weapon, int falloff)
     {
         bool permiable = true;
+        int chunks = Random.Range(weapon.itemData.explosionDetails.chunks.x, weapon.itemData.explosionDetails.chunks.y);
 
         // There are a couple things we could be attacking here:
         // - Walls
@@ -1174,7 +1175,11 @@ public static class Action
 
                 if (target.GetComponent<PlayerData>()) // Player being attacked
                 {
-                    DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData);
+                    // Before we deal damage we need to split it into chunks
+                    for(int i = 0; i < chunks; i++)
+                    {
+                        DamageBot(target.GetComponent<Actor>(), damageAmount / chunks, types, weapon.itemData);
+                    }
 
                     // Do a calc message
                     string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Hit";
@@ -1186,20 +1191,16 @@ public static class Action
                 }
                 else // Bot being attacked
                 {
-                    if (rand < target.GetComponent<Actor>().botInfo.coreExposure) // Hits the core
+                    // Before we deal damage we need to split it into chunks
+                    for (int i = 0; i < chunks; i++)
                     {
-                        target.GetComponent<Actor>().currentHealth -= damageAmount;
+                        DamageBot(target.GetComponent<Actor>(), damageAmount / chunks, types, weapon.itemData);
                     }
-                    else // Hits a part
-                    {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData);
-                    }
-
 
                     // Show a popup that says how much damage occured
                     if (!target.GetComponent<PlayerData>())
                     {
-                        UI_CombatPopup(target.GetComponent<Actor>(), damageAmount);
+                        UI_CombatPopup(target.GetComponent<Actor>(), damageAmount.ToString());
                     }
 
                     // Do a calc message
@@ -2729,14 +2730,14 @@ public static class Action
         return support;
     }
 
-    public static void UI_CombatPopup(Actor actor, int damage)
+    public static void UI_CombatPopup(Actor actor, string text)
     {
         Color a = Color.black, b = Color.black, c = Color.black;
         a = Color.black;
         string _message = "";
 
-        _message = damage.ToString();
-        
+        _message = text;
+
         // Set color related to current item health
         float HP = actor.currentHealth / actor.maxHealth;
         if (HP >= 0.75) // Healthy
@@ -3165,43 +3166,160 @@ public static class Action
         }
         #endregion
 
+        #region EM Disruption
+        if (target.botInfo) // Only effects AI
+        {
+            if(target.botInfo.resistancesExtra.disruption == false) // Not immune to it
+            {
+                if(Random.Range(0f, 1f) < 0.1f) // Not too sure what the chances of this should be so its gonna be at 10%
+                {
+                    if(hitItem != null && hitItem.Id > -1) // Hit the part
+                    {
+                        hitItem.disabledTimer += 10;
+                    }
+                    else // Hit the core
+                    {
+                        target.DisableThis(10);
+                    }
+                }
+            }
+        }
+        #endregion
+
         #region Crits
         // https://www.gridsagegames.com/blog/2021/05/design-overhaul-3-damage-types-and-criticals/
+        CritType critType = CritType.Nothing;
+        if (weapon.meleeAttack.isMelee) // Melee
+        {
+            critType = weapon.meleeAttack.critType;
+        }
+        else // Ranged
+        {
+            critType = weapon.projectile.critType;
+        }
 
         // First off, is what we are targeting immune to crits?
-        foreach (var item in protectiveItems)
+        #region Crit Immunity
+        // Check innate stats
+        if (crit && target.botInfo)
         {
-            if (item.itemEffect[0].armorProtectionEffect.armorEffect_preventCritStrikesVSSlot) // Armor protection
+            // Some bots have special resistances that are actually immunities to some types of crits.
+            BotResistancesExtra imm = target.botInfo.resistancesExtra;
+
+            if (imm.criticals)
             {
-                if (item.itemEffect[0].armorProtectionEffect.armorEffect_slotType.ToString().ToLower() == slotHit.ToString().ToLower())
+                crit = false;
+                UIManager.inst.CreateNewLogMessage(target.botInfo.name + " is immune to critical effects.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+            }
+
+            switch (critType)
+            {
+                case CritType.Nothing:
+                    crit = false;
+                    break;
+                case CritType.Burn:
+                    break;
+                case CritType.Meltdown:
+                    if (imm.meltdown)
+                    {
+                        crit = false;
+                        UIManager.inst.CreateNewLogMessage(target.botInfo.name + " is immune to a total meltdown.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                    }
+                    break;
+                case CritType.Destroy:
+                    if (imm.coring)
+                    {
+                        crit = false;
+                        UIManager.inst.CreateNewLogMessage(target.botInfo.name + " is immune to coring.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                    }
+                    break;
+                case CritType.Blast:
+                    if (imm.coring)
+                    {
+                        crit = false;
+                        UIManager.inst.CreateNewLogMessage(target.botInfo.name + " is immune to coring.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                    }
+                    else if(imm.dismemberment)
+                    {
+                        crit = false;
+                        UIManager.inst.CreateNewLogMessage(target.botInfo.name + " is immune to dismemberment.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                    }
+                    break;
+                case CritType.Corrupt:
+                    break;
+                case CritType.Smash:
+                    if (imm.coring)
+                    {
+                        crit = false;
+                        UIManager.inst.CreateNewLogMessage(target.botInfo.name + " is immune to coring.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                    }
+                    break;
+                case CritType.Sever:
+                    if (imm.dismemberment)
+                    {
+                        crit = false;
+                        UIManager.inst.CreateNewLogMessage(target.botInfo.name + " is immune to dismemberment.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                    }
+                    break;
+                case CritType.Puncture:
+                    if (imm.coring)
+                    {
+                        crit = false;
+                        UIManager.inst.CreateNewLogMessage(target.botInfo.name + " is immune to coring.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                    }
+                    break;
+                case CritType.Detonate:
+                    break;
+                case CritType.Sunder:
+                    if (imm.dismemberment)
+                    {
+                        crit = false;
+                        UIManager.inst.CreateNewLogMessage(target.botInfo.name + " is immune to dismemberment.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                    }
+                    break;
+                case CritType.Intensify:
+                    break;
+                case CritType.Phase:
+                    if (imm.coring)
+                    {
+                        crit = false;
+                        UIManager.inst.CreateNewLogMessage(target.botInfo.name + " is immune to coring.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                    }
+                    break;
+                case CritType.Impale:
+                    break;
+            }
+        }
+
+        if (crit)
+        {
+            // Check items
+            foreach (var item in protectiveItems)
+            {
+                if (item.itemEffect[0].armorProtectionEffect.armorEffect_preventCritStrikesVSSlot) // Armor protection
+                {
+                    if (item.itemEffect[0].armorProtectionEffect.armorEffect_slotType.ToString().ToLower() == slotHit.ToString().ToLower())
+                    {
+                        crit = false;
+                        UIManager.inst.CreateNewLogMessage("    " + item.itemName + " prevented critical effect.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                        break;
+                    }
+                }
+
+                if (item.itemEffect[0].armorProtectionEffect.critImmunity) // Special anti-crit item
                 {
                     crit = false;
                     UIManager.inst.CreateNewLogMessage("    " + item.itemName + " prevented critical effect.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                     break;
                 }
             }
-
-            if (item.itemEffect[0].armorProtectionEffect.critImmunity)
-            {
-                crit = false;
-                UIManager.inst.CreateNewLogMessage("    " + item.itemName + " prevented critical effect.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
-                break;
-            }
         }
+        #endregion
 
         bool burnCrit = false;
         bool corruptCrit = false;
         if(crit == true && weapon.explosionDetails.radius <= 0) // Is a crit & not an explosion
         {
-            CritType type = CritType.Nothing;
-            if (weapon.meleeAttack.isMelee) // Melee
-            {
-                type = weapon.meleeAttack.critType;
-            }
-            else // Ranged
-            {
-                type = weapon.projectile.critType;
-            }
 
             /*  Burn: Significantly increase heat transfer (TH guns)
                 Meltdown: Instantly melt target bot regardless of what part was hit (TH cannons)
@@ -3214,7 +3332,7 @@ public static class Action
                 (there are four other crit types associated with the special damage types not covered in this article: Detonate, Sunder, Intensity, and Phase)
              */
 
-            switch (type)
+            switch (critType)
             {
                 case CritType.Nothing:
                     break;
@@ -3463,6 +3581,21 @@ public static class Action
                     }
                     break;
             }
+
+            if (!target.botInfo) // AI Only
+            {
+                if (critType == CritType.Burn) // Since Burn is so common, only show it if the bot is already extremely hot already.
+                {
+                    if(target.currentHeat > 250)
+                    {
+                        UIManager.inst.CreateShortCombatPopup(target.gameObject, critType.ToString(), Color.black, Color.black, target); // Create a special (short) combat popup
+                    }
+                }
+                else
+                {
+                    UIManager.inst.CreateShortCombatPopup(target.gameObject, critType.ToString(), Color.black, Color.black, target); // Create a special (short) combat popup
+                }
+            }
         }
         #endregion
 
@@ -3547,7 +3680,7 @@ public static class Action
         Action.DealHeatTransfer(target.GetComponent<Actor>(), weapon.data, new Vector2Int(damageA, damageB), burnCrit);
         #endregion
 
-        // If the item has survived, return it
+        // If the item has survived, return it (used for some stuff)
         if(hitItem.Id >= 0 && hitItem.integrityCurrent > 0)
         {
             return hitItem;
