@@ -480,7 +480,8 @@ public class ItemProjectile // (Disregarded in AOE attacks except for projectile
     public int heatTrasfer;
     [Tooltip("0 = None | 1 = Low | 2 = Medium | 3 = High | 4 = Massive")]
     public int heatTransferDegree;
-    public int spectrum;
+    [Header("0.##% > Can be: Wide(10%) | Intermediate (30%) | Narrow (50%) | Fine (100%)")]
+    public float spectrum;
     public bool hasSpectrum = false;
     public float disruption;
     public int salvage;
@@ -611,8 +612,8 @@ public class ExplosionGeneric
     public float disruption = 0f;
 
     public bool hasSpectrum = false;
-    [Tooltip("0 = None, 1 = Short, 2 = Wide, 3 = Long")]
-    public int spectrum = 0;
+    [Header("0.##% > Can be: Wide(10%) | Intermediate (30%) | Narrow (50%) | Fine (100%)")]
+    public float spectrum;
 
     [Header("Directional")]
     public bool directional = false;
