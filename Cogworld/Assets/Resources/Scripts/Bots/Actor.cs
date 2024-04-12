@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static Unity.VisualScripting.Member;
-using static UnityEngine.GraphicsBuffer;
 
 public class Actor : Entity
 {
@@ -102,7 +100,7 @@ public class Actor : Entity
                 myFaction = botInfo.locations.alignment;
             }
 
-            algorithm = new AdamMilVisibility(); // Set visual algo
+            algorithm = new AdamMilVisibility(this); // Set visual algo
             allegances = GlobalSettings.inst.GenerateDefaultAllengances(botInfo); // Set allegances
 
             if (GetComponent<PlayerData>())

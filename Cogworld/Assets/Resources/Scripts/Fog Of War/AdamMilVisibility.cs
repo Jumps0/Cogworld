@@ -14,6 +14,10 @@ sealed class AdamMilVisibility : Visibility
     /// <param name="getDistance">A function that takes the X and Y coordinate of a point where X >= 0,
     /// Y >= 0, and X >= Y, and returns the distance from the point to the origin (0,0).
     /// </param>
+    /// 
+
+    [Tooltip("A direct reference to the actor that is using this individual visibility object.")]
+    public Actor myActor;
 
     public override void Compute(Vector3Int origin, int rangeLimit, List<Vector3Int> fieldOfView)
     {
@@ -243,7 +247,7 @@ sealed class AdamMilVisibility : Visibility
         TileBlock _tile = null;
         AccessObject _access = null;
         MachinePart _machine = null;
-        int toCheck = 0; // 0 = TileBlock, 1 = DoorLogic (has TileBlock), 2 = AccessObject
+        int toCheck = 0; // 0 = TileBlock, 1 = DoorLogic (has TileBlock), 2 = AccessObject, 3 = Machine, 4 = Floor trap
 
         // - First off, we want to find our target to check.
         //   - Lets first check on layer 1 (doors, machines, access, etc)
@@ -300,7 +304,7 @@ sealed class AdamMilVisibility : Visibility
         switch (toCheck)
         {
             case 0: // Tile
-                if (_tile.tileInfo.type == TileType.Floor || _tile.tileInfo.type == TileType.Default || _tile.specialNoBlockVis)
+                if (_tile.tileInfo.type == TileType.Floor || _tile.tileInfo.type == TileType.Default || _tile.specialNoBlockVis || (_tile.phaseWall && HF.PhaseWallVisCheck(myActor, _tile)))
                 {
                     returnValue = false;
                 }
@@ -353,5 +357,10 @@ sealed class AdamMilVisibility : Visibility
         }
 
         fieldOfView.Add(new Vector3Int((int)nx, (int)ny, 0));
+    }
+
+    public AdamMilVisibility(Actor actor = null)
+    {
+        myActor = actor;
     }
 }

@@ -15,6 +15,7 @@ using UnityEngine;
 /// </summary>
 public class TileBlock : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] private Color _baseColor, _offsetColor;
     [SerializeField] private SpriteRenderer _renderer;
     [SerializeField] public GameObject _highlight;
@@ -22,48 +23,49 @@ public class TileBlock : MonoBehaviour
     public GameObject _debrisSprite;
     [SerializeField] private GameObject _collapseSprite;
     [SerializeField] private Animator _collapseAnim;
-    public bool isDirty = false;
-
+    [Tooltip("The current item laying on top of this Tile, if none then = null.")]
+    public Part _partOnTop = null;
+    public GameObject targetingHighlight;
+    public Animator flashWhite;
     [Tooltip("What this tile would look in DOS mode.")]
     public GameObject dosLetter;
-
     [Tooltip("Alternate state for this tile.")]
     public GameObject subTile;
 
-    [Tooltip("Should this tile's highlight be blinking?")]
-    public bool blinkMode = false;
-
-    [Tooltip("Can this tile be walked on?")]
-    public bool walkable;
-
-    [Tooltip("Is something currently occupying this space?")]
-    public bool occupied = false;
-
-    [Tooltip("The current item laying on top of this Tile, if none then = null.")]
-    public Part _partOnTop = null;
-
+    [Header("Details")]
     [Tooltip("The specific details of what this tile is, set upon spawning.")]
     public TileObject tileInfo;
-
-    [Tooltip("If true, this tile won't block LOS like normal. Used for open doors.")]
-    public bool specialNoBlockVis = false;
-
-    public GameObject targetingHighlight;
-
+    public bool isDirty = false;
+    [Tooltip("Should this tile's highlight be blinking?")]
+    public bool blinkMode = false;
+    [Tooltip("Can this tile be walked on?")]
+    public bool walkable;
+    [Tooltip("Is something currently occupying this space?")]
+    public bool occupied = false;
     public int locX;
     public int locY;
 
+    [Header("Visibility")]
     public bool isExplored;
     public bool isVisible;
+    [Tooltip("If true, this tile won't block LOS like normal. Used for open doors.")]
+    public bool specialNoBlockVis = false;
 
-    // -- Colors --
+    [Header("Colors")]
     public Color intel_green;
-    public Color unstableCollapse_red;
-    public Color trojan_Blue;
-    public Color highlight_white;
-    public Color caution_yellow;
+    [SerializeField] private Color unstableCollapse_red;
+    [SerializeField] private Color trojan_Blue;
+    [SerializeField] private Color highlight_white;
+    [SerializeField] private Color caution_yellow;
 
-    public Animator flashWhite;
+    [Header("Phase Wall")]
+    [Tooltip("Is this tile a phase wall?")]
+    public bool phaseWall = false;
+    [Tooltip("Which team can *use* this phase wall?")]
+    public BotAlignment phaseWallTeam = BotAlignment.Complex;
+    public Sprite phaseWallSprite;
+    [Tooltip("Does the player know this tile is actually a phase wall?")]
+    public bool phaseWall_revealed = false;
 
     public void Init(bool isOffset)
     {
@@ -413,4 +415,57 @@ public class TileBlock : MonoBehaviour
 
         return null; // Failure
     }
+
+    #region Phase Wall
+
+    /// <summary>
+    /// Reveal that this tile is actually a phase wall to the player.
+    /// </summary>
+    public void PhaseWallReveal()
+    {
+        // Play an animation?
+        // Play a sound?
+        phaseWall_revealed = true;
+        _renderer.sprite = phaseWallSprite;
+        specialNoBlockVis = true; // Let the player see through it
+    }
+
+    /// <summary>
+    /// Make this phase wall passible & play a sound.
+    /// </summary>
+    public void PhaseWall_Open()
+    {
+        // Play the open sound
+        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.DOOR_Clips[Random.Range(8, 9)]);
+
+        walkable = true;
+
+        // Reveal to the player if the player can see this happening
+        if (!phaseWall_revealed && phaseWallTeam != BotAlignment.Player)
+        {
+            if(PlayerData.inst.GetComponent<Actor>().FieldofView.Contains(new Vector3Int((int)this.transform.position.x, (int)this.transform.position.y)))
+            {
+                PhaseWallReveal();
+            }
+        }
+    }
+
+    public void PhaseWall_Close()
+    {
+        // Play the close sound
+        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.DOOR_Clips[Random.Range(10, 12)]);
+
+        walkable = false;
+
+        // Reveal to the player if the player can see this happening
+        if (!phaseWall_revealed && phaseWallTeam != BotAlignment.Player)
+        {
+            if (PlayerData.inst.GetComponent<Actor>().FieldofView.Contains(new Vector3Int((int)this.transform.position.x, (int)this.transform.position.y)))
+            {
+                PhaseWallReveal();
+            }
+        }
+    }
+
+    #endregion
 }

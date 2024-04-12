@@ -4026,6 +4026,17 @@ public static class HF
         }
     }
 
+    /// <summary>
+    /// Checks to see if the actor in question should be able to see through the specified phase wall. Returns true/false.
+    /// </summary>
+    /// <param name="actor">The actor in question.</param>
+    /// <param name="tile">The phase wall tile (a wall).</param>
+    /// <returns>True/false, if this wall should be see-through for this specific bot.</returns>
+    public static bool PhaseWallVisCheck(Actor actor, TileBlock tile)
+    {
+        return tile.phaseWallTeam == actor.myFaction;
+    }
+
     #endregion
 
     #region Spotting

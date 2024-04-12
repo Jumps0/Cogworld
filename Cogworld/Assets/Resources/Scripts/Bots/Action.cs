@@ -4,10 +4,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.VersionControl;
 using UnityEngine;
-using static UnityEditor.Progress;
-using static UnityEngine.GraphicsBuffer;
 using Color = UnityEngine.Color;
 
 public static class Action
@@ -17,6 +14,80 @@ public static class Action
         Debug.Log("Quit");
         //Application.Quit();
     }
+
+    #region Attack Resolution Explainer
+    // from the manual: https://www.gridsagegames.com/cogmind/manual.txt
+    /* Attack Resolution
+        -------------------
+        With so many mechanics playing into an attack, especially later in the game when there are numerous active parts involved at once, 
+        min-maxers looking to optimize their build may want a clearer understanding of the order in which all elements of an attack are carried out. 
+        This manual already covered hit chances above, but there are many more steps to what happens once an attack hits a robot. 
+        Below is an ordered list detailing that entire process, which applies to both ranged and melee combat. 
+        Note that you most likely DO NOT need to know this stuff, but it may help answer a few specific questions min-maxers have about prioritization.
+
+        1. Check if the attack is a non-damaging special case such as Datajacks, Stasis Beams, Tearclaws, etc., and handle that before quitting early.
+
+        2. Calculate base damage, a random value selected from the weapon's damage range and multiplied by applicable modifiers for overloading, 
+        momentum, and melee sneak attacks, in that order. Potential damage range modified by Melee Analysis Suites, Kinecellerators, and Force Boosters here.
+
+        3. Apply robot analysis damage modifier, if applicable (+10%).
+
+        4. Apply link_complan hack damage modifier, if applicable (+25%).
+
+        5. Apply Particle Charger damage modifier, if applicable.
+
+        6. Reduce damage by resistances.
+
+        7. Apply salvage modifiers from the weapon and any Salvage Targeting Computers.
+
+        8. Determine whether the attack caused a critical hit.
+
+        9. Split damage into a random number of chunks if an explosion, usually 1~3. The process from here is repeated for each chunk.
+
+        10. Store the current damage value as [originalDamage] for later.
+
+        11. Apply the first and only first defense applicable from the following list: phase wall, 75% personal shield (VFP etc), 
+        Force Field, Shield Generator, stasis bubble, active Stasis Trap, Remote Shield, 50% remote shield (Energy Mantle etc.), Hardlight Generator.
+
+        12. Store the current damage value as [damageForHeatTransfer] for later.
+
+        13. Choose target part (or core) based on coverage, where an Armor Integrity Analyzer first applies its chance to bypass all armor, 
+        if applicable, then available Core Analyzers increase core exposure, before finally testing individual target chances normally.
+
+        14. Cancel critical strike intent if that target has applicable part shielding, or if not applicable to target.
+
+        15. If targeting core, apply damage and, if robot survives, check for core disruption if applicable.
+
+        16. If targeting a power source with an EM weapon, check for a chain reaction due to spectrum.
+
+        17. If not a core hit or chain reaction, prepare to apply damage to target part. If the part is Phase Armor or have an active Phase Redirector, 
+        first reduce the damage by their effect(s) and store the amount of reduction as [transferredCoreDamage] for later, 
+        then if part is Powered Armor reduce damage in exchange for energy (if available), or if part is treads currently in siege mode reduce damage appropriately. 
+        If part not destroyed then also check for EM disruption if applicable.
+
+        18. If part destroyed by damage, record any excess damage as overflow. If outright destroyed by a critical hit but damage exceeded 
+        part's integrity anyway, any excess damage is still recorded as overflow.
+
+        19. If part was not armor and the attack was via cannon, launcher, or melee, transfer remaining damage to another random target 
+        (forcing to a random armor if any exists). Continue transferring through additional parts if destroyed (and didn't hit armor).
+
+        20. If part not destroyed, check whether heat transfer melts it instead.
+
+        21. Apply [transferredCoreDamage] directly to the core if applicable, with no further modifiers.
+
+        22. Apply damage type side effects:
+
+        * Thermal weapons attempt to transfer ([damageForHeatTransfer] / [originalDamage])% of the maximum heat transfer rating, 
+          and also check for possible robot meltdown (the effect of which might be delayed until the robot's next turn).
+
+        * Kinetic damage may cause knockback.
+
+        * The amount of EM corruption is based on [originalDamage].
+
+        * Impact damage may cause knockback, and applies corruption for each part destroyed.
+     */
+
+    #endregion
 
     public static bool BumpAction(Actor actor, Vector2 direction)
     {
@@ -285,7 +356,7 @@ public static class Action
                     }
                     if (target.GetComponent<PlayerData>()) // Player being attacked
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, crit);
+                        DamageBot(source, target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, crit);
 
                         // Do a calc message
                         string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHit * 100}%) Hit";
@@ -297,7 +368,7 @@ public static class Action
                     }
                     else // Bot being attacked
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, crit);
+                        DamageBot(source, target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, crit);
 
                         // Show a popup that says how much damage occured
                         if (!target.GetComponent<PlayerData>())
@@ -454,7 +525,7 @@ public static class Action
                             }
                             if (target.GetComponent<PlayerData>()) // Player being attacked
                             {
-                                DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, crit);
+                                DamageBot(source, target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, crit);
 
                                 // Do a calc message
                                 string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHit * 100}%) Hit";
@@ -466,7 +537,7 @@ public static class Action
                             }
                             else // Bot being attacked
                             {
-                                DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, crit);
+                                DamageBot(source, target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, crit);
 
 
                                 // Show a popup that says how much damage occured
@@ -832,7 +903,7 @@ public static class Action
                     }
                     if (target.GetComponent<PlayerData>()) // Player being attacked
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, crit);
+                        DamageBot(source, target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, crit);
 
                         // Do a calc message
                         string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Hit";
@@ -844,7 +915,7 @@ public static class Action
                     }
                     else // Bot being attacked
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, crit);
+                        DamageBot(source, target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, crit);
 
 
                         // Show a popup that says how much damage occured
@@ -1178,7 +1249,7 @@ public static class Action
                     // Before we deal damage we need to split it into chunks
                     for(int i = 0; i < chunks; i++)
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount / chunks, types, weapon.itemData);
+                        DamageBot(source, target.GetComponent<Actor>(), damageAmount / chunks, types, weapon.itemData);
                     }
 
                     // Do a calc message
@@ -1194,7 +1265,7 @@ public static class Action
                     // Before we deal damage we need to split it into chunks
                     for (int i = 0; i < chunks; i++)
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount / chunks, types, weapon.itemData);
+                        DamageBot(source, target.GetComponent<Actor>(), damageAmount / chunks, types, weapon.itemData);
                     }
 
                     // Show a popup that says how much damage occured
@@ -2764,7 +2835,7 @@ public static class Action
         UIManager.inst.CreateCombatPopup(actor.gameObject, _message, a, b, c);
     }
 
-    public static Item DamageBot(Actor target, int damage, List<ArmorType> protection, ItemObject weapon, bool crit = false, int forcedOverflow = 0)
+    public static Item DamageBot(Actor source, Actor target, int damage, List<ArmorType> protection, ItemObject weapon, bool crit = false, int forcedOverflow = 0)
     {
         ItemDamageType damageType = HF.GetDamageType(weapon);
 
@@ -2940,9 +3011,12 @@ public static class Action
             }
         }
         int damageA = damage; // Saved for later (Heat transfer)
+        int damageB = 0;
+        bool firstSheild = false;
 
         // Shields
         #region Shields
+        // Shield items
         foreach (var P in protectiveItems)
         {
             if (P.itemEffect[0].armorProtectionEffect.projectionExchange)
@@ -2981,6 +3055,13 @@ public static class Action
                        PlayerData.inst.currentEnergy -= cost;
                     }
                 }
+
+                firstSheild = true;
+            }
+
+            if (firstSheild && damageB <= 0)
+            {
+                damageB = damage;
             }
         }
 
@@ -3032,14 +3113,69 @@ public static class Action
                                 PlayerData.inst.currentEnergy -= cost;
                             }
                         }
+
+                        firstSheild = true;
                     }
+                }
+
+                if (firstSheild && damageB <= 0)
+                {
+                    damageB = damage;
+                }
+            }
+        }
+
+        // Phase walls (-10% damage)
+        // - Is the source firing through a phase wall?
+        // (This is a bit overkill cause this will rarely happen but here we go)
+        Vector2 targetDirection = target.transform.position - source.transform.position;
+        float distance = Vector2.Distance(Action.V3_to_V2I(source.transform.position), Action.V3_to_V2I(target.transform.position));
+        RaycastHit2D[] hits = Physics2D.RaycastAll(new Vector2(source.transform.position.x, source.transform.position.y), targetDirection.normalized, distance);
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            if (hits[i].collider.GetComponent<TileBlock>() && hits[i].collider.GetComponent<TileBlock>().phaseWall)
+            {
+                damage = Mathf.RoundToInt(damage - (float)(damage * 0.1f));
+
+                firstSheild = true;
+                if (firstSheild && damageB <= 0)
+                {
+                    damageB = damage;
+                }
+                break;
+            }
+        }
+
+        // Stasis Bubble / Stasis Trap (+25% damage)
+        // - Is the target currently in a stasis bubble or stasis trap?
+        if (target.botInfo)
+        {
+            if (target.inStatis)
+            {
+                damage = Mathf.RoundToInt(damage + (float)(damage * 0.25f));
+
+                firstSheild = true;
+                if (firstSheild && damageB <= 0)
+                {
+                    damageB = damage;
+                }
+            }
+        }
+        else
+        {
+            if (PlayerData.inst.lockedInStasis)
+            {
+                damage = Mathf.RoundToInt(damage + (float)(damage * 0.25f));
+
+                firstSheild = true;
+                if (firstSheild && damageB <= 0)
+                {
+                    damageB = damage;
                 }
             }
         }
         #endregion
-
-        int damageB = damage;
-
 
         #endregion
 
@@ -3162,7 +3298,7 @@ public static class Action
 
         if (hitPart && overflow > 0 && !armorDestroyed)
         {
-            Action.DamageBot(target, damage, protection, weapon); // Recursion! (This doesn't strictly target armor first but whatever).
+            Action.DamageBot(source, target, damage, protection, weapon); // Recursion! (This doesn't strictly target armor first but whatever).
         }
         #endregion
 
@@ -3381,7 +3517,7 @@ public static class Action
                     break;
                 case CritType.Blast:
                     // Roll again!
-                    Item part = Action.DamageBot(target, damage, protection, weapon, false);
+                    Item part = Action.DamageBot(source, target, damage, protection, weapon, false);
                     if(part != null)
                     {
                         // If the 2nd part survives, forcefully drop it.
@@ -3412,7 +3548,7 @@ public static class Action
                     break;
                 case CritType.Smash:
                     // Roll again!
-                    Item part2 = Action.DamageBot(target, damage, protection, weapon, false, damage);
+                    Item part2 = Action.DamageBot(source, target, damage, protection, weapon, false, damage);
                     if (part2 != null)
                     {
                         // If the 2nd part survives, forcefully drop it.
@@ -3443,7 +3579,7 @@ public static class Action
                     if (!hitPart) // Hit core
                     {
                         // Roll again!
-                        Item part3 = Action.DamageBot(target, damage, protection, weapon, false);
+                        Item part3 = Action.DamageBot(source, target, damage, protection, weapon, false);
                         if (part3 != null)
                         {
                             // If the 2nd part survives, forcefully drop it.
@@ -3514,7 +3650,7 @@ public static class Action
                     // "[name] %1 ripped off."
                     // (Assumption): Damage & Remove random propulsion component
                     Item item4 = Action.FindRandomItemOfSlot(target, ItemSlot.Propulsion);
-                    item4 = Action.DamageBot(target, damage, protection, weapon, false);
+                    item4 = Action.DamageBot(source, target, damage, protection, weapon, false);
                     if (item4 != null)
                     {
                         // If the 2nd part survives, forcefully drop it.
@@ -3535,7 +3671,7 @@ public static class Action
                     // (Assumption): Double Damage
                     if (hitItem.Id >= 0 && hitItem.integrityCurrent > 0)
                     {
-                        Action.DamageBot(target, damage, protection, weapon, false);
+                        Action.DamageBot(source, target, damage, protection, weapon, false);
                     }
                     string botName = "";
                     if (target.botInfo)
@@ -3554,7 +3690,7 @@ public static class Action
                     // "Damage phase-mirrored to [name] %1."
                     // (Assumption): Mirror damage to neighbor
                     Actor neighbor = Action.FindNewNeighboringEnemy(target);
-                    DamageBot(neighbor, damage, protection, weapon, false);
+                    DamageBot(source, neighbor, damage, protection, weapon, false);
                     string botName2 = "";
                     if (target.botInfo)
                     {
