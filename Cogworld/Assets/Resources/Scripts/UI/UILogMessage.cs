@@ -13,9 +13,6 @@ public class UILogMessage : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     public Color setColor;
     public Color highLightColor;
 
-    [SerializeField] private float textSpeed = 0.01f;
-    private int currentDisplayingText = 0;
-
     bool hasAudioPlayout = false;
 
     public void Setup(string message, Color color, Color highlight, bool hasAudio)

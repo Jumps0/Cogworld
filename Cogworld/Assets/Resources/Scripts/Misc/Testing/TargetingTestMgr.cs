@@ -120,7 +120,9 @@ public class TargetingTestMgr : MonoBehaviour
     }
 
     private List<GameObject> path = new List<GameObject>();
+#pragma warning disable 0414
     private bool pathFinished = false;
+#pragma warning restore 0414
 
     private void FindLinePath()
     {

@@ -28,8 +28,6 @@ public class UIHackResults : MonoBehaviour
     public Color highDetColor;
     public Color veryHighDetColor;
 
-    [SerializeField] private float textSpeed = 0.007f;
-
     bool doDialogue = false;
     public void Setup(string text, Color newColor, bool hasDialogue = false)
     {

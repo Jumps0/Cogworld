@@ -1645,12 +1645,15 @@ public class DungeonGenerator : MonoBehaviour{
 		this.tryRoomsFirst			= tryRoomsFirst			?? this.tryRoomsFirst;
 		this.streamLine				= streamLine			?? this.streamLine;
 		this._seed					= seed					?? this._seed;
-		
-		if(_randomSeedOn || seed != null){	//use random seed if overlaod was used, or if it is enabled in general
+
+#pragma warning disable 0618
+        if (_randomSeedOn || seed != null){	//use random seed if overlaod was used, or if it is enabled in general
 			Random.seed = this._seed;
-		}					
-		//init grids
-		_dungeon		= new Tile[_dungeonWidth, _dungeonHeight];
+		}
+#pragma warning restore 0618
+
+        //init grids
+        _dungeon = new Tile[_dungeonWidth, _dungeonHeight];
 		_regions		= new int[_dungeonWidth, _dungeonHeight];
 		_currentRegion	= -1;	//reset
 		

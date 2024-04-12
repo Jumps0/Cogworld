@@ -75,10 +75,6 @@ public class UISchematicOption : MonoBehaviour
         StartCoroutine(AnimateAppear(delay));
     }
 
-    //Color unmarkedColor = new Color(0 / 255f, 173 / 255f, 0 / 255f);
-    Color unmarkedColor = new Color(0f, 0f, 0f, 0f);
-    float transitionDuration = 0.35f;
-
     private IEnumerator AnimateAppear(float delay = 0f)
     {
         yield return new WaitForSeconds(delay);

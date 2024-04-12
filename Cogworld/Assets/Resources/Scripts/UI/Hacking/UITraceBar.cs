@@ -31,7 +31,7 @@ public class UITraceBar : MonoBehaviour
 
     public float traceAmount = 0f;
 
-    [SerializeField] private float textSpeed = 0.01f;
+    //[SerializeField] private float textSpeed = 0.01f;
 
     public void Setup(GameObject terminal)
     {
