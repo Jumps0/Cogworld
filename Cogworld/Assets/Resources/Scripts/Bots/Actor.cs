@@ -503,11 +503,11 @@ public class Actor : Entity
 
                 foreach (BotArmament item in this.botInfo.armament.ToList())
                 {
-                    items.Add(item._item);
+                    items.Add(item.item);
                 }
                 foreach (BotArmament item in this.botInfo.components.ToList())
                 {
-                    items.Add(item._item);
+                    items.Add(item.item);
                 }
 
                 foreach (var item in items)
@@ -584,11 +584,11 @@ public class Actor : Entity
 
                 foreach (BotArmament item in this.botInfo.armament.ToList())
                 {
-                    items.Add(item._item);
+                    items.Add(item.item);
                 }
                 foreach (BotArmament item in this.botInfo.components.ToList())
                 {
-                    items.Add(item._item);
+                    items.Add(item.item);
                 }
 
                 foreach (var item in items)

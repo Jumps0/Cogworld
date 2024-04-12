@@ -219,7 +219,7 @@ public abstract class ItemObject : ScriptableObject
 
     // Effect
     [Header("Effect")]
-    public List<ItemEffect> itemEffect;
+    public List<ItemEffect> itemEffects;
     [Tooltip("Certain power sources, propulsion units, and energy weapons can be overloaded. Performing better but with dangerous downsides.")]
     public bool canOverload = false; // TODO: Complete functionality for relevant items
 
@@ -827,8 +827,10 @@ public class ItemBetterHitEffects
     public bool bonusCritChance = false;
     [Tooltip("Doesn't apply to AOE attacks.")]
     public bool bypassArmor = false;
-    [Tooltip("Increases target core exposure. Applies to only gun, cannon, and melee attacks.")]
+    [Tooltip("Increases target core exposure.")]
     public bool coreExposureEffect = false;
+    [Tooltip("Applies to only gun, cannon, and melee attacks.")]
+    public bool coreExposureGCM_only = true;
 }
 
 [System.Serializable]
@@ -1076,4 +1078,22 @@ public class SpecialTrait // TODO: Expand + effects!
     public bool CRM = false;
     public bool imprinted = false;
     public bool RIF = false;
+}
+
+[System.Serializable]
+public class SimplifiedItemEffect
+{
+    public int intVal;
+    public float floatVal;
+
+    public bool stacks;
+    public bool half_stacks;
+
+    public SimplifiedItemEffect(int intVal, float floatVal, bool stacks, bool half_stacks)
+    {
+        this.intVal = intVal;
+        this.floatVal = floatVal;
+        this.stacks = stacks;
+        this.half_stacks = half_stacks;
+    }
 }

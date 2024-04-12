@@ -475,9 +475,9 @@ public static class HF
         {
             foreach (ItemObject item in hackware)
             {
-                if(item.itemEffect.Count > 0)
+                if(item.itemEffects.Count > 0)
                 {
-                    foreach (ItemEffect effect in item.itemEffect)
+                    foreach (ItemEffect effect in item.itemEffects)
                     {
                         if (effect.hackBonuses.hasHackBonus)
                         {
@@ -1732,11 +1732,17 @@ public static class HF
 
         foreach (var item in items)
         {
-            if (item.itemData.itemEffect[0].armorProtectionEffect.hasEffect)
+            if(item.Id >= 0)
             {
-                if (item.itemData.itemEffect[0].armorProtectionEffect.projectionExchange)
+                foreach(var E in item.itemData.itemEffects)
                 {
-                    return item;
+                    if (E.armorProtectionEffect.hasEffect)
+                    {
+                        if (E.armorProtectionEffect.projectionExchange)
+                        {
+                            return item;
+                        }
+                    }
                 }
             }
         }
@@ -1838,9 +1844,9 @@ public static class HF
 
         foreach (ItemObject item in MapManager.inst.itemDatabase.Items)
         {
-            if(item.itemEffect.Count > 0)
+            if(item.itemEffects.Count > 0)
             {
-                foreach (var E in item.itemEffect)
+                foreach (var E in item.itemEffects)
                 {
                     if (E.hackBonuses.hasSystemShieldBonus && item.data.state)
                     {
@@ -3452,9 +3458,9 @@ public static class HF
         {
             if (item.item.Id >= 0)
             {
-                if (item.item.itemData.itemEffect.Count > 0)
+                if (item.item.itemData.itemEffects.Count > 0)
                 {
-                    foreach (var effect in item.item.itemData.itemEffect)
+                    foreach (var effect in item.item.itemData.itemEffects)
                     {
                         if (effect.detect_structural)
                         {
@@ -3999,7 +4005,7 @@ public static class HF
         {
             foreach (var I in bot.botInfo.components.ToList())
             {
-                if (I._item.Id >= 0 && I._item == item)
+                if (I.item.Id >= 0 && I.item == item)
                 {
                     bot.botInfo.components.Remove(I); // Remove the item
                     return;
@@ -4008,7 +4014,7 @@ public static class HF
 
             foreach (var I in bot.botInfo.armament.ToList())
             {
-                if (I._item.Id >= 0 && I._item == item)
+                if (I.item.Id >= 0 && I.item == item)
                 {
                     bot.botInfo.components.Remove(I); // Remove the item
                     return;
@@ -4036,6 +4042,39 @@ public static class HF
     {
         return tile.phaseWallTeam == actor.myFaction;
     }
+
+    public static (int intVal, float floatVal) ParseEffectStackingValues(List<SimplifiedItemEffect> list)
+    {
+        int totalIntValue = 0;
+        float totalFloatValue = 0f;
+
+        foreach (var effect in list)
+        {
+            if (effect.stacks)
+            {
+                if (effect.half_stacks)
+                {
+                    // If only half of the effect can stack, add half of the effect
+                    totalIntValue += effect.intVal / 2;
+                    totalFloatValue += effect.floatVal / 2f;
+                }
+                else
+                {
+                    // If the effect fully stacks, add the full effect
+                    totalIntValue += effect.intVal;
+                    totalFloatValue += effect.floatVal;
+                }
+            }
+            else
+            {
+                // If the effect doesn't stack, replace the total effect with the new effect
+                totalIntValue = effect.intVal;
+                totalFloatValue = effect.floatVal;
+            }
+        }
+
+        return (totalIntValue, totalFloatValue);
+    } 
 
     #endregion
 
