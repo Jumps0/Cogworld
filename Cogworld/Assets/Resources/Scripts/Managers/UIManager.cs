@@ -6013,7 +6013,121 @@ public class UIManager : MonoBehaviour
     // -      -
     #endregion
 
-    
+    #region DATA Menu (Item/Bot info display)
+    [Header("/ DATA / Menu")]
+    public UIDataDisplay dataMenu;
 
+    public void Data_OpenMenu(Item item = null, Actor bot = null)
+    {
+        // Enable the menu
+        dataMenu.data_parent.SetActive(true);
 
+        // There isn't actually an opening animation for the menu itself (thankfully).
+        // But most items inside the menu do have their own animations, which we will handle inside their own scripts.
+
+        // What are we focusing on, an item or a bot?
+        if(item != null)
+        {
+
+        }
+        else if(bot != null)
+        {
+
+        }
+    }
+
+    public void Data_CloseMenu()
+    {
+        StartCoroutine(Data_CloseMenuAnimation());
+    }
+
+    private IEnumerator Data_CloseMenuAnimation()
+    {
+        // There is a closing animation:
+        // - The menu itself just goes from its set color to all black (DONT FORGET TO RESET THEIR COLORS AT THE END THIS TIME!!!)
+        // - Each object has their own closing animations too.
+
+        // Transparency out the menu
+        #region Image Fade-out
+        Image[] bits = dataMenu.data_parent.GetComponentsInChildren<Image>();
+
+        float delay = 0.1f;
+
+        foreach (Image I in bits)
+        {
+            Color setColor = I.color;
+            I.color = new Color(setColor.r, setColor.g, setColor.b, 0.8f);
+        }
+
+        yield return new WaitForSeconds(delay);
+
+        foreach (Image I in bits)
+        {
+            Color setColor = I.color;
+            I.color = new Color(setColor.r, setColor.g, setColor.b, 0.6f);
+        }
+
+        yield return new WaitForSeconds(delay);
+
+        foreach (Image I in bits)
+        {
+            Color setColor = I.color;
+            I.color = new Color(setColor.r, setColor.g, setColor.b, 0.4f);
+        }
+
+        yield return new WaitForSeconds(delay);
+
+        foreach (Image I in bits)
+        {
+            Color setColor = I.color;
+            I.color = new Color(setColor.r, setColor.g, setColor.b, 0.2f);
+        }
+
+        yield return new WaitForSeconds(delay);
+
+        foreach (Image I in bits)
+        {
+            Color setColor = I.color;
+            I.color = new Color(setColor.r, setColor.g, setColor.b, 0f);
+        }
+        #endregion
+
+        // Destroy all prefabs we created
+
+        // Disable the menu
+        dataMenu.data_parent.SetActive(false);
+
+        // Reset the transparency
+        #region Image Transparency Reset
+
+        foreach (Image I in bits)
+        {
+            Color setColor = I.color;
+            I.color = new Color(setColor.r, setColor.g, setColor.b, 1f);
+        }
+        #endregion
+    }
+
+    #endregion
+
+}
+
+[System.Serializable]
+public class UIDataDisplay
+{
+    // This time we will be smart and store all our variables in a subclass so that
+    // we can hide it in the inspector later in a dropdown menu (unlike the wall of Terminal variables, my bad).
+
+    [Header("References")]
+    [Tooltip("Parent of the entire menu. Disabled/Enable this to Close/Open the menu.")]
+    public GameObject data_parent;
+
+    //[Header("Prefabs")]
+
+    [Header("Objects")]
+    [Tooltip("All the objects (prefabs) that we spawned in.")]
+    public List<GameObject> data_objects = new List<GameObject>();
+
+    [Header("Animation")]
+    public Animator data_animator;
 }

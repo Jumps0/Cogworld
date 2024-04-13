@@ -31618,6 +31618,10 @@ MonoBehaviour:
   instInv: []
   inventoryDisplayMode: I
   initAnimObjects: []
+  core_indicating: 0
+  matter_indicating: 0
+  energy_indicating: 0
+  corruption_indicating: 0
   evasionExtra: {fileID: 2062886321}
   evasion_hoverOpener: {fileID: 16228038}
   evasionAnimator: {fileID: 640395298}
@@ -31648,6 +31652,10 @@ MonoBehaviour:
   calcArea: {fileID: 1742173673}
   calcAreaParent: {fileID: 179391341}
   calcMessages: []
+  dataMenu:
+    data_parent: {fileID: 0}
+    data_objects: []
+    data_animator: {fileID: 0}
 --- !u!1 &899398655
 GameObject:
   m_ObjectHideFlags: 0
