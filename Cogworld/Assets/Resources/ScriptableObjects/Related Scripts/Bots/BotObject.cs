@@ -98,7 +98,9 @@ public enum BotSize
 public abstract class BotObject : ScriptableObject
 {
     public int Id;
+    public Sprite displaySprite;
     public Sprite asciiRep;
+
     [Header("Overview")]
     public BotClass _class;
     public BotSize _size;

@@ -6028,10 +6028,25 @@ public class UIManager : MonoBehaviour
         // What are we focusing on, an item or a bot?
         if(item != null)
         {
+            // Set the big image (and enable it)
+            dataMenu.data_mainImage.gameObject.SetActive(true);
+            dataMenu.data_mainImage.sprite = item.itemData.bigDisplay;
+            // Set title to item's name
+            dataMenu.data_mainTitle.text = item.Name;
+            // Set title image to item's (world) image
+            dataMenu.data_titleImage.sprite = item.itemData.inventoryDisplay;
+            dataMenu.data_titleImage.color = item.itemData.itemColor;
+
 
         }
         else if(bot != null)
         {
+            // Disable the big image because we don't use it
+            dataMenu.data_mainImage.gameObject.SetActive(false);
+            // Set title to bot's name
+            dataMenu.data_mainTitle.text = bot.name;
+            // Set title image to bot's (world) image
+            dataMenu.data_titleImage.sprite = bot.botInfo.displaySprite;
 
         }
     }
@@ -6121,6 +6136,11 @@ public class UIDataDisplay
     [Header("References")]
     [Tooltip("Parent of the entire menu. Disabled/Enable this to Close/Open the menu.")]
     public GameObject data_parent;
+    [Tooltip("The giant image that appears at the top of the menu.")]
+    public Image data_mainImage;
+    public TextMeshProUGUI data_mainTitle;
+    [Tooltip("The small little image right next to the item/bot's name inside the [ ]")]
+    public Image data_titleImage;
 
     //[Header("Prefabs")]
 

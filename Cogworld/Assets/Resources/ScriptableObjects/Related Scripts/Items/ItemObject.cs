@@ -158,6 +158,7 @@ public abstract class ItemObject : ScriptableObject
     public Sprite floorDisplay;
     public Sprite inventoryDisplay;
     public Sprite asciiRep;
+    public Sprite bigDisplay;
 
     public Color itemColor = Color.white;
 

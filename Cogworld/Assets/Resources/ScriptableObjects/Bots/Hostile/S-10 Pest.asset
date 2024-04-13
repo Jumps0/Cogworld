@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: S-10 Pest
   m_EditorClassIdentifier: 
   Id: 2
+  displaySprite: {fileID: -96095785, guid: c8c99b609fca1884eaa26184fcaefe75, type: 3}
   asciiRep: {fileID: 0}
   _class: 56
   _size: 1
@@ -20,6 +21,7 @@ MonoBehaviour:
     forward: SQ
     size: {x: 3, y: 3}
   rating: 5
+  star: 0
   tier: 1
   threat: 1
   value: 10
@@ -46,21 +48,66 @@ MonoBehaviour:
     - {x: 1, y: -10}
     - {x: 2, y: -10}
     - {x: 3, y: -10}
+    hasSchematic: 0
   armament:
-  - _item: {fileID: 11400000, guid: 9905546ad7157df4fbc906bd8c55c221, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.16
     _altChoices: []
     altChoicesDropChance: []
   components:
-  - _item: {fileID: 11400000, guid: fe5264c7ff4d80440834c70b67b6338b, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.16
     _altChoices: []
     altChoicesDropChance: []
-  - _item: {fileID: 11400000, guid: 9d1b56a386552b34d9184c123eb1f69a, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.17
     _altChoices: []
     altChoicesDropChance: []
-  - _item: {fileID: 11400000, guid: 9d1b56a386552b34d9184c123eb1f69a, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.17
     _altChoices: []
     altChoicesDropChance: []
@@ -70,10 +117,12 @@ MonoBehaviour:
     immune: 0
   resistancesExtra:
     coring: 0
+    dismemberment: 0
     disruption: 0
-    meltdown: 0
     hacking: 0
     jamming: 0
+    meltdown: 0
+    criticals: 0
   traits: []
   fabricationInfo:
     canBeFabricated: 0

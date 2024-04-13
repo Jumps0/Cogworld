@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Zionite
   m_EditorClassIdentifier: 
   Id: 15
+  displaySprite: {fileID: -824662763, guid: 79f85e31eb99f3e43af37b613c295404, type: 3}
   asciiRep: {fileID: 0}
   _class: 74
   _size: 2
@@ -20,6 +21,7 @@ MonoBehaviour:
     forward: RD
     size: {x: 5, y: 5}
   rating: 18
+  star: 0
   tier: 1
   threat: 1
   value: 0
@@ -46,31 +48,78 @@ MonoBehaviour:
     - {x: 1, y: -10}
     - {x: 2, y: -10}
     - {x: 3, y: -10}
+    hasSchematic: 0
   armament:
-  - _item: {fileID: 11400000, guid: 41a4fb581130c4049a3b2b34c55e551f, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.15
     _altChoices: []
     altChoicesDropChance: []
   components:
-  - _item: {fileID: 11400000, guid: c1fe8fee83d9b974f80203aa374eff0a, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.17
     _altChoices: []
     altChoicesDropChance: []
-  - _item: {fileID: 11400000, guid: c1fe8fee83d9b974f80203aa374eff0a, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.17
     _altChoices: []
     altChoicesDropChance: []
-  - _item: {fileID: 11400000, guid: 8f05c04fc2a79e94b90167c8b00e18b9, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.1
     _altChoices: []
     altChoicesDropChance: []
   resistances: []
   resistancesExtra:
     coring: 0
+    dismemberment: 0
     disruption: 0
-    meltdown: 0
     hacking: 0
     jamming: 0
+    meltdown: 0
+    criticals: 0
   traits: []
   fabricationInfo:
     canBeFabricated: 0

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: G-34 Mercenary
   m_EditorClassIdentifier: 
   Id: 1
+  displaySprite: {fileID: 150710960, guid: 3d4246bf28dd1e64b8800d326cd1c606, type: 3}
   asciiRep: {fileID: 400640993, guid: 0f98ae4f61612184ab250349db1b02ec, type: 3}
   _class: 25
   _size: 2
@@ -20,6 +21,7 @@ MonoBehaviour:
     forward: RD
     size: {x: 5, y: 5}
   rating: 8
+  star: 0
   tier: 1
   threat: 1
   value: 34
@@ -46,25 +48,81 @@ MonoBehaviour:
     - {x: 1, y: -10}
     - {x: 2, y: -10}
     - {x: 3, y: -10}
+    hasSchematic: 0
   armament:
-  - _item: {fileID: 11400000, guid: 1cf0bc96597c038438d406d6d145579c, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.12
     _altChoices: []
     altChoicesDropChance: []
   components:
-  - _item: {fileID: 11400000, guid: f257c55e230457d4085a2d7f236d192e, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.12
     _altChoices: []
     altChoicesDropChance: []
-  - _item: {fileID: 11400000, guid: e115e467b239ba74cbe9fdda3e326c3f, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.16
     _altChoices: []
     altChoicesDropChance: []
-  - _item: {fileID: 11400000, guid: e115e467b239ba74cbe9fdda3e326c3f, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.16
     _altChoices: []
     altChoicesDropChance: []
-  - _item: {fileID: 11400000, guid: 6e1e04cb2f8405447992feb6ecec365a, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.04
     _altChoices: []
     altChoicesDropChance: []
@@ -74,10 +132,12 @@ MonoBehaviour:
     immune: 0
   resistancesExtra:
     coring: 0
+    dismemberment: 0
     disruption: 0
-    meltdown: 0
     hacking: 0
     jamming: 0
+    meltdown: 0
+    criticals: 0
   traits: []
   fabricationInfo:
     canBeFabricated: 0

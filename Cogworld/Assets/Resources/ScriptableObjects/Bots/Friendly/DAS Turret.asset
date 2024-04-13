@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: DAS Turret
   m_EditorClassIdentifier: 
   Id: 13
+  displaySprite: {fileID: -1568931993, guid: 79f85e31eb99f3e43af37b613c295404, type: 3}
   asciiRep: {fileID: 0}
   _class: 62
   _size: 1
@@ -20,6 +21,7 @@ MonoBehaviour:
     forward: SQ
     size: {x: 3, y: 3}
   rating: 36
+  star: 0
   tier: 7
   threat: 4
   value: 0
@@ -46,8 +48,20 @@ MonoBehaviour:
     - {x: 1, y: -10}
     - {x: 2, y: -10}
     - {x: 3, y: -10}
+    hasSchematic: 0
   armament:
-  - _item: {fileID: 11400000, guid: 23d65a95fab258149b3d5bb0cb39f8b2, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.7
     _altChoices: []
     altChoicesDropChance: []
@@ -58,10 +72,12 @@ MonoBehaviour:
     immune: 0
   resistancesExtra:
     coring: 0
+    dismemberment: 0
     disruption: 0
-    meltdown: 0
     hacking: 1
     jamming: 0
+    meltdown: 0
+    criticals: 0
   traits: []
   fabricationInfo:
     canBeFabricated: 0

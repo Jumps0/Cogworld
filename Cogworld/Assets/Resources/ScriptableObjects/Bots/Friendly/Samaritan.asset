@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Samaritan
   m_EditorClassIdentifier: 
   Id: 13
+  displaySprite: {fileID: -1339470790, guid: 5be0c8177cfff664999389638e03edf2, type: 3}
   asciiRep: {fileID: 0}
   _class: 48
   _size: 3
@@ -20,6 +21,7 @@ MonoBehaviour:
     forward: RD
     size: {x: 7, y: 7}
   rating: 64
+  star: 0
   tier: 3
   threat: 1
   value: 0
@@ -46,69 +48,246 @@ MonoBehaviour:
     - {x: 1, y: -10}
     - {x: 2, y: -10}
     - {x: 3, y: -10}
+    hasSchematic: 0
   armament: []
   components:
-  - _item: {fileID: 11400000, guid: c5c2faf083ba7d84b8a984117c1c18c2, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.07
     _altChoices: []
     altChoicesDropChance: []
-  - _item: {fileID: 11400000, guid: c5c2faf083ba7d84b8a984117c1c18c2, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.07
     _altChoices: []
     altChoicesDropChance: []
-  - _item: {fileID: 11400000, guid: a1562a2881389e847a859a0ab084c31f, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.15
     _altChoices: []
     altChoicesDropChance: []
-  - _item: {fileID: 11400000, guid: a1562a2881389e847a859a0ab084c31f, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.15
     _altChoices: []
     altChoicesDropChance: []
-  - _item: {fileID: 11400000, guid: 6014e52b6f75f1349803d2a6729dfdcd, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.01
     _altChoices: []
     altChoicesDropChance: []
-  - _item: {fileID: 11400000, guid: 6014e52b6f75f1349803d2a6729dfdcd, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.01
     _altChoices: []
     altChoicesDropChance: []
-  - _item: {fileID: 11400000, guid: 6014e52b6f75f1349803d2a6729dfdcd, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.01
     _altChoices: []
     altChoicesDropChance: []
-  - _item: {fileID: 11400000, guid: 6014e52b6f75f1349803d2a6729dfdcd, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.01
     _altChoices: []
     altChoicesDropChance: []
-  - _item: {fileID: 11400000, guid: 6014e52b6f75f1349803d2a6729dfdcd, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.01
     _altChoices: []
     altChoicesDropChance: []
-  - _item: {fileID: 11400000, guid: 6014e52b6f75f1349803d2a6729dfdcd, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.01
     _altChoices: []
     altChoicesDropChance: []
-  - _item: {fileID: 11400000, guid: 6014e52b6f75f1349803d2a6729dfdcd, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.01
     _altChoices: []
     altChoicesDropChance: []
-  - _item: {fileID: 11400000, guid: 6014e52b6f75f1349803d2a6729dfdcd, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.01
     _altChoices: []
     altChoicesDropChance: []
-  - _item: {fileID: 11400000, guid: 6014e52b6f75f1349803d2a6729dfdcd, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.01
     _altChoices: []
     altChoicesDropChance: []
-  - _item: {fileID: 11400000, guid: 6014e52b6f75f1349803d2a6729dfdcd, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.01
     _altChoices: []
     altChoicesDropChance: []
-  - _item: {fileID: 11400000, guid: 6014e52b6f75f1349803d2a6729dfdcd, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.01
     _altChoices: []
     altChoicesDropChance: []
-  - _item: {fileID: 11400000, guid: 6014e52b6f75f1349803d2a6729dfdcd, type: 2}
+  - item:
+      Name: 
+      Id: -1
+      stackable: 0
+      amount: 1
+      itemData: {fileID: 0}
+      state: 1
+      integrityCurrent: 0
+      isOverloaded: 0
+      corrupted: 0
+      disabledTimer: 0
+      siege: 0
     dropChance: 0.01
     _altChoices: []
     altChoicesDropChance: []
@@ -118,10 +297,12 @@ MonoBehaviour:
     immune: 0
   resistancesExtra:
     coring: 0
+    dismemberment: 0
     disruption: 0
-    meltdown: 0
     hacking: 0
     jamming: 0
+    meltdown: 0
+    criticals: 0
   traits:
   - trait_sensorJamming: 0
     trait_energyEmmission: 1
