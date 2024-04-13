@@ -63,12 +63,15 @@ public class Item
     [Tooltip("Current integrity of this item.")]
     public int integrityCurrent;
 
+    [Header("Special States/Effects")]
     [Tooltip("Is this item currently overloaded?")]
     public bool isOverloaded = false;
     [Tooltip("Is this item corrupted?")]
     public bool corrupted = false;
     [Tooltip("If > 0, this item is disabled for the specified turns.")]
     public int disabledTimer = 0;
+    [Tooltip("Is this item currently in siege mode?")]
+    public bool siege = false; // https://www.gridsagegames.com/blog/2019/09/siege-tread-mechanics/
 
     public Item()
     {
@@ -170,7 +173,8 @@ public abstract class ItemObject : ScriptableObject
     public int rating;
     [Tooltip("If this item has a star * next to its rating, generally means it is better.")]
     public bool star = false;
-    public bool prototype = false;
+    [Tooltip("Sometimes items have a little green text indicator to the right of the rating number.")]
+    public ItemRatingType ratingType;
     public int integrityMax;
     [Tooltip("Percentage value.")]
     public int coverage;
@@ -394,6 +398,9 @@ public class ItemEffect
 
     [Header("Salvage Bonuses")]
     public ItemSalvageBonuses salvageBonus;
+
+    [Header("Alien Bonuses")]
+    public ItemAlienBonuses alienBonus;
 }
 
 public enum ItemQuality
@@ -459,6 +466,9 @@ public class ItemPropulsion
     [Tooltip("Percentage value.")]
     public int burnout;
     public bool hasBurnout = false;
+
+    [Tooltip("There are three possible values for a tread’s Siege stat (0, 1, 2):\r\n\r\nN/A: Not capable of entering siege mode (applies to all single-slot treads)\r\nStandard: Capable of siege mode, as described above (most multislot treads)\r\nHigh: As Standard, but with a +30% accuracy bonus and 50% damage reduction (a select few treads)")]
+    public int canSiege = 0;
 }
 
 // Weapon classes
@@ -659,6 +669,8 @@ public class ItemProtectionEffect
 
     [Header("Protection Exchange (Shields)")]
     public bool projectionExchange = false;
+    [Tooltip("Blocks global damage. If false, only blocks damage to this part.")]
+    public bool pe_global = false;
     [Tooltip("Blocks 0.##%")]
     public float pe_blockPercent = 0f;
     [Tooltip("Blocks ##% of damage to this part in exchange for energy loss at a #:# ratio (no effect if insufficient energy).")]
@@ -947,6 +959,22 @@ public class ItemSalvageBonuses
     public bool gunTypeOnly = true;
 }
 
+[System.Serializable]
+public class ItemAlienBonuses
+{
+    public bool hasEffect = false;
+    [Tooltip("0.##%")]
+    public float amount = 0f;
+
+    [Tooltip("While active, ##% of damage to this part is instead passed along to the core.")]
+    public bool singleDamageToCore = false;
+    [Tooltip("##% of damage to parts is instead transferred directly to the core.")]
+    public bool allDamageToCore = false;
+
+    public bool stacks = false;
+    public bool half_stacks = false;
+}
+
 #endregion
 
 
@@ -1039,6 +1067,17 @@ public enum ProjectileTrailStyle
     MissileMinor,
     MissileMajor,
     None
+}
+
+[System.Serializable]
+public enum ItemRatingType
+{
+    [Tooltip("No special text here")]
+    Standard,
+    [Tooltip("Has a special text box next to the rating")]
+    Prototype,
+    [Tooltip("Has a special text box next to the rating")]
+    Alien // ayy lmao
 }
 
 [System.Serializable]

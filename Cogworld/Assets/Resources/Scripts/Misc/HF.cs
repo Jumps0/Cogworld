@@ -1763,6 +1763,33 @@ public static class HF
     }
 
     /// <summary>
+    /// Determines if the actor in question can enter into siege mode, and if so, standard or high siege mode.
+    /// </summary>
+    /// <param name="actor">The actor in question.</param>
+    /// <returns>The *value* of siege mode. 0 = Can't | 1 = Standard | 2 = High</returns>
+    public static int DetermineSiegeType(Actor actor)
+    {
+        List<Item> items = Action.CollectAllBotItems(actor);
+
+        int mode = 0;
+
+        foreach (var item in items)
+        {
+            if(item.Id > -1 && item.itemData.type == ItemType.Treads)
+            {
+                if(mode == 2) // Stop early if we can reach High siege mode
+                {
+                    break;
+                }
+
+                mode = item.itemData.propulsion[0].canSiege;
+            }
+        }
+
+        return mode;
+    }
+
+    /// <summary>
     /// Finds a random bot (in the database) of a specified tier (1-10).
     /// </summary>
     /// <param name="tier">The specified tier to search for. 1 to 10</param>

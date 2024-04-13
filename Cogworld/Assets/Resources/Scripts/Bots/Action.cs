@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static Unity.VisualScripting.Member;
+using static UnityEditor.Progress;
 using static UnityEngine.GraphicsBuffer;
 using Color = UnityEngine.Color;
 
@@ -1065,6 +1066,31 @@ public static class Action
     /// <param name="target">The actor being pushed.</param>
     public static void ShuntAction(Actor source, Actor target)
     {
+        // Consider if the target is immune to knockback (siege mode and whatnot)
+        List<Item> items = Action.CollectAllBotItems(target);
+        foreach (var item in items)
+        {
+            if(item.Id > -1 && item.itemData.type == ItemType.Treads)
+            {
+                foreach(var E in item.itemData.itemEffects)
+                {
+                    if(E.hasStabEffect && E.stab_KnockbackImmune)
+                    {
+                        if (target.botInfo) // Bot
+                        {
+                            UIManager.inst.CreateNewLogMessage(target.botInfo.name + " is immune to being knocked back.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                            return;
+                        }
+                        else // Player
+                        {
+                            UIManager.inst.CreateNewLogMessage(item.itemData.itemName + " prevented being knocked back.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
         // We need to move away from the source
         List<GameObject> neighbors = HF.FindNeighbors((int)target.transform.position.x, (int)target.transform.position.y);
 
@@ -1852,12 +1878,64 @@ public static class Action
         ItemProjectile projData = weapon.itemData.projectile;
         int projAmount = weapon.itemData.projectileAmount;
 
+        List<Item> items = Action.CollectAllBotItems(source);
+
         float toHitChance = 1f;
         // First factor in the target's evasion/avoidance rate
         float avoidance = 0f;
         List<int> unused = new List<int>();
         (avoidance, unused) = Action.CalculateAvoidance(target);
         toHitChance -= (avoidance / 100);
+
+        // - Recoil - //
+        /* Anyway, weapon with recoil reduces the accuracy of all other weapons (regardless of their order).
+           So if you carry a Lgt. Assault Rifle (with 1 recoil) as well as 2 Sml. Lasers, those lasers will receive -1% accuracy due to the 1 recoil.
+           Recoil stacks, so if you carry 3 Lgt. Assault Riles, each one of them will receive -2% accuracy (due to the combined 2 recoil from the other 2 rifles).
+         */
+        float recoilBonus = 0f;
+        if((source.botInfo && source.siegeMode) || (!source.botInfo && PlayerData.inst.timeTilSiege == 0)) // Negated by being in siege mode.
+        {
+
+        }
+        else
+        {
+            foreach (var item in items)
+            {
+                if (item.Id > 0 && item.state && item.itemData.slot == ItemSlot.Weapons && item != weapon)
+                {
+                    int recoil = item.itemData.shot.shotRecoil;
+                    if (recoil > 0)
+                    {
+                        recoilBonus += (recoil / 100);
+                    }
+                }
+            }
+        }
+        // - Then add up stability effects (from treads)
+        int recoilMod = 0;
+        int weaponCount = 0;
+        foreach (var item in items)
+        {
+            if (item.Id > 0 && item.state && item.itemData.type == ItemType.Treads)
+            {
+                foreach(var E in item.itemData.itemEffects)
+                {
+                    if (E.hasStabEffect)
+                    {
+                        recoilMod += E.stab_recoilPerWeapon;
+                    }
+                }
+            }
+            else if (item.Id > 0 && item.state && item.itemData.slot == ItemSlot.Weapons)
+            {
+                weaponCount++;
+            }
+        }
+        // - Then use that mod to modify the recoil bonus based on weapons
+        recoilBonus += (recoilMod * weaponCount) / 100;
+        
+
+        toHitChance -= recoilBonus;
 
         // - Range - //
         int distance = (int)Vector2Int.Distance(Action.V3_to_V2I(source.gameObject.transform.position), Action.V3_to_V2I(target.gameObject.transform.position));
@@ -1867,19 +1945,14 @@ public static class Action
         }
 
         // - Siege Mode - //
-        if (source.GetComponent<PlayerData>())
+        int siegeType = HF.DetermineSiegeType(source);
+        if(siegeType == 1)
         {
-            if (PlayerData.inst.timeTilSiege == 0)
-            {
-                toHitChance += Random.Range(0.2f, 0.3f);
-            }
+            toHitChance += 0.2f;
         }
-        else
+        else if(siegeType == 2)
         {
-            if (source.siegeMode)
-            {
-                toHitChance += Random.Range(0.2f, 0.3f);
-            }
+            toHitChance += 0.3f;
         }
 
         // - Utility Bonuses - //
@@ -3305,8 +3378,8 @@ public static class Action
         #endregion
 
         #region Exposure
-        List<ItemObject> items = new List<ItemObject>();
-        List<ItemObject> protectiveItems = new List<ItemObject>();
+        List<Item> items = new List<Item>();
+        List<Item> protectiveItems = new List<Item>();
 
         // Collect up all the items
         if (target.botInfo) // Bot
@@ -3315,7 +3388,7 @@ public static class Action
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
-                    items.Add(item.item.itemData);
+                    items.Add(item.item);
                 }
             }
 
@@ -3323,7 +3396,7 @@ public static class Action
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
-                    items.Add(item.item.itemData);
+                    items.Add(item.item);
                 }
             }
         }
@@ -3333,7 +3406,7 @@ public static class Action
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
-                    items.Add(item.item.itemData);
+                    items.Add(item.item);
                 }
             }
 
@@ -3341,7 +3414,7 @@ public static class Action
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
-                    items.Add(item.item.itemData);
+                    items.Add(item.item);
                 }
             }
 
@@ -3349,7 +3422,7 @@ public static class Action
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
-                    items.Add(item.item.itemData);
+                    items.Add(item.item);
                 }
             }
 
@@ -3357,7 +3430,7 @@ public static class Action
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
-                    items.Add(item.item.itemData);
+                    items.Add(item.item);
                 }
             }
         }
@@ -3366,7 +3439,7 @@ public static class Action
         List<SimplifiedItemEffect> eList = new List<SimplifiedItemEffect>();
         foreach (var item in items)
         {
-            foreach (var E in item.itemEffects)
+            foreach (var E in item.itemData.itemEffects)
             {
                 if (E.toHitBuffs.hasEffect && E.toHitBuffs.bypassArmor)
                 {
@@ -3395,7 +3468,7 @@ public static class Action
         float coreExposureBoost = 0f;
         foreach (var item in items)
         {
-            foreach (var E in item.itemEffects)
+            foreach (var E in item.itemData.itemEffects)
             {
                 if (E.toHitBuffs.hasEffect && E.toHitBuffs.coreExposureEffect)
                 {
@@ -3454,16 +3527,25 @@ public static class Action
 
         foreach (var item in items)
         {
-            if (bypassArmor && item.type == ItemType.Armor) // Do we bypass any armor?
+            if (bypassArmor && item.itemData.type == ItemType.Armor) // Do we bypass any armor?
             {
 
             }
             else
             {
-                totalExposure += item.coverage;
+                totalExposure += item.itemData.coverage;
+
+                // All armor and heavy treads have double coverage in *Siege Mode*
+                if((source.botInfo && source.siegeMode) || (!source.botInfo && PlayerData.inst.timeTilSiege == 0))
+                {
+                    if(item.itemData.type == ItemType.Armor || item.itemData.propulsion[0].canSiege != 0)
+                    {
+                        totalExposure += item.itemData.coverage;
+                    }
+                }
 
                 // Gather up all protective items (we use this later)
-                foreach (var E in item.itemEffects)
+                foreach (var E in item.itemData.itemEffects)
                 {
                     if (E.armorProtectionEffect.hasEffect)
                     {
@@ -3479,7 +3561,7 @@ public static class Action
 
         foreach (var item in items)
         {
-            pairs.Add(new KeyValuePair<ItemObject, float>(item, item.coverage / totalExposure));
+            pairs.Add(new KeyValuePair<ItemObject, float>(item.itemData, item.itemData.coverage / totalExposure));
         }
 
         // Calculate to hit chance for player
@@ -3506,7 +3588,7 @@ public static class Action
         bool stacks = true;
         foreach (var P in protectiveItems)
         {
-            foreach (var E in P.itemEffects)
+            foreach (var E in P.itemData.itemEffects)
             {
                 if (E.armorProtectionEffect.type_hasTypeResistance) // Has a resistance to a type
                 {
@@ -3528,49 +3610,58 @@ public static class Action
 
         // Shields
         #region Shields
+        List<Item> pe_individual = new List<Item>(); // Individual damage -> energy protection items (used later)
+
         // Shield items
         foreach (var P in protectiveItems)
         {
-            foreach(var E in P.itemEffects)
+            foreach(var E in P.itemData.itemEffects)
             {
                 if (E.armorProtectionEffect.projectionExchange)
                 {
-                    float blocks = E.armorProtectionEffect.pe_blockPercent;
-                    Vector2 exchange = E.armorProtectionEffect.pe_exchange;
-
-                    // Calculate modification
-                    int removed = Mathf.RoundToInt(damage * blocks);
-
-                    // Subtract energy
-                    int cost = Mathf.RoundToInt(removed * exchange.y);
-
-                    int currentEnergy = 0;
-                    if (target.botInfo) // Bot
+                    if (E.armorProtectionEffect.pe_global)
                     {
-                        currentEnergy = target.currentEnergy;
-                    }
-                    else // Player
-                    {
-                        currentEnergy = PlayerData.inst.currentEnergy;
-                    }
+                        float blocks = E.armorProtectionEffect.pe_blockPercent;
+                        Vector2 exchange = E.armorProtectionEffect.pe_exchange;
 
-                    // Does the target have the power to cover this?
-                    if (currentEnergy >= cost)
-                    {
-                        // Yes, alter the damage
-                        damage = damage - removed;
-                        // And remove the power
+                        // Calculate modification
+                        int removed = Mathf.RoundToInt(damage * blocks);
+
+                        // Subtract energy
+                        int cost = Mathf.RoundToInt(removed * exchange.y);
+
+                        int currentEnergy = 0;
                         if (target.botInfo) // Bot
                         {
-                            target.currentEnergy -= cost;
+                            currentEnergy = target.currentEnergy;
                         }
                         else // Player
                         {
-                            PlayerData.inst.currentEnergy -= cost;
+                            currentEnergy = PlayerData.inst.currentEnergy;
                         }
-                    }
 
-                    firstSheild = true;
+                        // Does the target have the power to cover this?
+                        if (currentEnergy >= cost)
+                        {
+                            // Yes, alter the damage
+                            damage = damage - removed;
+                            // And remove the power
+                            if (target.botInfo) // Bot
+                            {
+                                target.currentEnergy -= cost;
+                            }
+                            else // Player
+                            {
+                                PlayerData.inst.currentEnergy -= cost;
+                            }
+                        }
+
+                        firstSheild = true;
+                    }
+                    else
+                    {
+                        pe_individual.Add(P);
+                    }
                 }
 
                 if (firstSheild && damageB <= 0)
@@ -3700,6 +3791,60 @@ public static class Action
 
         #endregion
 
+        #region EM Disruption
+        bool chainReaction = false;
+        if (target.botInfo) // Only effects AI
+        {
+            // Pick a random item (probably wrong but whatever)
+            Item targetItem = items[Random.Range(0, items.Count - 1)];
+
+            if (target.botInfo.resistancesExtra.disruption == false) // Not immune to it
+            {
+                // Disable roll
+                if (Random.Range(0f, 1f) < 0.1f) // Not too sure what the chances of this should be so its gonna be at 10%
+                {
+                    if (Random.Range(0f, 1f) < 0.7f) // Hit the part (70% chance)
+                    {
+                        targetItem.disabledTimer += 10;
+                    }
+                    else // Hit the core
+                    {
+                        target.DisableThis(10);
+                    }
+                }
+
+                // Chain reaction roll
+                if (targetItem.itemData.type == ItemType.Engine) // Is an engine
+                {
+                    float spectrum = 0;
+                    if (weapon.projectile.hasSpectrum)
+                    {
+                        spectrum = weapon.projectile.spectrum;
+                    }
+                    else if (weapon.explosionDetails.hasSpectrum)
+                    {
+                        spectrum = weapon.explosionDetails.spectrum;
+                    }
+
+                    if (spectrum > 0) // Has spectrum
+                    {
+                        // Roll for chain reaction explosion
+                        if (Random.Range(0f, 1f) < spectrum)
+                        {
+                            chainReaction = true;
+
+                            // Rope, Lamp Oil, Bombs? You want it? It's yours my friend.
+                            ChainReactionExplode(target, targetItem);
+                            targetItem = null; // This thing ain't coming back
+                        }
+                    }
+                }
+
+
+            }
+        }
+        #endregion
+
         #region Hitting Things
         // Roll to what we will hit
         float rand = Random.Range(0f, 1f);
@@ -3718,48 +3863,140 @@ public static class Action
         bool armorDestroyed = false;
         ItemSlot slotHit = ItemSlot.Other;
         Item hitItem = null;
+        int transferredCoreDamage = 0;
 
-        // Check which range the random number falls into
-        for (int i = 0; i < cumulativeProbabilities.Count; i++)
+        // No part attacking when a chain reaction happened
+        if (!chainReaction)
         {
-            if (rand < cumulativeProbabilities[i])
+            // Check which range the random number falls into
+            for (int i = 0; i < cumulativeProbabilities.Count; i++)
             {
-                // Item i is hit
-
-                // Now before we deal damage to this item. We need to check if the target has slot specific protection, and deal damage to that aswell
-                ItemSlot slot = pairs[i].Key.slot;
-                int splitDamage = 0;
-                Item splitItem = null;
-                foreach (var A in protectiveItems)
+                if (rand < cumulativeProbabilities[i])
                 {
-                    foreach(var E in A.itemEffects)
+                    #region Alien Protection
+                    // Hold it! Does the target have any of the wacky alien protection effects?
+                    float alienProtection = Action.CalculateAlienDamageTransfer(items);
+                    if(alienProtection > 0f) // Yes
                     {
-                        if (E.armorProtectionEffect.armorEffect_slotType.ToString().ToLower() == slot.ToString().ToLower()) // A bit of a janky way to convert
-                        {
-                            float percent = E.armorProtectionEffect.armorEffect_absorbtion;
+                        transferredCoreDamage = Mathf.RoundToInt(damage * alienProtection); // Save this reduced damage for later (goes against core)
+                        damage -= transferredCoreDamage; // And reduce the damage
+                    }
+                    #endregion
 
-                            splitDamage = Mathf.RoundToInt(damage * percent);
-                            damage -= splitDamage;
-                            splitItem = A.data;
-                            break;
+                    // Item i is hit
+                    Item part = pairs[i].Key.data;
+
+                    // Now before we deal damage to this item. We need to check a few things.
+
+                    // 1. If the part we just hit has the protection effect of damage -> power.
+                    foreach (var item in pe_individual)
+                    {
+                        if(item == part)
+                        {
+                            foreach(var E in item.itemData.itemEffects)
+                            {
+                                if (E.armorProtectionEffect.projectionExchange)
+                                {
+                                    float blocks = E.armorProtectionEffect.pe_blockPercent;
+                                    Vector2 exchange = E.armorProtectionEffect.pe_exchange;
+
+                                    // Calculate modification
+                                    int removed = Mathf.RoundToInt(damage * blocks);
+
+                                    // Subtract energy
+                                    int cost = Mathf.RoundToInt(removed * exchange.y);
+
+                                    int currentEnergy = 0;
+                                    if (target.botInfo) // Bot
+                                    {
+                                        currentEnergy = target.currentEnergy;
+                                    }
+                                    else // Player
+                                    {
+                                        currentEnergy = PlayerData.inst.currentEnergy;
+                                    }
+
+                                    // Does the target have the power to cover this?
+                                    if (currentEnergy >= cost)
+                                    {
+                                        // Yes, alter the damage
+                                        damage = damage - removed;
+                                        // And remove the power
+                                        if (target.botInfo) // Bot
+                                        {
+                                            target.currentEnergy -= cost;
+                                        }
+                                        else // Player
+                                        {
+                                            PlayerData.inst.currentEnergy -= cost;
+                                        }
+
+                                        // Then damage the item
+                                        hitItem = part;
+                                        Action.DamageItem(target, hitItem, damage);
+                                    }
+                                }
+                            }
                         }
                     }
-                }
 
-                // Damage the specific protection if it exists
-                if(splitItem != null)
-                {
+                    if(hitItem != null) // Stop if we hit something in step 1.
+                    {
+                        break;
+                    }
+
+                    // 2. If part is treads currently in siege mode reduce damage appropriately (-25% to -50% damage)
+                    // https://www.gridsagegames.com/blog/2019/09/siege-tread-mechanics/
+                    if (part.itemData.type == ItemType.Treads && part.itemData.propulsion[0].canSiege != 0 && part.siege)
+                    {
+                        float reduction = 0f;
+                        if (part.itemData.propulsion[0].canSiege == 1)
+                        {
+                            reduction = 0.25f;
+                        }
+                        else if (part.itemData.propulsion[0].canSiege == 2)
+                        {
+                            reduction = 0.50f;
+                        }
+
+                        damage = Mathf.RoundToInt(damage - (float)(damage * reduction));
+                    }
+
+                    // 3. If the target has slot specific protection, and deal damage to that aswell
+                    ItemSlot slot = part.itemData.slot;
+                    int splitDamage = 0;
+                    Item splitItem = null;
+                    foreach (var A in protectiveItems)
+                    {
+                        foreach (var E in A.itemData.itemEffects)
+                        {
+                            if (E.armorProtectionEffect.armorEffect_slotType.ToString().ToLower() == slot.ToString().ToLower()) // A bit of a janky way to convert
+                            {
+                                float percent = E.armorProtectionEffect.armorEffect_absorbtion;
+
+                                splitDamage = Mathf.RoundToInt(damage * percent);
+                                damage -= splitDamage;
+                                splitItem = A.itemData.data;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Damage the specific protection if it exists
+                    if (splitItem != null)
+                    {
+                        // Deal damage
+                        hitItem = splitItem;
+                        Action.DamageItem(target, splitItem, splitDamage);
+                    }
+
+
                     // Deal damage
-                    hitItem = splitItem;
-                    Action.DamageItem(target, splitItem, splitDamage);
+                    hitItem = part;
+                    (overflow, armorDestroyed) = Action.DamageItem(target, part, damage);
+                    slotHit = part.itemData.slot;
+                    hitPart = true;
                 }
-
-
-                // Deal damage
-                hitItem = pairs[i].Key.data;
-                (overflow, armorDestroyed) = Action.DamageItem(target, pairs[i].Key.data, damage);
-                slotHit = pairs[i].Key.slot;
-                hitPart = true;
             }
         }
 
@@ -3771,7 +4008,7 @@ public static class Action
             Item splitItem = null;
             foreach (var A in protectiveItems)
             {
-                foreach(var E in A.itemEffects)
+                foreach(var E in A.itemData.itemEffects)
                 {
                     if (E.armorProtectionEffect.armorEffect_slotType == ArmorType.None)
                     {
@@ -3779,7 +4016,7 @@ public static class Action
 
                         splitDamage = Mathf.RoundToInt(damage * percent);
                         damage -= splitDamage;
-                        splitItem = A.data;
+                        splitItem = A.itemData.data;
                         break;
                     }
                 }
@@ -3826,59 +4063,6 @@ public static class Action
         if (hitPart && overflow > 0 && !armorDestroyed)
         {
             Action.DamageBot(target, damage, protection, weapon, source); // Recursion! (This doesn't strictly target armor first but whatever).
-        }
-        #endregion
-
-        #region EM Disruption
-        bool chainReaction = false;
-        if (target.botInfo) // Only effects AI
-        {
-            if(target.botInfo.resistancesExtra.disruption == false) // Not immune to it
-            {
-                // Disable roll
-                if(Random.Range(0f, 1f) < 0.1f) // Not too sure what the chances of this should be so its gonna be at 10%
-                {
-                    if(hitItem != null && hitItem.Id > -1) // Hit the part
-                    {
-                        hitItem.disabledTimer += 10;
-                    }
-                    else // Hit the core
-                    {
-                        target.DisableThis(10);
-                    }
-                }
-
-                // Chain reaction roll
-                if (hitItem != null && hitItem.Id > -1) // Part still alive
-                {
-                    if(hitItem.itemData.type == ItemType.Engine) // Is an engine
-                    {
-                        float spectrum = 0;
-                        if (weapon.projectile.hasSpectrum)
-                        {
-                            spectrum = weapon.projectile.spectrum;
-                        }
-                        else if (weapon.explosionDetails.hasSpectrum)
-                        {
-                            spectrum = weapon.explosionDetails.spectrum;
-                        }
-
-                        if(spectrum > 0) // Has spectrum
-                        {
-                            // Roll for chain reaction explosion
-                            if(Random.Range(0f, 1f) < spectrum)
-                            {
-                                chainReaction = true;
-
-                                // Rope, Lamp Oil, Bombs? You want it? It's yours my friend.
-                                ChainReactionExplode(target, hitItem);
-                                hitItem = null; // This thing ain't coming back
-                            }
-                        }
-                    }
-                }
-
-            }
         }
         #endregion
 
@@ -3986,20 +4170,32 @@ public static class Action
                     break;
             }
         }
+        else if(crit && !target.botInfo) // Conditional player crit immunity
+        {
+            // Siege mode makes them immune to part destruction from critical hits
+            if(PlayerData.inst.timeTilSiege == 0) // In siege mode
+            {
+                if(critType == CritType.Destroy || critType == CritType.Blast || critType == CritType.Smash || critType == CritType.Detonate || critType == CritType.Sunder)
+                {
+                    crit = false;
+                    UIManager.inst.CreateNewLogMessage("    " + "Critical part destruction prevented due to siege mode.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                }
+            }
+        }
 
         if (crit)
         {
             // Check items
             foreach (var item in protectiveItems)
             {
-                foreach(var E in item.itemEffects)
+                foreach(var E in item.itemData.itemEffects)
                 {
                     if (E.armorProtectionEffect.armorEffect_preventCritStrikesVSSlot) // Armor protection
                     {
                         if (E.armorProtectionEffect.armorEffect_slotType.ToString().ToLower() == slotHit.ToString().ToLower())
                         {
                             crit = false;
-                            UIManager.inst.CreateNewLogMessage("    " + item.itemName + " prevented critical effect.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                            UIManager.inst.CreateNewLogMessage("    " + item.itemData.itemName + " prevented critical effect.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                             break;
                         }
                     }
@@ -4007,7 +4203,7 @@ public static class Action
                     if (E.armorProtectionEffect.critImmunity) // Special anti-crit item
                     {
                         crit = false;
-                        UIManager.inst.CreateNewLogMessage("    " + item.itemName + " prevented critical effect.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                        UIManager.inst.CreateNewLogMessage("    " + item.itemData.itemName + " prevented critical effect.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                         break;
                     }
                 }
@@ -4313,7 +4509,7 @@ public static class Action
             // Salvage Mod Items
             foreach (var item in items)
             {
-                foreach(var E in item.itemEffects)
+                foreach(var E in item.itemData.itemEffects)
                 {
                     if (E.salvageBonus.hasEffect)
                     {
@@ -5535,6 +5731,31 @@ public static class Action
 
         // Destroy the item
         Action.DestoyItem(source, item);
+    }
+
+    public static float CalculateAlienDamageTransfer(List<Item> items)
+    {
+        float amount = 0f;
+
+        List<SimplifiedItemEffect> eList = new List<SimplifiedItemEffect>();
+        foreach (Item item in items)
+        {
+            if(item.Id > -1)
+            {
+                foreach (var E in item.itemData.itemEffects)
+                {
+                    if (E.alienBonus.hasEffect && (E.alienBonus.allDamageToCore || E.alienBonus.singleDamageToCore)) // This shouldn't matter?
+                    {
+                        eList.Add(new SimplifiedItemEffect(0, E.alienBonus.amount, E.alienBonus.stacks, E.alienBonus.half_stacks));
+                    }
+                }
+            }
+        }
+
+        int filler;
+        (filler, amount) = HF.ParseEffectStackingValues(eList);
+
+        return amount;
     }
 
     #endregion
