@@ -3367,6 +3367,33 @@ public static class HF
         return salvage;
     }
 
+    /// <summary>
+    /// Attempts to find the parent part of a machine at the specified machine.
+    /// </summary>
+    /// <param name="pos">The position to check.</param>
+    /// <returns>If one is found, returns the gameObject of the machine parent located near the position.</returns>
+    public static GameObject GetMachineParentAtPosition(Vector2Int pos)
+    {
+        Vector3 lowerPosition = new Vector3(pos.x, pos.y, 2);
+        Vector3 upperPosition = new Vector3(pos.x, pos.y, -2);
+        Vector3 direction = lowerPosition - upperPosition;
+        float distance = Vector3.Distance(new Vector3Int((int)lowerPosition.x, (int)lowerPosition.y, 0), upperPosition);
+        direction.Normalize();
+        RaycastHit2D[] hits = Physics2D.RaycastAll(upperPosition, direction, distance);
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            RaycastHit2D hit = hits[i];
+
+            if (hit.collider.GetComponent<MachinePart>())
+            {
+                return hit.collider.GetComponent<MachinePart>().parentPart.gameObject;
+            }
+        }
+
+        return null;
+    }
+
     #endregion
 
     #region Floor Traps

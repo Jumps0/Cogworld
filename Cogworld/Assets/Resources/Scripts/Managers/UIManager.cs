@@ -4862,7 +4862,13 @@ public class UIManager : MonoBehaviour
         // Movement speed (and whether recently moved)
         if (PlayerData.inst.evasion3 > 0)
         {
-            evasionText3.text = "<color=#00FFF5>" + "Speed + " + PlayerData.inst.evasion3 + "</color>"; // Cyan
+            string mainText = "Speed + ";
+            if(PlayerData.inst.timeTilSiege == 0)
+            {
+                mainText = "Siege + "; // Special text for Siege mode
+            }
+
+            evasionText3.text = "<color=#00FFF5>" + mainText + PlayerData.inst.evasion3 + "</color>"; // Cyan
         }
         else
         {

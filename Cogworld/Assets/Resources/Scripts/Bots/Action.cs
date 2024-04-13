@@ -359,7 +359,7 @@ public static class Action
                     }
                     if (target.GetComponent<PlayerData>()) // Player being attacked
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, source, crit);
+                        DamageBot(target.GetComponent<Actor>(), damageAmount, weapon, source, crit);
 
                         // Do a calc message
                         string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHit * 100}%) Hit";
@@ -371,7 +371,7 @@ public static class Action
                     }
                     else // Bot being attacked
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, source, crit);
+                        DamageBot(target.GetComponent<Actor>(), damageAmount, weapon, source, crit);
 
                         // Show a popup that says how much damage occured
                         if (!target.GetComponent<PlayerData>())
@@ -528,7 +528,7 @@ public static class Action
                             }
                             if (target.GetComponent<PlayerData>()) // Player being attacked
                             {
-                                DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, source, crit);
+                                DamageBot(target.GetComponent<Actor>(), damageAmount, weapon, source, crit);
 
                                 // Do a calc message
                                 string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHit * 100}%) Hit";
@@ -540,7 +540,7 @@ public static class Action
                             }
                             else // Bot being attacked
                             {
-                                DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, source, crit);
+                                DamageBot(target.GetComponent<Actor>(), damageAmount, weapon, source, crit);
 
 
                                 // Show a popup that says how much damage occured
@@ -906,7 +906,7 @@ public static class Action
                     }
                     if (target.GetComponent<PlayerData>()) // Player being attacked
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, source, crit);
+                        DamageBot(target.GetComponent<Actor>(), damageAmount, weapon, source, crit);
 
                         // Do a calc message
                         string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Hit";
@@ -918,7 +918,7 @@ public static class Action
                     }
                     else // Bot being attacked
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount, types, weapon.itemData, source, crit);
+                        DamageBot(target.GetComponent<Actor>(), damageAmount, weapon, source, crit);
 
 
                         // Show a popup that says how much damage occured
@@ -1146,6 +1146,148 @@ public static class Action
     }
 
     /// <summary>
+    /// Batter up.
+    /// </summary>
+    /// <param name="target">The baseball.</param>
+    /// <param name="direction">Where we are sending it.</param>
+    public static void KnockbackAction(Actor target, Item weapon, Vector2Int direction, float og_knockback, int og_damage, int dealtDamage = 0)
+    {
+        // First off, (due to recursion) do we need to deal any extra damage?
+        if(dealtDamage > 0)
+        {
+            Item ph = Action.DamageBot(target, dealtDamage, weapon);
+            // Did we destroy that item (and was it originally an Impact attack?)
+            if(ph == null && weapon.itemData.meleeAttack.isMelee && weapon.itemData.meleeAttack.damageType == ItemDamageType.Impact)
+            {
+                // Apply a bit of corruption!
+                if (target.botInfo) // Bot
+                {
+                    target.corruption += (5 / 100);
+                }
+                else // Player
+                {
+                    PlayerData.inst.currentCorruption += 1;
+                }
+            }
+        }
+
+        Vector2Int pos = HF.V3_to_V2I(target.transform.position) + direction;
+        TileBlock firstAttemptTile = MapManager.inst._allTilesRealized[pos].GetComponent<TileBlock>();
+
+        // Is the tile where we want to send the target unoccupied?
+        if (target.GetComponent<Actor>().IsUnoccupiedTile(firstAttemptTile))
+        {
+            // Yes!
+            MovementAction(target, direction); // Force them to move
+            // Do a message
+            if (target.botInfo)
+            {
+                UIManager.inst.CreateNewLogMessage(target.botInfo + " was knocked back.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+            }
+            else
+            {
+                UIManager.inst.CreateNewLogMessage("Knocked back.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+            }
+        }
+        else
+        {
+            // No. Is there a bot there?
+            Actor blocker = GameManager.inst.GetBlockingActorAtLocation(new Vector3(pos.x, pos.y));
+            if(blocker != null)
+            {
+                // Yes! Try and knock them back instead.
+                /*
+                 * A robot hit by another displaced 
+                 * robot has a chance to itself be displaced and sustain damage, where the chance equals the original knockback chance further 
+                 * modified by +/-10% per size class difference between the blocking robot and the knocked back robot, and the resulting damage 
+                 * equals [originalDamage] (see Attack Resolution), further divided by the blocker size class if that class is greater than 1 (where Medium = 2, and so on).
+                 */
+                float followUpChance = og_knockback;
+                int followUpDamage = og_damage;
+
+                BotSize size_a = BotSize.Medium;
+                if (target.botInfo)
+                {
+                    size_a = target.botInfo._size;
+                }
+                BotSize size_b = BotSize.Medium;
+                if (blocker.botInfo)
+                {
+                    size_b = target.botInfo._size;
+                }
+                float sizeMod = Action.CalculateSizeModifier(size_b, size_a);
+                followUpChance = Mathf.RoundToInt(followUpChance + (float)(followUpChance * sizeMod));
+
+                int divide = 0;
+
+                if(size_b == BotSize.Medium)
+                {
+                    divide = 2;
+                }
+                else if(size_b == BotSize.Large)
+                {
+                    divide = 3;
+                }
+                else if(size_b == BotSize.Huge)
+                {
+                    divide = 4;
+                }
+
+                if(divide > 0)
+                {
+                    followUpDamage /= divide;
+                }
+
+                if (Random.Range(0f, 1f) < followUpChance)
+                {
+                    Action.KnockbackAction(blocker, weapon, direction, followUpChance, og_damage, followUpDamage);
+                }
+            }
+            else
+            {
+                // No. Stop here, but is there a machine at the location?
+                GameObject machine = HF.GetMachineParentAtPosition(pos);
+
+                if(machine != null)
+                {
+                    // Is the machine static and does it explode?
+                    if (machine.GetComponent<StaticMachine>())
+                    {
+                        if (machine.GetComponent<StaticMachine>().explosive)
+                        {
+                            // Do a message
+                            if (target.botInfo)
+                            {
+                                UIManager.inst.CreateNewLogMessage(target.botInfo + " was knocked back into " + machine.GetComponent<StaticMachine>()._name + ", causing it to explode.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                            }
+                            else
+                            {
+                                UIManager.inst.CreateNewLogMessage("Knocked back into " + machine.GetComponent<StaticMachine>()._name + ", causing it to explode.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                            }
+                            machine.GetComponent<StaticMachine>().Detonate(); // Kaboom.
+                        }
+                    }
+
+                    // If not, just destroy that part of the machine.
+                    if (MapManager.inst._layeredObjsRealized[pos].GetComponent<MachinePart>())
+                    {
+                        MapManager.inst._layeredObjsRealized[pos].GetComponent<MachinePart>().DestroyMe();
+                        // Do a message
+                        if (target.botInfo)
+                        {
+                            UIManager.inst.CreateNewLogMessage(target.botInfo + " was knocked back into " + MapManager.inst._layeredObjsRealized[pos].GetComponent<MachinePart>().displayName + ", heavily damaging it.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                        }
+                        else
+                        {
+                            UIManager.inst.CreateNewLogMessage("Knocked back into " + MapManager.inst._layeredObjsRealized[pos].GetComponent<MachinePart>().displayName + ", heavily damaging it.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
     /// Part of a larger AOE attack. This will indivudally target something and handle what happens independently.
     /// </summary>
     /// <param name="source">The attacker.</param>
@@ -1283,7 +1425,7 @@ public static class Action
                     // Before we deal damage we need to split it into chunks
                     for(int i = 0; i < chunks; i++)
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount / chunks, types, weapon.itemData, source);
+                        DamageBot(target.GetComponent<Actor>(), damageAmount / chunks, weapon, source);
                     }
 
                     // Do a calc message
@@ -1299,7 +1441,7 @@ public static class Action
                     // Before we deal damage we need to split it into chunks
                     for (int i = 0; i < chunks; i++)
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount / chunks, types, weapon.itemData, source);
+                        DamageBot(target.GetComponent<Actor>(), damageAmount / chunks, weapon, source);
                     }
 
                     // Show a popup that says how much damage occured
@@ -1687,7 +1829,7 @@ public static class Action
                     // Before we deal damage we need to split it into chunks
                     for (int i = 0; i < chunks; i++)
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount / chunks, types, weapon.itemData);
+                        DamageBot(target.GetComponent<Actor>(), damageAmount / chunks, weapon);
                     }
 
                     // Do a calc message
@@ -1699,7 +1841,7 @@ public static class Action
                     // Before we deal damage we need to split it into chunks
                     for (int i = 0; i < chunks; i++)
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount / chunks, types, weapon.itemData);
+                        DamageBot(target.GetComponent<Actor>(), damageAmount / chunks, weapon);
                     }
 
                     // Show a popup that says how much damage occured
@@ -3333,9 +3475,9 @@ public static class Action
         UIManager.inst.CreateCombatPopup(actor.gameObject, _message, a, b, c);
     }
 
-    public static Item DamageBot(Actor target, int damage, List<ArmorType> protection, ItemObject weapon, Actor source = null, bool crit = false, int forcedOverflow = 0)
+    public static Item DamageBot(Actor target, int damage, Item weapon, Actor source = null, bool crit = false, int forcedOverflow = 0)
     {
-        ItemDamageType damageType = HF.GetDamageType(weapon);
+        ItemDamageType damageType = HF.GetDamageType(weapon.itemData);
 
         #region Explanation
         /*
@@ -3474,7 +3616,7 @@ public static class Action
                 {
                     if (E.toHitBuffs.coreExposureGCM_only)
                     {
-                        if(weapon.type == ItemType.Gun || weapon.type == ItemType.Cannon || weapon.type == ItemType.Melee)
+                        if(weapon.itemData.type == ItemType.Gun || weapon.itemData.type == ItemType.Cannon || weapon.itemData.type == ItemType.Melee)
                         {
                             if (E.toHitBuffs.stacks)
                             {
@@ -3817,13 +3959,13 @@ public static class Action
                 if (targetItem.itemData.type == ItemType.Engine) // Is an engine
                 {
                     float spectrum = 0;
-                    if (weapon.projectile.hasSpectrum)
+                    if (weapon.itemData.projectile.hasSpectrum)
                     {
-                        spectrum = weapon.projectile.spectrum;
+                        spectrum = weapon.itemData.projectile.spectrum;
                     }
-                    else if (weapon.explosionDetails.hasSpectrum)
+                    else if (weapon.itemData.explosionDetails.hasSpectrum)
                     {
-                        spectrum = weapon.explosionDetails.spectrum;
+                        spectrum = weapon.itemData.explosionDetails.spectrum;
                     }
 
                     if (spectrum > 0) // Has spectrum
@@ -4039,6 +4181,19 @@ public static class Action
                 PlayerData.inst.currentHealth -= damage;
             }
         }
+
+        // And if it exists, apply transfer damage to core
+        if(transferredCoreDamage > 0)
+        {
+            if (target.botInfo)
+            {
+                target.currentHealth -= transferredCoreDamage;
+            }
+            else
+            {
+                PlayerData.inst.currentHealth -= transferredCoreDamage;
+            }
+        }
         #endregion
 
         #region Damage Overflow
@@ -4062,20 +4217,20 @@ public static class Action
 
         if (hitPart && overflow > 0 && !armorDestroyed)
         {
-            Action.DamageBot(target, damage, protection, weapon, source); // Recursion! (This doesn't strictly target armor first but whatever).
+            Action.DamageBot(target, damage, weapon, source); // Recursion! (This doesn't strictly target armor first but whatever).
         }
         #endregion
 
         #region Crits
         // https://www.gridsagegames.com/blog/2021/05/design-overhaul-3-damage-types-and-criticals/
         CritType critType = CritType.Nothing;
-        if (weapon.meleeAttack.isMelee) // Melee
+        if (weapon.itemData.meleeAttack.isMelee) // Melee
         {
-            critType = weapon.meleeAttack.critType;
+            critType = weapon.itemData.meleeAttack.critType;
         }
         else // Ranged
         {
-            critType = weapon.projectile.critType;
+            critType = weapon.itemData.projectile.critType;
         }
 
         // First off, is what we are targeting immune to crits?
@@ -4213,7 +4368,7 @@ public static class Action
 
         bool burnCrit = false;
         bool corruptCrit = false;
-        if(crit == true && weapon.explosionDetails.radius <= 0) // Is a crit & not an explosion
+        if(crit == true && weapon.itemData.explosionDetails.radius <= 0) // Is a crit & not an explosion
         {
 
             /*  Burn: Significantly increase heat transfer (TH guns)
@@ -4276,7 +4431,7 @@ public static class Action
                     break;
                 case CritType.Blast:
                     // Roll again!
-                    Item part = Action.DamageBot(target, damage, protection, weapon, source, false);
+                    Item part = Action.DamageBot(target, damage, weapon, source, false);
                     if(part != null)
                     {
                         // If the 2nd part survives, forcefully drop it.
@@ -4307,7 +4462,7 @@ public static class Action
                     break;
                 case CritType.Smash:
                     // Roll again!
-                    Item part2 = Action.DamageBot(target, damage, protection, weapon, source, false, damage);
+                    Item part2 = Action.DamageBot(target, damage, weapon, source, false, damage);
                     if (part2 != null)
                     {
                         // If the 2nd part survives, forcefully drop it.
@@ -4338,7 +4493,7 @@ public static class Action
                     if (!hitPart) // Hit core
                     {
                         // Roll again!
-                        Item part3 = Action.DamageBot(target, damage, protection, weapon, source, false);
+                        Item part3 = Action.DamageBot(target, damage, weapon, source, false);
                         if (part3 != null)
                         {
                             // If the 2nd part survives, forcefully drop it.
@@ -4409,7 +4564,7 @@ public static class Action
                     // "[name] %1 ripped off."
                     // (Assumption): Damage & Remove random propulsion component
                     Item item4 = Action.FindRandomItemOfSlot(target, ItemSlot.Propulsion);
-                    item4 = Action.DamageBot(target, damage, protection, weapon, source, false);
+                    item4 = Action.DamageBot(target, damage, weapon, source, false);
                     if (item4 != null)
                     {
                         // If the 2nd part survives, forcefully drop it.
@@ -4430,7 +4585,7 @@ public static class Action
                     // (Assumption): Double Damage
                     if (hitItem.Id >= 0 && hitItem.integrityCurrent > 0)
                     {
-                        Action.DamageBot(target, damage, protection, weapon, source, false);
+                        Action.DamageBot(target, damage, weapon, source, false);
                     }
                     string botName = "";
                     if (target.botInfo)
@@ -4449,7 +4604,7 @@ public static class Action
                     // "Damage phase-mirrored to [name] %1."
                     // (Assumption): Mirror damage to neighbor
                     Actor neighbor = Action.FindNewNeighboringEnemy(target);
-                    DamageBot(neighbor, damage, protection, weapon, source, false);
+                    DamageBot(neighbor, damage, weapon, source, false);
                     string botName2 = "";
                     if (target.botInfo)
                     {
@@ -4468,7 +4623,7 @@ public static class Action
                     if (target.botInfo)
                     {
                         UIManager.inst.CreateNewCalcMessage("Critical on " + target.botInfo.name + "'s core.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
-                        target.Die(target.name + "'s core has impaled by " + weapon.itemName + ", destroying it completely.");
+                        target.Die(target.name + "'s core has impaled by " + weapon + ", destroying it completely.");
                     }
                     else
                     {
@@ -4504,7 +4659,7 @@ public static class Action
 
         if (target.botInfo)
         {
-            int salvageMod = HF.GetSalvageMod(weapon.data);
+            int salvageMod = HF.GetSalvageMod(weapon);
 
             // Salvage Mod Items
             foreach (var item in items)
@@ -4513,9 +4668,9 @@ public static class Action
                 {
                     if (E.salvageBonus.hasEffect)
                     {
-                        if (E.salvageBonus.gunTypeOnly && weapon.type == ItemType.Gun)
+                        if (E.salvageBonus.gunTypeOnly && weapon.itemData.type == ItemType.Gun)
                         {
-                            if (weapon.projectileAmount == 1)
+                            if (weapon.itemData.projectileAmount == 1)
                             {
                                 salvageMod += E.salvageBonus.bonus;
                             }
@@ -4551,7 +4706,7 @@ public static class Action
                     amount = 1.5f; // Maximized due to crit
                 }
 
-                int corruption = Mathf.RoundToInt(damage * amount);
+                int corruption = Mathf.RoundToInt(damageA * amount);
                 target.corruption += (corruption / 100);
             }
             else // Player
@@ -4562,7 +4717,7 @@ public static class Action
                     amount = 1.5f; // Maximized due to crit
                 }
 
-                int corruption = Mathf.RoundToInt(damage * amount);
+                int corruption = Mathf.RoundToInt(damageA * amount);
                 float chance = corruption / 100;
 
                 if(Random.Range(0f, 1f) < chance)
@@ -4575,11 +4730,120 @@ public static class Action
 
         #region Heat Transfer
         // Heat transfer
-        Action.DealHeatTransfer(target.GetComponent<Actor>(), weapon.data, new Vector2Int(damageA, damageB), burnCrit);
+        Action.DealHeatTransfer(target.GetComponent<Actor>(), weapon, new Vector2Int(damageA, damageB), burnCrit);
+        #endregion
+
+        #region Knockback
+        // First check if this weapon is capable of knocking back the target (Kinetic cannons OR Impact melee weapons).
+        if(weapon.itemData.type == ItemType.Cannon || (weapon.itemData.meleeAttack.isMelee && weapon.itemData.meleeAttack.damageType == ItemDamageType.Impact))
+        {
+            // Then check if bot is knockback immune.
+            bool knockbackImmune = false;
+            // Consider if the target is immune to knockback (siege mode and whatnot)
+            foreach (var item in items)
+            {
+                if (item.Id > -1 && item.itemData.type == ItemType.Treads)
+                {
+                    foreach (var E in item.itemData.itemEffects)
+                    {
+                        if (E.hasStabEffect && E.stab_KnockbackImmune)
+                        {
+                            if (target.botInfo) // Bot
+                            {
+                                knockbackImmune = true;
+                            }
+                            else // Player
+                            {
+                                knockbackImmune = true;
+                            }
+                        }
+                    }
+                }
+            }
+            if (!knockbackImmune)
+            {
+                int knockback = 0;
+                /* >> Knockback! <<
+                 * "Kinetic cannons have a damage-equivalent chance to cause knockback, with a (10 - range) * 5 modifier and a +/-10% per size class (T/S/M/L/H) difference 
+                 * between the target and medium size (targets knocked into another robot may also damage and displace it, see Impact below)."
+                 * &
+                 * "Impact melee weapons have a damage-equivalent chance to cause knockback, with a +/-10% per size class (T/S/M/L/H) difference 
+                 * between attacker and target. Targets knocked into another robot may also damage and displace it. A robot hit by another displaced 
+                 * robot has a chance to itself be displaced and sustain damage, where the chance equals the original knockback chance further 
+                 * modified by +/-10% per size class difference between the blocking robot and the knocked back robot, and the resulting damage 
+                 * equals [originalDamage] (see Attack Resolution), further divided by the blocker size class if that class is greater than 1 (where Medium = 2, and so on)."
+                 */
+                if (weapon.itemData.type == ItemType.Cannon)
+                {
+                    knockback = damage + ((10 - weapon.itemData.shot.shotRange) * 5);
+                    // and consider size
+                    BotSize size = BotSize.Medium;
+                    if (target.botInfo)
+                    {
+                        size = target.botInfo._size;
+                    } // Player size doesn't change and is medium
+
+                    switch (size)
+                    {
+                        case BotSize.Tiny:
+                            knockback = Mathf.RoundToInt(knockback + (float)(knockback * 0.20f));
+                            break;
+                        case BotSize.Small:
+                            knockback = Mathf.RoundToInt(knockback + (float)(knockback * 0.10f));
+                            break;
+                        case BotSize.Medium:
+                            break;
+                        case BotSize.Large:
+                            knockback = Mathf.RoundToInt(knockback - (float)(knockback * 0.10f));
+                            break;
+                        case BotSize.Huge:
+                            knockback = Mathf.RoundToInt(knockback - (float)(knockback * 0.20f));
+                            break;
+                    }
+
+                    // No idea how to calculate this roll so we doing this
+                    if(Random.Range(0f, 1f) < knockback / 100)
+                    {
+                        Vector2Int direction = HF.V3_to_V2I(target.transform.position) - HF.V3_to_V2I(source.transform.position);
+
+                        Action.KnockbackAction(target, weapon, direction, knockback, damageA);
+                    }
+                }
+                else if (weapon.itemData.meleeAttack.isMelee && weapon.itemData.meleeAttack.damageType == ItemDamageType.Impact)
+                {
+                    BotSize size_a = BotSize.Medium;
+                    if (source)
+                    {
+                        if (source.botInfo)
+                        {
+                            size_a = target.botInfo._size;
+                        } // Player size doesn't change and is medium
+                    }
+                    BotSize size_t = BotSize.Medium;
+                    if (target.botInfo)
+                    {
+                        size_t = target.botInfo._size;
+                    } // Player size doesn't change and is medium
+
+                    float sizeMod = Action.CalculateSizeModifier(size_a, size_t);
+                    knockback = damage;
+                    knockback = Mathf.RoundToInt(knockback + (float)(knockback * sizeMod));
+
+                    // No idea how to calculate this roll so we doing this
+                    if (Random.Range(0f, 1f) < knockback / 100)
+                    {
+                        Vector2Int direction = HF.V3_to_V2I(target.transform.position) - HF.V3_to_V2I(source.transform.position);
+
+                        Action.KnockbackAction(target, weapon, direction, knockback, damageA);
+                    }
+                }
+            }
+        }
+
         #endregion
 
         // If the item has survived, return it (used for some stuff)
-        if(hitItem.Id >= 0 && hitItem.integrityCurrent > 0)
+        if (hitItem.Id >= 0 && hitItem.integrityCurrent > 0)
         {
             return hitItem;
         }
@@ -5013,7 +5277,7 @@ public static class Action
         {
             // We are also going to update the player's individual evasion1-5 variables as we go, because UIManager needs them.
 
-            // -- Flight/Hover bonus -- //
+            // -- Flight/Hover bonus (1) -- //
 
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items)
             {
@@ -5033,7 +5297,7 @@ public static class Action
 
             evasionBonus1 = 0;
 
-            // -- Heat Level -- //
+            // -- Heat Level (2) -- //
             // This appears to add a -1 bonus for every 30 or so heat.
             int heatCalc = 0;
             if (PlayerData.inst.currentHeat > 29)
@@ -5042,7 +5306,7 @@ public static class Action
             }
             evasionBonus2 = -heatCalc;
 
-            // -- Movement Speed -- //
+            // -- Movement Speed (3) -- //
             int speed = PlayerData.inst.moveSpeed1;
             /*
             if (speed <= 25) // FASTx3
@@ -5066,7 +5330,7 @@ public static class Action
                 evasionBonus3 = 0;
             }
 
-            // -- Evasion modifiers -- //
+            // -- Evasion modifiers (4) -- //
             // These effects can be found in 1. Legs 2. Variants of the reaction control system device
             bool rcsStack = true;
             BotMoveType myMoveType = DetermineBotMoveType(actor);
@@ -5126,7 +5390,7 @@ public static class Action
                 }
             }
 
-            // -- Phasing / Cloaking modifiers -- //
+            // -- Phasing / Cloaking modifiers (5) -- //
             bool phasingStack = true;
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items)
             {
@@ -5756,6 +6020,31 @@ public static class Action
         (filler, amount) = HF.ParseEffectStackingValues(eList);
 
         return amount;
+    }
+
+    public static float CalculateSizeModifier(BotSize attackerSize, BotSize targetSize)
+    {
+        // Define the size modifier values for each size class
+        Dictionary<BotSize, float> sizeModifiers = new Dictionary<BotSize, float>()
+        {
+            { BotSize.Tiny, 0.5f },
+            { BotSize.Small, 0.75f },
+            { BotSize.Medium, 1.0f },
+            { BotSize.Large, 1.25f },
+            { BotSize.Huge, 1.5f }
+        };
+
+        // Calculate the size modifiers for the attacker and target
+        float attackerModifier = sizeModifiers[attackerSize];
+        float targetModifier = sizeModifiers[targetSize];
+
+        // Calculate the difference between the modifiers
+        float difference = attackerModifier - targetModifier;
+
+        // Calculate the final size multiplier with a +/-10% difference
+        float finalMultiplier = 1.0f + (difference * 0.1f);
+
+        return finalMultiplier;
     }
 
     #endregion

@@ -16,5 +16,13 @@ public class StaticMachine : MonoBehaviour
     public AudioClip _ambient;
 
 
-
+    #region Explosion
+    public void Detonate()
+    {
+        if (explosive)
+        {
+            // TODO
+        }
+    }
+    #endregion
 }
