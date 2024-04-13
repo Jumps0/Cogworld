@@ -5,9 +5,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static Unity.VisualScripting.Member;
-using static UnityEditor.Progress;
-using static UnityEngine.GraphicsBuffer;
 using Color = UnityEngine.Color;
 
 public static class Action
@@ -187,11 +184,11 @@ public static class Action
                     // Deal half damage to player (if no legs/treads)
                     if (HasTreads(source) || HasLegs(source))
                     {
-                        PlayerData.inst.currentHealth -= (int)(damage / 2);
+                        Action.ModifyPlayerCore(-(int)(damage / 2));
                     }
                     else
                     {
-                        PlayerData.inst.currentHealth -= (int)(damage);
+                        Action.ModifyPlayerCore(-(int)damage);
                     }
 
                     UIManager.inst.CreateNewLogMessage("Slammed into " + target.GetComponent<Actor>().botInfo.name + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
@@ -1166,7 +1163,7 @@ public static class Action
                 }
                 else // Player
                 {
-                    PlayerData.inst.currentCorruption += 1;
+                    Action.ModifyPlayerCorruption(1);
                 }
             }
         }
@@ -4178,7 +4175,7 @@ public static class Action
             }
             else
             {
-                PlayerData.inst.currentHealth -= damage;
+                Action.ModifyPlayerCore(-damage);
             }
         }
 
@@ -4191,7 +4188,7 @@ public static class Action
             }
             else
             {
-                PlayerData.inst.currentHealth -= transferredCoreDamage;
+                Action.ModifyPlayerCore(-transferredCoreDamage);
             }
         }
         #endregion
@@ -4492,23 +4489,20 @@ public static class Action
 
                     if (!hitPart) // Hit core
                     {
-                        // Roll again!
-                        Item part3 = Action.DamageBot(target, damage, weapon, source, false);
-                        if (part3 != null)
+                        // Forcefully drop a random item
+                        Item dropItem = items[Random.Range(0, items.Count - 1)];
+                        if (target.botInfo)
                         {
-                            // If the 2nd part survives, forcefully drop it.
-                            if (target.botInfo)
-                            {
-                                HF.RemovePartFromBotInventory(target, part3);
-                                InventoryControl.inst.DropItemOnFloor(part3, target, null);
-                            }
-                            else
-                            {
-                                InventoryControl.inst.DropItemOnFloor(part3, target, HF.FindPlayerInventoryFromItem(part3));
-                            }
-
-                            UIManager.inst.CreateNewCalcMessage(part3.Name + " was severed.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                            HF.RemovePartFromBotInventory(target, dropItem);
+                            InventoryControl.inst.DropItemOnFloor(dropItem, target, null);
                         }
+                        else
+                        {
+                            InventoryControl.inst.DropItemOnFloor(dropItem, target, HF.FindPlayerInventoryFromItem(dropItem));
+                        }
+
+                        UIManager.inst.CreateNewCalcMessage(dropItem.Name + " was severed.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                        
                     }
                     else // Hit part
                     {
@@ -4538,7 +4532,7 @@ public static class Action
                     }
                     else
                     {
-                        PlayerData.inst.currentHealth -= (damage / 2);
+                        Action.ModifyPlayerCore(-(int)(damage / 2));
 
                         UIManager.inst.CreateNewCalcMessage("Core has suffered critical puncture.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
                     }
@@ -4722,7 +4716,7 @@ public static class Action
 
                 if(Random.Range(0f, 1f) < chance)
                 {
-                    PlayerData.inst.currentCorruption += 1;
+                    Action.ModifyPlayerCorruption(1);
                 }
             }
         }
@@ -5654,39 +5648,56 @@ public static class Action
 
     public static void DoWeaponAttackCost(Actor source, Item weapon)
     {
+        int h_cost = 0;
+        int m_cost = 0;
+        int e_cost = 0;
+
         if (weapon.itemData.meleeAttack.isMelee)
         {
             if (source.GetComponent<PlayerData>())
             {
-                PlayerData.inst.currentHeat += weapon.itemData.meleeAttack.heat;
-                PlayerData.inst.currentMatter += weapon.itemData.meleeAttack.matter;
-                PlayerData.inst.currentEnergy += weapon.itemData.meleeAttack.energy;
+                h_cost = weapon.itemData.meleeAttack.heat;
+                m_cost = weapon.itemData.meleeAttack.matter;
+                e_cost = weapon.itemData.meleeAttack.energy;
+
+                Action.ModifyPlayerEnergy(e_cost);
+                Action.ModifyPlayerMatter(m_cost);
+
+                PlayerData.inst.currentHeat += h_cost;
+                PlayerData.inst.currentMatter += m_cost;
+                PlayerData.inst.currentEnergy += e_cost;
             }
             else
             {
                 source.currentHeat += weapon.itemData.meleeAttack.heat;
                 source.currentMatter += weapon.itemData.meleeAttack.matter;
                 source.currentEnergy += weapon.itemData.meleeAttack.energy;
-                // energy?
             }
         }
         else
         {
             if (source.GetComponent<PlayerData>())
             {
-                PlayerData.inst.currentHeat += weapon.itemData.shot.shotHeat;
-                PlayerData.inst.currentMatter += weapon.itemData.shot.shotMatter;
-                PlayerData.inst.currentEnergy += weapon.itemData.shot.shotEnergy;
+                h_cost += weapon.itemData.shot.shotHeat;
+                m_cost += weapon.itemData.shot.shotMatter;
+                e_cost += weapon.itemData.shot.shotEnergy;
 
                 if (weapon.isOverloaded) // Overloading
                 {
                     // Double the energy cost
-                    PlayerData.inst.currentEnergy += weapon.itemData.shot.shotEnergy;
+                    e_cost += weapon.itemData.shot.shotEnergy;
 
                     // Triple the heat production
-                    PlayerData.inst.currentHeat += weapon.itemData.shot.shotHeat;
-                    PlayerData.inst.currentHeat += weapon.itemData.shot.shotHeat;
+                    h_cost += weapon.itemData.shot.shotHeat;
+                    h_cost += weapon.itemData.shot.shotHeat;
                 }
+
+                UIManager.inst.Matter_AnimateDecrease(m_cost);
+                UIManager.inst.Energy_AnimateDecrease(e_cost);
+
+                PlayerData.inst.currentHeat += h_cost;
+                PlayerData.inst.currentMatter += m_cost;
+                PlayerData.inst.currentEnergy += e_cost;
             }
             else
             {
@@ -6045,6 +6056,83 @@ public static class Action
         float finalMultiplier = 1.0f + (difference * 0.1f);
 
         return finalMultiplier;
+    }
+
+    #endregion
+
+    #region Basic Player Stat Changes
+    // Storing them all here to simplify things, especially since we need to animate the bar.
+
+    public static void ModifyPlayerCore(int amount)
+    {
+        if(amount == 0)
+        {
+
+        }
+        else if(amount > 0)
+        {
+            UIManager.inst.Core_AnimateIncrease(amount);
+        }
+        else if (amount < 0)
+        {
+            UIManager.inst.Core_AnimateDecrease(amount);
+        }
+
+        PlayerData.inst.currentHealth += amount;
+    }
+
+    public static void ModifyPlayerMatter(int amount)
+    {
+        if (amount == 0)
+        {
+
+        }
+        else if (amount > 0)
+        {
+            //UIManager.inst.Matter_AnimateIncrease(amount);
+        }
+        else if (amount < 0)
+        {
+            UIManager.inst.Matter_AnimateDecrease(amount);
+        }
+
+        PlayerData.inst.currentMatter += amount;
+    }
+
+    public static void ModifyPlayerEnergy(int amount)
+    {
+        if (amount == 0)
+        {
+
+        }
+        else if (amount > 0)
+        {
+            //UIManager.inst.Energy_AnimateIncrease(amount);
+        }
+        else if (amount < 0)
+        {
+            UIManager.inst.Energy_AnimateDecrease(amount);
+        }
+
+        PlayerData.inst.currentEnergy += amount;
+    }
+
+    public static void ModifyPlayerCorruption(int amount)
+    {
+        if(amount == 0)
+        {
+
+        }
+        else if (amount > 0)
+        {
+            UIManager.inst.Corruption_AnimateIncrease(amount);
+        }
+        else if (amount < 0)
+        {
+            // there ain't one
+        }
+
+        PlayerData.inst.currentCorruption += amount;
     }
 
     #endregion

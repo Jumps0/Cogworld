@@ -484,13 +484,12 @@ public class ItemProjectile // (Disregarded in AOE attacks except for projectile
     public float critChance;
     // https://www.gridsagegames.com/blog/2021/05/design-overhaul-3-damage-types-and-criticals/
     public CritType critType;
-    [Header("x# #/#")]
-    [Tooltip("Multiplier - Amount / Amount")]
+    [Tooltip("Multiplier - Amount / Amount | x# #/#\"")]
     public Vector3 penChance;
     public int heatTrasfer;
     [Tooltip("0 = None | 1 = Low | 2 = Medium | 3 = High | 4 = Massive")]
     public int heatTransferDegree;
-    [Header("0.##% > Can be: Wide(10%) | Intermediate (30%) | Narrow (50%) | Fine (100%)")]
+    [Tooltip("0.##% > Can be: Wide(10%) | Intermediate (30%) | Narrow (50%) | Fine (100%)")]
     public float spectrum;
     public bool hasSpectrum = false;
     public float disruption;

@@ -4297,29 +4297,430 @@ public class UIManager : MonoBehaviour
         int currentCorruption = PlayerData.inst.currentCorruption;
 
         // Core
-        core_slider.maxValue = PlayerData.inst.maxHealth;
-        core_slider.value = PlayerData.inst.currentHealth;
+        if (!core_indicating)
+        {
+            core_slider.maxValue = PlayerData.inst.maxHealth;
+            core_slider.value = PlayerData.inst.currentHealth;
+        }
         // Energy
-        energy_slider.maxValue = PlayerData.inst.maxEnergy;
-        energy_slider.value = PlayerData.inst.currentEnergy;
+        if (!energy_indicating)
+        {
+            energy_slider.maxValue = PlayerData.inst.maxEnergy;
+            energy_slider.value = PlayerData.inst.currentEnergy;
+        }
         // Matter
-        matter_slider.maxValue = PlayerData.inst.maxMatter;
-        matter_slider.value = PlayerData.inst.currentMatter;
+        if (!matter_indicating)
+        {
+            matter_slider.maxValue = PlayerData.inst.maxMatter;
+            matter_slider.value = PlayerData.inst.currentMatter;
+        }
         // Corruption
-        corruption_slider.maxValue = PlayerData.inst.maxCorruption;
-        corruption_slider.value = PlayerData.inst.currentCorruption;
+        if (!corruption_indicating)
+        {
+            corruption_slider.maxValue = PlayerData.inst.maxCorruption;
+            corruption_slider.value = PlayerData.inst.currentCorruption;
+        }
 
         // -- Duplicate Sliders -- //
         // Core
-        coreD_slider.maxValue = maxHealth;
-        coreD_slider.value = currentHealth;
+        if (!core_indicating)
+        {
+            coreD_slider.maxValue = maxHealth;
+            coreD_slider.value = currentHealth;
+        }
         // Energy
-        energyD_slider.maxValue = maxEnergy;
-        energyD_slider.value = currentEnergy;
+        if (!energy_indicating)
+        {
+            energyD_slider.maxValue = maxEnergy;
+            energyD_slider.value = currentEnergy;
+        }
         // Matter
-        matterD_slider.maxValue = maxMatter;
-        matterD_slider.value = currentMatter;
+        if (!matter_indicating)
+        {
+            matterD_slider.maxValue = maxMatter;
+            matterD_slider.value = currentMatter;
+        }
     }
+
+    #region Stat Bar Changes
+    public bool core_indicating = false;
+    public bool matter_indicating = false;
+    public bool energy_indicating = false;
+    public bool corruption_indicating = false;
+    Coroutine cBarChange;
+    Coroutine mBarChange;
+    Coroutine eBarChange;
+    Coroutine ccBarChange;
+
+    // -- INCREASES -- (Simpler, Black -> Main Color)
+    public void Core_AnimateIncrease(int amount)
+    {
+        if(cBarChange == null)
+        {
+            core_indicating = true;
+
+            int newCore = PlayerData.inst.currentHealth + amount;
+            if(newCore > PlayerData.inst.maxHealth)
+                newCore = PlayerData.inst.maxHealth;
+            int oldCore = PlayerData.inst.currentHealth;
+
+            // The true core slide is ON TOP of the duplicate slider
+
+            cBarChange = StartCoroutine(Core_AnimateIncrease(oldCore, newCore));
+        }
+    }
+
+    private IEnumerator Core_AnimateIncrease(int oldC, int newC)
+    {
+        // 1. Advace the duplicate bar to the new amount & set its color to black
+        coreD_slider.value = newC;
+        core_slider.value = oldC;
+        coreBarSub.color = Color.black;
+
+        // 2. Animate the duplicate bar's color from Black -> Main Green
+        Color startGreen = new Color(0 / 255f, 64 / 255f, 0 / 255f);
+
+        float elapsedTime = 0f;
+        float duration = 0.4f;
+        while (elapsedTime < duration) // Black -> Main Green
+        {
+            coreBarSub.color = Color.Lerp(Color.black, startGreen, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        coreBarSub.color = startGreen;
+
+        // 3. Set both bars to the new value
+        coreD_slider.value = newC;
+        core_slider.value = newC;
+
+        core_indicating = false;
+
+        cBarChange = null;
+    }
+
+    public void Matter_AnimateIncrease(int amount)
+    {
+        if (mBarChange == null)
+        {
+            matter_indicating = true;
+
+            int newMatter = PlayerData.inst.currentMatter + amount;
+            if (newMatter > PlayerData.inst.maxMatter)
+                newMatter = PlayerData.inst.maxMatter;
+            int oldMatter = PlayerData.inst.currentMatter;
+
+            // The true matter slide is ON TOP of the duplicate slider
+
+            mBarChange = StartCoroutine(Matter_AnimateIncrease(oldMatter, newMatter));
+        }
+    }
+
+    private IEnumerator Matter_AnimateIncrease(int oldM, int newM)
+    {
+        // 1. Advace the duplicate bar to the new amount & set its color to black
+        matterD_slider.value = newM;
+        matter_slider.value = oldM;
+        matterBarSub.color = Color.black;
+
+        // 2. Animate the duplicate bar's color from Black -> Main Purple
+        Color startPurple = new Color(77 / 255f, 0 / 255f, 101 / 255f);
+
+        float elapsedTime = 0f;
+        float duration = 0.4f;
+        while (elapsedTime < duration) // Black -> Main Cyan
+        {
+            matterBarSub.color = Color.Lerp(Color.black, startPurple, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        matterBarSub.color = startPurple;
+
+        // 3. Set both bars to the new value
+        matterD_slider.value = newM;
+        matter_slider.value = newM;
+
+        matter_indicating = false;
+
+        mBarChange = null;
+    }
+
+    public void Energy_AnimateIncrease(int amount)
+    {
+        if (eBarChange == null)
+        {
+            energy_indicating = true;
+
+            int newEnergy = PlayerData.inst.currentEnergy + amount;
+            if (newEnergy > PlayerData.inst.maxEnergy)
+                newEnergy = PlayerData.inst.maxEnergy;
+            int oldEnergy = PlayerData.inst.currentEnergy;
+
+            // The true energy slide is ON TOP of the duplicate slider
+
+            eBarChange = StartCoroutine(Energy_AnimateIncrease(oldEnergy, newEnergy));
+        }
+    }
+
+    private IEnumerator Energy_AnimateIncrease(int oldE, int newE)
+    {
+        // 1. Advace the duplicate bar to the new amount & set its color to black
+        energyD_slider.value = newE;
+        energy_slider.value = oldE;
+        energyBarSub.color = Color.black;
+
+        // 2. Animate the duplicate bar's color from Black -> Main Cyan
+        Color startCyan = new Color(4 / 255f, 76 / 255f, 103 / 255f);
+
+        float elapsedTime = 0f;
+        float duration = 0.4f;
+        while (elapsedTime < duration) // Black -> Main Cyan
+        {
+            energyBarSub.color = Color.Lerp(Color.black, startCyan, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        energyBarSub.color = startCyan;
+
+        // 3. Set both bars to the new value
+        energyD_slider.value = newE;
+        energy_slider.value = newE;
+
+        energy_indicating = false;
+
+        eBarChange = null;
+    }
+
+    public void Corruption_AnimateIncrease(int amount)
+    {
+        if (ccBarChange == null)
+        {
+            // Does the corruption bar have an animation? I'm not sure so we'll keep it simple for now & let Update_PSUI handle it.
+            
+
+            /*
+            corruption_indicating = true;
+
+            int newCore = PlayerData.inst.currentHealth + amount;
+            if (newCore > PlayerData.inst.maxHealth)
+                newCore = PlayerData.inst.maxHealth;
+            int oldCore = PlayerData.inst.currentHealth;
+
+            // The true core slide is ON TOP of the duplicate slider
+
+            ccBarChange = StartCoroutine(Corruption_AnimateIncrease(oldCore, newCore));
+            */
+        }
+    }
+
+    /*
+    private IEnumerator Corruption_AnimateIncrease(int oldC, int newC)
+    {
+        // 1. Advace the duplicate bar to the new amount & set its color to black
+        corruptionD_slider.value = newC;
+        corruption_slider.value = oldC;
+        corruptionBarSub.color = Color.black;
+
+        // 2. Animate the duplicate bar's color from White -> Main Green
+
+        float elapsedTime = 0f;
+        float duration = 0.4f;
+        while (elapsedTime < duration) // Green -> Bright Gren
+        {
+            corruptionBarSub.color = Color.Lerp(Color.black, Color.white, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        corruptionBarSub.color = Color.white;
+
+        // 3. Set both bars to the new value
+        corruptionD_slider.value = newC;
+        corruption_slider.value = newC;
+
+        corruption_indicating = false;
+
+        ccBarChange = null;
+    }
+    */
+
+    // -- DECREASES -- (Complex, Main Color -> Bright Main Color -> Black)
+    public void Core_AnimateDecrease(int cost)
+    {
+        if(cBarChange == null)
+        {
+            core_indicating = true;
+
+            int newCore = PlayerData.inst.currentHealth + cost;
+            int oldCore = PlayerData.inst.currentHealth;
+
+            // The true core slide is BELOW the duplicate slider
+
+            cBarChange = StartCoroutine(Core_AnimateDecreaseC(oldCore, newCore));
+        }
+    }
+
+    private IEnumerator Core_AnimateDecreaseC(int oldC, int newC)
+    {
+        // 1. Reduce the duplicate bar
+        coreD_slider.value = newC;
+        core_slider.value = oldC;
+
+        // 2. We animate the main bar (Green -> bright Green -> black)
+        Color startGreen = new Color(0 / 255f, 64 / 255f, 0 / 255f);
+        Color brightGreen = new Color(0 / 255f, 186 / 255f, 0 / 255f);
+
+        float elapsedTime = 0f;
+        float duration = 0.2f;
+        while (elapsedTime < duration) // Green -> Bright Gren
+        {
+            coreBarMain.color = Color.Lerp(startGreen, brightGreen, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        coreBarMain.color = brightGreen;
+
+        elapsedTime = 0f;
+        duration = 0.2f;
+        while (elapsedTime < duration) // Bright Green -> Black
+        {
+            coreBarMain.color = Color.Lerp(brightGreen, Color.black, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        coreBarMain.color = Color.black;
+
+        // 3. Reduce the main bar & reset its color
+        core_slider.value = newC;
+        coreBarMain.color = startGreen;
+
+        core_indicating = false;
+
+        cBarChange = null;
+    }
+
+    /// <summary>
+    /// Changes the UI matter bar to animate going down.
+    /// </summary>
+    /// <param name="cost">The cost to indicate.</param>
+    public void Matter_AnimateDecrease(int cost)
+    {
+        if(mBarChange == null)
+        {
+            matter_indicating = true;
+
+            int newMatter = PlayerData.inst.currentMatter + cost;
+            int oldMatter = PlayerData.inst.currentMatter;
+
+            // The true matter slide is BELOW the duplicate slider
+
+            mBarChange = StartCoroutine(Matter_AnimateDecreaseC(oldMatter, newMatter));
+        }
+    }
+
+    private IEnumerator Matter_AnimateDecreaseC(int oldM, int newM)
+    {
+        // 1. Reduce the duplicate bar
+        matterD_slider.value = newM;
+        matter_slider.value = oldM;
+
+        // 2. We animate the main bar (purple -> bright purple -> black)
+        Color startPurple = new Color(77 / 255f, 0 / 255f, 101 / 255f);
+        Color brightPurple = new Color(144 / 255f, 2 / 255f, 192 / 255f);
+
+        float elapsedTime = 0f;
+        float duration = 0.2f;
+        while (elapsedTime < duration) // Purple -> Bright Purple
+        {
+            matterBarMain.color = Color.Lerp(startPurple, brightPurple, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        matterBarMain.color = brightPurple;
+
+        elapsedTime = 0f;
+        duration = 0.2f;
+        while (elapsedTime < duration) // Bright Purple -> Black
+        {
+            matterBarMain.color = Color.Lerp(brightPurple, Color.black, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        matterBarMain.color = Color.black;
+
+        // 3. Reduce the main bar & reset its color
+        matter_slider.value = newM;
+        matterBarMain.color = startPurple;
+
+        matter_indicating = false;
+
+        mBarChange = null;
+    }
+
+    public void Energy_AnimateDecrease(int cost)
+    {
+        if(eBarChange == null)
+        {
+            energy_indicating = true;
+
+            int newEnergy = PlayerData.inst.currentEnergy + cost;
+            int oldEnergy = PlayerData.inst.currentEnergy;
+
+            // The true energy slide is BELOW the duplicate slider
+
+            eBarChange = StartCoroutine(Energy_AnimateDecreaseC(oldEnergy, newEnergy));
+        }
+    }
+
+    private IEnumerator Energy_AnimateDecreaseC(int oldE, int newE)
+    {
+        // 1. Reduce the duplicate bar
+        energyD_slider.value = newE;
+        energy_slider.value = oldE;
+
+        // 2. We animate the main bar (Cyan -> bright Cyan -> black)
+        Color startCyan = new Color(4 / 255f, 76 / 255f, 103 / 255f);
+        Color brightCyan = new Color(4 / 255f, 162 / 255f, 214 / 255f);
+
+        float elapsedTime = 0f;
+        float duration = 0.2f;
+        while (elapsedTime < duration) // Cyan -> Bright Cyan
+        {
+            energyBarMain.color = Color.Lerp(startCyan, brightCyan, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        energyBarMain.color = brightCyan;
+
+        elapsedTime = 0f;
+        duration = 0.2f;
+        while (elapsedTime < duration) // Bright Cyan -> Black
+        {
+            energyBarMain.color = Color.Lerp(brightCyan, Color.black, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        energyBarMain.color = Color.black;
+
+        // 3. Reduce the main bar & reset its color
+        energy_slider.value = newE;
+        energyBarMain.color = startCyan;
+
+        energy_indicating = false;
+
+        eBarChange = null;
+    }
+
+    #endregion
 
     #endregion
 

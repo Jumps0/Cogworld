@@ -228,6 +228,8 @@ public class CFXManager : MonoBehaviour
                 break;
             case ExplosionGFX.EMPCone:
                 break;
+            case ExplosionGFX.Nuclear: 
+                break;
         }
 
         yield return new WaitForSeconds(delay);
@@ -375,7 +377,8 @@ public enum ExplosionGFX
     Neutron, // Special Neutron (purple scattered)
     Singularity, // Special Point Singularity (purple tight + wings)
     EMP, // EMP (Blue with random characters)
-    EMPCone //
+    EMPCone, //
+    Nuclear
 }
 
 #endregion
