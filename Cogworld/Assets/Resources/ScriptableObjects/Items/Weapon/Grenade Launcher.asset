@@ -24,6 +24,8 @@ MonoBehaviour:
     integrityCurrent: 0
     isOverloaded: 0
     corrupted: 0
+    disabledTimer: 0
+    siege: 0
   knowByPlayer: 1
   floorDisplay: {fileID: -1062765988, guid: 888df3e4d78aa8747aa9841c000c889a, type: 3}
   inventoryDisplay: {fileID: -1062765988, guid: 888df3e4d78aa8747aa9841c000c889a, type: 3}
@@ -35,6 +37,7 @@ MonoBehaviour:
   mass: 3
   rating: 1
   star: 0
+  ratingType: 0
   integrityMax: 60
   coverage: 110
   schematicDetails:
@@ -103,26 +106,53 @@ MonoBehaviour:
     visualAttackTime: 0.5
     missSound: []
   explosion:
-    radius: 4
-    damageLow: 20
-    damageHigh: 48
-    falloff: -8
-    damageType: 2
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
-    salvage: -8
     explosionSounds:
     - {fileID: 8300000, guid: 286dae22c1e35d943892fc93e30c5941, type: 3}
     - {fileID: 8300000, guid: 20c1b8cac17df7f4787ffebb3dfb5e51, type: 3}
     - {fileID: 8300000, guid: e208c50b4d6b61e4d930ab469cd9528b, type: 3}
     explosionGFX: 1
+  explosionDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
+    damageType: 2
+    damage: {x: 20, y: 48}
+    radius: 4
+    fallOff: -8
+    chunks: {x: 0, y: 0}
+    salvage: -8
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+  deployableItem:
+    deployable: 0
+    type: 0
+    trapType: 0
+    canSever: 0
+    sever_amount: {x: 0, y: 0}
+    sever_damage: {x: 0, y: 0}
+    canShock: 0
+    shock_amount: {x: 0, y: 0}
+    canBurn: 0
+    burn_amount: {x: 0, y: 0}
+    burn_damage: {x: 0, y: 0}
+    burn_heat: {x: 0, y: 0}
+    burn_affectsNeighbors: 0
+    canPierce: 0
+    pierce_amount: 0
+    pierce_damage: {x: 0, y: 0}
+    pierce_impaleChance: 0
+    canStasis: 0
+    stasis_strength: 0
   isSpecialAttack: 0
   specialAttack:
     datajack: 0
     stasisBeam: 0
     tearClaw: 0
-  itemEffect: []
+  itemEffects: []
   canOverload: 0
   quality: 2
   itemName: Grenade Launcher

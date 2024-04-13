@@ -1295,6 +1295,10 @@ public static class Action
     {
         bool permiable = true;
         int chunks = Random.Range(weapon.itemData.explosionDetails.chunks.x, weapon.itemData.explosionDetails.chunks.y);
+        if(chunks == 0)
+        {
+            chunks = 1;
+        }
 
         // There are a couple things we could be attacking here:
         // - Walls
