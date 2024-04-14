@@ -8,12 +8,14 @@ This project has been in development on and off for the past year or so. I work 
 
 ### External Resources
 
--Sprites, Audio, and Lore/Text from the game Cogmind.
+-Sprites, Audio, and Lore/Text from the game Cogmind. [(steam-page)](https://store.steampowered.com/app/722730/Cogmind/)
 
--Unity Implementation of Dr. Peter Henningsen's Dungeon Maker algorithm by Ariel Oliveira [https://github.com/ArielOliveira/DungeonGenerator] [https://dungeonmaker.sourceforge.net/]
+-Unity Implementation of Dr. Peter Henningsen's Dungeon Maker algorithm by Ariel Oliveira [(github)](https://github.com/ArielOliveira/DungeonGenerator) [(Dungeonmaker)](https://dungeonmaker.sourceforge.net/)
 
--Unity Implementation of Hauberk, Perlin Noise, and Cave dungeon generation by Andy Stobirski(?) [https://github.com/AndyStobirski/RogueLike/tree/master?tab=readme-ov-file]
+-Unity Implementation of Hauberk, Perlin Noise, and Cave dungeon generation by Andy Stobirski(?) [(github)](https://github.com/AndyStobirski/RogueLike/tree/master?tab=readme-ov-file)
 
--An incredible roguelike vision algorithm by Adam Mil [http://www.adammil.net/blog/v125_roguelike_vision_algorithms.html#mine]
+-An incredible roguelike vision algorithm by Adam Mil [(link)](http://www.adammil.net/blog/v125_roguelike_vision_algorithms.html#mine)
+
+-Massive thanks to noemica for creating and maintaining "Cog-Minder", providing invaluable information, statistics, and resources about the game. [(Cog-Minder)](https://noemica.github.io/cog-minder/parts.html) [(github)](https://github.com/noemica/cog-minder)
 
 -Various Unity tutorials
