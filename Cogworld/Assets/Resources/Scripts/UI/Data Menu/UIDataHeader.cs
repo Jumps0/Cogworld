@@ -14,6 +14,7 @@ public class UIDataHeader : MonoBehaviour
     public Color normalColor;
     public Color highlightColor;
     public Color brightColor;
+    public Color darkGreen;
 
     public void Setup(string text)
     {
@@ -74,7 +75,19 @@ public class UIDataHeader : MonoBehaviour
 
     private IEnumerator AnimateClose()
     {
-        yield return null;
+        float elapsedTime = 0f;
+        float duration = 0.45f;
+        while (elapsedTime < duration) // Dark green -> Black
+        {
+            Color color = Color.Lerp(darkGreen, Color.black, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+
+            string oldText = mainText.text;
+            mainText.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(color)}>{oldText}</mark>";
+
+            yield return null;
+        }
 
         Destroy(this.gameObject);
     }

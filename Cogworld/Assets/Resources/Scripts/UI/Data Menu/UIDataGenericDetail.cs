@@ -25,6 +25,7 @@ public class UIDataGenericDetail : MonoBehaviour
     public List<GameObject> mainBoxes;
     public List<GameObject> secondaryBoxes;
     private float barAmount;
+    [SerializeField] private Image barBacker;
 
     [Header("Colors")] // For the boxes. Other stuff uses colors from UIManager
     public Color b_green;
@@ -84,7 +85,7 @@ public class UIDataGenericDetail : MonoBehaviour
         if (useBoxBar)
         {
             barAmount = _barAmount;
-            UpdateBoxIndicator(0f); // Starts out at 0 and animates out
+            UpdateBoxIndicator(barAmount);
         }
     }
 
@@ -113,11 +114,11 @@ public class UIDataGenericDetail : MonoBehaviour
     // Update the indicator bar based on the value (0-100%)
     public void UpdateBoxIndicator(float value)
     {
-        int activeBoxes = Mathf.RoundToInt(mainBoxes.Count * value / 100f);
+        int activeBoxes = Mathf.RoundToInt(mainBoxes.Count * value);
 
-        for (int i = 0; i < mainBoxes.Count; i++)
+        for (int i = 0; i < mainBoxes.Count; i++) // Loop through all the boxes
         {
-            if (i < activeBoxes)
+            if (i < activeBoxes) // And for all the boxes that should be enabled
             {
                 // Activate main box
                 //mainBoxes[i].SetActive(true);
@@ -132,6 +133,9 @@ public class UIDataGenericDetail : MonoBehaviour
                 secondaryBoxes[i].SetActive(true);
                 secondaryBoxes[i].GetComponent<Image>().color = Color.black;
 
+                // Set the main box color to green as a default
+                mainBoxes[i].GetComponent<Image>().color = b_green;
+
                 // Deactivate main box
                 //mainBoxes[i].SetActive(false);
             }
@@ -141,11 +145,11 @@ public class UIDataGenericDetail : MonoBehaviour
     // Determine the color of the main box based on the value
     private Color DetermineColor(float value)
     {
-        if (value >= 66f)
+        if (value >= 0.66f)
         {
             return b_green;
         }
-        else if (value <= 33f)
+        else if (value <= 0.33f)
         {
             return b_red;
         }
@@ -179,7 +183,7 @@ public class UIDataGenericDetail : MonoBehaviour
         }
         if (boxBarParent.gameObject.activeInHierarchy)
         {
-            StartCoroutine(OpenBoxBar());
+            OpenBoxBar();
         }
 
         string primaryStart = primary_text.text;
@@ -266,7 +270,83 @@ public class UIDataGenericDetail : MonoBehaviour
     {
         // Instead of typing out like normal, this flashes from black -> bright green -> black like 3 times, then goes from black -> green.
 
-        yield return null;
+        // 1
+        float elapsedTime = 0f;
+        float duration = 0.1f;
+        while (elapsedTime < duration) // Black -> Bright Green
+        {
+            valueA_text.color = Color.Lerp(Color.black, brightGreen, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        valueA_text.color = brightGreen;
+        // 2
+        elapsedTime = 0f;
+        duration = 0.1f;
+        while (elapsedTime < duration) // Bright Green -> Black
+        {
+            valueA_text.color = Color.Lerp(brightGreen, Color.black, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        valueA_text.color = brightGreen;
+        // 3
+        duration = 0f;
+        duration = 0.1f;
+        while (elapsedTime < duration) // Black -> Bright Green
+        {
+            valueA_text.color = Color.Lerp(Color.black, brightGreen, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        valueA_text.color = brightGreen;
+        // 4
+        elapsedTime = 0f;
+        duration = 0.1f;
+        while (elapsedTime < duration) // Bright Green -> Black
+        {
+            valueA_text.color = Color.Lerp(brightGreen, Color.black, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        valueA_text.color = brightGreen;
+        // 5
+        elapsedTime = 0f;
+        duration = 0.1f;
+        while (elapsedTime < duration) // Black -> Bright Green
+        {
+            valueA_text.color = Color.Lerp(Color.black, brightGreen, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        valueA_text.color = brightGreen;
+        // 6
+        elapsedTime = 0f;
+        duration = 0.1f;
+        while (elapsedTime < duration) // Bright Green -> Black
+        {
+            valueA_text.color = Color.Lerp(brightGreen, Color.black, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        valueA_text.color = brightGreen;
+        // 7 - Finisher
+        elapsedTime = 0f;
+        duration = 0.1f;
+        while (elapsedTime < duration) // Black -> Green
+        {
+            valueA_text.color = Color.Lerp(Color.black, b_green, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        valueA_text.color = b_green;
     }
 
     private IEnumerator OpenVariableBox()
@@ -373,7 +453,7 @@ public class UIDataGenericDetail : MonoBehaviour
         variableB_text.text = text;
     }
 
-    private IEnumerator OpenBoxBar()
+    private void OpenBoxBar()
     {
         // The box is starting out completely empty.
         // We need to "expand outward" towards the true value.
@@ -382,7 +462,41 @@ public class UIDataGenericDetail : MonoBehaviour
         // 2. We fade this box from black to its true state/color.
         // 3. Halfway through this process ^, we start with the next box, until we reach our true value.
 
-        yield return null;
+        int activeBoxes = Mathf.RoundToInt(mainBoxes.Count * barAmount);
+
+        float delay = 0f;
+        float perDelay = 0.75f / activeBoxes;
+
+        for (int i = 0; i < activeBoxes; i++)
+        {
+            // Box starts as black
+            mainBoxes[i].GetComponent<Image>().color = Color.black;
+
+            StartCoroutine(FadeInBox(DetermineColor(barAmount), mainBoxes[i], delay += perDelay));
+        }
+    }
+
+    private IEnumerator FadeInBox(Color color, GameObject box, float delay = 0f)
+    {
+        yield return new WaitForSeconds(delay);
+
+        Image main = box.GetComponent<Image>();
+
+        // Start at black
+        main.color = Color.black;
+
+        // And go from black to the color
+        float elapsedTime = 0f;
+        float duration = 0.5f;
+        while (elapsedTime < duration) // Black -> [Color]
+        {
+            main.color = Color.Lerp(Color.black, color, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        main.color = color;
+
     }
 
     private IEnumerator DelayedSetText(TextMeshProUGUI UI, string text, float delay)
@@ -399,7 +513,42 @@ public class UIDataGenericDetail : MonoBehaviour
 
     private IEnumerator AnimateClose()
     {
-        yield return null;
+        // Everything here has the same animation.
+        // (Highlighting as dark green and then going to black)
+
+        // So basically we are just gonna gather up all the text and lerp it.
+        // For the boxes though we are going to put an image behind it.
+
+        barBacker.gameObject.SetActive(true);
+        List<TextMeshProUGUI> uguis = new List<TextMeshProUGUI>();
+        foreach (Transform child in this.transform)
+        {
+            if (child.GetComponent<TextMeshProUGUI>())
+            {
+                uguis.Add(child.GetComponent<TextMeshProUGUI>());
+            }
+        }
+
+        float elapsedTime = 0f;
+        float duration = 0.45f;
+        while (elapsedTime < duration) // Dark green -> Black
+        {
+            Color color = Color.Lerp(darkGreen, Color.black, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+
+            // Set the highlights for the text
+            foreach (var ugui in uguis)
+            {
+                string oldText = ugui.text;
+                ugui.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(color)}>{oldText}</mark>";
+            }
+
+            // Set the image color
+            barBacker.color = color;
+
+            yield return null;
+        }
 
         Destroy(this.gameObject);
     }
