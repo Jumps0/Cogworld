@@ -6107,7 +6107,20 @@ public class UIManager : MonoBehaviour
         }
         #endregion
 
-        // Destroy all prefabs we created
+        // Animate out & Destroy all the prefabs we create
+        foreach(var O in dataMenu.data_objects.ToList())
+        {
+            if (O.GetComponent<UIDataHeader>())
+            {
+                O.GetComponent<UIDataHeader>().Close();
+            }
+            else if (O.GetComponent<UIDataGenericDetail>())
+            {
+                O.GetComponent<UIDataGenericDetail>().Close();
+            }
+        }
+
+        dataMenu.data_objects.Clear();
 
         // Disable the menu
         dataMenu.data_parent.SetActive(false);
@@ -6121,6 +6134,31 @@ public class UIManager : MonoBehaviour
             I.color = new Color(setColor.r, setColor.g, setColor.b, 1f);
         }
         #endregion
+    }
+
+    private void Data_CreateHeader(string text)
+    {
+        GameObject go = Instantiate(dataMenu.data_headerPrefab, dataMenu.data_contentArea.transform.position, Quaternion.identity);
+        go.transform.SetParent(dataMenu.data_contentArea.transform);
+        go.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+        // Add it to list
+        dataMenu.data_objects.Add(go);
+        // Assign Details
+        go.GetComponent<TextMeshProUGUI>().text = text;
+
+        // Animate it opening
+        go.GetComponent<UIDataHeader>().Open();
+    }
+
+    private UIDataGenericDetail Data_CreateGeneric()
+    {
+        GameObject go = Instantiate(dataMenu.data_genericPrefab, dataMenu.data_contentArea.transform.position, Quaternion.identity);
+        go.transform.SetParent(dataMenu.data_contentArea.transform);
+        go.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+        // Add it to list
+        dataMenu.data_objects.Add(go);
+
+        return go.GetComponent<UIDataGenericDetail>();
     }
 
     #endregion
@@ -6141,8 +6179,12 @@ public class UIDataDisplay
     public TextMeshProUGUI data_mainTitle;
     [Tooltip("The small little image right next to the item/bot's name inside the [ ]")]
     public Image data_titleImage;
+    [Tooltip("The object where all the prefabs should be spawned in.")]
+    public GameObject data_contentArea;
 
-    //[Header("Prefabs")]
+    [Header("Prefabs")]
+    public GameObject data_headerPrefab;
+    public GameObject data_genericPrefab;
 
     [Header("Objects")]
     [Tooltip("All the objects (prefabs) that we spawned in.")]
