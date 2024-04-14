@@ -6037,7 +6037,7 @@ public class UIManager : MonoBehaviour
             dataMenu.data_titleImage.sprite = item.itemData.inventoryDisplay;
             dataMenu.data_titleImage.color = item.itemData.itemColor;
 
-
+            // -- We have quite an extensive checklist here, there is a massive variance in what data an item can have -- //
         }
         else if(bot != null)
         {
@@ -6049,6 +6049,33 @@ public class UIManager : MonoBehaviour
             dataMenu.data_titleImage.sprite = bot.botInfo.displaySprite;
 
         }
+
+
+        // -- Animation time --
+        // We need to trigger all the animations at the same time
+
+        // Animate the big image (if its enabled)
+        if (dataMenu.data_mainImage.gameObject.activeInHierarchy)
+        {
+
+        }
+
+        // Animate the title
+
+
+        // Animate the data lines
+        foreach (var O in dataMenu.data_objects.ToList())
+        {
+            if (O.GetComponent<UIDataHeader>())
+            {
+                O.GetComponent<UIDataHeader>().Open();
+            }
+            else if (O.GetComponent<UIDataGenericDetail>())
+            {
+                O.GetComponent<UIDataGenericDetail>().Open();
+            }
+        }
+
     }
 
     public void Data_CloseMenu()

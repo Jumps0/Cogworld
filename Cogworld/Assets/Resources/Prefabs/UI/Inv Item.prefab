@@ -1351,8 +1351,14 @@ MonoBehaviour:
     Name: 
     Id: 0
     stackable: 0
+    amount: 1
     itemData: {fileID: 0}
-  _part: {fileID: 0}
+    state: 1
+    integrityCurrent: 0
+    isOverloaded: 0
+    corrupted: 0
+    disabledTimer: 0
+    siege: 0
   _assignedChar: 0
 --- !u!95 &200695864095227819
 Animator:

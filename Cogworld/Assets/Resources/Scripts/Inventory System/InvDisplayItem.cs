@@ -200,4 +200,15 @@ public class InvDisplayItem : MonoBehaviour
 
 
     #endregion
+
+    private void OnMouseEnter()
+    {
+        if (Input.GetKeyDown(KeyCode.Mouse1)) // Right Click to open /DATA/ Menu
+        {
+            if (!UIManager.inst.dataMenu.data_parent.gameObject.activeInHierarchy)
+            {
+                UIManager.inst.Data_OpenMenu(_assignedItem);
+            }
+        }
+    }
 }

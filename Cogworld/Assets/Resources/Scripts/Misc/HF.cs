@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
+using TMPro;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
@@ -3679,6 +3680,7 @@ public static class HF
         }
     }
 
+    // UNUSED (doesnt work)
     public static string GenerateMarkedString(string input)
     {
         // Split the input string into words
@@ -3695,6 +3697,29 @@ public static class HF
 
         // Return the final marked string
         return sb.ToString();
+    }
+
+    public static string GetLastCharOfString(string input)
+    {
+        if(input.Length == 0)
+        {
+            return "";
+        }
+        else if(input.Length == 1)
+        {
+            return input;
+        }
+        else
+        {
+            return input[input.Length - 1].ToString();
+        }
+    }
+
+    public static IEnumerator DelayedSetText(TextMeshProUGUI UI, string text, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        UI.text = text;
     }
 
     #endregion
