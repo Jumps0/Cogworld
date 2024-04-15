@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Resources {
+namespace DungeonResources {
     public struct Coordinate {
         public int first;
         public int second;

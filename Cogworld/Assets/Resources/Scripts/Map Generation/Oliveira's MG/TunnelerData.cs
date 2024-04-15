@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Resources;
+using DungeonResources;
 
 [System.Serializable]
 public class TunnelerData {

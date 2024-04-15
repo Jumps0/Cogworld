@@ -2,7 +2,7 @@
 using System.Xml.Serialization;
 using UnityEngine;
 using UnityEngine.UI;
-using Resources;
+using DungeonResources;
 using System.Collections.Generic;
 using System.Collections;
 

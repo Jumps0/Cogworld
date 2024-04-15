@@ -33,7 +33,7 @@ public class BuilderSpawner : MonoBehaviour {
             Vector2Int forward = new Vector2Int((int)transform.forward.x, (int)transform.forward.z);
             Vector2Int location = new Vector2Int((int)transform.position.x, (int)transform.position.z);
             Debug.Log(location);
-            generator.CreateRoomie(location+forward, forward, 0, 9, 0, 12, Resources.RoomSize.MEDIUM, 0);
+            generator.CreateRoomie(location+forward, forward, 0, 9, 0, 12, DungeonResources.RoomSize.MEDIUM, 0);
             generator.OverrideIteration();
         }
 

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Resources;
+using DungeonResources;
 
 public class RoomCTR : StructureCTR {    
     private List<RoomCTR> rooms;

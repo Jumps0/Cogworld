@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Resources;
+using DungeonResources;
 
 [System.Serializable]
 public abstract class StructureCTR {

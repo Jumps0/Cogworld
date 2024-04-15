@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using Random = System.Random;
-using Resources;
+using DungeonResources;
 using STType = StructureCTR.STType;
 using System;
 using UnityEngine.UIElements;

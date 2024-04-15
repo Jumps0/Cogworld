@@ -1,4 +1,4 @@
-﻿using Resources;
+﻿using DungeonResources;
 using UnityEngine;
 
 public class Roomie : Builder {

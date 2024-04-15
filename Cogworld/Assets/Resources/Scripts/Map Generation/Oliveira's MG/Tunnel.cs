@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Resources;
+using DungeonResources;
 
 public class Tunnel : StructureCTR {
    public Tunnel(List<DTile> interior, List<DTile> edges, List<DTile> walls, List<DTile> ceiling, List<DTile> corners, List<DTile> doors, List<DTile> columns, List<DTile> lights, Vector2Int center, Vector2Int start, Vector2Int end, bool inDungeon, int sizeX, int sizeY) : base(interior, edges, walls, ceiling, corners, doors, columns, lights, center, start, end, inDungeon, sizeX, sizeY) {}
