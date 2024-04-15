@@ -182,7 +182,6 @@ GameObject:
   - component: {fileID: 78723924119389563}
   - component: {fileID: -7551770013587196452}
   - component: {fileID: -6662281646775278896}
-  - component: {fileID: 2232679177993127119}
   m_Layer: 3
   m_Name: DAS Turret
   m_TagString: Player
@@ -370,19 +369,27 @@ MonoBehaviour:
   heatDissipation: 0
   energyGeneration: 0
   currentMatter: 0
+  currentEnergy: 100
+  corruption: 0
   siegeMode: 0
   inStatis: 0
   speed: 0
   weightCurrent: 0
   weightMax: 0
+  salvageModifier: 0
   noMovementFor: 0
   momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
   isAlive: 1
   fieldOfViewRange: 8
   fieldOfView: []
   AI: {fileID: 0}
   botInfo: {fileID: 11400000, guid: 0633304d21a363148a924c58fb541549, type: 2}
+  myFaction: 0
   _class: 1
+  wasFabricated: 0
   Initiative: 0
   _sprite: {fileID: 1489840735416740139}
   state_DORMANT: 0
@@ -392,6 +399,7 @@ MonoBehaviour:
   state_DISABLED: 0
   directPlayerAlly: 0
   followThePlayer: 0
+  hacked_mods: 
   isExplored: 0
   isVisible: 0
   fow_sprite: {fileID: 1489840735416740139}
@@ -416,6 +424,8 @@ MonoBehaviour:
   state: 0
   isTurn: 0
   memory: 0
+  canSeePlayer: 0
+  relationToPlayer: 1
   pointsOfInterest: []
   hasDialogue: 0
   hasBufferDialogue: 0
@@ -425,30 +435,6 @@ MonoBehaviour:
   moveToNextDialogue: 0
   uniqueDialogueSound: {fileID: 0}
   uniqueName: 
---- !u!114 &2232679177993127119
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1489840735499938570}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9b4efa103d5d9e41854cd740b4ace36, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attachedUser: {fileID: 0}
-  belongsToAI: 1
-  _invPower: {fileID: 0}
-  maxSize_power: 0
-  _invPropulsion: {fileID: 0}
-  maxSize_propulsion: 0
-  _invUtility: {fileID: 0}
-  maxSize_utility: 0
-  _invWeapon: {fileID: 0}
-  maxSize_weapon: 0
-  _inventory: {fileID: 0}
-  maxSize_inv: 0
 --- !u!1 &9212121307027914503
 GameObject:
   m_ObjectHideFlags: 0
