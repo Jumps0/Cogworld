@@ -6,13 +6,8 @@ using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using TMPro;
-using Unity.VisualScripting;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
+using DungeonResources;
 using UnityEngine;
-using UnityEngine.UIElements;
-using UnityEngine.Windows;
-using static Unity.VisualScripting.Member;
-using static UnityEngine.GraphicsBuffer;
 using Random = UnityEngine.Random;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
@@ -3393,6 +3388,24 @@ public static class HF
         }
 
         return null;
+    }
+
+    public static Sprite GetBlackAndWhiteSprite(Sprite coloredSprite)
+    {
+        if(coloredSprite == null)
+        {
+            return null;
+        }
+
+        // Get the name of the colored sprite
+        string coloredSpriteName = coloredSprite.name;
+
+        // Append "_BW" to the name to get the name of the black and white sprite
+        string blackAndWhiteSpriteName = coloredSpriteName + "_BW";
+        // Load the black and white sprite from the "BW" folder
+        Sprite blackAndWhiteSprite = Resources.Load<Sprite>("Textures/Sprites/Part Art/BW/" + blackAndWhiteSpriteName);
+
+        return blackAndWhiteSprite;
     }
 
     #endregion

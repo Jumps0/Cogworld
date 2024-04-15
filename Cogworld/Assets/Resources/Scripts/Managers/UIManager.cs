@@ -6042,7 +6042,13 @@ public class UIManager : MonoBehaviour
         {
             // Set the big image (and enable it)
             dataMenu.data_superImageParent.gameObject.SetActive(true);
-            dataMenu.data_superImage.sprite = item.itemData.bigDisplay;
+            Sprite itemSprite = item.itemData.bigDisplay; // Get the sprite art
+            Sprite itemSprite_bw = HF.GetBlackAndWhiteSprite(itemSprite); // Get the black & white variant for the opening animation
+            Debug.Log(itemSprite);
+            Debug.Log(itemSprite_bw);
+            dataMenu.data_superImage.sprite = itemSprite_bw;
+            dataMenu.data_superImageBW.sprite = itemSprite;
+
             // Set title to item's name
             dataMenu.data_mainTitle.text = item.Name;
             // Set title image to item's (world) image
@@ -6328,6 +6334,7 @@ public class UIManager : MonoBehaviour
             yield return null;
         }
     }
+
     #endregion
     
     #endregion
@@ -6345,6 +6352,7 @@ public class UIDataDisplay
     public GameObject data_parent;
     [Tooltip("The giant image that appears at the top of the menu.")]
     public Image data_superImage;
+    public Image data_superImageBW;
     public GameObject data_superImageParent;
     [Tooltip("In cases where an item has no image, we display this text instead.")]
     public GameObject data_superImageNull;
