@@ -6073,7 +6073,7 @@ public class UIManager : MonoBehaviour
             // Disable the big image because we don't use it
             dataMenu.data_superImageParent.gameObject.SetActive(false);
             // Set title to bot's name
-            dataMenu.data_mainTitle.text = bot.name;
+            dataMenu.data_mainTitle.text = bot.botInfo.name;
             // Set title image to bot's (world) image
             dataMenu.data_smallImage.sprite = bot.botInfo.displaySprite;
 
@@ -6128,10 +6128,12 @@ public class UIManager : MonoBehaviour
             botTemp.Setup(true, true, false, "Core Temp", tempColor, "", false, "", false, tempText);
             // Core Explosure
             UIDataGenericDetail botExposure = UIManager.inst.Data_CreateGeneric();
-            botExposure.Setup(true, false, true, "Core Exposure", Color.white, bot.currentHealth.ToString(), false, "", false, "", bot.botInfo.coreExposure);
+            botExposure.Setup(true, false, true, "Core Exposure", Color.white, (bot.botInfo.coreExposure * 100) + "%", false, "", false, "", bot.botInfo.coreExposure);
             // Salvage Potential
             UIDataGenericDetail botSalvage = UIManager.inst.Data_CreateGeneric();
             botSalvage.Setup(true, false, false, "Salvage Potential", Color.white, "", false, bot.botInfo.salvagePotential.x + "-" + bot.botInfo.salvagePotential.y);
+
+            Data_CreateSpacer();
 
             // Armament
             UIManager.inst.Data_CreateHeader("Armament");
@@ -6169,13 +6171,15 @@ public class UIManager : MonoBehaviour
                     else
                     {
                         UIDataGenericDetail itemC = UIManager.inst.Data_CreateGeneric();
-                        string displayString = I.item.itemData.itemName + " (" + HF.FindExposureInBotObject(bot.botInfo.armament, I.item.itemData) + ")";
+                        string displayString = I.item.itemData.itemName + " (" + HF.FindExposureInBotObject(bot.botInfo.armament, I.item.itemData) * 100 + "%)";
 
                         itemC.Setup(false, false, false, displayString, Color.white);
 
                         tracker.Add(I.item.itemData);
                     }
                 }
+
+                Data_CreateSpacer();
             }
 
             // Components
@@ -6214,13 +6218,15 @@ public class UIManager : MonoBehaviour
                     else
                     {
                         UIDataGenericDetail itemC = UIManager.inst.Data_CreateGeneric();
-                        string displayString = I.item.itemData.itemName + " (" + HF.FindExposureInBotObject(bot.botInfo.components, I.item.itemData) + ")";
+                        string displayString = I.item.itemData.itemName + " (" + HF.FindExposureInBotObject(bot.botInfo.components, I.item.itemData) * 100 + "%)";
 
                         itemC.Setup(false, false, false, displayString, Color.white);
 
                         tracker.Add(I.item.itemData);
                     }
                 }
+
+                Data_CreateSpacer();
             }
 
             // Resistances
@@ -6245,11 +6251,11 @@ public class UIManager : MonoBehaviour
                     string vA = "";
                     if (R.resistanceAmount < 0f)
                     {
-                        vA = "-" + Mathf.Abs(R.resistanceAmount * 100).ToString();
+                        vA = "-" + Mathf.Abs(R.resistanceAmount * 100).ToString() + "%";
                     }
                     else
                     {
-                        vA = Mathf.Abs(R.resistanceAmount * 100).ToString();
+                        vA = Mathf.Abs(R.resistanceAmount * 100).ToString() + "%";
                     }
 
                     resBar.Setup(true, false, true, R.damageType.ToString(), Color.white, vA, false, "", false, "", Mathf.Abs(R.resistanceAmount), true); // Bar
@@ -6295,6 +6301,8 @@ public class UIManager : MonoBehaviour
             // Traits (most bots don't have this so we'll do it later) TODO
             if(bot.botInfo.traits.Count > 0)
             {
+                Data_CreateSpacer();
+
                 UIManager.inst.Data_CreateHeader("Traits");
 
                 foreach (var T in bot.botInfo.traits)
@@ -6461,6 +6469,16 @@ public class UIManager : MonoBehaviour
         return go.GetComponent<UIDataGenericDetail>();
     }
 
+    private void Data_CreateSpacer()
+    {
+        GameObject go = Instantiate(dataMenu.data_spacerPrefab, dataMenu.data_contentArea.transform.position, Quaternion.identity);
+        go.transform.SetParent(dataMenu.data_contentArea.transform);
+        go.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+        // Add it to list
+        dataMenu.data_objects.Add(go);
+    }
+
+
     #region Animations
     private IEnumerator DataAnim_TitleOpen()
     {
@@ -6602,6 +6620,7 @@ public class UIDataDisplay
     [Header("Prefabs")]
     public GameObject data_headerPrefab;
     public GameObject data_genericPrefab;
+    public GameObject data_spacerPrefab;
 
     [Header("Objects")]
     [Tooltip("All the objects (prefabs) that we spawned in.")]
