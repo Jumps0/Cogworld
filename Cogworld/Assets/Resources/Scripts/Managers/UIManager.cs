@@ -106,6 +106,15 @@ public class UIManager : MonoBehaviour
         // Volley check
         if((volleyMain.activeInHierarchy || volleyTiles.Count > 0) && !volleyAnimating)
             Evasion_VolleyCheck();
+
+        // - Check to close the /DATA/ menu via left click
+        if (dataMenu.data_parent.gameObject.activeInHierarchy)
+        {
+            if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Escape))
+            {
+                Data_CloseMenu();
+            }
+        }
     }
 
     #region > New Floor & Fresh Start Animations <
@@ -6022,6 +6031,9 @@ public class UIManager : MonoBehaviour
         // Enable the menu
         dataMenu.data_parent.SetActive(true);
 
+        // Play a sound
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[55]);
+
         // There isn't actually an opening animation for the menu itself (thankfully).
         // But most items inside the menu do have their own animations, which we will handle inside their own scripts.
 
@@ -6038,6 +6050,11 @@ public class UIManager : MonoBehaviour
             dataMenu.data_smallImage.color = item.itemData.itemColor;
 
             // -- We have quite an extensive checklist here, there is a massive variance in what data an item can have -- //
+            #region Data Displaying
+
+
+
+            #endregion
         }
         else if(bot != null)
         {
@@ -6048,6 +6065,11 @@ public class UIManager : MonoBehaviour
             // Set title image to bot's (world) image
             dataMenu.data_smallImage.sprite = bot.botInfo.displaySprite;
 
+            // -- Unlike items, bots are more consistent in the data we have to display, but there is a little bit of variance in there -- //
+            #region Data Displaying
+
+
+            #endregion
         }
 
 
@@ -6057,14 +6079,22 @@ public class UIManager : MonoBehaviour
         // Animate the big image (if its enabled)
         if (dataMenu.data_superImage.gameObject.activeInHierarchy)
         {
-            dataMenu.data_SuperImageAnimator.Play("Data_SuperImageAppear");
+            if(dataMenu.data_superImage.sprite != null)
+            {
+                dataMenu.data_superImageNull.gameObject.SetActive(false);
+                dataMenu.data_SuperImageAnimator.Play("Data_SuperImageAppear");
+            }
+            else // In some rare cases, some items don't have images. So we display some text indicating so.
+            {
+                dataMenu.data_superImageNull.gameObject.SetActive(true);
+            }
         }
 
         // Animate the title (type out, include the [ ] too)
         StartCoroutine(DataAnim_TitleOpen());
 
         // Animate the little image
-        StartCoroutine(dataMenu.Anim_SmallImageOpen());
+        StartCoroutine(DataAnim_SmallImageOpen());
 
         // Animate the data lines
         foreach (var O in dataMenu.data_objects.ToList())
@@ -6083,6 +6113,9 @@ public class UIManager : MonoBehaviour
 
     public void Data_CloseMenu()
     {
+        // Play a sound
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[17]);
+
         StartCoroutine(Data_CloseMenuAnimation());
     }
 
@@ -6136,6 +6169,9 @@ public class UIManager : MonoBehaviour
             I.color = new Color(setColor.r, setColor.g, setColor.b, 0f);
         }
         #endregion
+
+        // Fade out the title text
+        StartCoroutine(DataAnim_TitleTextClose());
 
         // Animate out & Destroy all the prefabs we create
         foreach(var O in dataMenu.data_objects.ToList())
@@ -6253,7 +6289,47 @@ public class UIManager : MonoBehaviour
         dataMenu.data_bracketRight.text = "]";
 
     }
+
+    private IEnumerator DataAnim_SmallImageOpen()
+    {
+        Color transparent = new Color(0f, 0f, 0f, 0f);
+
+        float elapsedTime = 0f;
+        float duration = 0.5f;
+        while (elapsedTime < duration) // Bright green -> Fully transparent
+        {
+            Color color = Color.Lerp(UIManager.inst.highGreen, transparent, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+
+            dataMenu.data_smallImage_anim.color = color;
+
+            yield return null;
+        }
+    }
+
+    private IEnumerator DataAnim_TitleTextClose()
+    {
+        string oldtext = dataMenu.data_mainTitle.text;
+
+        float elapsedTime = 0f;
+        float duration = 0.45f;
+        while (elapsedTime < duration) // Dark green -> Black
+        {
+            Color color = Color.Lerp(UIManager.inst.dullGreen, Color.black, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+
+            // Set the highlights for the text
+            dataMenu.data_mainTitle.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(color)}>{oldtext}</mark>";
+            dataMenu.data_bracketLeft.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(color)}>{"["}</mark>";
+            dataMenu.data_bracketRight.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(color)}>{"]"}</mark>";
+
+            yield return null;
+        }
+    }
     #endregion
+    
     #endregion
 
 }
@@ -6270,6 +6346,8 @@ public class UIDataDisplay
     [Tooltip("The giant image that appears at the top of the menu.")]
     public Image data_superImage;
     public GameObject data_superImageParent;
+    [Tooltip("In cases where an item has no image, we display this text instead.")]
+    public GameObject data_superImageNull;
     public TextMeshProUGUI data_mainTitle;
     [Tooltip("The small little image right next to the item/bot's name inside the [ ]")]
     public Image data_smallImage;
@@ -6290,27 +6368,4 @@ public class UIDataDisplay
     [Header("Animation")]
     public Animator data_animator;
     public Animator data_SuperImageAnimator;
-
-    #region Animations
-
-    public IEnumerator Anim_SmallImageOpen()
-    {
-        Color transparent = new Color(0f, 0f, 0f, 0f);
-
-        float elapsedTime = 0f;
-        float duration = 0.5f;
-        while (elapsedTime < duration) // Bright green -> Fully transparent
-        {
-            Color color = Color.Lerp(UIManager.inst.highGreen, transparent, elapsedTime / duration);
-
-            elapsedTime += Time.deltaTime;
-
-            data_smallImage_anim.color = color;
-
-            yield return null;
-        }
-    }
-
-
-    #endregion
 }
