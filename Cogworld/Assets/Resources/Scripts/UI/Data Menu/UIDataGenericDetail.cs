@@ -38,7 +38,8 @@ public class UIDataGenericDetail : MonoBehaviour
     public Color brightGreen;
     public Color darkGreen;
 
-    public void Setup(bool useSecondary, bool useVariable, bool useBoxBar, string mainText, Color boxColor, string valueA = "", bool valueA_faded = false, string secondaryText = "", bool secondary_faded = false, string boxText = "", float _barAmount = 0f, bool _forceBarColor = false)
+    public void Setup(bool useSecondary, bool useVariable, bool useBoxBar, string mainText, Color boxColor, 
+        string valueA = "", bool valueA_faded = false, string secondaryText = "", bool secondary_faded = false, string boxText = "", float _barAmount = 0f, bool _forceBarColor = false)
     {
         StopAllCoroutines();
 
@@ -152,7 +153,7 @@ public class UIDataGenericDetail : MonoBehaviour
     {
         if (forceBarColor)
         {
-            if(value > 0)
+            if(value > 0.0f)
             {
                 return b_green;
             }
@@ -161,18 +162,20 @@ public class UIDataGenericDetail : MonoBehaviour
                 return b_red;
             }
         }
-
-        if (value >= 0.66f)
-        {
-            return b_green;
-        }
-        else if (value <= 0.33f)
-        {
-            return b_red;
-        }
         else
         {
-            return b_yellow;
+            if (value >= 0.66f)
+            {
+                return b_green;
+            }
+            else if (value <= 0.33f)
+            {
+                return b_red;
+            }
+            else
+            {
+                return b_yellow;
+            }
         }
     }
     #endregion
@@ -566,7 +569,7 @@ public class UIDataGenericDetail : MonoBehaviour
 
             yield return null;
         }
-
+        Debug.Log("Finish!");
         Destroy(this.gameObject);
     }
 
@@ -606,4 +609,9 @@ public class UIDataGenericDetail : MonoBehaviour
     }
 
     #endregion
+
+    private void OnDestroy()
+    {
+        Debug.Log("Destroyed " + this.gameObject);
+    }
 }

@@ -6088,7 +6088,7 @@ public class UIManager : MonoBehaviour
             botSize.Setup(true, false, false, "Size", Color.white, "", false, bot.botInfo._size.ToString());
             // Rating
             UIDataGenericDetail botRating = UIManager.inst.Data_CreateGeneric();
-            botRating.Setup(true, false, true, "Rating", Color.white, bot.botInfo.rating.ToString(), false, "", false, "", bot.botInfo.rating / 100, true); // Uses the bar for some reason?
+            botRating.Setup(true, false, true, "Rating", Color.white, bot.botInfo.rating.ToString(), false, "", false, "", bot.botInfo.rating / 100f, true); // Uses the bar for some reason?
             // ID
             UIDataGenericDetail botID = UIManager.inst.Data_CreateGeneric();
             Color idColor = Color.white;
@@ -6100,7 +6100,7 @@ public class UIManager : MonoBehaviour
             botMovement.Setup(true, false, false, "Movement", Color.white, "", false, bot.botInfo._movement.moveType.ToString() + " (" + bot.botInfo._movement.moveTileRange + ")");
             // Core Integrity
             UIDataGenericDetail botInteg = UIManager.inst.Data_CreateGeneric();
-            botInteg.Setup(true, false, true, "Core Integrity", Color.white, bot.currentHealth.ToString(), false, "", false, "", bot.currentHealth / 100);
+            botInteg.Setup(true, false, true, "Core Integrity", Color.white, bot.currentHealth.ToString(), false, "", false, "", bot.currentHealth / 100f);
             // Core Temp
             UIDataGenericDetail botTemp = UIManager.inst.Data_CreateGeneric();
             Color tempColor = Color.white;
@@ -6258,7 +6258,7 @@ public class UIManager : MonoBehaviour
                         vA = Mathf.Abs(R.resistanceAmount * 100).ToString() + "%";
                     }
 
-                    resBar.Setup(true, false, true, R.damageType.ToString(), Color.white, vA, false, "", false, "", Mathf.Abs(R.resistanceAmount), true); // Bar
+                    resBar.Setup(true, false, true, R.damageType.ToString(), Color.white, vA, false, "", false, "", R.resistanceAmount, true); // Bar
                 }
             }
             // - and then go through resisitancesExtra too
@@ -6419,7 +6419,7 @@ public class UIManager : MonoBehaviour
         StartCoroutine(DataAnim_TitleTextClose());
 
         // Animate out & Destroy all the prefabs we create
-        foreach(var O in dataMenu.data_objects.ToList())
+        foreach(var O in dataMenu.data_objects)
         {
             if (O.GetComponent<UIDataHeader>())
             {
