@@ -38,6 +38,8 @@ public class UIDataGenericDetail : MonoBehaviour
 
     public void Setup(bool useSecondary, bool useVariable, bool useBoxBar, string mainText, Color boxColor, string valueA = "", bool valueA_faded = false, string secondaryText = "", bool secondary_faded = false, string boxText = "", float _barAmount = 0f)
     {
+        StopAllCoroutines();
+
         primary_text.text = mainText;
 
         // Secondary

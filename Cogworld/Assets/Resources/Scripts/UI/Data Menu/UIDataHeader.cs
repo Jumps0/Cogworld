@@ -18,6 +18,8 @@ public class UIDataHeader : MonoBehaviour
 
     public void Setup(string text)
     {
+        StopAllCoroutines();
+
         mainString = text;
         mainText.text = mainString;
     }

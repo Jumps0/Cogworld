@@ -6028,6 +6028,13 @@ public class UIManager : MonoBehaviour
 
     public void Data_OpenMenu(Item item = null, Actor bot = null)
     {
+        // Emergency stop incase this menu is being spammed
+        StopCoroutine(Data_CloseMenuAnimation());
+        StopCoroutine(DataAnim_TitleOpen());
+        StopCoroutine(DataAnim_SmallImageOpen());
+        StopCoroutine(DataAnim_TitleTextClose());
+
+
         // Enable the menu
         dataMenu.data_parent.SetActive(true);
 
@@ -6044,8 +6051,7 @@ public class UIManager : MonoBehaviour
             dataMenu.data_superImageParent.gameObject.SetActive(true);
             Sprite itemSprite = item.itemData.bigDisplay; // Get the sprite art
             Sprite itemSprite_bw = HF.GetBlackAndWhiteSprite(itemSprite); // Get the black & white variant for the opening animation
-            Debug.Log(itemSprite);
-            Debug.Log(itemSprite_bw);
+
             dataMenu.data_superImage.sprite = itemSprite_bw;
             dataMenu.data_superImageBW.sprite = itemSprite;
 
@@ -6298,10 +6304,14 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator DataAnim_SmallImageOpen()
     {
+        yield return new WaitForSeconds(0.1f);
+
+        dataMenu.data_smallImage_anim.gameObject.SetActive(true);
+
         Color transparent = new Color(0f, 0f, 0f, 0f);
 
         float elapsedTime = 0f;
-        float duration = 0.5f;
+        float duration = 1f;
         while (elapsedTime < duration) // Bright green -> Fully transparent
         {
             Color color = Color.Lerp(UIManager.inst.highGreen, transparent, elapsedTime / duration);
@@ -6312,6 +6322,8 @@ public class UIManager : MonoBehaviour
 
             yield return null;
         }
+
+        dataMenu.data_smallImage_anim.gameObject.SetActive(false);
     }
 
     private IEnumerator DataAnim_TitleTextClose()
