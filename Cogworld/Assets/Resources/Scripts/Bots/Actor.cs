@@ -982,7 +982,7 @@ public class Actor : Entity
         target.state_UNPOWERED = this.state_UNPOWERED;
     }
 
-    public void OnMouseEnter()
+    public void OnMouseOver()
     {
         if (Input.GetKeyDown(KeyCode.Mouse1)) // Right Click to open /DATA/ Menu
         {

@@ -6029,24 +6029,24 @@ public class UIManager : MonoBehaviour
         if(item != null)
         {
             // Set the big image (and enable it)
-            dataMenu.data_mainImage.gameObject.SetActive(true);
-            dataMenu.data_mainImage.sprite = item.itemData.bigDisplay;
+            dataMenu.data_superImageParent.gameObject.SetActive(true);
+            dataMenu.data_superImage.sprite = item.itemData.bigDisplay;
             // Set title to item's name
             dataMenu.data_mainTitle.text = item.Name;
             // Set title image to item's (world) image
-            dataMenu.data_titleImage.sprite = item.itemData.inventoryDisplay;
-            dataMenu.data_titleImage.color = item.itemData.itemColor;
+            dataMenu.data_smallImage.sprite = item.itemData.inventoryDisplay;
+            dataMenu.data_smallImage.color = item.itemData.itemColor;
 
             // -- We have quite an extensive checklist here, there is a massive variance in what data an item can have -- //
         }
         else if(bot != null)
         {
             // Disable the big image because we don't use it
-            dataMenu.data_mainImage.gameObject.SetActive(false);
+            dataMenu.data_superImageParent.gameObject.SetActive(false);
             // Set title to bot's name
             dataMenu.data_mainTitle.text = bot.name;
             // Set title image to bot's (world) image
-            dataMenu.data_titleImage.sprite = bot.botInfo.displaySprite;
+            dataMenu.data_smallImage.sprite = bot.botInfo.displaySprite;
 
         }
 
@@ -6055,13 +6055,16 @@ public class UIManager : MonoBehaviour
         // We need to trigger all the animations at the same time
 
         // Animate the big image (if its enabled)
-        if (dataMenu.data_mainImage.gameObject.activeInHierarchy)
+        if (dataMenu.data_superImage.gameObject.activeInHierarchy)
         {
-
+            dataMenu.data_SuperImageAnimator.Play("Data_SuperImageAppear");
         }
 
-        // Animate the title
+        // Animate the title (type out, include the [ ] too)
+        StartCoroutine(DataAnim_TitleOpen());
 
+        // Animate the little image
+        StartCoroutine(dataMenu.Anim_SmallImageOpen());
 
         // Animate the data lines
         foreach (var O in dataMenu.data_objects.ToList())
@@ -6188,6 +6191,69 @@ public class UIManager : MonoBehaviour
         return go.GetComponent<UIDataGenericDetail>();
     }
 
+    #region Animations
+    private IEnumerator DataAnim_TitleOpen()
+    {
+        // Set brackets to black
+        dataMenu.data_bracketLeft.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(Color.black)}aa><color=#{ColorUtility.ToHtmlStringRGB(Color.black)}>{"["}</color></mark>";
+        dataMenu.data_bracketRight.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(Color.black)}aa><color=#{ColorUtility.ToHtmlStringRGB(Color.black)}>{"["}</color></mark>";
+
+        string primaryStart = dataMenu.data_mainTitle.text;
+        int len = primaryStart.Length;
+
+        float delay = 0f;
+        float perDelay = 0.75f / len;
+        dataMenu.data_mainTitle.text = "";
+
+        List<string> segments = HF.StringToList(primaryStart);
+
+        foreach (string segment in segments)
+        {
+            string s = segment;
+            string last = HF.GetLastCharOfString(s);
+            if (last == " ")
+            {
+                last = "_"; // Janky workaround because mark doesn't highlight spaces
+            }
+
+            if (s.Length > 0)
+            {
+                s = segment.Remove(segment.Length - 1, 1); // Remove the last character
+                if (last == "_")
+                {
+                    s += $"<mark=#{ColorUtility.ToHtmlStringRGB(UIManager.inst.subGreen)}aa><color=#{ColorUtility.ToHtmlStringRGB(Color.black)}>{last}</color></mark>"; // Add it back with the highlight
+                }
+                else
+                {
+                    s += $"<mark=#{ColorUtility.ToHtmlStringRGB(UIManager.inst.subGreen)}aa><color=#{ColorUtility.ToHtmlStringRGB(UIManager.inst.highlightGreen)}>{last}</color></mark>"; // Add it back with the highlight
+                }
+            }
+
+            StartCoroutine(HF.DelayedSetText(dataMenu.data_mainTitle, s, delay += perDelay));
+        }
+
+        yield return new WaitForSeconds(delay);
+
+        dataMenu.data_mainTitle.text = primaryStart;
+
+        // And we need to manual deal with the remaining brackets
+        // - Highlight the bracket
+        dataMenu.data_bracketLeft.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(UIManager.inst.subGreen)}aa><color=#{ColorUtility.ToHtmlStringRGB(Color.black)}>{"["}</color></mark>";
+
+        yield return new WaitForSeconds(perDelay);
+
+        // - Unhighlight the left bracket & highlight the right one
+
+        dataMenu.data_bracketLeft.text = "[";
+        dataMenu.data_bracketRight.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(UIManager.inst.subGreen)}aa><color=#{ColorUtility.ToHtmlStringRGB(Color.black)}>{"]"}</color></mark>";
+
+        yield return new WaitForSeconds(perDelay);
+
+        // - Unhighlight the right bracket
+        dataMenu.data_bracketRight.text = "]";
+
+    }
+    #endregion
     #endregion
 
 }
@@ -6202,10 +6268,14 @@ public class UIDataDisplay
     [Tooltip("Parent of the entire menu. Disabled/Enable this to Close/Open the menu.")]
     public GameObject data_parent;
     [Tooltip("The giant image that appears at the top of the menu.")]
-    public Image data_mainImage;
+    public Image data_superImage;
+    public GameObject data_superImageParent;
     public TextMeshProUGUI data_mainTitle;
     [Tooltip("The small little image right next to the item/bot's name inside the [ ]")]
-    public Image data_titleImage;
+    public Image data_smallImage;
+    public Image data_smallImage_anim;
+    public TextMeshProUGUI data_bracketLeft;
+    public TextMeshProUGUI data_bracketRight;
     [Tooltip("The object where all the prefabs should be spawned in.")]
     public GameObject data_contentArea;
 
@@ -6219,4 +6289,28 @@ public class UIDataDisplay
 
     [Header("Animation")]
     public Animator data_animator;
+    public Animator data_SuperImageAnimator;
+
+    #region Animations
+
+    public IEnumerator Anim_SmallImageOpen()
+    {
+        Color transparent = new Color(0f, 0f, 0f, 0f);
+
+        float elapsedTime = 0f;
+        float duration = 0.5f;
+        while (elapsedTime < duration) // Bright green -> Fully transparent
+        {
+            Color color = Color.Lerp(UIManager.inst.highGreen, transparent, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+
+            data_smallImage_anim.color = color;
+
+            yield return null;
+        }
+    }
+
+
+    #endregion
 }

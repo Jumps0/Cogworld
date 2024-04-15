@@ -201,7 +201,7 @@ public class InvDisplayItem : MonoBehaviour
 
     #endregion
 
-    private void OnMouseEnter()
+    private void OnMouseOver()
     {
         if (Input.GetKeyDown(KeyCode.Mouse1)) // Right Click to open /DATA/ Menu
         {
