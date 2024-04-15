@@ -16,29 +16,38 @@ MonoBehaviour:
   amount: 1
   data:
     Name: Heat Sink
-    Id: 55
+    Id: 56
     stackable: 0
+    amount: 1
     itemData: {fileID: 11400000}
+    state: 1
+    integrityCurrent: 0
+    isOverloaded: 0
+    corrupted: 0
+    disabledTimer: 0
+    siege: 0
   knowByPlayer: 0
   floorDisplay: {fileID: 2078175397, guid: 9317a15c65d31344c83ab52f7cdbb9db, type: 3}
   inventoryDisplay: {fileID: 2078175397, guid: 9317a15c65d31344c83ab52f7cdbb9db, type: 3}
   asciiRep: {fileID: -923958525, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  bigDisplay: {fileID: 21300000, guid: d2e3305bc1eff0b42892a8bbf3caa8ae, type: 3}
   itemColor: {r: 0.48540407, g: 0.2249911, b: 0.6037736, a: 1}
   type: 12
   slot: 2
+  slotsRequired: 1
   mass: 1
   rating: 8
   star: 0
-  integrityCurrent: 50
+  ratingType: 0
   integrityMax: 50
   coverage: 10
-  state: 0
   schematicDetails:
     hackable: 1
     location:
     - {x: 1, y: -3}
     - {x: 2, y: -4}
     - {x: 3, y: -5}
+    hasSchematic: 0
   hasUpkeep: 1
   energyUpkeep: -1
   matterUpkeep: 0
@@ -67,112 +76,86 @@ MonoBehaviour:
     damageType: 0
     critChance: 0
     critType: 0
-    penChance: 0
+    penChance: {x: 0, y: 0, z: 0}
     heatTrasfer: 0
     heatTransferDegree: 0
     spectrum: 0
     hasSpectrum: 0
     disruption: 0
     salvage: 0
-  itemEffect:
-  - chainExplode: 0
+    projectileColor: {r: 1, g: 0, b: 0, a: 1}
+    projectileSprite: {fileID: 0}
+    projectileRotates: 1
+    projectileTrail: 2
+    penetrationCapability: 0
+    penetrationChances: []
+  meleeAttack:
+    isMelee: 0
+    energy: 0
+    matter: 0
+    heat: 0
+    targeting: 0
+    delay: 0
     damage: {x: 0, y: 0}
-    chainDamageType: 0
-    radius: 0
-    chunks: {x: 0, y: 0}
-    fallOff: 0
+    damageType: 6
+    critical: 0
+    critType: 0
+    disruption: 0
     salvage: 0
-    transferLevel: 0
-    doesHeatDissip: 0
-    heatDissipation_perTurn: 0
-    heatDissipation_stacks: 0
-    hasLegEffect: 0
-    extraKickChance: 0
-    appliesToLargeTargets: 0
-    conferToRunningState: 0
-    evasionNaccuracyChange: 0
-    maxMomentumAmount: 0
-    inventorySizeEffect: 0
-    sizeIncrease: 0
-    effectStacks: 0
-    ramCrushEffect: 0
-    ramCrushChance: 0
-    ramCrush_canDoLarge: 0
-    ramCrush_canDoGigantic: 0
-    ramCrush_integLimit: 0
-    ramCrush_canStack: 0
-    ramCrush_stackCap: 0
-    hasStabEffect: 0
-    stab_recoilPerWeapon: 0
-    stab_KnockbackImmune: 0
-    armorEffect: 0
-    armorEffect_slotType: 0
-    armorEffect_absorbtion: 0
-    armorEffect_preventCritStrikes: 0
-    armorEffect_preventChainReactions: 0
-    armorEffect_stacks: 0
-    armorEffect_resistances: []
-    hasAccuracyBuff: 0
-    accBuff_nonMelee: 0
-    accBuff_melee: 0
-    accBuff_stacks: 0
-    hasDetectionEffect: 0
-    detection_range: 0
-    detect_seismic: 0
-    detect_machines: 0
-    detect_bots: 0
-    detect_pure: 0
-    detect_structural: 0
-    detect_stacks: 0
-    hasSignalInterp: 0
-    signalInterp_strength: 0
-    haulerTracking: 0
-    hasMassSupport: 0
-    massSupport: 0
-    massSupport_stacks: 0
-    collectsMatterBeam: 0
-    matterCollectionRange: 0
-    terrainScan: 0
-    terrainScanRange: 0
-    terrainScan_boost: 0
-    terrainScan_densBoost: 0
-    terrainScanBoost_stacks: 0
-    internalStorage: 0
-    internalStorageType: 0
-    internalStorageCapacity: 0
-    internalStorageType_stacks: 0
-    hackBonuses:
-      hasHackBonus: 0
-      hackSuccessBonus: 0
-      rewireBonus: 0
-      programmerHackDefenseBonus: 0
-      stacks: 0
-      hasSystemShieldBonus: 0
-      hackDetectRateBonus: 0
-      hackDetectChanceBonus: 0
-      securityLevelIncreaseChance: 0
-      databaseLockoutBonus: 0
-      hackFeedbackPreventBonus: 0
-      allyHackDefenseBonus: 0
-    emitEffect:
-      hasEffect: 0
-      target: 0
-      turnTime: 0
-      range: 0
-    fireTimeEffect:
-      hasEffect: 1
-      fireTimeReduction: 0.25
-      capped: 1
-      cap: 0.3
-      stacks: 1
-      compatability: 0
+    visualAttackTime: 0.5
+    missSound: []
+  explosion:
+    explosionSounds: []
+    explosionGFX: 0
+  explosionDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
+    damageType: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
+    salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+  deployableItem:
+    deployable: 0
+    type: 0
+    trapType: 0
+    canSever: 0
+    sever_amount: {x: 0, y: 0}
+    sever_damage: {x: 0, y: 0}
+    canShock: 0
+    shock_amount: {x: 0, y: 0}
+    canBurn: 0
+    burn_amount: {x: 0, y: 0}
+    burn_damage: {x: 0, y: 0}
+    burn_heat: {x: 0, y: 0}
+    burn_affectsNeighbors: 0
+    canPierce: 0
+    pierce_amount: 0
+    pierce_damage: {x: 0, y: 0}
+    pierce_impaleChance: 0
+    canStasis: 0
+    stasis_strength: 0
+  isSpecialAttack: 0
+  specialAttack:
+    datajack: 0
+    stasisBeam: 0
+    tearClaw: 0
+  itemEffects: []
+  canOverload: 0
   quality: 3
   itemName: Adv. Weapon Cycler
   description: A unique device that reduces fire time of all guns, cannons, and launchers
     by a certain amount. This device is not compatible with the Quantum Capacitor
     and any Autonomous Weapons.
-  details:
-    temp: 
+  mechanicalDescription: 
   fabricationInfo:
     canBeFabricated: 1
     amountMadePer: 2

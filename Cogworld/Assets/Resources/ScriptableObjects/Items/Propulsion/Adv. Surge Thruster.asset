@@ -18,27 +18,36 @@ MonoBehaviour:
     Name: 
     Id: 1
     stackable: 0
+    amount: 1
     itemData: {fileID: 11400000}
-  knowByPlayer: 1
+    state: 1
+    integrityCurrent: 0
+    isOverloaded: 0
+    corrupted: 0
+    disabledTimer: 0
+    siege: 0
+  knowByPlayer: 0
   floorDisplay: {fileID: -1937396886, guid: 341095b58407e0e4aa4bb36190339c2d, type: 3}
   inventoryDisplay: {fileID: -1937396886, guid: 341095b58407e0e4aa4bb36190339c2d, type: 3}
   asciiRep: {fileID: -1087548489, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  bigDisplay: {fileID: 21300000, guid: d4e25906607e4064bafdf445a65fd5d9, type: 3}
   itemColor: {r: 0.69803923, g: 0, b: 0, a: 1}
   type: 8
   slot: 1
+  slotsRequired: 1
   mass: 0
   rating: 7
   star: 0
-  integrityCurrent: 90
+  ratingType: 0
   integrityMax: 90
   coverage: 70
-  state: 0
   schematicDetails:
     hackable: 1
     location:
     - {x: 1, y: -4}
     - {x: 2, y: -5}
     - {x: 3, y: -6}
+    hasSchematic: 0
   hasUpkeep: 1
   energyUpkeep: -1.5
   matterUpkeep: 0
@@ -57,6 +66,7 @@ MonoBehaviour:
     penalty: 40
     burnout: 40
     hasBurnout: 1
+    canSiege: 0
   shot:
     shotRange: 0
     shotEnergy: 0
@@ -76,19 +86,84 @@ MonoBehaviour:
     damageType: 0
     critChance: 0
     critType: 0
-    penChance: 0
+    penChance: {x: 0, y: 0, z: 0}
     heatTrasfer: 0
     heatTransferDegree: 0
     spectrum: 0
     hasSpectrum: 0
     disruption: 0
     salvage: 0
-  itemEffect: []
+    projectileColor: {r: 1, g: 0, b: 0, a: 1}
+    projectileSprite: {fileID: 0}
+    projectileRotates: 1
+    projectileTrail: 2
+    penetrationCapability: 0
+    penetrationChances: []
+  meleeAttack:
+    isMelee: 0
+    energy: 0
+    matter: 0
+    heat: 0
+    targeting: 0
+    delay: 0
+    damage: {x: 0, y: 0}
+    damageType: 6
+    critical: 0
+    critType: 0
+    disruption: 0
+    salvage: 0
+    visualAttackTime: 0.5
+    missSound: []
+  explosion:
+    explosionSounds: []
+    explosionGFX: 0
+  explosionDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
+    damageType: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
+    salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+  deployableItem:
+    deployable: 0
+    type: 0
+    trapType: 0
+    canSever: 0
+    sever_amount: {x: 0, y: 0}
+    sever_damage: {x: 0, y: 0}
+    canShock: 0
+    shock_amount: {x: 0, y: 0}
+    canBurn: 0
+    burn_amount: {x: 0, y: 0}
+    burn_damage: {x: 0, y: 0}
+    burn_heat: {x: 0, y: 0}
+    burn_affectsNeighbors: 0
+    canPierce: 0
+    pierce_amount: 0
+    pierce_damage: {x: 0, y: 0}
+    pierce_impaleChance: 0
+    canStasis: 0
+    stasis_strength: 0
+  isSpecialAttack: 0
+  specialAttack:
+    datajack: 0
+    stasisBeam: 0
+    tearClaw: 0
+  itemEffects: []
+  canOverload: 0
   quality: 3
   itemName: Adv. Surge Thruster
   description: 
-  details:
-    temp: 
+  mechanicalDescription: 
   fabricationInfo:
     canBeFabricated: 1
     amountMadePer: 2

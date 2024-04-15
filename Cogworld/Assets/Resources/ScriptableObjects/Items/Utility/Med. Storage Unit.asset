@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
-  m_Name: Small Laser
+  m_Name: Med. Storage Unit
   m_EditorClassIdentifier: 
   instantUnique: 0
   amount: 1
   data:
     Name: 
-    Id: 41
+    Id: 7
     stackable: 0
     amount: 1
     itemData: {fileID: 11400000}
@@ -24,19 +24,23 @@ MonoBehaviour:
     integrityCurrent: 0
     isOverloaded: 0
     corrupted: 0
+    disabledTimer: 0
+    siege: 0
   knowByPlayer: 1
-  floorDisplay: {fileID: -1202212350, guid: fab67cf9e23fdbf4e9bad070f3896ba8, type: 3}
-  inventoryDisplay: {fileID: -1202212350, guid: fab67cf9e23fdbf4e9bad070f3896ba8, type: 3}
-  asciiRep: {fileID: -946019755, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  floorDisplay: {fileID: 2079199078, guid: 9e5fd32a0821a894a9c4ce41b9aec735, type: 3}
+  inventoryDisplay: {fileID: 2079199078, guid: 9e5fd32a0821a894a9c4ce41b9aec735, type: 3}
+  asciiRep: {fileID: -923958525, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  bigDisplay: {fileID: 21300000, guid: 7a888204ccdfd5844817bbef22148126, type: 3}
   itemColor: {r: 0, g: 1, b: 0.6862745, a: 1}
-  type: 16
-  slot: 3
+  type: 9
+  slot: 2
   slotsRequired: 1
-  mass: 1
+  mass: 10
   rating: 1
   star: 0
-  integrityMax: 70
-  coverage: 60
+  ratingType: 0
+  integrityMax: 250
+  coverage: 25
   schematicDetails:
     hackable: 1
     location:
@@ -54,10 +58,10 @@ MonoBehaviour:
   power_stability: 0
   propulsion: []
   shot:
-    shotRange: 12
-    shotEnergy: -8
+    shotRange: 0
+    shotEnergy: 0
     shotMatter: 0
-    shotHeat: 40
+    shotHeat: 0
     shotRecoil: 0
     shotTargeting: 0
     shotDelay: 0
@@ -65,20 +69,16 @@ MonoBehaviour:
     shotArc: 0
     hasStability: 0
     hasArc: 0
-    shotSound:
-    - {fileID: 8300000, guid: e070043e348f2e1498eb5d09dbd6d843, type: 3}
-    - {fileID: 8300000, guid: b590c25584a1c774ebc2986780fd770e, type: 3}
-    - {fileID: 8300000, guid: b871b9cfdfd312e4694813a3910caac5, type: 3}
-    - {fileID: 8300000, guid: 90ae9c49052d4ee4aafec5ef6bbfbaac, type: 3}
+    shotSound: []
   projectileAmount: 1
   projectile:
-    damage: {x: 10, y: 12}
-    damageType: 1
+    damage: {x: 0, y: 0}
+    damageType: 0
     critChance: 0
     critType: 0
     penChance: {x: 0, y: 0, z: 0}
-    heatTrasfer: 25
-    heatTransferDegree: 1
+    heatTrasfer: 0
+    heatTransferDegree: 0
     spectrum: 0
     hasSpectrum: 0
     disruption: 0
@@ -105,32 +105,59 @@ MonoBehaviour:
     visualAttackTime: 0.5
     missSound: []
   explosion:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
-    damageType: 2
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
-    salvage: 0
     explosionSounds: []
     explosionGFX: 0
+  explosionDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
+    damageType: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
+    salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+  deployableItem:
+    deployable: 0
+    type: 0
+    trapType: 0
+    canSever: 0
+    sever_amount: {x: 0, y: 0}
+    sever_damage: {x: 0, y: 0}
+    canShock: 0
+    shock_amount: {x: 0, y: 0}
+    canBurn: 0
+    burn_amount: {x: 0, y: 0}
+    burn_damage: {x: 0, y: 0}
+    burn_heat: {x: 0, y: 0}
+    burn_affectsNeighbors: 0
+    canPierce: 0
+    pierce_amount: 0
+    pierce_damage: {x: 0, y: 0}
+    pierce_impaleChance: 0
+    canStasis: 0
+    stasis_strength: 0
   isSpecialAttack: 0
   specialAttack:
     datajack: 0
     stasisBeam: 0
     tearClaw: 0
-  itemEffect: []
+  itemEffects: []
   canOverload: 0
   quality: 2
-  itemName: Sml. Laser
-  description: A lightweight laser that shoots beams of energy that do thermal damage
-    to the target.
+  itemName: Med. Storage Unit
+  description: A medium storage unit that increases the users inventory size by 5.
+    Effect does not stack.
   mechanicalDescription: 
   fabricationInfo:
     canBeFabricated: 1
-    amountMadePer: 2
+    amountMadePer: 1
     fabTime: {x: 51, y: 25, z: 17}
-    matterCost: 15
+    matterCost: 30
     componenetsRequired: []

@@ -24,10 +24,13 @@ MonoBehaviour:
     integrityCurrent: 0
     isOverloaded: 0
     corrupted: 0
+    disabledTimer: 0
+    siege: 0
   knowByPlayer: 0
   floorDisplay: {fileID: 1848404217, guid: 29b93740c1620a54b8cc50531ce485a5, type: 3}
   inventoryDisplay: {fileID: 1848404217, guid: 29b93740c1620a54b8cc50531ce485a5, type: 3}
   asciiRep: {fileID: -1108843116, guid: bbf1a054510493147ace67589225c41a, type: 3}
+  bigDisplay: {fileID: 21300000, guid: 129266d8d375ccc46ae2cd4c149a37b7, type: 3}
   itemColor: {r: 0.5943396, g: 0.5943396, b: 0.5943396, a: 1}
   type: 25
   slot: 4
@@ -35,7 +38,7 @@ MonoBehaviour:
   mass: 0
   rating: 1
   star: 0
-  prototype: 0
+  ratingType: 0
   integrityMax: 10
   coverage: 0
   schematicDetails:
@@ -142,7 +145,7 @@ MonoBehaviour:
     datajack: 0
     stasisBeam: 0
     tearClaw: 0
-  itemEffect: []
+  itemEffects: []
   canOverload: 0
   quality: 2
   itemName: Blade Trap

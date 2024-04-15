@@ -16,16 +16,21 @@ MonoBehaviour:
   amount: 1
   data:
     Name: Imp. Deuterium Engine
-    Id: 21
+    Id: 89
     stackable: 0
     amount: 1
     itemData: {fileID: 11400000}
     state: 1
     integrityCurrent: 0
+    isOverloaded: 0
+    corrupted: 0
+    disabledTimer: 0
+    siege: 0
   knowByPlayer: 0
   floorDisplay: {fileID: 1896401937, guid: fab67cf9e23fdbf4e9bad070f3896ba8, type: 3}
   inventoryDisplay: {fileID: 1896401937, guid: fab67cf9e23fdbf4e9bad070f3896ba8, type: 3}
   asciiRep: {fileID: -164177848, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  bigDisplay: {fileID: 21300000, guid: 93771c99158dc0940877a778e0988dd6, type: 3}
   itemColor: {r: 0.2553935, g: 0, b: 1, a: 1}
   type: 1
   slot: 0
@@ -33,6 +38,7 @@ MonoBehaviour:
   mass: 11
   rating: 4
   star: 0
+  ratingType: 0
   integrityMax: 120
   coverage: 60
   schematicDetails:
@@ -41,6 +47,7 @@ MonoBehaviour:
     - {x: 1, y: -6}
     - {x: 2, y: -7}
     - {x: 3, y: -8}
+    hasSchematic: 0
   hasUpkeep: 1
   energyUpkeep: 0
   matterUpkeep: 0
@@ -76,6 +83,12 @@ MonoBehaviour:
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    projectileColor: {r: 1, g: 0, b: 0, a: 1}
+    projectileSprite: {fileID: 0}
+    projectileRotates: 1
+    projectileTrail: 2
+    penetrationCapability: 0
+    penetrationChances: []
   meleeAttack:
     isMelee: 0
     energy: 0
@@ -89,161 +102,59 @@ MonoBehaviour:
     critType: 0
     disruption: 0
     salvage: 0
-  itemEffect:
-  - chainExplode: 1
-    damage: {x: 36, y: 74}
-    chainDamageType: 1
-    radius: 2
-    chunks: {x: 1, y: 2}
-    fallOff: 11
-    salvage: -6
-    transferLevel: 0
+    visualAttackTime: 0.5
+    missSound: []
+  explosion:
+    explosionSounds: []
+    explosionGFX: 0
+  explosionDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
+    damageType: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
+    salvage: 0
     disruption: 0
+    hasSpectrum: 0
     spectrum: 0
-    doesHeatDissip: 0
-    heatDissipation_perTurn: 0
-    heatDissipation_stacks: 0
-    hasLegEffect: 0
-    extraKickChance: 0
-    appliesToLargeTargets: 0
-    conferToRunningState: 0
-    evasionNaccuracyChange: 0
-    maxMomentumAmount: 0
-    inventorySizeEffect: 0
-    sizeIncrease: 0
-    effectStacks: 0
-    ramCrushEffect: 0
-    ramCrushChance: 0
-    ramCrush_canDoLarge: 0
-    ramCrush_canDoGigantic: 0
-    ramCrush_integLimit: 0
-    ramCrush_canStack: 0
-    ramCrush_stackCap: 0
-    hasStabEffect: 0
-    stab_recoilPerWeapon: 0
-    stab_KnockbackImmune: 0
-    armorEffect: 0
-    armorEffect_slotType: 0
-    armorEffect_absorbtion: 0
-    armorEffect_preventCritStrikes: 0
-    armorEffect_preventChainReactions: 0
-    armorEffect_stacks: 0
-    armorEffect_resistances: []
-    hasAccuracyBuff: 0
-    accBuff_nonMelee: 0
-    accBuff_melee: 0
-    accBuff_stacks: 0
-    hasDetectionEffect: 0
-    detection_range: 0
-    detect_seismic: 0
-    detect_machines: 0
-    detect_bots: 0
-    detect_pure: 0
-    detect_structural: 0
-    detect_stacks: 0
-    hasSignalInterp: 0
-    signalInterp_strength: 0
-    haulerTracking: 0
-    hasMassSupport: 0
-    massSupport: 0
-    massSupport_stacks: 0
-    collectsMatterBeam: 0
-    matterCollectionRange: 0
-    terrainScan: 0
-    terrainScanRange: 0
-    terrainScan_boost: 0
-    terrainScan_densBoost: 0
-    terrainScanBoost_stacks: 0
-    internalStorage: 0
-    internalStorageType: 0
-    internalStorageCapacity: 0
-    internalStorageType_stacks: 0
-    hackBonuses:
-      hasHackBonus: 0
-      hackSuccessBonus: 0
-      rewireBonus: 0
-      programmerHackDefenseBonus: 0
-      stacks: 1
-      hasSystemShieldBonus: 0
-      hackDetectRateBonus: 0
-      hackDetectChanceBonus: 0
-      securityLevelIncreaseChance: 0
-      databaseLockoutBonus: 0
-      hackFeedbackPreventBonus: 0
-      allyHackDefenseBonus: 0
-      allyHackRange: 0
-    emitEffect:
-      hasEffect: 0
-      target: 0
-      turnTime: 5
-      range: 0
-    fireTimeEffect:
-      hasEffect: 0
-      fireTimeReduction: 0
-      capped: 0
-      cap: 0
-      stacks: 1
-      compatability: 0
-    transmissionJammingEffect:
-      hasEffect: 0
-      range: 0
-      preventReinforcementCall: 1
-      suppressAlarmTraps: 1
-    effectiveCorruptionEffect:
-      hasEffect: 0
-      amount: 0
-      stacks: 1
-    partRestoreEffect:
-      hasEffect: 0
-      percentChance: 0
-      canRepairAlienTech: 0
-      protoRepairCap: 0
-      canRunInParralel: 1
-    exilesEffects:
-      hasEffect: 0
-      isAutoWeapon: 0
-      chronoWheelEffect: 0
-      deployableTurret: 0
-      lifetimeDecay: 0
-    toHitBuffs:
-      hasEffect: 0
-      amount: 0
-      stacks: 0
-      halfStacks: 0
-      bonusCritChance: 0
-      bypassArmor: 0
-      coreExposureEffect: 0
-      launcherAccuracy: 0
-    partIdent:
-      hasEffect: 0
-      amount: 0
-      parallel: 0
-    antiCorruption:
-      hasEffect: 0
-      amount: 0
-      integrityLossPer: 0
-      parallel: 0
-    rcsEffect:
-      hasEffect: 0
-      percentage: 0
-      stacks: 0
-      momentumBonus: 1
-    phasingEffect:
-      hasEffect: 0
-      percentage: 0
-      stacks: 0
-    cloakingEffect:
-      hasEffect: 0
-      rangedReduction: 0
-      noticeReduction: 0
-      halfStacks: 1
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+  deployableItem:
+    deployable: 0
+    type: 0
+    trapType: 0
+    canSever: 0
+    sever_amount: {x: 0, y: 0}
+    sever_damage: {x: 0, y: 0}
+    canShock: 0
+    shock_amount: {x: 0, y: 0}
+    canBurn: 0
+    burn_amount: {x: 0, y: 0}
+    burn_damage: {x: 0, y: 0}
+    burn_heat: {x: 0, y: 0}
+    burn_affectsNeighbors: 0
+    canPierce: 0
+    pierce_amount: 0
+    pierce_damage: {x: 0, y: 0}
+    pierce_impaleChance: 0
+    canStasis: 0
+    stasis_strength: 0
+  isSpecialAttack: 0
+  specialAttack:
+    datajack: 0
+    stasisBeam: 0
+    tearClaw: 0
+  itemEffects: []
+  canOverload: 0
   quality: 8
   itemName: Hvy. Deuterium Engine
   description: An heavy variant of the rugged Deuterium engine, providing more power
     output and storage at the cost of additional weight.
   mechanicalDescription: 4 M11 E13
-  details:
-    temp: 
   fabricationInfo:
     canBeFabricated: 1
     amountMadePer: 1

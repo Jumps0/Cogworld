@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
-  m_Name: Lgt. Neutrino Core
+  m_Name: Sml. Laser
   m_EditorClassIdentifier: 
   instantUnique: 0
   amount: 1
   data:
-    Name: Imp. Deuterium Engine
-    Id: 61
+    Name: 
+    Id: 41
     stackable: 0
     amount: 1
     itemData: {fileID: 11400000}
@@ -26,42 +26,42 @@ MonoBehaviour:
     corrupted: 0
     disabledTimer: 0
     siege: 0
-  knowByPlayer: 0
-  floorDisplay: {fileID: -1884263998, guid: 6074c0389029dd34c9cd2fd482c26683, type: 3}
-  inventoryDisplay: {fileID: -1884263998, guid: 6074c0389029dd34c9cd2fd482c26683, type: 3}
-  asciiRep: {fileID: -164177848, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
-  bigDisplay: {fileID: 21300000, guid: 2f89bf3849b5c0b4591c4cfbe3a95fe5, type: 3}
-  itemColor: {r: 0.6037736, g: 0.088287644, b: 0.5264283, a: 1}
-  type: 1
-  slot: 0
+  knowByPlayer: 1
+  floorDisplay: {fileID: -1202212350, guid: fab67cf9e23fdbf4e9bad070f3896ba8, type: 3}
+  inventoryDisplay: {fileID: -1202212350, guid: fab67cf9e23fdbf4e9bad070f3896ba8, type: 3}
+  asciiRep: {fileID: -946019755, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  bigDisplay: {fileID: 21300000, guid: 2b2361051da959c4ebe288e098e538a0, type: 3}
+  itemColor: {r: 0, g: 1, b: 0.6862745, a: 1}
+  type: 16
+  slot: 3
   slotsRequired: 1
-  mass: 8
-  rating: 6
+  mass: 1
+  rating: 1
   star: 0
   ratingType: 0
-  integrityMax: 80
-  coverage: 50
+  integrityMax: 70
+  coverage: 60
   schematicDetails:
     hackable: 1
     location:
-    - {x: 1, y: -4}
-    - {x: 2, y: -5}
-    - {x: 3, y: -6}
+    - {x: 1, y: -10}
+    - {x: 2, y: -10}
+    - {x: 3, y: -10}
     hasSchematic: 0
-  hasUpkeep: 1
+  hasUpkeep: 0
   energyUpkeep: 0
   matterUpkeep: 0
-  heatUpkeep: 8
-  supply: 14
-  storage: 70
+  heatUpkeep: 0
+  supply: 0
+  storage: 0
   power_HasStability: 0
   power_stability: 0
   propulsion: []
   shot:
-    shotRange: 0
-    shotEnergy: 0
+    shotRange: 12
+    shotEnergy: -8
     shotMatter: 0
-    shotHeat: 0
+    shotHeat: 40
     shotRecoil: 0
     shotTargeting: 0
     shotDelay: 0
@@ -69,16 +69,20 @@ MonoBehaviour:
     shotArc: 0
     hasStability: 0
     hasArc: 0
-    shotSound: []
-  projectileAmount: 0
+    shotSound:
+    - {fileID: 8300000, guid: e070043e348f2e1498eb5d09dbd6d843, type: 3}
+    - {fileID: 8300000, guid: b590c25584a1c774ebc2986780fd770e, type: 3}
+    - {fileID: 8300000, guid: b871b9cfdfd312e4694813a3910caac5, type: 3}
+    - {fileID: 8300000, guid: 90ae9c49052d4ee4aafec5ef6bbfbaac, type: 3}
+  projectileAmount: 1
   projectile:
-    damage: {x: 0, y: 0}
-    damageType: 0
+    damage: {x: 10, y: 12}
+    damageType: 1
     critChance: 0
     critType: 0
     penChance: {x: 0, y: 0, z: 0}
-    heatTrasfer: 0
-    heatTransferDegree: 0
+    heatTrasfer: 25
+    heatTransferDegree: 1
     spectrum: 0
     hasSpectrum: 0
     disruption: 0
@@ -150,14 +154,14 @@ MonoBehaviour:
     tearClaw: 0
   itemEffects: []
   canOverload: 0
-  quality: 9
-  itemName: Lgt. Neutrino Core
-  description: A lightweight version of the reliable Neutrino Power Core. If triggered
-    by a chain reaction will cause an electromagnetic explosion.
-  mechanicalDescription: 6 M8 E14
+  quality: 2
+  itemName: Sml. Laser
+  description: A lightweight laser that shoots beams of energy that do thermal damage
+    to the target.
+  mechanicalDescription: 
   fabricationInfo:
     canBeFabricated: 1
-    amountMadePer: 1
-    fabTime: {x: 169, y: 84, z: 56}
-    matterCost: 140
+    amountMadePer: 2
+    fabTime: {x: 51, y: 25, z: 17}
+    matterCost: 15
     componenetsRequired: []
