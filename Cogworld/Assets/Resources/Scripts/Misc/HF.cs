@@ -3735,6 +3735,14 @@ public static class HF
         UI.text = text;
     }
 
+    public static string BotClassParse(BotClass bClass)
+    {
+        string s = bClass.ToString();
+        s = s.Replace("_", " ");
+
+        return s;
+    } 
+
     #endregion
 
     #region Highlighted Path Pruning
@@ -4167,6 +4175,53 @@ public static class HF
 
         return (totalIntValue, totalFloatValue);
     } 
+
+    /// <summary>
+    /// Used in UIManager to get the color and display text for the /DATA/ box next to "ID" for bots.
+    /// </summary>
+    /// <param name="faction">The faction of the bot.</param>
+    /// <returns>(Color, string)</returns>
+    public static (Color color, string text) VisualsFromBotRelation(Actor bot)
+    {
+        // First consider any special states
+        if (bot.state_CLOAKED)
+        {
+            return (UIManager.inst.deepInfoBlue, "CLOAKED");
+        }
+        else if (bot.state_DISABLED)
+        {
+            return (UIManager.inst.warningOrange, "DISABLED");
+        }
+        else if (bot.state_DISARMED)
+        {
+            return (UIManager.inst.dullGreen, "DISARMED");
+        }
+        else if (bot.state_DORMANT)
+        {
+            return (UIManager.inst.corruptOrange_faded, "DORMANT");
+        }
+        else if (bot.state_UNPOWERED)
+        {
+            return (UIManager.inst.warningOrange, "UNPOWERED");
+        }
+
+        // Then consider relations
+        BotRelation relation = HF.DetermineRelation(PlayerData.inst.GetComponent<Actor>(), bot);
+
+        switch (relation)
+        {
+            case BotRelation.Hostile:
+                return (UIManager.inst.highSecRed, "HOSTILE");
+            case BotRelation.Neutral:
+                return (UIManager.inst.inactiveGray, "NEUTRAL");
+            case BotRelation.Friendly:
+                return (UIManager.inst.highlightGreen, "FRIENDLY");
+            case BotRelation.Default:
+                return (UIManager.inst.inactiveGray, "NEUTRAL");
+            default:
+                return (UIManager.inst.inactiveGray, "NEUTRAL");
+        }
+    }
 
     #endregion
 

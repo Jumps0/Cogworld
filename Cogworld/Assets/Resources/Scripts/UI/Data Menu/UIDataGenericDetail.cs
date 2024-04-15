@@ -26,6 +26,9 @@ public class UIDataGenericDetail : MonoBehaviour
     public List<GameObject> secondaryBoxes;
     private float barAmount;
     [SerializeField] private Image barBacker;
+    private bool forceBarColor = false;
+    //
+    public TextMeshProUGUI sideBrackets;
 
     [Header("Colors")] // For the boxes. Other stuff uses colors from UIManager
     public Color b_green;
@@ -36,7 +39,7 @@ public class UIDataGenericDetail : MonoBehaviour
     public Color brightGreen;
     public Color darkGreen;
 
-    public void Setup(bool useSecondary, bool useVariable, bool useBoxBar, string mainText, Color boxColor, string valueA = "", bool valueA_faded = false, string secondaryText = "", bool secondary_faded = false, string boxText = "", float _barAmount = 0f)
+    public void Setup(bool useSecondary, bool useVariable, bool useBoxBar, string mainText, Color boxColor, string valueA = "", bool valueA_faded = false, string secondaryText = "", bool secondary_faded = false, string boxText = "", float _barAmount = 0f, bool _forceBarColor = false)
     {
         StopAllCoroutines();
 
@@ -89,6 +92,7 @@ public class UIDataGenericDetail : MonoBehaviour
             barAmount = _barAmount;
             UpdateBoxIndicator(barAmount);
         }
+        forceBarColor = _forceBarColor;
     }
 
     private void ToggleSecondaryState(bool active)
@@ -147,6 +151,11 @@ public class UIDataGenericDetail : MonoBehaviour
     // Determine the color of the main box based on the value
     private Color DetermineColor(float value)
     {
+        if (forceBarColor)
+        {
+            return b_green;
+        }
+
         if (value >= 0.66f)
         {
             return b_green;
@@ -554,5 +563,41 @@ public class UIDataGenericDetail : MonoBehaviour
 
         Destroy(this.gameObject);
     }
+
+    public void FlashBrackets()
+    {
+        StopCoroutine(AnimFlashBrackets());
+        StartCoroutine(AnimFlashBrackets());
+    }
+
+    private IEnumerator AnimFlashBrackets()
+    {
+        // Black -> Bright Green -> Green
+
+        // 1
+        float elapsedTime = 0f;
+        float duration = 0.2f;
+        while (elapsedTime < duration) // Black -> Bright Green
+        {
+            sideBrackets.color = Color.Lerp(Color.black, brightGreen, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        sideBrackets.color = brightGreen;
+        // 2
+        elapsedTime = 0f;
+        elapsedTime = 0.2f;
+        while (elapsedTime < duration) // Bright Green -> Green
+        {
+            sideBrackets.color = Color.Lerp(brightGreen, b_green, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        sideBrackets.color = b_green;
+
+    }
+
     #endregion
 }

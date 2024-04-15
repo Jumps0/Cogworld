@@ -6079,7 +6079,62 @@ public class UIManager : MonoBehaviour
 
             // -- Unlike items, bots are more consistent in the data we have to display, but there is a little bit of variance in there -- //
             #region Data Displaying
+            UIManager.inst.Data_CreateHeader("Overview"); // Overview
+            // Class
+            UIDataGenericDetail botClass = UIManager.inst.Data_CreateGeneric();
+            botClass.Setup(true, false, false, "Class", Color.white, "", false, HF.BotClassParse(bot.botInfo._class));
+            // Size
+            UIDataGenericDetail botSize = UIManager.inst.Data_CreateGeneric();
+            botSize.Setup(true, false, false, "Size", Color.white, "", false, bot.botInfo._size.ToString());
+            // Rating
+            UIDataGenericDetail botRating = UIManager.inst.Data_CreateGeneric();
+            botRating.Setup(true, false, true, "Rating", Color.white, bot.botInfo.rating.ToString(), false, "", false, "", bot.botInfo.rating / 100, true); // Uses the bar for some reason?
+            // ID
+            UIDataGenericDetail botID = UIManager.inst.Data_CreateGeneric();
+            Color idColor = Color.white;
+            string idText = "";
+            (idColor, idText) = HF.VisualsFromBotRelation(bot);
+            botID.Setup(true, true, false, "ID", idColor, "", false, "", false, idText);
+            // Movement
+            UIDataGenericDetail botMovement = UIManager.inst.Data_CreateGeneric();
+            botMovement.Setup(true, false, false, "Movement", Color.white, "", false, bot.botInfo._movement.moveType.ToString() + " (" + bot.botInfo._movement.moveTileRange + ")");
+            // Core Integrity
+            UIDataGenericDetail botInteg = UIManager.inst.Data_CreateGeneric();
+            botInteg.Setup(true, false, true, "Core Integrity", Color.white, bot.currentHealth.ToString(), false, "", false, "", bot.currentHealth / 100);
+            // Core Temp
+            UIDataGenericDetail botTemp = UIManager.inst.Data_CreateGeneric();
+            Color tempColor = Color.white;
+            string tempText = "";
+            if (bot.currentHeat < 100) // Cool
+            {
+                tempText = "Cool";
+                tempColor = coolBlue;
+            }
+            else if (bot.currentHeat >= 100 && bot.currentHeat < 200) // Warm
+            {
+                tempText = "Warm";
+                tempColor = warmYellow;
+            }
+            else if (bot.currentHeat >= 200 && bot.currentHeat < 300) // HOT
+            {
+                tempText = "Hot";
+                tempColor = warningOrange;
+            }
+            else // Critical
+            {
+                tempText = "Critical";
+                tempColor = alertRed;
+            }
+            botTemp.Setup(true, true, false, "Core Temp", tempColor, "", false, "", false, tempText);
+            // Core Explosure
+            UIDataGenericDetail botExposure = UIManager.inst.Data_CreateGeneric();
+            botExposure.Setup(true, false, true, "Core Exposure", Color.white, bot.currentHealth.ToString(), false, "", false, "", bot.botInfo.coreExposure);
+            // Salvage Potential
+            UIDataGenericDetail botSalvage = UIManager.inst.Data_CreateGeneric();
+            botSalvage.Setup(true, false, false, "Salvage Potential", Color.white, "", false, bot.botInfo.salvagePotential.x + "-" + bot.botInfo.salvagePotential.y);
 
+            // Armament
+            
 
             #endregion
         }
@@ -6136,6 +6191,9 @@ public class UIManager : MonoBehaviour
         // There is a closing animation:
         // - The menu itself just goes from its set color to all black (DONT FORGET TO RESET THEIR COLORS AT THE END THIS TIME!!!)
         // - Each object has their own closing animations too.
+
+        // Disable the super image
+        dataMenu.data_superImageParent.gameObject.SetActive(false);
 
         // Transparency out the menu
         #region Image Fade-out
@@ -6223,9 +6281,6 @@ public class UIManager : MonoBehaviour
         dataMenu.data_objects.Add(go);
         // Assign Details
         go.GetComponent<TextMeshProUGUI>().text = text;
-
-        // Animate it opening
-        go.GetComponent<UIDataHeader>().Open();
     }
 
     private UIDataGenericDetail Data_CreateGeneric()
