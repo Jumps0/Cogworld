@@ -51,11 +51,11 @@ MonoBehaviour:
     hasSchematic: 0
   armament:
   - item:
-      Name: 
-      Id: -1
+      Name: Beamcaster
+      Id: 45
       stackable: 0
       amount: 1
-      itemData: {fileID: 0}
+      itemData: {fileID: 11400000, guid: 9ceff4d16cf286a4293ba2ebc44f6704, type: 2}
       state: 1
       integrityCurrent: 0
       isOverloaded: 0
@@ -67,11 +67,11 @@ MonoBehaviour:
     altChoicesDropChance: []
   components:
   - item:
-      Name: 
-      Id: -1
+      Name: Lgt. Angular Momentum Engine
+      Id: 46
       stackable: 0
       amount: 1
-      itemData: {fileID: 0}
+      itemData: {fileID: 11400000, guid: 75bb6b8f21fe4b7469d2689302308b83, type: 2}
       state: 1
       integrityCurrent: 0
       isOverloaded: 0
@@ -82,11 +82,11 @@ MonoBehaviour:
     _altChoices: []
     altChoicesDropChance: []
   - item:
-      Name: 
-      Id: -1
+      Name: Carbon-Fiber Leg
+      Id: 47
       stackable: 0
       amount: 1
-      itemData: {fileID: 0}
+      itemData: {fileID: 11400000, guid: e8164a5545bf0244090775c2dfad165d, type: 2}
       state: 1
       integrityCurrent: 0
       isOverloaded: 0
@@ -97,11 +97,11 @@ MonoBehaviour:
     _altChoices: []
     altChoicesDropChance: []
   - item:
-      Name: 
-      Id: -1
+      Name: Carbon-Fiber Leg
+      Id: 47
       stackable: 0
       amount: 1
-      itemData: {fileID: 0}
+      itemData: {fileID: 11400000, guid: e8164a5545bf0244090775c2dfad165d, type: 2}
       state: 1
       integrityCurrent: 0
       isOverloaded: 0
@@ -112,11 +112,11 @@ MonoBehaviour:
     _altChoices: []
     altChoicesDropChance: []
   - item:
-      Name: 
-      Id: -1
+      Name: Imp. Heat Sink
+      Id: 23
       stackable: 0
       amount: 1
-      itemData: {fileID: 0}
+      itemData: {fileID: 11400000, guid: 591a744c750455244bc8ee986a032d0b, type: 2}
       state: 1
       integrityCurrent: 0
       isOverloaded: 0
@@ -127,11 +127,11 @@ MonoBehaviour:
     _altChoices: []
     altChoicesDropChance: []
   - item:
-      Name: 
-      Id: -1
+      Name: Imp. Heat Sink
+      Id: 23
       stackable: 0
       amount: 1
-      itemData: {fileID: 0}
+      itemData: {fileID: 11400000, guid: 591a744c750455244bc8ee986a032d0b, type: 2}
       state: 1
       integrityCurrent: 0
       isOverloaded: 0

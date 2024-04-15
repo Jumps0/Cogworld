@@ -3408,6 +3408,19 @@ public static class HF
         return blackAndWhiteSprite;
     }
 
+    public static float FindExposureInBotObject(List<BotArmament> inventory, ItemObject item)
+    {
+        foreach (var I in inventory)
+        {
+            if(I.item.itemData == item)
+            {
+                return I.dropChance;
+            }
+        }
+
+        return 0f;
+    }
+
     #endregion
 
     #region Floor Traps
@@ -3572,6 +3585,13 @@ public static class HF
     #endregion
 
     #region String/Name Manipulation
+
+    public static int StringToInt(string input)
+    {
+        // Parse the string to an integer
+        int result = int.Parse(input);
+        return result;
+    }
 
     /// <summary>
     /// Access a string in the form of word(word), returns anything to the left of the "(".
@@ -4221,6 +4241,38 @@ public static class HF
             default:
                 return (UIManager.inst.inactiveGray, "NEUTRAL");
         }
+    }
+
+    /// <summary>
+    /// Based on a provided inventory that (presumably) contains utility items that increase inventory size, determines how big an inventory should be.
+    /// </summary>
+    /// <param name="inv">The InventoryObject we will search through. Should contain utility items.</param>
+    /// <param name="baseAmount">A starting amount, can be 0.</param>
+    /// <returns>The size the inventory should be based on our findings.</returns>
+    public static int CalculateMaxInventorySize(InventoryObject inv, int baseAmount = 0)
+    {
+        int size = baseAmount;
+
+        foreach (var item in inv.Container.Items)
+        {
+            if(item.item.Id >= 0)
+            {
+                // Storage items
+                if (item.item.itemData.itemEffects.Count > 0)
+                {
+                    foreach (var E in item.item.itemData.itemEffects)
+                    {
+                        if (E.inventorySizeEffect)
+                        {
+                            size += E.sizeIncrease;
+                        }
+                    }
+                    // There may be some other items out there that increase inventory size with some weird effect (maybe alien items?) but we can add that in later.
+                }
+            }
+        }
+
+        return size;
     }
 
     #endregion

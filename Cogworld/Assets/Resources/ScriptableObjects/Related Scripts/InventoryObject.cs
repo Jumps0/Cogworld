@@ -18,6 +18,22 @@ public class InventoryObject : ScriptableObject//, ISerializationCallbackReceive
     public ItemDatabaseObject database;
     public Inventory Container;
     
+    public InventoryObject(int size, string name = "")
+    {
+        database = MapManager.inst.itemDatabase; // Set the database
+        Container = new Inventory(); // Set the container
+        Container.Items = new InventorySlot[size]; // Set size
+
+        for (int i = 0; i < Container.Items.Length; i++)
+        {
+            Container.Items[i] = new InventorySlot();
+        }
+
+        if(name != "")
+        {
+            this.name = name;
+        }
+    }
 
     
     public bool AddItem(Item _item, int _amount)
@@ -37,6 +53,9 @@ public class InventoryObject : ScriptableObject//, ISerializationCallbackReceive
         if (EmptySlotCount <= 0)
             return false;
         InventorySlot slot = FindItemOnInventory(_item);
+
+        _item = new Item(_item.itemData);
+        
         if (!database.Items[_item.Id].data.stackable || slot == null)
         {
             SetEmptySlot(_item, _amount);

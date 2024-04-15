@@ -80,12 +80,7 @@ public class Actor : Entity
             {
                 TurnManager.inst.AddActor(this);
                 fow_sprite.color = Color.black; // temp fix
-                /*
-                if (this.GetComponent<PotentialField>() && (this.GetComponent<AI_Hostile>() || this.GetComponent<AI_Passive>()))
-                {
-                    this.GetComponent<PotentialField>().movementActive = true;
-                }
-                */
+
                 fieldOfViewRange = botInfo.visualRange;
                 maxHealth = botInfo.coreIntegrity;
                 currentHealth = maxHealth;
@@ -95,9 +90,8 @@ public class Actor : Entity
                 StartCoroutine(SetBotName());
 
                 // Create new inventories
-                armament = new InventoryObject();
-                components = new InventoryObject();
-                inventory = new InventoryObject();
+                armament = new InventoryObject(botInfo.armament.Count, botInfo.name + "'s Armament");
+                components = new InventoryObject(botInfo.components.Count, botInfo.name + "'s Components");
 
                 // Fill up armament & component inventories
                 foreach (var item in botInfo.armament)
@@ -106,8 +100,10 @@ public class Actor : Entity
                 }
                 foreach (var item in botInfo.components)
                 {
-                    armament.AddItem(item.item, 1);
+                    components.AddItem(item.item, 1);
                 }
+
+                inventory = new InventoryObject(HF.CalculateMaxInventorySize(components), botInfo.name + "'s Inventory");
 
                 myFaction = botInfo.locations.alignment;
             }
