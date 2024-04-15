@@ -153,7 +153,14 @@ public class UIDataGenericDetail : MonoBehaviour
     {
         if (forceBarColor)
         {
-            return b_green;
+            if(value > 0)
+            {
+                return b_green;
+            }
+            else
+            {
+                return b_red;
+            }
         }
 
         if (value >= 0.66f)

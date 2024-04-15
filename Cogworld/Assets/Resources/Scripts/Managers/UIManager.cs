@@ -6134,7 +6134,174 @@ public class UIManager : MonoBehaviour
             botSalvage.Setup(true, false, false, "Salvage Potential", Color.white, "", false, bot.botInfo.salvagePotential.x + "-" + bot.botInfo.salvagePotential.y);
 
             // Armament
-            
+            UIManager.inst.Data_CreateHeader("Armament");
+            if(bot.armament.Container.Items.Length <= 0)
+            {
+                UIDataGenericDetail aNone = UIManager.inst.Data_CreateGeneric();
+                aNone.Setup(false, false, false, "None", Color.white);
+            }
+            else
+            {
+                List<ItemObject> tracker = new List<ItemObject>(); // Track all items so we can stack duplicates
+                foreach (var I in bot.armament.Container.Items)
+                {
+                    if (tracker.Contains(I.item.itemData)) // Duplicate
+                    {
+                        // Modify the last object
+                        UIDataGenericDetail obj = dataMenu.data_objects[dataMenu.data_objects.Count - 1].GetComponent<UIDataGenericDetail>();
+                        string displayString = obj.primary_text.text;
+                        if (displayString[displayString.Length - 1].ToString() == "x" || displayString[displayString.Length - 2].ToString() == "x" 
+                            || displayString[displayString.Length - 3].ToString() == "x" || displayString[displayString.Length - 4].ToString() == "x")
+                        { // Does this string already contain an x## at the end?
+                            // Yes, we need to modify that number
+                            string[] split = displayString.Split("x");
+                            int amount = HF.StringToInt(split[split.Length - 1]);
+                            displayString += "x" + amount++; // Increase the number and add it back in
+                        }
+                        else
+                        {
+                            // No, add in the x
+                            displayString += " x2";
+                        }
+
+                        obj.Setup(false, false, false, displayString, Color.white);
+                    }
+                    else
+                    {
+                        UIDataGenericDetail itemC = UIManager.inst.Data_CreateGeneric();
+                        string displayString = I.item.itemData.itemName + " (" + HF.FindExposureInBotObject(bot.botInfo.armament, I.item.itemData) + ")";
+
+                        itemC.Setup(false, false, false, displayString, Color.white);
+
+                        tracker.Add(I.item.itemData);
+                    }
+                }
+            }
+
+            // Components
+            UIManager.inst.Data_CreateHeader("Components");
+            if (bot.components.Container.Items.Length <= 0)
+            {
+                UIDataGenericDetail aNone = UIManager.inst.Data_CreateGeneric();
+                aNone.Setup(false, false, false, "None", Color.white);
+            }
+            else
+            {
+                List<ItemObject> tracker = new List<ItemObject>(); // Track all items so we can stack duplicates
+                foreach (var I in bot.components.Container.Items)
+                {
+                    if (tracker.Contains(I.item.itemData)) // Duplicate
+                    {
+                        // Modify the last object
+                        UIDataGenericDetail obj = dataMenu.data_objects[dataMenu.data_objects.Count - 1].GetComponent<UIDataGenericDetail>();
+                        string displayString = obj.primary_text.text;
+                        if (displayString[displayString.Length - 1].ToString() == "x" || displayString[displayString.Length - 2].ToString() == "x"
+                            || displayString[displayString.Length - 3].ToString() == "x" || displayString[displayString.Length - 4].ToString() == "x")
+                        { // Does this string already contain an x## at the end?
+                            // Yes, we need to modify that number
+                            string[] split = displayString.Split("x");
+                            int amount = HF.StringToInt(split[split.Length - 1]);
+                            displayString += "x" + amount++; // Increase the number and add it back in
+                        }
+                        else
+                        {
+                            // No, add in the x
+                            displayString += " x2";
+                        }
+
+                        obj.Setup(false, false, false, displayString, Color.white);
+                    }
+                    else
+                    {
+                        UIDataGenericDetail itemC = UIManager.inst.Data_CreateGeneric();
+                        string displayString = I.item.itemData.itemName + " (" + HF.FindExposureInBotObject(bot.botInfo.components, I.item.itemData) + ")";
+
+                        itemC.Setup(false, false, false, displayString, Color.white);
+
+                        tracker.Add(I.item.itemData);
+                    }
+                }
+            }
+
+            // Resistances
+            UIManager.inst.Data_CreateHeader("Resistances");
+            BotResistancesExtra x = bot.botInfo.resistancesExtra;
+            if (bot.botInfo.resistances.Count <= 0 && !x.coring && !x.criticals && !x.dismemberment && !x.disruption && !x.hacking && !x.jamming && !x.meltdown)
+            {
+                UIDataGenericDetail rNone = UIManager.inst.Data_CreateGeneric();
+                rNone.Setup(false, false, false, "None", Color.white);
+            }
+
+            foreach (var R in bot.botInfo.resistances)
+            {
+                UIDataGenericDetail resBar = UIManager.inst.Data_CreateGeneric();
+
+                if (R.immune)
+                {
+                    resBar.Setup(true, false, false, "Class", Color.white, "", false, "Immune", true);
+                }
+                else
+                {
+                    string vA = "";
+                    if (R.resistanceAmount < 0f)
+                    {
+                        vA = "-" + Mathf.Abs(R.resistanceAmount * 100).ToString();
+                    }
+                    else
+                    {
+                        vA = Mathf.Abs(R.resistanceAmount * 100).ToString();
+                    }
+
+                    resBar.Setup(true, false, true, R.damageType.ToString(), Color.white, vA, false, "", false, "", Mathf.Abs(R.resistanceAmount), true); // Bar
+                }
+            }
+            // - and then go through resisitancesExtra too
+            if (x.dismemberment)
+            {
+                UIDataGenericDetail rX = UIManager.inst.Data_CreateGeneric();
+                rX.Setup(true, false, false, "Dismemberment", Color.white, "", false, "Immune", true);
+            }
+            if (x.disruption)
+            {
+                UIDataGenericDetail rX = UIManager.inst.Data_CreateGeneric();
+                rX.Setup(true, false, false, "Disruption", Color.white, "", false, "Immune", true);
+            }
+            if (x.criticals)
+            {
+                UIDataGenericDetail rX = UIManager.inst.Data_CreateGeneric();
+                rX.Setup(true, false, false, "Criticals", Color.white, "", false, "Immune", true);
+            }
+            if (x.coring)
+            {
+                UIDataGenericDetail rX = UIManager.inst.Data_CreateGeneric();
+                rX.Setup(true, false, false, "Coring", Color.white, "", false, "Immune", true);
+            }
+            if (x.hacking)
+            {
+                UIDataGenericDetail rX = UIManager.inst.Data_CreateGeneric();
+                rX.Setup(true, false, false, "Hacking", Color.white, "", false, "Immune", true);
+            }
+            if (x.jamming)
+            {
+                UIDataGenericDetail rX = UIManager.inst.Data_CreateGeneric();
+                rX.Setup(true, false, false, "Jamming", Color.white, "", false, "Immune", true);
+            }
+            if (x.meltdown)
+            {
+                UIDataGenericDetail rX = UIManager.inst.Data_CreateGeneric();
+                rX.Setup(true, false, false, "Metldown", Color.white, "", false, "Immune", true);
+            }
+
+            // Traits (most bots don't have this so we'll do it later) TODO
+            if(bot.botInfo.traits.Count > 0)
+            {
+                UIManager.inst.Data_CreateHeader("Traits");
+
+                foreach (var T in bot.botInfo.traits)
+                {
+
+                }
+            }
 
             #endregion
         }
