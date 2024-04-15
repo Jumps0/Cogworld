@@ -125,7 +125,6 @@ public static class Action
             if (target.GetComponent<Actor>().botInfo) // Bot
             {
                 targetCoreExposure = target.GetComponent<Actor>().botInfo.coreExposure;
-                //ItemObject weapon = target.botInfo.armament
             }
             else // Player
             {
@@ -1317,7 +1316,7 @@ public static class Action
 
         if (source != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
-            foreach (BotArmament item in source.botInfo.components)
+            foreach (var item in source.components.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0 && stacks)
                 {
@@ -2457,7 +2456,7 @@ public static class Action
 
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.armament)
+            foreach (var item in actor.armament.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -2497,7 +2496,7 @@ public static class Action
 
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.armament)
+            foreach (var item in actor.armament.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -2563,7 +2562,7 @@ public static class Action
 
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.armament)
+            foreach (var item in actor.armament.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -2615,7 +2614,7 @@ public static class Action
         {
             if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
             {
-                foreach (BotArmament item in actor.botInfo.armament)
+                foreach (var item in actor.armament.Container.Items)
                 {
                     if (item.item.itemData.data.Id >= 0)
                     {
@@ -2657,7 +2656,7 @@ public static class Action
 
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.armament)
+            foreach (var item in actor.armament.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -2728,7 +2727,7 @@ public static class Action
     {
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.components)
+            foreach (var item in actor.components.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -2763,7 +2762,7 @@ public static class Action
     {
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.components)
+            foreach (var item in actor.components.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -2798,7 +2797,7 @@ public static class Action
     {
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.components)
+            foreach (var item in actor.components.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -2833,7 +2832,7 @@ public static class Action
     {
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.components)
+            foreach (var item in actor.components.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -2868,7 +2867,7 @@ public static class Action
     {
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.components)
+            foreach (var item in actor.components.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -2913,7 +2912,7 @@ public static class Action
 
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.components)
+            foreach (var item in actor.components.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -2988,7 +2987,7 @@ public static class Action
 
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.components)
+            foreach (var item in actor.components.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -3088,7 +3087,7 @@ public static class Action
 
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.components)
+            foreach (var item in actor.components.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -3161,7 +3160,7 @@ public static class Action
 
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.components)
+            foreach (var item in actor.components.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -3247,7 +3246,7 @@ public static class Action
         // Items in inventory don't count!
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.armament)
+            foreach (var item in actor.armament.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -3255,7 +3254,7 @@ public static class Action
                 }
             }
 
-            foreach (BotArmament item in actor.botInfo.components)
+            foreach (var item in actor.components.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -3324,7 +3323,7 @@ public static class Action
 
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.components)
+            foreach (var item in actor.components.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0) // There's something there
                 {
@@ -3382,7 +3381,7 @@ public static class Action
 
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.components)
+            foreach (var item in actor.components.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0) // There's something there
                 {
@@ -3527,7 +3526,7 @@ public static class Action
         // Collect up all the items
         if (target.botInfo) // Bot
         {
-            foreach (BotArmament item in target.botInfo.armament)
+            foreach (var item in target.armament.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -3535,7 +3534,7 @@ public static class Action
                 }
             }
 
-            foreach (BotArmament item in target.botInfo.components)
+            foreach (var item in target.components.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -4885,20 +4884,20 @@ public static class Action
     {
         if (owner.botInfo) // Bot
         {
-            foreach (var I in owner.botInfo.components.ToList())
+            foreach (var I in owner.components.Container.Items.ToList())
             {
                 if (I.item.Id >= 0 && I.item == item)
                 {
-                    owner.botInfo.components.Remove(I); // Remove the item
+                    owner.components.RemoveItem(I.item); // Remove the item
                     break;
                 }
             }
 
-            foreach (var I in owner.botInfo.armament.ToList())
+            foreach (var I in owner.armament.Container.Items.ToList())
             {
                 if (I.item.Id >= 0 && I.item == item)
                 {
-                    owner.botInfo.components.Remove(I); // Remove the item
+                    owner.armament.RemoveItem(I.item); // Remove the item
                     break;
                 }
             }
@@ -5005,7 +5004,7 @@ public static class Action
 
         if (attacker.botInfo) // Bot
         {
-            foreach (var item in attacker.botInfo.components)
+            foreach (var item in attacker.components.Container.Items)
             {
                 if (item.item.Id >= 0)
                 {
@@ -5134,7 +5133,7 @@ public static class Action
             }
             else 
             {
-                foreach (BotArmament item in actor.botInfo.components)
+                foreach (var item in actor.components.Container.Items)
                 {
                     if (item.item.itemData.data.Id >= 0)
                     {
@@ -5188,7 +5187,7 @@ public static class Action
             // These effects can be found in 1. Legs 2. Variants of the reaction control system device
             bool rcsStack = true;
             BotMoveType myMoveType = DetermineBotMoveType(actor);
-            foreach (BotArmament item in actor.botInfo.components)
+            foreach (var item in actor.components.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -5240,7 +5239,7 @@ public static class Action
 
             // -- Phasing / Cloaking modifiers -- //
             bool phasingStack = true;
-            foreach (BotArmament item in actor.botInfo.components)
+            foreach (var item in actor.components.Container.Items)
             {
                 if(item.item.itemData.data.Id > 0 && item.item.itemData.type == ItemType.Device)
                 {
@@ -5453,7 +5452,7 @@ public static class Action
 
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Not the player
         {
-            foreach (BotArmament item in actor.botInfo.components)
+            foreach (var item in actor.components.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0 && item.item.itemData.data.state)
                 {
@@ -5919,7 +5918,7 @@ public static class Action
         // Collect up all the items
         if (actor.botInfo) // Bot
         {
-            foreach (BotArmament item in actor.botInfo.armament)
+            foreach (var item in actor.armament.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -5927,7 +5926,7 @@ public static class Action
                 }
             }
 
-            foreach (BotArmament item in actor.botInfo.components)
+            foreach (var item in actor.armament.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0)
                 {

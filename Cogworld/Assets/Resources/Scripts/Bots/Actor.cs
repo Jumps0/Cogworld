@@ -94,8 +94,20 @@ public class Actor : Entity
 
                 StartCoroutine(SetBotName());
 
-                // Create new inventory
+                // Create new inventories
+                armament = new InventoryObject();
+                components = new InventoryObject();
                 inventory = new InventoryObject();
+
+                // Fill up armament & component inventories
+                foreach (var item in botInfo.armament)
+                {
+                    armament.AddItem(item.item, 1);
+                }
+                foreach (var item in botInfo.components)
+                {
+                    armament.AddItem(item.item, 1);
+                }
 
                 myFaction = botInfo.locations.alignment;
             }
@@ -422,7 +434,7 @@ public class Actor : Entity
             }
 
             // Shoving this in here too
-            state_DISARMED = this.botInfo.armament.Count <= 0;
+            state_DISARMED = this.armament.Container.Items.Length <= 0;
         }
     }
 
@@ -501,11 +513,11 @@ public class Actor : Entity
             {
                 List<Item> items = new List<Item>();
 
-                foreach (BotArmament item in this.botInfo.armament.ToList())
+                foreach (var item in this.armament.Container.Items.ToList())
                 {
                     items.Add(item.item);
                 }
-                foreach (BotArmament item in this.botInfo.components.ToList())
+                foreach (var item in this.components.Container.Items.ToList())
                 {
                     items.Add(item.item);
                 }
@@ -582,11 +594,11 @@ public class Actor : Entity
             {
                 List<Item> items = new List<Item>();
 
-                foreach (BotArmament item in this.botInfo.armament.ToList())
+                foreach (var item in this.armament.Container.Items.ToList())
                 {
                     items.Add(item.item);
                 }
-                foreach (BotArmament item in this.botInfo.components.ToList())
+                foreach (var item in this.components.Container.Items.ToList())
                 {
                     items.Add(item.item);
                 }
@@ -633,6 +645,10 @@ public class Actor : Entity
         {
             InventoryControl.inst.DropItemOnFloor(I.item, this, inventory);
         }
+        armament.Clear();
+        Destroy(armament);
+        components.Clear();
+        Destroy(components);
         inventory.Clear();
         Destroy(inventory);
 
@@ -690,6 +706,14 @@ public class Actor : Entity
             TurnManager.inst.actorNum -= 1;
         }
 
+        if (armament)
+        { // Failsafe. We don't want infinite inventories cluttering up our file system.
+            Destroy(armament);
+        }
+        if (components)
+        { // Failsafe. We don't want infinite inventories cluttering up our file system.
+            Destroy(components);
+        }
         if (inventory)
         { // Failsafe. We don't want infinite inventories cluttering up our file system.
             Destroy(inventory);

@@ -4103,20 +4103,20 @@ public static class HF
     {
         if (bot.botInfo) // Bot
         {
-            foreach (var I in bot.botInfo.components.ToList())
+            foreach (var I in bot.components.Container.Items.ToList())
             {
                 if (I.item.Id >= 0 && I.item == item)
                 {
-                    bot.botInfo.components.Remove(I); // Remove the item
+                    bot.components.RemoveItem(I.item); // Remove the item
                     return;
                 }
             }
 
-            foreach (var I in bot.botInfo.armament.ToList())
+            foreach (var I in bot.armament.Container.Items.ToList())
             {
                 if (I.item.Id >= 0 && I.item == item)
                 {
-                    bot.botInfo.components.Remove(I); // Remove the item
+                    bot.armament.RemoveItem(I.item); // Remove the item
                     return;
                 }
             }

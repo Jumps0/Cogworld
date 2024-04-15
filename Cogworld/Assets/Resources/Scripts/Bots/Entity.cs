@@ -40,7 +40,9 @@ public class Entity : MonoBehaviour
     public int momentum = 0;
     private Vector2 lastDirection = Vector2.zero;
 
-    [Header("Inventory")]
+    [Header("Inventories")]
+    public InventoryObject armament;
+    public InventoryObject components;
     public InventoryObject inventory;
 
     public void Move(Vector2 direction)
