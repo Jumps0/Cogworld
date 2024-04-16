@@ -5779,11 +5779,11 @@ public static class Action
         }
         else if(level == 2)
         {
-            heat = Mathf.RoundToInt(heat * 0.5f); // 50%
+            heat = Mathf.RoundToInt(heat * 0.37f); // 37%
         }
         else if(level == 3)
         {
-            heat = Mathf.RoundToInt(heat * 0.75f); // 75%
+            heat = Mathf.RoundToInt(heat * 0.50f); // 50%
         }
         else if(level == 4)
         {

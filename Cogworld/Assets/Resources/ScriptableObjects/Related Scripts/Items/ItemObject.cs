@@ -254,7 +254,7 @@ public abstract class ItemObject : ScriptableObject
 public class ItemEffect
 {
     [Header("Heat Transfer Level")]
-    [Tooltip("Heat Transfer level: 0 --> 4 [None, Low, Medium, High, Massive]")]
+    [Tooltip("Heat Transfer level: 0 --> 4 [None, Low (25), Medium (37), High (50), Massive (80)]")]
     public int heatTransfer = 0;
 
     [Header("Chain Reaction Explosive")]
@@ -488,8 +488,6 @@ public class ItemProjectile // (Disregarded in AOE attacks except for projectile
     public float critChance;
     // https://www.gridsagegames.com/blog/2021/05/design-overhaul-3-damage-types-and-criticals/
     public CritType critType;
-    [Tooltip("Multiplier - Amount / Amount | x# #/#\"")]
-    public Vector3 penChance;
     public int heatTrasfer;
     [Tooltip("0 = None | 1 = Low | 2 = Medium | 3 = High | 4 = Massive")]
     public int heatTransferDegree;
@@ -515,7 +513,7 @@ public class ItemProjectile // (Disregarded in AOE attacks except for projectile
         "something to penetrate it--the mechanic is completely independent of damage, meaning you can now " +
         "even fire through walls to hit targets on the other side without taking down the wall itself.")]
     public int penetrationCapability = 0; // How many things this can penetrate through
-    [Tooltip("The chance for each penetration event. This list should be equal to the amount of things this projectile can pen.")]
+    [Tooltip("(0.##%) The chance for each penetration event. This list should be equal to the amount of things this projectile can pen.")]
     public List<float> penetrationChances = new List<float>();
 
 }

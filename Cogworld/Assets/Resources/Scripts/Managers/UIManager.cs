@@ -10,9 +10,6 @@ using System.Text;
 using Vector3 = UnityEngine.Vector3;
 using Quaternion = UnityEngine.Quaternion;
 using Vector2 = UnityEngine.Vector2;
-using static UnityEngine.GraphicsBuffer;
-using static UnityEngine.UI.Image;
-using Unity.VisualScripting;
 using ColorUtility = UnityEngine.ColorUtility;
 //using static UnityEditor.Progress;
 
@@ -6116,7 +6113,12 @@ public class UIManager : MonoBehaviour
             {
                 iCoverage.Setup(true, false, false, "Coverage", Color.white, "", false, item.itemData.coverage.ToString()); // Just 0, you won't hit this. Nothing fancy. (Its probably in the inventory)
             }
-
+            // Schematic
+            if (item.itemData.schematicDetails.hasSchematic)
+            {
+                UIDataGenericDetail iSchematic = UIManager.inst.Data_CreateGeneric();
+                iSchematic.Setup(true, false, false, "Schematic", Color.white, "", false, "Known", true);
+            }
             // State - there is some variance in this
             UIDataGenericDetail iState = UIManager.inst.Data_CreateGeneric();
             if (item.isOverloaded) // Overloaded (yellow)
@@ -6421,18 +6423,6 @@ public class UIManager : MonoBehaviour
                 // Range
                 UIDataGenericDetail iSRange = UIManager.inst.Data_CreateGeneric();
                 iSRange.Setup(true, false, true, "Range", Color.white, item.itemData.shot.shotRange.ToString(), false, "", false, "", item.itemData.shot.shotRange / 22f); // Bar
-
-
-                /*
-                if (item.itemData.propulsion[0].support > 0)
-                {
-                    iSRange.Setup(true, false, true, "Support", Color.white, item.itemData.propulsion[0].support.ToString(), false, "", false, "", item.itemData.propulsion[0].support / 22f); // Bar
-                }
-                else
-                {
-                    iSRange.Setup(true, false, true, "Support", Color.white, "0", true, "", false, "", 0f); // Bar
-                }
-                */
                 // Energy
                 UIDataGenericDetail iSEnergy = UIManager.inst.Data_CreateGeneric();
                 if(shot.shotEnergy < 0) // Negative
@@ -6445,7 +6435,7 @@ public class UIManager : MonoBehaviour
                 else
                 {
                     iSEnergy.Setup(true, false, true, "Energy", Color.white, shot.shotEnergy.ToString(), true, "", false, "", 0f); // Bar
-                }
+                } 
                 // Matter
                 UIDataGenericDetail iSMatter = UIManager.inst.Data_CreateGeneric();
                 if (shot.shotMatter < 0) // Negative
@@ -6543,25 +6533,190 @@ public class UIManager : MonoBehaviour
                 Data_CreateSpacer();
             }
 
+            if(item.itemData.projectile.damage.x > 0)
+            {
+                ItemProjectile proj = item.itemData.projectile;
+                UIManager.inst.Data_CreateHeader("Projectile"); // Projectile =========================================================================
+                // Damage
+                UIDataGenericDetail pDamage = UIManager.inst.Data_CreateGeneric();
+                pDamage.Setup(true, false, true, "Damage", highlightGreen, proj.damage.x + "-" + proj.damage.y, false, "", false, "", ((proj.damage.x + proj.damage.y) / 2) / 100f, true);
+                // Type
+                UIDataGenericDetail pType = UIManager.inst.Data_CreateGeneric();
+                pType.Setup(true, false, false, "Type", Color.white, "", false, proj.damageType.ToString());
+                // Critical
+                UIDataGenericDetail pCrit = UIManager.inst.Data_CreateGeneric();
+                if(proj.critChance > 0f)
+                {
+                    pCrit.Setup(true, false, false, "Critical", Color.white, (proj.critChance * 100).ToString() + "%", false, proj.critType.ToString());
+                }
+                else
+                {
+                    pCrit.Setup(true, false, false, "Critical", Color.white, "0%", true);
+                }
+                // Penetration
+                UIDataGenericDetail pPen = UIManager.inst.Data_CreateGeneric();
+                if (proj.penetrationCapability > 0)
+                {
+                    string s = "";
+                    foreach (var P in proj.penetrationChances)
+                    {
+                        s += (P * 100) + " / ";
+                    }
+                    s = s.Substring(0, s.Length - 2); // Remove the extra "/ "
+
+                    pPen.Setup(true, false, false, "Penetration", Color.white, "x" + proj.penetrationCapability, false, s);
+                }
+                else
+                {
+                    pPen.Setup(true, false, false, "Penetration", Color.white, "x0", true);
+                }
+                // Heat Transfer
+                if (item.itemData.itemEffects[0].heatTransfer > 0)
+                {
+                    UIDataGenericDetail iPHT = UIManager.inst.Data_CreateGeneric();
+                    string s = "";
+                    int ht = item.itemData.itemEffects[0].heatTransfer;
+                    if (ht == 1)
+                    {
+                        s = "Low (25)";
+                    }
+                    else if(ht == 2)
+                    {
+                        s = "Medium (37)";
+                    }
+                    else if(ht == 3)
+                    {
+                        s = "High (50)";
+                    }
+                    else if(ht == 4)
+                    {
+                        s = "Massive (80)";
+                    }
+
+                    iPHT.Setup(true, false, false, "Heat Transfer", Color.white, "", false, s);
+                }
+                // Spectrum
+                UIDataGenericDetail iPS = UIManager.inst.Data_CreateGeneric();
+                if (proj.hasSpectrum)
+                {
+                    string s = "";
+                    if(proj.spectrum <= 0.1f)
+                    {
+                        s = "Wide (10%)";
+                    }
+                    else if (proj.spectrum == 0.3f)
+                    {
+                        s = "Intermediate (30%)";
+                    }
+                    else if (proj.spectrum == 0.5f)
+                    {
+                        s = "Narrow (50%)";
+                    }
+                    else if (proj.spectrum == 1f)
+                    {
+                        s = "Fine (100%)";
+                    }
+
+                    iPS.Setup(true, false, false, "Specturm", Color.white, s); // No bar (simple)
+                }
+                else
+                {
+                    iPS.Setup(true, false, false, "Specturm", Color.white, "N/A", true); // No bar (simple)
+                }
+                // Disruption
+                UIDataGenericDetail iPD = UIManager.inst.Data_CreateGeneric();
+                if(proj.disruption > 0)
+                {
+                    Color iPDC = highlightGreen;
+                    if(proj.disruption < 0.33)
+                    {
+                        iPDC = highlightGreen;
+                    }
+                    else if (proj.disruption >= 0.66)
+                    {
+                        iPDC = highSecRed;
+                    }
+                    else
+                    {
+                        iPDC = cautiousYellow;
+                    }
+
+                    iPD.Setup(true, false, true, "Disruption", iPDC, (proj.disruption * 100) + "%", false, "", false, "", proj.disruption, true); // Bar
+                }
+                else
+                {
+                    iPD.Setup(true, false, true, "Disruption", Color.white, "0%", true, "", false, "", 0f); // Bar
+
+                }
+                // Salvage
+                UIDataGenericDetail iPR = UIManager.inst.Data_CreateGeneric();
+                if (proj.salvage > 0)
+                {
+                    iPR.Setup(true, false, false, "Salvage", Color.white, "+" + proj.salvage.ToString()); // No bar (simple)
+                }
+                else if (proj.salvage == 0)
+                {
+                    iPR.Setup(true, false, false, "Salvage", Color.white, "0", true); // No bar (simple)
+                }
+                else
+                {
+                    iPR.Setup(true, false, false, "Salvage", Color.white, proj.salvage.ToString()); // No bar (simple)
+                }
+
+                Data_CreateSpacer();
+            }
+
             // Effect is above fabrication
             if (item.itemData.itemEffects.Count > 0)
             {
                 UIManager.inst.Data_CreateHeader("Effect"); // Effect =========================================================================
+
+                foreach (var E in item.itemData.itemEffects)
+                {
+                    // There is A LOT to consider here and its gonna take a while to fill it all out
+                    string textWall = "";
+
+
+
+
+                    Data_CreateTextWall(textWall);
+                    Data_CreateSpacer();
+                }
             }
-            foreach (var E in item.itemData.itemEffects)
-            {
-                // There is A LOT to consider here and its gonna take a while to fill it all out
-                string textWall = "";
 
-
-
-
-                Data_CreateTextWall(textWall);
-                Data_CreateSpacer();
-            }
 
 
             // Fabrication goes at the very bottom
+            if (item.itemData.fabricationInfo.canBeFabricated && item.itemData.schematicDetails.hasSchematic)
+            {
+                string mult = "";
+                ItemFabInfo info = item.itemData.fabricationInfo;
+
+                if(info.amountMadePer > 1)
+                {
+                    mult = " x" + info.amountMadePer;
+                }
+
+                UIManager.inst.Data_CreateHeader("Fabrication" + mult); // Fabrication =========================================================================
+
+                UIDataGenericDetail fTime = UIManager.inst.Data_CreateGeneric();
+                fTime.Setup(true, false, false, "Time", Color.white, "", false, info.fabTime.x + "/" + info.fabTime.y + "/" + info.fabTime.z);
+                UIDataGenericDetail fComp = UIManager.inst.Data_CreateGeneric();
+                if (info.componenetsRequired.Count > 0)
+                {
+                    string comps = "";
+                    foreach (var C in info.componenetsRequired)
+                    {
+                        comps += C.itemName + "/";
+                    }
+                    comps = comps.Substring(0, comps.Length - 1); // Remove the extra "/"
+                    fComp.Setup(true, false, false, "Components", Color.white, "", false, comps);
+                }
+                else
+                {
+                    fComp.Setup(true, false, false, "Components", Color.white, "", false, "None", true);
+                }
+            }
 
             #endregion
         }
