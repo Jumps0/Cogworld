@@ -551,9 +551,10 @@ public class UIDataGenericDetail : MonoBehaviour
         // --
 
         float elapsedTime = 0f;
-        float duration = 0.75f;
+        float duration = 0.45f;
         while (elapsedTime < duration) // Dark green -> Black
         {
+
             Color color = Color.Lerp(darkGreen, Color.black, elapsedTime / duration);
 
             // Set the highlights for the text
@@ -616,6 +617,6 @@ public class UIDataGenericDetail : MonoBehaviour
 
     private void OnDestroy()
     {
-        Debug.Log("Destroyed " + this.gameObject);
+        StopAllCoroutines();
     }
 }

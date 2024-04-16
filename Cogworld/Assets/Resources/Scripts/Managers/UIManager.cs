@@ -6585,7 +6585,7 @@ public class UIManager : MonoBehaviour
         StartCoroutine(DataAnim_TitleTextClose());
 
         // Animate out & Destroy all the prefabs we create
-        foreach (var O in dataMenu.data_objects)
+        foreach (var O in dataMenu.data_objects.ToList())
         {
             if (O.GetComponent<UIDataHeader>())
             {
@@ -6642,6 +6642,13 @@ public class UIManager : MonoBehaviour
         }
         #endregion
 
+        yield return new WaitForSeconds(delay);
+
+        foreach (var O in dataMenu.data_objects.ToList()) // Clear up any remaining things (like spacers)
+        {
+            Destroy(O.gameObject);
+        }
+
         dataMenu.data_objects.Clear();
 
         // Disable the menu
@@ -6650,6 +6657,7 @@ public class UIManager : MonoBehaviour
         // Reset the transparency
         #region Image Transparency Reset
 
+        bits = dataMenu.data_parent.GetComponentsInChildren<Image>();
         foreach (Image I in bits)
         {
             Color setColor = I.color;

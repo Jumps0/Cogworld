@@ -93,4 +93,9 @@ public class UIDataHeader : MonoBehaviour
 
         Destroy(this.gameObject);
     }
+
+    private void OnDestroy()
+    {
+        StopAllCoroutines();
+    }
 }
