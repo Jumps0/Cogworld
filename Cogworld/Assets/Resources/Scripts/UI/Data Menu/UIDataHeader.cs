@@ -83,10 +83,10 @@ public class UIDataHeader : MonoBehaviour
         {
             Color color = Color.Lerp(darkGreen, Color.black, elapsedTime / duration);
 
-            elapsedTime += Time.deltaTime;
-
             string oldText = mainText.text;
             mainText.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(color)}>{oldText}</mark>";
+
+            elapsedTime += Time.deltaTime;
 
             yield return null;
         }

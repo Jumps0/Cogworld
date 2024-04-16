@@ -540,36 +540,35 @@ public class UIDataGenericDetail : MonoBehaviour
         // For the boxes though we are going to put an image behind it.
 
         barBacker.gameObject.SetActive(true);
-        List<TextMeshProUGUI> uguis = new List<TextMeshProUGUI>();
-        foreach (Transform child in this.transform)
-        {
-            if (child.GetComponent<TextMeshProUGUI>())
-            {
-                uguis.Add(child.GetComponent<TextMeshProUGUI>());
-            }
-        }
+
+        // --
+        string o1 = primary_text.text;
+        string o2 = valueA_text.text;
+        string o3 = secondary_text.text;
+        string o4 = variableB_text.text;
+        // --
 
         float elapsedTime = 0f;
-        float duration = 0.45f;
+        float duration = 0.75f;
         while (elapsedTime < duration) // Dark green -> Black
         {
             Color color = Color.Lerp(darkGreen, Color.black, elapsedTime / duration);
 
-            elapsedTime += Time.deltaTime;
-
             // Set the highlights for the text
-            foreach (var ugui in uguis)
-            {
-                string oldText = ugui.text;
-                ugui.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(color)}>{oldText}</mark>";
-            }
+
+            primary_text.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(color)}>{o1}</mark>";
+            valueA_text.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(color)}>{o2}</mark>";
+            secondary_text.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(color)}>{o3}</mark>";
+            variableB_text.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(color)}>{o4}</mark>";
 
             // Set the image color
             barBacker.color = color;
 
+            elapsedTime += Time.deltaTime;
+
             yield return null;
         }
-        Debug.Log("Finish!");
+
         Destroy(this.gameObject);
     }
 

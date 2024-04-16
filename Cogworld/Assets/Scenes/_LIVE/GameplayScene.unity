@@ -31958,7 +31958,7 @@ MonoBehaviour:
     data_superImage: {fileID: 1048767338}
     data_superImageBW: {fileID: 99563877}
     data_superImageParent: {fileID: 2051464420}
-    data_superImageNull: {fileID: 1457429885}
+    data_superImageNull: {fileID: 721917732}
     data_mainTitle: {fileID: 1910883694}
     data_smallImage: {fileID: 1441118040}
     data_smallImage_anim: {fileID: 935839576}

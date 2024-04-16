@@ -6037,6 +6037,7 @@ public class UIManager : MonoBehaviour
 
         // Enable the menu
         dataMenu.data_parent.SetActive(true);
+        dataMenu.data_contentArea.SetActive(true);
 
         // Play a sound
         AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[55]);
@@ -6063,7 +6064,10 @@ public class UIManager : MonoBehaviour
 
             // -- We have quite an extensive checklist here, there is a massive variance in what data an item can have -- //
             #region Data Displaying
-
+            UIManager.inst.Data_CreateHeader("Overview"); // Overview
+            // Type
+            UIDataGenericDetail iType = UIManager.inst.Data_CreateGeneric();
+            iType.Setup(true, false, false, "Type", Color.white, "", false, item.itemData.type.ToString());
 
 
             #endregion
@@ -6314,7 +6318,6 @@ public class UIManager : MonoBehaviour
             #endregion
         }
 
-
         // -- Animation time --
         // We need to trigger all the animations at the same time
 
@@ -6337,7 +6340,7 @@ public class UIManager : MonoBehaviour
 
         // Animate the little image
         StartCoroutine(DataAnim_SmallImageOpen());
-
+        
         // Animate the data lines
         foreach (var O in dataMenu.data_objects.ToList())
         {
@@ -6350,7 +6353,7 @@ public class UIManager : MonoBehaviour
                 O.GetComponent<UIDataGenericDetail>().Open();
             }
         }
-
+        
     }
 
     public void Data_CloseMenu()
@@ -6369,6 +6372,22 @@ public class UIManager : MonoBehaviour
 
         // Disable the super image
         dataMenu.data_superImageParent.gameObject.SetActive(false);
+
+        // Fade out the title text
+        StartCoroutine(DataAnim_TitleTextClose());
+
+        // Animate out & Destroy all the prefabs we create
+        foreach (var O in dataMenu.data_objects)
+        {
+            if (O.GetComponent<UIDataHeader>())
+            {
+                O.GetComponent<UIDataHeader>().Close();
+            }
+            else if (O.GetComponent<UIDataGenericDetail>())
+            {
+                O.GetComponent<UIDataGenericDetail>().Close();
+            }
+        }
 
         // Transparency out the menu
         #region Image Fade-out
@@ -6414,22 +6433,6 @@ public class UIManager : MonoBehaviour
             I.color = new Color(setColor.r, setColor.g, setColor.b, 0f);
         }
         #endregion
-
-        // Fade out the title text
-        StartCoroutine(DataAnim_TitleTextClose());
-
-        // Animate out & Destroy all the prefabs we create
-        foreach(var O in dataMenu.data_objects)
-        {
-            if (O.GetComponent<UIDataHeader>())
-            {
-                O.GetComponent<UIDataHeader>().Close();
-            }
-            else if (O.GetComponent<UIDataGenericDetail>())
-            {
-                O.GetComponent<UIDataGenericDetail>().Close();
-            }
-        }
 
         dataMenu.data_objects.Clear();
 
