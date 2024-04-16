@@ -38,6 +38,21 @@ public class UIDataGenericDetail : MonoBehaviour
     public Color brightGreen;
     public Color darkGreen;
 
+    /// <summary>
+    /// Assign the setup values of this line of detail.
+    /// </summary>
+    /// <param name="useSecondary">Should we even bother enabling the secondary side of this display (usually we need to).</param>
+    /// <param name="useVariable">Do we enable the variable color box?</param>
+    /// <param name="useBoxBar">Do we use the "progress" box bar?</param>
+    /// <param name="mainText">What should the main display text be?</param>
+    /// <param name="boxColor">What color should the variable box be? If the BoxBar color is forced then this color is used.</param>
+    /// <param name="valueA">What should the small value display? If not set, will not appear.</param>
+    /// <param name="valueA_faded">Should the small value display be faded out? (Useful where its equal to 0 or N/A)</param>
+    /// <param name="secondaryText">What should the secondary text display as? Disabled if no text is set.</param>
+    /// <param name="secondary_faded">Should the secondary text be faded out?</param>
+    /// <param name="boxText">What should the text INSIDE the variable box be?</param>
+    /// <param name="_barAmount">Percent value 0.0f to 1.0f. How filled should the bar be?</param>
+    /// <param name="_forceBarColor">Should we force the color of the box bar to be a certain color? This color is defined by *boxColor*.</param>
     public void Setup(bool useSecondary, bool useVariable, bool useBoxBar, string mainText, Color boxColor, 
         string valueA = "", bool valueA_faded = false, string secondaryText = "", bool secondary_faded = false, string boxText = "", float _barAmount = 0f, bool _forceBarColor = false)
     {

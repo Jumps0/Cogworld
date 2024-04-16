@@ -12,6 +12,8 @@ using Quaternion = UnityEngine.Quaternion;
 using Vector2 = UnityEngine.Vector2;
 using static UnityEngine.GraphicsBuffer;
 using static UnityEngine.UI.Image;
+using Unity.VisualScripting;
+using ColorUtility = UnityEngine.ColorUtility;
 //using static UnityEditor.Progress;
 
 public class UIManager : MonoBehaviour
@@ -6259,19 +6261,305 @@ public class UIManager : MonoBehaviour
                 }
                 iEnergyProp.Setup(true, false, true, "Energy", iEP, item.itemData.propulsion[0].propEnergy.ToString(), false, "", false, "", item.itemData.propulsion[0].propEnergy + 10 / 20f, true); // Bar
                 // Heat
-
+                UIDataGenericDetail iHeatProp = UIManager.inst.Data_CreateGeneric();
+                Color iHP = highlightGreen;
+                if (item.itemData.propulsion[0].propHeat <= 5)
+                {
+                    iHP = highlightGreen;
+                }
+                else if (item.itemData.propulsion[0].propHeat > 15)
+                {
+                    iHP = highSecRed;
+                }
+                else
+                {
+                    iHP = cautiousYellow;
+                }
+                if (item.itemData.propulsion[0].propHeat > 0)
+                {
+                    iHeatProp.Setup(true, false, true, "Heat", iHP, item.itemData.propulsion[0].propHeat.ToString(), false, "", false, "", item.itemData.propulsion[0].propHeat + 1 / 20f, true); // Bar
+                }
+                else
+                {
+                    iHeatProp.Setup(true, false, true, "Heat", iHP, "0", true, "", false, "", 0f, true); // Bar
+                }
                 // Support
-
+                UIDataGenericDetail iSupportProp = UIManager.inst.Data_CreateGeneric();
+                if (item.itemData.propulsion[0].support > 0)
+                {
+                    iSupportProp.Setup(true, false, true, "Support", Color.white, item.itemData.propulsion[0].support.ToString(), false, "", false, "", item.itemData.propulsion[0].support / 22f); // Bar
+                }
+                else
+                {
+                    iSupportProp.Setup(true, false, true, "Support", Color.white, "0", true, "", false, "", 0f); // Bar
+                }
                 // Penalty
-
+                UIDataGenericDetail iPenaltyProp = UIManager.inst.Data_CreateGeneric();
+                Color iPP = highlightGreen;
+                if (item.itemData.propulsion[0].penalty <= 10)
+                {
+                    iPP = highlightGreen;
+                }
+                else if (item.itemData.propulsion[0].penalty > 45)
+                {
+                    iPP = highSecRed;
+                }
+                else
+                {
+                    iPP = cautiousYellow;
+                }
+                if (item.itemData.propulsion[0].penalty > 0)
+                {
+                    iPenaltyProp.Setup(true, false, true, " Penalty", iPP, item.itemData.propulsion[0].penalty.ToString(), false, "", false, "", item.itemData.propulsion[0].penalty / 60f, true); // Bar
+                }
+                else
+                {
+                    iPenaltyProp.Setup(true, false, true, " Penalty", iPP, "0", true, "", false, "", 0f, true); // Bar
+                }
                 // Burnout
+                UIDataGenericDetail iBurnout = UIManager.inst.Data_CreateGeneric();
+                Color iBP = highlightGreen;
+                if (item.itemData.propulsion[0].penalty <= 15)
+                {
+                    iBP = highlightGreen;
+                }
+                else if (item.itemData.propulsion[0].penalty > 50)
+                {
+                    iBP = highSecRed;
+                }
+                else
+                {
+                    iBP = cautiousYellow;
+                }
+                if (item.itemData.propulsion[0].penalty > 0)
+                {
+                    iBurnout.Setup(true, false, true, "Burnout", iBP, item.itemData.propulsion[0].penalty.ToString(), false, "", false, "", item.itemData.propulsion[0].penalty / 70f, true); // Bar
+                }
+                else
+                {
+                    iBurnout.Setup(true, false, true, "Burnout", iBP, "N/A", true, "", false, "", 0f); // Bar
+                }
 
+                // And then consider if there is a text wall after this
+                foreach (var E in item.itemData.itemEffects)
+                {
+                    string textWall = "";
+
+                    if(E.hasLegEffect) // Leg effect
+                    {
+                        if(E.extraKickChance > 0)
+                        {
+                            textWall += "Each active leg slot provides a ";
+                            textWall += (E.extraKickChance * 100).ToString() + "% ";
+                            textWall += "chance to kick ";
+
+                            if (E.appliesToLargeTargets)
+                            {
+                                textWall += "non-huge ";
+                            }
+                            textWall += "targets out of the way. ";
+                        }
+
+                        if (E.conferToRunningState)
+                        {
+                            textWall += "Moving on legs also confers the Running state, which increases evasion but decreases accuracy, each by ";
+                            textWall += (E.evasionNaccuracyChange * 100).ToString() + "% per level of momentup (up to ";
+                            textWall += E.maxMomentumAmount.ToString() + ").";
+                        }
+
+                        Data_CreateSpacer();
+                        Data_CreateTextWall(textWall);
+                    }
+
+                    if (E.chainExplode) // Chain reaction explosion
+                    {
+                        textWall += item.itemData.itemName + ": ";
+                        textWall += "If triggered by chain reaction or rigged proximity response, explodes for ";
+                        textWall += item.itemData.explosionDetails.damage.x + "-" + item.itemData.explosionDetails.damage.y;
+                        textWall += " " + item.itemData.explosionDetails.damageType.ToString().ToLower();
+                        textWall += " damage with a radius of ";
+                        textWall += item.itemData.explosionDetails.radius + " (falloff: ";
+                        textWall += item.itemData.explosionDetails.fallOff + "; chunks: ";
+                        textWall += item.itemData.explosionDetails.chunks.x + "-" + item.itemData.explosionDetails.chunks.y;
+                        textWall += "; salvage: " + item.itemData.explosionDetails.salvage.ToString();
+                        textWall += "). ";
+                        if(E.heatTransfer == 0)
+                        {
+
+                        }
+                        else if (E.heatTransfer == 1)
+                        {
+                            textWall += "Low heat transfer.";
+                        }
+                        else if (E.heatTransfer == 2)
+                        {
+                            textWall += "Medium heat transfer.";
+                        }
+                        else if (E.heatTransfer == 3)
+                        {
+                            textWall += "High heat transfer.";
+                        }
+                        else if (E.heatTransfer == 4)
+                        {
+                            textWall += "Massive heat transfer.";
+                        }
+
+                        Data_CreateSpacer();
+                        Data_CreateTextWall(textWall);
+                    }
+
+                    // TODO: Consider a couple more effects that appear like this
+                }
 
                 Data_CreateSpacer();
             }
 
-            
+            if(item.itemData.shot.shotRange > 0)
+            {
+                ItemShot shot = item.itemData.shot;
+                UIManager.inst.Data_CreateHeader("Shot"); // Shot =========================================================================
+                // Range
+                UIDataGenericDetail iSRange = UIManager.inst.Data_CreateGeneric();
+                iSRange.Setup(true, false, true, "Range", Color.white, item.itemData.shot.shotRange.ToString(), false, "", false, "", item.itemData.shot.shotRange / 22f); // Bar
+
+
+                /*
+                if (item.itemData.propulsion[0].support > 0)
+                {
+                    iSRange.Setup(true, false, true, "Support", Color.white, item.itemData.propulsion[0].support.ToString(), false, "", false, "", item.itemData.propulsion[0].support / 22f); // Bar
+                }
+                else
+                {
+                    iSRange.Setup(true, false, true, "Support", Color.white, "0", true, "", false, "", 0f); // Bar
+                }
+                */
+                // Energy
+                UIDataGenericDetail iSEnergy = UIManager.inst.Data_CreateGeneric();
+                if(shot.shotEnergy < 0) // Negative
+                {
+                    float clampedValue = Mathf.Clamp(shot.shotEnergy, 0, -50);
+                    float normalizedValue = Mathf.InverseLerp(0, -50, clampedValue);
+
+                    iSEnergy.Setup(true, false, true, "Energy", Color.white, shot.shotEnergy.ToString(), false, "", false, "", normalizedValue); // Bar
+                }
+                else
+                {
+                    iSEnergy.Setup(true, false, true, "Energy", Color.white, shot.shotEnergy.ToString(), true, "", false, "", 0f); // Bar
+                }
+                // Matter
+                UIDataGenericDetail iSMatter = UIManager.inst.Data_CreateGeneric();
+                if (shot.shotMatter < 0) // Negative
+                {
+                    float clampedValue = Mathf.Clamp(shot.shotMatter, 0, -50);
+                    float normalizedValue = Mathf.InverseLerp(0, -50, clampedValue);
+
+                    iSMatter.Setup(true, false, true, "Matter", Color.white, shot.shotMatter.ToString(), false, "", false, "", normalizedValue); // Bar
+                }
+                else
+                {
+                    iSMatter.Setup(true, false, true, "Matter", Color.white, shot.shotMatter.ToString(), true, "", false, "", 0f); // Bar
+                }
+                // Heat
+                UIDataGenericDetail iSHeat = UIManager.inst.Data_CreateGeneric();
+                if (shot.shotHeat > 0)
+                {
+                    Color iSC = highlightGreen;
+                    if(shot.shotHeat > 60)
+                    {
+                        iSC = highSecRed;
+                    }
+                    else if (shot.shotHeat <= 20)
+                    {
+                        iSC = highlightGreen;
+                    }
+                    else
+                    {
+                        iSC = cautiousYellow;
+                    }
+
+                    iSHeat.Setup(true, false, true, "Heat", iSC, "+" + shot.shotHeat.ToString(), false, "", false, "", shot.shotHeat / 100f, true); // Bar
+                }
+                else
+                {
+                    iSHeat.Setup(true, false, true, "Heat", Color.white, shot.shotHeat.ToString(), true, "", false, "", 0f); // Bar
+                }
+                // Recoil
+                UIDataGenericDetail iSR = UIManager.inst.Data_CreateGeneric();
+                if (shot.shotRecoil > 0)
+                {
+                    iSR.Setup(true, false, false, "Recoil", Color.white, shot.shotRecoil.ToString()); // No bar (simple)
+                }
+                else
+                {
+                    iSR.Setup(true, false, false, "Recoil", Color.white, "0", true); // No bar (simple)
+                }
+                // Targeting
+                UIDataGenericDetail iST = UIManager.inst.Data_CreateGeneric();
+                if (shot.shotTargeting != 0)
+                {
+                    iST.Setup(true, false, false, "Targeting", Color.white, (shot.shotTargeting * 100) + "%"); // No bar (simple)
+                }
+                else
+                {
+                    iST.Setup(true, false, false, "Targeting", Color.white, "0%", true); // No bar (simple)
+                }
+                // Delay
+                UIDataGenericDetail iSD = UIManager.inst.Data_CreateGeneric();
+                if (shot.shotDelay > 0)
+                {
+                    string iSD_text = "";
+                    if(shot.shotDelay > 0)
+                    {
+                        iSD_text = "+";
+                    }
+
+                    iSD.Setup(true, false, false, "Delay", Color.white, iSD_text += shot.shotDelay); // No bar (simple)
+                }
+                else
+                {
+                    iSD.Setup(true, false, false, "Delay", Color.white, "0", true); // No bar (simple)
+                }
+                // Stability
+                UIDataGenericDetail iSS = UIManager.inst.Data_CreateGeneric();
+                if (shot.hasStability)
+                {
+                    iSS.Setup(true, false, true, "Stability", Color.white, (shot.shotStability * 100) + "%", false, "", false, "", shot.shotStability); // Bar
+                }
+                else
+                {
+                    iSS.Setup(true, false, false, "Stability", Color.white, "N/A", true, "", false, "", 0f); // Empty bar
+                }
+                // Arc
+                UIDataGenericDetail iSA = UIManager.inst.Data_CreateGeneric();
+                if (shot.hasArc)
+                {
+                    iSA.Setup(true, false, false, "Arc", Color.white, shot.shotArc.ToString()); // No bar (simple)
+                }
+                else
+                {
+                    iSA.Setup(true, false, false, "Arc", Color.white, "N/A", true); // No bar (simple)
+                }
+
+                Data_CreateSpacer();
+            }
+
             // Effect is above fabrication
+            if (item.itemData.itemEffects.Count > 0)
+            {
+                UIManager.inst.Data_CreateHeader("Effect"); // Effect =========================================================================
+            }
+            foreach (var E in item.itemData.itemEffects)
+            {
+                // There is A LOT to consider here and its gonna take a while to fill it all out
+                string textWall = "";
+
+
+
+
+                Data_CreateTextWall(textWall);
+                Data_CreateSpacer();
+            }
+
 
             // Fabrication goes at the very bottom
 
@@ -6560,6 +6848,10 @@ public class UIManager : MonoBehaviour
             {
                 O.GetComponent<UIDataGenericDetail>().Open();
             }
+            else if (O.GetComponent<UIDataTextWall>())
+            {
+                O.GetComponent<UIDataTextWall>().Open();
+            }
         }
         
     }
@@ -6594,6 +6886,10 @@ public class UIManager : MonoBehaviour
             else if (O.GetComponent<UIDataGenericDetail>())
             {
                 O.GetComponent<UIDataGenericDetail>().Close();
+            }
+            else if (O.GetComponent<UIDataTextWall>())
+            {
+                O.GetComponent<UIDataTextWall>().Close();
             }
         }
 
@@ -6695,6 +6991,17 @@ public class UIManager : MonoBehaviour
         go.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
         dataMenu.data_objects.Add(go);
+    }
+
+    private void Data_CreateTextWall(string text)
+    {
+        GameObject go = Instantiate(dataMenu.data_textWallPrefab, dataMenu.data_contentArea.transform.position, Quaternion.identity);
+        go.transform.SetParent(dataMenu.data_contentArea.transform);
+        go.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+        // Add it to list
+        dataMenu.data_objects.Add(go);
+        // Set value
+        go.GetComponent<UIDataTextWall>().Setup(text);
     }
 
 
@@ -6840,6 +7147,7 @@ public class UIDataDisplay
     public GameObject data_headerPrefab;
     public GameObject data_genericPrefab;
     public GameObject data_spacerPrefab;
+    public GameObject data_textWallPrefab;
 
     [Header("Objects")]
     [Tooltip("All the objects (prefabs) that we spawned in.")]

@@ -270,7 +270,7 @@ public class ItemEffect
     public float extraKickChance; // % value
     public bool appliesToLargeTargets = false;
     public bool conferToRunningState;
-    [Tooltip("Increase invasion by X% but also decreases accuracy by X% (per level)")]
+    [Tooltip("Increase invasion by 0.##% but also decreases accuracy by 0.##% (per level)")]
     public float evasionNaccuracyChange;
     public int maxMomentumAmount = 3; // This value seems to always be 3
 

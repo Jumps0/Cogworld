@@ -31968,6 +31968,7 @@ MonoBehaviour:
     data_headerPrefab: {fileID: 319458136557587059, guid: 9e2196b4f94d08545a1ed96819c06020, type: 3}
     data_genericPrefab: {fileID: 2297786581987578752, guid: 3660de268b783f74db981afb6874951f, type: 3}
     data_spacerPrefab: {fileID: 319458136557587059, guid: f556320353af04747bd97ff1d227d6c4, type: 3}
+    data_textWallPrefab: {fileID: 319458136557587059, guid: c7f147c07fb66cd4cac94eeee125742d, type: 3}
     data_objects: []
     data_animator: {fileID: 0}
     data_SuperImageAnimator: {fileID: 2051464422}
