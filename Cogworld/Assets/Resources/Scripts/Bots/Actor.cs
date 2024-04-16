@@ -1008,7 +1008,7 @@ public class Actor : Entity
         {
             if (!UIManager.inst.dataMenu.data_parent.gameObject.activeInHierarchy)
             {
-                UIManager.inst.Data_OpenMenu(null, this);
+                UIManager.inst.Data_OpenMenu(null, this, this);
             }
         }
     }

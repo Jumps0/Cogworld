@@ -6026,7 +6026,7 @@ public class UIManager : MonoBehaviour
     [Header("/ DATA / Menu")]
     public UIDataDisplay dataMenu;
 
-    public void Data_OpenMenu(Item item = null, Actor bot = null)
+    public void Data_OpenMenu(Item item = null, Actor bot = null, Actor itemOwner = null)
     {
         // Emergency stop incase this menu is being spammed
         StopCoroutine(Data_CloseMenuAnimation());
@@ -6068,7 +6068,71 @@ public class UIManager : MonoBehaviour
             // Type
             UIDataGenericDetail iType = UIManager.inst.Data_CreateGeneric();
             iType.Setup(true, false, false, "Type", Color.white, "", false, item.itemData.type.ToString());
+            // Slot
+            UIDataGenericDetail iSlot = UIManager.inst.Data_CreateGeneric();
+            iSlot.Setup(true, false, false, "Slot", Color.white, "", false, item.itemData.slot.ToString());
+            // Mass
+            UIDataGenericDetail iMass = UIManager.inst.Data_CreateGeneric();
+            if (item.itemData.mass > 0)
+            {
+                iMass.Setup(true, false, true, "Mass", Color.white, item.itemData.mass.ToString(), false, "", false, "", item.itemData.mass / 100f, true); // Uses the bar for some reason?
+            }
+            else // If the mass is 0, we display "N/A"
+            {
+                iMass.Setup(true, false, false, "Mass", Color.white, "", false, "N/A", true);
+            }
+            // Rating - this guy actually has some variance
+            UIDataGenericDetail iRating = UIManager.inst.Data_CreateGeneric();
+            string rText = item.itemData.rating.ToString();
+            if (item.itemData.star)
+                rText += "*";
+            switch (item.itemData.ratingType)
+            {
+                case ItemRatingType.Standard: // Faded out "Standard"
+                    iRating.Setup(true, false, false, "Rating", Color.white, rText, false, "Standard", true);
+                    break;
+                case ItemRatingType.Prototype: // Bright green vBox "Prototype"
+                    iRating.Setup(true, true, false, "Rating", highlightGreen, rText, false, "", false, "Prototype");
+                    break;
+                case ItemRatingType.Alien: // Bright green vBox "Alien"
+                    iRating.Setup(true, true, false, "Rating", highlightGreen, rText, false, "", false, "Alien");
+                    break;
+                default:
+                    break;
+            }
+            // Integrity
+            UIDataGenericDetail iInteg = UIManager.inst.Data_CreateGeneric();
+            iInteg.Setup(true, false, true, "Integrity", Color.white, item.integrityCurrent + " / " + item.itemData.integrityMax, false, "", false, "", item.integrityCurrent / item.itemData.integrityMax);
+            // Coverage
+            UIDataGenericDetail iCoverage = UIManager.inst.Data_CreateGeneric();
+            if(item.itemData.coverage > 0 && itemOwner != null)
+            { // CalculateItemCoverage
+                float coverage = HF.CalculateItemCoverage(itemOwner, item);
+                iCoverage.Setup(true, false, true, "Coverage", Color.white, "", false, item.itemData.coverage.ToString() + " (" + coverage * 100 + "%)", false, "", coverage, true);
+            }
+            else
+            {
+                iCoverage.Setup(true, false, false, "Coverage", Color.white, "", false, item.itemData.coverage.ToString()); // Just 0, you won't hit this. Nothing fancy. (Its probably in the inventory)
+            }
 
+            // State - there is some variance in this
+            UIDataGenericDetail iState = UIManager.inst.Data_CreateGeneric();
+            if (item.isOverloaded) // Overloaded (yellow)
+            {
+                iState.Setup(true, true, false, "State", cautiousYellow, "", false, "", false, "OVERLOADED");
+            }
+            else if (item.isDeteriorating) // Deteriorating (yellow)
+            {
+                iState.Setup(true, true, false, "State", cautiousYellow, "", false, "", false, "DETERIORATING");
+            }
+            else if (item.state) // Active (green)
+            {
+                iState.Setup(true, true, false, "State", highlightGreen, "", false, "", false, "ACTIVE");
+            }
+            else // Inactive (gray)
+            {
+                iState.Setup(true, true, false, "State", inactiveGray, "", false, "", false, "INACTIVE");
+            }
 
             #endregion
         }

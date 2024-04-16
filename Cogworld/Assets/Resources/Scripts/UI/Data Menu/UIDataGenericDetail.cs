@@ -574,6 +574,9 @@ public class UIDataGenericDetail : MonoBehaviour
 
     public void FlashBrackets()
     {
+        // Play a sound
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[44]);
+
         StopCoroutine(AnimFlashBrackets());
         StartCoroutine(AnimFlashBrackets());
     }

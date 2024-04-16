@@ -66,6 +66,8 @@ public class Item
     [Header("Special States/Effects")]
     [Tooltip("Is this item currently overloaded?")]
     public bool isOverloaded = false;
+    [Tooltip("Is this item currently losing HP because of an external reason (deteriorating)?")] // see: https://www.gridsagegames.com/blog/2013/12/burnout-momentum-em-disruption/
+    public bool isDeteriorating = false;
     [Tooltip("Is this item corrupted?")]
     public bool corrupted = false;
     [Tooltip("If > 0, this item is disabled for the specified turns.")]

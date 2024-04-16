@@ -207,7 +207,7 @@ public class InvDisplayItem : MonoBehaviour
         {
             if (!UIManager.inst.dataMenu.data_parent.gameObject.activeInHierarchy)
             {
-                UIManager.inst.Data_OpenMenu(_assignedItem);
+                UIManager.inst.Data_OpenMenu(_assignedItem, null, PlayerData.inst.GetComponent<Actor>());
             }
         }
     }

@@ -11,6 +11,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
+using static UnityEngine.GraphicsBuffer;
 
 /// <summary>
 /// Contains helper functions to be used globally.
@@ -4150,6 +4151,37 @@ public static class HF
                 }
             }
         }
+    }
+
+    public static float CalculateItemCoverage(Actor actor, Item item)
+    {
+        // We aren't going to consider to hit bonuses or any other effects here.
+        
+        // Gather up all the items
+        List<Item> items = Action.CollectAllBotItems(actor);
+
+        // Get the core exposure
+        int coreExposure = 0;
+        float coreHitChance = 0f;
+        if (actor.botInfo)
+        {
+            //coreExposure = actor.botInfo.coreExposure; // This is a percent value in the game files and I don't know how to calculate the true value. Fun!
+            coreExposure = 100;
+            coreHitChance = actor.botInfo.coreExposure;
+        }
+        else
+        {
+            coreExposure = PlayerData.inst.currentCoreExposure;
+        }
+
+
+        int totalExposure = 0; // Calculate total exposure
+        foreach (var I in items)
+        {
+            totalExposure += I.itemData.coverage;
+        }
+
+        return item.itemData.coverage / totalExposure; // And with that, return the item's calculated exposure
     }
 
     /// <summary>
