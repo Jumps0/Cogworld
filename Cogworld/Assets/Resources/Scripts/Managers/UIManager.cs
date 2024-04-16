@@ -6064,7 +6064,7 @@ public class UIManager : MonoBehaviour
 
             // -- We have quite an extensive checklist here, there is a massive variance in what data an item can have -- //
             #region Data Displaying
-            UIManager.inst.Data_CreateHeader("Overview"); // Overview
+            UIManager.inst.Data_CreateHeader("Overview"); // Overview =========================================================================
             // Type
             UIDataGenericDetail iType = UIManager.inst.Data_CreateGeneric();
             iType.Setup(true, false, false, "Type", Color.white, "", false, item.itemData.type.ToString());
@@ -6075,7 +6075,7 @@ public class UIManager : MonoBehaviour
             UIDataGenericDetail iMass = UIManager.inst.Data_CreateGeneric();
             if (item.itemData.mass > 0)
             {
-                iMass.Setup(true, false, true, "Mass", Color.white, item.itemData.mass.ToString(), false, "", false, "", item.itemData.mass / 100f, true); // Uses the bar for some reason?
+                iMass.Setup(true, false, true, "Mass", highlightGreen, item.itemData.mass.ToString(), false, "", false, "", item.itemData.mass / 100f, true); // Uses the bar for some reason?
             }
             else // If the mass is 0, we display "N/A"
             {
@@ -6108,7 +6108,7 @@ public class UIManager : MonoBehaviour
             if(item.itemData.coverage > 0 && itemOwner != null)
             { // CalculateItemCoverage
                 float coverage = HF.CalculateItemCoverage(itemOwner, item);
-                iCoverage.Setup(true, false, true, "Coverage", Color.white, "", false, item.itemData.coverage.ToString() + " (" + coverage * 100 + "%)", false, "", coverage, true);
+                iCoverage.Setup(true, false, true, "Coverage", highlightGreen, "", false, item.itemData.coverage.ToString() + " (" + coverage * 100 + "%)", false, "", coverage, true);
             }
             else
             {
@@ -6134,6 +6134,147 @@ public class UIManager : MonoBehaviour
                 iState.Setup(true, true, false, "State", inactiveGray, "", false, "", false, "INACTIVE");
             }
 
+            Data_CreateSpacer();
+
+            if (item.itemData.hasUpkeep)
+            {
+                UIManager.inst.Data_CreateHeader("Active Upkeep"); // Active Upkeep =========================================================================
+                // Energy
+                UIDataGenericDetail iEnergyUpkeep = UIManager.inst.Data_CreateGeneric();
+                string iEU = "";
+                if (item.itemData.energyUpkeep < 0f)
+                {
+                    iEU = "-" + Mathf.Abs(item.itemData.energyUpkeep).ToString() + "%";
+                    iEnergyUpkeep.Setup(true, false, true, "Energy", Color.white, iEU, false, "", false, "", item.itemData.energyUpkeep / 36f); // Bar
+                }
+                else if(item.itemData.energyUpkeep > 0f)
+                {
+                    iEU = "+" + Mathf.Abs(item.itemData.energyUpkeep).ToString() + "%";
+                    iEnergyUpkeep.Setup(true, false, true, "Energy", Color.white, iEU, false, "", false, "", item.itemData.energyUpkeep / 36f); // Bar
+                }
+                else if(item.itemData.energyUpkeep == 0)
+                {
+                    // Grayed out
+                    iEnergyUpkeep.Setup(true, false, true, "Energy", Color.white, "0", true, "", false, "", 0f); // Bar
+                }
+                // Matter
+                UIDataGenericDetail iMatterUpkeep = UIManager.inst.Data_CreateGeneric();
+                string iMU = "";
+                if (item.itemData.matterUpkeep < 0f)
+                {
+                    iMU = "-" + Mathf.Abs(item.itemData.matterUpkeep).ToString() + "%";
+                    iMatterUpkeep.Setup(true, false, true, "Matter", Color.white, iMU, false, "", false, "", item.itemData.matterUpkeep / 36f); // Bar
+                }
+                else if (item.itemData.matterUpkeep > 0f)
+                {
+                    iMU = "+" + Mathf.Abs(item.itemData.matterUpkeep).ToString() + "%";
+                    iMatterUpkeep.Setup(true, false, true, "Matter", Color.white, iMU, false, "", false, "", item.itemData.matterUpkeep / 36f); // Bar
+                }
+                else if (item.itemData.matterUpkeep == 0)
+                {
+                    // Grayed out
+                    iMatterUpkeep.Setup(true, false, true, "Matter", Color.white, "0", true, "", false, "", 0f); // Bar
+                }
+                // Heat
+                UIDataGenericDetail iHeatUpkeep = UIManager.inst.Data_CreateGeneric();
+                string iHU = "";
+                if (item.itemData.heatUpkeep < 0f)
+                {
+                    iHU = "-" + Mathf.Abs(item.itemData.heatUpkeep).ToString();
+                    iHeatUpkeep.Setup(true, false, true, "Heat", Color.white, iHU, false, "", false, "", item.itemData.heatUpkeep / 36f); // Bar
+                }
+                else if (item.itemData.heatUpkeep > 0f)
+                {
+                    iHU = "+" + Mathf.Abs(item.itemData.heatUpkeep).ToString();
+                    iHeatUpkeep.Setup(true, false, true, "Heat", Color.white, iHU, false, "", false, "", item.itemData.heatUpkeep / 36f); // Bar
+                }
+                else if (item.itemData.heatUpkeep == 0)
+                {
+                    // Grayed out
+                    iHeatUpkeep.Setup(true, false, true, "Heat", Color.white, "0", true, "", false, "", 0f); // Bar
+                }
+
+                Data_CreateSpacer();
+            }
+
+            if(item.itemData.supply > 0)
+            {
+                UIManager.inst.Data_CreateHeader("Power"); // Power =========================================================================
+                // Supply
+                UIDataGenericDetail iSupply = UIManager.inst.Data_CreateGeneric();
+                iSupply.Setup(true, false, true, "Supply", highlightGreen, "+" + item.itemData.supply, false, "", false, "", item.itemData.supply / 36f, true); // Bar
+                // Storage
+                UIDataGenericDetail iStorage = UIManager.inst.Data_CreateGeneric();
+                iStorage.Setup(true, false, true, "Storage", highlightGreen, item.itemData.storage.ToString(), false, "", false, "", item.itemData.storage / 500f, true); // Bar
+                // Stability
+                UIDataGenericDetail iStability = UIManager.inst.Data_CreateGeneric();
+                if (item.itemData.power_HasStability)
+                {
+                    iStability.Setup(true, false, true, "Stability", Color.white, (item.itemData.power_stability * 100) + "%", false, "", false, "", item.itemData.power_stability); // Bar
+                }
+                else
+                {
+                    iStability.Setup(true, false, true, "Stability", Color.white, "N/A", true, "", false, "", 0f, false); // Bar
+                }
+
+                Data_CreateSpacer();
+            }
+
+            if(item.itemData.propulsion.Count > 0)
+            {
+                UIManager.inst.Data_CreateHeader("Propulsion"); // Propulsion =========================================================================
+                // Time/Move
+                UIDataGenericDetail iTimeMove = UIManager.inst.Data_CreateGeneric();
+                Color iTMC = highlightGreen; // Color is inverted based on amount
+                if(item.itemData.propulsion[0].timeToMove > 100)
+                {
+                    iTMC = highSecRed;
+                }
+                else if (item.itemData.propulsion[0].timeToMove < 50)
+                {
+                    iTMC = highlightGreen;
+                }
+                else
+                {
+                    iTMC = cautiousYellow;
+                }
+                iTimeMove.Setup(true, false, true, "Time/Move", iTMC, item.itemData.propulsion[0].timeToMove.ToString(), false, "", false, "", item.itemData.propulsion[0].timeToMove / 200f, true); // Bar
+                // Drag
+                UIDataGenericDetail iDrag = UIManager.inst.Data_CreateGeneric();
+                iDrag.Setup(true, false, false, "Drag", Color.white, item.itemData.propulsion[0].drag.ToString()); // No bar (simple)
+                // Energy
+                UIDataGenericDetail iEnergyProp = UIManager.inst.Data_CreateGeneric();
+                Color iEP = highlightGreen;
+                if(item.itemData.propulsion[0].propEnergy <= 0)
+                {
+                    iEP = highlightGreen;
+                }
+                else if(item.itemData.propulsion[0].propEnergy > 15)
+                {
+                    iEP = highSecRed;
+                }
+                else
+                {
+                    iEP = cautiousYellow;
+                }
+                iEnergyProp.Setup(true, false, true, "Energy", iEP, item.itemData.propulsion[0].propEnergy.ToString(), false, "", false, "", item.itemData.propulsion[0].propEnergy + 10 / 20f, true); // Bar
+                // Heat
+
+                // Support
+
+                // Penalty
+
+                // Burnout
+
+
+                Data_CreateSpacer();
+            }
+
+            
+            // Effect is above fabrication
+
+            // Fabrication goes at the very bottom
+
             #endregion
         }
         else if(bot != null)
@@ -6156,7 +6297,7 @@ public class UIManager : MonoBehaviour
             botSize.Setup(true, false, false, "Size", Color.white, "", false, bot.botInfo._size.ToString());
             // Rating
             UIDataGenericDetail botRating = UIManager.inst.Data_CreateGeneric();
-            botRating.Setup(true, false, true, "Rating", Color.white, bot.botInfo.rating.ToString(), false, "", false, "", bot.botInfo.rating / 100f, true); // Uses the bar for some reason?
+            botRating.Setup(true, false, true, "Rating", highlightGreen, bot.botInfo.rating.ToString(), false, "", false, "", bot.botInfo.rating / 100f, true); // Uses the bar for some reason?
             // ID
             UIDataGenericDetail botID = UIManager.inst.Data_CreateGeneric();
             Color idColor = Color.white;
@@ -6317,16 +6458,19 @@ public class UIManager : MonoBehaviour
                 else
                 {
                     string vA = "";
+                    Color vC;
                     if (R.resistanceAmount < 0f)
                     {
                         vA = "-" + Mathf.Abs(R.resistanceAmount * 100).ToString() + "%";
+                        vC = highSecRed;
                     }
                     else
                     {
                         vA = Mathf.Abs(R.resistanceAmount * 100).ToString() + "%";
+                        vC = highlightGreen;
                     }
 
-                    resBar.Setup(true, false, true, R.damageType.ToString(), Color.white, vA, false, "", false, "", R.resistanceAmount, true); // Bar
+                    resBar.Setup(true, false, true, R.damageType.ToString(), vC, vA, false, "", false, "", R.resistanceAmount, true); // Bar
                 }
             }
             // - and then go through resisitancesExtra too

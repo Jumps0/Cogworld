@@ -196,8 +196,9 @@ public abstract class ItemObject : ScriptableObject
     [Header("Power")]
     public int supply;
     public int storage;
-    public bool power_HasStability = false;
-    public int power_stability;
+    public bool power_HasStability = false; // Seems like only Cld. power sources have this so it'l be rare that it will show up
+    [Tooltip("Rarely used. 0.##%")]
+    public float power_stability;
 
     [Header("Propulsion")]
     public List<ItemPropulsion> propulsion = new List<ItemPropulsion>();

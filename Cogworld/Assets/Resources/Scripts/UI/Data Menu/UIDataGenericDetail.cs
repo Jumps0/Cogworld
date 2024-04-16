@@ -79,9 +79,9 @@ public class UIDataGenericDetail : MonoBehaviour
 
         // Variable Box
         ToggleVariableBox(useVariable);
+        variable_color = boxColor;
         if (useVariable)
         {
-            variable_color = boxColor;
             SetVariableBox(boxText, boxColor);
         }
 
@@ -89,6 +89,15 @@ public class UIDataGenericDetail : MonoBehaviour
         ToggleBoxBar(useBoxBar);
         if (useBoxBar)
         {
+            if(_barAmount > 1f) // Clamp
+            {
+                _barAmount = 1f;
+            }
+            else if(_barAmount < -1f)
+            {
+                _barAmount = -1f;
+            }
+
             barAmount = _barAmount;
             UpdateBoxIndicator(barAmount);
         }
@@ -153,14 +162,7 @@ public class UIDataGenericDetail : MonoBehaviour
     {
         if (forceBarColor)
         {
-            if(value > 0.0f)
-            {
-                return b_green;
-            }
-            else
-            {
-                return b_red;
-            }
+            return variable_color;
         }
         else
         {
