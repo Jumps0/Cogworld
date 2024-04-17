@@ -9,6 +9,9 @@ public class UIDataHeader : MonoBehaviour
     [Header("References")]
     public TextMeshProUGUI mainText;
     private string mainString;
+    //
+    public TextMeshProUGUI bonusText;
+    public GameObject bonusParent;
 
     [Header("Colors")]
     public Color normalColor;
@@ -16,12 +19,18 @@ public class UIDataHeader : MonoBehaviour
     public Color brightColor;
     public Color darkGreen;
 
-    public void Setup(string text)
+    public void Setup(string text, string bonusString = "")
     {
         StopAllCoroutines();
 
         mainString = text;
         mainText.text = mainString;
+
+        if(bonusString != "")
+        {
+            bonusParent.SetActive(true);
+            bonusText.text = bonusString;
+        }
     }
 
     public void Open()
@@ -77,14 +86,21 @@ public class UIDataHeader : MonoBehaviour
 
     private IEnumerator AnimateClose()
     {
+        string oldText = mainText.text;
+        string oldB = bonusText.text;
+
         float elapsedTime = 0f;
         float duration = 0.45f;
         while (elapsedTime < duration) // Dark green -> Black
         {
             Color color = Color.Lerp(darkGreen, Color.black, elapsedTime / duration);
 
-            string oldText = mainText.text;
             mainText.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(color)}>{oldText}</mark>";
+
+            if (bonusParent.gameObject.activeInHierarchy)
+            {
+                bonusText.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(color)}>{oldB}</mark>";
+            }
 
             elapsedTime += Time.deltaTime;
 

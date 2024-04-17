@@ -23,6 +23,7 @@ MonoBehaviour:
     state: 1
     integrityCurrent: 0
     isOverloaded: 0
+    isDeteriorating: 0
     corrupted: 0
     disabledTimer: 0
     siege: 0
@@ -74,11 +75,10 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 4615a04452aacae4790d9f8a0098aca1, type: 3}
   projectileAmount: 1
   projectile:
-    damage: {x: 20, y: 48}
+    damage: {x: 0, y: 0}
     damageType: 2
     critChance: 0
     critType: 0
-    penChance: {x: 0, y: 0, z: 0}
     heatTrasfer: 0
     heatTransferDegree: 0
     spectrum: 0

@@ -11,6 +11,7 @@ using Vector3 = UnityEngine.Vector3;
 using Quaternion = UnityEngine.Quaternion;
 using Vector2 = UnityEngine.Vector2;
 using ColorUtility = UnityEngine.ColorUtility;
+using UnityEngine.XR;
 //using static UnityEditor.Progress;
 
 public class UIManager : MonoBehaviour
@@ -6536,7 +6537,13 @@ public class UIManager : MonoBehaviour
             if(item.itemData.projectile.damage.x > 0)
             {
                 ItemProjectile proj = item.itemData.projectile;
-                UIManager.inst.Data_CreateHeader("Projectile"); // Projectile =========================================================================
+                string bonus = "";
+                if(item.itemData.projectileAmount > 1)
+                {
+                    bonus = "x" + item.itemData.projectileAmount;
+                }
+
+                UIManager.inst.Data_CreateHeader("Projectile", bonus); // Projectile =========================================================================
                 // Damage
                 UIDataGenericDetail pDamage = UIManager.inst.Data_CreateGeneric();
                 pDamage.Setup(true, false, true, "Damage", highlightGreen, proj.damage.x + "-" + proj.damage.y, false, "", false, "", ((proj.damage.x + proj.damage.y) / 2) / 100f, true);
@@ -6571,7 +6578,7 @@ public class UIManager : MonoBehaviour
                     pPen.Setup(true, false, false, "Penetration", Color.white, "x0", true);
                 }
                 // Heat Transfer
-                if (item.itemData.itemEffects[0].heatTransfer > 0)
+                if (item.itemData.itemEffects.Count > 0 && item.itemData.itemEffects[0].heatTransfer > 0)
                 {
                     UIDataGenericDetail iPHT = UIManager.inst.Data_CreateGeneric();
                     string s = "";
@@ -6664,6 +6671,95 @@ public class UIManager : MonoBehaviour
                 }
 
                 Data_CreateSpacer();
+            }
+
+            if(item.itemData.explosionDetails.radius > 0)
+            {
+                UIManager.inst.Data_CreateHeader("Explosion"); // Explosion =========================================================================
+                ExplosionGeneric detail = item.itemData.explosionDetails;
+                // Range
+                UIDataGenericDetail iERadius = UIManager.inst.Data_CreateGeneric();
+                iERadius.Setup(true, false, true, "Radius", highlightGreen, detail.radius.ToString(), false, "", false, "", detail.radius / 9f, true); // Bar
+                // Damage
+                int average = Mathf.RoundToInt((detail.damage.x + detail.damage.y) / 2);
+                UIDataGenericDetail iEDamage = UIManager.inst.Data_CreateGeneric();
+                iEDamage.Setup(true, false, true, "Damage", highlightGreen, detail.damage.x + "-" + detail.damage.y, false, "", false, "", average / 120f, true); // Bar
+                // Falloff
+                UIDataGenericDetail iEFalloff = UIManager.inst.Data_CreateGeneric();
+                if(detail.fallOff <= 0)
+                {
+                    iEFalloff.Setup(true, false, false, " Falloff", Color.white, detail.fallOff.ToString());
+                }
+                else
+                {
+                    iEFalloff.Setup(true, false, false, " Falloff", Color.white, "0", true);
+                }
+                // Type
+                UIDataGenericDetail iEType = UIManager.inst.Data_CreateGeneric();
+                iEType.Setup(true, false, false, "Type", Color.white, "", false, detail.damageType.ToString());
+                // Spectrum
+                UIDataGenericDetail iESpectrum = UIManager.inst.Data_CreateGeneric();
+                if (detail.hasSpectrum)
+                {
+                    string s = "";
+                    if (detail.spectrum <= 0.1f)
+                    {
+                        s = "Wide (10%)";
+                    }
+                    else if (detail.spectrum == 0.3f)
+                    {
+                        s = "Intermediate (30%)";
+                    }
+                    else if (detail.spectrum == 0.5f)
+                    {
+                        s = "Narrow (50%)";
+                    }
+                    else if (detail.spectrum == 1f)
+                    {
+                        s = "Fine (100%)";
+                    }
+
+                    iESpectrum.Setup(true, false, false, "Specturm", Color.white, s); // No bar (simple)
+                }
+                else
+                {
+                    iESpectrum.Setup(true, false, false, "Specturm", Color.white, "N/A", true); // No bar (simple)
+                }
+                // Disruption
+                UIDataGenericDetail iEDisruption = UIManager.inst.Data_CreateGeneric();
+                if (detail.disruption > 0)
+                {
+                    Color iPDC = highlightGreen;
+                    if (detail.disruption < 0.33)
+                    {
+                        iPDC = highlightGreen;
+                    }
+                    else if (detail.disruption >= 0.66)
+                    {
+                        iPDC = highSecRed;
+                    }
+                    else
+                    {
+                        iPDC = cautiousYellow;
+                    }
+
+                    iEDisruption.Setup(true, false, true, "Disruption", iPDC, (detail.disruption * 100) + "%", false, "", false, "", detail.disruption, true); // Bar
+                }
+                else
+                {
+                    iEDisruption.Setup(true, false, true, "Disruption", Color.white, "0%", true, "", false, "", 0f); // Bar
+
+                }
+                // Salvage
+                UIDataGenericDetail iESalvage = UIManager.inst.Data_CreateGeneric();
+                if (detail.fallOff <= 0)
+                {
+                    iESalvage.Setup(true, false, false, "Salvage", Color.white, detail.salvage.ToString());
+                }
+                else
+                {
+                    iESalvage.Setup(true, false, false, "Salvage", Color.white, "0", true);
+                }
             }
 
             // Effect is above fabrication
@@ -7117,7 +7213,7 @@ public class UIManager : MonoBehaviour
         #endregion
     }
 
-    private void Data_CreateHeader(string text)
+    private void Data_CreateHeader(string text, string bonus = "")
     {
         GameObject go = Instantiate(dataMenu.data_headerPrefab, dataMenu.data_contentArea.transform.position, Quaternion.identity);
         go.transform.SetParent(dataMenu.data_contentArea.transform);
@@ -7125,7 +7221,7 @@ public class UIManager : MonoBehaviour
         // Add it to list
         dataMenu.data_objects.Add(go);
         // Assign Details
-        go.GetComponent<TextMeshProUGUI>().text = text;
+        go.GetComponent<UIDataHeader>().Setup(text, bonus);
     }
 
     private UIDataGenericDetail Data_CreateGeneric()
