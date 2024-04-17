@@ -6762,6 +6762,175 @@ public class UIManager : MonoBehaviour
                 }
             }
 
+            if (item.itemData.meleeAttack.isMelee)
+            {
+                // This is split up into "attack" and "hit"
+                ItemMeleeAttack melee = item.itemData.meleeAttack;
+                UIManager.inst.Data_CreateHeader("Attack"); // Attack =========================================================================
+                // Energy
+                UIDataGenericDetail iAEnergy = UIManager.inst.Data_CreateGeneric();
+                if (melee.energy < 0) // Negative
+                {
+                    float clampedValue = Mathf.Clamp(melee.energy, 0, -50);
+                    float normalizedValue = Mathf.InverseLerp(0, -50, clampedValue);
+
+                    iAEnergy.Setup(true, false, true, "Energy", Color.white, melee.energy.ToString(), false, "", false, "", normalizedValue); // Bar
+                }
+                else
+                {
+                    iAEnergy.Setup(true, false, true, "Energy", Color.white, melee.energy.ToString(), true, "", false, "", 0f); // Bar
+                }
+                // Matter
+                UIDataGenericDetail iAMatter = UIManager.inst.Data_CreateGeneric();
+                if (melee.matter < 0) // Negative
+                {
+                    float clampedValue = Mathf.Clamp(melee.matter, 0, -50);
+                    float normalizedValue = Mathf.InverseLerp(0, -50, clampedValue);
+
+                    iAMatter.Setup(true, false, true, "Matter", Color.white, melee.matter.ToString(), false, "", false, "", normalizedValue); // Bar
+                }
+                else
+                {
+                    iAMatter.Setup(true, false, true, "Matter", Color.white, melee.matter.ToString(), true, "", false, "", 0f); // Bar
+                }
+                // Heat
+                UIDataGenericDetail iAHeat = UIManager.inst.Data_CreateGeneric();
+                if (melee.heat > 0)
+                {
+                    Color iSC = highlightGreen;
+                    if (melee.heat > 60)
+                    {
+                        iSC = highSecRed;
+                    }
+                    else if (melee.heat <= 20)
+                    {
+                        iSC = highlightGreen;
+                    }
+                    else
+                    {
+                        iSC = cautiousYellow;
+                    }
+
+                    iAHeat.Setup(true, false, true, "Heat", iSC, "+" + melee.heat.ToString(), false, "", false, "", melee.heat / 100f, true); // Bar
+                }
+                else
+                {
+                    iAHeat.Setup(true, false, true, "Heat", Color.white, melee.heat.ToString(), true, "", false, "", 0f); // Bar
+                }
+                // Targeting
+                UIDataGenericDetail iATargeting = UIManager.inst.Data_CreateGeneric();
+                if (melee.targeting != 0)
+                {
+                    iATargeting.Setup(true, false, false, "Targeting", Color.white, (melee.targeting * 100) + "%"); // No bar (simple)
+                }
+                else
+                {
+                    iATargeting.Setup(true, false, false, "Targeting", Color.white, "0%", true); // No bar (simple)
+                }
+                // Delay
+                UIDataGenericDetail iADelay = UIManager.inst.Data_CreateGeneric();
+                if (melee.delay > 0)
+                {
+                    string iSD_text = "";
+                    if (melee.delay > 0)
+                    {
+                        iSD_text = "+";
+                    }
+
+                    iADelay.Setup(true, false, false, "Delay", Color.white, iSD_text += melee.delay); // No bar (simple)
+                }
+                else
+                {
+                    iADelay.Setup(true, false, false, "Delay", Color.white, "0", true); // No bar (simple)
+                }
+
+                Data_CreateSpacer();
+                if (!item.itemData.specialAttack.specialMelee)
+                {
+                    UIManager.inst.Data_CreateHeader("Hit"); // Hit =========================================================================
+                                                             // Damage
+                    UIDataGenericDetail hDamage = UIManager.inst.Data_CreateGeneric();
+                    hDamage.Setup(true, false, true, "Damage", highlightGreen, melee.damage.x + "-" + melee.damage.y, false, "", false, "", ((melee.damage.x + melee.damage.y) / 2) / 100f, true);
+                    // Type
+                    UIDataGenericDetail hType = UIManager.inst.Data_CreateGeneric();
+                    hType.Setup(true, false, false, "Type", Color.white, "", false, melee.damageType.ToString());
+                    // Critical
+                    UIDataGenericDetail hCrit = UIManager.inst.Data_CreateGeneric();
+                    if (melee.critical > 0f)
+                    {
+                        hCrit.Setup(true, false, false, "Critical", Color.white, (melee.critical * 100).ToString() + "%", false, melee.critical.ToString());
+                    }
+                    else
+                    {
+                        hCrit.Setup(true, false, false, "Critical", Color.white, "0%", true);
+                    }
+                    // Heat Transfer
+                    if (item.itemData.itemEffects.Count > 0 && item.itemData.itemEffects[0].heatTransfer > 0)
+                    {
+                        UIDataGenericDetail hHT = UIManager.inst.Data_CreateGeneric();
+                        string s = "";
+                        int ht = item.itemData.itemEffects[0].heatTransfer;
+                        if (ht == 1)
+                        {
+                            s = "Low (25)";
+                        }
+                        else if (ht == 2)
+                        {
+                            s = "Medium (37)";
+                        }
+                        else if (ht == 3)
+                        {
+                            s = "High (50)";
+                        }
+                        else if (ht == 4)
+                        {
+                            s = "Massive (80)";
+                        }
+
+                        hHT.Setup(true, false, false, "Heat Transfer", Color.white, "", false, s);
+                    }
+                    // Disruption
+                    UIDataGenericDetail iHDisruption = UIManager.inst.Data_CreateGeneric();
+                    if (melee.disruption > 0)
+                    {
+                        Color iPDC = highlightGreen;
+                        if (melee.disruption < 0.33)
+                        {
+                            iPDC = highlightGreen;
+                        }
+                        else if (melee.disruption >= 0.66)
+                        {
+                            iPDC = highSecRed;
+                        }
+                        else
+                        {
+                            iPDC = cautiousYellow;
+                        }
+
+                        iHDisruption.Setup(true, false, true, "Disruption", iPDC, (melee.disruption * 100) + "%", false, "", false, "", melee.disruption, true); // Bar
+                    }
+                    else
+                    {
+                        iHDisruption.Setup(true, false, true, "Disruption", Color.white, "0%", true, "", false, "", 0f); // Bar
+
+                    }
+                    // Salvage
+                    UIDataGenericDetail iHSalvage = UIManager.inst.Data_CreateGeneric();
+                    if (melee.salvage > 0)
+                    {
+                        iHSalvage.Setup(true, false, false, "Salvage", Color.white, "+" + melee.salvage.ToString()); // No bar (simple)
+                    }
+                    else if (melee.salvage == 0)
+                    {
+                        iHSalvage.Setup(true, false, false, "Salvage", Color.white, "0", true); // No bar (simple)
+                    }
+                    else
+                    {
+                        iHSalvage.Setup(true, false, false, "Salvage", Color.white, melee.salvage.ToString()); // No bar (simple)
+                    }
+                }
+            }
+
             // Effect is above fabrication
             if (item.itemData.itemEffects.Count > 0)
             {
@@ -6770,11 +6939,242 @@ public class UIManager : MonoBehaviour
                 foreach (var E in item.itemData.itemEffects)
                 {
                     // There is A LOT to consider here and its gonna take a while to fill it all out
-                    string textWall = "";
+                    string textWall = " ";
+                    #region Effects
+
+                    if (E.heatDissipation.hasEffect)
+                    {
+                        if(E.heatDissipation.dissipationPerTurn > 0)
+                        {
+                            textWall += "Dissipates " + E.heatDissipation.dissipationPerTurn + " heat per turn";
+                            if(E.heatDissipation.integrityLossPerTurn > 0)
+                            {
+                                textWall += ", losing " + E.heatDissipation.integrityLossPerTurn + " integrity in the process";
+                            }
+                            if(E.heatDissipation.minTempToActivate > 0)
+                            {
+                                textWall += ", but is applied after all standard heat dissipation, and only when heat levels rise above ";
+                                textWall += E.heatDissipation.minTempToActivate.ToString();
+                            }
+                            textWall += ".";
+                        }
+                        else if(E.heatDissipation.lowerBaseTemp > 0)
+                        {
+                            textWall += "Lowers base temperature to " + E.heatDissipation.lowerBaseTemp + ".";
+                            if (E.heatDissipation.preventPowerShutdown)
+                            {
+                                textWall += "Also protects power sources from forced shutdown while overheating";
+                                if(E.heatDissipation.preventOverheatSideEffects > 0)
+                                {
+                                    textWall += ", and has a " + E.heatDissipation.preventOverheatSideEffects * 100 + "% chance to prevent other types of overheating side effects";
+                                }
+                                textWall += ".";
+                            }
+                        }
+                        else if(E.heatDissipation.heatToEnergyAmount > 0)
+                        {
+                            textWall += "Generates " + E.heatDissipation.energyGeneration + " energy per ";
+                            textWall += E.heatDissipation.heatToEnergyAmount + " surplus heat every turn.";
+                        }
 
 
+                        if (E.heatDissipation.stacks)
+                        {
+                            textWall += "\n <stacks>";
+                        }
+                        else if (E.heatDissipation.parallel)
+                        {
+                            textWall += "\n <parallel_ok>";
+                        }
+                        else
+                        {
+                            textWall += "\n <no_stack>";
+                        }
+                    }
+                    else if (E.ramCrushEffect)
+                    {
+                        textWall += E.ramCrushChance * 100 + "% chance to crush robots when ramming them.";
+                        if (E.ramCrush_canDoLarge && E.ramCrush_canDoGigantic)
+                        {
+                            textWall += "Cannot crush targets of large or greater size";
+                            if(E.ramCrush_integLimit > 0)
+                            {
+                                textWall += ", or those with more than " + E.ramCrush_integLimit + " core integrity";
+                            }
+                            textWall += ".";
+                        }
 
+                        if (E.ramCrush_canStack)
+                        {
+                            if(E.ramCrush_stackCap > 0)
+                            {
+                                textWall += "\n <stacks, capped at " + E.ramCrush_stackCap * 100 + "%>";
+                            }
+                            else
+                            {
+                                textWall += "\n <stacks>";
+                            }
+                        }
+                        else
+                        {
+                            textWall += "\n <no_stack>";
+                        }
+                        textWall += "\n\n";
+                    }
 
+                    if (E.hasStabEffect)
+                    {
+                        textWall += E.stab_recoilPerWeapon + " recoil from each weapon";
+                        if (E.stab_KnockbackImmune)
+                        {
+                            textWall += ", and immunity to knockback";
+                        }
+                        textWall += ".";
+                    }
+
+                    if (E.armorProtectionEffect.hasEffect)
+                    {
+                        ItemProtectionEffect p = E.armorProtectionEffect;
+
+                        if(p.armorEffect_absorbtion > 0)
+                        {
+                            textWall += "Absorbs " + p.armorEffect_absorbtion * 100 + "% of damage that would otherwise affect ";
+                            string type = "";
+                            switch (p.armorEffect_slotType)
+                            {
+                                case ArmorType.Power:
+                                    type = "Power sources.";
+                                    break;
+                                case ArmorType.Propulsion:
+                                    type = "Propulsion units.";
+                                    break;
+                                case ArmorType.Utility:
+                                    type = "Utilities.";
+                                    break;
+                                case ArmorType.Weapon:
+                                    type = "Weapons.";
+                                    break;
+                                case ArmorType.General:
+                                    type = "other parts.";
+                                    break;
+                                case ArmorType.None:
+                                    type = "Core.";
+                                    break;
+                            }
+                            textWall += type;
+                            if (p.armorEffect_preventCritStrikesVSSlot)
+                            {
+                                textWall += "Also negates extra effects of critical strikes against " + type;
+                                if (p.armorEffect_preventChainReactions)
+                                {
+                                    textWall += ", and prevents chain reactions due to electromagnetic damage";
+                                    if (!p.armorEffect_preventOverflowDamage)
+                                    {
+                                        textWall += ", but cannot protect against overflow damage";
+                                    }
+                                }
+                            }
+                            textWall += ".";
+
+                            if (p.stacks)
+                            {
+                                textWall += "\n <stacks>";
+                            }
+                            else
+                            {
+                                textWall += "\n <no_stack>";
+                            }
+                        }
+                        else if (p.projectionExchange)
+                        {
+                            textWall += "Blocks " + p.pe_blockPercent * 100 + "% of damage ";
+                            if (p.pe_global)
+                            {
+                                textWall += "in exchange for energy loss at a ";
+                            }
+                            else if (p.pe_includeVisibileAllies)
+                            {
+                                textWall += "to self and any visibile allies within a range of ";
+                                textWall += p.pe_alliesDistance + " in exchange for energy loss at a ";
+                            }
+                            else
+                            {
+                                textWall += "to this part in exchange for energy loss at a ";
+                            }
+                            textWall += p.pe_exchange.x + ":" + p.pe_exchange.y + " ratio";
+                            if(p.pe_requireEnergy)
+                                textWall += " (no effect if insufficient energy).";
+                            textWall += ".";
+
+                            if (p.stacks)
+                            {
+                                textWall += "\n <stacks>";
+                            }
+                            else
+                            {
+                                textWall += "\n <no_stack>";
+                            }
+                        }
+                        else if (p.highCoverage)
+                        {
+                            textWall += "Protects other parts via high coverage.";
+                        }
+                        else if (p.type_hasTypeResistance)
+                        {
+                            textWall += "Enables ";
+                            if (p.type_allTypes)
+                            {
+                                textWall += "general damage resistance: ";
+                            }
+                            else
+                            {
+                                textWall += p.type_damageType.ToString().ToLower() + " damage resistance: ";
+                            }
+                            textWall += p.type_percentage * 100 + "%";
+                            if (p.type_includeAllies)
+                            {
+                                textWall += ", applying benefit to both self and any allies within a range of ";
+                                textWall += p.type_alliesRange.ToString();
+                            }
+                            textWall += ".";
+
+                            if (p.stacks)
+                            {
+                                textWall += "\n <stacks>";
+                            }
+                            else
+                            {
+                                textWall += "\n <no_stack>";
+                            }
+                        }
+                        else if (p.selfRepair)
+                        {
+                            textWall += "Regenerates integrity at a rate of ";
+                            textWall += p.selfRepair_amount + " per " + p.selfRepairTurns + " turn";
+                            if (p.selfRepairTurns > 1)
+                                textWall += "s";
+                            textWall += ".";
+
+                            if(p.parallel && p.resume)
+                            {
+                                textWall += "\n <parallel_ok, resume_ok>";
+                            }
+                            else if (p.parallel)
+                            {
+                                textWall += "\n <parallel_ok>";
+                            }
+                            else if (p.resume)
+                            {
+                                textWall += "\n <resume_ok>";
+                            }
+                        }
+                        else if (p.critImmunity)
+                        {
+                            textWall += "100% chance to negate effects of incoming critical strikes.";
+                        }
+                    }
+
+                    #endregion
                     Data_CreateTextWall(textWall);
                     Data_CreateSpacer();
                 }
@@ -7104,7 +7504,7 @@ public class UIManager : MonoBehaviour
                 O.GetComponent<UIDataTextWall>().Open();
             }
         }
-        
+
     }
 
     public void Data_CloseMenu()
@@ -7365,7 +7765,7 @@ public class UIManager : MonoBehaviour
     }
 
     #endregion
-    
+
     #endregion
 
 }

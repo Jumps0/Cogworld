@@ -260,11 +260,6 @@ public class ItemEffect
     [Header("Chain Reaction Explosive")]
     public bool chainExplode = false;
 
-    [Header("Heat Dissipation")]
-    public bool doesHeatDissip = false;
-    public int heatDissipation_perTurn;
-    public bool heatDissipation_stacks = false;
-
     [Header("Leg Effect")]
     public bool hasLegEffect = false;
     public float extraKickChance; // % value
@@ -643,6 +638,8 @@ public enum DeployableType
 [System.Serializable]
 public class ItemSpecialAttack
 {
+    public bool specialMelee = false; // Removes the "Hit" section
+
     public bool datajack = false;
     public bool stasisBeam = false;
     public bool tearClaw = false;
@@ -677,6 +674,8 @@ public class ItemProtectionEffect
     [Tooltip("Blocks ##% of damage to this part in exchange for energy loss at a #:# ratio (no effect if insufficient energy).")]
     public Vector2 pe_exchange = new Vector2(1, 1);
     public bool pe_includeVisibileAllies = false;
+    public int pe_alliesDistance = 10;
+    public bool pe_requireEnergy = true;
 
     [Header("High Coverage")]
     [Tooltip("Protects other parts via high coverage.")]
@@ -688,18 +687,23 @@ public class ItemProtectionEffect
     [Tooltip("0.##")]
     public float type_percentage;
     public bool type_allTypes = false;
+    public bool type_includeAllies = false;
+    public int type_alliesRange = 10;
 
     [Header("Scrap Shield")]
     public bool scrapShield = false;
 
     [Header("Self Repair")]
-    [Tooltip("Regenerates integrity at a rate of # per turn.")]
+    [Tooltip("Regenerates integrity at a rate of # per # turns..")]
     public bool selfRepair = false;
     public int selfRepair_amount = 0;
+    public int selfRepairTurns = 0;
 
     [Header("Crit Immunity")] // Basically just Graphene Brace in here
     public bool critImmunity = false;
 
+    public bool parallel = false;
+    public bool resume = false;
     public bool stacks = false;
 }
 
@@ -1059,7 +1063,7 @@ public enum ArmorType
     Utility,
     Weapon,
     General,
-    None
+    None // Core
 }
 
 [System.Serializable]

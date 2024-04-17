@@ -3783,7 +3783,7 @@ public static class Action
                         }
 
                         // Does the target have the power to cover this?
-                        if (currentEnergy >= cost)
+                        if ((E.armorProtectionEffect.pe_requireEnergy && currentEnergy >= cost) || !E.armorProtectionEffect.pe_requireEnergy)
                         {
                             // Yes, alter the damage
                             damage = damage - removed;
@@ -3829,42 +3829,55 @@ public static class Action
                     {
                         if (E.armorProtectionEffect.pe_includeVisibileAllies)
                         {
-                            float blocks = E.armorProtectionEffect.pe_blockPercent;
-                            Vector2 exchange = E.armorProtectionEffect.pe_exchange;
-
-                            // Calculate modification
-                            int removed = Mathf.RoundToInt(damage * blocks);
-
-                            // Subtract energy
-                            int cost = Mathf.RoundToInt(removed * exchange.y);
-
-                            int currentEnergy = 0;
-                            if (bot.botInfo) // Bot
+                            if(Vector2.Distance(bot.transform.position, target.transform.position) <= E.armorProtectionEffect.pe_alliesDistance)
                             {
-                                currentEnergy = bot.currentEnergy;
-                            }
-                            else // Player
-                            {
-                                currentEnergy = PlayerData.inst.currentEnergy;
-                            }
+                                float blocks = E.armorProtectionEffect.pe_blockPercent;
+                                Vector2 exchange = E.armorProtectionEffect.pe_exchange;
 
-                            // Does the target have the power to cover this?
-                            if (currentEnergy >= cost)
-                            {
-                                // Yes, alter the damage
-                                damage = damage - removed;
-                                // And remove the power
-                                if (target.botInfo) // Bot
+                                // Calculate modification
+                                int removed = Mathf.RoundToInt(damage * blocks);
+
+                                // Subtract energy
+                                int cost = Mathf.RoundToInt(removed * exchange.y);
+
+                                int currentEnergy = 0;
+                                if (bot.botInfo) // Bot
                                 {
-                                    target.currentEnergy -= cost;
+                                    currentEnergy = bot.currentEnergy;
                                 }
                                 else // Player
                                 {
-                                    PlayerData.inst.currentEnergy -= cost;
+                                    currentEnergy = PlayerData.inst.currentEnergy;
+                                }
+
+                                // Does the target have the power to cover this?
+                                if ((E.armorProtectionEffect.pe_requireEnergy && currentEnergy >= cost) || !E.armorProtectionEffect.pe_requireEnergy)
+                                {
+                                    // Yes, alter the damage
+                                    damage = damage - removed;
+                                    // And remove the power
+                                    if (target.botInfo) // Bot
+                                    {
+                                        target.currentEnergy -= cost;
+                                    }
+                                    else // Player
+                                    {
+                                        PlayerData.inst.currentEnergy -= cost;
+                                    }
+                                }
+
+                                firstSheild = true;
+                            }
+                        }
+                        else if (E.armorProtectionEffect.type_includeAllies)
+                        {
+                            if (E.armorProtectionEffect.type_damageType == HF.GetDamageType(weapon.itemData) || E.armorProtectionEffect.type_allTypes)
+                            {
+                                if(Vector2.Distance(bot.transform.position, target.transform.position) <= E.armorProtectionEffect.type_alliesRange)
+                                {
+                                    damage = Mathf.RoundToInt(damage + (float)(damage * E.armorProtectionEffect.type_percentage));
                                 }
                             }
-
-                            firstSheild = true;
                         }
                     }
 
@@ -4059,7 +4072,7 @@ public static class Action
                                     }
 
                                     // Does the target have the power to cover this?
-                                    if (currentEnergy >= cost)
+                                    if ((E.armorProtectionEffect.pe_requireEnergy && currentEnergy >= cost) || !E.armorProtectionEffect.pe_requireEnergy)
                                     {
                                         // Yes, alter the damage
                                         damage = damage - removed;
