@@ -1485,18 +1485,6 @@ MonoBehaviour:
   onHoverStart:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4967508354004066071}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
       - m_Target: {fileID: 2270497141161898798}
         m_TargetAssemblyTypeName: UIDataGenericDetail, Assembly-CSharp
         m_MethodName: FlashBrackets
@@ -3372,7 +3360,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: -9.510005, y: -6}
-  m_SizeDelta: {x: 475.01, y: 12}
+  m_SizeDelta: {x: 399.01, y: 12}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &829781608314049977
 CanvasRenderer:
@@ -3402,7 +3390,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '[                                                ]'
+  m_text: '[                                         ]'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3f1bf64e23c81b149a75c74890c74f84, type: 2}
   m_sharedMaterial: {fileID: -6821579221814523707, guid: 3f1bf64e23c81b149a75c74890c74f84, type: 2}

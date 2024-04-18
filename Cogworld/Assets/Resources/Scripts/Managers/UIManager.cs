@@ -6352,7 +6352,7 @@ public class UIManager : MonoBehaviour
                     {
                         if(E.extraKickChance > 0)
                         {
-                            textWall += "Each active leg slot provides a ";
+                            textWall += " Each active leg slot provides a ";
                             textWall += (E.extraKickChance * 100).ToString() + "% ";
                             textWall += "chance to kick ";
 
@@ -6376,7 +6376,7 @@ public class UIManager : MonoBehaviour
 
                     if (E.chainExplode) // Chain reaction explosion
                     {
-                        textWall += item.itemData.itemName + ": ";
+                        textWall += " " + item.itemData.itemName + ": ";
                         textWall += "If triggered by chain reaction or rigged proximity response, explodes for ";
                         textWall += item.itemData.explosionDetails.damage.x + "-" + item.itemData.explosionDetails.damage.y;
                         textWall += " " + item.itemData.explosionDetails.damageType.ToString().ToLower();
@@ -6934,295 +6934,347 @@ public class UIManager : MonoBehaviour
             // Effect is above fabrication
             if (item.itemData.itemEffects.Count > 0)
             {
-                UIManager.inst.Data_CreateHeader("Effect"); // Effect =========================================================================
-
-                foreach (var E in item.itemData.itemEffects)
+                if (!item.itemData.itemEffects[0].hasLegEffect && !item.itemData.itemEffects[0].chainExplode)
                 {
-                    // There is A LOT to consider here and its gonna take a while to fill it all out
-                    string textWall = " ";
-                    #region Effects
+                    UIManager.inst.Data_CreateHeader("Effect"); // Effect =========================================================================
 
-                    if (E.heatDissipation.hasEffect)
+                    foreach (var E in item.itemData.itemEffects)
                     {
-                        if(E.heatDissipation.dissipationPerTurn > 0)
+                        // There is A LOT to consider here and its gonna take a while to fill it all out
+                        string textWall = " ";
+                        #region Effects
+
+                        if (E.heatDissipation.hasEffect)
                         {
-                            textWall += "Dissipates " + E.heatDissipation.dissipationPerTurn + " heat per turn";
-                            if(E.heatDissipation.integrityLossPerTurn > 0)
+                            if (E.heatDissipation.dissipationPerTurn > 0)
                             {
-                                textWall += ", losing " + E.heatDissipation.integrityLossPerTurn + " integrity in the process";
-                            }
-                            if(E.heatDissipation.minTempToActivate > 0)
-                            {
-                                textWall += ", but is applied after all standard heat dissipation, and only when heat levels rise above ";
-                                textWall += E.heatDissipation.minTempToActivate.ToString();
-                            }
-                            textWall += ".";
-                        }
-                        else if(E.heatDissipation.lowerBaseTemp > 0)
-                        {
-                            textWall += "Lowers base temperature to " + E.heatDissipation.lowerBaseTemp + ".";
-                            if (E.heatDissipation.preventPowerShutdown)
-                            {
-                                textWall += "Also protects power sources from forced shutdown while overheating";
-                                if(E.heatDissipation.preventOverheatSideEffects > 0)
+                                textWall += "Dissipates " + E.heatDissipation.dissipationPerTurn + " heat per turn";
+                                if (E.heatDissipation.integrityLossPerTurn > 0)
                                 {
-                                    textWall += ", and has a " + E.heatDissipation.preventOverheatSideEffects * 100 + "% chance to prevent other types of overheating side effects";
+                                    textWall += ", losing " + E.heatDissipation.integrityLossPerTurn + " integrity in the process";
+                                }
+                                if (E.heatDissipation.minTempToActivate > 0)
+                                {
+                                    textWall += ", but is applied after all standard heat dissipation, and only when heat levels rise above ";
+                                    textWall += E.heatDissipation.minTempToActivate.ToString();
                                 }
                                 textWall += ".";
                             }
-                        }
-                        else if(E.heatDissipation.heatToEnergyAmount > 0)
-                        {
-                            textWall += "Generates " + E.heatDissipation.energyGeneration + " energy per ";
-                            textWall += E.heatDissipation.heatToEnergyAmount + " surplus heat every turn.";
-                        }
-
-
-                        if (E.heatDissipation.stacks)
-                        {
-                            textWall += "\n <stacks>";
-                        }
-                        else if (E.heatDissipation.parallel)
-                        {
-                            textWall += "\n <parallel_ok>";
-                        }
-                        else
-                        {
-                            textWall += "\n <no_stack>";
-                        }
-                    }
-                    else if (E.ramCrushEffect)
-                    {
-                        textWall += E.ramCrushChance * 100 + "% chance to crush robots when ramming them.";
-                        if (E.ramCrush_canDoLarge && E.ramCrush_canDoGigantic)
-                        {
-                            textWall += "Cannot crush targets of large or greater size";
-                            if(E.ramCrush_integLimit > 0)
+                            else if (E.heatDissipation.lowerBaseTemp > 0)
                             {
-                                textWall += ", or those with more than " + E.ramCrush_integLimit + " core integrity";
-                            }
-                            textWall += ".";
-                        }
-
-                        if (E.ramCrush_canStack)
-                        {
-                            if(E.ramCrush_stackCap > 0)
-                            {
-                                textWall += "\n <stacks, capped at " + E.ramCrush_stackCap * 100 + "%>";
-                            }
-                            else
-                            {
-                                textWall += "\n <stacks>";
-                            }
-                        }
-                        else
-                        {
-                            textWall += "\n <no_stack>";
-                        }
-                        textWall += "\n\n";
-                    }
-
-                    if (E.hasStabEffect)
-                    {
-                        textWall += E.stab_recoilPerWeapon + " recoil from each weapon";
-                        if (E.stab_KnockbackImmune)
-                        {
-                            textWall += ", and immunity to knockback";
-                        }
-                        textWall += ".";
-                    }
-
-                    if (E.armorProtectionEffect.hasEffect)
-                    {
-                        ItemProtectionEffect p = E.armorProtectionEffect;
-
-                        if(p.armorEffect_absorbtion > 0)
-                        {
-                            textWall += "Absorbs " + p.armorEffect_absorbtion * 100 + "% of damage that would otherwise affect ";
-                            string type = "";
-                            switch (p.armorEffect_slotType)
-                            {
-                                case ArmorType.Power:
-                                    type = "Power sources.";
-                                    break;
-                                case ArmorType.Propulsion:
-                                    type = "Propulsion units.";
-                                    break;
-                                case ArmorType.Utility:
-                                    type = "Utilities.";
-                                    break;
-                                case ArmorType.Weapon:
-                                    type = "Weapons.";
-                                    break;
-                                case ArmorType.General:
-                                    type = "other parts.";
-                                    break;
-                                case ArmorType.None:
-                                    type = "Core.";
-                                    break;
-                            }
-                            textWall += type;
-                            if (p.armorEffect_preventCritStrikesVSSlot)
-                            {
-                                textWall += "Also negates extra effects of critical strikes against " + type;
-                                if (p.armorEffect_preventChainReactions)
+                                textWall += "Lowers base temperature to " + E.heatDissipation.lowerBaseTemp + ".";
+                                if (E.heatDissipation.preventPowerShutdown)
                                 {
-                                    textWall += ", and prevents chain reactions due to electromagnetic damage";
-                                    if (!p.armorEffect_preventOverflowDamage)
+                                    textWall += "Also protects power sources from forced shutdown while overheating";
+                                    if (E.heatDissipation.preventOverheatSideEffects > 0)
                                     {
-                                        textWall += ", but cannot protect against overflow damage";
+                                        textWall += ", and has a " + E.heatDissipation.preventOverheatSideEffects * 100 + "% chance to prevent other types of overheating side effects";
                                     }
+                                    textWall += ".";
                                 }
                             }
-                            textWall += ".";
+                            else if (E.heatDissipation.heatToEnergyAmount > 0)
+                            {
+                                textWall += "Generates " + E.heatDissipation.energyGeneration + " energy per ";
+                                textWall += E.heatDissipation.heatToEnergyAmount + " surplus heat every turn.";
+                            }
 
-                            if (p.stacks)
+
+                            if (E.heatDissipation.stacks)
                             {
                                 textWall += "\n <stacks>";
                             }
-                            else
-                            {
-                                textWall += "\n <no_stack>";
-                            }
-                        }
-                        else if (p.projectionExchange)
-                        {
-                            textWall += "Blocks " + p.pe_blockPercent * 100 + "% of damage ";
-                            if (p.pe_global)
-                            {
-                                textWall += "in exchange for energy loss at a ";
-                            }
-                            else if (p.pe_includeVisibileAllies)
-                            {
-                                textWall += "to self and any visibile allies within a range of ";
-                                textWall += p.pe_alliesDistance + " in exchange for energy loss at a ";
-                            }
-                            else
-                            {
-                                textWall += "to this part in exchange for energy loss at a ";
-                            }
-                            textWall += p.pe_exchange.x + ":" + p.pe_exchange.y + " ratio";
-                            if(p.pe_requireEnergy)
-                                textWall += " (no effect if insufficient energy).";
-                            textWall += ".";
-
-                            if (p.stacks)
-                            {
-                                textWall += "\n <stacks>";
-                            }
-                            else
-                            {
-                                textWall += "\n <no_stack>";
-                            }
-                        }
-                        else if (p.highCoverage)
-                        {
-                            textWall += "Protects other parts via high coverage.";
-                        }
-                        else if (p.type_hasTypeResistance)
-                        {
-                            textWall += "Enables ";
-                            if (p.type_allTypes)
-                            {
-                                textWall += "general damage resistance: ";
-                            }
-                            else
-                            {
-                                textWall += p.type_damageType.ToString().ToLower() + " damage resistance: ";
-                            }
-                            textWall += p.type_percentage * 100 + "%";
-                            if (p.type_includeAllies)
-                            {
-                                textWall += ", applying benefit to both self and any allies within a range of ";
-                                textWall += p.type_alliesRange.ToString();
-                            }
-                            textWall += ".";
-
-                            if (p.stacks)
-                            {
-                                textWall += "\n <stacks>";
-                            }
-                            else
-                            {
-                                textWall += "\n <no_stack>";
-                            }
-                        }
-                        else if (p.selfRepair)
-                        {
-                            textWall += "Regenerates integrity at a rate of ";
-                            textWall += p.selfRepair_amount + " per " + p.selfRepairTurns + " turn";
-                            if (p.selfRepairTurns > 1)
-                                textWall += "s";
-                            textWall += ".";
-
-                            if(p.parallel && p.resume)
-                            {
-                                textWall += "\n <parallel_ok, resume_ok>";
-                            }
-                            else if (p.parallel)
+                            else if (E.heatDissipation.parallel)
                             {
                                 textWall += "\n <parallel_ok>";
                             }
-                            else if (p.resume)
+                            else
                             {
-                                textWall += "\n <resume_ok>";
+                                textWall += "\n <no_stack>";
                             }
                         }
-                        else if (p.critImmunity)
+                        else if (E.ramCrushEffect)
                         {
-                            textWall += "100% chance to negate effects of incoming critical strikes.";
-                        }
-                    }
-
-                    if (E.detectionEffect.hasEffect)
-                    {
-                        ItemDetectionEffect d = E.detectionEffect;
-
-                        if (d.botDetection)
-                        {
-                            textWall += "Enables robots scanning up to a distance of " + d.range + ", once per turn";
-
-                            if (d.bd_maxInterpreterEffect)
+                            textWall += E.ramCrushChance * 100 + "% chance to crush robots when ramming them.";
+                            if (E.ramCrush_canDoLarge && E.ramCrush_canDoGigantic)
                             {
-                                textWall += ", in addition to all effects of a maximum-strength signal interpreter.";
-                                if (d.bd_previousActivity)
+                                textWall += "Cannot crush targets of large or greater size";
+                                if (E.ramCrush_integLimit > 0)
                                 {
-                                    textWall += " Also detects long-term residual evidence of prior robot activity within field of view.";
+                                    textWall += ", or those with more than " + E.ramCrush_integLimit + " core integrity";
                                 }
+                                textWall += ".";
+                            }
 
-                                if (d.bd_botReporting)
+                            if (E.ramCrush_canStack)
+                            {
+                                if (E.ramCrush_stackCap > 0)
                                 {
-                                    textWall += " 0b10 combat robots scanned by this device will report the event, once per bot.";
+                                    textWall += "\n <stacks, capped at " + E.ramCrush_stackCap * 100 + "%>";
+                                }
+                                else
+                                {
+                                    textWall += "\n <stacks>";
                                 }
                             }
                             else
                             {
-                                textWall += ".";
+                                textWall += "\n <no_stack>";
                             }
+                            textWall += "\n\n";
                         }
-                        else if (d.terrainScanning)
-                        {
-                            textWall += "Enabled terrain scanning up to a distance of " + d.range + ", once per turn.";
-                        }
-                        else if (d.haulerTracking)
-                        {
-                            textWall += "Enables real-time tracking of 0b10 Haulers across the entire floor";
-                            if (d.ht_viewInventories)
-                            {
-                                textWall += ", and gives access to their current manifest. Toggle active state to temporarily list all inventories in view.";
-                            }
-                            else
-                            {
-                                textWall += ".";
-                            }
-                            textWall += " Only applies in 0b10-controlled areas.";
-                        }
-                        else if (d.seismic)
-                        {
-                            textWall += "Enables real-time seismic detection and analysis up to a distance of ";
-                            textWall += d.range + ".";
 
-                            if (d.stacks)
+                        if (E.hasStabEffect)
+                        {
+                            textWall += E.stab_recoilPerWeapon + " recoil from each weapon";
+                            if (E.stab_KnockbackImmune)
+                            {
+                                textWall += ", and immunity to knockback";
+                            }
+                            textWall += ".";
+                        }
+
+                        if (E.armorProtectionEffect.hasEffect)
+                        {
+                            ItemProtectionEffect p = E.armorProtectionEffect;
+
+                            if (p.armorEffect_absorbtion > 0)
+                            {
+                                textWall += "Absorbs " + p.armorEffect_absorbtion * 100 + "% of damage that would otherwise affect ";
+                                string type = "";
+                                switch (p.armorEffect_slotType)
+                                {
+                                    case ArmorType.Power:
+                                        type = "Power sources.";
+                                        break;
+                                    case ArmorType.Propulsion:
+                                        type = "Propulsion units.";
+                                        break;
+                                    case ArmorType.Utility:
+                                        type = "Utilities.";
+                                        break;
+                                    case ArmorType.Weapon:
+                                        type = "Weapons.";
+                                        break;
+                                    case ArmorType.General:
+                                        type = "other parts.";
+                                        break;
+                                    case ArmorType.None:
+                                        type = "Core.";
+                                        break;
+                                }
+                                textWall += type;
+                                if (p.armorEffect_preventCritStrikesVSSlot)
+                                {
+                                    textWall += "Also negates extra effects of critical strikes against " + type;
+                                    if (p.armorEffect_preventChainReactions)
+                                    {
+                                        textWall += ", and prevents chain reactions due to electromagnetic damage";
+                                        if (!p.armorEffect_preventOverflowDamage)
+                                        {
+                                            textWall += ", but cannot protect against overflow damage";
+                                        }
+                                    }
+                                }
+                                textWall += ".";
+
+                                if (p.stacks)
+                                {
+                                    textWall += "\n <stacks>";
+                                }
+                                else
+                                {
+                                    textWall += "\n <no_stack>";
+                                }
+                            }
+                            else if (p.projectionExchange)
+                            {
+                                textWall += "Blocks " + p.pe_blockPercent * 100 + "% of damage ";
+                                if (p.pe_global)
+                                {
+                                    textWall += "in exchange for energy loss at a ";
+                                }
+                                else if (p.pe_includeVisibileAllies)
+                                {
+                                    textWall += "to self and any visibile allies within a range of ";
+                                    textWall += p.pe_alliesDistance + " in exchange for energy loss at a ";
+                                }
+                                else
+                                {
+                                    textWall += "to this part in exchange for energy loss at a ";
+                                }
+                                textWall += p.pe_exchange.x + ":" + p.pe_exchange.y + " ratio";
+                                if (p.pe_requireEnergy)
+                                    textWall += " (no effect if insufficient energy).";
+                                textWall += ".";
+
+                                if (p.stacks)
+                                {
+                                    textWall += "\n <stacks>";
+                                }
+                                else
+                                {
+                                    textWall += "\n <no_stack>";
+                                }
+                            }
+                            else if (p.highCoverage)
+                            {
+                                textWall += "Protects other parts via high coverage.";
+                            }
+                            else if (p.type_hasTypeResistance)
+                            {
+                                textWall += "Enables ";
+                                if (p.type_allTypes)
+                                {
+                                    textWall += "general damage resistance: ";
+                                }
+                                else
+                                {
+                                    textWall += p.type_damageType.ToString().ToLower() + " damage resistance: ";
+                                }
+                                textWall += p.type_percentage * 100 + "%";
+                                if (p.type_includeAllies)
+                                {
+                                    textWall += ", applying benefit to both self and any allies within a range of ";
+                                    textWall += p.type_alliesRange.ToString();
+                                }
+                                textWall += ".";
+
+                                if (p.stacks)
+                                {
+                                    textWall += "\n <stacks>";
+                                }
+                                else
+                                {
+                                    textWall += "\n <no_stack>";
+                                }
+                            }
+                            else if (p.selfRepair)
+                            {
+                                textWall += "Regenerates integrity at a rate of ";
+                                textWall += p.selfRepair_amount + " per " + p.selfRepairTurns + " turn";
+                                if (p.selfRepairTurns > 1)
+                                    textWall += "s";
+                                textWall += ".";
+
+                                if (p.parallel && p.resume)
+                                {
+                                    textWall += "\n <parallel_ok, resume_ok>";
+                                }
+                                else if (p.parallel)
+                                {
+                                    textWall += "\n <parallel_ok>";
+                                }
+                                else if (p.resume)
+                                {
+                                    textWall += "\n <resume_ok>";
+                                }
+                            }
+                            else if (p.critImmunity)
+                            {
+                                textWall += "100% chance to negate effects of incoming critical strikes.";
+                            }
+                        }
+
+                        if (E.detectionEffect.hasEffect)
+                        {
+                            ItemDetectionEffect d = E.detectionEffect;
+
+                            if (d.botDetection)
+                            {
+                                textWall += "Enables robots scanning up to a distance of " + d.range + ", once per turn";
+
+                                if (d.bd_maxInterpreterEffect)
+                                {
+                                    textWall += ", in addition to all effects of a maximum-strength signal interpreter.";
+                                    if (d.bd_previousActivity)
+                                    {
+                                        textWall += " Also detects long-term residual evidence of prior robot activity within field of view.";
+                                    }
+
+                                    if (d.bd_botReporting)
+                                    {
+                                        textWall += " 0b10 combat robots scanned by this device will report the event, once per bot.";
+                                    }
+                                }
+                                else
+                                {
+                                    textWall += ".";
+                                }
+                            }
+                            else if (d.terrainScanning)
+                            {
+                                textWall += "Enabled terrain scanning up to a distance of " + d.range + ", once per turn.";
+                            }
+                            else if (d.haulerTracking)
+                            {
+                                textWall += "Enables real-time tracking of 0b10 Haulers across the entire floor";
+                                if (d.ht_viewInventories)
+                                {
+                                    textWall += ", and gives access to their current manifest. Toggle active state to temporarily list all inventories in view.";
+                                }
+                                else
+                                {
+                                    textWall += ".";
+                                }
+                                textWall += " Only applies in 0b10-controlled areas.";
+                            }
+                            else if (d.seismic)
+                            {
+                                textWall += "Enables real-time seismic detection and analysis up to a distance of ";
+                                textWall += d.range + ".";
+
+                                if (d.stacks)
+                                {
+                                    textWall += "\n <stacks>";
+                                }
+                                else
+                                {
+                                    textWall += "\n <no_stack>";
+                                }
+                            }
+                            else if (d.machine)
+                            {
+                                textWall += "Analyzes visible machines to locate others on the 0b10 network. Also determines whether an explosive machine has been destabilized and how long until detonation.";
+                            }
+                            else if (d.structural)
+                            {
+                                textWall += "Scans all visible walls to analyze the structure behind them, out to a depth of ";
+                                textWall += d.structural_depth;
+                                textWall += ". Also identifies hidden doorways and highlights areas that will soon cave in due to instability even without further stimulation.";
+                            }
+                            else if (d.warlordComms)
+                            {
+                                textWall += "Enables long-distance communication with Warlord forces to determine their composition and hiding locations. Toggle active state to temporarily list all squads in the area. If active while near a squad, will signal it to emerge and assist.";
+                            }
+                        }
+
+                        if (E.hasSignalInterp)
+                        {
+                            // Unlike other effects, each text wall is different for the different strengths
+                            // 1 -> 4
+                            switch (E.signalInterp_strength)
+                            {
+                                case 1:
+                                    textWall += "Strength 1: Robot scan signals differentiate between object sizes. (Requires data from a Sensor Array.) Also enables deciphering of signals emitted from adjacent exits, revealing where they lead, and at garrisons know the time until the next response dispatch, if any. When multiple exits lead to the same destination, after having identified the first, subsequent ones will be identified on sight even without an interpreter.";
+                                    break;
+                                case 2:
+                                    textWall += "Strength 2: Robot scan signals accurately reflect target size and class, and are unaffected by system corruption. (Requires data from a Sensor Array.) Also enables deciphering of signals emitted from adjacent exits, revealing where they lead, and at garrisons know the time until the next response dispatch, if any. When multiple exits lead to the same destination, after having identified the first, subsequent ones will be identified on sight even without an interpreter.";
+                                    break;
+                                case 3:
+                                    textWall += "Strength 3: Robot scan signals accurately reflect target size and specific class rating, and are unaffected by system corruption. (Requires data from a Sensor Array.) Also enables deciphering of signals emitted from adjacent exits, revealing where they lead, and at garrisons know the time until the next response dispatch, if any. When multiple exits lead to the same destination, after having identified the first, subsequent ones will be identified on sight even without an interpreter.";
+                                    break;
+                                case 4:
+                                    textWall += "Strength 4: Robot scan signals accurately reflect target size and specific class rating, are unaffected by system corruption, and can discern dormant, unpowered, disabled, and broken robots. (Requires data from a Sensor Array.) Also enables deciphering of signals emitted from adjacent exits, revealing where they lead, and at garrisons know the time until the next response dispatch, if any. When multiple exits lead to the same destination, after having identified the first, subsequent ones will be identified on sight even without an interpreter.";
+                                    break;
+                            }
+                        }
+
+                        if (E.hasMassSupport)
+                        {
+                            textWall += "Increase mass support by " + E.massSupport + ".";
+
+                            if (E.massSupport_stacks)
                             {
                                 textWall += "\n <stacks>";
                             }
@@ -7231,529 +7283,137 @@ public class UIManager : MonoBehaviour
                                 textWall += "\n <no_stack>";
                             }
                         }
-                        else if (d.machine)
-                        {
-                            textWall += "Analyzes visible machines to locate others on the 0b10 network. Also determines whether an explosive machine has been destabilized and how long until detonation.";
-                        }
-                        else if (d.structural)
-                        {
-                            textWall += "Scans all visible walls to analyze the structure behind them, out to a depth of ";
-                            textWall += d.structural_depth;
-                            textWall += ". Also identifies hidden doorways and highlights areas that will soon cave in due to instability even without further stimulation.";
-                        }
-                        else if (d.warlordComms)
-                        {
-                            textWall += "Enables long-distance communication with Warlord forces to determine their composition and hiding locations. Toggle active state to temporarily list all squads in the area. If active while near a squad, will signal it to emerge and assist.";
-                        }
-                    }
 
-                    if (E.hasSignalInterp)
-                    {
-                        // Unlike other effects, each text wall is different for the different strengths
-                        // 1 -> 4
-                        switch (E.signalInterp_strength)
+                        if (E.collectsMatterBeam)
                         {
-                            case 1:
-                                textWall += "Strength 1: Robot scan signals differentiate between object sizes. (Requires data from a Sensor Array.) Also enables deciphering of signals emitted from adjacent exits, revealing where they lead, and at garrisons know the time until the next response dispatch, if any. When multiple exits lead to the same destination, after having identified the first, subsequent ones will be identified on sight even without an interpreter.";
-                                break;
-                            case 2:
-                                textWall += "Strength 2: Robot scan signals accurately reflect target size and class, and are unaffected by system corruption. (Requires data from a Sensor Array.) Also enables deciphering of signals emitted from adjacent exits, revealing where they lead, and at garrisons know the time until the next response dispatch, if any. When multiple exits lead to the same destination, after having identified the first, subsequent ones will be identified on sight even without an interpreter.";
-                                break;
-                            case 3:
-                                textWall += "Strength 3: Robot scan signals accurately reflect target size and specific class rating, and are unaffected by system corruption. (Requires data from a Sensor Array.) Also enables deciphering of signals emitted from adjacent exits, revealing where they lead, and at garrisons know the time until the next response dispatch, if any. When multiple exits lead to the same destination, after having identified the first, subsequent ones will be identified on sight even without an interpreter.";
-                                break;
-                            case 4:
-                                textWall += "Strength 4: Robot scan signals accurately reflect target size and specific class rating, are unaffected by system corruption, and can discern dormant, unpowered, disabled, and broken robots. (Requires data from a Sensor Array.) Also enables deciphering of signals emitted from adjacent exits, revealing where they lead, and at garrisons know the time until the next response dispatch, if any. When multiple exits lead to the same destination, after having identified the first, subsequent ones will be identified on sight even without an interpreter.";
-                                break;
-                        }
-                    }
-
-                    if (E.hasMassSupport)
-                    {
-                        textWall += "Increase mass support by " + E.massSupport + ".";
-
-                        if (E.massSupport_stacks)
-                        {
-                            textWall += "\n <stacks>";
-                        }
-                        else
-                        {
-                            textWall += "\n <no_stack>";
-                        }
-                    }
-
-                    if (E.collectsMatterBeam)
-                    {
-                        textWall += "Automatically collects matter within a range of " + E.matterCollectionRange + ".";
-                    }
-
-                    if (E.internalStorage)
-                    {
-                        textWall += "Increases ";
-                        if(E.internalStorageType == 0) // Matter
-                        {
-                            textWall += "matter storage capcity by " + E.internalStorageCapacity + ".";
-                            textWall += " Also stores surplus collected matter while in inventory, but cannot be accessed for use until attached. Stored matter can also be extracted directly if on the ground at current position.";
-                        }
-                        else if(E.internalStorageType == 1) // Power
-                        {
-                            textWall += "energy storage capcity by " + E.internalStorageCapacity + ".";
-                            textWall += " Also stores surplus collected energy while in inventory, but cannot be accessed for use until attached. Stored energy can also be extracted directly if on the ground at current position.";
+                            textWall += "Automatically collects matter within a range of " + E.matterCollectionRange + ".";
                         }
 
-                        if (E.internalStorageType_stacks)
+                        if (E.internalStorage)
                         {
-                            textWall += "\n <stacks>";
-                        }
-                        else
-                        {
-                            textWall += "\n <no_stack>";
-                        }
-                    }
-
-                    if (E.hackBonuses.hasHackBonus || E.hackBonuses.hasSystemShieldBonus)
-                    {
-                        HackBonus h = E.hackBonuses;
-
-                        if (h.hasHackBonus)
-                        {
-                            textWall += "Increases chance of successful machine hack by " + h.hackSuccessBonus * 100;
-                            textWall += ". Also provides a +" + h.rewireBonus * 100 + "% bonus to rewiring traps and disrupted robots, and applies a ";
-                            textWall += h.programmerHackDefenseBonus * 100 + "% penalty to hostile programmers attempting to defend their allies against your hacks.";
-                        }
-                        else if (h.hasSystemShieldBonus)
-                        {
-                            textWall += "While hacking machines, reduces both chance of detection and rate of detection chance increase by ";
-                            textWall += h.hackDetectRateBonus + ". Reduces tracing progress advances by the same amount. Also a lower chance that hacking machines will be considered serious enough to trigger an increase in security level, and reduces central database lockout chance by ";
-                            textWall += h.databaseLockoutBonus * 100 + "%. Blocks hacking feedback side effects ";
-                            textWall += h.hackFeedbackPreventBonus * 100 + "% of the time, and repels " + h.allyHackDefenseBonus * 100 + "% of hacking attempts against allies within a range of ";
-                            textWall += h.allyHackRange + ".";
-                        }
-
-                        if (h.stacks)
-                        {
-                            textWall += "\n <stacks>";
-                        }
-                        else
-                        {
-                            textWall += "\n <no_stack>";
-                        }
-                    }
-
-                    if (E.emitEffect.hasEffect)
-                    {
-                        textWall += "Every " + E.emitEffect.turnTime + " turns emits a powerful signal tuned to power down all ";
-                        if (E.emitEffect.target)
-                        {
-                            textWall += "0b10 ";
-                        }
-                        else
-                        {
-                            textWall += "Assembled ";
-                        }
-                        textWall += "within a range of " + E.emitEffect.range + ".";
-                    }
-
-                    if (E.fireTimeEffect.hasEffect)
-                    {
-                        ItemFiretimeEffect f = E.fireTimeEffect;
-
-                        if (f.launchersOnly)
-                        {
-                            textWall += "Reduces firing time for any launcher by " + f.fireTimeReduction * 100 + "%, if fired alone.";
-                        }
-                        else
-                        {
-                            textWall += "Reduces collective firing time of all guns, cannons, and launchers by " + f.fireTimeReduction * 100 + "%.";
-                        }
-
-                        if (!f.compatability)
-                        {
-                            textWall += " Incompatible with Weapon Cyclers and Autonomous or overloaded weapons.";
-                        }
-
-                        if (f.stacks)
-                        {
-                            if (f.capped)
+                            textWall += "Increases ";
+                            if (E.internalStorageType == 0) // Matter
                             {
-                                textWall += "\n <stacks, capped at " + f.cap * 100 + "%>";
+                                textWall += "matter storage capcity by " + E.internalStorageCapacity + ".";
+                                textWall += " Also stores surplus collected matter while in inventory, but cannot be accessed for use until attached. Stored matter can also be extracted directly if on the ground at current position.";
                             }
-                            else
+                            else if (E.internalStorageType == 1) // Power
+                            {
+                                textWall += "energy storage capcity by " + E.internalStorageCapacity + ".";
+                                textWall += " Also stores surplus collected energy while in inventory, but cannot be accessed for use until attached. Stored energy can also be extracted directly if on the ground at current position.";
+                            }
+
+                            if (E.internalStorageType_stacks)
                             {
                                 textWall += "\n <stacks>";
                             }
-                        }
-                        else
-                        {
-                            textWall += "\n <no_stack>";
-                        }
-                    }
-
-                    if(E.transmissionJammingEffect.hasEffect)
-                    {
-                        ItemTransmissionJamming f = E.transmissionJammingEffect;
-
-                        textWall += "Blocks local transmissions from visible hostiles within a range of ";
-                        textWall += f.range + ", making it impossible for them to share information about your current position.";
-
-                        if (f.preventReinforcementCall)
-                        {
-                            textWall += " Also prevents calls for reinforcements";
-                            if (f.suppressAlarmTraps)
+                            else
                             {
-                                textWall += ", and suppresses alarm traps";
+                                textWall += "\n <no_stack>";
                             }
-                            textWall += ".";
                         }
-                    }
 
-                    if (E.effectiveCorruptionEffect.hasEffect)
-                    {
-                        ItemEffectiveCorruptionPrevention f = E.effectiveCorruptionEffect;
-
-                        textWall += "Reduces effective system corruption by " + f.amount + ".";
-
-                        if (f.stacks)
+                        if (E.hackBonuses.hasHackBonus || E.hackBonuses.hasSystemShieldBonus)
                         {
-                            textWall += "\n <stacks>";
-                        }
-                        else
-                        {
-                            textWall += "\n <no_stack>";
-                        }
-                    }
+                            HackBonus h = E.hackBonuses;
 
-                    if (E.partRestoreEffect.hasEffect)
-                    {
-                        ItemPartRestore f = E.partRestoreEffect;
-
-                        textWall += f.percentChance * 100 + "% chance each turn to restore a broken or malfunctioning part, attached or in inventory, to functionality.";
-                        if (!f.canRepairAlienTech)
-                        {
-                            textWall += " Unable to repair alien technology";
-                            if (f.protoRepairCap > 0)
+                            if (h.hasHackBonus)
                             {
-                                textWall += ", or prototypes above rating " + f.protoRepairCap + ".";
+                                textWall += "Increases chance of successful machine hack by " + h.hackSuccessBonus * 100;
+                                textWall += ". Also provides a +" + h.rewireBonus * 100 + "% bonus to rewiring traps and disrupted robots, and applies a ";
+                                textWall += h.programmerHackDefenseBonus * 100 + "% penalty to hostile programmers attempting to defend their allies against your hacks.";
+                            }
+                            else if (h.hasSystemShieldBonus)
+                            {
+                                textWall += "While hacking machines, reduces both chance of detection and rate of detection chance increase by ";
+                                textWall += h.hackDetectRateBonus + ". Reduces tracing progress advances by the same amount. Also a lower chance that hacking machines will be considered serious enough to trigger an increase in security level, and reduces central database lockout chance by ";
+                                textWall += h.databaseLockoutBonus * 100 + "%. Blocks hacking feedback side effects ";
+                                textWall += h.hackFeedbackPreventBonus * 100 + "% of the time, and repels " + h.allyHackDefenseBonus * 100 + "% of hacking attempts against allies within a range of ";
+                                textWall += h.allyHackRange + ".";
+                            }
+
+                            if (h.stacks)
+                            {
+                                textWall += "\n <stacks>";
                             }
                             else
                             {
+                                textWall += "\n <no_stack>";
+                            }
+                        }
+
+                        if (E.emitEffect.hasEffect)
+                        {
+                            textWall += "Every " + E.emitEffect.turnTime + " turns emits a powerful signal tuned to power down all ";
+                            if (E.emitEffect.target)
+                            {
+                                textWall += "0b10 ";
+                            }
+                            else
+                            {
+                                textWall += "Assembled ";
+                            }
+                            textWall += "within a range of " + E.emitEffect.range + ".";
+                        }
+
+                        if (E.fireTimeEffect.hasEffect)
+                        {
+                            ItemFiretimeEffect f = E.fireTimeEffect;
+
+                            if (f.launchersOnly)
+                            {
+                                textWall += "Reduces firing time for any launcher by " + f.fireTimeReduction * 100 + "%, if fired alone.";
+                            }
+                            else
+                            {
+                                textWall += "Reduces collective firing time of all guns, cannons, and launchers by " + f.fireTimeReduction * 100 + "%.";
+                            }
+
+                            if (!f.compatability)
+                            {
+                                textWall += " Incompatible with Weapon Cyclers and Autonomous or overloaded weapons.";
+                            }
+
+                            if (f.stacks)
+                            {
+                                if (f.capped)
+                                {
+                                    textWall += "\n <stacks, capped at " + f.cap * 100 + "%>";
+                                }
+                                else
+                                {
+                                    textWall += "\n <stacks>";
+                                }
+                            }
+                            else
+                            {
+                                textWall += "\n <no_stack>";
+                            }
+                        }
+
+                        if (E.transmissionJammingEffect.hasEffect)
+                        {
+                            ItemTransmissionJamming f = E.transmissionJammingEffect;
+
+                            textWall += "Blocks local transmissions from visible hostiles within a range of ";
+                            textWall += f.range + ", making it impossible for them to share information about your current position.";
+
+                            if (f.preventReinforcementCall)
+                            {
+                                textWall += " Also prevents calls for reinforcements";
+                                if (f.suppressAlarmTraps)
+                                {
+                                    textWall += ", and suppresses alarm traps";
+                                }
                                 textWall += ".";
                             }
                         }
-                        else
+
+                        if (E.effectiveCorruptionEffect.hasEffect)
                         {
-                            textWall += " Able to repair alien technology";
-                            if (f.protoRepairCap > 0)
-                            {
-                                textWall += ", but unable to repair prototypes above rating " + f.protoRepairCap + ".";
-                            }
-                            else
-                            {
-                                textWall += ".";
-                            }
-                        }
+                            ItemEffectiveCorruptionPrevention f = E.effectiveCorruptionEffect;
 
-                        if (f.canRunInParralel)
-                        {
-                            textWall += "\n <parallel_ok>";
-                        }
-                    }
-
-                    if(E.exilesEffects.hasEffect)
-                    {
-                        ItemExilesSpecific f = E.exilesEffects;
-
-                        if (f.isAutoWeapon)
-                        {
-                            textWall += "Selects its own targets and attacks them if in range, at no time cost to you.";
-                        }
-
-                        if (f.chronoWheelEffect)
-                        {
-                            textWall += "Sets a temporal reversion point when attached, then loses 1 integrity per turn. Once integrity is depleted naturally, you are forced back to that point in time. If destroyed prematurely the reversion will not occur.";
-                        }
-
-                        if (f.lifetimeDecay)
-                        {
-                            textWall += "\n\n Eventually breaks down.";
-                        }
-
-                        // add more later
-                    }
-
-                    if (E.toHitBuffs.hasEffect)
-                    {
-                        ItemToHitEffects f = E.toHitBuffs;
-
-                        if (f.bonusCritChance)
-                        {
-                            textWall += "Increases weapon critical chances by " + f.amount * 100 + "%.";
-                            textWall += " Only affects weapons that are already capable of critical hits, and not applicable for the Meltdown critical.";
-                        }
-
-                        if (f.bypassArmor)
-                        {
-                            textWall += "Enables " + f.amount * 100 + "% chance to bypass target armor. Does not apply to AOE attacks.";
-                        }
-
-                        if (f.coreExposureEffect)
-                        {
-                            textWall += "Increases target core exposure by " + f.amount * 100 + "%.";
-                            if (f.coreExposureGCM_only)
-                            {
-                                textWall += " Applies to only gun, cannon, and melee attacks.";
-                            }
-                        }
-
-                        if (f.flatBonus)
-                        {
-                            textWall += "Increase non-melee weapon accuracy by " + f.amount * 100 + "%";
-                        }
-
-                        if (f.stacks)
-                        {
-                            textWall += "\n <stacks>";
-                        }
-                        else if (f.halfStacks)
-                        {
-                            textWall += "\n <half_stacks>";
-                        }
-                        else
-                        {
-                            textWall += "\n <no_stack>";
-                        }
-                    }
-
-                    if (E.partIdent.hasEffect)
-                    {
-                        textWall += E.partIdent.amount * 100 + "% chance to identify a random unidentified part in inventory each turn. ";
-                        if (!E.partIdent.canIdentifyAlien)
-                        {
-                            textWall += "Cannot identify alien technology.";
-                        }
-
-                        if (E.partIdent.parallel)
-                        {
-                            textWall += "\n <parallel_ok>";
-                        }
-                    }
-
-                    if (E.antiCorruption.hasEffect)
-                    {
-                        textWall += E.antiCorruption.amount * 100 + "% chance each turn to purge 1% of system corruption";
-                        if(E.antiCorruption.integrityLossPer > 0)
-                        {
-                            textWall += ", losing " + E.antiCorruption.integrityLossPer + " integrity each time the effect is applied";
-                        }
-
-                        textWall += ".";
-
-                        if (E.antiCorruption.parallel)
-                        {
-                            textWall += "\n <parallel_ok>";
-                        }
-                    }
-
-                    if (E.rcsEffect.hasEffect)
-                    {
-                        ItemRCS f = E.rcsEffect;
-
-                        textWall += "Enables responsive movement to avoid direct attacks, " + f.percentage * 100 + "% to dodge while on legs, or " + f.percentage * 200 + "% while hovering or flying (no effect on tracked or wheeled movement). Same chance to evade triggered traps";
-                        if(f.momentumBonus > 0)
-                        {
-                            textWall += ", and a +" + f.momentumBonus + " to effective momentum for melee attacks and ramming. No effects while overweight";
-                        }
-                        textWall += ".";
-
-                        if (f.stacks)
-                        {
-                            textWall += "\n <stacks>";
-                        }
-                        else
-                        {
-                            textWall += "\n <no_stack>";
-                        }
-                    }
-
-                    if (E.phasingEffect.hasEffect)
-                    {
-                        textWall += "Reduces enemy ranged targeting accuracy by " + E.phasingEffect.percentage * 100 + "%.";
-                        if (E.phasingEffect.stacks)
-                        {
-                            textWall += "\n <stacks>";
-                        }
-                        else
-                        {
-                            textWall += "\n <no_stack>";
-                        }
-                    }
-
-                    if (E.cloakingEffect.hasEffect)
-                    {
-                        ItemCloaking f = E.cloakingEffect;
-
-                        textWall += "Effective sight range of robots attempting to spot you reduced by " + f.rangedReduction + ". ";
-                        if(f.noticeReduction > 0)
-                        {
-                            textWall += "Also " + f.noticeReduction * 100 + "% chance of being noticed by hostiles if passing through their field of view when not their turn.";
-                        }
-
-                        if (f.halfStacks)
-                        {
-                            textWall += "\n <half_stacks>";
-                        }
-                        else
-                        {
-                            textWall += "\n <no_stack>";
-                        }
-                    }
-
-                    if (E.meleeBonus.hasEffect)
-                    {
-                        ItemMeleeBonus f = E.meleeBonus;
-
-                        if(f.melee_followUpChance > 0)
-                        {
-                            textWall += "Increases per-weapon chance of follow-up melee attacks by" + f.melee_followUpChance * 100 + "%";
-                        }
-
-                        if(f.melee_maxDamageBoost > 0)
-                        {
-                            textWall += "Increases melee weapons maximum damage by " + f.melee_maxDamageBoost * 100 + "%";
-                            if(f.melee_accuracyDecrease > 0)
-                            {
-                                textWall += ", and decreases melee attack accuracy by " + f.melee_accuracyDecrease * 100 + "%";
-                            }
-                            textWall += ".";
-                        }
-
-                        if(f.melee_accuracyIncrease > 0)
-                        {
-                            textWall += "Increases melee attack accuracy by " + f.melee_accuracyIncrease * 100 + "%";
-                            if(f.melee_minDamageBoost > 0)
-                            {
-                                textWall += ", and minimum damage by " + f.melee_minDamageBoost + " (cannot exceed weapon's maximum damage)"; ;
-                            }
-                            textWall += ".";
-                        }
-
-                        if(f.melee_attackTimeDecrease > 0)
-                        {
-                            textWall += "Increases per-weapon chance of follow-up melee attacks by " + f.melee_attackTimeDecrease * 100 + "%";
-                        }
-
-                        if (f.stacks)
-                        {
-                            textWall += "\n <stack>";
-                        }
-                        else if (f.halfStacks)
-                        {
-                            textWall += "\n <half_stacks>";
-                        }
-                        else
-                        {
-                            textWall += "\n <no_stack>";
-                        }
-                    }
-
-                    if (E.launcherBonus.hasEffect)
-                    {
-                        ItemLauncherBonuses f = E.launcherBonus;
-
-                        if(f.launcherAccuracy > 0)
-                        {
-                            textWall += "Increases launcher accuracy by " + f.launcherAccuracy * 100 + "%. Also prevents launcher misfires caused by system corruption.";
-                        }
-
-                        if(f.launcherLoading > 0)
-                        {
-                            if (f.forEnergyOrCannon)
-                            {
-                                textWall += "Reduces firing time for an energy gun or cannon by 50%, if fired alone. Incompatible with Weapon Cyclers and autonomous or overloaded weapons.";
-                            }
-                            else
-                            {
-                                textWall += "Reduces firing time for any launcher by 50%, if fired alone. Incompatible with Weapon Cyclers and autonomous or overloaded weapons.";
-                            }
-                        }
-
-                        if (f.stacks)
-                        {
-                            textWall += "\n <stacks>";
-                        }
-                        else
-                        {
-                            textWall += "\n <no_stack>";
-                        }
-                    }
-
-                    if (E.bonusSlots.hasEffect)
-                    {
-                        ItemBonusSlots f = E.bonusSlots;
-
-                        // ?
-                    }
-
-                    if(E.flatDamageBonus.hasEffect)
-                    {
-                        ItemFlatDamageBonus f = E.flatDamageBonus;
-
-                        string types = "";
-                        foreach (var T in f.types)
-                        {
-                            types += T.ToString() + "/";
-                        }
-                        types = types.Substring(0, types.Length - 1); // Remove the spare "/"
-
-                        textWall += "Increases " + types + " damage by " + f.damageBonus * 100 + "%.";
-
-                        if (f.stacks)
-                        {
-                            textWall += "\n <stacks>";
-                        }
-                        else if (f.halfStacks)
-                        {
-                            textWall += "\n <half_stacks>";
-                        }
-                        else
-                        {
-                            textWall += "\n <no_stack>";
-                        }
-                    }
-
-                    if (E.salvageBonus.hasEffect)
-                    {
-                        ItemSalvageBonuses f = E.salvageBonus;
-
-                        textWall += "Increases salvage recovered from targets, +" + f.bonus + " modifier.";
-
-                        if (f.gunTypeOnly)
-                        {
-                            textWall += " Compatible only with gun-type weapons that fire a single projectile.";
-                        }
-
-                        if (f.stacks)
-                        {
-                            textWall += "\n <stacks>";
-                        }
-                        else
-                        {
-                            textWall += "\n <no_stack>";
-                        }
-                    }
-
-                    if (E.alienBonus.hasEffect)
-                    {
-                        ItemAlienBonuses f = E.alienBonus;
-
-                        if (f.singleDamageToCore)
-                        {
-                            textWall += "While active, " + f.amount * 100 + "% of damage to this part is intead passed along to core.";
-                        }
-
-                        if (f.allDamageToCore)
-                        {
-                            textWall += f.amount * 100 + "% of damage to parts is instead transferred directly to the core.";
+                            textWall += "Reduces effective system corruption by " + f.amount + ".";
 
                             if (f.stacks)
                             {
@@ -7765,13 +7425,359 @@ public class UIManager : MonoBehaviour
                             }
                         }
 
-                        // Expand this later
-                    }
+                        if (E.partRestoreEffect.hasEffect)
+                        {
+                            ItemPartRestore f = E.partRestoreEffect;
 
-                    #endregion
-                    Data_CreateTextWall(textWall);
-                    Data_CreateSpacer();
+                            textWall += f.percentChance * 100 + "% chance each turn to restore a broken or malfunctioning part, attached or in inventory, to functionality.";
+                            if (!f.canRepairAlienTech)
+                            {
+                                textWall += " Unable to repair alien technology";
+                                if (f.protoRepairCap > 0)
+                                {
+                                    textWall += ", or prototypes above rating " + f.protoRepairCap + ".";
+                                }
+                                else
+                                {
+                                    textWall += ".";
+                                }
+                            }
+                            else
+                            {
+                                textWall += " Able to repair alien technology";
+                                if (f.protoRepairCap > 0)
+                                {
+                                    textWall += ", but unable to repair prototypes above rating " + f.protoRepairCap + ".";
+                                }
+                                else
+                                {
+                                    textWall += ".";
+                                }
+                            }
+
+                            if (f.canRunInParralel)
+                            {
+                                textWall += "\n <parallel_ok>";
+                            }
+                        }
+
+                        if (E.exilesEffects.hasEffect)
+                        {
+                            ItemExilesSpecific f = E.exilesEffects;
+
+                            if (f.isAutoWeapon)
+                            {
+                                textWall += "Selects its own targets and attacks them if in range, at no time cost to you.";
+                            }
+
+                            if (f.chronoWheelEffect)
+                            {
+                                textWall += "Sets a temporal reversion point when attached, then loses 1 integrity per turn. Once integrity is depleted naturally, you are forced back to that point in time. If destroyed prematurely the reversion will not occur.";
+                            }
+
+                            if (f.lifetimeDecay)
+                            {
+                                textWall += "\n\n Eventually breaks down.";
+                            }
+
+                            // add more later
+                        }
+
+                        if (E.toHitBuffs.hasEffect)
+                        {
+                            ItemToHitEffects f = E.toHitBuffs;
+
+                            if (f.bonusCritChance)
+                            {
+                                textWall += "Increases weapon critical chances by " + f.amount * 100 + "%.";
+                                textWall += " Only affects weapons that are already capable of critical hits, and not applicable for the Meltdown critical.";
+                            }
+
+                            if (f.bypassArmor)
+                            {
+                                textWall += "Enables " + f.amount * 100 + "% chance to bypass target armor. Does not apply to AOE attacks.";
+                            }
+
+                            if (f.coreExposureEffect)
+                            {
+                                textWall += "Increases target core exposure by " + f.amount * 100 + "%.";
+                                if (f.coreExposureGCM_only)
+                                {
+                                    textWall += " Applies to only gun, cannon, and melee attacks.";
+                                }
+                            }
+
+                            if (f.flatBonus)
+                            {
+                                textWall += "Increase non-melee weapon accuracy by " + f.amount * 100 + "%";
+                            }
+
+                            if (f.stacks)
+                            {
+                                textWall += "\n <stacks>";
+                            }
+                            else if (f.halfStacks)
+                            {
+                                textWall += "\n <half_stacks>";
+                            }
+                            else
+                            {
+                                textWall += "\n <no_stack>";
+                            }
+                        }
+
+                        if (E.partIdent.hasEffect)
+                        {
+                            textWall += E.partIdent.amount * 100 + "% chance to identify a random unidentified part in inventory each turn. ";
+                            if (!E.partIdent.canIdentifyAlien)
+                            {
+                                textWall += "Cannot identify alien technology.";
+                            }
+
+                            if (E.partIdent.parallel)
+                            {
+                                textWall += "\n <parallel_ok>";
+                            }
+                        }
+
+                        if (E.antiCorruption.hasEffect)
+                        {
+                            textWall += E.antiCorruption.amount * 100 + "% chance each turn to purge 1% of system corruption";
+                            if (E.antiCorruption.integrityLossPer > 0)
+                            {
+                                textWall += ", losing " + E.antiCorruption.integrityLossPer + " integrity each time the effect is applied";
+                            }
+
+                            textWall += ".";
+
+                            if (E.antiCorruption.parallel)
+                            {
+                                textWall += "\n <parallel_ok>";
+                            }
+                        }
+
+                        if (E.rcsEffect.hasEffect)
+                        {
+                            ItemRCS f = E.rcsEffect;
+
+                            textWall += "Enables responsive movement to avoid direct attacks, " + f.percentage * 100 + "% to dodge while on legs, or " + f.percentage * 200 + "% while hovering or flying (no effect on tracked or wheeled movement). Same chance to evade triggered traps";
+                            if (f.momentumBonus > 0)
+                            {
+                                textWall += ", and a +" + f.momentumBonus + " to effective momentum for melee attacks and ramming. No effects while overweight";
+                            }
+                            textWall += ".";
+
+                            if (f.stacks)
+                            {
+                                textWall += "\n <stacks>";
+                            }
+                            else
+                            {
+                                textWall += "\n <no_stack>";
+                            }
+                        }
+
+                        if (E.phasingEffect.hasEffect)
+                        {
+                            textWall += "Reduces enemy ranged targeting accuracy by " + E.phasingEffect.percentage * 100 + "%.";
+                            if (E.phasingEffect.stacks)
+                            {
+                                textWall += "\n <stacks>";
+                            }
+                            else
+                            {
+                                textWall += "\n <no_stack>";
+                            }
+                        }
+
+                        if (E.cloakingEffect.hasEffect)
+                        {
+                            ItemCloaking f = E.cloakingEffect;
+
+                            textWall += "Effective sight range of robots attempting to spot you reduced by " + f.rangedReduction + ". ";
+                            if (f.noticeReduction > 0)
+                            {
+                                textWall += "Also " + f.noticeReduction * 100 + "% chance of being noticed by hostiles if passing through their field of view when not their turn.";
+                            }
+
+                            if (f.halfStacks)
+                            {
+                                textWall += "\n <half_stacks>";
+                            }
+                            else
+                            {
+                                textWall += "\n <no_stack>";
+                            }
+                        }
+
+                        if (E.meleeBonus.hasEffect)
+                        {
+                            ItemMeleeBonus f = E.meleeBonus;
+
+                            if (f.melee_followUpChance > 0)
+                            {
+                                textWall += "Increases per-weapon chance of follow-up melee attacks by" + f.melee_followUpChance * 100 + "%";
+                            }
+
+                            if (f.melee_maxDamageBoost > 0)
+                            {
+                                textWall += "Increases melee weapons maximum damage by " + f.melee_maxDamageBoost * 100 + "%";
+                                if (f.melee_accuracyDecrease > 0)
+                                {
+                                    textWall += ", and decreases melee attack accuracy by " + f.melee_accuracyDecrease * 100 + "%";
+                                }
+                                textWall += ".";
+                            }
+
+                            if (f.melee_accuracyIncrease > 0)
+                            {
+                                textWall += "Increases melee attack accuracy by " + f.melee_accuracyIncrease * 100 + "%";
+                                if (f.melee_minDamageBoost > 0)
+                                {
+                                    textWall += ", and minimum damage by " + f.melee_minDamageBoost + " (cannot exceed weapon's maximum damage)"; ;
+                                }
+                                textWall += ".";
+                            }
+
+                            if (f.melee_attackTimeDecrease > 0)
+                            {
+                                textWall += "Increases per-weapon chance of follow-up melee attacks by " + f.melee_attackTimeDecrease * 100 + "%";
+                            }
+
+                            if (f.stacks)
+                            {
+                                textWall += "\n <stack>";
+                            }
+                            else if (f.halfStacks)
+                            {
+                                textWall += "\n <half_stacks>";
+                            }
+                            else
+                            {
+                                textWall += "\n <no_stack>";
+                            }
+                        }
+
+                        if (E.launcherBonus.hasEffect)
+                        {
+                            ItemLauncherBonuses f = E.launcherBonus;
+
+                            if (f.launcherAccuracy > 0)
+                            {
+                                textWall += "Increases launcher accuracy by " + f.launcherAccuracy * 100 + "%. Also prevents launcher misfires caused by system corruption.";
+                            }
+
+                            if (f.launcherLoading > 0)
+                            {
+                                if (f.forEnergyOrCannon)
+                                {
+                                    textWall += "Reduces firing time for an energy gun or cannon by 50%, if fired alone. Incompatible with Weapon Cyclers and autonomous or overloaded weapons.";
+                                }
+                                else
+                                {
+                                    textWall += "Reduces firing time for any launcher by 50%, if fired alone. Incompatible with Weapon Cyclers and autonomous or overloaded weapons.";
+                                }
+                            }
+
+                            if (f.stacks)
+                            {
+                                textWall += "\n <stacks>";
+                            }
+                            else
+                            {
+                                textWall += "\n <no_stack>";
+                            }
+                        }
+
+                        if (E.bonusSlots.hasEffect)
+                        {
+                            ItemBonusSlots f = E.bonusSlots;
+
+                            // ?
+                        }
+
+                        if (E.flatDamageBonus.hasEffect)
+                        {
+                            ItemFlatDamageBonus f = E.flatDamageBonus;
+
+                            string types = "";
+                            foreach (var T in f.types)
+                            {
+                                types += T.ToString() + "/";
+                            }
+                            types = types.Substring(0, types.Length - 1); // Remove the spare "/"
+
+                            textWall += "Increases " + types + " damage by " + f.damageBonus * 100 + "%.";
+
+                            if (f.stacks)
+                            {
+                                textWall += "\n <stacks>";
+                            }
+                            else if (f.halfStacks)
+                            {
+                                textWall += "\n <half_stacks>";
+                            }
+                            else
+                            {
+                                textWall += "\n <no_stack>";
+                            }
+                        }
+
+                        if (E.salvageBonus.hasEffect)
+                        {
+                            ItemSalvageBonuses f = E.salvageBonus;
+
+                            textWall += "Increases salvage recovered from targets, +" + f.bonus + " modifier.";
+
+                            if (f.gunTypeOnly)
+                            {
+                                textWall += " Compatible only with gun-type weapons that fire a single projectile.";
+                            }
+
+                            if (f.stacks)
+                            {
+                                textWall += "\n <stacks>";
+                            }
+                            else
+                            {
+                                textWall += "\n <no_stack>";
+                            }
+                        }
+
+                        if (E.alienBonus.hasEffect)
+                        {
+                            ItemAlienBonuses f = E.alienBonus;
+
+                            if (f.singleDamageToCore)
+                            {
+                                textWall += "While active, " + f.amount * 100 + "% of damage to this part is intead passed along to core.";
+                            }
+
+                            if (f.allDamageToCore)
+                            {
+                                textWall += f.amount * 100 + "% of damage to parts is instead transferred directly to the core.";
+
+                                if (f.stacks)
+                                {
+                                    textWall += "\n <stacks>";
+                                }
+                                else
+                                {
+                                    textWall += "\n <no_stack>";
+                                }
+                            }
+
+                            // Expand this later
+                        }
+
+                        #endregion
+
+                        Data_CreateTextWall(textWall);
+                        Data_CreateSpacer();
+                    }
                 }
+
+                
             }
 
 

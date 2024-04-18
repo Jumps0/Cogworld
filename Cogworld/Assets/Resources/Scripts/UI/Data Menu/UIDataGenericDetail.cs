@@ -592,6 +592,8 @@ public class UIDataGenericDetail : MonoBehaviour
 
     public void FlashBrackets()
     {
+        sideBrackets.gameObject.SetActive(true);
+
         // Play a sound
         AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[44]);
 
@@ -627,6 +629,49 @@ public class UIDataGenericDetail : MonoBehaviour
         sideBrackets.color = b_green;
 
     }
+
+    #endregion
+
+    #region Extra Detail
+    [Header("Extra Details")]
+    public TextMeshProUGUI extraText;
+    public GameObject extraParent;
+    public string extraAssignedString;
+    private Coroutine extraAnim;
+
+    private void OnMouseOver()
+    {
+        if(Input.GetMouseButtonDown(0) && !extraParent.activeInHierarchy && extraAnim == null)
+        {
+            ShowExtraDetail();
+        }
+    }
+
+    public void ShowExtraDetail()
+    {
+        extraParent.gameObject.SetActive(true);
+        if(extraAnim == null)
+        {
+            extraAnim = StartCoroutine(OpenExtra());
+        }
+        else
+        {
+            StopCoroutine(extraAnim);
+        }
+    }
+
+    private IEnumerator OpenExtra()
+    {
+        yield return null;
+
+        extraAnim = null;
+    }
+
+    public void HideExtraDetail()
+    {
+        extraParent.gameObject.SetActive(true);
+    }
+
 
     #endregion
 

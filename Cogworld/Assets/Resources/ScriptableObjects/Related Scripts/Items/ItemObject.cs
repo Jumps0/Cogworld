@@ -230,6 +230,7 @@ public abstract class ItemObject : ScriptableObject
     public List<ItemEffect> itemEffects;
     [Tooltip("Certain power sources, propulsion units, and energy weapons can be overloaded. Performing better but with dangerous downsides.")]
     public bool canOverload = false; // TODO: Complete functionality for relevant items
+    public bool consumable = false; // TODO: Functionality for this too
 
     [Header("Primary Details")]
     public ItemQuality quality;
