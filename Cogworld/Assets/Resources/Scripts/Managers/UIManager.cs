@@ -7174,6 +7174,150 @@ public class UIManager : MonoBehaviour
                         }
                     }
 
+                    if (E.detectionEffect.hasEffect)
+                    {
+                        ItemDetectionEffect d = E.detectionEffect;
+
+                        if (d.botDetection)
+                        {
+                            textWall += "Enables robots scanning up to a distance of " + d.range + ", once per turn";
+
+                            if (d.bd_maxInterpreterEffect)
+                            {
+                                textWall += ", in addition to all effects of a maximum-strength signal interpreter.";
+                                if (d.bd_previousActivity)
+                                {
+                                    textWall += " Also detects long-term residual evidence of prior robot activity within field of view.";
+                                }
+
+                                if (d.bd_botReporting)
+                                {
+                                    textWall += " 0b10 combat robots scanned by this device will report the event, once per bot.";
+                                }
+                            }
+                            else
+                            {
+                                textWall += ".";
+                            }
+                        }
+                        else if (d.terrainScanning)
+                        {
+                            textWall += "Enabled terrain scanning up to a distance of " + d.range + ", once per turn.";
+                        }
+                        else if (d.haulerTracking)
+                        {
+                            textWall += "Enables real-time tracking of 0b10 Haulers across the entire floor";
+                            if (d.ht_viewInventories)
+                            {
+                                textWall += ", and gives access to their current manifest. Toggle active state to temporarily list all inventories in view.";
+                            }
+                            else
+                            {
+                                textWall += ".";
+                            }
+                            textWall += " Only applies in 0b10-controlled areas.";
+                        }
+                        else if (d.seismic)
+                        {
+                            textWall += "Enables real-time seismic detection and analysis up to a distance of ";
+                            textWall += d.range + ".";
+
+                            if (d.stacks)
+                            {
+                                textWall += "\n <stacks>";
+                            }
+                            else
+                            {
+                                textWall += "\n <no_stack>";
+                            }
+                        }
+                        else if (d.machine)
+                        {
+                            textWall += "Analyzes visible machines to locate others on the 0b10 network. Also determines whether an explosive machine has been destabilized and how long until detonation.";
+                        }
+                        else if (d.structural)
+                        {
+                            textWall += "Scans all visible walls to analyze the structure behind them, out to a depth of ";
+                            textWall += d.structural_depth;
+                            textWall += ". Also identifies hidden doorways and highlights areas that will soon cave in due to instability even without further stimulation.";
+                        }
+                        else if (d.warlordComms)
+                        {
+                            textWall += "Enables long-distance communication with Warlord forces to determine their composition and hiding locations. Toggle active state to temporarily list all squads in the area. If active while near a squad, will signal it to emerge and assist.";
+                        }
+                    }
+
+                    if (E.hasSignalInterp)
+                    {
+                        // Unlike other effects, each text wall is different for the different strengths
+                        // 1 -> 4
+                        switch (E.signalInterp_strength)
+                        {
+                            case 1:
+                                textWall += "Strength 1: Robot scan signals differentiate between object sizes. (Requires data from a Sensor Array.) Also enables deciphering of signals emitted from adjacent exits, revealing where they lead, and at garrisons know the time until the next response dispatch, if any. When multiple exits lead to the same destination, after having identified the first, subsequent ones will be identified on sight even without an interpreter.";
+                                break;
+                            case 2:
+                                textWall += "Strength 2: Robot scan signals accurately reflect target size and class, and are unaffected by system corruption. (Requires data from a Sensor Array.) Also enables deciphering of signals emitted from adjacent exits, revealing where they lead, and at garrisons know the time until the next response dispatch, if any. When multiple exits lead to the same destination, after having identified the first, subsequent ones will be identified on sight even without an interpreter.";
+                                break;
+                            case 3:
+                                textWall += "Strength 3: Robot scan signals accurately reflect target size and specific class rating, and are unaffected by system corruption. (Requires data from a Sensor Array.) Also enables deciphering of signals emitted from adjacent exits, revealing where they lead, and at garrisons know the time until the next response dispatch, if any. When multiple exits lead to the same destination, after having identified the first, subsequent ones will be identified on sight even without an interpreter.";
+                                break;
+                            case 4:
+                                textWall += "Strength 4: Robot scan signals accurately reflect target size and specific class rating, are unaffected by system corruption, and can discern dormant, unpowered, disabled, and broken robots. (Requires data from a Sensor Array.) Also enables deciphering of signals emitted from adjacent exits, revealing where they lead, and at garrisons know the time until the next response dispatch, if any. When multiple exits lead to the same destination, after having identified the first, subsequent ones will be identified on sight even without an interpreter.";
+                                break;
+                        }
+                    }
+
+                    if (E.hasMassSupport)
+                    {
+                        textWall += "Increase mass support by " + E.massSupport + ".";
+
+                        if (E.massSupport_stacks)
+                        {
+                            textWall += "\n <stacks>";
+                        }
+                        else
+                        {
+                            textWall += "\n <no_stack>";
+                        }
+                    }
+
+                    if (E.collectsMatterBeam)
+                    {
+                        textWall += "Automatically collects matter within a range of " + E.matterCollectionRange + ".";
+                    }
+
+                    if (E.internalStorage)
+                    {
+                        textWall += "Increases ";
+                        if(E.internalStorageType == 0) // Matter
+                        {
+                            textWall += "matter storage capcity by " + E.internalStorageCapacity + ".";
+                            textWall += " Also stores surplus collected matter while in inventory, but cannot be accessed for use until attached. Stored matter can also be extracted directly if on the ground at current position.";
+                        }
+                        else if(E.internalStorageType == 1) // Power
+                        {
+                            textWall += "energy storage capcity by " + E.internalStorageCapacity + ".";
+                            textWall += " Also stores surplus collected energy while in inventory, but cannot be accessed for use until attached. Stored energy can also be extracted directly if on the ground at current position.";
+                        }
+
+                        if (E.internalStorageType_stacks)
+                        {
+                            textWall += "\n <stacks>";
+                        }
+                        else
+                        {
+                            textWall += "\n <no_stack>";
+                        }
+                    }
+
+                    if (E.hackBonuses.hasHackBonus)
+                    {
+                        HackBonus h = E.hackBonuses;
+
+
+                    }
+
                     #endregion
                     Data_CreateTextWall(textWall);
                     Data_CreateSpacer();

@@ -294,28 +294,12 @@ public class ItemEffect
     [Header("Armor")]
     public ItemProtectionEffect armorProtectionEffect;
 
-    [Header("Accurracy Buffs")]
-    public bool hasAccuracyBuff = false;
-    public float accBuff_nonMelee = 0f;
-    public float accBuff_melee = 0f;
-    public bool accBuff_stacks = false;
-
     [Header("Detection")]
-    public bool hasDetectionEffect = false;
-    public int detection_range = 0;
-    public bool detect_seismic = false;
-    public bool detect_machines = false;
-    public bool detect_bots = false;
-    public bool detect_pure = false;
-    public bool detect_structural = false;
-    public bool detect_stacks = false;
+    public ItemDetectionEffect detectionEffect;
 
     [Header("Signal Interpretation")]
     public bool hasSignalInterp = false;
     public int signalInterp_strength;
-
-    [Header("Network Info")]
-    public bool haulerTracking = false;
 
     [Header("Mass Support")]
     public bool hasMassSupport = false;
@@ -325,13 +309,6 @@ public class ItemEffect
     [Header("Matter Tractor-Beam")]
     public bool collectsMatterBeam = false;
     public int matterCollectionRange;
-
-    [Header("Terrain Scanning")]
-    public bool terrainScan = false;
-    public int terrainScanRange;
-    public bool terrainScan_boost = false;
-    public int terrainScan_densBoost;
-    public bool terrainScanBoost_stacks = false;
 
     [Header("Internal Storage")]
     public bool internalStorage = false;
@@ -363,7 +340,7 @@ public class ItemEffect
     public ItemExilesSpecific exilesEffects;
 
     [Header("Various to-hit Buffs")]
-    public ItemBetterHitEffects toHitBuffs;
+    public ItemToHitEffects toHitBuffs;
 
     [Header("Part Identification")]
     public ItemPartIdentification partIdent;
@@ -833,14 +810,12 @@ public class ItemExilesSpecific
 
 [System.Serializable]
 [Tooltip("Effects chances to hit, crit chance, bypassing armor, etc.")]
-public class ItemBetterHitEffects
+public class ItemToHitEffects
 {
     public bool hasEffect = false;
     [Tooltip("0.##")]
     public float amount;
-    public bool stacks = false;
-    [Tooltip("This effect stacks, but the bonus is halved.")]
-    public bool halfStacks = false;
+    
     [Header("Type of Effect")]
     public bool bonusCritChance = false;
     [Tooltip("Doesn't apply to AOE attacks.")]
@@ -849,6 +824,11 @@ public class ItemBetterHitEffects
     public bool coreExposureEffect = false;
     [Tooltip("Applies to only gun, cannon, and melee attacks.")]
     public bool coreExposureGCM_only = true;
+    public bool meleeOnly = false;
+
+    public bool stacks = false;
+    [Tooltip("This effect stacks, but the bonus is halved.")]
+    public bool halfStacks = false;
 }
 
 [System.Serializable]
@@ -978,6 +958,56 @@ public class ItemAlienBonuses
 
     public bool stacks = false;
     public bool half_stacks = false;
+}
+
+[System.Serializable]
+public class ItemDetectionEffect
+{
+    public bool hasEffect = false;
+
+    public int range = 0;
+
+    [Header("Bot Detection")]
+    [Tooltip("Enables robot scanning up to a distance of ##, once per turn.")]
+    public bool botDetection = false;
+    // extra stuff (sensor suite)
+    /* Enables robot scanning up to a distance of 20, once per turn, in addition to all effects of a maximum-strength Signal Interpreter. 
+     * Also detects long-term residual evidence of prior robot activity within field of view. 
+     * 0b10 combat robots scanned by this device will report the event, once per bot.
+     */
+    public bool bd_maxInterpreterEffect = false;
+    public bool bd_previousActivity = false;
+    public bool bd_botReporting = false;
+
+    [Header("Terrain Scanning")]
+    public bool terrainScanning = false;
+
+    [Header("Hauler Tracking")]
+    [Tooltip("Enables both real-time tracking of 0b10 Haulers across the entire floor, and gives access to their current manifest. " +
+        "Toggle active state to temporarily list all inventories in view. Only applies in 0b10-controlled areas.")]
+    public bool haulerTracking = false;
+    public bool ht_viewInventories = false;
+
+    [Header("Seismic")]
+    public bool seismic = false;
+
+    [Header("Machine")]
+    [Tooltip("Analyzes visible machines to locate others on the 0b10 network. Also determines whether an explosive machine has been destabilized and how long until detonation.")]
+    public bool machine = false;
+
+    [Header("Structural")]
+    [Tooltip("Scans all visible walls to analyze the structure behind them, out to a depth of 1. " +
+        "Also identifies hidden doorways and highlights areas that will soon cave in due to instability even without further stimulation.")]
+    public bool structural = false;
+    public int structural_depth = 1;
+
+    [Header("Warlord Comms")]
+    [Tooltip("Enables long-distance communication with Warlord forces to determine their composition and hiding locations. " +
+        "Toggle active state to temporarily list all squads in the area. If active while near a squad, will signal it to emerge and assist.")]
+    public bool warlordComms = false;
+
+
+    public bool stacks = false;
 }
 
 #endregion

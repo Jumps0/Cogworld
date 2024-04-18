@@ -3542,9 +3542,9 @@ public static class HF
             {
                 if (item.item.itemData.itemEffects.Count > 0)
                 {
-                    foreach (var effect in item.item.itemData.itemEffects)
+                    foreach (var E in item.item.itemData.itemEffects)
                     {
-                        if (effect.detect_structural)
+                        if (E.detectionEffect.structural)
                         {
                             detChance += 0.02f;
                             break;

@@ -2906,7 +2906,6 @@ public static class Action
     /// <returns>1. Ranged Bonus 2. Melee Bonus</returns>
     public static (float, float) HasToHitBonus(Actor actor)
     {
-        bool stacks = true;
         float bonus_melee = 0f;
         float bonus_ranged = 0f;
 
@@ -2918,18 +2917,40 @@ public static class Action
                 {
                     foreach (var E in item.item.itemData.itemEffects)
                     {
-                        if (item.item.itemData.itemEffects.Count > 0 && E.hasAccuracyBuff && stacks)
+                        if (item.item.itemData.itemEffects.Count > 0 && E.toHitBuffs.hasEffect)
                         {
-                            bonus_melee += E.accBuff_melee;
-                            bonus_ranged += E.accBuff_nonMelee;
-
-                            if (E.accBuff_stacks)
+                            if (E.toHitBuffs.stacks)
                             {
-                                stacks = true;
+                                if (E.toHitBuffs.meleeOnly)
+                                {
+                                    bonus_melee += E.toHitBuffs.amount;
+                                }
+                                else
+                                {
+                                    bonus_ranged += E.toHitBuffs.amount;
+                                }
+                            }
+                            else if (E.toHitBuffs.halfStacks)
+                            {
+                                if (E.toHitBuffs.meleeOnly)
+                                {
+                                    bonus_melee += E.toHitBuffs.amount / 2;
+                                }
+                                else
+                                {
+                                    bonus_ranged += E.toHitBuffs.amount;
+                                }
                             }
                             else
                             {
-                                stacks = false;
+                                if (E.toHitBuffs.meleeOnly)
+                                {
+                                    bonus_melee = E.toHitBuffs.amount;
+                                }
+                                else
+                                {
+                                    bonus_ranged = E.toHitBuffs.amount;
+                                }
                             }
                         }
                     }
@@ -2944,18 +2965,40 @@ public static class Action
                 {
                     foreach (var E in item.item.itemData.itemEffects)
                     {
-                        if (item.item.itemData.itemEffects.Count > 0 && E.hasAccuracyBuff && stacks)
+                        if (item.item.itemData.itemEffects.Count > 0 && E.toHitBuffs.hasEffect)
                         {
-                            bonus_melee += E.accBuff_melee;
-                            bonus_ranged += E.accBuff_nonMelee;
-
-                            if (E.accBuff_stacks)
+                            if (E.toHitBuffs.stacks)
                             {
-                                stacks = true;
+                                if (E.toHitBuffs.meleeOnly)
+                                {
+                                    bonus_melee += E.toHitBuffs.amount;
+                                }
+                                else
+                                {
+                                    bonus_ranged += E.toHitBuffs.amount;
+                                }
+                            }
+                            else if (E.toHitBuffs.halfStacks)
+                            {
+                                if (E.toHitBuffs.meleeOnly)
+                                {
+                                    bonus_melee += E.toHitBuffs.amount / 2;
+                                }
+                                else
+                                {
+                                    bonus_ranged += E.toHitBuffs.amount;
+                                }
                             }
                             else
                             {
-                                stacks = false;
+                                if (E.toHitBuffs.meleeOnly)
+                                {
+                                    bonus_melee = E.toHitBuffs.amount;
+                                }
+                                else
+                                {
+                                    bonus_ranged = E.toHitBuffs.amount;
+                                }
                             }
                         }
                     }
