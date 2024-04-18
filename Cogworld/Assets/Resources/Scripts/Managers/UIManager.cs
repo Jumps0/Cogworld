@@ -6067,76 +6067,102 @@ public class UIManager : MonoBehaviour
             UIManager.inst.Data_CreateHeader("Overview"); // Overview =========================================================================
             // Type
             UIDataGenericDetail iType = UIManager.inst.Data_CreateGeneric();
-            iType.Setup(true, false, false, "Type", Color.white, "", false, item.itemData.type.ToString());
+            iType.Setup(true, false, false, "Type", Color.white, "General classification of this item.", "", false, item.itemData.type.ToString());
             // Slot
             UIDataGenericDetail iSlot = UIManager.inst.Data_CreateGeneric();
-            iSlot.Setup(true, false, false, "Slot", Color.white, "", false, item.itemData.slot.ToString());
+            iSlot.Setup(true, false, false, "Slot", Color.white, "Type of slot the part can be attached to, if applicable. Larger items may occupy multipel slots, both in the inventory and when attached.", "", false, item.itemData.slot.ToString());
             // Mass
             UIDataGenericDetail iMass = UIManager.inst.Data_CreateGeneric();
+            string extra = "Mass of an attached item contributes to a robot's total mass and affects its movement speed. Items held in inventory do not count towards total mass for movement calculation purposes.";
             if (item.itemData.mass > 0)
             {
-                iMass.Setup(true, false, true, "Mass", highlightGreen, item.itemData.mass.ToString(), false, "", false, "", item.itemData.mass / 100f, true); // Uses the bar for some reason?
+                iMass.Setup(true, false, true, "Mass", highlightGreen, extra, item.itemData.mass.ToString(), false, "", false, "", item.itemData.mass / 100f, true); // Uses the bar for some reason?
             }
             else // If the mass is 0, we display "N/A"
             {
-                iMass.Setup(true, false, false, "Mass", Color.white, "", false, "N/A", true);
+                iMass.Setup(true, false, false, "Mass", Color.white, extra, "", false, "N/A", true);
             }
             // Rating - this guy actually has some variance
             UIDataGenericDetail iRating = UIManager.inst.Data_CreateGeneric();
             string rText = item.itemData.rating.ToString();
+            extra = "Rating is a relative indicator of the item's usefulness and/or value. When comparing items, the quickest and easiest method is to go with whatever has the highest rating. However, prototypes are almost always better than common parts with a similar rating (generally implying a +1 to their listed ratings)."; ;
             if (item.itemData.star)
                 rText += "*";
             switch (item.itemData.ratingType)
             {
                 case ItemRatingType.Standard: // Faded out "Standard"
-                    iRating.Setup(true, false, false, "Rating", Color.white, rText, false, "Standard", true);
+                    iRating.Setup(true, false, false, "Rating", Color.white, extra, rText, false, "Standard", true);
                     break;
                 case ItemRatingType.Prototype: // Bright green vBox "Prototype"
-                    iRating.Setup(true, true, false, "Rating", highlightGreen, rText, false, "", false, "Prototype");
+                    iRating.Setup(true, true, false, "Rating", highlightGreen, extra, rText, false, "", false, "Prototype");
                     break;
                 case ItemRatingType.Alien: // Bright green vBox "Alien"
-                    iRating.Setup(true, true, false, "Rating", highlightGreen, rText, false, "", false, "Alien");
+                    iRating.Setup(true, true, false, "Rating", highlightGreen, extra, rText, false, "", false, "Alien");
                     break;
                 default:
                     break;
             }
             // Integrity
             UIDataGenericDetail iInteg = UIManager.inst.Data_CreateGeneric();
-            iInteg.Setup(true, false, true, "Integrity", Color.white, item.integrityCurrent + " / " + item.itemData.integrityMax, false, "", false, "", item.integrityCurrent / item.itemData.integrityMax);
-            // Coverage
-            UIDataGenericDetail iCoverage = UIManager.inst.Data_CreateGeneric();
-            if(item.itemData.coverage > 0 && itemOwner != null)
-            { // CalculateItemCoverage
-                float coverage = HF.CalculateItemCoverage(itemOwner, item);
-                iCoverage.Setup(true, false, true, "Coverage", highlightGreen, "", false, item.itemData.coverage.ToString() + " (" + coverage * 100 + "%)", false, "", coverage, true);
+            extra = "Integrity reflects the amount of damage a part can sustain before it is destroyed or rendered useless. Maximum integrity for a part type that cannot be repaired is preceded by a *.";
+            string integS = "";
+            if (item.itemData.repairable)
+            {
+                integS = item.integrityCurrent + " / " + item.itemData.integrityMax;
             }
             else
             {
-                iCoverage.Setup(true, false, false, "Coverage", Color.white, "", false, item.itemData.coverage.ToString()); // Just 0, you won't hit this. Nothing fancy. (Its probably in the inventory)
+                if(item.integrityCurrent >= item.itemData.integrityMax)
+                {
+                    integS = "*" + item.integrityCurrent;
+                }
+                else
+                {
+                    integS = item.integrityCurrent.ToString();
+                }
+            }
+            iInteg.Setup(true, false, true, "Integrity", Color.white, extra, integS, false, "", false, "", item.integrityCurrent / item.itemData.integrityMax);
+            // Coverage
+            UIDataGenericDetail iCoverage = UIManager.inst.Data_CreateGeneric();
+            extra = "Coverage is a relative indicator of how likely this part is to be hit by a successful incoming attack compared to other attached parts. For example, a part with 100 coverage is twice" +
+                " as likely to be hit as another part with a value of 50. Armor, protective, and large parts tend to have higher coverage values while small subsystems provide less coverage but are therefore less likely to be damage.";
+            if(item.itemData.coverage > 0 && itemOwner != null)
+            { // CalculateItemCoverage
+                float coverage = HF.CalculateItemCoverage(itemOwner, item);
+                iCoverage.Setup(true, false, true, "Coverage", highlightGreen, extra, "", false, item.itemData.coverage.ToString() + " (" + coverage * 100 + "%)", false, "", coverage, true);
+            }
+            else
+            {
+                iCoverage.Setup(true, false, false, "Coverage", Color.white, extra, "", false, item.itemData.coverage.ToString()); // Just 0, you won't hit this. Nothing fancy. (Its probably in the inventory)
             }
             // Schematic
             if (item.itemData.schematicDetails.hasSchematic)
             {
+                extra = "A schematic allows this item to be fabricated at any fabricator provided you have enough matter to start the process.";
                 UIDataGenericDetail iSchematic = UIManager.inst.Data_CreateGeneric();
-                iSchematic.Setup(true, false, false, "Schematic", Color.white, "", false, "Known", true);
+                iSchematic.Setup(true, false, false, "Schematic", Color.white, extra, "", false, "Known", true);
             }
             // State - there is some variance in this
             UIDataGenericDetail iState = UIManager.inst.Data_CreateGeneric();
             if (item.isOverloaded) // Overloaded (yellow)
             {
-                iState.Setup(true, true, false, "State", cautiousYellow, "", false, "", false, "OVERLOADED");
+                extra = "Current state of this item. This item is currently overloaded, providing double effectiveness, while requiring double energy, and producing three times the normal heat.";
+                iState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "OVERLOADED");
             }
             else if (item.isDeteriorating) // Deteriorating (yellow)
             {
-                iState.Setup(true, true, false, "State", cautiousYellow, "", false, "", false, "DETERIORATING");
+                extra = "Current state of this item. This item is currently deteriorating. While active, it will lose integrity until eventually becoming permanently disabled. ";
+                iState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "DETERIORATING");
             }
             else if (item.state) // Active (green)
             {
-                iState.Setup(true, true, false, "State", highlightGreen, "", false, "", false, "ACTIVE");
+                extra = "Current state of this item. This message will provide more context for special states.";
+                iState.Setup(true, true, false, "State", highlightGreen, extra, "", false, "", false, "ACTIVE");
             }
             else // Inactive (gray)
             {
-                iState.Setup(true, true, false, "State", inactiveGray, "", false, "", false, "INACTIVE");
+                extra = "Current state of this item. This item is inactive, and will not provide any useful effects, or function as normal.";
+                iState.Setup(true, true, false, "State", inactiveGray, extra, "", false, "", false, "INACTIVE");
             }
 
             Data_CreateSpacer();
@@ -6230,6 +6256,7 @@ public class UIManager : MonoBehaviour
                 UIManager.inst.Data_CreateHeader("Propulsion"); // Propulsion =========================================================================
                 // Time/Move
                 UIDataGenericDetail iTimeMove = UIManager.inst.Data_CreateGeneric();
+                extra = "The amount of time required to move on space when unburdened and using only this type of propulsion. Where multiple active propulsion modules have different values, the average is used."; ;
                 Color iTMC = highlightGreen; // Color is inverted based on amount
                 if(item.itemData.propulsion[0].timeToMove > 100)
                 {
@@ -6243,7 +6270,7 @@ public class UIManager : MonoBehaviour
                 {
                     iTMC = cautiousYellow;
                 }
-                iTimeMove.Setup(true, false, true, "Time/Move", iTMC, item.itemData.propulsion[0].timeToMove.ToString(), false, "", false, "", item.itemData.propulsion[0].timeToMove / 200f, true); // Bar
+                iTimeMove.Setup(true, false, true, "Time/Move", iTMC, extra, item.itemData.propulsion[0].timeToMove.ToString(), false, "", false, "", item.itemData.propulsion[0].timeToMove / 200f, true); // Bar
                 // Drag
                 UIDataGenericDetail iDrag = UIManager.inst.Data_CreateGeneric();
                 iDrag.Setup(true, false, false, "Drag", Color.white, item.itemData.propulsion[0].drag.ToString()); // No bar (simple)
@@ -6423,35 +6450,39 @@ public class UIManager : MonoBehaviour
                 UIManager.inst.Data_CreateHeader("Shot"); // Shot =========================================================================
                 // Range
                 UIDataGenericDetail iSRange = UIManager.inst.Data_CreateGeneric();
-                iSRange.Setup(true, false, true, "Range", Color.white, item.itemData.shot.shotRange.ToString(), false, "", false, "", item.itemData.shot.shotRange / 22f); // Bar
+                extra = "Maximum effective range of this weapon.";
+                iSRange.Setup(true, false, true, "Range", Color.white, extra, item.itemData.shot.shotRange.ToString(), false, "", false, "", item.itemData.shot.shotRange / 22f); // Bar
                 // Energy
                 UIDataGenericDetail iSEnergy = UIManager.inst.Data_CreateGeneric();
+                extra = "Energy required to fire this weapon.";
                 if(shot.shotEnergy < 0) // Negative
                 {
                     float clampedValue = Mathf.Clamp(shot.shotEnergy, 0, -50);
                     float normalizedValue = Mathf.InverseLerp(0, -50, clampedValue);
 
-                    iSEnergy.Setup(true, false, true, "Energy", Color.white, shot.shotEnergy.ToString(), false, "", false, "", normalizedValue); // Bar
+                    iSEnergy.Setup(true, false, true, "Energy", Color.white, extra, shot.shotEnergy.ToString(), false, "", false, "", normalizedValue); // Bar
                 }
                 else
                 {
-                    iSEnergy.Setup(true, false, true, "Energy", Color.white, shot.shotEnergy.ToString(), true, "", false, "", 0f); // Bar
+                    iSEnergy.Setup(true, false, true, "Energy", Color.white, extra, shot.shotEnergy.ToString(), true, "", false, "", 0f); // Bar
                 } 
                 // Matter
                 UIDataGenericDetail iSMatter = UIManager.inst.Data_CreateGeneric();
+                extra = "Matter consumed when firing this weapon.";
                 if (shot.shotMatter < 0) // Negative
                 {
                     float clampedValue = Mathf.Clamp(shot.shotMatter, 0, -50);
                     float normalizedValue = Mathf.InverseLerp(0, -50, clampedValue);
 
-                    iSMatter.Setup(true, false, true, "Matter", Color.white, shot.shotMatter.ToString(), false, "", false, "", normalizedValue); // Bar
+                    iSMatter.Setup(true, false, true, "Matter", Color.white, extra, shot.shotMatter.ToString(), false, "", false, "", normalizedValue); // Bar
                 }
                 else
                 {
-                    iSMatter.Setup(true, false, true, "Matter", Color.white, shot.shotMatter.ToString(), true, "", false, "", 0f); // Bar
+                    iSMatter.Setup(true, false, true, "Matter", Color.white, extra, shot.shotMatter.ToString(), true, "", false, "", 0f); // Bar
                 }
                 // Heat
                 UIDataGenericDetail iSHeat = UIManager.inst.Data_CreateGeneric();
+                extra = "Heat produced by firing this weapon. This value is averaged over the number of turns it takes to fire, and therefore not applied all at once.";
                 if (shot.shotHeat > 0)
                 {
                     Color iSC = highlightGreen;
@@ -6468,34 +6499,37 @@ public class UIManager : MonoBehaviour
                         iSC = cautiousYellow;
                     }
 
-                    iSHeat.Setup(true, false, true, "Heat", iSC, "+" + shot.shotHeat.ToString(), false, "", false, "", shot.shotHeat / 100f, true); // Bar
+                    iSHeat.Setup(true, false, true, "Heat", iSC, extra, "+" + shot.shotHeat.ToString(), false, "", false, "", shot.shotHeat / 100f, true); // Bar
                 }
                 else
                 {
-                    iSHeat.Setup(true, false, true, "Heat", Color.white, shot.shotHeat.ToString(), true, "", false, "", 0f); // Bar
+                    iSHeat.Setup(true, false, true, "Heat", Color.white, extra, shot.shotHeat.ToString(), true, "", false, "", 0f); // Bar
                 }
                 // Recoil
                 UIDataGenericDetail iSR = UIManager.inst.Data_CreateGeneric();
+                extra = "Recoil causes any other weapons fired in the same volley to suffer this penalty to their accuracy.";
                 if (shot.shotRecoil > 0)
                 {
-                    iSR.Setup(true, false, false, "Recoil", Color.white, shot.shotRecoil.ToString()); // No bar (simple)
+                    iSR.Setup(true, false, false, "Recoil", Color.white, extra, shot.shotRecoil.ToString()); // No bar (simple)
                 }
                 else
                 {
-                    iSR.Setup(true, false, false, "Recoil", Color.white, "0", true); // No bar (simple)
+                    iSR.Setup(true, false, false, "Recoil", Color.white, extra, "0", true); // No bar (simple)
                 }
                 // Targeting
                 UIDataGenericDetail iST = UIManager.inst.Data_CreateGeneric();
+                extra = "This is a direct modifier to the weapon's accuracy calculation when firing. Some weapons are inherently easier or more difficult to accurately target with.";
                 if (shot.shotTargeting != 0)
                 {
-                    iST.Setup(true, false, false, "Targeting", Color.white, (shot.shotTargeting * 100) + "%"); // No bar (simple)
+                    iST.Setup(true, false, false, "Targeting", Color.white, extra, (shot.shotTargeting * 100) + "%"); // No bar (simple)
                 }
                 else
                 {
-                    iST.Setup(true, false, false, "Targeting", Color.white, "0%", true); // No bar (simple)
+                    iST.Setup(true, false, false, "Targeting", Color.white, extra, "0%", true); // No bar (simple)
                 }
                 // Delay
                 UIDataGenericDetail iSD = UIManager.inst.Data_CreateGeneric();
+                extra = "This is a direct modifier to the time it takes to fire the weapon. Some weapons are inherently faster or slower to fire.";
                 if (shot.shotDelay > 0)
                 {
                     string iSD_text = "";
@@ -6504,31 +6538,36 @@ public class UIManager : MonoBehaviour
                         iSD_text = "+";
                     }
 
-                    iSD.Setup(true, false, false, "Delay", Color.white, iSD_text += shot.shotDelay); // No bar (simple)
+                    iSD.Setup(true, false, false, "Delay", Color.white, extra, iSD_text += shot.shotDelay); // No bar (simple)
                 }
                 else
                 {
-                    iSD.Setup(true, false, false, "Delay", Color.white, "0", true); // No bar (simple)
+                    iSD.Setup(true, false, false, "Delay", Color.white, extra, "0", true); // No bar (simple)
                 }
                 // Stability
                 UIDataGenericDetail iSS = UIManager.inst.Data_CreateGeneric();
+                extra = "Stability represents the ability of this weapon to fire while overloaded without suffering any negative side-effects. Overloading doubles damage and energy cost, " +
+                    "and generates triple the heat. If N/A, this weapon cannot be overloaded; only some energy weapons support overloading. While overloaded, heat transfer is one level high than" +
+                    " usual where applicable.";
                 if (shot.hasStability)
                 {
-                    iSS.Setup(true, false, true, "Stability", Color.white, (shot.shotStability * 100) + "%", false, "", false, "", shot.shotStability); // Bar
+                    iSS.Setup(true, false, true, "Stability", Color.white, extra, (shot.shotStability * 100) + "%", false, "", false, "", shot.shotStability); // Bar
                 }
                 else
                 {
-                    iSS.Setup(true, false, false, "Stability", Color.white, "N/A", true, "", false, "", 0f); // Empty bar
+                    iSS.Setup(true, false, false, "Stability", Color.white, extra, "N/A", true, "", false, "", 0f); // Empty bar
                 }
                 // Arc
                 UIDataGenericDetail iSA = UIManager.inst.Data_CreateGeneric();
+                extra = "Total angle within which projectiles are randomly distributed around the target, spreading them along an arc of a circle centered on the shot origin. Improved " +
+                    "targeting has no effect on the spread, which is always centered around the line of fire.";
                 if (shot.hasArc)
                 {
-                    iSA.Setup(true, false, false, "Arc", Color.white, shot.shotArc.ToString()); // No bar (simple)
+                    iSA.Setup(true, false, false, "Arc", Color.white, extra, shot.shotArc.ToString()); // No bar (simple)
                 }
                 else
                 {
-                    iSA.Setup(true, false, false, "Arc", Color.white, "N/A", true); // No bar (simple)
+                    iSA.Setup(true, false, false, "Arc", Color.white, extra, "N/A", true); // No bar (simple)
                 }
 
                 Data_CreateSpacer();
@@ -6546,22 +6585,28 @@ public class UIManager : MonoBehaviour
                 UIManager.inst.Data_CreateHeader("Projectile", bonus); // Projectile =========================================================================
                 // Damage
                 UIDataGenericDetail pDamage = UIManager.inst.Data_CreateGeneric();
-                pDamage.Setup(true, false, true, "Damage", highlightGreen, proj.damage.x + "-" + proj.damage.y, false, "", false, "", ((proj.damage.x + proj.damage.y) / 2) / 100f, true);
+                extra = "Range of potential damage at the point of impact.";
+                pDamage.Setup(true, false, true, "Damage", highlightGreen, extra, proj.damage.x + "-" + proj.damage.y, false, "", false, "", ((proj.damage.x + proj.damage.y) / 2) / 100f, true);
                 // Type
                 UIDataGenericDetail pType = UIManager.inst.Data_CreateGeneric();
-                pType.Setup(true, false, false, "Type", Color.white, "", false, proj.damageType.ToString());
+                extra = "Ballistic weapons generally have a longer effective range and more destructive critical strikes, but suffer from less predictable damage and high recoil. " +
+                    "Kinetic cannon hits also blast usuable matter of target robots and have a chance to cause knockback depending on damage, range, and size of the target.";
+                pType.Setup(true, false, false, "Type", Color.white, extra, "", false, proj.damageType.ToString());
                 // Critical
                 UIDataGenericDetail pCrit = UIManager.inst.Data_CreateGeneric();
+                extra = HF.CriticalEffectsToString(proj.critType);
                 if(proj.critChance > 0f)
                 {
-                    pCrit.Setup(true, false, false, "Critical", Color.white, (proj.critChance * 100).ToString() + "%", false, proj.critType.ToString());
+                    pCrit.Setup(true, false, false, "Critical", Color.white, extra, (proj.critChance * 100).ToString() + "%", false, proj.critType.ToString());
                 }
                 else
                 {
-                    pCrit.Setup(true, false, false, "Critical", Color.white, "0%", true);
+                    pCrit.Setup(true, false, false, "Critical", Color.white, extra, "0%", true);
                 }
                 // Penetration
                 UIDataGenericDetail pPen = UIManager.inst.Data_CreateGeneric();
+                extra = "Chance this projectile may penetrate each consecutive object it hits, e.g. 100 / 80 /50 may pass through up to three objects, with a 100% chance for the first," +
+                    " followed by 80% and 50^ for the remaining two. Huge robots count as a single object for penetration purposes.";
                 if (proj.penetrationCapability > 0)
                 {
                     string s = "";
@@ -6571,17 +6616,18 @@ public class UIManager : MonoBehaviour
                     }
                     s = s.Substring(0, s.Length - 2); // Remove the extra "/ "
 
-                    pPen.Setup(true, false, false, "Penetration", Color.white, "x" + proj.penetrationCapability, false, s);
+                    pPen.Setup(true, false, false, "Penetration", Color.white, extra, "x" + proj.penetrationCapability, false, s);
                 }
                 else
                 {
-                    pPen.Setup(true, false, false, "Penetration", Color.white, "x0", true);
+                    pPen.Setup(true, false, false, "Penetration", Color.white, extra, "x0", true);
                 }
                 // Heat Transfer
                 if (item.itemData.itemEffects.Count > 0 && item.itemData.itemEffects[0].heatTransfer > 0)
                 {
                     UIDataGenericDetail iPHT = UIManager.inst.Data_CreateGeneric();
                     string s = "";
+                    extra = "Thermal weapons attempt to transfer some % of the maximum heat transfer rating of the weapon, and also check for possible robot meltdown (the effect of which might be delayed until the robot's next turn).";
                     int ht = item.itemData.itemEffects[0].heatTransfer;
                     if (ht == 1)
                     {
@@ -6600,10 +6646,11 @@ public class UIManager : MonoBehaviour
                         s = "Massive (80)";
                     }
 
-                    iPHT.Setup(true, false, false, "Heat Transfer", Color.white, "", false, s);
+                    iPHT.Setup(true, false, false, "Heat Transfer", Color.white, extra, "", false, s);
                 }
                 // Spectrum
                 UIDataGenericDetail iPS = UIManager.inst.Data_CreateGeneric();
+                extra = "Range of electromagnetic spectrum, with narrower ranges more likely to trigger chain explosions in power sources. (Cogmind's power sources are immune to this effect from projectiles.)";
                 if (proj.hasSpectrum)
                 {
                     string s = "";
@@ -6624,14 +6671,15 @@ public class UIManager : MonoBehaviour
                         s = "Fine (100%)";
                     }
 
-                    iPS.Setup(true, false, false, "Specturm", Color.white, s); // No bar (simple)
+                    iPS.Setup(true, false, false, "Specturm", Color.white, extra, s); // No bar (simple)
                 }
                 else
                 {
-                    iPS.Setup(true, false, false, "Specturm", Color.white, "N/A", true); // No bar (simple)
+                    iPS.Setup(true, false, false, "Specturm", Color.white, extra, "N/A", true); // No bar (simple)
                 }
                 // Disruption
                 UIDataGenericDetail iPD = UIManager.inst.Data_CreateGeneric();
+                extra = "Chance this projectile may temporarily disable an active part on impact. If a robot core is struck, there is half thsi chance the entire robot may be disabled.";
                 if(proj.disruption > 0)
                 {
                     Color iPDC = highlightGreen;
@@ -6648,26 +6696,28 @@ public class UIManager : MonoBehaviour
                         iPDC = cautiousYellow;
                     }
 
-                    iPD.Setup(true, false, true, "Disruption", iPDC, (proj.disruption * 100) + "%", false, "", false, "", proj.disruption, true); // Bar
+                    iPD.Setup(true, false, true, "Disruption", iPDC, extra, (proj.disruption * 100) + "%", false, "", false, "", proj.disruption, true); // Bar
                 }
                 else
                 {
-                    iPD.Setup(true, false, true, "Disruption", Color.white, "0%", true, "", false, "", 0f); // Bar
+                    iPD.Setup(true, false, true, "Disruption", Color.white, extra, "0%", true, "", false, "", 0f); // Bar
 
                 }
                 // Salvage
                 UIDataGenericDetail iPR = UIManager.inst.Data_CreateGeneric();
+                extra = "Amount by which the salvage potential of a given robot is affected each time shot by a projectile from this weapon. While usually negative, reducing the amount of " +
+                    "usable salvage, some special weapons may increase salvage by disabling a robot with minimal collateral damage.";
                 if (proj.salvage > 0)
                 {
-                    iPR.Setup(true, false, false, "Salvage", Color.white, "+" + proj.salvage.ToString()); // No bar (simple)
+                    iPR.Setup(true, false, false, "Salvage", Color.white, extra, "+" + proj.salvage.ToString()); // No bar (simple)
                 }
                 else if (proj.salvage == 0)
                 {
-                    iPR.Setup(true, false, false, "Salvage", Color.white, "0", true); // No bar (simple)
+                    iPR.Setup(true, false, false, "Salvage", Color.white, extra, "0", true); // No bar (simple)
                 }
                 else
                 {
-                    iPR.Setup(true, false, false, "Salvage", Color.white, proj.salvage.ToString()); // No bar (simple)
+                    iPR.Setup(true, false, false, "Salvage", Color.white, extra, proj.salvage.ToString()); // No bar (simple)
                 }
 
                 Data_CreateSpacer();

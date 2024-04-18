@@ -53,7 +53,7 @@ public class UIDataGenericDetail : MonoBehaviour
     /// <param name="boxText">What should the text INSIDE the variable box be?</param>
     /// <param name="_barAmount">Percent value 0.0f to 1.0f. How filled should the bar be?</param>
     /// <param name="_forceBarColor">Should we force the color of the box bar to be a certain color? This color is defined by *boxColor*.</param>
-    public void Setup(bool useSecondary, bool useVariable, bool useBoxBar, string mainText, Color boxColor, 
+    public void Setup(bool useSecondary, bool useVariable, bool useBoxBar, string mainText, Color boxColor, string extraDetail, 
         string valueA = "", bool valueA_faded = false, string secondaryText = "", bool secondary_faded = false, string boxText = "", float _barAmount = 0f, bool _forceBarColor = false)
     {
         StopAllCoroutines();
@@ -117,6 +117,10 @@ public class UIDataGenericDetail : MonoBehaviour
             UpdateBoxIndicator(barAmount);
         }
         forceBarColor = _forceBarColor;
+
+        // And the extra detail text
+        extraAssignedString = extraDetail;
+        extraText.text = extraAssignedString;
     }
 
     private void ToggleSecondaryState(bool active)
@@ -638,12 +642,34 @@ public class UIDataGenericDetail : MonoBehaviour
     public GameObject extraParent;
     public string extraAssignedString;
     private Coroutine extraAnim;
+    [SerializeField] private Image extraBorders;
 
     private void OnMouseOver()
     {
-        if(Input.GetMouseButtonDown(0) && !extraParent.activeInHierarchy && extraAnim == null)
+        if(extraAssignedString != "")
         {
-            ShowExtraDetail();
+            if (Input.GetMouseButtonDown(0) && !extraParent.activeInHierarchy && extraAnim == null)
+            {
+                ShowExtraDetail();
+            }
+
+            if (extraParent.activeInHierarchy) // If active, the element should follow the mouse
+            {
+                RectTransform uiElement = extraParent.GetComponent<RectTransform>();
+
+                // Get the mouse position in screen space
+                Vector3 mousePosition = Input.mousePosition;
+
+                // Convert the screen space mouse position to canvas space
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    uiElement.parent as RectTransform,
+                    mousePosition,
+                    Camera.main,
+                    out Vector2 localPoint);
+
+                // Set the position of the UI element's top-left corner to the calculated position
+                uiElement.localPosition = localPoint;
+            }
         }
     }
 
@@ -662,7 +688,37 @@ public class UIDataGenericDetail : MonoBehaviour
 
     private IEnumerator OpenExtra()
     {
-        yield return null;
+        // There is a bit more to this animation (a green scan bar that goes from top -> bottom, but its visibile for like 5 frames so honestly its not worth it)
+
+        Color gray = extraBorders.color;
+        Color blue = extraText.color;
+
+        extraText.color = Color.black;
+        extraBorders.color = Color.black;
+
+        // Black -> Gray
+        float elapsedTime = 0f;
+        float duration = 0.2f;
+        while (elapsedTime < duration) // Black -> Gray
+        {
+            extraBorders.color = Color.Lerp(Color.black, gray, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        extraBorders.color = gray;
+
+        // Black -> Blue
+        elapsedTime = 0f;
+        duration = 0.4f;
+        while (elapsedTime < duration) // Black -> Blue
+        {
+            extraText.color = Color.Lerp(Color.black, blue, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        extraText.color = blue;
 
         extraAnim = null;
     }

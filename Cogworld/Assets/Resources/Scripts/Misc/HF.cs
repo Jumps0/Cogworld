@@ -4307,6 +4307,61 @@ public static class HF
         return size;
     }
 
+    public static string CriticalEffectsToString(CritType crit)
+    {
+        switch (crit)
+        {
+            case CritType.Nothing:
+                return "This weapon has no critical effect.";
+            case CritType.Burn:
+                return "Significantly increase the heat transfer rate of this weapon.";
+            case CritType.Meltdown:
+                return "Instantly melt target bot regardless of what part was hit.";
+            case CritType.Destroy:
+                return "Chance for this weapon to instantly destroy the hit component, or even a robot core. (Cogmind is less susceptible to this effect, which can only destroy those" +
+                    " parts which are already below 33% integrity when hit.) Armor is immune to this effect, instead taking an additional 20% damage.";
+            case CritType.Blast:
+                return "Chance for this weapon to instantly destroy the hit component, or even a robot core. Also damage a second part and knock it off target.";
+            case CritType.Corrupt:
+                return "Maximize system corruption effect on target.";
+            case CritType.Smash:
+                return "Chance for this weapon to instantly destroy the hit component, or even a robot core. Also apply an equal amount of damage as overflow damage.";
+            case CritType.Sever:
+                return "Sever target part, or if hit core also damages and severs a different part.";
+            case CritType.Puncture:
+                return "Half of damage automatically transferred to core.";
+            case CritType.Detonate:
+                return "Destroy a random utility part.";
+            case CritType.Sunder:
+                return "Damage and remove a random propulsion component.";
+            case CritType.Intensify:
+                return "Doubles damage dealt to target.";
+            case CritType.Phase:
+                return "Mirrors damage done to a single neighboring bot.";
+            case CritType.Impale:
+                return "Chance to instantly destroy an enemy bot's core.";
+        }
+        return "This weapon has no critical effect.";
+    }
+
+    public static int CalculateAverageTimeToMove(Actor bot)
+    {
+        List<Item> items = Action.CollectAllBotItems(bot);
+        int total = 0;
+        int count = 0;
+
+        foreach (var item in items)
+        {
+            if (item.itemData.propulsion[0].timeToMove > 0)
+            {
+                total += item.itemData.propulsion[0].timeToMove;
+                count++;
+            }
+        }
+
+        return Mathf.RoundToInt(total / count);
+    }
+
     #endregion
 
     #region Spotting

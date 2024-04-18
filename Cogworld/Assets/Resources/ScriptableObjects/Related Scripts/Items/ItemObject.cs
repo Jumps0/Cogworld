@@ -179,6 +179,8 @@ public abstract class ItemObject : ScriptableObject
     [Tooltip("Sometimes items have a little green text indicator to the right of the rating number.")]
     public ItemRatingType ratingType;
     public int integrityMax;
+    [Tooltip("If false, the UI will only display the current health, and include a * if at max health.")]
+    public bool repairable = true;
     [Tooltip("Percentage value.")]
     public int coverage;
 
@@ -418,11 +420,13 @@ public class ItemShot
     public int shotMatter;
     public int shotHeat;
     public int shotRecoil;
+    [Tooltip("This is a direct modifier to the weapon's accuracy calculation when firing. Some weapons are inherently easier or more difficult to accurately target with.")]
     public float shotTargeting;
     [Tooltip("Each weapon incurs no additional time cost to attack aside from modifying the total attack time by half of their time delay (whether positive or negative).")]
     public int shotDelay;
     [Tooltip("0.##%")]
     public float shotStability;
+    [Tooltip("Total angle within which projectiles are randomly distributed around the target, spreading them along an arc of a circle centered on the shot origin. Improved targeting has no effect on the spread, which is always centered around the line of fire.")]
     public int shotArc;
     public bool hasStability = false;
     public bool hasArc = false;

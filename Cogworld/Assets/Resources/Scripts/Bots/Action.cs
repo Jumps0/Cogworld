@@ -2029,6 +2029,9 @@ public static class Action
         (avoidance, unused) = Action.CalculateAvoidance(target);
         toHitChance -= (avoidance / 100);
 
+        // Consider any targeting bonuses (usually 0)
+        toHitChance += shotData.shotTargeting;
+
         // - Recoil - //
         /* Anyway, weapon with recoil reduces the accuracy of all other weapons (regardless of their order).
            So if you carry a Lgt. Assault Rifle (with 1 recoil) as well as 2 Sml. Lasers, those lasers will receive -1% accuracy due to the 1 recoil.
