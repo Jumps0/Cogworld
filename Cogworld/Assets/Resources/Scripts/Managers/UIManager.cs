@@ -7481,6 +7481,293 @@ public class UIManager : MonoBehaviour
                         // add more later
                     }
 
+                    if (E.toHitBuffs.hasEffect)
+                    {
+                        ItemToHitEffects f = E.toHitBuffs;
+
+                        if (f.bonusCritChance)
+                        {
+                            textWall += "Increases weapon critical chances by " + f.amount * 100 + "%.";
+                            textWall += " Only affects weapons that are already capable of critical hits, and not applicable for the Meltdown critical.";
+                        }
+
+                        if (f.bypassArmor)
+                        {
+                            textWall += "Enables " + f.amount * 100 + "% chance to bypass target armor. Does not apply to AOE attacks.";
+                        }
+
+                        if (f.coreExposureEffect)
+                        {
+                            textWall += "Increases target core exposure by " + f.amount * 100 + "%.";
+                            if (f.coreExposureGCM_only)
+                            {
+                                textWall += " Applies to only gun, cannon, and melee attacks.";
+                            }
+                        }
+
+                        if (f.flatBonus)
+                        {
+                            textWall += "Increase non-melee weapon accuracy by " + f.amount * 100 + "%";
+                        }
+
+                        if (f.stacks)
+                        {
+                            textWall += "\n <stacks>";
+                        }
+                        else if (f.halfStacks)
+                        {
+                            textWall += "\n <half_stacks>";
+                        }
+                        else
+                        {
+                            textWall += "\n <no_stack>";
+                        }
+                    }
+
+                    if (E.partIdent.hasEffect)
+                    {
+                        textWall += E.partIdent.amount * 100 + "% chance to identify a random unidentified part in inventory each turn. ";
+                        if (!E.partIdent.canIdentifyAlien)
+                        {
+                            textWall += "Cannot identify alien technology.";
+                        }
+
+                        if (E.partIdent.parallel)
+                        {
+                            textWall += "\n <parallel_ok>";
+                        }
+                    }
+
+                    if (E.antiCorruption.hasEffect)
+                    {
+                        textWall += E.antiCorruption.amount * 100 + "% chance each turn to purge 1% of system corruption";
+                        if(E.antiCorruption.integrityLossPer > 0)
+                        {
+                            textWall += ", losing " + E.antiCorruption.integrityLossPer + " integrity each time the effect is applied";
+                        }
+
+                        textWall += ".";
+
+                        if (E.antiCorruption.parallel)
+                        {
+                            textWall += "\n <parallel_ok>";
+                        }
+                    }
+
+                    if (E.rcsEffect.hasEffect)
+                    {
+                        ItemRCS f = E.rcsEffect;
+
+                        textWall += "Enables responsive movement to avoid direct attacks, " + f.percentage * 100 + "% to dodge while on legs, or " + f.percentage * 200 + "% while hovering or flying (no effect on tracked or wheeled movement). Same chance to evade triggered traps";
+                        if(f.momentumBonus > 0)
+                        {
+                            textWall += ", and a +" + f.momentumBonus + " to effective momentum for melee attacks and ramming. No effects while overweight";
+                        }
+                        textWall += ".";
+
+                        if (f.stacks)
+                        {
+                            textWall += "\n <stacks>";
+                        }
+                        else
+                        {
+                            textWall += "\n <no_stack>";
+                        }
+                    }
+
+                    if (E.phasingEffect.hasEffect)
+                    {
+                        textWall += "Reduces enemy ranged targeting accuracy by " + E.phasingEffect.percentage * 100 + "%.";
+                        if (E.phasingEffect.stacks)
+                        {
+                            textWall += "\n <stacks>";
+                        }
+                        else
+                        {
+                            textWall += "\n <no_stack>";
+                        }
+                    }
+
+                    if (E.cloakingEffect.hasEffect)
+                    {
+                        ItemCloaking f = E.cloakingEffect;
+
+                        textWall += "Effective sight range of robots attempting to spot you reduced by " + f.rangedReduction + ". ";
+                        if(f.noticeReduction > 0)
+                        {
+                            textWall += "Also " + f.noticeReduction * 100 + "% chance of being noticed by hostiles if passing through their field of view when not their turn.";
+                        }
+
+                        if (f.halfStacks)
+                        {
+                            textWall += "\n <half_stacks>";
+                        }
+                        else
+                        {
+                            textWall += "\n <no_stack>";
+                        }
+                    }
+
+                    if (E.meleeBonus.hasEffect)
+                    {
+                        ItemMeleeBonus f = E.meleeBonus;
+
+                        if(f.melee_followUpChance > 0)
+                        {
+                            textWall += "Increases per-weapon chance of follow-up melee attacks by" + f.melee_followUpChance * 100 + "%";
+                        }
+
+                        if(f.melee_maxDamageBoost > 0)
+                        {
+                            textWall += "Increases melee weapons maximum damage by " + f.melee_maxDamageBoost * 100 + "%";
+                            if(f.melee_accuracyDecrease > 0)
+                            {
+                                textWall += ", and decreases melee attack accuracy by " + f.melee_accuracyDecrease * 100 + "%";
+                            }
+                            textWall += ".";
+                        }
+
+                        if(f.melee_accuracyIncrease > 0)
+                        {
+                            textWall += "Increases melee attack accuracy by " + f.melee_accuracyIncrease * 100 + "%";
+                            if(f.melee_minDamageBoost > 0)
+                            {
+                                textWall += ", and minimum damage by " + f.melee_minDamageBoost + " (cannot exceed weapon's maximum damage)"; ;
+                            }
+                            textWall += ".";
+                        }
+
+                        if(f.melee_attackTimeDecrease > 0)
+                        {
+                            textWall += "Increases per-weapon chance of follow-up melee attacks by " + f.melee_attackTimeDecrease * 100 + "%";
+                        }
+
+                        if (f.stacks)
+                        {
+                            textWall += "\n <stack>";
+                        }
+                        else if (f.halfStacks)
+                        {
+                            textWall += "\n <half_stacks>";
+                        }
+                        else
+                        {
+                            textWall += "\n <no_stack>";
+                        }
+                    }
+
+                    if (E.launcherBonus.hasEffect)
+                    {
+                        ItemLauncherBonuses f = E.launcherBonus;
+
+                        if(f.launcherAccuracy > 0)
+                        {
+                            textWall += "Increases launcher accuracy by " + f.launcherAccuracy * 100 + "%. Also prevents launcher misfires caused by system corruption.";
+                        }
+
+                        if(f.launcherLoading > 0)
+                        {
+                            if (f.forEnergyOrCannon)
+                            {
+                                textWall += "Reduces firing time for an energy gun or cannon by 50%, if fired alone. Incompatible with Weapon Cyclers and autonomous or overloaded weapons.";
+                            }
+                            else
+                            {
+                                textWall += "Reduces firing time for any launcher by 50%, if fired alone. Incompatible with Weapon Cyclers and autonomous or overloaded weapons.";
+                            }
+                        }
+
+                        if (f.stacks)
+                        {
+                            textWall += "\n <stacks>";
+                        }
+                        else
+                        {
+                            textWall += "\n <no_stack>";
+                        }
+                    }
+
+                    if (E.bonusSlots.hasEffect)
+                    {
+                        ItemBonusSlots f = E.bonusSlots;
+
+                        // ?
+                    }
+
+                    if(E.flatDamageBonus.hasEffect)
+                    {
+                        ItemFlatDamageBonus f = E.flatDamageBonus;
+
+                        string types = "";
+                        foreach (var T in f.types)
+                        {
+                            types += T.ToString() + "/";
+                        }
+                        types = types.Substring(0, types.Length - 1); // Remove the spare "/"
+
+                        textWall += "Increases " + types + " damage by " + f.damageBonus * 100 + "%.";
+
+                        if (f.stacks)
+                        {
+                            textWall += "\n <stacks>";
+                        }
+                        else if (f.halfStacks)
+                        {
+                            textWall += "\n <half_stacks>";
+                        }
+                        else
+                        {
+                            textWall += "\n <no_stack>";
+                        }
+                    }
+
+                    if (E.salvageBonus.hasEffect)
+                    {
+                        ItemSalvageBonuses f = E.salvageBonus;
+
+                        textWall += "Increases salvage recovered from targets, +" + f.bonus + " modifier.";
+
+                        if (f.gunTypeOnly)
+                        {
+                            textWall += " Compatible only with gun-type weapons that fire a single projectile.";
+                        }
+
+                        if (f.stacks)
+                        {
+                            textWall += "\n <stacks>";
+                        }
+                        else
+                        {
+                            textWall += "\n <no_stack>";
+                        }
+                    }
+
+                    if (E.alienBonus.hasEffect)
+                    {
+                        ItemAlienBonuses f = E.alienBonus;
+
+                        if (f.singleDamageToCore)
+                        {
+                            textWall += "While active, " + f.amount * 100 + "% of damage to this part is intead passed along to core.";
+                        }
+
+                        if (f.allDamageToCore)
+                        {
+                            textWall += f.amount * 100 + "% of damage to parts is instead transferred directly to the core.";
+
+                            if (f.stacks)
+                            {
+                                textWall += "\n <stacks>";
+                            }
+                            else
+                            {
+                                textWall += "\n <no_stack>";
+                            }
+                        }
+
+                        // Expand this later
+                    }
+
                     #endregion
                     Data_CreateTextWall(textWall);
                     Data_CreateSpacer();

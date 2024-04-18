@@ -819,14 +819,16 @@ public class ItemToHitEffects
     public float amount;
     
     [Header("Type of Effect")]
-    public bool bonusCritChance = false;
+    public bool bonusCritChance = false; // target analyzer
     [Tooltip("Doesn't apply to AOE attacks.")]
-    public bool bypassArmor = false;
+    public bool bypassArmor = false; // armor integ analyzer
     [Tooltip("Increases target core exposure.")]
-    public bool coreExposureEffect = false;
+    public bool coreExposureEffect = false; // Core analyzer
     [Tooltip("Applies to only gun, cannon, and melee attacks.")]
     public bool coreExposureGCM_only = true;
-    public bool meleeOnly = false;
+
+    [Tooltip("Flat bonuses (non melee only)")]
+    public bool flatBonus = false;
 
     public bool stacks = false;
     [Tooltip("This effect stacks, but the bonus is halved.")]
@@ -840,6 +842,7 @@ public class ItemPartIdentification
     public bool hasEffect = false;
     [Tooltip("0.##")]
     public float amount;
+    public bool canIdentifyAlien = false;
     public bool parallel = false;
 }
 
@@ -909,8 +912,10 @@ public class ItemMeleeBonus
     public int melee_minDamageBoost = 0;
     [Header("Microactuator Effects")] // Micro, Femto, Nano, etc.
     public float melee_attackTimeDecrease = 0f;
-    public bool actuator_stacks = true;
     public float actuator_cap = 0.5f;
+
+    public bool halfStacks = false;
+    public bool stacks = false;
 
 }
 
@@ -924,6 +929,9 @@ public class ItemLauncherBonuses
     public float launcherAccuracy = 0f;
     [Tooltip("Reduces firing time for any launcher by ##%, if fired alone. Incompatible with Weapon Cyclers and autonomous or overloaded weapons.")]
     public float launcherLoading = 0f;
+    [Tooltip("Instead of launchers, Energy gun or cannon (Quantum Capacitor)")]
+    public bool forEnergyOrCannon = false;
+
     public bool stacks = false;
 }
 
@@ -935,6 +943,9 @@ public class ItemFlatDamageBonus
     public List<ItemDamageType> types = new List<ItemDamageType>();
     [Tooltip("0.##%")]
     public float damageBonus = 0f;
+
+    public bool stacks = false;
+    public bool halfStacks = false;
 }
 
 [System.Serializable]
@@ -944,6 +955,8 @@ public class ItemSalvageBonuses
     public bool hasEffect = false;
     public int bonus = 0;
     public bool gunTypeOnly = true;
+
+    public bool stacks = false;
 }
 
 [System.Serializable]
@@ -957,6 +970,8 @@ public class ItemAlienBonuses
     public bool singleDamageToCore = false;
     [Tooltip("##% of damage to parts is instead transferred directly to the core.")]
     public bool allDamageToCore = false;
+
+    // TODO: Expand this with more effects when needed
 
     public bool stacks = false;
     public bool half_stacks = false;

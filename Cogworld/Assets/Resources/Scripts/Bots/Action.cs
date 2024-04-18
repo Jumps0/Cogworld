@@ -2917,40 +2917,26 @@ public static class Action
                 {
                     foreach (var E in item.item.itemData.itemEffects)
                     {
-                        if (item.item.itemData.itemEffects.Count > 0 && E.toHitBuffs.hasEffect)
+                        if (item.item.itemData.itemEffects.Count > 0)
                         {
-                            if (E.toHitBuffs.stacks)
+                            if (E.toHitBuffs.hasEffect && E.toHitBuffs.flatBonus)
                             {
-                                if (E.toHitBuffs.meleeOnly)
-                                {
-                                    bonus_melee += E.toHitBuffs.amount;
-                                }
-                                else
+                                if (E.toHitBuffs.stacks)
                                 {
                                     bonus_ranged += E.toHitBuffs.amount;
                                 }
-                            }
-                            else if (E.toHitBuffs.halfStacks)
-                            {
-                                if (E.toHitBuffs.meleeOnly)
-                                {
-                                    bonus_melee += E.toHitBuffs.amount / 2;
-                                }
-                                else
+                                else if (E.toHitBuffs.halfStacks)
                                 {
                                     bonus_ranged += E.toHitBuffs.amount;
-                                }
-                            }
-                            else
-                            {
-                                if (E.toHitBuffs.meleeOnly)
-                                {
-                                    bonus_melee = E.toHitBuffs.amount;
                                 }
                                 else
                                 {
                                     bonus_ranged = E.toHitBuffs.amount;
                                 }
+                            }
+                            else if (E.meleeBonus.hasEffect)
+                            {
+                                bonus_melee += E.meleeBonus.melee_accuracyIncrease;
                             }
                         }
                     }
@@ -2965,40 +2951,26 @@ public static class Action
                 {
                     foreach (var E in item.item.itemData.itemEffects)
                     {
-                        if (item.item.itemData.itemEffects.Count > 0 && E.toHitBuffs.hasEffect)
+                        if (item.item.itemData.itemEffects.Count > 0)
                         {
-                            if (E.toHitBuffs.stacks)
+                            if (E.toHitBuffs.hasEffect && E.toHitBuffs.flatBonus)
                             {
-                                if (E.toHitBuffs.meleeOnly)
-                                {
-                                    bonus_melee += E.toHitBuffs.amount;
-                                }
-                                else
+                                if (E.toHitBuffs.stacks)
                                 {
                                     bonus_ranged += E.toHitBuffs.amount;
                                 }
-                            }
-                            else if (E.toHitBuffs.halfStacks)
-                            {
-                                if (E.toHitBuffs.meleeOnly)
-                                {
-                                    bonus_melee += E.toHitBuffs.amount / 2;
-                                }
-                                else
+                                else if (E.toHitBuffs.halfStacks)
                                 {
                                     bonus_ranged += E.toHitBuffs.amount;
-                                }
-                            }
-                            else
-                            {
-                                if (E.toHitBuffs.meleeOnly)
-                                {
-                                    bonus_melee = E.toHitBuffs.amount;
                                 }
                                 else
                                 {
                                     bonus_ranged = E.toHitBuffs.amount;
                                 }
+                            }
+                            else if (E.meleeBonus.hasEffect)
+                            {
+                                bonus_melee += E.meleeBonus.melee_accuracyIncrease;
                             }
                         }
                     }
@@ -3045,7 +3017,7 @@ public static class Action
                             bonus_minDamage += E.meleeBonus.melee_minDamageBoost;
 
 
-                            if (E.meleeBonus.actuator_stacks) // This effect should stack
+                            if (E.meleeBonus.stacks) // This effect should stack
                             {
                                 if (stackTrack == 0) // No decrease
                                 {
@@ -3085,7 +3057,7 @@ public static class Action
                             bonus_minDamage += E.meleeBonus.melee_minDamageBoost;
 
 
-                            if (E.meleeBonus.actuator_stacks) // This effect should stack
+                            if (E.meleeBonus.stacks) // This effect should stack
                             {
                                 if (stackTrack == 0) // No decrease
                                 {
@@ -4713,6 +4685,7 @@ public static class Action
         if (target.botInfo)
         {
             int salvageMod = HF.GetSalvageMod(weapon);
+            int bonus = 0;
 
             // Salvage Mod Items
             foreach (var item in items)
@@ -4725,17 +4698,32 @@ public static class Action
                         {
                             if (weapon.itemData.projectileAmount == 1)
                             {
-                                salvageMod += E.salvageBonus.bonus;
+                                if (E.salvageBonus.stacks)
+                                {
+                                    bonus += E.salvageBonus.bonus;
+                                }
+                                else
+                                {
+                                    bonus = E.salvageBonus.bonus;
+                                }
                             }
                         }
                         else if (!E.salvageBonus.gunTypeOnly)
                         {
-                            salvageMod += E.salvageBonus.bonus;
+                            if (E.salvageBonus.stacks)
+                            {
+                                bonus += E.salvageBonus.bonus;
+                            }
+                            else
+                            {
+                                bonus = E.salvageBonus.bonus;
+                            }
                         }
                     }
                 }
             }
 
+            salvageMod += bonus;
             target.salvageModifier += salvageMod;
         }
 
@@ -5057,6 +5045,7 @@ public static class Action
     public static int AddFlatDamageBonuses(int initialDamage, Actor attacker, Item weapon)
     {
         int damage = initialDamage;
+        float bonus = 0f;
 
         if (attacker.botInfo) // Bot
         {
@@ -5070,7 +5059,21 @@ public static class Action
                         {
                             if (E.flatDamageBonus.types.Contains(HF.GetDamageType(weapon.itemData))) // Same type?
                             {
-                                damage = Mathf.RoundToInt(damage + (damage * E.flatDamageBonus.damageBonus));
+                                if (E.flatDamageBonus.stacks)
+                                {
+                                    bonus += E.flatDamageBonus.damageBonus;
+                                }
+                                else
+                                {
+                                    if (E.flatDamageBonus.halfStacks)
+                                    {
+                                        bonus += E.flatDamageBonus.damageBonus / 2;
+                                    }
+                                    else
+                                    {
+                                        bonus = E.flatDamageBonus.damageBonus;
+                                    }
+                                }
                             }
                         }
                     }
@@ -5089,13 +5092,29 @@ public static class Action
                         {
                             if (E.flatDamageBonus.types.Contains(HF.GetDamageType(weapon.itemData))) // Same type?
                             {
-                                damage = Mathf.RoundToInt(damage + (damage * E.flatDamageBonus.damageBonus));
+                                if (E.flatDamageBonus.stacks)
+                                {
+                                    bonus += E.flatDamageBonus.damageBonus;
+                                }
+                                else
+                                {
+                                    if (E.flatDamageBonus.halfStacks)
+                                    {
+                                        bonus += E.flatDamageBonus.damageBonus / 2;
+                                    }
+                                    else
+                                    {
+                                        bonus = E.flatDamageBonus.damageBonus;
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
         }
+
+        damage = Mathf.RoundToInt(damage + (damage * bonus));
 
         return damage;
     }
