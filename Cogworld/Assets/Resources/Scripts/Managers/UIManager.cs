@@ -7311,11 +7311,174 @@ public class UIManager : MonoBehaviour
                         }
                     }
 
-                    if (E.hackBonuses.hasHackBonus)
+                    if (E.hackBonuses.hasHackBonus || E.hackBonuses.hasSystemShieldBonus)
                     {
                         HackBonus h = E.hackBonuses;
 
+                        if (h.hasHackBonus)
+                        {
+                            textWall += "Increases chance of successful machine hack by " + h.hackSuccessBonus * 100;
+                            textWall += ". Also provides a +" + h.rewireBonus * 100 + "% bonus to rewiring traps and disrupted robots, and applies a ";
+                            textWall += h.programmerHackDefenseBonus * 100 + "% penalty to hostile programmers attempting to defend their allies against your hacks.";
+                        }
+                        else if (h.hasSystemShieldBonus)
+                        {
+                            textWall += "While hacking machines, reduces both chance of detection and rate of detection chance increase by ";
+                            textWall += h.hackDetectRateBonus + ". Reduces tracing progress advances by the same amount. Also a lower chance that hacking machines will be considered serious enough to trigger an increase in security level, and reduces central database lockout chance by ";
+                            textWall += h.databaseLockoutBonus * 100 + "%. Blocks hacking feedback side effects ";
+                            textWall += h.hackFeedbackPreventBonus * 100 + "% of the time, and repels " + h.allyHackDefenseBonus * 100 + "% of hacking attempts against allies within a range of ";
+                            textWall += h.allyHackRange + ".";
+                        }
 
+                        if (h.stacks)
+                        {
+                            textWall += "\n <stacks>";
+                        }
+                        else
+                        {
+                            textWall += "\n <no_stack>";
+                        }
+                    }
+
+                    if (E.emitEffect.hasEffect)
+                    {
+                        textWall += "Every " + E.emitEffect.turnTime + " turns emits a powerful signal tuned to power down all ";
+                        if (E.emitEffect.target)
+                        {
+                            textWall += "0b10 ";
+                        }
+                        else
+                        {
+                            textWall += "Assembled ";
+                        }
+                        textWall += "within a range of " + E.emitEffect.range + ".";
+                    }
+
+                    if (E.fireTimeEffect.hasEffect)
+                    {
+                        ItemFiretimeEffect f = E.fireTimeEffect;
+
+                        if (f.launchersOnly)
+                        {
+                            textWall += "Reduces firing time for any launcher by " + f.fireTimeReduction * 100 + "%, if fired alone.";
+                        }
+                        else
+                        {
+                            textWall += "Reduces collective firing time of all guns, cannons, and launchers by " + f.fireTimeReduction * 100 + "%.";
+                        }
+
+                        if (!f.compatability)
+                        {
+                            textWall += " Incompatible with Weapon Cyclers and Autonomous or overloaded weapons.";
+                        }
+
+                        if (f.stacks)
+                        {
+                            if (f.capped)
+                            {
+                                textWall += "\n <stacks, capped at " + f.cap * 100 + "%>";
+                            }
+                            else
+                            {
+                                textWall += "\n <stacks>";
+                            }
+                        }
+                        else
+                        {
+                            textWall += "\n <no_stack>";
+                        }
+                    }
+
+                    if(E.transmissionJammingEffect.hasEffect)
+                    {
+                        ItemTransmissionJamming f = E.transmissionJammingEffect;
+
+                        textWall += "Blocks local transmissions from visible hostiles within a range of ";
+                        textWall += f.range + ", making it impossible for them to share information about your current position.";
+
+                        if (f.preventReinforcementCall)
+                        {
+                            textWall += " Also prevents calls for reinforcements";
+                            if (f.suppressAlarmTraps)
+                            {
+                                textWall += ", and suppresses alarm traps";
+                            }
+                            textWall += ".";
+                        }
+                    }
+
+                    if (E.effectiveCorruptionEffect.hasEffect)
+                    {
+                        ItemEffectiveCorruptionPrevention f = E.effectiveCorruptionEffect;
+
+                        textWall += "Reduces effective system corruption by " + f.amount + ".";
+
+                        if (f.stacks)
+                        {
+                            textWall += "\n <stacks>";
+                        }
+                        else
+                        {
+                            textWall += "\n <no_stack>";
+                        }
+                    }
+
+                    if (E.partRestoreEffect.hasEffect)
+                    {
+                        ItemPartRestore f = E.partRestoreEffect;
+
+                        textWall += f.percentChance * 100 + "% chance each turn to restore a broken or malfunctioning part, attached or in inventory, to functionality.";
+                        if (!f.canRepairAlienTech)
+                        {
+                            textWall += " Unable to repair alien technology";
+                            if (f.protoRepairCap > 0)
+                            {
+                                textWall += ", or prototypes above rating " + f.protoRepairCap + ".";
+                            }
+                            else
+                            {
+                                textWall += ".";
+                            }
+                        }
+                        else
+                        {
+                            textWall += " Able to repair alien technology";
+                            if (f.protoRepairCap > 0)
+                            {
+                                textWall += ", but unable to repair prototypes above rating " + f.protoRepairCap + ".";
+                            }
+                            else
+                            {
+                                textWall += ".";
+                            }
+                        }
+
+                        if (f.canRunInParralel)
+                        {
+                            textWall += "\n <parallel_ok>";
+                        }
+                    }
+
+                    if(E.exilesEffects.hasEffect)
+                    {
+                        ItemExilesSpecific f = E.exilesEffects;
+
+                        if (f.isAutoWeapon)
+                        {
+                            textWall += "Selects its own targets and attacks them if in range, at no time cost to you.";
+                        }
+
+                        if (f.chronoWheelEffect)
+                        {
+                            textWall += "Sets a temporal reversion point when attached, then loses 1 integrity per turn. Once integrity is depleted naturally, you are forced back to that point in time. If destroyed prematurely the reversion will not occur.";
+                        }
+
+                        if (f.lifetimeDecay)
+                        {
+                            textWall += "\n\n Eventually breaks down.";
+                        }
+
+                        // add more later
                     }
 
                     #endregion

@@ -741,14 +741,17 @@ public class ItemFiretimeEffect
 {
     public bool hasEffect = false;
 
+    [Tooltip("True = Launchers | False = Guns, Cannons, & Launchers")]
+    public bool launchersOnly = false;
     [Tooltip("0.##%")]
     public float fireTimeReduction;
+    [Tooltip("Incompatible with Qunatum Capacitor & Autonomous Weapons")]
+    public bool compatability = false;
+
+    public bool stacks = true;
     public bool capped = false;
     [Tooltip("0.##%")]
     public float cap;
-    public bool stacks = true;
-    [Tooltip("Incompatible with Qunatum Capacitor & Autonomous Weapons")]
-    public bool compatability = false;
 }
 
 [System.Serializable]
@@ -801,11 +804,10 @@ public class ItemExilesSpecific
     public bool isAutoWeapon = false;
     [Tooltip("Chrono Wheel")]
     public bool chronoWheelEffect = false;
-    [Tooltip("Deployable Turret")]
-    public bool deployableTurret = false;
     [Tooltip("Breaks down over time")]
     public bool lifetimeDecay = false;
 
+    // add more later
 }
 
 [System.Serializable]
@@ -1056,7 +1058,7 @@ public class HackBonus
     // For System Shield
     public bool hasSystemShieldBonus = false;
     [Tooltip("Reduces Chances of Detection while hacking machines")]
-    public float hackDetectRateBonus = 0f; // Reduces Chances of Detection
+    public int hackDetectRateBonus = 0; // Reduces Chances of Detection
     [Tooltip("Reduces Rate of Detection Chance increases while hacking machines")]
     public float hackDetectChanceBonus = 0f;
     [Tooltip("Lowers the chance that hacking machines will be considered serious enough to trigger an increase in security")]
