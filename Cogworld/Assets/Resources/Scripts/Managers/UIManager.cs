@@ -110,9 +110,16 @@ public class UIManager : MonoBehaviour
         // - Check to close the /DATA/ menu via left click
         if (dataMenu.data_parent.gameObject.activeInHierarchy)
         {
-            if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Escape))
+            if ((Input.GetMouseButtonDown(0) && dataMenu.data_focusObject == null) || Input.GetKeyDown(KeyCode.Escape)) // Close the menu
             {
                 Data_CloseMenu();
+            }
+            else if (Input.GetMouseButtonDown(0) && dataMenu.data_focusObject != null) // Open the special detail menu instead
+            {
+                if (!dataMenu.data_focusObject.extraParent.gameObject.activeInHierarchy) // Menu isn't already open
+                {
+                    dataMenu.data_focusObject.ShowExtraDetail();
+                }
             }
         }
     }
@@ -8366,13 +8373,13 @@ public class UIManager : MonoBehaviour
             if (x.hacking)
             {
                 UIDataGenericDetail rX = UIManager.inst.Data_CreateGeneric();
-                extra = "Immune to attempts at offensive hacking and other ailments.";
+                extra = "Immune to any remote hacking by Programmers. Cannot be rewired while core disrupted.";
                 rX.Setup(true, false, false, "Hacking", Color.white, extra, "", false, "Immune", true);
             }
             if (x.jamming)
             {
                 UIDataGenericDetail rX = UIManager.inst.Data_CreateGeneric();
-                extra = "Immune to transmission jamming from hostile bots.";
+                extra = "Immune to transmission jamming.";
                 rX.Setup(true, false, false, "Jamming", Color.white, extra, "", false, "Immune", true);
             }
             if (x.meltdown)
@@ -8737,6 +8744,7 @@ public class UIDataDisplay
     [Header("Objects")]
     [Tooltip("All the objects (prefabs) that we spawned in.")]
     public List<GameObject> data_objects = new List<GameObject>();
+    public UIDataGenericDetail data_focusObject = null;
 
     [Header("Animation")]
     public Animator data_animator;

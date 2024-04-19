@@ -645,18 +645,16 @@ public class UIDataGenericDetail : MonoBehaviour
     private Coroutine extraAnim;
     [SerializeField] private Image extraBorders;
 
-    private Coroutine ed_delayer;
     bool flip = false;
 
     public void MouseOver()
     {
         if (extraAssignedString != "")
         {
-            // If the extra detail menu is not already shown and no coroutine is running
-            if (!extraParent.activeInHierarchy && ed_delayer == null)
+            // If the extra detail menu is not already shown
+            if (!extraParent.activeInHierarchy)
             {
-                // Start the coroutine to show the extra detail menu after a delay
-                ed_delayer = StartCoroutine(ED_Delay(2.5f));
+                UIManager.inst.dataMenu.data_focusObject = this;
             }
 
             // If the extra detail menu is active, move it with the mouse
@@ -702,26 +700,11 @@ public class UIDataGenericDetail : MonoBehaviour
         }
     }
 
-    private IEnumerator ED_Delay(float delay)
-    {
-        // Wait for the specified delay
-        yield return new WaitForSeconds(delay);
-
-        // Show the extra detail menu
-        ShowExtraDetail();
-
-        // Reset the coroutine reference
-        ed_delayer = null;
-    }
-
     public void MouseLeave()
     {
-        // If the mouse exits the object, cancel the coroutine if it's running
-        if (ed_delayer != null)
-        {
-            StopCoroutine(ed_delayer);
-            ed_delayer = null;
-        }
+        HideExtraDetail();
+
+        UIManager.inst.dataMenu.data_focusObject = null;
     }
 
     public void ShowExtraDetail()
@@ -775,7 +758,7 @@ public class UIDataGenericDetail : MonoBehaviour
 
     public void HideExtraDetail()
     {
-        extraParent.gameObject.SetActive(true);
+        extraParent.gameObject.SetActive(false);
     }
 
 
