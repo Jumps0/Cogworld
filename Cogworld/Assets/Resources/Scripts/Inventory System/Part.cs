@@ -315,6 +315,7 @@ public class Part : MonoBehaviour
         {
             // If the player clicks on this item, we want to first try and put it in one of their / PARTS / slots.
             bool slotAvailable = false;
+
             switch (_item.itemData.slot)
             {
                 // First we want to see if there is space to add this item

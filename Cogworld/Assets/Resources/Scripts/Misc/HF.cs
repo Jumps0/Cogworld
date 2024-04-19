@@ -4233,28 +4233,28 @@ public static class HF
     /// </summary>
     /// <param name="faction">The faction of the bot.</param>
     /// <returns>(Color, string)</returns>
-    public static (Color color, string text) VisualsFromBotRelation(Actor bot)
+    public static (Color color, string text, string extra) VisualsFromBotRelation(Actor bot)
     {
         // First consider any special states
         if (bot.state_CLOAKED)
         {
-            return (UIManager.inst.deepInfoBlue, "CLOAKED");
+            return (UIManager.inst.deepInfoBlue, "CLOAKED", "This bot is currently moving in stealth, and is only visible to you and its allies.");
         }
         else if (bot.state_DISABLED)
         {
-            return (UIManager.inst.warningOrange, "DISABLED");
+            return (UIManager.inst.warningOrange, "DISABLED", "This bot is currently disabled and will not re-activate unless directly interfered with.");
         }
         else if (bot.state_DISARMED)
         {
-            return (UIManager.inst.dullGreen, "DISARMED");
+            return (UIManager.inst.dullGreen, "DISARMED", "This bot is currently disarmed and unable to fight. It will likely flee and return to its point of origin.");
         }
         else if (bot.state_DORMANT)
         {
-            return (UIManager.inst.corruptOrange_faded, "DORMANT");
+            return (UIManager.inst.corruptOrange_faded, "DORMANT", "Robots temporarily resting in this mode are only a problem if they wake up, which may be triggered by alarm traps, being alerted by their nearby allies, or by hostiles hanging around in their field of vision.");
         }
         else if (bot.state_UNPOWERED)
         {
-            return (UIManager.inst.warningOrange, "UNPOWERED");
+            return (UIManager.inst.warningOrange, "UNPOWERED", "Unpowered robots will never become active. (Though yeah they’re very much real and you can harvest them for parts if you’d like.)");
         }
 
         // Then consider relations
@@ -4263,15 +4263,15 @@ public static class HF
         switch (relation)
         {
             case BotRelation.Hostile:
-                return (UIManager.inst.highSecRed, "HOSTILE");
+                return (UIManager.inst.highSecRed, "HOSTILE", "This robot's relation with you. If inactive for some reason, this message will provide more context.");
             case BotRelation.Neutral:
-                return (UIManager.inst.inactiveGray, "NEUTRAL");
+                return (UIManager.inst.inactiveGray, "NEUTRAL", "This robot's relation with you. If inactive for some reason, this message will provide more context.");
             case BotRelation.Friendly:
-                return (UIManager.inst.highlightGreen, "FRIENDLY");
+                return (UIManager.inst.highlightGreen, "FRIENDLY", "This robot's relation with you. If inactive for some reason, this message will provide more context.");
             case BotRelation.Default:
-                return (UIManager.inst.inactiveGray, "NEUTRAL");
+                return (UIManager.inst.inactiveGray, "NEUTRAL", "This robot's relation with you. If inactive for some reason, this message will provide more context.");
             default:
-                return (UIManager.inst.inactiveGray, "NEUTRAL");
+                return (UIManager.inst.inactiveGray, "NEUTRAL", "This robot's relation with you. If inactive for some reason, this message will provide more context.");
         }
     }
 
@@ -4342,6 +4342,32 @@ public static class HF
                 return "Chance to instantly destroy an enemy bot's core.";
         }
         return "This weapon has no critical effect.";
+    }
+
+    public static string DamageTypeToString(ItemDamageType type)
+    {
+        switch (type)
+        {
+            case ItemDamageType.Kinetic:
+                return "Ballistic weapons generally have a longer effective range and higher chance of critical strike, but suffer from less predictable damage and high recoil. Kinetic cannon hits also have a chance to cause knockback depending on damage, range, and size of the target.";
+            case ItemDamageType.Thermal:
+                return "Thermal weapons generally have a shorter effective range, but benefit from a more easily predictable damage potential and little or no recoil. Thermal damage also generally transfers heat to the target, and may cause meltdowns in hot enough targets.";
+            case ItemDamageType.Explosive:
+                return "While powerful, explosives generally spread damage across each target in the area of effect, dividing damage into 1~3 chunks before affecting a robot, where each chunk selects its own target part (though they may overlap). Explosions also significantly tend to reduce the amount of salvage remaining after destroying a target.";
+            case ItemDamageType.EMP:
+                return "EM weapons have less of an impact on integrity, but are capable of corrupting a target’s computer systems. Anywhere from 50 to 150% of damage done is also applied as system corruption, automatically maximized on a critical hit. EM-based explosions only deal half damage to inactive items lying on the ground.";
+            case ItemDamageType.Phasic: // TODO
+                return "[NO_DATA]";
+            case ItemDamageType.Impact:
+                return "Impact melee weapons have a damage-equivalent chance to cause knockback, and while incapable of a critical strike, they ignore coverage and are effective at destroying fragile systems. For every component crushed by an impact, its owner’s system is significantly corrupted (+25-150%), though electromagnetic resistance can help mitigate this effect.";
+            case ItemDamageType.Slashing:
+                return "Slashing melee weapons are generally very damaging, and most are also capable of severing components from a target without destroying them.";
+            case ItemDamageType.Piercing:
+                return "Piercing melee weapons achieve critical strikes more often, are more likely to hit a robot’s core (doubles core exposure value in hit location calculations), and get double the melee momentum damage bonus.";
+            case ItemDamageType.Entropic: // TODO
+                return "[NO_DATA]";
+        }
+        return "";
     }
 
     public static int CalculateAverageTimeToMove(Actor bot)

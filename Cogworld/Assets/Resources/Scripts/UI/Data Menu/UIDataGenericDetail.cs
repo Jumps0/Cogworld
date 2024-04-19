@@ -59,6 +59,7 @@ public class UIDataGenericDetail : MonoBehaviour
         StopAllCoroutines();
 
         primary_text.text = mainText;
+        this.gameObject.name = "[Detail]: " + mainText;
 
         // Secondary
         ToggleSecondaryState(useSecondary);
@@ -644,21 +645,49 @@ public class UIDataGenericDetail : MonoBehaviour
     private Coroutine extraAnim;
     [SerializeField] private Image extraBorders;
 
-    private void OnMouseOver()
+    private Coroutine ed_delayer;
+    bool flip = false;
+
+    public void MouseOver()
     {
-        if(extraAssignedString != "")
+        if (extraAssignedString != "")
         {
-            if (Input.GetMouseButtonDown(0) && !extraParent.activeInHierarchy && extraAnim == null)
+            // If the extra detail menu is not already shown and no coroutine is running
+            if (!extraParent.activeInHierarchy && ed_delayer == null)
             {
-                ShowExtraDetail();
+                // Start the coroutine to show the extra detail menu after a delay
+                ed_delayer = StartCoroutine(ED_Delay(2.5f));
             }
 
-            if (extraParent.activeInHierarchy) // If active, the element should follow the mouse
+            // If the extra detail menu is active, move it with the mouse
+            if (extraParent.activeInHierarchy)
             {
                 RectTransform uiElement = extraParent.GetComponent<RectTransform>();
-
-                // Get the mouse position in screen space
                 Vector3 mousePosition = Input.mousePosition;
+
+                // Check if the mouse is close to the bottom of the screen
+                if (Screen.height - mousePosition.y < 200f)
+                {
+                    // Change anchor to bottom left if it hasn't already been changed
+                    if (!flip)
+                    {
+                        uiElement.anchorMin = new Vector2(uiElement.anchorMin.x, 0f);
+                        uiElement.anchorMax = new Vector2(uiElement.anchorMax.x, 0f);
+                        uiElement.pivot = new Vector2(uiElement.pivot.x, 0f);
+                        flip = true;
+                    }
+                }
+                else
+                {
+                    // Reset anchor to top left if it has been changed
+                    if (flip)
+                    {
+                        uiElement.anchorMin = new Vector2(uiElement.anchorMin.x, 1f);
+                        uiElement.anchorMax = new Vector2(uiElement.anchorMax.x, 1f);
+                        uiElement.pivot = new Vector2(uiElement.pivot.x, 1f);
+                        flip = false;
+                    }
+                }
 
                 // Convert the screen space mouse position to canvas space
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -670,6 +699,28 @@ public class UIDataGenericDetail : MonoBehaviour
                 // Set the position of the UI element's top-left corner to the calculated position
                 uiElement.localPosition = localPoint;
             }
+        }
+    }
+
+    private IEnumerator ED_Delay(float delay)
+    {
+        // Wait for the specified delay
+        yield return new WaitForSeconds(delay);
+
+        // Show the extra detail menu
+        ShowExtraDetail();
+
+        // Reset the coroutine reference
+        ed_delayer = null;
+    }
+
+    public void MouseLeave()
+    {
+        // If the mouse exits the object, cancel the coroutine if it's running
+        if (ed_delayer != null)
+        {
+            StopCoroutine(ed_delayer);
+            ed_delayer = null;
         }
     }
 
@@ -689,7 +740,6 @@ public class UIDataGenericDetail : MonoBehaviour
     private IEnumerator OpenExtra()
     {
         // There is a bit more to this animation (a green scan bar that goes from top -> bottom, but its visibile for like 5 frames so honestly its not worth it)
-
         Color gray = extraBorders.color;
         Color blue = extraText.color;
 

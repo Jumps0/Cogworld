@@ -23,6 +23,7 @@ public class TestMgr : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
 
+        /*
         refA.GetComponent<UIDataHeader>().Setup("Overview");
         refA.GetComponent<UIDataHeader>().Open();
 
@@ -30,6 +31,7 @@ public class TestMgr : MonoBehaviour
         refB.GetComponent<UIDataGenericDetail>().Setup(false, false, false, "This is a text test", Color.white); // Basic (no secondary)
         //refB.GetComponent<UIDataGenericDetail>().Setup(true, false, true, "This is a text test", Color.white, "", false, "", false, "", 0.9f); // Bar
         refB.GetComponent<UIDataGenericDetail>().Open();
+        */
     }
 
     private void Update()

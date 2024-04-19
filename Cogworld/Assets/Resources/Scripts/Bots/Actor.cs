@@ -40,7 +40,7 @@ public class Actor : Entity
     public bool state_DORMANT = false; // Grayed-out orange
     [Tooltip("This bot once had weapons but has since lost them and cannot fight. Has a different sprite.")]
     public bool state_DISARMED = false; // Grayed-out green
-    [Tooltip("This bot is cloaked is moving in steal, but through one reason or another the player knows their position. Has a different sprite")]
+    [Tooltip("This bot is cloaked and is moving in stealth, but through one reason or another the player knows their position. Has a different sprite")]
     public bool state_CLOAKED = false; // Grayed-out blue
     [Tooltip("UNPOWERED: Unpowered robots will never become active. (Though yeah they’re very much real and you can harvest them for parts if you’d like.)")]
     public bool state_UNPOWERED = false; // Grayed-out red

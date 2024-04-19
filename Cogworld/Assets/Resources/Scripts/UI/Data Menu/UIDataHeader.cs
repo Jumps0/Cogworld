@@ -26,6 +26,8 @@ public class UIDataHeader : MonoBehaviour
         mainString = text;
         mainText.text = mainString;
 
+        this.gameObject.name = "[Header]: " + text;
+
         if(bonusString != "")
         {
             bonusParent.SetActive(true);

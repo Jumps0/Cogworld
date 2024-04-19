@@ -68,6 +68,7 @@ public class Item
     public bool isOverloaded = false;
     [Tooltip("Is this item currently losing HP because of an external reason (deteriorating)?")] // see: https://www.gridsagegames.com/blog/2013/12/burnout-momentum-em-disruption/
     public bool isDeteriorating = false;
+    public bool isRigged = false;
     [Tooltip("Is this item corrupted?")]
     public bool corrupted = false;
     [Tooltip("If > 0, this item is disabled for the specified turns.")]
@@ -439,6 +440,7 @@ public class ItemPropulsion
     // Propulsion
     public int timeToMove;
     public int modExtra;
+    [Tooltip("Inactive non-airborne propulsion modify the movement time cost by this amouunt while airborne. However, inactive propulsion has no adverse effective on the speed of non-airborne propulsion, including core movement.")]
     public int drag; // Affects flying/hover movement
     public float propEnergy;
     public float propHeat;

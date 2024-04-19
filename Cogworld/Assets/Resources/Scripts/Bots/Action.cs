@@ -6139,6 +6139,36 @@ public static class Action
         return finalMultiplier;
     }
 
+    public static int CalculateDrag(Actor actor)
+    {
+        /* Inactive non-airborne propulsion modify the movement time cost by this amouunt while airborne. 
+         * However, inactive propulsion has no adverse effective on the speed of non-airborne propulsion, including core movement.
+         */
+
+        int drag = 0;
+
+        List<Item> items = Action.CollectAllBotItems(actor);
+
+        foreach (var I in items)
+        {
+            if (I.itemData.propulsion[0].timeToMove > 0)
+            {
+                // Is this part inactive?
+                if (!I.state)
+                {
+                    // Is this part non-airborne?
+                    if(I.itemData.type != ItemType.Hover && I.itemData.type != ItemType.Flight)
+                    {
+                        // Add its drag amount
+                        drag += I.itemData.propulsion[0].drag;
+                    }
+                }
+            }
+        }
+
+        return drag;
+    }
+
     #endregion
 
     #region Basic Player Stat Changes

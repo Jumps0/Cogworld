@@ -6112,14 +6112,7 @@ public class UIManager : MonoBehaviour
             }
             else
             {
-                if(item.integrityCurrent >= item.itemData.integrityMax)
-                {
-                    integS = "*" + item.integrityCurrent;
-                }
-                else
-                {
-                    integS = item.integrityCurrent.ToString();
-                }
+                integS = item.integrityCurrent + " /*" + item.itemData.integrityMax;
             }
             iInteg.Setup(true, false, true, "Integrity", Color.white, extra, integS, false, "", false, "", item.integrityCurrent / item.itemData.integrityMax);
             // Coverage
@@ -6154,6 +6147,12 @@ public class UIManager : MonoBehaviour
                 extra = "Current state of this item. This item is currently deteriorating. While active, it will lose integrity until eventually becoming permanently disabled. ";
                 iState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "DETERIORATING");
             }
+            else if (item.isRigged) // Rigged (yellow)
+            {
+                extra = "A rigged power source has been converted into a proximity mine set to detonate when anyone hostile to the creator moves adjacent to it. These power sources " +
+                    "can no longer be attached or used for their normal purpose, but can be safely picked up and relocated by anyone not deemed a threat. ";
+                iState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "RIGGED");
+            }
             else if (item.state) // Active (green)
             {
                 extra = "Current state of this item. This message will provide more context for special states.";
@@ -6172,57 +6171,60 @@ public class UIManager : MonoBehaviour
                 UIManager.inst.Data_CreateHeader("Active Upkeep"); // Active Upkeep =========================================================================
                 // Energy
                 UIDataGenericDetail iEnergyUpkeep = UIManager.inst.Data_CreateGeneric();
+                extra = "Energy consumed each turn by this part while active.";
                 string iEU = "";
                 if (item.itemData.energyUpkeep < 0f)
                 {
                     iEU = "-" + Mathf.Abs(item.itemData.energyUpkeep).ToString() + "%";
-                    iEnergyUpkeep.Setup(true, false, true, "Energy", Color.white, iEU, false, "", false, "", item.itemData.energyUpkeep / 36f); // Bar
+                    iEnergyUpkeep.Setup(true, false, true, "Energy", Color.white, extra, iEU, false, "", false, "", item.itemData.energyUpkeep / 36f); // Bar
                 }
                 else if(item.itemData.energyUpkeep > 0f)
                 {
                     iEU = "+" + Mathf.Abs(item.itemData.energyUpkeep).ToString() + "%";
-                    iEnergyUpkeep.Setup(true, false, true, "Energy", Color.white, iEU, false, "", false, "", item.itemData.energyUpkeep / 36f); // Bar
+                    iEnergyUpkeep.Setup(true, false, true, "Energy", Color.white, extra, iEU, false, "", false, "", item.itemData.energyUpkeep / 36f); // Bar
                 }
                 else if(item.itemData.energyUpkeep == 0)
                 {
                     // Grayed out
-                    iEnergyUpkeep.Setup(true, false, true, "Energy", Color.white, "0", true, "", false, "", 0f); // Bar
+                    iEnergyUpkeep.Setup(true, false, true, "Energy", Color.white, extra, "0", true, "", false, "", 0f); // Bar
                 }
                 // Matter
                 UIDataGenericDetail iMatterUpkeep = UIManager.inst.Data_CreateGeneric();
+                extra = "Matter consumed each turn by this part while active.";
                 string iMU = "";
                 if (item.itemData.matterUpkeep < 0f)
                 {
                     iMU = "-" + Mathf.Abs(item.itemData.matterUpkeep).ToString() + "%";
-                    iMatterUpkeep.Setup(true, false, true, "Matter", Color.white, iMU, false, "", false, "", item.itemData.matterUpkeep / 36f); // Bar
+                    iMatterUpkeep.Setup(true, false, true, "Matter", Color.white, extra, iMU, false, "", false, "", item.itemData.matterUpkeep / 36f); // Bar
                 }
                 else if (item.itemData.matterUpkeep > 0f)
                 {
                     iMU = "+" + Mathf.Abs(item.itemData.matterUpkeep).ToString() + "%";
-                    iMatterUpkeep.Setup(true, false, true, "Matter", Color.white, iMU, false, "", false, "", item.itemData.matterUpkeep / 36f); // Bar
+                    iMatterUpkeep.Setup(true, false, true, "Matter", Color.white, extra, iMU, false, "", false, "", item.itemData.matterUpkeep / 36f); // Bar
                 }
                 else if (item.itemData.matterUpkeep == 0)
                 {
                     // Grayed out
-                    iMatterUpkeep.Setup(true, false, true, "Matter", Color.white, "0", true, "", false, "", 0f); // Bar
+                    iMatterUpkeep.Setup(true, false, true, "Matter", Color.white, extra, "0", true, "", false, "", 0f); // Bar
                 }
                 // Heat
                 UIDataGenericDetail iHeatUpkeep = UIManager.inst.Data_CreateGeneric();
+                extra = "Heat produced each turn by this part while active.";
                 string iHU = "";
                 if (item.itemData.heatUpkeep < 0f)
                 {
                     iHU = "-" + Mathf.Abs(item.itemData.heatUpkeep).ToString();
-                    iHeatUpkeep.Setup(true, false, true, "Heat", Color.white, iHU, false, "", false, "", item.itemData.heatUpkeep / 36f); // Bar
+                    iHeatUpkeep.Setup(true, false, true, "Heat", Color.white, extra, iHU, false, "", false, "", item.itemData.heatUpkeep / 36f); // Bar
                 }
                 else if (item.itemData.heatUpkeep > 0f)
                 {
                     iHU = "+" + Mathf.Abs(item.itemData.heatUpkeep).ToString();
-                    iHeatUpkeep.Setup(true, false, true, "Heat", Color.white, iHU, false, "", false, "", item.itemData.heatUpkeep / 36f); // Bar
+                    iHeatUpkeep.Setup(true, false, true, "Heat", Color.white, extra, iHU, false, "", false, "", item.itemData.heatUpkeep / 36f); // Bar
                 }
                 else if (item.itemData.heatUpkeep == 0)
                 {
                     // Grayed out
-                    iHeatUpkeep.Setup(true, false, true, "Heat", Color.white, "0", true, "", false, "", 0f); // Bar
+                    iHeatUpkeep.Setup(true, false, true, "Heat", Color.white, extra, "0", true, "", false, "", 0f); // Bar
                 }
 
                 Data_CreateSpacer();
@@ -6233,19 +6235,23 @@ public class UIManager : MonoBehaviour
                 UIManager.inst.Data_CreateHeader("Power"); // Power =========================================================================
                 // Supply
                 UIDataGenericDetail iSupply = UIManager.inst.Data_CreateGeneric();
-                iSupply.Setup(true, false, true, "Supply", highlightGreen, "+" + item.itemData.supply, false, "", false, "", item.itemData.supply / 36f, true); // Bar
+                extra = "Energy generated each turn by this power source.";
+                iSupply.Setup(true, false, true, "Supply", highlightGreen, extra, "+" + item.itemData.supply, false, "", false, "", item.itemData.supply / 36f, true); // Bar
                 // Storage
                 UIDataGenericDetail iStorage = UIManager.inst.Data_CreateGeneric();
-                iStorage.Setup(true, false, true, "Storage", highlightGreen, item.itemData.storage.ToString(), false, "", false, "", item.itemData.storage / 500f, true); // Bar
+                extra = "Energy storage capacity of this power source. Excess energy can be stored, but requires additional utilities.";
+                iStorage.Setup(true, false, true, "Storage", highlightGreen, extra, item.itemData.storage.ToString(), false, "", false, "", item.itemData.storage / 500f, true); // Bar
                 // Stability
                 UIDataGenericDetail iStability = UIManager.inst.Data_CreateGeneric();
+                extra = "Stability represents the ability of this power source to generate energy while overloaded without suffering any negative side-effects. " +
+                    "Overloading doubles output and heat. If N/A, this power source cannot be overloaded; only cooled power sources support overloading.";
                 if (item.itemData.power_HasStability)
                 {
-                    iStability.Setup(true, false, true, "Stability", Color.white, (item.itemData.power_stability * 100) + "%", false, "", false, "", item.itemData.power_stability); // Bar
+                    iStability.Setup(true, false, true, "Stability", Color.white, extra, (item.itemData.power_stability * 100) + "%", false, "", false, "", item.itemData.power_stability); // Bar
                 }
                 else
                 {
-                    iStability.Setup(true, false, true, "Stability", Color.white, "N/A", true, "", false, "", 0f, false); // Bar
+                    iStability.Setup(true, false, true, "Stability", Color.white, extra, "N/A", true, "", false, "", 0f, false); // Bar
                 }
 
                 Data_CreateSpacer();
@@ -6273,9 +6279,11 @@ public class UIManager : MonoBehaviour
                 iTimeMove.Setup(true, false, true, "Time/Move", iTMC, extra, item.itemData.propulsion[0].timeToMove.ToString(), false, "", false, "", item.itemData.propulsion[0].timeToMove / 200f, true); // Bar
                 // Drag
                 UIDataGenericDetail iDrag = UIManager.inst.Data_CreateGeneric();
-                iDrag.Setup(true, false, false, "Drag", Color.white, item.itemData.propulsion[0].drag.ToString()); // No bar (simple)
+                extra = "Inactive non-airborne propulsion modify the movement time cost by this amouunt while airborne. However, inactive propulsion has no adverse effective on the speed of non-airborne propulsion, including core movement.";
+                iDrag.Setup(true, false, false, "Drag", Color.white, extra, item.itemData.propulsion[0].drag.ToString()); // No bar (simple)
                 // Energy
                 UIDataGenericDetail iEnergyProp = UIManager.inst.Data_CreateGeneric();
+                extra = "Energy consumed by this part each move, if active.";
                 Color iEP = highlightGreen;
                 if(item.itemData.propulsion[0].propEnergy <= 0)
                 {
@@ -6289,9 +6297,10 @@ public class UIManager : MonoBehaviour
                 {
                     iEP = cautiousYellow;
                 }
-                iEnergyProp.Setup(true, false, true, "Energy", iEP, item.itemData.propulsion[0].propEnergy.ToString(), false, "", false, "", item.itemData.propulsion[0].propEnergy + 10 / 20f, true); // Bar
+                iEnergyProp.Setup(true, false, true, "Energy", iEP, extra, item.itemData.propulsion[0].propEnergy.ToString(), false, "", false, "", item.itemData.propulsion[0].propEnergy + 10 / 20f, true); // Bar
                 // Heat
                 UIDataGenericDetail iHeatProp = UIManager.inst.Data_CreateGeneric();
+                extra = "Heat produced by this part each move, if active.";
                 Color iHP = highlightGreen;
                 if (item.itemData.propulsion[0].propHeat <= 5)
                 {
@@ -6307,24 +6316,27 @@ public class UIManager : MonoBehaviour
                 }
                 if (item.itemData.propulsion[0].propHeat > 0)
                 {
-                    iHeatProp.Setup(true, false, true, "Heat", iHP, item.itemData.propulsion[0].propHeat.ToString(), false, "", false, "", item.itemData.propulsion[0].propHeat + 1 / 20f, true); // Bar
+                    iHeatProp.Setup(true, false, true, "Heat", iHP, extra, item.itemData.propulsion[0].propHeat.ToString(), false, "", false, "", item.itemData.propulsion[0].propHeat + 1 / 20f, true); // Bar
                 }
                 else
                 {
-                    iHeatProp.Setup(true, false, true, "Heat", iHP, "0", true, "", false, "", 0f, true); // Bar
+                    iHeatProp.Setup(true, false, true, "Heat", iHP, extra, "0", true, "", false, "", 0f, true); // Bar
                 }
                 // Support
                 UIDataGenericDetail iSupportProp = UIManager.inst.Data_CreateGeneric();
+                extra = "Mass supported by this part, if active.";
                 if (item.itemData.propulsion[0].support > 0)
                 {
-                    iSupportProp.Setup(true, false, true, "Support", Color.white, item.itemData.propulsion[0].support.ToString(), false, "", false, "", item.itemData.propulsion[0].support / 22f); // Bar
+                    iSupportProp.Setup(true, false, true, "Support", Color.white, extra, item.itemData.propulsion[0].support.ToString(), false, "", false, "", item.itemData.propulsion[0].support / 22f); // Bar
                 }
                 else
                 {
-                    iSupportProp.Setup(true, false, true, "Support", Color.white, "0", true, "", false, "", 0f); // Bar
+                    iSupportProp.Setup(true, false, true, "Support", Color.white, extra, "0", true, "", false, "", 0f); // Bar
                 }
                 // Penalty
                 UIDataGenericDetail iPenaltyProp = UIManager.inst.Data_CreateGeneric();
+                extra = "Movement time penalty for being overweight, applied once if overweight at all. Penalty values for multiple different propulsion modules are averaged for calculation purposes. " +
+                    "Further exceeding the mass support limit gradually continue to reduce speed depending on the amount of excess mass.";
                 Color iPP = highlightGreen;
                 if (item.itemData.propulsion[0].penalty <= 10)
                 {
@@ -6340,35 +6352,60 @@ public class UIManager : MonoBehaviour
                 }
                 if (item.itemData.propulsion[0].penalty > 0)
                 {
-                    iPenaltyProp.Setup(true, false, true, " Penalty", iPP, item.itemData.propulsion[0].penalty.ToString(), false, "", false, "", item.itemData.propulsion[0].penalty / 60f, true); // Bar
+                    iPenaltyProp.Setup(true, false, true, " Penalty", iPP, extra, item.itemData.propulsion[0].penalty.ToString(), false, "", false, "", item.itemData.propulsion[0].penalty / 60f, true); // Bar
                 }
                 else
                 {
-                    iPenaltyProp.Setup(true, false, true, " Penalty", iPP, "0", true, "", false, "", 0f, true); // Bar
+                    iPenaltyProp.Setup(true, false, true, " Penalty", iPP, extra, "0", true, "", false, "", 0f, true); // Bar
                 }
                 // Burnout
-                UIDataGenericDetail iBurnout = UIManager.inst.Data_CreateGeneric();
-                Color iBP = highlightGreen;
-                if (item.itemData.propulsion[0].penalty <= 15)
+                if (item.itemData.propulsion[0].hasBurnout)
                 {
-                    iBP = highlightGreen;
+                    UIDataGenericDetail iBurnout = UIManager.inst.Data_CreateGeneric();
+                    extra = "If this system is overloaded, it will gradually lose integrity determined by its burnout rate due to the strain of operating in this unintended state.";
+                    Color iBP = highlightGreen;
+                    if (item.itemData.propulsion[0].penalty <= 15)
+                    {
+                        iBP = highlightGreen;
+                    }
+                    else if (item.itemData.propulsion[0].penalty > 50)
+                    {
+                        iBP = highSecRed;
+                    }
+                    else
+                    {
+                        iBP = cautiousYellow;
+                    }
+                    if (item.itemData.propulsion[0].penalty > 0)
+                    {
+                        iBurnout.Setup(true, false, true, "Burnout", iBP, extra, item.itemData.propulsion[0].burnout.ToString(), false, "", false, "", item.itemData.propulsion[0].burnout / 70f, true); // Bar
+                    }
+                    else
+                    {
+                        iBurnout.Setup(true, false, true, "Burnout", iBP, extra, "N/A", true, "", false, "", 0f); // Bar
+                    }
                 }
-                else if (item.itemData.propulsion[0].penalty > 50)
+                // Siege
+                if(item.itemData.type == ItemType.Treads)
                 {
-                    iBP = highSecRed;
+                    UIDataGenericDetail iSiege = UIManager.inst.Data_CreateGeneric();
+                    extra = "Entering or exiting siege mode requires 5 turns. During the transition, and for as long as the mode is active, Cogmind is immobile and the treads cannot be disabled or removed." +
+                        " While in siege mode, non-melee attacks have a +20% accuracy, coverage for all armor and heavy treads is doubled, any treads in siege mode get a free 25% damage reduction, no " +
+                        "weapons suffer from recoil effects, and Cogmind is immune to instant part destruction from critical hits. Treads capable of High siege mode instead give + 30% accuracy and have 50% damage resist.";
+                    if (item.itemData.propulsion[0].canSiege == 1)
+                    {
+                        iSiege.Setup(true, false, false, "Siege", Color.white, extra, "", false, "Standard");
+                    }
+                    else if (item.itemData.propulsion[0].canSiege == 2)
+                    {
+                        iSiege.Setup(true, false, false, "Siege", Color.white, extra, "", false, "High");
+                    }
+                    else
+                    {
+                        iSiege.Setup(true, false, false, "Siege", Color.white, extra, "N/A", true);
+                    }
                 }
-                else
-                {
-                    iBP = cautiousYellow;
-                }
-                if (item.itemData.propulsion[0].penalty > 0)
-                {
-                    iBurnout.Setup(true, false, true, "Burnout", iBP, item.itemData.propulsion[0].penalty.ToString(), false, "", false, "", item.itemData.propulsion[0].penalty / 70f, true); // Bar
-                }
-                else
-                {
-                    iBurnout.Setup(true, false, true, "Burnout", iBP, "N/A", true, "", false, "", 0f); // Bar
-                }
+                
 
                 // And then consider if there is a text wall after this
                 foreach (var E in item.itemData.itemEffects)
@@ -6589,8 +6626,7 @@ public class UIManager : MonoBehaviour
                 pDamage.Setup(true, false, true, "Damage", highlightGreen, extra, proj.damage.x + "-" + proj.damage.y, false, "", false, "", ((proj.damage.x + proj.damage.y) / 2) / 100f, true);
                 // Type
                 UIDataGenericDetail pType = UIManager.inst.Data_CreateGeneric();
-                extra = "Ballistic weapons generally have a longer effective range and more destructive critical strikes, but suffer from less predictable damage and high recoil. " +
-                    "Kinetic cannon hits also blast usuable matter of target robots and have a chance to cause knockback depending on damage, range, and size of the target.";
+                extra = HF.DamageTypeToString(proj.damageType);
                 pType.Setup(true, false, false, "Type", Color.white, extra, "", false, proj.damageType.ToString());
                 // Critical
                 UIDataGenericDetail pCrit = UIManager.inst.Data_CreateGeneric();
@@ -6729,26 +6765,41 @@ public class UIManager : MonoBehaviour
                 ExplosionGeneric detail = item.itemData.explosionDetails;
                 // Range
                 UIDataGenericDetail iERadius = UIManager.inst.Data_CreateGeneric();
-                iERadius.Setup(true, false, true, "Radius", highlightGreen, detail.radius.ToString(), false, "", false, "", detail.radius / 9f, true); // Bar
+                extra = "Maximum radius of the explosion from its origin.";
+                iERadius.Setup(true, false, true, "Radius", highlightGreen, extra, detail.radius.ToString(), false, "", false, "", detail.radius / 9f, true); // Bar
                 // Damage
                 int average = Mathf.RoundToInt((detail.damage.x + detail.damage.y) / 2);
+                extra = "Range of potential damage at the explosion's origin.";
                 UIDataGenericDetail iEDamage = UIManager.inst.Data_CreateGeneric();
-                iEDamage.Setup(true, false, true, "Damage", highlightGreen, detail.damage.x + "-" + detail.damage.y, false, "", false, "", average / 120f, true); // Bar
+                iEDamage.Setup(true, false, true, "Damage", highlightGreen, extra, detail.damage.x + "-" + detail.damage.y, false, "", false, "", average / 120f, true); // Bar
                 // Falloff
                 UIDataGenericDetail iEFalloff = UIManager.inst.Data_CreateGeneric();
+                extra = "Amount of damage potential lost per space as the explosion expands from its origin. While targeting, this falloff is represented visually by the AOE color's brightness " +
+                    "relative to the origin (this feature can be toggled via Explosion Predictions option).";
                 if(detail.fallOff <= 0)
                 {
-                    iEFalloff.Setup(true, false, false, " Falloff", Color.white, detail.fallOff.ToString());
+                    iEFalloff.Setup(true, false, false, " Falloff", Color.white, extra, detail.fallOff.ToString());
                 }
                 else
                 {
-                    iEFalloff.Setup(true, false, false, " Falloff", Color.white, "0", true);
+                    iEFalloff.Setup(true, false, false, " Falloff", Color.white, extra, "0", true);
+                }
+                // Chunks
+                if(detail.chunks.y > 1)
+                {
+                    UIDataGenericDetail iEChunks = UIManager.inst.Data_CreateGeneric();
+                    extra = "AOE damage is often spread across each target in the area of effect, dividing the damage into separate chunks before affecting a robot," +
+                        " where each chunk of damage selects its own target part (though they may overlap). Some explosive effects have a static number of chunks, while " +
+                        "others randomly select from within a range for each attack.";
+                    iEFalloff.Setup(true, false, false, " Falloff", Color.white, extra, detail.fallOff.ToString());
                 }
                 // Type
                 UIDataGenericDetail iEType = UIManager.inst.Data_CreateGeneric();
-                iEType.Setup(true, false, false, "Type", Color.white, "", false, detail.damageType.ToString());
+                extra = "While powerful, explosives generally spread damage across each target in the area of effect.\nExplosions also tend to reduce the amount of salvage remaining after destroying a target.";
+                iEType.Setup(true, false, false, "Type", Color.white, extra, "", false, detail.damageType.ToString());
                 // Spectrum
                 UIDataGenericDetail iESpectrum = UIManager.inst.Data_CreateGeneric();
+                extra = "Range of electromagnetic spectrum, with narrower ranges more likely to trigger chain explosions in power sources. (AOE spectrum only affects power sources being used by Cogmind, or those exposed on the ground.)";
                 if (detail.hasSpectrum)
                 {
                     string s = "";
@@ -6769,14 +6820,15 @@ public class UIManager : MonoBehaviour
                         s = "Fine (100%)";
                     }
 
-                    iESpectrum.Setup(true, false, false, "Specturm", Color.white, s); // No bar (simple)
+                    iESpectrum.Setup(true, false, false, "Specturm", Color.white, extra, s); // No bar (simple)
                 }
                 else
                 {
-                    iESpectrum.Setup(true, false, false, "Specturm", Color.white, "N/A", true); // No bar (simple)
+                    iESpectrum.Setup(true, false, false, "Specturm", Color.white, extra, "N/A", true); // No bar (simple)
                 }
                 // Disruption
                 UIDataGenericDetail iEDisruption = UIManager.inst.Data_CreateGeneric();
+                extra = "Chance this explosion may temporarily disable an active part it damages. If a robot core is struck, there is half this chance the entire robot may be disabled.";
                 if (detail.disruption > 0)
                 {
                     Color iPDC = highlightGreen;
@@ -6793,22 +6845,23 @@ public class UIManager : MonoBehaviour
                         iPDC = cautiousYellow;
                     }
 
-                    iEDisruption.Setup(true, false, true, "Disruption", iPDC, (detail.disruption * 100) + "%", false, "", false, "", detail.disruption, true); // Bar
+                    iEDisruption.Setup(true, false, true, "Disruption", iPDC, extra, (detail.disruption * 100) + "%", false, "", false, "", detail.disruption, true); // Bar
                 }
                 else
                 {
-                    iEDisruption.Setup(true, false, true, "Disruption", Color.white, "0%", true, "", false, "", 0f); // Bar
+                    iEDisruption.Setup(true, false, true, "Disruption", Color.white, extra, "0%", true, "", false, "", 0f); // Bar
 
                 }
                 // Salvage
                 UIDataGenericDetail iESalvage = UIManager.inst.Data_CreateGeneric();
+                extra = "Amount by which the salvage potential of a given robot is affected by being engulfed in this explosion. While usually negative, reducing the amount of usable salvage, some special weapons may increase salvage by disabling a robot with minimal collateral damage.";
                 if (detail.fallOff <= 0)
                 {
-                    iESalvage.Setup(true, false, false, "Salvage", Color.white, detail.salvage.ToString());
+                    iESalvage.Setup(true, false, false, "Salvage", Color.white, extra, detail.salvage.ToString());
                 }
                 else
                 {
-                    iESalvage.Setup(true, false, false, "Salvage", Color.white, "0", true);
+                    iESalvage.Setup(true, false, false, "Salvage", Color.white, extra, "0", true);
                 }
             }
 
@@ -6819,32 +6872,35 @@ public class UIManager : MonoBehaviour
                 UIManager.inst.Data_CreateHeader("Attack"); // Attack =========================================================================
                 // Energy
                 UIDataGenericDetail iAEnergy = UIManager.inst.Data_CreateGeneric();
+                extra = "Energy required to attack with this weapon.";
                 if (melee.energy < 0) // Negative
                 {
                     float clampedValue = Mathf.Clamp(melee.energy, 0, -50);
                     float normalizedValue = Mathf.InverseLerp(0, -50, clampedValue);
 
-                    iAEnergy.Setup(true, false, true, "Energy", Color.white, melee.energy.ToString(), false, "", false, "", normalizedValue); // Bar
+                    iAEnergy.Setup(true, false, true, "Energy", Color.white, extra, melee.energy.ToString(), false, "", false, "", normalizedValue); // Bar
                 }
                 else
                 {
-                    iAEnergy.Setup(true, false, true, "Energy", Color.white, melee.energy.ToString(), true, "", false, "", 0f); // Bar
+                    iAEnergy.Setup(true, false, true, "Energy", Color.white, extra, melee.energy.ToString(), true, "", false, "", 0f); // Bar
                 }
                 // Matter
                 UIDataGenericDetail iAMatter = UIManager.inst.Data_CreateGeneric();
+                extra = "Matter consumed when attacking with this weapon.";
                 if (melee.matter < 0) // Negative
                 {
                     float clampedValue = Mathf.Clamp(melee.matter, 0, -50);
                     float normalizedValue = Mathf.InverseLerp(0, -50, clampedValue);
 
-                    iAMatter.Setup(true, false, true, "Matter", Color.white, melee.matter.ToString(), false, "", false, "", normalizedValue); // Bar
+                    iAMatter.Setup(true, false, true, "Matter", Color.white, extra, melee.matter.ToString(), false, "", false, "", normalizedValue); // Bar
                 }
                 else
                 {
-                    iAMatter.Setup(true, false, true, "Matter", Color.white, melee.matter.ToString(), true, "", false, "", 0f); // Bar
+                    iAMatter.Setup(true, false, true, "Matter", Color.white, extra, melee.matter.ToString(), true, "", false, "", 0f); // Bar
                 }
                 // Heat
                 UIDataGenericDetail iAHeat = UIManager.inst.Data_CreateGeneric();
+                extra = "Heat produced by attack with this weapon.";
                 if (melee.heat > 0)
                 {
                     Color iSC = highlightGreen;
@@ -6861,24 +6917,26 @@ public class UIManager : MonoBehaviour
                         iSC = cautiousYellow;
                     }
 
-                    iAHeat.Setup(true, false, true, "Heat", iSC, "+" + melee.heat.ToString(), false, "", false, "", melee.heat / 100f, true); // Bar
+                    iAHeat.Setup(true, false, true, "Heat", iSC, extra, "+" + melee.heat.ToString(), false, "", false, "", melee.heat / 100f, true); // Bar
                 }
                 else
                 {
-                    iAHeat.Setup(true, false, true, "Heat", Color.white, melee.heat.ToString(), true, "", false, "", 0f); // Bar
+                    iAHeat.Setup(true, false, true, "Heat", Color.white, extra, melee.heat.ToString(), true, "", false, "", 0f); // Bar
                 }
                 // Targeting
                 UIDataGenericDetail iATargeting = UIManager.inst.Data_CreateGeneric();
+                extra = "This is a direct modifier to the weapon's accuracy when attacking with it. Some weapons are inherently easier or more difficult to accurately strike with.";
                 if (melee.targeting != 0)
                 {
-                    iATargeting.Setup(true, false, false, "Targeting", Color.white, (melee.targeting * 100) + "%"); // No bar (simple)
+                    iATargeting.Setup(true, false, false, "Targeting", Color.white, extra, (melee.targeting * 100) + "%"); // No bar (simple)
                 }
                 else
                 {
-                    iATargeting.Setup(true, false, false, "Targeting", Color.white, "0%", true); // No bar (simple)
+                    iATargeting.Setup(true, false, false, "Targeting", Color.white, extra, "0%", true); // No bar (simple)
                 }
                 // Delay
                 UIDataGenericDetail iADelay = UIManager.inst.Data_CreateGeneric();
+                extra = "This is a modifier to the time it takes to attack with this weapon. Some weapons are inherently faster or slower to attack with.";
                 if (melee.delay > 0)
                 {
                     string iSD_text = "";
@@ -6887,11 +6945,11 @@ public class UIManager : MonoBehaviour
                         iSD_text = "+";
                     }
 
-                    iADelay.Setup(true, false, false, "Delay", Color.white, iSD_text += melee.delay); // No bar (simple)
+                    iADelay.Setup(true, false, false, "Delay", Color.white, extra, iSD_text += melee.delay); // No bar (simple)
                 }
                 else
                 {
-                    iADelay.Setup(true, false, false, "Delay", Color.white, "0", true); // No bar (simple)
+                    iADelay.Setup(true, false, false, "Delay", Color.white, extra, "0", true); // No bar (simple)
                 }
 
                 Data_CreateSpacer();
@@ -6900,24 +6958,28 @@ public class UIManager : MonoBehaviour
                     UIManager.inst.Data_CreateHeader("Hit"); // Hit =========================================================================
                                                              // Damage
                     UIDataGenericDetail hDamage = UIManager.inst.Data_CreateGeneric();
-                    hDamage.Setup(true, false, true, "Damage", highlightGreen, melee.damage.x + "-" + melee.damage.y, false, "", false, "", ((melee.damage.x + melee.damage.y) / 2) / 100f, true);
+                    extra = "Range of potential damage at the point of impact.";
+                    hDamage.Setup(true, false, true, "Damage", highlightGreen, extra, melee.damage.x + "-" + melee.damage.y, false, "", false, "", ((melee.damage.x + melee.damage.y) / 2) / 100f, true);
                     // Type
                     UIDataGenericDetail hType = UIManager.inst.Data_CreateGeneric();
-                    hType.Setup(true, false, false, "Type", Color.white, "", false, melee.damageType.ToString());
+                    extra = HF.DamageTypeToString(item.itemData.meleeAttack.damageType);
+                    hType.Setup(true, false, false, "Type", Color.white, extra, "", false, melee.damageType.ToString());
                     // Critical
                     UIDataGenericDetail hCrit = UIManager.inst.Data_CreateGeneric();
+                    extra = HF.CriticalEffectsToString(item.itemData.meleeAttack.critType);
                     if (melee.critical > 0f)
                     {
-                        hCrit.Setup(true, false, false, "Critical", Color.white, (melee.critical * 100).ToString() + "%", false, melee.critical.ToString());
+                        hCrit.Setup(true, false, false, "Critical", Color.white, extra, (melee.critical * 100).ToString() + "%", false, melee.critical.ToString());
                     }
                     else
                     {
-                        hCrit.Setup(true, false, false, "Critical", Color.white, "0%", true);
+                        hCrit.Setup(true, false, false, "Critical", Color.white, extra, "0%", true);
                     }
                     // Heat Transfer
                     if (item.itemData.itemEffects.Count > 0 && item.itemData.itemEffects[0].heatTransfer > 0)
                     {
                         UIDataGenericDetail hHT = UIManager.inst.Data_CreateGeneric();
+                        extra = "Thermal weapons attempt to transfer some % of the maximum heat transfer rating of the weapon, and also check for possible robot meltdown (the effect of which might be delayed until the robot's next turn).";
                         string s = "";
                         int ht = item.itemData.itemEffects[0].heatTransfer;
                         if (ht == 1)
@@ -6937,10 +6999,11 @@ public class UIManager : MonoBehaviour
                             s = "Massive (80)";
                         }
 
-                        hHT.Setup(true, false, false, "Heat Transfer", Color.white, "", false, s);
+                        hHT.Setup(true, false, false, "Heat Transfer", Color.white, extra, "", false, s);
                     }
                     // Disruption
                     UIDataGenericDetail iHDisruption = UIManager.inst.Data_CreateGeneric();
+                    extra = "Chance for this weapon to temporarily disable an active part on impact. If a robot core is struck, there is half this chance the entire robot may be disabled.";
                     if (melee.disruption > 0)
                     {
                         Color iPDC = highlightGreen;
@@ -6957,26 +7020,28 @@ public class UIManager : MonoBehaviour
                             iPDC = cautiousYellow;
                         }
 
-                        iHDisruption.Setup(true, false, true, "Disruption", iPDC, (melee.disruption * 100) + "%", false, "", false, "", melee.disruption, true); // Bar
+                        iHDisruption.Setup(true, false, true, "Disruption", iPDC, extra, (melee.disruption * 100) + "%", false, "", false, "", melee.disruption, true); // Bar
                     }
                     else
                     {
-                        iHDisruption.Setup(true, false, true, "Disruption", Color.white, "0%", true, "", false, "", 0f); // Bar
+                        iHDisruption.Setup(true, false, true, "Disruption", Color.white, extra, "0%", true, "", false, "", 0f); // Bar
 
                     }
                     // Salvage
                     UIDataGenericDetail iHSalvage = UIManager.inst.Data_CreateGeneric();
+                    extra = "Amount by which the salvage potential of a given robot is affected each time shot by a projectile from this weapon. While usually negative, reducing the amount of " +
+                    "usable salvage, some special weapons may increase salvage by disabling a robot with minimal collateral damage.";
                     if (melee.salvage > 0)
                     {
-                        iHSalvage.Setup(true, false, false, "Salvage", Color.white, "+" + melee.salvage.ToString()); // No bar (simple)
+                        iHSalvage.Setup(true, false, false, "Salvage", Color.white, extra, "+" + melee.salvage.ToString()); // No bar (simple)
                     }
                     else if (melee.salvage == 0)
                     {
-                        iHSalvage.Setup(true, false, false, "Salvage", Color.white, "0", true); // No bar (simple)
+                        iHSalvage.Setup(true, false, false, "Salvage", Color.white, extra, "0", true); // No bar (simple)
                     }
                     else
                     {
-                        iHSalvage.Setup(true, false, false, "Salvage", Color.white, melee.salvage.ToString()); // No bar (simple)
+                        iHSalvage.Setup(true, false, false, "Salvage", Color.white, extra, melee.salvage.ToString()); // No bar (simple)
                     }
                 }
             }
@@ -7846,8 +7911,10 @@ public class UIManager : MonoBehaviour
                 UIManager.inst.Data_CreateHeader("Fabrication" + mult); // Fabrication =========================================================================
 
                 UIDataGenericDetail fTime = UIManager.inst.Data_CreateGeneric();
-                fTime.Setup(true, false, false, "Time", Color.white, "", false, info.fabTime.x + "/" + info.fabTime.y + "/" + info.fabTime.z);
+                extra = "The time in turns required to fabricate this item at a fabricator. Fabricators with higher security levels fabricator quicker, as indicated by the times. Security level: 1 / 2 / 3.";
+                fTime.Setup(true, false, false, "Time", Color.white, extra, "", false, info.fabTime.x + "/" + info.fabTime.y + "/" + info.fabTime.z);
                 UIDataGenericDetail fComp = UIManager.inst.Data_CreateGeneric();
+                extra = "Any extra components required to fabricate this item. Normally only matter is required. Some special items may require extra components.";
                 if (info.componenetsRequired.Count > 0)
                 {
                     string comps = "";
@@ -7856,11 +7923,11 @@ public class UIManager : MonoBehaviour
                         comps += C.itemName + "/";
                     }
                     comps = comps.Substring(0, comps.Length - 1); // Remove the extra "/"
-                    fComp.Setup(true, false, false, "Components", Color.white, "", false, comps);
+                    fComp.Setup(true, false, false, "Components", Color.white, extra, "", false, comps);
                 }
                 else
                 {
-                    fComp.Setup(true, false, false, "Components", Color.white, "", false, "None", true);
+                    fComp.Setup(true, false, false, "Components", Color.white, extra, "", false, "None", true);
                 }
             }
 
@@ -7880,29 +7947,49 @@ public class UIManager : MonoBehaviour
             UIManager.inst.Data_CreateHeader("Overview"); // Overview
             // Class
             UIDataGenericDetail botClass = UIManager.inst.Data_CreateGeneric();
-            botClass.Setup(true, false, false, "Class", Color.white, "", false, HF.BotClassParse(bot.botInfo._class));
+            string extra = "Robots are divided into classes based on their purpose.";
+            botClass.Setup(true, false, false, "Class", Color.white, extra, "", false, HF.BotClassParse(bot.botInfo._class));
             // Size
             UIDataGenericDetail botSize = UIManager.inst.Data_CreateGeneric();
-            botSize.Setup(true, false, false, "Size", Color.white, "", false, bot.botInfo._size.ToString());
+            extra = "Robot size category determines their likeliness of being struck by both targeted and stray shots, as well as their chance to suffer knockback. " +
+                "Smaller robots do not necessarily occupy their entire position, see the manual under Combat > Targeting for more about how this affects lines of fire.";
+            botSize.Setup(true, false, false, "Size", Color.white, extra, "", false, bot.botInfo._size.ToString());
             // Rating
             UIDataGenericDetail botRating = UIManager.inst.Data_CreateGeneric();
-            botRating.Setup(true, false, true, "Rating", highlightGreen, bot.botInfo.rating.ToString(), false, "", false, "", bot.botInfo.rating / 100f, true); // Uses the bar for some reason?
+            extra = "Rating summarizes the robot's overall effectiveness in combat situations, thus highly-rated robots are far more dangerous.";
+            Color bRC = highlightGreen;
+            if(bot.botInfo.rating > 90)
+            {
+                bRC = highSecRed;
+            }
+            else if(bot.botInfo.rating <= 25)
+            {
+                bRC = highlightGreen;
+            }
+            else
+            {
+                bRC = cautiousYellow;
+            }
+            botRating.Setup(true, false, true, "Rating", bRC, extra, bot.botInfo.rating.ToString(), false, "", false, "", bot.botInfo.rating / 100f, true); // Uses the bar to indicate threat
             // ID
             UIDataGenericDetail botID = UIManager.inst.Data_CreateGeneric();
             Color idColor = Color.white;
             string idText = "";
-            (idColor, idText) = HF.VisualsFromBotRelation(bot);
-            botID.Setup(true, true, false, "ID", idColor, "", false, "", false, idText);
+            (idColor, idText, extra) = HF.VisualsFromBotRelation(bot);
+            botID.Setup(true, true, false, "ID", idColor, extra, "", false, "", false, idText);
             // Movement
             UIDataGenericDetail botMovement = UIManager.inst.Data_CreateGeneric();
-            botMovement.Setup(true, false, false, "Movement", Color.white, "", false, bot.botInfo._movement.moveType.ToString() + " (" + bot.botInfo._movement.moveTileRange + ")");
+            extra = "Indicates the current propulsion type, and speed as a percentage of 'average' speed (100%). In tactical HUD mode, an additional value represents the actual time cost to move one space (thus higher values are slower).";
+            botMovement.Setup(true, false, false, "Movement", Color.white, extra, "", false, bot.botInfo._movement.moveType.ToString() + " (" + bot.botInfo._movement.moveTileRange + ")");
             // Core Integrity
             UIDataGenericDetail botInteg = UIManager.inst.Data_CreateGeneric();
-            botInteg.Setup(true, false, true, "Core Integrity", Color.white, bot.currentHealth.ToString(), false, "", false, "", bot.currentHealth / 100f);
+            extra = "Remaining core integrity. A robot is destroyed once its core integrity reaches zero.";
+            botInteg.Setup(true, false, true, "Core Integrity", Color.white, extra, bot.currentHealth.ToString(), false, "", false, "", bot.currentHealth / 100f);
             // Core Temp
             UIDataGenericDetail botTemp = UIManager.inst.Data_CreateGeneric();
             Color tempColor = Color.white;
             string tempText = "";
+            extra = "Current temperature. At the danger threshold and above, this robot is susceptible to meltdowns from additional thermal damage.";
             if (bot.currentHeat < 100) // Cool
             {
                 tempText = "Cool";
@@ -7923,13 +8010,15 @@ public class UIManager : MonoBehaviour
                 tempText = "Critical";
                 tempColor = alertRed;
             }
-            botTemp.Setup(true, true, false, "Core Temp", tempColor, "", false, "", false, tempText);
+            botTemp.Setup(true, true, false, "Core Temp", tempColor, extra, "", false, "", false, tempText);
             // Core Explosure
             UIDataGenericDetail botExposure = UIManager.inst.Data_CreateGeneric();
-            botExposure.Setup(true, false, true, "Core Exposure", Color.white, (bot.botInfo.coreExposure * 100) + "%", false, "", false, "", bot.botInfo.coreExposure);
+            extra = "Exposure represents the chance that a successful attack will hit the core.";
+            botExposure.Setup(true, false, true, "Core Exposure", Color.white, extra, (bot.botInfo.coreExposure * 100) + "%", false, "", false, "", bot.botInfo.coreExposure);
             // Salvage Potential
             UIDataGenericDetail botSalvage = UIManager.inst.Data_CreateGeneric();
-            botSalvage.Setup(true, false, false, "Salvage Potential", Color.white, "", false, bot.botInfo.salvagePotential.x + "-" + bot.botInfo.salvagePotential.y);
+            extra = "Salvage potential represents the amount of matter that could be retrieved from the robot, assuming it can be disabled without excessive collateral damage.";
+            botSalvage.Setup(true, false, false, "Salvage Potential", Color.white, extra, "", false, bot.botInfo.salvagePotential.x + "-" + bot.botInfo.salvagePotential.y);
 
             Data_CreateSpacer();
 
@@ -7938,7 +8027,7 @@ public class UIManager : MonoBehaviour
             if(bot.armament.Container.Items.Length <= 0)
             {
                 UIDataGenericDetail aNone = UIManager.inst.Data_CreateGeneric();
-                aNone.Setup(false, false, false, "None", Color.white);
+                aNone.Setup(false, false, false, "None", Color.white, "");
             }
             else
             {
@@ -7964,14 +8053,106 @@ public class UIManager : MonoBehaviour
                             displayString += " x2";
                         }
 
-                        obj.Setup(false, false, false, displayString, Color.white);
+                        obj.Setup(false, false, false, displayString, Color.white, "");
                     }
                     else
                     {
                         UIDataGenericDetail itemC = UIManager.inst.Data_CreateGeneric();
-                        string displayString = I.item.itemData.itemName + " (" + HF.FindExposureInBotObject(bot.botInfo.armament, I.item.itemData) * 100 + "%)";
+                        string cName = "";
+                        // Only show the true name if the player has prototype knowledge about it. If not, append "Prototype" and call it by its type.
+                        if (I.item.itemData.knowByPlayer)
+                        {
+                            cName = I.item.itemData.itemName;
+                        }
+                        else
+                        {
+                            cName = "Prototype ";
+                            switch (I.item.itemData.type)
+                            {
+                                case ItemType.Default:
+                                    cName += "Part";
+                                    break;
+                                case ItemType.Engine:
+                                    cName += "Engine";
+                                    break;
+                                case ItemType.PowerCore:
+                                    cName += "Power Core";
+                                    break;
+                                case ItemType.Reactor:
+                                    cName += "Reactor";
+                                    break;
+                                case ItemType.Treads:
+                                    cName += "Treads";
+                                    break;
+                                case ItemType.Legs:
+                                    cName += "Legs";
+                                    break;
+                                case ItemType.Wheels:
+                                    cName += "Wheels";
+                                    break;
+                                case ItemType.Hover:
+                                    cName += "Hover Unit";
+                                    break;
+                                case ItemType.Flight:
+                                    cName += "Flight Unit";
+                                    break;
+                                case ItemType.Storage:
+                                    cName += "Storage";
+                                    break;
+                                case ItemType.Processor:
+                                    cName += "Processor";
+                                    break;
+                                case ItemType.Hackware:
+                                    cName += "Hackware";
+                                    break;
+                                case ItemType.Device:
+                                    cName += "Device";
+                                    break;
+                                case ItemType.Armor:
+                                    cName += "Protection";
+                                    break;
+                                case ItemType.Alien:
+                                    cName = "Unknown Alien Artifact";
+                                    break;
+                                case ItemType.Gun:
+                                    cName += "Ballistic Gun";
+                                    break;
+                                case ItemType.EnergyGun:
+                                    cName += "Energy Gun";
+                                    break;
+                                case ItemType.Cannon:
+                                    cName += "Ballistic Cannon";
+                                    break;
+                                case ItemType.EnergyCannon:
+                                    cName += "Energy Cannon";
+                                    break;
+                                case ItemType.Launcher:
+                                    cName += "Launcher";
+                                    break;
+                                case ItemType.Impact:
+                                    cName += "Melee Weapon";
+                                    break;
+                                case ItemType.Special:
+                                    cName += "Melee Weapon";
+                                    break;
+                                case ItemType.Melee:
+                                    cName += "Melee Weapon";
+                                    break;
+                                case ItemType.Data:
+                                    cName += "Data Object";
+                                    break;
+                                case ItemType.Nonpart:
+                                    cName += "Mechanism";
+                                    break;
+                                case ItemType.Trap:
+                                    cName += "Trap";
+                                    break;
+                            }
+                        }
 
-                        itemC.Setup(false, false, false, displayString, Color.white);
+                        string displayString = cName + " (" + HF.FindExposureInBotObject(bot.botInfo.armament, I.item.itemData) * 100 + "%)";
+
+                        itemC.Setup(false, false, false, displayString, Color.white, "");
 
                         tracker.Add(I.item.itemData);
                     }
@@ -7985,7 +8166,7 @@ public class UIManager : MonoBehaviour
             if (bot.components.Container.Items.Length <= 0)
             {
                 UIDataGenericDetail aNone = UIManager.inst.Data_CreateGeneric();
-                aNone.Setup(false, false, false, "None", Color.white);
+                aNone.Setup(false, false, false, "None", Color.white, "");
             }
             else
             {
@@ -8011,14 +8192,106 @@ public class UIManager : MonoBehaviour
                             displayString += " x2";
                         }
 
-                        obj.Setup(false, false, false, displayString, Color.white);
+                        obj.Setup(false, false, false, displayString, Color.white, "");
                     }
                     else
                     {
                         UIDataGenericDetail itemC = UIManager.inst.Data_CreateGeneric();
-                        string displayString = I.item.itemData.itemName + " (" + HF.FindExposureInBotObject(bot.botInfo.components, I.item.itemData) * 100 + "%)";
+                        string cName = "";
+                        // Only show the true name if the player has prototype knowledge about it. If not, append "Prototype" and call it by its type.
+                        if (I.item.itemData.knowByPlayer)
+                        {
+                            cName = I.item.itemData.itemName;
+                        }
+                        else
+                        {
+                            cName = "Prototype ";
+                            switch (I.item.itemData.type)
+                            {
+                                case ItemType.Default:
+                                    cName += "Part";
+                                    break;
+                                case ItemType.Engine:
+                                    cName += "Engine";
+                                    break;
+                                case ItemType.PowerCore:
+                                    cName += "Power Core";
+                                    break;
+                                case ItemType.Reactor:
+                                    cName += "Reactor";
+                                    break;
+                                case ItemType.Treads:
+                                    cName += "Treads";
+                                    break;
+                                case ItemType.Legs:
+                                    cName += "Legs";
+                                    break;
+                                case ItemType.Wheels:
+                                    cName += "Wheels";
+                                    break;
+                                case ItemType.Hover:
+                                    cName += "Hover Unit";
+                                    break;
+                                case ItemType.Flight:
+                                    cName += "Flight Unit";
+                                    break;
+                                case ItemType.Storage:
+                                    cName += "Storage";
+                                    break;
+                                case ItemType.Processor:
+                                    cName += "Processor";
+                                    break;
+                                case ItemType.Hackware:
+                                    cName += "Hackware";
+                                    break;
+                                case ItemType.Device:
+                                    cName += "Device";
+                                    break;
+                                case ItemType.Armor:
+                                    cName += "Protection";
+                                    break;
+                                case ItemType.Alien:
+                                    cName = "Unknown Alien Artifact";
+                                    break;
+                                case ItemType.Gun:
+                                    cName += "Ballistic Gun";
+                                    break;
+                                case ItemType.EnergyGun:
+                                    cName += "Energy Gun";
+                                    break;
+                                case ItemType.Cannon:
+                                    cName += "Ballistic Cannon";
+                                    break;
+                                case ItemType.EnergyCannon:
+                                    cName += "Energy Cannon";
+                                    break;
+                                case ItemType.Launcher:
+                                    cName += "Launcher";
+                                    break;
+                                case ItemType.Impact:
+                                    cName += "Melee Weapon";
+                                    break;
+                                case ItemType.Special:
+                                    cName += "Melee Weapon";
+                                    break;
+                                case ItemType.Melee:
+                                    cName += "Melee Weapon";
+                                    break;
+                                case ItemType.Data:
+                                    cName += "Data Object";
+                                    break;
+                                case ItemType.Nonpart:
+                                    cName += "Mechanism";
+                                    break;
+                                case ItemType.Trap:
+                                    cName += "Trap";
+                                    break;
+                            }
+                        }
 
-                        itemC.Setup(false, false, false, displayString, Color.white);
+                        string displayString = cName + " (" + HF.FindExposureInBotObject(bot.botInfo.components, I.item.itemData) * 100 + "%)";
+
+                        itemC.Setup(false, false, false, displayString, Color.white, "");
 
                         tracker.Add(I.item.itemData);
                     }
@@ -8033,16 +8306,19 @@ public class UIManager : MonoBehaviour
             if (bot.botInfo.resistances.Count <= 0 && !x.coring && !x.criticals && !x.dismemberment && !x.disruption && !x.hacking && !x.jamming && !x.meltdown)
             {
                 UIDataGenericDetail rNone = UIManager.inst.Data_CreateGeneric();
-                rNone.Setup(false, false, false, "None", Color.white);
+                rNone.Setup(false, false, false, "None", Color.white, "");
             }
 
             foreach (var R in bot.botInfo.resistances)
             {
                 UIDataGenericDetail resBar = UIManager.inst.Data_CreateGeneric();
+                extra = "Depending on their design, robots may be more or less likely to be affected by a certain type of damage. Negative resistances represent a weakness," +
+                    " and therefore greater damage from that source. For example, 25% resistance would decrease the damage from an incoming attack of that type by 25%, " +
+                    "while -25% would instead increase the damage sustained by 25%.";
 
                 if (R.immune)
                 {
-                    resBar.Setup(true, false, false, "Class", Color.white, "", false, "Immune", true);
+                    resBar.Setup(true, false, false, "Class", Color.white, "This bot is IMMUNE to the damage type. Attempting to damage this bot with the designated weapon type will do ZERO damage.", "", false, "Immune", true);
                 }
                 else
                 {
@@ -8059,44 +8335,51 @@ public class UIManager : MonoBehaviour
                         vC = highlightGreen;
                     }
 
-                    resBar.Setup(true, false, true, R.damageType.ToString(), vC, vA, false, "", false, "", R.resistanceAmount, true); // Bar
+                    resBar.Setup(true, false, true, R.damageType.ToString(), vC, extra, vA, false, "", false, "", R.resistanceAmount, true); // Bar
                 }
             }
             // - and then go through resisitancesExtra too
             if (x.dismemberment)
             {
                 UIDataGenericDetail rX = UIManager.inst.Data_CreateGeneric();
-                rX.Setup(true, false, false, "Dismemberment", Color.white, "", false, "Immune", true);
+                extra = "Immune to dismemberment from melee and other related sources.";
+                rX.Setup(true, false, false, "Dismemberment", Color.white, extra, "", false, "Immune", true);
             }
             if (x.disruption)
             {
                 UIDataGenericDetail rX = UIManager.inst.Data_CreateGeneric();
-                rX.Setup(true, false, false, "Disruption", Color.white, "", false, "Immune", true);
+                extra = "Immune to core disruption from electromagnetic sources.";
+                rX.Setup(true, false, false, "Disruption", Color.white, extra, "", false, "Immune", true);
             }
             if (x.criticals)
             {
                 UIDataGenericDetail rX = UIManager.inst.Data_CreateGeneric();
-                rX.Setup(true, false, false, "Criticals", Color.white, "", false, "Immune", true);
+                extra = "Immune to ALL critical effects.";
+                rX.Setup(true, false, false, "Criticals", Color.white, extra, "", false, "Immune", true);
             }
             if (x.coring)
             {
                 UIDataGenericDetail rX = UIManager.inst.Data_CreateGeneric();
-                rX.Setup(true, false, false, "Coring", Color.white, "", false, "Immune", true);
+                extra = "Immune to any core-affecting effects from critical strikes, including Destroy, Blast, Smash, and Phase.";
+                rX.Setup(true, false, false, "Coring", Color.white, extra, "", false, "Immune", true);
             }
             if (x.hacking)
             {
                 UIDataGenericDetail rX = UIManager.inst.Data_CreateGeneric();
-                rX.Setup(true, false, false, "Hacking", Color.white, "", false, "Immune", true);
+                extra = "Immune to attempts at offensive hacking and other ailments.";
+                rX.Setup(true, false, false, "Hacking", Color.white, extra, "", false, "Immune", true);
             }
             if (x.jamming)
             {
                 UIDataGenericDetail rX = UIManager.inst.Data_CreateGeneric();
-                rX.Setup(true, false, false, "Jamming", Color.white, "", false, "Immune", true);
+                extra = "Immune to transmission jamming from hostile bots.";
+                rX.Setup(true, false, false, "Jamming", Color.white, extra, "", false, "Immune", true);
             }
             if (x.meltdown)
             {
                 UIDataGenericDetail rX = UIManager.inst.Data_CreateGeneric();
-                rX.Setup(true, false, false, "Metldown", Color.white, "", false, "Immune", true);
+                extra = "Immune to meltdown destruction and other side effects of overheating, as well as the Meltdown critical effect.";
+                rX.Setup(true, false, false, "Metldown", Color.white, extra, "", false, "Immune", true);
             }
 
             // Traits (most bots don't have this so we'll do it later) TODO
@@ -8104,7 +8387,7 @@ public class UIManager : MonoBehaviour
             {
                 Data_CreateSpacer();
 
-                UIManager.inst.Data_CreateHeader("Traits");
+                // This has its own dropdown menu!
 
                 foreach (var T in bot.botInfo.traits)
                 {
@@ -8292,6 +8575,7 @@ public class UIManager : MonoBehaviour
         go.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
         dataMenu.data_objects.Add(go);
+        go.name = "<Spacer>";
     }
 
     private void Data_CreateTextWall(string text)
