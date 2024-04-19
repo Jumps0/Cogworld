@@ -116,9 +116,9 @@ public class UIManager : MonoBehaviour
             }
             else if (Input.GetMouseButtonDown(0) && dataMenu.data_focusObject != null) // Open the special detail menu instead
             {
-                if (!dataMenu.data_focusObject.extraParent.gameObject.activeInHierarchy) // Menu isn't already open
+                if (!dataMenu.data_extraDetail.activeInHierarchy) // Menu isn't already open
                 {
-                    dataMenu.data_focusObject.ShowExtraDetail();
+                    dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().ShowExtraDetail(dataMenu.data_focusObject.extraDetailString);
                 }
             }
         }
@@ -8734,6 +8734,7 @@ public class UIDataDisplay
     public TextMeshProUGUI data_bracketRight;
     [Tooltip("The object where all the prefabs should be spawned in.")]
     public GameObject data_contentArea;
+    public GameObject data_extraDetail;
 
     [Header("Prefabs")]
     public GameObject data_headerPrefab;

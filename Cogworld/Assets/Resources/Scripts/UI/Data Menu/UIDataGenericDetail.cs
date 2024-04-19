@@ -28,6 +28,7 @@ public class UIDataGenericDetail : MonoBehaviour
     private bool forceBarColor = false;
     //
     public TextMeshProUGUI sideBrackets;
+    public string extraDetailString;
 
     [Header("Colors")] // For the boxes. Other stuff uses colors from UIManager
     public Color b_green;
@@ -120,8 +121,7 @@ public class UIDataGenericDetail : MonoBehaviour
         forceBarColor = _forceBarColor;
 
         // And the extra detail text
-        extraAssignedString = extraDetail;
-        extraText.text = extraAssignedString;
+        extraDetailString = extraDetail;
     }
 
     private void ToggleSecondaryState(bool active)
@@ -637,132 +637,24 @@ public class UIDataGenericDetail : MonoBehaviour
 
     #endregion
 
-    #region Extra Detail
-    [Header("Extra Details")]
-    public TextMeshProUGUI extraText;
-    public GameObject extraParent;
-    public string extraAssignedString;
-    private Coroutine extraAnim;
-    [SerializeField] private Image extraBorders;
-
-    bool flip = false;
-
-    public void MouseOver()
+    public void MouseHover()
     {
-        if (extraAssignedString != "")
+        if (extraDetailString != "")
         {
             // If the extra detail menu is not already shown
-            if (!extraParent.activeInHierarchy)
+            if (!UIManager.inst.dataMenu.data_extraDetail.activeInHierarchy)
             {
                 UIManager.inst.dataMenu.data_focusObject = this;
-            }
-
-            // If the extra detail menu is active, move it with the mouse
-            if (extraParent.activeInHierarchy)
-            {
-                RectTransform uiElement = extraParent.GetComponent<RectTransform>();
-                Vector3 mousePosition = Input.mousePosition;
-
-                // Check if the mouse is close to the bottom of the screen
-                if (Screen.height - mousePosition.y < 200f)
-                {
-                    // Change anchor to bottom left if it hasn't already been changed
-                    if (!flip)
-                    {
-                        uiElement.anchorMin = new Vector2(uiElement.anchorMin.x, 0f);
-                        uiElement.anchorMax = new Vector2(uiElement.anchorMax.x, 0f);
-                        uiElement.pivot = new Vector2(uiElement.pivot.x, 0f);
-                        flip = true;
-                    }
-                }
-                else
-                {
-                    // Reset anchor to top left if it has been changed
-                    if (flip)
-                    {
-                        uiElement.anchorMin = new Vector2(uiElement.anchorMin.x, 1f);
-                        uiElement.anchorMax = new Vector2(uiElement.anchorMax.x, 1f);
-                        uiElement.pivot = new Vector2(uiElement.pivot.x, 1f);
-                        flip = false;
-                    }
-                }
-
-                // Convert the screen space mouse position to canvas space
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                    uiElement.parent as RectTransform,
-                    mousePosition,
-                    Camera.main,
-                    out Vector2 localPoint);
-
-                // Set the position of the UI element's top-left corner to the calculated position
-                uiElement.localPosition = localPoint;
             }
         }
     }
 
     public void MouseLeave()
     {
-        HideExtraDetail();
+        UIManager.inst.dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().HideExtraDetail();
 
         UIManager.inst.dataMenu.data_focusObject = null;
     }
-
-    public void ShowExtraDetail()
-    {
-        extraParent.gameObject.SetActive(true);
-        if(extraAnim == null)
-        {
-            extraAnim = StartCoroutine(OpenExtra());
-        }
-        else
-        {
-            StopCoroutine(extraAnim);
-        }
-    }
-
-    private IEnumerator OpenExtra()
-    {
-        // There is a bit more to this animation (a green scan bar that goes from top -> bottom, but its visibile for like 5 frames so honestly its not worth it)
-        Color gray = extraBorders.color;
-        Color blue = extraText.color;
-
-        extraText.color = Color.black;
-        extraBorders.color = Color.black;
-
-        // Black -> Gray
-        float elapsedTime = 0f;
-        float duration = 0.2f;
-        while (elapsedTime < duration) // Black -> Gray
-        {
-            extraBorders.color = Color.Lerp(Color.black, gray, elapsedTime / duration);
-
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-        extraBorders.color = gray;
-
-        // Black -> Blue
-        elapsedTime = 0f;
-        duration = 0.4f;
-        while (elapsedTime < duration) // Black -> Blue
-        {
-            extraText.color = Color.Lerp(Color.black, blue, elapsedTime / duration);
-
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-        extraText.color = blue;
-
-        extraAnim = null;
-    }
-
-    public void HideExtraDetail()
-    {
-        extraParent.gameObject.SetActive(false);
-    }
-
-
-    #endregion
 
     private void OnDestroy()
     {
