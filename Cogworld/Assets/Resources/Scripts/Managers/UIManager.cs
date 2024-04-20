@@ -16,6 +16,7 @@ using Slider = UnityEngine.UI.Slider;
 using Button = UnityEngine.UI.Button;
 using static System.Net.Mime.MediaTypeNames;
 using UnityEngine.XR;
+using Unity.VisualScripting;
 //using static UnityEditor.Progress;
 
 public class UIManager : MonoBehaviour
@@ -125,7 +126,7 @@ public class UIManager : MonoBehaviour
                     dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().ShowExtraDetail(dataMenu.data_focusObject.extraDetailString);
                 }
             }
-            else if (Input.GetMouseButtonDown(0) && dataMenu.data_onTraits && dataMenu.selection_bot != null) // Open the traits menu
+            else if (Input.GetMouseButtonDown(0) && dataMenu.data_onTraits && dataMenu.selection_obj != null) // Open the traits menu
             {
                 if (!dataMenu.data_traitBox.activeInHierarchy) // Menu isn't already open
                 {
@@ -6044,10 +6045,32 @@ public class UIManager : MonoBehaviour
     [Header("/ DATA / Menu")]
     public UIDataDisplay dataMenu;
 
-    public void Data_OpenMenu(Item item = null, Actor bot = null, Actor itemOwner = null)
+    public void Data_OpenMenu(Item item = null, GameObject other = null, Actor itemOwner = null)
     {
+        Actor bot = null;
+        MachinePart machine = null;
+        TileBlock tile = null;
+
+        if (other.GetComponent<Actor>())
+        {
+            bot = other.GetComponent<Actor>();
+        }
+        else if(other.GetComponent<MachinePart>())
+        {
+            machine = other.GetComponent<MachinePart>().parentPart;
+        }
+        else if (other.GetComponent<TileBlock>())
+        {
+            tile = other.GetComponent<TileBlock>();
+            // But we only want walls & doors
+            if(tile.tileInfo.type == TileType.Floor || tile.tileInfo.type == TileType.Machine || tile.tileInfo.type == TileType.Exit || tile.tileInfo.type == TileType.Default)
+            {
+                tile = null;
+            }
+        }
+
         dataMenu.selection_item = item;
-        dataMenu.selection_bot = bot;
+        dataMenu.selection_obj = other;
 
         // Emergency stop incase this menu is being spammed
         StopCoroutine(Data_CloseMenuAnimation());
@@ -6059,6 +6082,7 @@ public class UIManager : MonoBehaviour
         // Enable the menu
         dataMenu.data_parent.SetActive(true);
         dataMenu.data_contentArea.SetActive(true);
+        dataMenu.data_smallImage.transform.parent.gameObject.SetActive(true);
 
         // Play a sound
         AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[55]);
@@ -6158,7 +6182,17 @@ public class UIManager : MonoBehaviour
             }
             // State - there is some variance in this
             UIDataGenericDetail iState = UIManager.inst.Data_CreateGeneric();
-            if (item.isOverloaded) // Overloaded (yellow)
+            if(item.unstable > 0) // Unstable
+            {
+                extra = "Unstable weapons implode after the indicated remaining number of shots.";
+                iState.Setup(true, true, false, "State", energyBlue, extra, "", false, "", false, "UNSTABLE " + item.unstable);
+            }
+            else if (item.disposable > 0) // Disposable
+            {
+                extra = "Disposable weapons become defunct after a certain number of uses.";
+                iState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "DISPOSABLE " + item.unstable);
+            }
+            else if (item.isOverloaded) // Overloaded (yellow)
             {
                 extra = "Current state of this item. This item is currently overloaded, providing double effectiveness, while requiring double energy, and producing three times the normal heat.";
                 iState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "OVERLOADED");
@@ -6784,7 +6818,7 @@ public class UIManager : MonoBehaviour
             {
                 UIManager.inst.Data_CreateHeader("Explosion"); // Explosion =========================================================================
                 ExplosionGeneric detail = item.itemData.explosionDetails;
-                // Range
+                // Radius
                 UIDataGenericDetail iERadius = UIManager.inst.Data_CreateGeneric();
                 extra = "Maximum radius of the explosion from its origin.";
                 iERadius.Setup(true, false, true, "Radius", highlightGreen, extra, detail.radius.ToString(), false, "", false, "", detail.radius / 9f, true); // Bar
@@ -8501,6 +8535,483 @@ public class UIManager : MonoBehaviour
 
             #endregion
         }
+        else if(machine != null)
+        {
+            // Pretty simple, not much to show here besides overview and resistances
+
+
+            // Disable the big image because we don't use it
+            dataMenu.data_superImageParent.gameObject.SetActive(false);
+            // Set title to machine's name
+            dataMenu.data_mainTitle.text = machine.displayName;
+            // Disable the mini-image
+            dataMenu.data_smallImage.transform.parent.gameObject.SetActive(false);
+
+            #region Details
+            UIManager.inst.Data_CreateHeader("Overview"); // Overview ============================================================
+            // Class
+            UIDataGenericDetail mArmor = UIManager.inst.Data_CreateGeneric();
+            string extra = "Amount of concentrated damage required to overcome this object's armor to disable or destroy it. After resistances are factored in, " +
+                "the damage from a single hit must be greater than or equal to this value.";
+            Color aC = Color.white;
+            if (machine.armor.y >= 40)
+            {
+                aC = highSecRed;
+            }
+            else if (machine.armor.y <= 12)
+            {
+                aC = highlightGreen;
+            }
+            else if (machine.armor.y < 40 && machine.armor.y >= 20)
+            {
+                aC = warningOrange;
+            }
+            else
+            {
+                aC = cautiousYellow;
+            }
+            mArmor.Setup(true, false, true, "Armor", aC, extra, machine.armor.y.ToString(), false, "", false, "", machine.armor.y / 75f, true);
+
+            // State - there is some variance in this
+            float detectionChance = 0f;
+            float traceProgress = 0f;
+            bool detected = false;
+            (detectionChance, traceProgress, detected) = HF.GetTraceValues(machine.gameObject);
+            // https://www.gridsagegames.com/blog/2015/11/garrison-access/
+            UIDataGenericDetail mState = UIManager.inst.Data_CreateGeneric();
+            /*
+             *  == There are quite a few states a machine can be in ==
+             *  ACTIVE - Normal state
+             *  INACTIVE - Destroyed or inoperable
+             *  PROCESSING T-(time) - [Fabricator/Repair Bay] Time until finished
+             *  TRACING T-(time) - (All?) ???
+             *  UNSTABLE (time) - [Static that will explode because of external factors] Time until detonation
+             *  DETONATE (time) - [Static that was *told* to explode] Time until detonation
+             *  OVERLOAD - [Fabricator] "Render the fabricator inoperable, but cause it to send high corruption-causing arcs of electromagnetic energy at nearby bots for a short while. Also, locks the machine and summons an investigation squad like all force hacks."
+             *  COMPROMISED - [Terminal] - If you trigger the central database lockout 
+             *  TRANSMITTING - [Garrison] Calling in more dudes
+             *  REDEPLOYING - [Garrison?] Recalling squad
+             */
+            if (machine.GetComponent<Fabricator>() && machine.GetComponent<Fabricator>().flag_overload) // OVERLOAD
+            {
+                extra = "This machine is currently inoperable and is randomly send high corruption arcs of electromagnetic energy at any nearby bots. An investigation squad is likely to be on its way.";
+                mState.Setup(true, true, false, "State", highSecRed, extra, "", false, "", false, "OVERLOAD");
+            }
+            else if ((machine.GetComponent<Fabricator>() && machine.GetComponent<Fabricator>().working) || (machine.GetComponent<RepairStation>() && machine.GetComponent<RepairStation>().working)) // PROCESSING
+            {
+                int time = 0;
+                if (machine.GetComponent<Fabricator>())
+                {
+                    time = TurnManager.inst.globalTime - machine.GetComponent<Fabricator>().begunBuildTime;
+                }
+                else if (machine.GetComponent<RepairStation>())
+                {
+                    time = machine.GetComponent<RepairStation>().timeToComplete;
+                }
+                extra = "This machine is currently in operation and will finish after the specified time.";
+                mState.Setup(true, true, false, "State", energyBlue, extra, "", false, "", false, "PROCESSING T-" + time.ToString());
+            }
+            else if (machine.GetComponent<Garrison>() && (machine.GetComponent<Garrison>().s_redeploying || machine.GetComponent<Garrison>().s_transmitting))
+            {
+                if (machine.GetComponent<Garrison>().s_redeploying)
+                {
+                    extra = "Forces summoned by this Garrison Access are currently moving to redeploy to a different area. They will arrive here shortly.";
+                    mState.Setup(true, true, false, "State", warningOrange, extra, "", false, "", false, "REDEPLOYING");
+                }
+                else if (machine.GetComponent<Garrison>().s_transmitting)
+                {
+                    extra = "This Garrison Access is communicating with additional reinforcements preparing for dispatch. Using a Signal Interpreter provides the precise number of turns remaining until the next dispatch.";
+                    mState.Setup(true, true, false, "State", warningOrange, extra, "", false, "", false, "TRANSMITTING");
+                }
+            }
+            else if (machine.GetComponent<Terminal>() && machine.GetComponent<Terminal>().databaseLockout)
+            {
+                extra = "This terminal's access to the central database has been compromised due to frequenty incursion attempts, and has thus been denied access to make further attempts.";
+                mState.Setup(true, true, false, "State", warningOrange, extra, "", false, "", false, "COMPROMISED");
+            }
+            else if (machine.GetComponent<StaticMachine>() && (machine.GetComponent<StaticMachine>().s_detonate || machine.GetComponent<StaticMachine>().s_unstable))
+            {
+                if (machine.GetComponent<StaticMachine>().s_detonate)
+                {
+                    extra = "This machine is about to explode due to external interference.";
+                    mState.Setup(true, true, false, "State", highSecRed, extra, "", false, "", false, "DETONATE " + machine.GetComponent<StaticMachine>().detonate_timer);
+                }
+                else if (machine.GetComponent<StaticMachine>().s_unstable)
+                {
+                    extra = "This machine has become extremely unstable due to external circumstances, and will explode very soon.";
+                    mState.Setup(true, true, false, "State", highSecRed, extra, "", false, "", false, "UNSTABLE " + machine.GetComponent<StaticMachine>().detonate_timer);
+                }
+            }
+            else if (!machine.GetComponent<StaticMachine>() && detected) // Tracing
+            {
+                extra = "Due to recently detected hacking attempts, the central control system is currently attempting to trace the approximate location of the intrusion. Once successful, and investigate squad will be sent to this position.";
+                mState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "TRACING " + (traceProgress * 100).ToString());
+            }
+            else if (machine.state) // Active (green)
+            {
+                extra = "Current state of this machine. This message will provide more context for special states.";
+                mState.Setup(true, true, false, "State", highlightGreen, extra, "", false, "", false, "ACTIVE");
+            }
+            else if(!machine.state) // Inactive (gray)
+            {
+                extra = "This machine is inactive and will not function.";
+                mState.Setup(true, true, false, "State", inactiveGray, extra, "", false, "", false, "INACTIVE");
+            }
+            else if (machine.destroyed) // Disabled (gray)
+            {
+                extra = "Critical components of this machine have been destroyed and thus this machine is disabled.";
+                mState.Setup(true, true, false, "State", inactiveGray, extra, "", false, "", false, "DISABLED");
+            }
+
+            // Building/Repair progress
+            if (machine.GetComponent<Fabricator>() && machine.GetComponent<Fabricator>().working)
+            {
+                UIDataGenericDetail mTrojans = UIManager.inst.Data_CreateGeneric();
+                if (machine.state)
+                {
+                    extra = "This machine is currently working on fabricating the specified object. It will finish after the specified time.";
+                    string Fname = "";
+                    if (machine.GetComponent<Fabricator>().targetBot != null)
+                    {
+                        Fname = machine.GetComponent<Fabricator>().targetBot.name;
+                    }
+                    else if (machine.GetComponent<Fabricator>().targetPart != null)
+                    {
+                        Fname = machine.GetComponent<Fabricator>().targetPart.itemName;
+                    }
+                    mTrojans.Setup(true, false, false, "Building...", Color.white, extra, "", false, Fname);
+                }
+                else
+                {
+                    extra = "This machine is currently disabled.";
+                    mTrojans.Setup(true, false, false, "Building...", Color.white, extra, "", false, "Disabled");
+                }
+            }
+            else if (machine.GetComponent<RepairStation>() && machine.GetComponent<RepairStation>().working)
+            {
+                UIDataGenericDetail mTrojans = UIManager.inst.Data_CreateGeneric();
+                if (machine.state)
+                {
+                    extra = "This machine is currently working on repairing the following item. It will finish after the specified time.";
+                    mTrojans.Setup(true, false, false, "Repairing...", Color.white, extra, "", false, machine.GetComponent<RepairStation>().targetPart.itemName);
+                }
+                else
+                {
+                    extra = "This machine is currently disabled.";
+                    mTrojans.Setup(true, false, false, "Repairing...", Color.white, extra, "", false, "Disabled");
+                }
+            }
+
+            // Trojans
+            if (!machine.GetComponent<StaticMachine>())
+            {
+                if (machine.state)
+                {
+                    List<TrojanType> trojans = HF.GetMachineTrojans(machine.gameObject);
+                    bool first = true;
+                    if (trojans.Count > 0)
+                    {
+                        foreach (var T in trojans)
+                        {
+                            UIDataGenericDetail trojan = UIManager.inst.Data_CreateGeneric();
+                            if (first)
+                            {
+                                trojan.Setup(true, false, false, "Trojans", Color.white, HF.HackDescription(T), "", false, T.ToString());
+                            }
+                            else
+                            {
+                                trojan.Setup(true, false, false, "", Color.white, HF.HackDescription(T), "", false, T.ToString());
+                            }
+
+                            first = false;
+                        }
+                    }
+                    else
+                    {
+                        UIDataGenericDetail mTrojans = UIManager.inst.Data_CreateGeneric();
+                        mTrojans.Setup(true, false, false, "Trojans", Color.white, "Lists any active trojans loaded on this system", "", false, "None", true);
+                    }
+                }
+                else
+                {
+                    UIDataGenericDetail mTrojans = UIManager.inst.Data_CreateGeneric();
+                    mTrojans.Setup(true, false, false, "Trojans", Color.white, "This machine is currently disabled.", "", false, "Disabled");
+                }
+            }
+
+            Data_CreateSpacer();
+
+            // Resistances
+            if(machine.resistances.Count > 0)
+            {
+                UIManager.inst.Data_CreateHeader("Resistances"); // Overview ============================================================
+
+                foreach (var R in machine.resistances)
+                {
+                    UIDataGenericDetail resBar = UIManager.inst.Data_CreateGeneric();
+                    extra = "Depending on their design, some installations may be more or less likely to be affected by a certain type of damage. Negative resistances represent a weakness," +
+                        " and therefore greater damage from that source. For example, 25% resistance would decrease the damage from an incoming attack of that type by 25%, " +
+                        "while -25% would instead increase the damage sustained by 25%.";
+
+                    if (R.immune)
+                    {
+                        resBar.Setup(true, false, false, "Class", Color.white, "This machine is IMMUNE to the damage type. Attempting to damage this machine with the designated weapon type will do ZERO damage.", "", false, "Immune", true);
+                    }
+                    else
+                    {
+                        string vA = "";
+                        Color vC;
+                        if (R.resistanceAmount < 0f)
+                        {
+                            vA = "-" + Mathf.Abs(R.resistanceAmount * 100).ToString() + "%";
+                            vC = highSecRed;
+                        }
+                        else
+                        {
+                            vA = Mathf.Abs(R.resistanceAmount * 100).ToString() + "%";
+                            vC = highlightGreen;
+                        }
+
+                        resBar.Setup(true, false, true, R.damageType.ToString(), vC, extra, vA, false, "", false, "", R.resistanceAmount, true); // Bar
+                    }
+                }
+
+                Data_CreateSpacer();
+            }
+
+            // Explosive Potential
+            if(machine.GetComponent<StaticMachine>() && machine.GetComponent<StaticMachine>().explosive)
+            {
+                UIManager.inst.Data_CreateHeader("Explosive Potential"); // Explosive Potential ============================================================
+                ExplosionGeneric detail = machine.GetComponent<MachinePart>().explosiveDetails;
+
+                // Stability
+                UIDataGenericDetail mStability = UIManager.inst.Data_CreateGeneric();
+                extra = "Ability of this potentially explosive machine to avoid being destabilized by a sutained attack, even those that do note pentrate its armor.";
+                if (detail.stability > 0)
+                {
+                    mStability.Setup(true, false, true, "Stability", Color.white, extra, (detail.stability * 100) + "%", false, "", false, "", detail.stability); // Bar
+                }
+                else
+                {
+                    mStability.Setup(true, false, true, "Stability", Color.white, extra, "N/A", true, "", false, "", 0f, false); // Bar
+                }
+                // Delay
+                UIDataGenericDetail mDelay = UIManager.inst.Data_CreateGeneric();
+                extra = "Approximate number of turns after a destabilization event that this machine will likely explode.";
+                mDelay.Setup(true, false, false, "Delay", Color.white, extra, "", false, detail.delay.x + "-" + detail.delay.y);
+                // Radius
+                UIDataGenericDetail iERadius = UIManager.inst.Data_CreateGeneric();
+                extra = "Maximum radius of the explosion from its origin.";
+                iERadius.Setup(true, false, true, "Radius", highlightGreen, extra, detail.radius.ToString(), false, "", false, "", detail.radius / 9f, true); // Bar
+                // Damage
+                int average = Mathf.RoundToInt((detail.damage.x + detail.damage.y) / 2);
+                extra = "Range of potential damage at the explosion's origin.";
+                UIDataGenericDetail iEDamage = UIManager.inst.Data_CreateGeneric();
+                iEDamage.Setup(true, false, true, "Damage", highlightGreen, extra, detail.damage.x + "-" + detail.damage.y, false, "", false, "", average / 120f, true); // Bar
+                // Falloff
+                UIDataGenericDetail iEFalloff = UIManager.inst.Data_CreateGeneric();
+                extra = "Amount of damage potential lost per space as the explosion expands from its origin. While targeting, this falloff is represented visually by the AOE color's brightness " +
+                    "relative to the origin (this feature can be toggled via Explosion Predictions option).";
+                if (detail.fallOff <= 0)
+                {
+                    iEFalloff.Setup(true, false, false, " Falloff", Color.white, extra, detail.fallOff.ToString());
+                }
+                else
+                {
+                    iEFalloff.Setup(true, false, false, " Falloff", Color.white, extra, "0", true);
+                }
+                // Chunks
+                if (detail.chunks.y > 1)
+                {
+                    UIDataGenericDetail iEChunks = UIManager.inst.Data_CreateGeneric();
+                    extra = "AOE damage is often spread across each target in the area of effect, dividing the damage into separate chunks before affecting a robot," +
+                        " where each chunk of damage selects its own target part (though they may overlap). Some explosive effects have a static number of chunks, while " +
+                        "others randomly select from within a range for each attack.";
+                    iEFalloff.Setup(true, false, false, " Falloff", Color.white, extra, detail.fallOff.ToString());
+                }
+                // Type
+                UIDataGenericDetail iEType = UIManager.inst.Data_CreateGeneric();
+                extra = "While powerful, explosives generally spread damage across each target in the area of effect.\nExplosions also tend to reduce the amount of salvage remaining after destroying a target.";
+                iEType.Setup(true, false, false, "Type", Color.white, extra, "", false, detail.damageType.ToString());
+                // Spectrum
+                UIDataGenericDetail iESpectrum = UIManager.inst.Data_CreateGeneric();
+                extra = "Range of electromagnetic spectrum, with narrower ranges more likely to trigger chain explosions in power sources. (AOE spectrum only affects power sources being used by Cogmind, or those exposed on the ground.)";
+                if (detail.hasSpectrum)
+                {
+                    string s = "";
+                    if (detail.spectrum <= 0.1f)
+                    {
+                        s = "Wide (10%)";
+                    }
+                    else if (detail.spectrum == 0.3f)
+                    {
+                        s = "Intermediate (30%)";
+                    }
+                    else if (detail.spectrum == 0.5f)
+                    {
+                        s = "Narrow (50%)";
+                    }
+                    else if (detail.spectrum == 1f)
+                    {
+                        s = "Fine (100%)";
+                    }
+
+                    iESpectrum.Setup(true, false, false, "Specturm", Color.white, extra, s); // No bar (simple)
+                }
+                else
+                {
+                    iESpectrum.Setup(true, false, false, "Specturm", Color.white, extra, "N/A", true); // No bar (simple)
+                }
+                // Heat transfer
+                int ht = machine.heatTransfer;
+                UIDataGenericDetail mHeatTransfer = UIManager.inst.Data_CreateGeneric();
+                if (ht > 0)
+                {
+                    string s = "";
+                    extra = "Some explosions attempt to transfer some % of the maximum heat transfer rating of the explosion, and also check for possible robot meltdown (the effect of which might be delayed until the robot's next turn).";
+                    if (ht == 1)
+                    {
+                        s = "Low (25)";
+                    }
+                    else if (ht == 2)
+                    {
+                        s = "Medium (37)";
+                    }
+                    else if (ht == 3)
+                    {
+                        s = "High (50)";
+                    }
+                    else if (ht == 4)
+                    {
+                        s = "Massive (80)";
+                    }
+
+                    mHeatTransfer.Setup(true, false, false, "Heat Transfer", Color.white, extra, "", false, s);
+                }
+                else
+                {
+                    mHeatTransfer.Setup(true, false, false, "Heat Transfer", Color.white, extra, "", false, "N/A", true);
+                }
+                // Disruption
+                UIDataGenericDetail iEDisruption = UIManager.inst.Data_CreateGeneric();
+                extra = "Chance this explosion may temporarily disable an active part it damages. If a robot core is struck, there is half this chance the entire robot may be disabled.";
+                if (detail.disruption > 0)
+                {
+                    Color iPDC = highlightGreen;
+                    if (detail.disruption < 0.33)
+                    {
+                        iPDC = highlightGreen;
+                    }
+                    else if (detail.disruption >= 0.66)
+                    {
+                        iPDC = highSecRed;
+                    }
+                    else
+                    {
+                        iPDC = cautiousYellow;
+                    }
+
+                    iEDisruption.Setup(true, false, true, "Disruption", iPDC, extra, (detail.disruption * 100) + "%", false, "", false, "", detail.disruption, true); // Bar
+                }
+                else
+                {
+                    iEDisruption.Setup(true, false, true, "Disruption", Color.white, extra, "0%", true, "", false, "", 0f); // Bar
+
+                }
+                // Salvage
+                UIDataGenericDetail iESalvage = UIManager.inst.Data_CreateGeneric();
+                extra = "Amount by which the salvage potential of a given robot is affected by being engulfed in this explosion. While usually negative, reducing the amount of usable salvage, some special weapons may increase salvage by disabling a robot with minimal collateral damage.";
+                if (detail.fallOff <= 0)
+                {
+                    iESalvage.Setup(true, false, false, "Salvage", Color.white, extra, detail.salvage.ToString());
+                }
+                else
+                {
+                    iESalvage.Setup(true, false, false, "Salvage", Color.white, extra, "0", true);
+                }
+            }
+            
+
+            #endregion
+        }
+        else if(tile != null)
+        {
+            // Pretty simple, not much to show here besides overview and resistances
+
+            // Disable the big image because we don't use it
+            dataMenu.data_superImageParent.gameObject.SetActive(false);
+            // Set title to machine's name
+            dataMenu.data_mainTitle.text = machine.displayName;
+            // Disable the mini-image
+            dataMenu.data_smallImage.transform.parent.gameObject.SetActive(false);
+
+            #region Details
+            UIManager.inst.Data_CreateHeader("Overview"); // Overview ============================================================
+            // Class
+            UIDataGenericDetail mArmor = UIManager.inst.Data_CreateGeneric();
+            int armor = tile.tileInfo.armor;
+            string extra = "Amount of concentrated damage required to overcome this object's armor to disable or destroy it. After resistances are factored in, " +
+                "the damage from a single hit must be greater than or equal to this value.";
+            Color aC = Color.white;
+            if (armor >= 40)
+            {
+                aC = highSecRed;
+            }
+            else if (armor <= 12)
+            {
+                aC = highlightGreen;
+            }
+            else if (armor < 40 && armor >= 20)
+            {
+                aC = warningOrange;
+            }
+            else
+            {
+                aC = cautiousYellow;
+            }
+            mArmor.Setup(true, false, true, "Armor", aC, extra, armor.ToString(), false, "", false, "", armor / 75f, true);
+
+            // Resistances
+            if (tile.tileInfo.resistances.Count > 0)
+            {
+                UIManager.inst.Data_CreateHeader("Resistances"); // Overview ============================================================
+
+                foreach (var R in tile.tileInfo.resistances)
+                {
+                    UIDataGenericDetail resBar = UIManager.inst.Data_CreateGeneric();
+                    extra = "Depending on their design, some structures may be more or less likely to be affected by a certain type of damage. Negative resistances represent a weakness," +
+                        " and therefore greater damage from that source. For example, 25% resistance would decrease the damage from an incoming attack of that type by 25%, " +
+                        "while -25% would instead increase the damage sustained by 25%.";
+
+                    if (R.immune)
+                    {
+                        resBar.Setup(true, false, false, "Class", Color.white, "This structure is IMMUNE to the damage type. Attempting to damage this structure with the designated weapon type will do ZERO damage.", "", false, "Immune", true);
+                    }
+                    else
+                    {
+                        string vA = "";
+                        Color vC;
+                        if (R.resistanceAmount < 0f)
+                        {
+                            vA = "-" + Mathf.Abs(R.resistanceAmount * 100).ToString() + "%";
+                            vC = highSecRed;
+                        }
+                        else
+                        {
+                            vA = Mathf.Abs(R.resistanceAmount * 100).ToString() + "%";
+                            vC = highlightGreen;
+                        }
+
+                        resBar.Setup(true, false, true, R.damageType.ToString(), vC, extra, vA, false, "", false, "", R.resistanceAmount, true); // Bar
+                    }
+                }
+
+                Data_CreateSpacer();
+            }
+
+            #endregion
+        }
 
         // -- Animation time --
         // We need to trigger all the animations at the same time
@@ -8554,7 +9065,7 @@ public class UIManager : MonoBehaviour
         AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[17]);
 
         dataMenu.selection_item = null;
-        dataMenu.selection_bot = null;
+        dataMenu.selection_obj = null;
 
         StartCoroutine(Data_CloseMenuAnimation());
     }
@@ -8857,7 +9368,7 @@ public class UIDataDisplay
     public List<GameObject> data_objects = new List<GameObject>();
     public UIDataGenericDetail data_focusObject = null;
     public Item selection_item;
-    public Actor selection_bot;
+    public GameObject selection_obj;
 
     [Header("Animation")]
     public Animator data_animator;

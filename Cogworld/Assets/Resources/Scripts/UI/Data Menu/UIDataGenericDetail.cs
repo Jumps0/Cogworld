@@ -33,6 +33,7 @@ public class UIDataGenericDetail : MonoBehaviour
     [Header("Colors")] // For the boxes. Other stuff uses colors from UIManager
     public Color b_green;
     public Color b_yellow;
+    public Color b_orange;
     public Color b_red;
     //
     public Color highlightColor;
@@ -186,13 +187,17 @@ public class UIDataGenericDetail : MonoBehaviour
         }
         else
         {
-            if (value >= 0.66f)
+            if (value >= 0.75f)
             {
                 return b_green;
             }
-            else if (value <= 0.33f)
+            else if (value <= 0.25f)
             {
                 return b_red;
+            }
+            else if(value < 0.75f && value > 0.25f)
+            {
+                return b_orange;
             }
             else
             {

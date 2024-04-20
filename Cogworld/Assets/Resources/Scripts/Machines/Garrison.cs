@@ -28,20 +28,16 @@ public class Garrison : MonoBehaviour
     public bool locked = false; // No longer accessable
 
     [Header("Trojans")]
-    public int trojans = 0;
-    public bool trojan_track = false;
-    public bool trojan_assimilate = false;
-    public bool trojan_botnet = false;
-    public bool trojan_detonate = false;
-    //
-    public bool trojan_broadcast = false;
-    public bool trojan_decoy = false;
-    public bool trojan_redirect = false;
-    public bool trojan_reprogram = false;
+    public List<TrojanType> trojans = new List<TrojanType>();
 
     [Header("Operation")]
     [Tooltip("Where arriving bots are spawned, or the access point is created.")]
     public Transform ejectionSpot;
+
+    [Header("Special Flags")]
+    [Tooltip("This Garrison Access is communicating with additional reinforcements preparing for dispatch. Using a Signal Interpreter provides the precise number of turns remaining until the next dispatch.")]
+    public bool s_transmitting = false;
+    public bool s_redeploying = false;
 
     public void Init()
     {

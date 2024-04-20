@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,6 +74,10 @@ public class Item
     public bool corrupted = false;
     [Tooltip("If > 0, this item is disabled for the specified turns.")]
     public int disabledTimer = 0;
+    [Tooltip("Unstable weapons implode after the indicated remaining number of shots. -1 = not unstable.")]
+    public int unstable = -1; // -1 = not unstable | https://www.gridsagegames.com/forums/index.php?topic=1577.0
+    [Tooltip("Some weapons have a limited number of uses and will destroy themselves after use. -1 = not disposable.")]
+    public int disposable = -1;
     [Tooltip("Is this item currently in siege mode?")]
     public bool siege = false; // https://www.gridsagegames.com/blog/2019/09/siege-tread-mechanics/
 
@@ -88,6 +93,7 @@ public class Item
         Id = item.data.Id;
         itemData = item;
         integrityCurrent = item.integrityMax;
+        disposable = item.disposable;
         SetupText();
     }
 
@@ -234,6 +240,7 @@ public abstract class ItemObject : ScriptableObject
     [Tooltip("Certain power sources, propulsion units, and energy weapons can be overloaded. Performing better but with dangerous downsides.")]
     public bool canOverload = false; // TODO: Complete functionality for relevant items
     public bool consumable = false; // TODO: Functionality for this too
+    public int disposable = -1; // TODO: Functionality for this
 
     [Header("Primary Details")]
     public ItemQuality quality;
@@ -609,6 +616,13 @@ public class ExplosionGeneric
     public bool directional = false;
     public float d_arc; // Usually 90 degrees
     public int d_distance;
+
+    [Header("Machine Related")]
+    [Tooltip("Ability of this potentially explosive machine to avoid being destabilized by a sutained attack, even those that do note pentrate its armor.")]
+    public float stability;
+    [Tooltip("")]
+    public Vector2Int delay;
+    
 }
 
 [System.Serializable]

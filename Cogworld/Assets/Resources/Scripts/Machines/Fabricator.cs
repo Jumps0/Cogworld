@@ -27,11 +27,7 @@ public class Fabricator : MonoBehaviour
     public bool locked = false; // No longer accessable
 
     [Header("Trojans")]
-    public int trojans = 0;
-    public bool trojan_track = false;
-    public bool trojan_assimilate = false;
-    public bool trojan_botnet = false;
-    public bool trojan_detonate = false;
+    public List<TrojanType> trojans = new List<TrojanType>();
 
     [Header("Operation")]
     public ItemObject targetPart = null;
@@ -41,6 +37,9 @@ public class Fabricator : MonoBehaviour
     public bool working = false;
     [Tooltip("Where completed components get spawned.")]
     public Transform ejectionSpot;
+
+    [Header("Special Flags")]
+    public bool flag_overload = false;
 
     public void Init()
     {

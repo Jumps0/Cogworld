@@ -26,11 +26,7 @@ public class TerminalCustom : MonoBehaviour
     public bool locked = false; // No longer accessable
 
     [Header("Trojans")]
-    public int trojans = 0;
-    public bool trojan_track = false;
-    public bool trojan_assimilate = false;
-    public bool trojan_botnet = false;
-    public bool trojan_detonate = false;
+    public List<TrojanType> trojans = new List<TrojanType>();
 
     public CustomTerminalType type;
 

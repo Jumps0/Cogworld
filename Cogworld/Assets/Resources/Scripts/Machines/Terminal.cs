@@ -39,13 +39,10 @@ public class Terminal : MonoBehaviour
     public float detectionChance;
     public float traceProgress;
     public bool detected;
+    public bool databaseLockout = false;
 
     [Header("Trojans")]
-    public int trojans = 0;
-    public bool trojan_track = false;
-    public bool trojan_assimilate = false;
-    public bool trojan_botnet = false;
-    public bool trojan_detonate = false;
+    public List<TrojanType> trojans = new List<TrojanType>();
 
 
 
@@ -256,4 +253,32 @@ public class TerminalCustomCode
 
         return randomString;
     }
+}
+
+public enum TrojanType // https://noemica.github.io/cog-minder/hacks.html
+{ // This doesn't include FORCE hacks for now
+    Track,
+    Assimilate,
+    Botnet,
+    Detonate,
+    Broadcast,
+    Decoy,
+    Redirect,
+    Reprogram,
+    Disrupt,
+    Fabnet,
+    Haulers,
+    Intercept,
+    Mask,
+    Mechanics,
+    Monitor,
+    Operators,
+    Prioritize,
+    Recyclers,
+    Reject,
+    Report,
+    Researchers,
+    Restock,
+    Watchers,
+    Liberate
 }

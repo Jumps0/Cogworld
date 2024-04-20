@@ -208,6 +208,7 @@ public class Actor : Entity
     }
     */
 
+    #region Turns
     public void StartTurn()
     {
         if(this.GetComponent<BotAI>() != null)
@@ -226,6 +227,7 @@ public class Actor : Entity
         //MapManager.inst.NearTileVisUpdate(this.fieldOfViewRange, HF.V3_to_V2I(this.transform.position)); // experimental
 
     }
+    #endregion
 
     #region Navigation
 
@@ -1008,7 +1010,7 @@ public class Actor : Entity
         {
             if (!UIManager.inst.dataMenu.data_parent.gameObject.activeInHierarchy)
             {
-                UIManager.inst.Data_OpenMenu(null, this, this);
+                UIManager.inst.Data_OpenMenu(null, this.gameObject, this);
             }
         }
     }

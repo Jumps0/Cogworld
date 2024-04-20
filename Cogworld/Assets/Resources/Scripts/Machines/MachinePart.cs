@@ -10,17 +10,13 @@ public class MachinePart : MonoBehaviour
     [Tooltip("Basically health. X = current, Y = max.")]
     public Vector2Int armor;
     public bool state = true; // Active
-    [Header("----Resistances----")]
-    public List<BotResistances> resistances;
     [Header("----Explosive Potential----")]
     public bool explodes = false;
-    public float stability = 1.0f;
-    public Vector2Int delay = new Vector2Int(0,0);
-    public int chunks = 0;
-    [Tooltip("Heat Transfer level: 0 --> 3 [None, Low, Medium, High]")]
-    public int heatTransferLevel;
-    public int heatTransfer;
+    public int heatTransfer = 0;
+    public ExplosionGeneric explosiveDetails;
     public ItemExplosion explosivePotential;
+    [Header("----Resistances----")]
+    public List<BotResistances> resistances;
     [Header("----Random----")]
     public bool initializeRandom = false; // If true, will be set to a random machine sprite, and to a random rotation
     public bool walkable = false; // If true, certain bots (zionities, subcaves, etc.) will be able to walk through this machine.
@@ -173,11 +169,26 @@ public class MachinePart : MonoBehaviour
         
     }
 
+    private void OnMouseOver()
+    {
+        if (Input.GetKeyDown(KeyCode.Mouse1)) // Right Click to open /DATA/ Menu
+        {
+            if (!UIManager.inst.dataMenu.data_parent.gameObject.activeInHierarchy)
+            {
+                UIManager.inst.Data_OpenMenu(null, this.gameObject);
+            }
+        }
+    }
+
+    #region Destruction
+
     /// <summary>
     /// For when this part needs to actually be destroyed. Plays a sound effect, and leaves some trash behind.
     /// </summary>
     public void DestroyMe()
     {
+        destroyed = true;
+
         // Decide if this should leave debris or note (random)
         if (Random.Range(0f, 1f) > 0.5f) // Yes, debris
         {
@@ -196,7 +207,77 @@ public class MachinePart : MonoBehaviour
             AudioManager.inst.CreateTempClip(this.transform.position, clip, 0.8f);
         }
 
+        // Annouce that this machine has been disabled (don't wanna spam this)
+        if(parentPart != this && parentPart.state && !annouced) // Not the parent part but still active
+        {
+            parentPart.AnnouceDisabled();
+        }
+        else if(parentPart == this && state && !annouced) // Is the parent part and still active
+        {
+            AnnouceDisabled();
+        }
+
+        state = false;
+
         Destroy(this.gameObject);
+    }
+
+    bool annouced = false;
+    private void AnnouceDisabled()
+    {
+        annouced = true;
+        string message = "";
+
+        if (this.GetComponent<Terminal>())
+        {
+            message = "Terminal";
+        }
+        else if (this.GetComponent<Fabricator>())
+        {
+            message = "Fabricator";
+        }
+        else if (this.GetComponent<RecyclingUnit>())
+        {
+            message = "Recycling Unit";
+        }
+        else if (this.GetComponent<Garrison>())
+        {
+            message = "Garrison";
+        }
+        else if (this.GetComponent<RepairStation>())
+        {
+            message = "Repair Station";
+        }
+        else if (this.GetComponent<Scanalyzer>())
+        {
+            message = "Scanalyzer";
+        }
+        else if (this.GetComponent<TerminalCustom>())
+        {
+            if (parentPart)
+            {
+                message = parentPart.GetComponent<TerminalCustom>().systemType;
+            }
+            else
+            {
+                message = this.GetComponent<TerminalCustom>().systemType;
+            }
+        }
+        else if (this.GetComponent<StaticMachine>())
+        {
+            if (parentPart)
+            {
+                message = parentPart.GetComponent<StaticMachine>()._name;
+            }
+            else
+            {
+                message = this.GetComponent<StaticMachine>()._name;
+            }
+        }
+
+        message += " disabled.";
+
+        UIManager.inst.CreateNewLogMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
     }
 
     private void OnDestroy()
@@ -213,4 +294,6 @@ public class MachinePart : MonoBehaviour
                 parentPart.state = false;
         }
     }
+
+    #endregion
 }

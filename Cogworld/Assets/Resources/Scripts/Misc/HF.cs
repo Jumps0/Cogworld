@@ -281,6 +281,62 @@ public static class HF
     }
 
     #region Machines/Hacking
+    public static string HackDescription(TrojanType type)
+    {
+        switch (type)
+        {
+            case TrojanType.Track:
+                return "Continuously report the position of all robots within a short distance of the terminal. The radius is 6 for a level 1 terminal, 8 for a level 2, and 10 for a level 3.";
+            case TrojanType.Assimilate:
+                return "Causes any operator attempting to report Cogmind to instead become a controllable (blue) ally.";
+            case TrojanType.Botnet:
+                return "Increase the success rate of hacking attempts on all other machines on the floor. The first hack increases success by 6%, the second by 3%, and all others by 1%.";
+            case TrojanType.Detonate:
+                return "Rig a nearby explosive machine to detonate when a hostile passes nearby.";
+            case TrojanType.Broadcast:
+                return "Enable reporting of any garrison dispatch type, robot composition, and position on the floor.";
+            case TrojanType.Decoy:
+                return "Redirect the next dispatch's target to another location, includes dispatches with otherwise perfect tracking like exterminations and assaults.";
+            case TrojanType.Redirect:
+                return "Redirect all dispatch targets to another location, includes dispatches with otherwise perfect tracking like exterminations and assaults. Each dispatch after the first has an increasing 25% chance of removing the hack, dispatching an extra investigation squad, and disabling the garrison machine.";
+            case TrojanType.Reprogram:
+                return "Reprogram the next dispatch to be allied but noncontrollable to Cogmind (purple color). Doesn't work against special dispatches like Lightnings.";
+            case TrojanType.Disrupt:
+                return "Reduce the targeting of all nearby hostile robots by 10%.";
+            case TrojanType.Fabnet:
+                return "Adds a 3% chance per 0b10 combat bot on the next depth up to temporarily turn friendly (purple) when alerted of any enemy (not just Cogmind) similar to the RIF hack overwrite IFF. This chance decreases to 1% on the following depth, and reaches 0% after that. Caps at 15%. There is a chance that the machine network on the floor will be permanently locked when this effect activates.";
+            case TrojanType.Haulers:
+                return "Continuously report the position of all Hauler class robots on the current floor.";
+            case TrojanType.Intercept:
+                return "Increases accuracy against nearby MAIN.C-controlled bot by 15% for all friendly bots.";
+            case TrojanType.Mask:
+                return "Prevent Recycler robots from picking up any parts in a 15-tile square area around the machine.";
+            case TrojanType.Mechanics:
+                return "Continuously report the position of all Mechanic class robots on the current floor.";
+            case TrojanType.Monitor:
+                return "Enable reporting of any parts inserted into any Recycling Machine, as well as their integrity.";
+            case TrojanType.Operators:
+                return "Continuously report the position of all Operator class robots on the current floor.";
+            case TrojanType.Prioritize:
+                return "Double the speed of fabrication for the current fabricator.";
+            case TrojanType.Recyclers:
+                return "Continuously report the position of all Recycler class robots on the current floor.";
+            case TrojanType.Reject:
+                return "Prevent parts from being deposited into the recycling machine. Instead, any inserted parts are deposited onto the floor.";
+            case TrojanType.Report:
+                return "Reports when any fabricator on the floor is finished building something, as well as its position.";
+            case TrojanType.Researchers:
+                return "Continuously report the position of all Researcher class robots on the current floor.";
+            case TrojanType.Restock:
+                return "Dispatches a programmer to the current garrison carrying relay couplers.";
+            case TrojanType.Watchers:
+                return "Continuously report the position of all Watcher class robots on the current floor.";
+            case TrojanType.Liberate:
+                return "Any bots created by this fabricator by 0b10 will be allied but noncontrollable to Cogmind (purple color). If on a factory floor, the bots will head for the closest caves exit and leave the map. Otherwise the bots will follow you as regular purple allies.";
+            default:
+                return "";
+        }
+    }
 
     public static int MachineSecLvl()
     {
@@ -1028,31 +1084,31 @@ public static class HF
                         GameObject target = UIManager.inst.terminal_targetTerm;
                         if (target.GetComponent<Terminal>())
                         {
-                            target.GetComponent<Terminal>().trojan_botnet = true;
+                            target.GetComponent<Terminal>().trojans.Add(TrojanType.Botnet);
                         }
                         else if (target.GetComponent<Fabricator>())
                         {
-                            target.GetComponent<Fabricator>().trojan_botnet = true;
+                            target.GetComponent<Fabricator>().trojans.Add(TrojanType.Botnet);
                         }
                         else if (target.GetComponent<Scanalyzer>())
                         {
-                            target.GetComponent<Scanalyzer>().trojan_botnet = true;
+                            target.GetComponent<Scanalyzer>().trojans.Add(TrojanType.Botnet);
                         }
                         else if (target.GetComponent<RepairStation>())
                         {
-                            target.GetComponent<RepairStation>().trojan_botnet = true;
+                            target.GetComponent<RepairStation>().trojans.Add(TrojanType.Botnet);
                         }
                         else if (target.GetComponent<RecyclingUnit>())
                         {
-                            target.GetComponent<RecyclingUnit>().trojan_botnet = true;
+                            target.GetComponent<RecyclingUnit>().trojans.Add(TrojanType.Botnet);
                         }
                         else if (target.GetComponent<Garrison>())
                         {
-                            target.GetComponent<Garrison>().trojan_botnet = true;
+                            target.GetComponent<Garrison>().trojans.Add(TrojanType.Botnet);
                         }
                         else if (target.GetComponent<TerminalCustom>())
                         {
-                            target.GetComponent<TerminalCustom>().trojan_botnet = true;
+                            target.GetComponent<TerminalCustom>().trojans.Add(TrojanType.Botnet);
                         }
                         return print; 
 
@@ -1098,6 +1154,11 @@ public static class HF
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
                     }
                     else if (parsedName.Contains("Intercept"))
+                    {
+                        // hack
+                        return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
+                    }
+                    else if (parsedName.Contains("Liberate"))
                     {
                         // hack
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
@@ -1148,11 +1209,6 @@ public static class HF
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
                     }
                     else if (parsedName.Contains("Restock"))
-                    {
-                        // hack
-                        return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
-                    }
-                    else if (parsedName.Contains("Siphon"))
                     {
                         // hack
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
@@ -1308,7 +1364,12 @@ public static class HF
 
     }
 
-    public static void TraceHacking(GameObject machine)
+    /// <summary>
+    /// When given a gameObject (machine) returns the 3 values related to tracing. Detection Chance, Trace Progress, and if the hack has been detected.
+    /// </summary>
+    /// <param name="machine">The machine gameObject to investigate</param>
+    /// <returns>(float, float, bool) Detection Chance, Trace Progress, and if the hack has been detected.</returns>
+    public static (float, float, bool) GetTraceValues(GameObject machine)
     {
         float detectionChance = 0f;
         float traceProgress = 0f;
@@ -1356,6 +1417,17 @@ public static class HF
             traceProgress = machine.GetComponent<TerminalCustom>().traceProgress;
             detected = machine.GetComponent<TerminalCustom>().detected;
         }
+
+        return (detectionChance, traceProgress, detected);
+    }
+
+    public static void TraceHacking(GameObject machine)
+    {
+        float detectionChance = 0f;
+        float traceProgress = 0f;
+        bool detected = false;
+
+        (detectionChance, traceProgress, detected) = HF.GetTraceValues(machine);
 
         /*
         Detection: Initially your presence is unknown, but with each subsequent action there is a chance your activity will be detected. 
@@ -1596,22 +1668,7 @@ public static class HF
 
     #endregion
 
-    /// <summary>
-    /// Extracts text from the inside of (   ). Example Name(This)
-    /// </summary>
-    /// <param name="input">A string in the format of "Name(This)".</param>
-    /// <returns></returns>
-    public static string ExtractText(string input)
-    {
-        int bracketStartIndex = input.IndexOf('(');
-        int bracketEndIndex = input.IndexOf(')');
-        if (bracketStartIndex != -1 && bracketEndIndex != -1 && bracketEndIndex > bracketStartIndex)
-        {
-            return input.Substring(bracketStartIndex + 1, bracketEndIndex - bracketStartIndex - 1).Trim();
-        }
-
-        return string.Empty;
-    }
+    #region Find & Get
 
     /// <summary>
     /// Determines the relations between the "source" Actor and "target" actor. Returns the relation.
@@ -1652,7 +1709,7 @@ public static class HF
         {
             foreach ((BotAlignment, BotRelation) T in source.allegances.alleganceTree)
             {
-                if(T.Item1 == targetAlignment)
+                if (T.Item1 == targetAlignment)
                 {
                     relationToTarget = T.Item2;
                 }
@@ -1662,7 +1719,7 @@ public static class HF
         {
             foreach ((BotAlignment, BotRelation) T in source.allegances.alleganceTree)
             {
-                if(T.Item1 == BotAlignment.Player)
+                if (T.Item1 == BotAlignment.Player)
                 {
                     relationToTarget = T.Item2;
                 }
@@ -1672,7 +1729,7 @@ public static class HF
         {
             foreach ((BotAlignment, BotRelation) T in source.allegances.alleganceTree) // Source
             {
-                if(T.Item1 == targetAlignment)
+                if (T.Item1 == targetAlignment)
                 {
                     relationToTarget = T.Item2;
                 }
@@ -1699,8 +1756,6 @@ public static class HF
 
         return relationToTarget;
     }
-
-    #region Find & Get
 
     /// <summary>
     /// Attempts to find bots within a specified ranged of a specified bot. Returns a list of any found bots.
@@ -1745,6 +1800,40 @@ public static class HF
         }
 
         return null;
+    }
+
+    public static List<TrojanType> GetMachineTrojans(GameObject target)
+    {
+        if (target.GetComponent<Terminal>())
+        {
+            return target.GetComponent<Terminal>().trojans;
+        }
+        else if (target.GetComponent<Fabricator>())
+        {
+            return target.GetComponent<Fabricator>().trojans;
+        }
+        else if (target.GetComponent<Scanalyzer>())
+        {
+            return target.GetComponent<Scanalyzer>().trojans;
+        }
+        else if (target.GetComponent<RepairStation>())
+        {
+            return target.GetComponent<RepairStation>().trojans;
+        }
+        else if (target.GetComponent<RecyclingUnit>())
+        {
+            return target.GetComponent<RecyclingUnit>().trojans;
+        }
+        else if (target.GetComponent<Garrison>())
+        {
+            return target.GetComponent<Garrison>().trojans;
+        }
+        else if (target.GetComponent<TerminalCustom>())
+        {
+            return target.GetComponent<TerminalCustom>().trojans;
+        }
+
+        return new List<TrojanType>();
     }
 
     public static ItemDamageType GetDamageType(ItemObject weapon)
@@ -3587,6 +3676,22 @@ public static class HF
 
     #region String/Name Manipulation
 
+    /// <summary>
+    /// Extracts text from the inside of (   ). Example Name(This)
+    /// </summary>
+    /// <param name="input">A string in the format of "Name(This)".</param>
+    /// <returns></returns>
+    public static string ExtractText(string input)
+    {
+        int bracketStartIndex = input.IndexOf('(');
+        int bracketEndIndex = input.IndexOf(')');
+        if (bracketStartIndex != -1 && bracketEndIndex != -1 && bracketEndIndex > bracketStartIndex)
+        {
+            return input.Substring(bracketStartIndex + 1, bracketEndIndex - bracketStartIndex - 1).Trim();
+        }
+
+        return string.Empty;
+    }
     public static int StringToInt(string input)
     {
         // Parse the string to an integer

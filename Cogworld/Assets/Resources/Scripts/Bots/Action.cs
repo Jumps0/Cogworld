@@ -4,6 +4,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.VersionControl;
 using UnityEngine;
 using Color = UnityEngine.Color;
 
@@ -708,7 +709,10 @@ public static class Action
                 GameManager.inst.CreateMeleeAttackIndicator(HF.V3_to_V2I(target.transform.position), angleDeg, weapon, false);
                 // - Sound is taken care of in ^ -
 
-                // Don't make a message about it
+                // Message
+                string message = $" Damage insufficient to overcome {target.name} armor";
+
+                UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.inactiveGray, UIManager.inst.dullGreen, false, true);
             }
             #endregion
 
@@ -1011,7 +1015,10 @@ public static class Action
                     // Play a sound
                     source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
 
-                    // Don't make a message about it
+                    // Message
+                    string message = $" Damage insufficient to overcome {target.name} armor";
+
+                    UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.inactiveGray, UIManager.inst.dullGreen, false, true);
                 }
                 #endregion
             }
@@ -1025,6 +1032,16 @@ public static class Action
         if (weapon.isOverloaded)
         {
             Action.OverloadedConsequences(source, weapon);
+        }
+
+        // Unstable consequences
+        if(weapon.unstable > -1)
+        {
+            weapon.unstable--;
+            if (weapon.unstable == 0)
+            {
+                Action.UnstableWeaponConsequences(source, weapon);
+            }
         }
 
         source.momentum = 0;
@@ -5936,6 +5953,11 @@ public static class Action
         {
             return;
         }
+    }
+
+    public static void UnstableWeaponConsequences(Actor owner, Item weapon)
+    {
+
     }
 
     public static bool HasResourcesToAttack(Actor attacker, Item weapon)

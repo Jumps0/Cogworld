@@ -15,6 +15,11 @@ public class StaticMachine : MonoBehaviour
     public AudioSource _source;
     public AudioClip _ambient;
 
+    [Header("Special Flags")]
+    public bool s_detonate = false;
+    public int detonate_timer = 15;
+    public bool s_unstable = false;
+
 
     #region Explosion
     public void Detonate()

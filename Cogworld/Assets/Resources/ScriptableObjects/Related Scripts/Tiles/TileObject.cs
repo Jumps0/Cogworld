@@ -23,7 +23,6 @@ public abstract class TileObject : ScriptableObject
 
     [Header("Details")]
     public TileType type;
-    public TileDetails details;
 
     [Tooltip("Used for things like the open sprite of doors.")]
     public Sprite altSprite;
@@ -50,14 +49,8 @@ public abstract class TileObject : ScriptableObject
     [Header("Destruction Sounds")]
     public List<AudioClip> destructionClips = new List<AudioClip>();
 
-}
-
-[System.Serializable]
-public class TileDetails
-{
-    
-
-
+    [Header("Resistances")]
+    public List<BotResistances> resistances;
 }
 
 [System.Serializable]
