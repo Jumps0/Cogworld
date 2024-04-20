@@ -6047,6 +6047,7 @@ public class UIManager : MonoBehaviour
 
     public void Data_OpenMenu(Item item = null, GameObject other = null, Actor itemOwner = null)
     {
+        // Firstly assign values
         Actor bot = null;
         MachinePart machine = null;
         TileBlock tile = null;
@@ -6069,15 +6070,44 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        dataMenu.selection_item = item;
-        dataMenu.selection_obj = other;
-
         // Emergency stop incase this menu is being spammed
         StopCoroutine(Data_CloseMenuAnimation());
         StopCoroutine(DataAnim_TitleOpen());
         StopCoroutine(DataAnim_SmallImageOpen());
         StopCoroutine(DataAnim_TitleTextClose());
 
+        // Before we assign the selection objects, we need to check if this menu is already open.
+        // Because if it is, we need to do a quick clear and refresh animation instead.
+        // And if its and item, and we previous had an item, we need to open the comparison menu.
+        if (dataMenu.data_parent.activeInHierarchy)
+        {
+            // Clear out all detail text that was spawned in (no animations)
+            foreach (var O in dataMenu.data_objects.ToList())
+            {
+                Destroy(O.gameObject);
+            }
+            dataMenu.data_objects.Clear();
+
+            // Was the previous selected object an item?
+            if(dataMenu.selection_item != null)
+            {
+                dataMenu.selected_comparison_item = item; // Assign the item
+
+                // Then we need to open the comparison sidebar!
+                dataMenu.data_comparisonParent.SetActive(true);
+
+                // Activate the animation
+                dataMenu.data_ComparisonAnimator.Play("");
+
+                // Populate the comparison area with details
+
+
+
+            }
+        }
+
+        dataMenu.selection_item = item;
+        dataMenu.selection_obj = other;
 
         // Enable the menu
         dataMenu.data_parent.SetActive(true);
@@ -6090,7 +6120,7 @@ public class UIManager : MonoBehaviour
         // There isn't actually an opening animation for the menu itself (thankfully).
         // But most items inside the menu do have their own animations, which we will handle inside their own scripts.
 
-        // What are we focusing on, an item or a bot?
+        // What are we focusing on, an item, bot, machine, or tile? (Spawn in things respective to what info we are given)
         if(item != null)
         {
             // Set the big image (and enable it)
@@ -9033,8 +9063,12 @@ public class UIManager : MonoBehaviour
         // Animate the title (type out, include the [ ] too)
         StartCoroutine(DataAnim_TitleOpen());
 
-        // Animate the little image
-        StartCoroutine(DataAnim_SmallImageOpen());
+        // Animate the small [image] if its active
+        if (dataMenu.data_smallImage.transform.parent.gameObject.activeInHierarchy)
+        {
+            // Animate the little image
+            StartCoroutine(DataAnim_SmallImageOpen());
+        }
         
         // Animate the data lines
         foreach (var O in dataMenu.data_objects.ToList())
@@ -9066,6 +9100,7 @@ public class UIManager : MonoBehaviour
 
         dataMenu.selection_item = null;
         dataMenu.selection_obj = null;
+        dataMenu.selected_comparison_item = null;
 
         StartCoroutine(Data_CloseMenuAnimation());
     }
@@ -9172,6 +9207,7 @@ public class UIManager : MonoBehaviour
         #endregion
     }
 
+    #region Prefab Creation
     private void Data_CreateHeader(string text, string bonus = "")
     {
         GameObject go = Instantiate(dataMenu.data_headerPrefab, dataMenu.data_contentArea.transform.position, Quaternion.identity);
@@ -9214,7 +9250,7 @@ public class UIManager : MonoBehaviour
         // Set value
         go.GetComponent<UIDataTextWall>().Setup(text);
     }
-
+    #endregion
 
     #region Animations
     private IEnumerator DataAnim_TitleOpen()
@@ -9362,17 +9398,24 @@ public class UIDataDisplay
     public GameObject data_spacerPrefab;
     public GameObject data_textWallPrefab;
     public GameObject data_traitPrefab;
+    public GameObject data_comparisonPrefab;
 
     [Header("Objects")]
     [Tooltip("All the objects (prefabs) that we spawned in.")]
     public List<GameObject> data_objects = new List<GameObject>();
     public UIDataGenericDetail data_focusObject = null;
     public Item selection_item;
+    [Tooltip("A second item we compare the first against.")]
+    public Item selected_comparison_item;
     public GameObject selection_obj;
 
     [Header("Animation")]
-    public Animator data_animator;
     public Animator data_SuperImageAnimator;
+    public Animator data_ComparisonAnimator;
 
     public bool data_onTraits = false;
+
+    [Header("Comparison")]
+    public GameObject data_comparisonParent;
+    public GameObject data_comparisonArea;
 }
