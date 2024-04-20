@@ -11,6 +11,10 @@ using Vector3 = UnityEngine.Vector3;
 using Quaternion = UnityEngine.Quaternion;
 using Vector2 = UnityEngine.Vector2;
 using ColorUtility = UnityEngine.ColorUtility;
+using Image = UnityEngine.UI.Image;
+using Slider = UnityEngine.UI.Slider;
+using Button = UnityEngine.UI.Button;
+using static System.Net.Mime.MediaTypeNames;
 using UnityEngine.XR;
 //using static UnityEditor.Progress;
 
@@ -110,7 +114,7 @@ public class UIManager : MonoBehaviour
         // - Check to close the /DATA/ menu via left click
         if (dataMenu.data_parent.gameObject.activeInHierarchy)
         {
-            if ((Input.GetMouseButtonDown(0) && dataMenu.data_focusObject == null) || Input.GetKeyDown(KeyCode.Escape)) // Close the menu
+            if ((Input.GetMouseButtonDown(0) && dataMenu.data_focusObject == null && dataMenu.data_onTraits == false) || Input.GetKeyDown(KeyCode.Escape)) // Close the menu
             {
                 Data_CloseMenu();
             }
@@ -119,6 +123,13 @@ public class UIManager : MonoBehaviour
                 if (!dataMenu.data_extraDetail.activeInHierarchy) // Menu isn't already open
                 {
                     dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().ShowExtraDetail(dataMenu.data_focusObject.extraDetailString);
+                }
+            }
+            else if (Input.GetMouseButtonDown(0) && dataMenu.data_onTraits && dataMenu.selection_bot != null) // Open the traits menu
+            {
+                if (!dataMenu.data_traitBox.activeInHierarchy) // Menu isn't already open
+                {
+                    dataMenu.data_traitBox.GetComponent<UIDataTraitbox>().Open();
                 }
             }
         }
@@ -6035,6 +6046,9 @@ public class UIManager : MonoBehaviour
 
     public void Data_OpenMenu(Item item = null, Actor bot = null, Actor itemOwner = null)
     {
+        dataMenu.selection_item = item;
+        dataMenu.selection_bot = bot;
+
         // Emergency stop incase this menu is being spammed
         StopCoroutine(Data_CloseMenuAnimation());
         StopCoroutine(DataAnim_TitleOpen());
@@ -8392,14 +8406,97 @@ public class UIManager : MonoBehaviour
             // Traits (most bots don't have this so we'll do it later) TODO
             if(bot.botInfo.traits.Count > 0)
             {
-                Data_CreateSpacer();
+                Data_CreateSpacer(); // Spacer
+
+                // Create the object
+                GameObject go = Instantiate(dataMenu.data_traitPrefab, dataMenu.data_contentArea.transform.position, Quaternion.identity);
+                go.transform.SetParent(dataMenu.data_contentArea.transform);
+                go.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+                // Add it to list
+                dataMenu.data_objects.Add(go);
+                go.name = "[Traits]";
 
                 // This has its own dropdown menu!
+                string combiText = "";
+                bool isFirstTrait = true; // Flag to check if it's the first trait
 
                 foreach (var T in bot.botInfo.traits)
                 {
+                    // Add "\n\n" before adding the next trait description if it's not the first trait
+                    if (!isFirstTrait)
+                    {
+                        combiText += "\n\n";
+                    }
 
+                    if (T.trait_sensorJamming)
+                    {
+                        combiText += "Sensor Jamming: Prevents Sensor Arrays within range from pinpointing signals, but gives away its position in the process.";
+                        isFirstTrait = false;
+                    }
+
+                    if (T.trait_energyEmmission)
+                    {
+                        //if (!isFirstTrait) combiText += "\n\n";
+                        combiText += $"Energy Emission ({T.eeAmount}): Each turn transfers [{T.eeAmount}-range] energy to each robot in view and within a range of {T.eeRange}.";
+                        isFirstTrait = false;
+                    }
+
+                    if (T.trait_coreRegeneration)
+                    {
+                        //if (!isFirstTrait) combiText += "\n\n";
+                        combiText += $"Core Regeneration ({T.crAmount}): Regenerates {T.crAmount} core integrity every turn.";
+                        isFirstTrait = false;
+                    }
+                    
+                    if (T.trait_partRegeneration)
+                    {
+                        //if (!isFirstTrait) combiText += "\n\n";
+                        combiText += $"Part Regeneration ({T.prAmount}): All attached parts regenerate {T.prAmount} integrity every turn. ";
+                        if (T.prIncludeMissing)
+                        {
+                            combiText += $"Also regenerates one missing part every {T.prMissingDelay} turns.";
+                        }
+                        isFirstTrait = false;
+                    }
+                    
+                    if (T.trait_corruptionEmission)
+                    {
+                        //if (!isFirstTrait) combiText += "\n\n";
+                        combiText += $"Corruption Emission ({T.ceChance * 100}): {T.ceChance * 100}% chance each turn to cause anywhere from {T.ceAmount.x * 100}-{T.ceAmount.y * 100}% corruption in each robot in view and within a range of {T.ceRange}. (Cogmind is less susceptible to the effect and only suffers 0-1% corruption.)";
+                        isFirstTrait = false;
+                    }
+                    
+                    if (T.trait_energyDrain)
+                    {
+                        //if (!isFirstTrait) combiText += "\n\n";
+                        combiText += $"Energy Drain ({T.edAmount}): Each turn drains [{T.edAmount}-(range*2)] energy from each robot in view and within a range of {T.edRange}. ";
+                        combiText += $"Also drains an equivalent amount of heat.";
+                        isFirstTrait = false;
+                    }
+                    
+                    if (T.trait_heatEmission)
+                    {
+                        //if (!isFirstTrait) combiText += "\n\n";
+                        combiText += $"Heat Emission ({T.heAmount}): Each turn transfers [{T.heAmount}-(range*{T.heRange})] heat to each robot in view and within a range of {T.heRange}.";
+                        isFirstTrait = false;
+                    }
+                    
+                    if (T.trait_scanCloak)
+                    {
+                        //if (!isFirstTrait) combiText += "\n\n";
+                        combiText += $"Scan Cloak ({T.scStrength}): Hides this robot from sensors without a Signal Interpreter of at least strength {T.scStrength}.";
+                        isFirstTrait = false;
+                    }
+                    
+                    if (T.trait_selfDestruct)
+                    {
+                        //if (!isFirstTrait) combiText += "\n\n";
+                        combiText += $"Self-destructing: Leaves no parts on destruction, unless self-destruct mechanism fails due to system corruption.";
+                        isFirstTrait = false;
+                    }
                 }
+
+                dataMenu.data_traitBox.GetComponent<UIDataTraitbox>().Setup(combiText);
             }
 
             #endregion
@@ -8443,6 +8540,10 @@ public class UIManager : MonoBehaviour
             {
                 O.GetComponent<UIDataTextWall>().Open();
             }
+            else if (O.GetComponent<UIDataTraits>())
+            {
+                O.GetComponent<UIDataTraits>().AppearAnimate();
+            }
         }
 
     }
@@ -8451,6 +8552,9 @@ public class UIManager : MonoBehaviour
     {
         // Play a sound
         AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[17]);
+
+        dataMenu.selection_item = null;
+        dataMenu.selection_bot = null;
 
         StartCoroutine(Data_CloseMenuAnimation());
     }
@@ -8481,6 +8585,10 @@ public class UIManager : MonoBehaviour
             else if (O.GetComponent<UIDataTextWall>())
             {
                 O.GetComponent<UIDataTextWall>().Close();
+            }
+            else if (O.GetComponent<UIDataTraits>())
+            {
+                O.GetComponent<UIDataTraits>().Close();
             }
         }
 
@@ -8735,19 +8843,25 @@ public class UIDataDisplay
     [Tooltip("The object where all the prefabs should be spawned in.")]
     public GameObject data_contentArea;
     public GameObject data_extraDetail;
+    public GameObject data_traitBox;
 
     [Header("Prefabs")]
     public GameObject data_headerPrefab;
     public GameObject data_genericPrefab;
     public GameObject data_spacerPrefab;
     public GameObject data_textWallPrefab;
+    public GameObject data_traitPrefab;
 
     [Header("Objects")]
     [Tooltip("All the objects (prefabs) that we spawned in.")]
     public List<GameObject> data_objects = new List<GameObject>();
     public UIDataGenericDetail data_focusObject = null;
+    public Item selection_item;
+    public Actor selection_bot;
 
     [Header("Animation")]
     public Animator data_animator;
     public Animator data_SuperImageAnimator;
+
+    public bool data_onTraits = false;
 }

@@ -59,6 +59,8 @@ MonoBehaviour:
       state: 1
       integrityCurrent: 0
       isOverloaded: 0
+      isDeteriorating: 0
+      isRigged: 0
       corrupted: 0
       disabledTimer: 0
       siege: 0
@@ -75,6 +77,8 @@ MonoBehaviour:
       state: 1
       integrityCurrent: 0
       isOverloaded: 0
+      isDeteriorating: 0
+      isRigged: 0
       corrupted: 0
       disabledTimer: 0
       siege: 0
@@ -90,6 +94,8 @@ MonoBehaviour:
       state: 1
       integrityCurrent: 0
       isOverloaded: 0
+      isDeteriorating: 0
+      isRigged: 0
       corrupted: 0
       disabledTimer: 0
       siege: 0
@@ -105,6 +111,8 @@ MonoBehaviour:
       state: 1
       integrityCurrent: 0
       isOverloaded: 0
+      isDeteriorating: 0
+      isRigged: 0
       corrupted: 0
       disabledTimer: 0
       siege: 0
@@ -120,6 +128,8 @@ MonoBehaviour:
       state: 1
       integrityCurrent: 0
       isOverloaded: 0
+      isDeteriorating: 0
+      isRigged: 0
       corrupted: 0
       disabledTimer: 0
       siege: 0
@@ -135,6 +145,8 @@ MonoBehaviour:
       state: 1
       integrityCurrent: 0
       isOverloaded: 0
+      isDeteriorating: 0
+      isRigged: 0
       corrupted: 0
       disabledTimer: 0
       siege: 0
@@ -156,7 +168,79 @@ MonoBehaviour:
     jamming: 0
     meltdown: 0
     criticals: 0
-  traits: []
+  traits:
+  - trait_sensorJamming: 1
+    trait_energyEmmission: 0
+    eeRange: 0
+    eeAmount: 0
+    trait_coreRegeneration: 0
+    crAmount: 0
+    trait_partRegeneration: 0
+    prAmount: 0
+    prIncludeMissing: 0
+    prMissingDelay: 0
+    trait_corruptionEmission: 0
+    ceChance: 0
+    ceAmount: {x: 0, y: 0}
+    ceRange: 0
+    trait_energyDrain: 0
+    edAmount: 0
+    edRange: 0
+    edDrainHeat: 0
+    trait_heatEmission: 0
+    heAmount: 0
+    heRange: 0
+    trait_scanCloak: 0
+    scStrength: 0
+    trait_selfDestruct: 0
+  - trait_sensorJamming: 0
+    trait_energyEmmission: 0
+    eeRange: 0
+    eeAmount: 0
+    trait_coreRegeneration: 0
+    crAmount: 0
+    trait_partRegeneration: 0
+    prAmount: 0
+    prIncludeMissing: 0
+    prMissingDelay: 0
+    trait_corruptionEmission: 0
+    ceChance: 0
+    ceAmount: {x: 0, y: 0}
+    ceRange: 0
+    trait_energyDrain: 0
+    edAmount: 0
+    edRange: 0
+    edDrainHeat: 0
+    trait_heatEmission: 0
+    heAmount: 0
+    heRange: 0
+    trait_scanCloak: 0
+    scStrength: 0
+    trait_selfDestruct: 1
+  - trait_sensorJamming: 0
+    trait_energyEmmission: 0
+    eeRange: 0
+    eeAmount: 0
+    trait_coreRegeneration: 0
+    crAmount: 0
+    trait_partRegeneration: 0
+    prAmount: 0
+    prIncludeMissing: 0
+    prMissingDelay: 0
+    trait_corruptionEmission: 0
+    ceChance: 0
+    ceAmount: {x: 0, y: 0}
+    ceRange: 0
+    trait_energyDrain: 0
+    edAmount: 0
+    edRange: 0
+    edDrainHeat: 0
+    trait_heatEmission: 0
+    heAmount: 0
+    heRange: 0
+    trait_scanCloak: 1
+    scStrength: 2
+    trait_selfDestruct: 0
   fabricationInfo:
     canBeFabricated: 0
     amountMadePer: 3

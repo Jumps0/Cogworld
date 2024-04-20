@@ -597,13 +597,16 @@ public class UIDataGenericDetail : MonoBehaviour
 
     public void FlashBrackets()
     {
-        sideBrackets.gameObject.SetActive(true);
+        if(extraDetailString != "")
+        {
+            sideBrackets.gameObject.SetActive(true);
 
-        // Play a sound
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[44]);
+            // Play a sound
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[44]);
 
-        StopCoroutine(AnimFlashBrackets());
-        StartCoroutine(AnimFlashBrackets());
+            StopCoroutine(AnimFlashBrackets());
+            StartCoroutine(AnimFlashBrackets());
+        }
     }
 
     private IEnumerator AnimFlashBrackets()

@@ -233,16 +233,58 @@ public class BotResistancesExtra
 [System.Serializable]
 public class BotTraits
 {
-    // TODO
-    [Header("Sensor Jamming\n")]
+    // There are currently only 9 total traits in the game
+
+    [Header("Sensor Jamming")]
     [Tooltip("Sensor Jamming: Prevents Sensor Arrays within range from pinpointing signals, but gives away its position in the process.")]
     public bool trait_sensorJamming = false;
 
-    [Header("Energy Emission\n")]
+    [Header("Energy Emission")]
     [Tooltip("Energy Emission (##): Each turn transfers [##-range] energy to each robot in view and within a range of ##.")]
     public bool trait_energyEmmission = false;
     public int eeRange = 0;
     public int eeAmount = 0;
+
+    [Header("Core Regeneration")]
+    [Tooltip("Core Regeneration (#): Regenerates # core integrity every turn.")]
+    public bool trait_coreRegeneration = false;
+    public int crAmount = 0;
+
+    [Header("Part Regeneration")]
+    [Tooltip("Part Regeneration (#): All attached parts regenerate # integrity every turn. Also regenerates one missing part every ## turns.")]
+    public bool trait_partRegeneration = false;
+    public int prAmount = 0;
+    public bool prIncludeMissing = false;
+    public int prMissingDelay = 10;
+
+    [Header("Corruption Emission")]
+    [Tooltip("Corruption Emission (##): 0.##% chance each turn to cause anywhere from 0-##% corruption in each robot in view and within a range of ##. (Cogmind is less susceptible to the effect and only suffers 0-1% corruption.)")]
+    public bool trait_corruptionEmission = false;
+    public float ceChance = 0f;
+    public Vector2 ceAmount = new Vector2(0f, 0.5f);
+    public int ceRange;
+
+    [Header("Energy Drain")]
+    [Tooltip("Energy Drain (##): Each turn drains [##-(range*2)] energy from each robot in view and within a range of ##. Also drains an equivalent amount of heat.")]
+    public bool trait_energyDrain = false;
+    public int edAmount = 0;
+    public int edRange = 0;
+    public bool edDrainHeat = true;
+
+    [Header("Heat Emission")]
+    [Tooltip("Heat Emission (###): Each turn transfers [###-(range*##)] heat to each robot in view and within a range of ##.")]
+    public bool trait_heatEmission = false;
+    public int heAmount = 0;
+    public int heRange = 0;
+
+    [Header("Scan Cloak")]
+    [Tooltip("Scan Cloak (#): Hides this robot from sensors without a Signal Interpreter of at least strength #.")]
+    public bool trait_scanCloak = false;
+    public int scStrength = 1;
+
+    [Header("Self Destruct")]
+    [Tooltip("Self-destructing: Leaves no parts on destruction, unless self-destruct mechanism fails due to system corruption.")]
+    public bool trait_selfDestruct = false;
 }
 
 [System.Serializable]
