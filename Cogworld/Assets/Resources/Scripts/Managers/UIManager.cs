@@ -6097,16 +6097,200 @@ public class UIManager : MonoBehaviour
                 dataMenu.data_comparisonParent.SetActive(true);
 
                 // Activate the animation
-                dataMenu.data_ComparisonAnimator.Play("");
+                dataMenu.data_ComparisonAnimator.Play("Data_ComparisonOpen");
 
                 // Populate the comparison area with details
+                #region Comparison Logic
+                Item item1 = dataMenu.selection_item;
+                Item item2 = dataMenu.selected_comparison_item;
+                /*
+                 *  ====== HOW THIS WORKS =====
+                 *  We are comaring the stats of item1 against item2.
+                 *  What this means is that if item1 has an integrity of 100,
+                 *  and item2 has an integrity of 45.
+                 *  We display a "-55" in the comparison sidebar,
+                 *  since the 2nd item (which we are now viewing),
+                 *  has a lower integrity.
+                 *  
+                 *  If the values are the same, we don't display anything.
+                 */
 
 
+                // - Firstly, when comparing two items, we start at mass in the overview section, which all items have.
+                int diff = 0;
 
+                #region Overview
+                // Mass
+                diff = item1.itemData.mass - item2.itemData.mass;
+                if (diff > 0) // Red (item1 is better)
+                {
+                    UIManager.inst.Data_CreateComparison(false, diff.ToString());
+                }
+                else if (diff < 0) // Green (item2 is better)
+                {
+                    UIManager.inst.Data_CreateComparison(true, diff.ToString());
+                }
+                else
+                {
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                }
+                // Rating
+                diff = item1.itemData.rating - item2.itemData.rating;
+                if (diff > 0) // Red (item1 is better)
+                {
+                    UIManager.inst.Data_CreateComparison(false, diff.ToString());
+                }
+                else if (diff < 0) // Green (item2 is better)
+                {
+                    UIManager.inst.Data_CreateComparison(true, diff.ToString());
+                }
+                else
+                {
+                    // Consider other special types
+                    int A = 0;
+                    int B = 0;
+                    if(item1.itemData.ratingType == ItemRatingType.Standard)
+                    {
+                        A = 0;
+                    }
+                    else if (item1.itemData.ratingType == ItemRatingType.Prototype)
+                    {
+                        A = 1;
+                    }
+                    else if (item1.itemData.ratingType == ItemRatingType.Alien)
+                    {
+                        A = 2;
+                    }
+
+                    if (item2.itemData.ratingType == ItemRatingType.Standard)
+                    {
+                        B = 0;
+                    }
+                    else if (item2.itemData.ratingType == ItemRatingType.Prototype)
+                    {
+                        B = 1;
+                    }
+                    else if (item2.itemData.ratingType == ItemRatingType.Alien)
+                    {
+                        B = 2;
+                    }
+
+                    if(A > B)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "*");
+                    }
+                    else if(B > A)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, "*");
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                }
+                // Integrity
+                diff = item1.integrityCurrent - item2.integrityCurrent;
+                if(diff > 0) // Red (item1 is better)
+                {
+                    UIManager.inst.Data_CreateComparison(false, diff.ToString());
+                }
+                else if(diff < 0) // Green (item2 is better)
+                {
+                    UIManager.inst.Data_CreateComparison(true, diff.ToString());
+                }
+                else
+                {
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                }
+                // Coverage
+                diff = item1.itemData.coverage - item2.itemData.coverage;
+                if (diff > 0) // Red (item1 is better)
+                {
+                    UIManager.inst.Data_CreateComparison(false, diff.ToString());
+                }
+                else if (diff < 0) // Green (item2 is better)
+                {
+                    UIManager.inst.Data_CreateComparison(false, diff.ToString());
+                }
+                else
+                {
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                }
+                if (item2.itemData.schematicDetails.hasSchematic) // Need another spacer
+                {
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                }
+                // State (empty)
+                UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                // (Leave two more empties as spacers for the next category)
+                UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                #endregion
+                // - Then after overview, we need to consider if the two items have similar subsections (we don't do effects)
+                // Upkeep
+                if (item1.itemData.hasUpkeep && item2.itemData.hasUpkeep)
+                {
+                    diff = item1.itemData.mass - item2.itemData.mass;
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, diff.ToString());
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, diff.ToString());
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                }
+                else
+                {
+                    // Create 5 spacers
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                }
+                // (Power) Supply
+                if (item1.itemData.supply > 0 && item2.itemData.supply > 0)
+                {
+
+                }
+                // Propulsion
+                if (item1.itemData.propulsion.Count > 0 && item2.itemData.propulsion.Count > 0)
+                {
+
+                }
+                // Shot
+                if (item1.itemData.shot.shotRange > 0 && item2.itemData.shot.shotRange > 0)
+                {
+
+                }
+                // Projectile
+                if (item1.itemData.projectile.damage.x > 0 && item2.itemData.projectile.damage.x > 0)
+                {
+
+                }
+                // Explosion
+                if (item1.itemData.explosionDetails.radius > 0 && item2.itemData.explosionDetails.radius > 0)
+                {
+
+                }
+                // Melee (Attack & Hit)
+                if (item1.itemData.meleeAttack.isMelee && item2.itemData.meleeAttack.isMelee)
+                {
+
+                }
+                #endregion
             }
         }
+        else
+        {
+            dataMenu.selection_item = item;
+        }
 
-        dataMenu.selection_item = item;
         dataMenu.selection_obj = other;
 
         // Enable the menu
@@ -6139,6 +6323,7 @@ public class UIManager : MonoBehaviour
 
             // -- We have quite an extensive checklist here, there is a massive variance in what data an item can have -- //
             #region Data Displaying
+            #region Overview
             UIManager.inst.Data_CreateHeader("Overview"); // Overview =========================================================================
             // Type
             UIDataGenericDetail iType = UIManager.inst.Data_CreateGeneric();
@@ -6248,6 +6433,7 @@ public class UIManager : MonoBehaviour
                 extra = "Current state of this item. This item is inactive, and will not provide any useful effects, or function as normal.";
                 iState.Setup(true, true, false, "State", inactiveGray, extra, "", false, "", false, "INACTIVE");
             }
+            #endregion
 
             Data_CreateSpacer();
 
@@ -9249,6 +9435,18 @@ public class UIManager : MonoBehaviour
         dataMenu.data_objects.Add(go);
         // Set value
         go.GetComponent<UIDataTextWall>().Setup(text);
+    }
+
+    private void Data_CreateComparison(bool green, string text, bool alt = false)
+    {
+        GameObject go = Instantiate(dataMenu.data_comparisonPrefab, dataMenu.data_contentArea.transform.position, Quaternion.identity);
+        go.transform.SetParent(dataMenu.data_contentArea.transform);
+        go.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+        // Add it to list
+        dataMenu.data_objects.Add(go);
+        // Assign Details
+        go.GetComponent<UIDataComparisonDetail>().Setup(green, text, alt);
+        go.name = "[Comp]: " + text;
     }
     #endregion
 

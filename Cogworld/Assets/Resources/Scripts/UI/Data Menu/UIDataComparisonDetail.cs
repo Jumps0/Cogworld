@@ -29,31 +29,40 @@ public class UIDataComparisonDetail : MonoBehaviour
     /// <param name="altDisplay">If true instead of a backing /w color it will display the string with gray ( ) and white text inside.</param>
     public void Setup(bool isGreen, string display, bool altDisplay = false)
     {
-        if(altDisplay) // (string)
+        // First off, is this just empty? (basically just a spacer)
+        if(display == "EMPTY")
         {
-            // Disable the backer
             image_backer.gameObject.SetActive(false);
-
-            // Set the text
-            string s = $"<color=#{ColorUtility.ToHtmlStringRGB(gray)}>{"("}</color><color=#{ColorUtility.ToHtmlStringRGB(Color.white)}>{display}</color><color=#{ColorUtility.ToHtmlStringRGB(gray)}>{")"}</color>";
-            text_main.text = s;
+            text_main.gameObject.SetActive(false);
         }
         else
         {
-            text_main.text = display;
-            if(isGreen)
+            if (altDisplay) // (string)
             {
-                image_backer.color = lowGreen;
-                text_main.color = textGreen;
+                // Disable the backer
+                image_backer.gameObject.SetActive(false);
+
+                // Set the text
+                string s = $"<color=#{ColorUtility.ToHtmlStringRGB(gray)}>{"("}</color><color=#{ColorUtility.ToHtmlStringRGB(Color.white)}>{display}</color><color=#{ColorUtility.ToHtmlStringRGB(gray)}>{")"}</color>";
+                text_main.text = s;
             }
             else
             {
-                image_backer.color = lowRed;
-                text_main.color = textRed;
+                text_main.text = display;
+                if (isGreen)
+                {
+                    image_backer.color = lowGreen;
+                    text_main.color = textGreen;
+                }
+                else
+                {
+                    image_backer.color = lowRed;
+                    text_main.color = textRed;
+                }
             }
-        }
 
-        Appear();
+            Appear();
+        }
     }
 
     public void Appear()
