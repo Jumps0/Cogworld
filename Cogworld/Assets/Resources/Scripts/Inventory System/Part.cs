@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -295,11 +296,13 @@ public class Part : MonoBehaviour
 
         if (isExplored)
         {
-            foreach (GameObject P in UIManager.inst.itemPopups)
+            foreach (GameObject P in UIManager.inst.itemPopups.ToList())
             {
                 if (P.GetComponentInChildren<UIItemPopup>()._parent == this.gameObject)
                 {
-                    P.GetComponentInChildren<UIItemPopup>().mouseOver = false;
+                    UIManager.inst.itemPopups.Remove(P);
+
+                    P.GetComponentInChildren<UIItemPopup>().MessageOut();
                     break;
                 }
             }

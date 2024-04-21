@@ -14,9 +14,6 @@ using ColorUtility = UnityEngine.ColorUtility;
 using Image = UnityEngine.UI.Image;
 using Slider = UnityEngine.UI.Slider;
 using Button = UnityEngine.UI.Button;
-using static System.Net.Mime.MediaTypeNames;
-using UnityEngine.XR;
-using Unity.VisualScripting;
 //using static UnityEditor.Progress;
 
 public class UIManager : MonoBehaviour
@@ -1174,21 +1171,7 @@ public class UIManager : MonoBehaviour
         // Assign Details
         newItemPopup.GetComponentInChildren<UIItemPopup>().Setup(setName, _parent, a, b, c);
 
-
-        yield return new WaitForSeconds(5f);
-
-        // If the player has their mouse over it keep it up
-        while (newItemPopup != null && newItemPopup.GetComponentInChildren<UIItemPopup>().mouseOver)
-        {
-
-            yield return null;
-        }
-
-        itemPopups.Remove(newItemPopup);
-
-        if(newItemPopup != null)
-            newItemPopup.GetComponentInChildren<UIItemPopup>().MessageOut();
-
+        yield return null;
     }
 
     public void ClearItemPopup()
@@ -5042,6 +5025,8 @@ public class UIManager : MonoBehaviour
 
                 if (focusObj.GetComponent<Part>()._item.Id != 17)
                 {
+                    Item _item = focusObj.GetComponent<Part>()._item;
+
                     // - The square - here it represents the item's current health
                     scanSubImage.enabled = true;
                     float currentIntegrity = (float)focusObj.GetComponent<Part>()._item.integrityCurrent / (float)focusObj.GetComponent<Part>()._item.itemData.integrityMax;
@@ -5062,7 +5047,17 @@ public class UIManager : MonoBehaviour
                         scanSubImage.color = dangerRed;
                     }
                     // - The text - here line A is the item's name (in full green) and line B is the items mechanical description (dark green)
-                    scanSubTextA.text = focusObj.GetComponent<Part>()._item.Name;
+                    string _message = "";
+                    // Is this item a prototype? If so we don't show the true name
+                    if (_item.itemData.knowByPlayer)
+                    {
+                        _message = _item.itemData.itemName;
+                    }
+                    else
+                    {
+                        _message = HF.ItemPrototypeName(_item);
+                    }
+                    scanSubTextA.text = _message;
                     scanSubTextA.color = highGreen;
                 }
                 else // We do something different for matter
