@@ -34,6 +34,7 @@ public class UIDataComparisonDetail : MonoBehaviour
         {
             image_backer.gameObject.SetActive(false);
             text_main.gameObject.SetActive(false);
+            this.gameObject.name += "SPACER";
         }
         else
         {
@@ -45,6 +46,7 @@ public class UIDataComparisonDetail : MonoBehaviour
                 // Set the text
                 string s = $"<color=#{ColorUtility.ToHtmlStringRGB(gray)}>{"("}</color><color=#{ColorUtility.ToHtmlStringRGB(Color.white)}>{display}</color><color=#{ColorUtility.ToHtmlStringRGB(gray)}>{")"}</color>";
                 text_main.text = s;
+                this.gameObject.name += s;
             }
             else
             {
@@ -59,6 +61,8 @@ public class UIDataComparisonDetail : MonoBehaviour
                     image_backer.color = lowRed;
                     text_main.color = textRed;
                 }
+
+                this.gameObject.name += display;
             }
 
             Appear();

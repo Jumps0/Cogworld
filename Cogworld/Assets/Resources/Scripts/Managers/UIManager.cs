@@ -6074,6 +6074,8 @@ public class UIManager : MonoBehaviour
         }
 
         // Emergency stop incase this menu is being spammed
+        dataMenu.data_superImageParent.SetActive(false);
+
         StopCoroutine(Data_CloseMenuAnimation());
         StopCoroutine(DataAnim_TitleOpen());
         StopCoroutine(DataAnim_SmallImageOpen());
@@ -6281,7 +6283,7 @@ public class UIManager : MonoBehaviour
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
                 }
-                else
+                else if(item.itemData.hasUpkeep)
                 {
                     // Create 5 spacers
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
@@ -6346,7 +6348,7 @@ public class UIManager : MonoBehaviour
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
                 }
-                else
+                else if(item.itemData.supply > 0)
                 {
                     // Create 5 spacers
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
@@ -6481,7 +6483,7 @@ public class UIManager : MonoBehaviour
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
                 }
-                else
+                else if(item.itemData.propulsion.Count > 0)
                 {
                     // Create spacers
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
@@ -6632,7 +6634,7 @@ public class UIManager : MonoBehaviour
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
                 }
-                else
+                else if(item.itemData.shot.shotRange > 0)
                 {
                     // Create spacers
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
@@ -6652,20 +6654,23 @@ public class UIManager : MonoBehaviour
                 {
                     // Damage (semi different text since its a range)
                     Vector2Int diffV2 = new Vector2Int((int)item1.itemData.projectile.damage.x - (int)item2.itemData.projectile.damage.x, (int)item1.itemData.projectile.damage.y - (int)item2.itemData.projectile.damage.y);
+                    text = "";
                     if(diffV2.x > 0)
                     {
-                        text = "+ ";
+                        text = "+";
                     }
                     text += diffV2.x + "/";
                     if (diffV2.y > 0)
                     {
-                        text = "+ ";
+                        text += "+";
                     }
-                    if (diff > 0) // Red (item1 is better)
+                    text += diffV2.y;
+                    Debug.Log(text + " --- " + diffV2.x + "/" + diffV2.y);
+                    if (diffV2.x > 0 || diffV2.y > 0) // Red (item1 is better)
                     {
                         UIManager.inst.Data_CreateComparison(false, text);
                     }
-                    else if (diff < 0) // Green (item2 is better)
+                    else if (diffV2.x < 0 || diffV2.y < 0) // Green (item2 is better)
                     {
                         UIManager.inst.Data_CreateComparison(true, text);
                     }
@@ -6676,7 +6681,7 @@ public class UIManager : MonoBehaviour
                     }
                     else
                     {
-                        text = "(" + HF.ShortenDamageType(item1.itemData.projectile.damageType) + ")";
+                        text = HF.ShortenDamageType(item1.itemData.projectile.damageType);
                         UIManager.inst.Data_CreateComparison(true, text, true);
                     }
                     // Critical (special text)
@@ -6687,8 +6692,9 @@ public class UIManager : MonoBehaviour
                     else
                     {
                         string typeC = item1.itemData.projectile.critType.ToString();
-                        typeC = typeC.Substring(0, 5); // Shorten crit type
-                        text = "(" + typeC + ")";
+                        if(typeC.Length > 5)
+                            typeC = typeC.Substring(0, 5); // Shorten crit type
+                        text = typeC;
                         UIManager.inst.Data_CreateComparison(true, text, true);
                     }
                     // Penetration
@@ -6721,7 +6727,7 @@ public class UIManager : MonoBehaviour
                     // Spectrum (conditional & special text)
                     if (item1.itemData.projectile.hasSpectrum && item2.itemData.projectile.hasSpectrum)
                     {
-                        text = "(" + ((item2.itemData.projectile.spectrum * 100) - (item1.itemData.projectile.spectrum * 100)) + ")"; // not too sure why this is swapped?
+                        text = ((item2.itemData.projectile.spectrum * 100) - (item1.itemData.projectile.spectrum * 100)).ToString(); // not too sure why this is swapped?
 
                         UIManager.inst.Data_CreateComparison(false, text, true);
                     }
@@ -6754,7 +6760,7 @@ public class UIManager : MonoBehaviour
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
                 }
-                else
+                else if(item.itemData.projectile.damage.x > 0)
                 {
                     // Create spacers
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
@@ -6826,7 +6832,7 @@ public class UIManager : MonoBehaviour
                     }
                     else
                     {
-                        text = "(" + HF.ShortenDamageType(item1.itemData.explosionDetails.damageType) + ")";
+                        text = HF.ShortenDamageType(item1.itemData.explosionDetails.damageType);
                         UIManager.inst.Data_CreateComparison(true, text, true);
                     }
 
@@ -6866,7 +6872,7 @@ public class UIManager : MonoBehaviour
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
                 }
-                else
+                else if(item.itemData.explosionDetails.radius > 0)
                 {
                     // Create spacers
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
@@ -6983,7 +6989,7 @@ public class UIManager : MonoBehaviour
                     }
                     else
                     {
-                        text = "(" + HF.ShortenDamageType(item1.itemData.meleeAttack.damageType) + ")";
+                        text = HF.ShortenDamageType(item1.itemData.meleeAttack.damageType);
                         UIManager.inst.Data_CreateComparison(true, text, true);
                     }
                     // Critical (special text)
@@ -6995,7 +7001,7 @@ public class UIManager : MonoBehaviour
                     {
                         string typeC = item1.itemData.meleeAttack.critType.ToString();
                         typeC = typeC.Substring(0, 5); // Shorten crit type
-                        text = "(" + typeC + ")";
+                        text = typeC;
                         UIManager.inst.Data_CreateComparison(true, text, true);
                     }
 
@@ -7040,7 +7046,7 @@ public class UIManager : MonoBehaviour
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
                 }
-                else
+                else if(item.itemData.meleeAttack.isMelee)
                 {
                     // Create spacers
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
@@ -10223,8 +10229,8 @@ public class UIManager : MonoBehaviour
 
     private void Data_CreateComparison(bool green, string text, bool alt = false)
     {
-        GameObject go = Instantiate(dataMenu.data_comparisonPrefab, dataMenu.data_contentArea.transform.position, Quaternion.identity);
-        go.transform.SetParent(dataMenu.data_contentArea.transform);
+        GameObject go = Instantiate(dataMenu.data_comparisonPrefab, dataMenu.data_comparisonArea.transform.position, Quaternion.identity);
+        go.transform.SetParent(dataMenu.data_comparisonArea.transform);
         go.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
         dataMenu.data_objects.Add(go);
