@@ -7115,24 +7115,56 @@ public class UIManager : MonoBehaviour
                 // Alter the title to include the amount (if it has any)
                 if(item.amount > 1)
                     dataMenu.data_mainTitle.text = item.amount + " " + item.Name;
+                if (item.itemData.type == ItemType.Alien && !item.itemData.knowByPlayer) // Unknown alien artifact
+                    dataMenu.data_mainTitle.text = "Alien Artifact";
 
                 // Overview
                 UIManager.inst.Data_CreateHeader("Overview"); // Overview =========================================================================
-                // Type
-                UIDataGenericDetail iType = UIManager.inst.Data_CreateGeneric();
-                iType.Setup(true, false, false, "Type", Color.white, "General classification of this item.", "", false, item.itemData.itemName);
-                // Slot
-                UIDataGenericDetail iSlot = UIManager.inst.Data_CreateGeneric();
-                iSlot.Setup(true, false, false, "Slot", Color.white, "Type of slot the part can be attached to, if applicable. Larger items may occupy multipel slots, both in the inventory and when attached.", "", false, "N/A", true);
-                // Mass
-                UIDataGenericDetail iMass = UIManager.inst.Data_CreateGeneric();
-                string extra = "Mass of an attached item contributes to a robot's total mass and affects its movement speed. Items held in inventory do not count towards total mass for movement calculation purposes.";
-                iMass.Setup(true, false, false, "Mass", Color.white, extra, "", false, "N/A", true);
+
+                // -- A bit of variation here --
+                if(item.itemData.type == ItemType.Alien && !item.itemData.knowByPlayer) // Alien artifacts
+                {
+                    // Type
+                    UIDataGenericDetail iType = UIManager.inst.Data_CreateGeneric();
+                    iType.Setup(true, false, false, "Type", Color.white, "General classification of this item.", "", false, "Artifact");
+                    // Slot
+                    UIDataGenericDetail iSlot = UIManager.inst.Data_CreateGeneric();
+                    string xtra = "";
+                    if (item.itemData.slotsRequired > 1)
+                    {
+                        xtra = " x" + item.itemData.slotsRequired;
+                    }
+                    iSlot.Setup(true, false, false, "Slot", Color.white, "Type of slot the part can be attached to, if applicable. Larger items may occupy multipel slots, both in the inventory and when attached.", "", false, item.itemData.slot + xtra);
+
+                    // Also turn off the big image and change the null text
+                    dataMenu.data_superImage.sprite = null;
+                    dataMenu.data_superImageNull.GetComponent<TextMeshProUGUI>().text = "No Analysis Data";
+                }
+                else // Other stuff
+                {
+                    // Type
+                    UIDataGenericDetail iType = UIManager.inst.Data_CreateGeneric();
+                    iType.Setup(true, false, false, "Type", Color.white, "General classification of this item.", "", false, item.itemData.itemName);
+                    // Slot
+                    UIDataGenericDetail iSlot = UIManager.inst.Data_CreateGeneric();
+                    iSlot.Setup(true, false, false, "Slot", Color.white, "Type of slot the part can be attached to, if applicable. Larger items may occupy multipel slots, both in the inventory and when attached.", "", false, "N/A", true);
+                    // Mass
+                    UIDataGenericDetail iMass = UIManager.inst.Data_CreateGeneric();
+                    string extra = "Mass of an attached item contributes to a robot's total mass and affects its movement speed. Items held in inventory do not count towards total mass for movement calculation purposes.";
+                    iMass.Setup(true, false, false, "Mass", Color.white, extra, "", false, "N/A", true);
+                }
 
                 // Then the textwall, which we take from the item's description.
                 Data_CreateSpacer();
-                Data_CreateTextWall(item.itemData.description);
 
+                if (item.itemData.type == ItemType.Alien && !item.itemData.knowByPlayer)
+                { // Unknown alien artifact
+                    Data_CreateTextWall("This is an unidentified alien artifact. Its properties are discovered by attaching it.");
+                }
+                else
+                {
+                    Data_CreateTextWall(item.itemData.description);
+                }
             }
             else
             {
@@ -7146,7 +7178,12 @@ public class UIManager : MonoBehaviour
                 iType.Setup(true, false, false, "Type", Color.white, "General classification of this item.", "", false, item.itemData.type.ToString());
                 // Slot
                 UIDataGenericDetail iSlot = UIManager.inst.Data_CreateGeneric();
-                iSlot.Setup(true, false, false, "Slot", Color.white, "Type of slot the part can be attached to, if applicable. Larger items may occupy multipel slots, both in the inventory and when attached.", "", false, item.itemData.slot.ToString());
+                string xtra = "";
+                if (item.itemData.slotsRequired > 1)
+                {
+                    xtra = " x" + item.itemData.slotsRequired;
+                }
+                iSlot.Setup(true, false, false, "Slot", Color.white, "Type of slot the part can be attached to, if applicable. Larger items may occupy multipel slots, both in the inventory and when attached.", "", false, item.itemData.slot.ToString() + xtra);
                 // Mass
                 UIDataGenericDetail iMass = UIManager.inst.Data_CreateGeneric();
                 string extra = "Mass of an attached item contributes to a robot's total mass and affects its movement speed. Items held in inventory do not count towards total mass for movement calculation purposes.";
@@ -9152,88 +9189,7 @@ public class UIManager : MonoBehaviour
                         }
                         else
                         {
-                            cName = "Prototype ";
-                            switch (I.item.itemData.type)
-                            {
-                                case ItemType.Default:
-                                    cName += "Part";
-                                    break;
-                                case ItemType.Engine:
-                                    cName += "Engine";
-                                    break;
-                                case ItemType.PowerCore:
-                                    cName += "Power Core";
-                                    break;
-                                case ItemType.Reactor:
-                                    cName += "Reactor";
-                                    break;
-                                case ItemType.Treads:
-                                    cName += "Treads";
-                                    break;
-                                case ItemType.Legs:
-                                    cName += "Legs";
-                                    break;
-                                case ItemType.Wheels:
-                                    cName += "Wheels";
-                                    break;
-                                case ItemType.Hover:
-                                    cName += "Hover Unit";
-                                    break;
-                                case ItemType.Flight:
-                                    cName += "Flight Unit";
-                                    break;
-                                case ItemType.Storage:
-                                    cName += "Storage";
-                                    break;
-                                case ItemType.Processor:
-                                    cName += "Processor";
-                                    break;
-                                case ItemType.Hackware:
-                                    cName += "Hackware";
-                                    break;
-                                case ItemType.Device:
-                                    cName += "Device";
-                                    break;
-                                case ItemType.Armor:
-                                    cName += "Protection";
-                                    break;
-                                case ItemType.Alien:
-                                    cName = "Unknown Alien Artifact";
-                                    break;
-                                case ItemType.Gun:
-                                    cName += "Ballistic Gun";
-                                    break;
-                                case ItemType.EnergyGun:
-                                    cName += "Energy Gun";
-                                    break;
-                                case ItemType.Cannon:
-                                    cName += "Ballistic Cannon";
-                                    break;
-                                case ItemType.EnergyCannon:
-                                    cName += "Energy Cannon";
-                                    break;
-                                case ItemType.Launcher:
-                                    cName += "Launcher";
-                                    break;
-                                case ItemType.Impact:
-                                    cName += "Melee Weapon";
-                                    break;
-                                case ItemType.Special:
-                                    cName += "Melee Weapon";
-                                    break;
-                                case ItemType.Melee:
-                                    cName += "Melee Weapon";
-                                    break;
-                                case ItemType.Data:
-                                    cName += "Data Object";
-                                    break;
-                                case ItemType.Nonpart:
-                                    cName += "Mechanism";
-                                    break;
-                                case ItemType.Trap:
-                                    cName += "Trap";
-                                    break;
-                            }
+                            cName = HF.ItemPrototypeName(item);
                         }
 
                         string displayString = cName + " (" + HF.FindExposureInBotObject(bot.botInfo.armament, I.item.itemData) * 100 + "%)";

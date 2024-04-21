@@ -250,7 +250,16 @@ public class Part : MonoBehaviour
                 }
                 else
                 {
-                    _message = _item.itemData.itemName + " [" + _item.itemData.rating.ToString() + "]"; // Name [Rating]
+                    // Is this item a prototype? If so we don't show the true name & rating
+                    if (_item.itemData.knowByPlayer)
+                    {
+                        _message = _item.itemData.itemName + " [" + _item.itemData.rating.ToString() + "]"; // Name [Rating]
+                    }
+                    else
+                    {
+                        _message = HF.ItemPrototypeName(_item);
+                    }
+
                     // Set color related to current item health
                     float HP = (float)_item.integrityCurrent / (float)_item.itemData.integrityMax;
                     if (HP >= 0.75) // Healthy

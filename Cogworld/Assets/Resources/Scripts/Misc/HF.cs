@@ -3934,6 +3934,95 @@ public static class HF
         }
     }
 
+    public static string ItemPrototypeName(Item item)
+    {
+        string cName = "Prototype ";
+
+        switch (item.itemData.type)
+        {
+            case ItemType.Default:
+                cName += "Part";
+                break;
+            case ItemType.Engine:
+                cName += "Engine";
+                break;
+            case ItemType.PowerCore:
+                cName += "Power Core";
+                break;
+            case ItemType.Reactor:
+                cName += "Reactor";
+                break;
+            case ItemType.Treads:
+                cName += "Treads";
+                break;
+            case ItemType.Legs:
+                cName += "Legs";
+                break;
+            case ItemType.Wheels:
+                cName += "Wheels";
+                break;
+            case ItemType.Hover:
+                cName += "Hover Unit";
+                break;
+            case ItemType.Flight:
+                cName += "Flight Unit";
+                break;
+            case ItemType.Storage:
+                cName += "Storage";
+                break;
+            case ItemType.Processor:
+                cName += "Processor";
+                break;
+            case ItemType.Hackware:
+                cName += "Hackware";
+                break;
+            case ItemType.Device:
+                cName += "Device";
+                break;
+            case ItemType.Armor:
+                cName += "Protection";
+                break;
+            case ItemType.Alien:
+                cName = "Unknown Alien Artifact";
+                break;
+            case ItemType.Gun:
+                cName += "Ballistic Gun";
+                break;
+            case ItemType.EnergyGun:
+                cName += "Energy Gun";
+                break;
+            case ItemType.Cannon:
+                cName += "Ballistic Cannon";
+                break;
+            case ItemType.EnergyCannon:
+                cName += "Energy Cannon";
+                break;
+            case ItemType.Launcher:
+                cName += "Launcher";
+                break;
+            case ItemType.Impact:
+                cName += "Melee Weapon";
+                break;
+            case ItemType.Special:
+                cName += "Melee Weapon";
+                break;
+            case ItemType.Melee:
+                cName += "Melee Weapon";
+                break;
+            case ItemType.Data:
+                cName += "Data Object";
+                break;
+            case ItemType.Nonpart:
+                cName += "Mechanism";
+                break;
+            case ItemType.Trap:
+                cName += "Trap";
+                break;
+        }
+
+        return cName;
+    }
+
     #endregion
 
     #region Highlighted Path Pruning
