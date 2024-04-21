@@ -157,8 +157,8 @@ public class Item
 public abstract class ItemObject : ScriptableObject
 {
     [Header("Standard Info")]
-    [Tooltip("For unique items like matter.")]
-    public bool instantUnique = false; // For unique items like matter
+    [Tooltip("For unique items like matter, scrap, derelict info caches, etc.")]
+    public bool instantUnique = false; // For unique items like matter, scrap, derelict info caches, etc.
     public int amount = 1;
     public Item data = new Item();
     [Tooltip("If false, the player doesn't know what it is, so it should be classified as a prototype until they equip/learn about it.")]
@@ -241,6 +241,7 @@ public abstract class ItemObject : ScriptableObject
     public bool canOverload = false; // TODO: Complete functionality for relevant items
     public bool consumable = false; // TODO: Functionality for this too
     public int disposable = -1; // TODO: Functionality for this
+
 
     [Header("Primary Details")]
     public ItemQuality quality;

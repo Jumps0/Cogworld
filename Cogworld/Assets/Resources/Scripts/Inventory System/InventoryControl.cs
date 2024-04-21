@@ -260,6 +260,7 @@ public class InventoryControl : MonoBehaviour
             item.amount = specificAmount;
         }
 
+        item.state = false;
         spawnedItem.GetComponent<Part>()._item = item; // Assign part data from database by ID
 
         spawnedItem.name += spawnedItem.GetComponent<Part>()._item.itemData.itemName.ToString(); // Modify name with type
@@ -290,6 +291,7 @@ public class InventoryControl : MonoBehaviour
         placedItem.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
         placedItem.name = $"Floor Item {location.x} {location.y} - "; // Give grid based name
 
+        _item.state = false;
         placedItem.GetComponent<Part>()._item = _item; // Assign part data from database by ID
         tile._partOnTop = placedItem.GetComponent<Part>();
 

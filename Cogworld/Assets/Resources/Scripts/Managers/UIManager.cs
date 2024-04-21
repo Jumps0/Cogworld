@@ -6093,8 +6093,8 @@ public class UIManager : MonoBehaviour
             }
             dataMenu.data_objects.Clear();
 
-            // Was the previous selected object an item? (and its not the exact same thing)
-            if(dataMenu.selection_item != null && dataMenu.selection_item != item)
+            // Was the previous selected object an item? (and its not the exact same thing, and its not a unique item)
+            if(dataMenu.selection_item != null && dataMenu.selection_item != item && !item.itemData.instantUnique)
             {
                 dataMenu.selected_comparison_item = item; // Assign the item
 
@@ -7108,937 +7108,649 @@ public class UIManager : MonoBehaviour
             dataMenu.data_smallImage.sprite = item.itemData.inventoryDisplay;
             dataMenu.data_smallImage.color = item.itemData.itemColor;
 
-            // -- We have quite an extensive checklist here, there is a massive variance in what data an item can have -- //
-            #region Data Displaying
-            #region Overview
-            UIManager.inst.Data_CreateHeader("Overview"); // Overview =========================================================================
-            // Type
-            UIDataGenericDetail iType = UIManager.inst.Data_CreateGeneric();
-            iType.Setup(true, false, false, "Type", Color.white, "General classification of this item.", "", false, item.itemData.type.ToString());
-            // Slot
-            UIDataGenericDetail iSlot = UIManager.inst.Data_CreateGeneric();
-            iSlot.Setup(true, false, false, "Slot", Color.white, "Type of slot the part can be attached to, if applicable. Larger items may occupy multipel slots, both in the inventory and when attached.", "", false, item.itemData.slot.ToString());
-            // Mass
-            UIDataGenericDetail iMass = UIManager.inst.Data_CreateGeneric();
-            string extra = "Mass of an attached item contributes to a robot's total mass and affects its movement speed. Items held in inventory do not count towards total mass for movement calculation purposes.";
-            if (item.itemData.mass > 0)
+            // Before we get into the item detail displaying, lets check if this is a "special" item, like matter, scrap, a data cache, etc.
+            // Because if so we don't really display anything, and there are things likes N/A's and whatnot.
+            if (item.itemData.instantUnique)
             {
-                iMass.Setup(true, false, true, "Mass", highlightGreen, extra, item.itemData.mass.ToString(), false, "", false, "", item.itemData.mass / 100f, true); // Uses the bar for some reason?
-            }
-            else // If the mass is 0, we display "N/A"
-            {
+                // Alter the title to include the amount (if it has any)
+                if(item.amount > 1)
+                    dataMenu.data_mainTitle.text = item.amount + " " + item.Name;
+
+                // Overview
+                UIManager.inst.Data_CreateHeader("Overview"); // Overview =========================================================================
+                // Type
+                UIDataGenericDetail iType = UIManager.inst.Data_CreateGeneric();
+                iType.Setup(true, false, false, "Type", Color.white, "General classification of this item.", "", false, item.itemData.itemName);
+                // Slot
+                UIDataGenericDetail iSlot = UIManager.inst.Data_CreateGeneric();
+                iSlot.Setup(true, false, false, "Slot", Color.white, "Type of slot the part can be attached to, if applicable. Larger items may occupy multipel slots, both in the inventory and when attached.", "", false, "N/A", true);
+                // Mass
+                UIDataGenericDetail iMass = UIManager.inst.Data_CreateGeneric();
+                string extra = "Mass of an attached item contributes to a robot's total mass and affects its movement speed. Items held in inventory do not count towards total mass for movement calculation purposes.";
                 iMass.Setup(true, false, false, "Mass", Color.white, extra, "", false, "N/A", true);
-            }
-            // Rating - this guy actually has some variance
-            UIDataGenericDetail iRating = UIManager.inst.Data_CreateGeneric();
-            string rText = item.itemData.rating.ToString();
-            extra = "Rating is a relative indicator of the item's usefulness and/or value. When comparing items, the quickest and easiest method is to go with whatever has the highest rating. However, prototypes are almost always better than common parts with a similar rating (generally implying a +1 to their listed ratings)."; ;
-            if (item.itemData.star)
-                rText += "*";
-            switch (item.itemData.ratingType)
-            {
-                case ItemRatingType.Standard: // Faded out "Standard"
-                    iRating.Setup(true, false, false, "Rating", Color.white, extra, rText, false, "Standard", true);
-                    break;
-                case ItemRatingType.Prototype: // Bright green vBox "Prototype"
-                    iRating.Setup(true, true, false, "Rating", highlightGreen, extra, rText, false, "", false, "Prototype");
-                    break;
-                case ItemRatingType.Alien: // Bright green vBox "Alien"
-                    iRating.Setup(true, true, false, "Rating", highlightGreen, extra, rText, false, "", false, "Alien");
-                    break;
-                default:
-                    break;
-            }
-            // Integrity
-            UIDataGenericDetail iInteg = UIManager.inst.Data_CreateGeneric();
-            extra = "Integrity reflects the amount of damage a part can sustain before it is destroyed or rendered useless. Maximum integrity for a part type that cannot be repaired is preceded by a *.";
-            string integS = "";
-            if (item.itemData.repairable)
-            {
-                integS = item.integrityCurrent + " / " + item.itemData.integrityMax;
+
+                // Then the textwall, which we take from the item's description.
+                Data_CreateSpacer();
+                Data_CreateTextWall(item.itemData.description);
+
             }
             else
             {
-                integS = item.integrityCurrent + " /*" + item.itemData.integrityMax;
-            }
-            iInteg.Setup(true, false, true, "Integrity", Color.white, extra, integS, false, "", false, "", item.integrityCurrent / item.itemData.integrityMax);
-            // Coverage
-            UIDataGenericDetail iCoverage = UIManager.inst.Data_CreateGeneric();
-            extra = "Coverage is a relative indicator of how likely this part is to be hit by a successful incoming attack compared to other attached parts. For example, a part with 100 coverage is twice" +
-                " as likely to be hit as another part with a value of 50. Armor, protective, and large parts tend to have higher coverage values while small subsystems provide less coverage but are therefore less likely to be damage.";
-            if(item.itemData.coverage > 0 && itemOwner != null)
-            { // CalculateItemCoverage
-                float coverage = HF.CalculateItemCoverage(itemOwner, item);
-                iCoverage.Setup(true, false, true, "Coverage", highlightGreen, extra, "", false, item.itemData.coverage.ToString() + " (" + coverage * 100 + "%)", false, "", coverage, true);
-            }
-            else
-            {
-                iCoverage.Setup(true, false, false, "Coverage", Color.white, extra, "", false, item.itemData.coverage.ToString()); // Just 0, you won't hit this. Nothing fancy. (Its probably in the inventory)
-            }
-            // Schematic
-            if (item.itemData.schematicDetails.hasSchematic)
-            {
-                extra = "A schematic allows this item to be fabricated at any fabricator provided you have enough matter to start the process.";
-                UIDataGenericDetail iSchematic = UIManager.inst.Data_CreateGeneric();
-                iSchematic.Setup(true, false, false, "Schematic", Color.white, extra, "", false, "Known", true);
-            }
-            // State - there is some variance in this
-            UIDataGenericDetail iState = UIManager.inst.Data_CreateGeneric();
-            if(item.unstable > 0) // Unstable
-            {
-                extra = "Unstable weapons implode after the indicated remaining number of shots.";
-                iState.Setup(true, true, false, "State", energyBlue, extra, "", false, "", false, "UNSTABLE " + item.unstable);
-            }
-            else if (item.disposable > 0) // Disposable
-            {
-                extra = "Disposable weapons become defunct after a certain number of uses.";
-                iState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "DISPOSABLE " + item.unstable);
-            }
-            else if (item.isOverloaded) // Overloaded (yellow)
-            {
-                extra = "Current state of this item. This item is currently overloaded, providing double effectiveness, while requiring double energy, and producing three times the normal heat.";
-                iState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "OVERLOADED");
-            }
-            else if (item.isDeteriorating) // Deteriorating (yellow)
-            {
-                extra = "Current state of this item. This item is currently deteriorating. While active, it will lose integrity until eventually becoming permanently disabled. ";
-                iState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "DETERIORATING");
-            }
-            else if (item.isRigged) // Rigged (yellow)
-            {
-                extra = "A rigged power source has been converted into a proximity mine set to detonate when anyone hostile to the creator moves adjacent to it. These power sources " +
-                    "can no longer be attached or used for their normal purpose, but can be safely picked up and relocated by anyone not deemed a threat. ";
-                iState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "RIGGED");
-            }
-            else if (item.state) // Active (green)
-            {
-                extra = "Current state of this item. This message will provide more context for special states.";
-                iState.Setup(true, true, false, "State", highlightGreen, extra, "", false, "", false, "ACTIVE");
-            }
-            else // Inactive (gray)
-            {
-                extra = "Current state of this item. This item is inactive, and will not provide any useful effects, or function as normal.";
-                iState.Setup(true, true, false, "State", inactiveGray, extra, "", false, "", false, "INACTIVE");
-            }
-            #endregion
 
-            Data_CreateSpacer();
-
-            if (item.itemData.hasUpkeep)
-            {
-                UIManager.inst.Data_CreateHeader("Active Upkeep"); // Active Upkeep =========================================================================
-                // Energy
-                UIDataGenericDetail iEnergyUpkeep = UIManager.inst.Data_CreateGeneric();
-                extra = "Energy consumed each turn by this part while active.";
-                string iEU = "";
-                if (item.itemData.energyUpkeep < 0f)
+                // -- We have quite an extensive checklist here, there is a massive variance in what data an item can have -- //
+                #region Data Displaying
+                #region Overview
+                UIManager.inst.Data_CreateHeader("Overview"); // Overview =========================================================================
+                                                              // Type
+                UIDataGenericDetail iType = UIManager.inst.Data_CreateGeneric();
+                iType.Setup(true, false, false, "Type", Color.white, "General classification of this item.", "", false, item.itemData.type.ToString());
+                // Slot
+                UIDataGenericDetail iSlot = UIManager.inst.Data_CreateGeneric();
+                iSlot.Setup(true, false, false, "Slot", Color.white, "Type of slot the part can be attached to, if applicable. Larger items may occupy multipel slots, both in the inventory and when attached.", "", false, item.itemData.slot.ToString());
+                // Mass
+                UIDataGenericDetail iMass = UIManager.inst.Data_CreateGeneric();
+                string extra = "Mass of an attached item contributes to a robot's total mass and affects its movement speed. Items held in inventory do not count towards total mass for movement calculation purposes.";
+                if (item.itemData.mass > 0)
                 {
-                    iEU = "-" + Mathf.Abs(item.itemData.energyUpkeep).ToString() + "%";
-                    iEnergyUpkeep.Setup(true, false, true, "Energy", Color.white, extra, iEU, false, "", false, "", item.itemData.energyUpkeep / 36f); // Bar
+                    iMass.Setup(true, false, true, "Mass", highlightGreen, extra, item.itemData.mass.ToString(), false, "", false, "", item.itemData.mass / 100f, true); // Uses the bar for some reason?
                 }
-                else if(item.itemData.energyUpkeep > 0f)
+                else // If the mass is 0, we display "N/A"
                 {
-                    iEU = "+" + Mathf.Abs(item.itemData.energyUpkeep).ToString() + "%";
-                    iEnergyUpkeep.Setup(true, false, true, "Energy", Color.white, extra, iEU, false, "", false, "", item.itemData.energyUpkeep / 36f); // Bar
+                    iMass.Setup(true, false, false, "Mass", Color.white, extra, "", false, "N/A", true);
                 }
-                else if(item.itemData.energyUpkeep == 0)
+                // Rating - this guy actually has some variance
+                UIDataGenericDetail iRating = UIManager.inst.Data_CreateGeneric();
+                string rText = item.itemData.rating.ToString();
+                extra = "Rating is a relative indicator of the item's usefulness and/or value. When comparing items, the quickest and easiest method is to go with whatever has the highest rating. However, prototypes are almost always better than common parts with a similar rating (generally implying a +1 to their listed ratings)."; ;
+                if (item.itemData.star)
+                    rText += "*";
+                switch (item.itemData.ratingType)
                 {
-                    // Grayed out
-                    iEnergyUpkeep.Setup(true, false, true, "Energy", Color.white, extra, "0", true, "", false, "", 0f); // Bar
+                    case ItemRatingType.Standard: // Faded out "Standard"
+                        iRating.Setup(true, false, false, "Rating", Color.white, extra, rText, false, "Standard", true);
+                        break;
+                    case ItemRatingType.Prototype: // Bright green vBox "Prototype"
+                        iRating.Setup(true, true, false, "Rating", highlightGreen, extra, rText, false, "", false, "Prototype");
+                        break;
+                    case ItemRatingType.Alien: // Bright green vBox "Alien"
+                        iRating.Setup(true, true, false, "Rating", highlightGreen, extra, rText, false, "", false, "Alien");
+                        break;
+                    default:
+                        break;
                 }
-                // Matter
-                UIDataGenericDetail iMatterUpkeep = UIManager.inst.Data_CreateGeneric();
-                extra = "Matter consumed each turn by this part while active.";
-                string iMU = "";
-                if (item.itemData.matterUpkeep < 0f)
+                // Integrity
+                UIDataGenericDetail iInteg = UIManager.inst.Data_CreateGeneric();
+                extra = "Integrity reflects the amount of damage a part can sustain before it is destroyed or rendered useless. Maximum integrity for a part type that cannot be repaired is preceded by a *.";
+                string integS = "";
+                if (item.itemData.repairable)
                 {
-                    iMU = "-" + Mathf.Abs(item.itemData.matterUpkeep).ToString() + "%";
-                    iMatterUpkeep.Setup(true, false, true, "Matter", Color.white, extra, iMU, false, "", false, "", item.itemData.matterUpkeep / 36f); // Bar
+                    integS = item.integrityCurrent + " / " + item.itemData.integrityMax;
                 }
-                else if (item.itemData.matterUpkeep > 0f)
+                else
                 {
-                    iMU = "+" + Mathf.Abs(item.itemData.matterUpkeep).ToString() + "%";
-                    iMatterUpkeep.Setup(true, false, true, "Matter", Color.white, extra, iMU, false, "", false, "", item.itemData.matterUpkeep / 36f); // Bar
+                    integS = item.integrityCurrent + " /*" + item.itemData.integrityMax;
                 }
-                else if (item.itemData.matterUpkeep == 0)
+                iInteg.Setup(true, false, true, "Integrity", Color.white, extra, integS, false, "", false, "", item.integrityCurrent / item.itemData.integrityMax);
+                // Coverage
+                UIDataGenericDetail iCoverage = UIManager.inst.Data_CreateGeneric();
+                extra = "Coverage is a relative indicator of how likely this part is to be hit by a successful incoming attack compared to other attached parts. For example, a part with 100 coverage is twice" +
+                    " as likely to be hit as another part with a value of 50. Armor, protective, and large parts tend to have higher coverage values while small subsystems provide less coverage but are therefore less likely to be damage.";
+                if (item.itemData.coverage > 0 && itemOwner != null)
+                { // CalculateItemCoverage
+                    float coverage = HF.CalculateItemCoverage(itemOwner, item);
+                    iCoverage.Setup(true, false, true, "Coverage", highlightGreen, extra, "", false, item.itemData.coverage.ToString() + " (" + coverage * 100 + "%)", false, "", coverage, true);
+                }
+                else
                 {
-                    // Grayed out
-                    iMatterUpkeep.Setup(true, false, true, "Matter", Color.white, extra, "0", true, "", false, "", 0f); // Bar
+                    iCoverage.Setup(true, false, false, "Coverage", Color.white, extra, "", false, item.itemData.coverage.ToString()); // Just 0, you won't hit this. Nothing fancy. (Its probably in the inventory)
                 }
-                // Heat
-                UIDataGenericDetail iHeatUpkeep = UIManager.inst.Data_CreateGeneric();
-                extra = "Heat produced each turn by this part while active.";
-                string iHU = "";
-                if (item.itemData.heatUpkeep < 0f)
+                // Schematic
+                if (item.itemData.schematicDetails.hasSchematic)
                 {
-                    iHU = "-" + Mathf.Abs(item.itemData.heatUpkeep).ToString();
-                    iHeatUpkeep.Setup(true, false, true, "Heat", Color.white, extra, iHU, false, "", false, "", item.itemData.heatUpkeep / 36f); // Bar
+                    extra = "A schematic allows this item to be fabricated at any fabricator provided you have enough matter to start the process.";
+                    UIDataGenericDetail iSchematic = UIManager.inst.Data_CreateGeneric();
+                    iSchematic.Setup(true, false, false, "Schematic", Color.white, extra, "", false, "Known", true);
                 }
-                else if (item.itemData.heatUpkeep > 0f)
+                // State - there is some variance in this
+                UIDataGenericDetail iState = UIManager.inst.Data_CreateGeneric();
+                if (item.unstable > 0) // Unstable
                 {
-                    iHU = "+" + Mathf.Abs(item.itemData.heatUpkeep).ToString();
-                    iHeatUpkeep.Setup(true, false, true, "Heat", Color.white, extra, iHU, false, "", false, "", item.itemData.heatUpkeep / 36f); // Bar
+                    extra = "Unstable weapons implode after the indicated remaining number of shots.";
+                    iState.Setup(true, true, false, "State", energyBlue, extra, "", false, "", false, "UNSTABLE " + item.unstable);
                 }
-                else if (item.itemData.heatUpkeep == 0)
+                else if (item.disposable > 0) // Disposable
                 {
-                    // Grayed out
-                    iHeatUpkeep.Setup(true, false, true, "Heat", Color.white, extra, "0", true, "", false, "", 0f); // Bar
+                    extra = "Disposable weapons become defunct after a certain number of uses.";
+                    iState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "DISPOSABLE " + item.unstable);
                 }
+                else if (item.isOverloaded) // Overloaded (yellow)
+                {
+                    extra = "Current state of this item. This item is currently overloaded, providing double effectiveness, while requiring double energy, and producing three times the normal heat.";
+                    iState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "OVERLOADED");
+                }
+                else if (item.isDeteriorating) // Deteriorating (yellow)
+                {
+                    extra = "Current state of this item. This item is currently deteriorating. While active, it will lose integrity until eventually becoming permanently disabled. ";
+                    iState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "DETERIORATING");
+                }
+                else if (item.isRigged) // Rigged (yellow)
+                {
+                    extra = "A rigged power source has been converted into a proximity mine set to detonate when anyone hostile to the creator moves adjacent to it. These power sources " +
+                        "can no longer be attached or used for their normal purpose, but can be safely picked up and relocated by anyone not deemed a threat. ";
+                    iState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "RIGGED");
+                }
+                else if (item.state) // Active (green)
+                {
+                    extra = "Current state of this item. This message will provide more context for special states.";
+                    iState.Setup(true, true, false, "State", highlightGreen, extra, "", false, "", false, "ACTIVE");
+                }
+                else // Inactive (gray)
+                {
+                    extra = "Current state of this item. This item is inactive, and will not provide any useful effects, or function as normal.";
+                    iState.Setup(true, true, false, "State", inactiveGray, extra, "", false, "", false, "INACTIVE");
+                }
+                #endregion
 
                 Data_CreateSpacer();
-            }
 
-            if(item.itemData.supply > 0)
-            {
-                UIManager.inst.Data_CreateHeader("Power"); // Power =========================================================================
-                // Supply
-                UIDataGenericDetail iSupply = UIManager.inst.Data_CreateGeneric();
-                extra = "Energy generated each turn by this power source.";
-                iSupply.Setup(true, false, true, "Supply", highlightGreen, extra, "+" + item.itemData.supply, false, "", false, "", item.itemData.supply / 36f, true); // Bar
-                // Storage
-                UIDataGenericDetail iStorage = UIManager.inst.Data_CreateGeneric();
-                extra = "Energy storage capacity of this power source. Excess energy can be stored, but requires additional utilities.";
-                iStorage.Setup(true, false, true, "Storage", highlightGreen, extra, item.itemData.storage.ToString(), false, "", false, "", item.itemData.storage / 500f, true); // Bar
-                // Stability
-                UIDataGenericDetail iStability = UIManager.inst.Data_CreateGeneric();
-                extra = "Stability represents the ability of this power source to generate energy while overloaded without suffering any negative side-effects. " +
-                    "Overloading doubles output and heat. If N/A, this power source cannot be overloaded; only cooled power sources support overloading.";
-                if (item.itemData.power_HasStability)
+                if (item.itemData.hasUpkeep)
                 {
-                    iStability.Setup(true, false, true, "Stability", Color.white, extra, (item.itemData.power_stability * 100) + "%", false, "", false, "", item.itemData.power_stability); // Bar
-                }
-                else
-                {
-                    iStability.Setup(true, false, true, "Stability", Color.white, extra, "N/A", true, "", false, "", 0f, false); // Bar
-                }
-
-                Data_CreateSpacer();
-            }
-
-            if(item.itemData.propulsion.Count > 0)
-            {
-                UIManager.inst.Data_CreateHeader("Propulsion"); // Propulsion =========================================================================
-                // Time/Move
-                UIDataGenericDetail iTimeMove = UIManager.inst.Data_CreateGeneric();
-                extra = "The amount of time required to move on space when unburdened and using only this type of propulsion. Where multiple active propulsion modules have different values, the average is used."; ;
-                Color iTMC = highlightGreen; // Color is inverted based on amount
-                if(item.itemData.propulsion[0].timeToMove > 100)
-                {
-                    iTMC = highSecRed;
-                }
-                else if (item.itemData.propulsion[0].timeToMove < 50)
-                {
-                    iTMC = highlightGreen;
-                }
-                else
-                {
-                    iTMC = cautiousYellow;
-                }
-                iTimeMove.Setup(true, false, true, "Time/Move", iTMC, extra, item.itemData.propulsion[0].timeToMove.ToString(), false, "", false, "", item.itemData.propulsion[0].timeToMove / 200f, true); // Bar
-                // Drag
-                UIDataGenericDetail iDrag = UIManager.inst.Data_CreateGeneric();
-                extra = "Inactive non-airborne propulsion modify the movement time cost by this amouunt while airborne. However, inactive propulsion has no adverse effective on the speed of non-airborne propulsion, including core movement.";
-                iDrag.Setup(true, false, false, "Drag", Color.white, extra, item.itemData.propulsion[0].drag.ToString()); // No bar (simple)
-                // Energy
-                UIDataGenericDetail iEnergyProp = UIManager.inst.Data_CreateGeneric();
-                extra = "Energy consumed by this part each move, if active.";
-                Color iEP = highlightGreen;
-                if(item.itemData.propulsion[0].propEnergy <= 0)
-                {
-                    iEP = highlightGreen;
-                }
-                else if(item.itemData.propulsion[0].propEnergy > 15)
-                {
-                    iEP = highSecRed;
-                }
-                else
-                {
-                    iEP = cautiousYellow;
-                }
-                iEnergyProp.Setup(true, false, true, "Energy", iEP, extra, item.itemData.propulsion[0].propEnergy.ToString(), false, "", false, "", item.itemData.propulsion[0].propEnergy + 10 / 20f, true); // Bar
-                // Heat
-                UIDataGenericDetail iHeatProp = UIManager.inst.Data_CreateGeneric();
-                extra = "Heat produced by this part each move, if active.";
-                Color iHP = highlightGreen;
-                if (item.itemData.propulsion[0].propHeat <= 5)
-                {
-                    iHP = highlightGreen;
-                }
-                else if (item.itemData.propulsion[0].propHeat > 15)
-                {
-                    iHP = highSecRed;
-                }
-                else
-                {
-                    iHP = cautiousYellow;
-                }
-                if (item.itemData.propulsion[0].propHeat > 0)
-                {
-                    iHeatProp.Setup(true, false, true, "Heat", iHP, extra, item.itemData.propulsion[0].propHeat.ToString(), false, "", false, "", item.itemData.propulsion[0].propHeat + 1 / 20f, true); // Bar
-                }
-                else
-                {
-                    iHeatProp.Setup(true, false, true, "Heat", iHP, extra, "0", true, "", false, "", 0f, true); // Bar
-                }
-                // Support
-                UIDataGenericDetail iSupportProp = UIManager.inst.Data_CreateGeneric();
-                extra = "Mass supported by this part, if active.";
-                if (item.itemData.propulsion[0].support > 0)
-                {
-                    iSupportProp.Setup(true, false, true, "Support", Color.white, extra, item.itemData.propulsion[0].support.ToString(), false, "", false, "", item.itemData.propulsion[0].support / 22f); // Bar
-                }
-                else
-                {
-                    iSupportProp.Setup(true, false, true, "Support", Color.white, extra, "0", true, "", false, "", 0f); // Bar
-                }
-                // Penalty
-                UIDataGenericDetail iPenaltyProp = UIManager.inst.Data_CreateGeneric();
-                extra = "Movement time penalty for being overweight, applied once if overweight at all. Penalty values for multiple different propulsion modules are averaged for calculation purposes. " +
-                    "Further exceeding the mass support limit gradually continue to reduce speed depending on the amount of excess mass.";
-                Color iPP = highlightGreen;
-                if (item.itemData.propulsion[0].penalty <= 10)
-                {
-                    iPP = highlightGreen;
-                }
-                else if (item.itemData.propulsion[0].penalty > 45)
-                {
-                    iPP = highSecRed;
-                }
-                else
-                {
-                    iPP = cautiousYellow;
-                }
-                if (item.itemData.propulsion[0].penalty > 0)
-                {
-                    iPenaltyProp.Setup(true, false, true, " Penalty", iPP, extra, item.itemData.propulsion[0].penalty.ToString(), false, "", false, "", item.itemData.propulsion[0].penalty / 60f, true); // Bar
-                }
-                else
-                {
-                    iPenaltyProp.Setup(true, false, true, " Penalty", iPP, extra, "0", true, "", false, "", 0f, true); // Bar
-                }
-                // Burnout
-                if (item.itemData.propulsion[0].hasBurnout)
-                {
-                    UIDataGenericDetail iBurnout = UIManager.inst.Data_CreateGeneric();
-                    extra = "If this system is overloaded, it will gradually lose integrity determined by its burnout rate due to the strain of operating in this unintended state.";
-                    Color iBP = highlightGreen;
-                    if (item.itemData.propulsion[0].penalty <= 15)
+                    UIManager.inst.Data_CreateHeader("Active Upkeep"); // Active Upkeep =========================================================================
+                                                                       // Energy
+                    UIDataGenericDetail iEnergyUpkeep = UIManager.inst.Data_CreateGeneric();
+                    extra = "Energy consumed each turn by this part while active.";
+                    string iEU = "";
+                    if (item.itemData.energyUpkeep < 0f)
                     {
-                        iBP = highlightGreen;
+                        iEU = "-" + Mathf.Abs(item.itemData.energyUpkeep).ToString() + "%";
+                        iEnergyUpkeep.Setup(true, false, true, "Energy", Color.white, extra, iEU, false, "", false, "", item.itemData.energyUpkeep / 36f); // Bar
                     }
-                    else if (item.itemData.propulsion[0].penalty > 50)
+                    else if (item.itemData.energyUpkeep > 0f)
                     {
-                        iBP = highSecRed;
+                        iEU = "+" + Mathf.Abs(item.itemData.energyUpkeep).ToString() + "%";
+                        iEnergyUpkeep.Setup(true, false, true, "Energy", Color.white, extra, iEU, false, "", false, "", item.itemData.energyUpkeep / 36f); // Bar
+                    }
+                    else if (item.itemData.energyUpkeep == 0)
+                    {
+                        // Grayed out
+                        iEnergyUpkeep.Setup(true, false, true, "Energy", Color.white, extra, "0", true, "", false, "", 0f); // Bar
+                    }
+                    // Matter
+                    UIDataGenericDetail iMatterUpkeep = UIManager.inst.Data_CreateGeneric();
+                    extra = "Matter consumed each turn by this part while active.";
+                    string iMU = "";
+                    if (item.itemData.matterUpkeep < 0f)
+                    {
+                        iMU = "-" + Mathf.Abs(item.itemData.matterUpkeep).ToString() + "%";
+                        iMatterUpkeep.Setup(true, false, true, "Matter", Color.white, extra, iMU, false, "", false, "", item.itemData.matterUpkeep / 36f); // Bar
+                    }
+                    else if (item.itemData.matterUpkeep > 0f)
+                    {
+                        iMU = "+" + Mathf.Abs(item.itemData.matterUpkeep).ToString() + "%";
+                        iMatterUpkeep.Setup(true, false, true, "Matter", Color.white, extra, iMU, false, "", false, "", item.itemData.matterUpkeep / 36f); // Bar
+                    }
+                    else if (item.itemData.matterUpkeep == 0)
+                    {
+                        // Grayed out
+                        iMatterUpkeep.Setup(true, false, true, "Matter", Color.white, extra, "0", true, "", false, "", 0f); // Bar
+                    }
+                    // Heat
+                    UIDataGenericDetail iHeatUpkeep = UIManager.inst.Data_CreateGeneric();
+                    extra = "Heat produced each turn by this part while active.";
+                    string iHU = "";
+                    if (item.itemData.heatUpkeep < 0f)
+                    {
+                        iHU = "-" + Mathf.Abs(item.itemData.heatUpkeep).ToString();
+                        iHeatUpkeep.Setup(true, false, true, "Heat", Color.white, extra, iHU, false, "", false, "", item.itemData.heatUpkeep / 36f); // Bar
+                    }
+                    else if (item.itemData.heatUpkeep > 0f)
+                    {
+                        iHU = "+" + Mathf.Abs(item.itemData.heatUpkeep).ToString();
+                        iHeatUpkeep.Setup(true, false, true, "Heat", Color.white, extra, iHU, false, "", false, "", item.itemData.heatUpkeep / 36f); // Bar
+                    }
+                    else if (item.itemData.heatUpkeep == 0)
+                    {
+                        // Grayed out
+                        iHeatUpkeep.Setup(true, false, true, "Heat", Color.white, extra, "0", true, "", false, "", 0f); // Bar
+                    }
+
+                    Data_CreateSpacer();
+                }
+
+                if (item.itemData.supply > 0)
+                {
+                    UIManager.inst.Data_CreateHeader("Power"); // Power =========================================================================
+                                                               // Supply
+                    UIDataGenericDetail iSupply = UIManager.inst.Data_CreateGeneric();
+                    extra = "Energy generated each turn by this power source.";
+                    iSupply.Setup(true, false, true, "Supply", highlightGreen, extra, "+" + item.itemData.supply, false, "", false, "", item.itemData.supply / 36f, true); // Bar
+                                                                                                                                                                           // Storage
+                    UIDataGenericDetail iStorage = UIManager.inst.Data_CreateGeneric();
+                    extra = "Energy storage capacity of this power source. Excess energy can be stored, but requires additional utilities.";
+                    iStorage.Setup(true, false, true, "Storage", highlightGreen, extra, item.itemData.storage.ToString(), false, "", false, "", item.itemData.storage / 500f, true); // Bar
+                                                                                                                                                                                     // Stability
+                    UIDataGenericDetail iStability = UIManager.inst.Data_CreateGeneric();
+                    extra = "Stability represents the ability of this power source to generate energy while overloaded without suffering any negative side-effects. " +
+                        "Overloading doubles output and heat. If N/A, this power source cannot be overloaded; only cooled power sources support overloading.";
+                    if (item.itemData.power_HasStability)
+                    {
+                        iStability.Setup(true, false, true, "Stability", Color.white, extra, (item.itemData.power_stability * 100) + "%", false, "", false, "", item.itemData.power_stability); // Bar
                     }
                     else
                     {
-                        iBP = cautiousYellow;
+                        iStability.Setup(true, false, true, "Stability", Color.white, extra, "N/A", true, "", false, "", 0f, false); // Bar
+                    }
+
+                    Data_CreateSpacer();
+                }
+
+                if (item.itemData.propulsion.Count > 0)
+                {
+                    UIManager.inst.Data_CreateHeader("Propulsion"); // Propulsion =========================================================================
+                                                                    // Time/Move
+                    UIDataGenericDetail iTimeMove = UIManager.inst.Data_CreateGeneric();
+                    extra = "The amount of time required to move on space when unburdened and using only this type of propulsion. Where multiple active propulsion modules have different values, the average is used."; ;
+                    Color iTMC = highlightGreen; // Color is inverted based on amount
+                    if (item.itemData.propulsion[0].timeToMove > 100)
+                    {
+                        iTMC = highSecRed;
+                    }
+                    else if (item.itemData.propulsion[0].timeToMove < 50)
+                    {
+                        iTMC = highlightGreen;
+                    }
+                    else
+                    {
+                        iTMC = cautiousYellow;
+                    }
+                    iTimeMove.Setup(true, false, true, "Time/Move", iTMC, extra, item.itemData.propulsion[0].timeToMove.ToString(), false, "", false, "", item.itemData.propulsion[0].timeToMove / 200f, true); // Bar
+                                                                                                                                                                                                                // Drag
+                    UIDataGenericDetail iDrag = UIManager.inst.Data_CreateGeneric();
+                    extra = "Inactive non-airborne propulsion modify the movement time cost by this amouunt while airborne. However, inactive propulsion has no adverse effective on the speed of non-airborne propulsion, including core movement.";
+                    iDrag.Setup(true, false, false, "Drag", Color.white, extra, item.itemData.propulsion[0].drag.ToString()); // No bar (simple)
+                                                                                                                              // Energy
+                    UIDataGenericDetail iEnergyProp = UIManager.inst.Data_CreateGeneric();
+                    extra = "Energy consumed by this part each move, if active.";
+                    Color iEP = highlightGreen;
+                    if (item.itemData.propulsion[0].propEnergy <= 0)
+                    {
+                        iEP = highlightGreen;
+                    }
+                    else if (item.itemData.propulsion[0].propEnergy > 15)
+                    {
+                        iEP = highSecRed;
+                    }
+                    else
+                    {
+                        iEP = cautiousYellow;
+                    }
+                    iEnergyProp.Setup(true, false, true, "Energy", iEP, extra, item.itemData.propulsion[0].propEnergy.ToString(), false, "", false, "", item.itemData.propulsion[0].propEnergy + 10 / 20f, true); // Bar
+                                                                                                                                                                                                                  // Heat
+                    UIDataGenericDetail iHeatProp = UIManager.inst.Data_CreateGeneric();
+                    extra = "Heat produced by this part each move, if active.";
+                    Color iHP = highlightGreen;
+                    if (item.itemData.propulsion[0].propHeat <= 5)
+                    {
+                        iHP = highlightGreen;
+                    }
+                    else if (item.itemData.propulsion[0].propHeat > 15)
+                    {
+                        iHP = highSecRed;
+                    }
+                    else
+                    {
+                        iHP = cautiousYellow;
+                    }
+                    if (item.itemData.propulsion[0].propHeat > 0)
+                    {
+                        iHeatProp.Setup(true, false, true, "Heat", iHP, extra, item.itemData.propulsion[0].propHeat.ToString(), false, "", false, "", item.itemData.propulsion[0].propHeat + 1 / 20f, true); // Bar
+                    }
+                    else
+                    {
+                        iHeatProp.Setup(true, false, true, "Heat", iHP, extra, "0", true, "", false, "", 0f, true); // Bar
+                    }
+                    // Support
+                    UIDataGenericDetail iSupportProp = UIManager.inst.Data_CreateGeneric();
+                    extra = "Mass supported by this part, if active.";
+                    if (item.itemData.propulsion[0].support > 0)
+                    {
+                        iSupportProp.Setup(true, false, true, "Support", Color.white, extra, item.itemData.propulsion[0].support.ToString(), false, "", false, "", item.itemData.propulsion[0].support / 22f); // Bar
+                    }
+                    else
+                    {
+                        iSupportProp.Setup(true, false, true, "Support", Color.white, extra, "0", true, "", false, "", 0f); // Bar
+                    }
+                    // Penalty
+                    UIDataGenericDetail iPenaltyProp = UIManager.inst.Data_CreateGeneric();
+                    extra = "Movement time penalty for being overweight, applied once if overweight at all. Penalty values for multiple different propulsion modules are averaged for calculation purposes. " +
+                        "Further exceeding the mass support limit gradually continue to reduce speed depending on the amount of excess mass.";
+                    Color iPP = highlightGreen;
+                    if (item.itemData.propulsion[0].penalty <= 10)
+                    {
+                        iPP = highlightGreen;
+                    }
+                    else if (item.itemData.propulsion[0].penalty > 45)
+                    {
+                        iPP = highSecRed;
+                    }
+                    else
+                    {
+                        iPP = cautiousYellow;
                     }
                     if (item.itemData.propulsion[0].penalty > 0)
                     {
-                        iBurnout.Setup(true, false, true, "Burnout", iBP, extra, item.itemData.propulsion[0].burnout.ToString(), false, "", false, "", item.itemData.propulsion[0].burnout / 70f, true); // Bar
+                        iPenaltyProp.Setup(true, false, true, " Penalty", iPP, extra, item.itemData.propulsion[0].penalty.ToString(), false, "", false, "", item.itemData.propulsion[0].penalty / 60f, true); // Bar
                     }
                     else
                     {
-                        iBurnout.Setup(true, false, true, "Burnout", iBP, extra, "N/A", true, "", false, "", 0f); // Bar
+                        iPenaltyProp.Setup(true, false, true, " Penalty", iPP, extra, "0", true, "", false, "", 0f, true); // Bar
                     }
-                }
-                // Siege
-                if(item.itemData.type == ItemType.Treads)
-                {
-                    UIDataGenericDetail iSiege = UIManager.inst.Data_CreateGeneric();
-                    extra = "Entering or exiting siege mode requires 5 turns. During the transition, and for as long as the mode is active, Cogmind is immobile and the treads cannot be disabled or removed." +
-                        " While in siege mode, non-melee attacks have a +20% accuracy, coverage for all armor and heavy treads is doubled, any treads in siege mode get a free 25% damage reduction, no " +
-                        "weapons suffer from recoil effects, and Cogmind is immune to instant part destruction from critical hits. Treads capable of High siege mode instead give + 30% accuracy and have 50% damage resist.";
-                    if (item.itemData.propulsion[0].canSiege == 1)
+                    // Burnout
+                    if (item.itemData.propulsion[0].hasBurnout)
                     {
-                        iSiege.Setup(true, false, false, "Siege", Color.white, extra, "", false, "Standard");
-                    }
-                    else if (item.itemData.propulsion[0].canSiege == 2)
-                    {
-                        iSiege.Setup(true, false, false, "Siege", Color.white, extra, "", false, "High");
-                    }
-                    else
-                    {
-                        iSiege.Setup(true, false, false, "Siege", Color.white, extra, "N/A", true);
-                    }
-                }
-                
-
-                // And then consider if there is a text wall after this
-                foreach (var E in item.itemData.itemEffects)
-                {
-                    string textWall = "";
-
-                    if(E.hasLegEffect) // Leg effect
-                    {
-                        if(E.extraKickChance > 0)
+                        UIDataGenericDetail iBurnout = UIManager.inst.Data_CreateGeneric();
+                        extra = "If this system is overloaded, it will gradually lose integrity determined by its burnout rate due to the strain of operating in this unintended state.";
+                        Color iBP = highlightGreen;
+                        if (item.itemData.propulsion[0].penalty <= 15)
                         {
-                            textWall += " Each active leg slot provides a ";
-                            textWall += (E.extraKickChance * 100).ToString() + "% ";
-                            textWall += "chance to kick ";
+                            iBP = highlightGreen;
+                        }
+                        else if (item.itemData.propulsion[0].penalty > 50)
+                        {
+                            iBP = highSecRed;
+                        }
+                        else
+                        {
+                            iBP = cautiousYellow;
+                        }
+                        if (item.itemData.propulsion[0].penalty > 0)
+                        {
+                            iBurnout.Setup(true, false, true, "Burnout", iBP, extra, item.itemData.propulsion[0].burnout.ToString(), false, "", false, "", item.itemData.propulsion[0].burnout / 70f, true); // Bar
+                        }
+                        else
+                        {
+                            iBurnout.Setup(true, false, true, "Burnout", iBP, extra, "N/A", true, "", false, "", 0f); // Bar
+                        }
+                    }
+                    // Siege
+                    if (item.itemData.type == ItemType.Treads)
+                    {
+                        UIDataGenericDetail iSiege = UIManager.inst.Data_CreateGeneric();
+                        extra = "Entering or exiting siege mode requires 5 turns. During the transition, and for as long as the mode is active, Cogmind is immobile and the treads cannot be disabled or removed." +
+                            " While in siege mode, non-melee attacks have a +20% accuracy, coverage for all armor and heavy treads is doubled, any treads in siege mode get a free 25% damage reduction, no " +
+                            "weapons suffer from recoil effects, and Cogmind is immune to instant part destruction from critical hits. Treads capable of High siege mode instead give + 30% accuracy and have 50% damage resist.";
+                        if (item.itemData.propulsion[0].canSiege == 1)
+                        {
+                            iSiege.Setup(true, false, false, "Siege", Color.white, extra, "", false, "Standard");
+                        }
+                        else if (item.itemData.propulsion[0].canSiege == 2)
+                        {
+                            iSiege.Setup(true, false, false, "Siege", Color.white, extra, "", false, "High");
+                        }
+                        else
+                        {
+                            iSiege.Setup(true, false, false, "Siege", Color.white, extra, "N/A", true);
+                        }
+                    }
 
-                            if (E.appliesToLargeTargets)
+
+                    // And then consider if there is a text wall after this
+                    foreach (var E in item.itemData.itemEffects)
+                    {
+                        string textWall = "";
+
+                        if (E.hasLegEffect) // Leg effect
+                        {
+                            if (E.extraKickChance > 0)
                             {
-                                textWall += "non-huge ";
+                                textWall += " Each active leg slot provides a ";
+                                textWall += (E.extraKickChance * 100).ToString() + "% ";
+                                textWall += "chance to kick ";
+
+                                if (E.appliesToLargeTargets)
+                                {
+                                    textWall += "non-huge ";
+                                }
+                                textWall += "targets out of the way. ";
                             }
-                            textWall += "targets out of the way. ";
+
+                            if (E.conferToRunningState)
+                            {
+                                textWall += "Moving on legs also confers the Running state, which increases evasion but decreases accuracy, each by ";
+                                textWall += (E.evasionNaccuracyChange * 100).ToString() + "% per level of momentup (up to ";
+                                textWall += E.maxMomentumAmount.ToString() + ").";
+                            }
+
+                            Data_CreateSpacer();
+                            Data_CreateTextWall(textWall);
                         }
 
-                        if (E.conferToRunningState)
+                        if (E.chainExplode) // Chain reaction explosion
                         {
-                            textWall += "Moving on legs also confers the Running state, which increases evasion but decreases accuracy, each by ";
-                            textWall += (E.evasionNaccuracyChange * 100).ToString() + "% per level of momentup (up to ";
-                            textWall += E.maxMomentumAmount.ToString() + ").";
+                            textWall += " " + item.itemData.itemName + ": ";
+                            textWall += "If triggered by chain reaction or rigged proximity response, explodes for ";
+                            textWall += item.itemData.explosionDetails.damage.x + "-" + item.itemData.explosionDetails.damage.y;
+                            textWall += " " + item.itemData.explosionDetails.damageType.ToString().ToLower();
+                            textWall += " damage with a radius of ";
+                            textWall += item.itemData.explosionDetails.radius + " (falloff: ";
+                            textWall += item.itemData.explosionDetails.fallOff + "; chunks: ";
+                            textWall += item.itemData.explosionDetails.chunks.x + "-" + item.itemData.explosionDetails.chunks.y;
+                            textWall += "; salvage: " + item.itemData.explosionDetails.salvage.ToString();
+                            textWall += "). ";
+                            if (E.heatTransfer == 0)
+                            {
+
+                            }
+                            else if (E.heatTransfer == 1)
+                            {
+                                textWall += "Low heat transfer.";
+                            }
+                            else if (E.heatTransfer == 2)
+                            {
+                                textWall += "Medium heat transfer.";
+                            }
+                            else if (E.heatTransfer == 3)
+                            {
+                                textWall += "High heat transfer.";
+                            }
+                            else if (E.heatTransfer == 4)
+                            {
+                                textWall += "Massive heat transfer.";
+                            }
+
+                            Data_CreateSpacer();
+                            Data_CreateTextWall(textWall);
                         }
 
-                        Data_CreateSpacer();
-                        Data_CreateTextWall(textWall);
+                        // TODO: Consider a couple more effects that appear like this
                     }
 
-                    if (E.chainExplode) // Chain reaction explosion
+                    Data_CreateSpacer();
+                }
+
+                if (item.itemData.shot.shotRange > 0)
+                {
+                    ItemShot shot = item.itemData.shot;
+                    UIManager.inst.Data_CreateHeader("Shot"); // Shot =========================================================================
+                                                              // Range
+                    UIDataGenericDetail iSRange = UIManager.inst.Data_CreateGeneric();
+                    extra = "Maximum effective range of this weapon.";
+                    iSRange.Setup(true, false, true, "Range", Color.white, extra, item.itemData.shot.shotRange.ToString(), false, "", false, "", item.itemData.shot.shotRange / 22f); // Bar
+                                                                                                                                                                                      // Energy
+                    UIDataGenericDetail iSEnergy = UIManager.inst.Data_CreateGeneric();
+                    extra = "Energy required to fire this weapon.";
+                    if (shot.shotEnergy < 0) // Negative
                     {
-                        textWall += " " + item.itemData.itemName + ": ";
-                        textWall += "If triggered by chain reaction or rigged proximity response, explodes for ";
-                        textWall += item.itemData.explosionDetails.damage.x + "-" + item.itemData.explosionDetails.damage.y;
-                        textWall += " " + item.itemData.explosionDetails.damageType.ToString().ToLower();
-                        textWall += " damage with a radius of ";
-                        textWall += item.itemData.explosionDetails.radius + " (falloff: ";
-                        textWall += item.itemData.explosionDetails.fallOff + "; chunks: ";
-                        textWall += item.itemData.explosionDetails.chunks.x + "-" + item.itemData.explosionDetails.chunks.y;
-                        textWall += "; salvage: " + item.itemData.explosionDetails.salvage.ToString();
-                        textWall += "). ";
-                        if(E.heatTransfer == 0)
-                        {
+                        float clampedValue = Mathf.Clamp(shot.shotEnergy, 0, -50);
+                        float normalizedValue = Mathf.InverseLerp(0, -50, clampedValue);
 
-                        }
-                        else if (E.heatTransfer == 1)
-                        {
-                            textWall += "Low heat transfer.";
-                        }
-                        else if (E.heatTransfer == 2)
-                        {
-                            textWall += "Medium heat transfer.";
-                        }
-                        else if (E.heatTransfer == 3)
-                        {
-                            textWall += "High heat transfer.";
-                        }
-                        else if (E.heatTransfer == 4)
-                        {
-                            textWall += "Massive heat transfer.";
-                        }
-
-                        Data_CreateSpacer();
-                        Data_CreateTextWall(textWall);
-                    }
-
-                    // TODO: Consider a couple more effects that appear like this
-                }
-
-                Data_CreateSpacer();
-            }
-
-            if(item.itemData.shot.shotRange > 0)
-            {
-                ItemShot shot = item.itemData.shot;
-                UIManager.inst.Data_CreateHeader("Shot"); // Shot =========================================================================
-                // Range
-                UIDataGenericDetail iSRange = UIManager.inst.Data_CreateGeneric();
-                extra = "Maximum effective range of this weapon.";
-                iSRange.Setup(true, false, true, "Range", Color.white, extra, item.itemData.shot.shotRange.ToString(), false, "", false, "", item.itemData.shot.shotRange / 22f); // Bar
-                // Energy
-                UIDataGenericDetail iSEnergy = UIManager.inst.Data_CreateGeneric();
-                extra = "Energy required to fire this weapon.";
-                if(shot.shotEnergy < 0) // Negative
-                {
-                    float clampedValue = Mathf.Clamp(shot.shotEnergy, 0, -50);
-                    float normalizedValue = Mathf.InverseLerp(0, -50, clampedValue);
-
-                    iSEnergy.Setup(true, false, true, "Energy", Color.white, extra, shot.shotEnergy.ToString(), false, "", false, "", normalizedValue); // Bar
-                }
-                else
-                {
-                    iSEnergy.Setup(true, false, true, "Energy", Color.white, extra, shot.shotEnergy.ToString(), true, "", false, "", 0f); // Bar
-                } 
-                // Matter
-                UIDataGenericDetail iSMatter = UIManager.inst.Data_CreateGeneric();
-                extra = "Matter consumed when firing this weapon.";
-                if (shot.shotMatter < 0) // Negative
-                {
-                    float clampedValue = Mathf.Clamp(shot.shotMatter, 0, -50);
-                    float normalizedValue = Mathf.InverseLerp(0, -50, clampedValue);
-
-                    iSMatter.Setup(true, false, true, "Matter", Color.white, extra, shot.shotMatter.ToString(), false, "", false, "", normalizedValue); // Bar
-                }
-                else
-                {
-                    iSMatter.Setup(true, false, true, "Matter", Color.white, extra, shot.shotMatter.ToString(), true, "", false, "", 0f); // Bar
-                }
-                // Heat
-                UIDataGenericDetail iSHeat = UIManager.inst.Data_CreateGeneric();
-                extra = "Heat produced by firing this weapon. This value is averaged over the number of turns it takes to fire, and therefore not applied all at once.";
-                if (shot.shotHeat > 0)
-                {
-                    Color iSC = highlightGreen;
-                    if(shot.shotHeat > 60)
-                    {
-                        iSC = highSecRed;
-                    }
-                    else if (shot.shotHeat <= 20)
-                    {
-                        iSC = highlightGreen;
+                        iSEnergy.Setup(true, false, true, "Energy", Color.white, extra, shot.shotEnergy.ToString(), false, "", false, "", normalizedValue); // Bar
                     }
                     else
                     {
-                        iSC = cautiousYellow;
+                        iSEnergy.Setup(true, false, true, "Energy", Color.white, extra, shot.shotEnergy.ToString(), true, "", false, "", 0f); // Bar
                     }
+                    // Matter
+                    UIDataGenericDetail iSMatter = UIManager.inst.Data_CreateGeneric();
+                    extra = "Matter consumed when firing this weapon.";
+                    if (shot.shotMatter < 0) // Negative
+                    {
+                        float clampedValue = Mathf.Clamp(shot.shotMatter, 0, -50);
+                        float normalizedValue = Mathf.InverseLerp(0, -50, clampedValue);
 
-                    iSHeat.Setup(true, false, true, "Heat", iSC, extra, "+" + shot.shotHeat.ToString(), false, "", false, "", shot.shotHeat / 100f, true); // Bar
-                }
-                else
-                {
-                    iSHeat.Setup(true, false, true, "Heat", Color.white, extra, shot.shotHeat.ToString(), true, "", false, "", 0f); // Bar
-                }
-                // Recoil
-                UIDataGenericDetail iSR = UIManager.inst.Data_CreateGeneric();
-                extra = "Recoil causes any other weapons fired in the same volley to suffer this penalty to their accuracy.";
-                if (shot.shotRecoil > 0)
-                {
-                    iSR.Setup(true, false, false, "Recoil", Color.white, extra, shot.shotRecoil.ToString()); // No bar (simple)
-                }
-                else
-                {
-                    iSR.Setup(true, false, false, "Recoil", Color.white, extra, "0", true); // No bar (simple)
-                }
-                // Targeting
-                UIDataGenericDetail iST = UIManager.inst.Data_CreateGeneric();
-                extra = "This is a direct modifier to the weapon's accuracy calculation when firing. Some weapons are inherently easier or more difficult to accurately target with.";
-                if (shot.shotTargeting != 0)
-                {
-                    iST.Setup(true, false, false, "Targeting", Color.white, extra, (shot.shotTargeting * 100) + "%"); // No bar (simple)
-                }
-                else
-                {
-                    iST.Setup(true, false, false, "Targeting", Color.white, extra, "0%", true); // No bar (simple)
-                }
-                // Delay
-                UIDataGenericDetail iSD = UIManager.inst.Data_CreateGeneric();
-                extra = "This is a direct modifier to the time it takes to fire the weapon. Some weapons are inherently faster or slower to fire.";
-                if (shot.shotDelay > 0)
-                {
-                    string iSD_text = "";
-                    if(shot.shotDelay > 0)
-                    {
-                        iSD_text = "+";
-                    }
-
-                    iSD.Setup(true, false, false, "Delay", Color.white, extra, iSD_text += shot.shotDelay); // No bar (simple)
-                }
-                else
-                {
-                    iSD.Setup(true, false, false, "Delay", Color.white, extra, "0", true); // No bar (simple)
-                }
-                // Stability
-                UIDataGenericDetail iSS = UIManager.inst.Data_CreateGeneric();
-                extra = "Stability represents the ability of this weapon to fire while overloaded without suffering any negative side-effects. Overloading doubles damage and energy cost, " +
-                    "and generates triple the heat. If N/A, this weapon cannot be overloaded; only some energy weapons support overloading. While overloaded, heat transfer is one level high than" +
-                    " usual where applicable.";
-                if (shot.hasStability)
-                {
-                    iSS.Setup(true, false, true, "Stability", Color.white, extra, (shot.shotStability * 100) + "%", false, "", false, "", shot.shotStability); // Bar
-                }
-                else
-                {
-                    iSS.Setup(true, false, false, "Stability", Color.white, extra, "N/A", true, "", false, "", 0f); // Empty bar
-                }
-                // Arc
-                UIDataGenericDetail iSA = UIManager.inst.Data_CreateGeneric();
-                extra = "Total angle within which projectiles are randomly distributed around the target, spreading them along an arc of a circle centered on the shot origin. Improved " +
-                    "targeting has no effect on the spread, which is always centered around the line of fire.";
-                if (shot.hasArc)
-                {
-                    iSA.Setup(true, false, false, "Arc", Color.white, extra, shot.shotArc.ToString()); // No bar (simple)
-                }
-                else
-                {
-                    iSA.Setup(true, false, false, "Arc", Color.white, extra, "N/A", true); // No bar (simple)
-                }
-
-                Data_CreateSpacer();
-            }
-
-            if(item.itemData.projectile.damage.x > 0)
-            {
-                ItemProjectile proj = item.itemData.projectile;
-                string bonus = "";
-                if(item.itemData.projectileAmount > 1)
-                {
-                    bonus = "x" + item.itemData.projectileAmount;
-                }
-
-                UIManager.inst.Data_CreateHeader("Projectile", bonus); // Projectile =========================================================================
-                // Damage
-                UIDataGenericDetail pDamage = UIManager.inst.Data_CreateGeneric();
-                extra = "Range of potential damage at the point of impact.";
-                pDamage.Setup(true, false, true, "Damage", highlightGreen, extra, proj.damage.x + "-" + proj.damage.y, false, "", false, "", ((proj.damage.x + proj.damage.y) / 2) / 100f, true);
-                // Type
-                UIDataGenericDetail pType = UIManager.inst.Data_CreateGeneric();
-                extra = HF.DamageTypeToString(proj.damageType);
-                pType.Setup(true, false, false, "Type", Color.white, extra, "", false, proj.damageType.ToString());
-                // Critical
-                UIDataGenericDetail pCrit = UIManager.inst.Data_CreateGeneric();
-                extra = HF.CriticalEffectsToString(proj.critType);
-                if(proj.critChance > 0f)
-                {
-                    pCrit.Setup(true, false, false, "Critical", Color.white, extra, (proj.critChance * 100).ToString() + "%", false, proj.critType.ToString());
-                }
-                else
-                {
-                    pCrit.Setup(true, false, false, "Critical", Color.white, extra, "0%", true);
-                }
-                // Penetration
-                UIDataGenericDetail pPen = UIManager.inst.Data_CreateGeneric();
-                extra = "Chance this projectile may penetrate each consecutive object it hits, e.g. 100 / 80 /50 may pass through up to three objects, with a 100% chance for the first," +
-                    " followed by 80% and 50^ for the remaining two. Huge robots count as a single object for penetration purposes.";
-                if (proj.penetrationCapability > 0)
-                {
-                    string s = "";
-                    foreach (var P in proj.penetrationChances)
-                    {
-                        s += (P * 100) + " / ";
-                    }
-                    s = s.Substring(0, s.Length - 2); // Remove the extra "/ "
-
-                    pPen.Setup(true, false, false, "Penetration", Color.white, extra, "x" + proj.penetrationCapability, false, s);
-                }
-                else
-                {
-                    pPen.Setup(true, false, false, "Penetration", Color.white, extra, "x0", true);
-                }
-                // Heat Transfer
-                if (item.itemData.itemEffects.Count > 0 && item.itemData.itemEffects[0].heatTransfer > 0)
-                {
-                    UIDataGenericDetail iPHT = UIManager.inst.Data_CreateGeneric();
-                    string s = "";
-                    extra = "Thermal weapons attempt to transfer some % of the maximum heat transfer rating of the weapon, and also check for possible robot meltdown (the effect of which might be delayed until the robot's next turn).";
-                    int ht = item.itemData.itemEffects[0].heatTransfer;
-                    if (ht == 1)
-                    {
-                        s = "Low (25)";
-                    }
-                    else if(ht == 2)
-                    {
-                        s = "Medium (37)";
-                    }
-                    else if(ht == 3)
-                    {
-                        s = "High (50)";
-                    }
-                    else if(ht == 4)
-                    {
-                        s = "Massive (80)";
-                    }
-
-                    iPHT.Setup(true, false, false, "Heat Transfer", Color.white, extra, "", false, s);
-                }
-                // Spectrum
-                UIDataGenericDetail iPS = UIManager.inst.Data_CreateGeneric();
-                extra = "Range of electromagnetic spectrum, with narrower ranges more likely to trigger chain explosions in power sources. (Cogmind's power sources are immune to this effect from projectiles.)";
-                if (proj.hasSpectrum)
-                {
-                    string s = "";
-                    if(proj.spectrum <= 0.1f)
-                    {
-                        s = "Wide (10%)";
-                    }
-                    else if (proj.spectrum == 0.3f)
-                    {
-                        s = "Intermediate (30%)";
-                    }
-                    else if (proj.spectrum == 0.5f)
-                    {
-                        s = "Narrow (50%)";
-                    }
-                    else if (proj.spectrum == 1f)
-                    {
-                        s = "Fine (100%)";
-                    }
-
-                    iPS.Setup(true, false, false, "Specturm", Color.white, extra, s); // No bar (simple)
-                }
-                else
-                {
-                    iPS.Setup(true, false, false, "Specturm", Color.white, extra, "N/A", true); // No bar (simple)
-                }
-                // Disruption
-                UIDataGenericDetail iPD = UIManager.inst.Data_CreateGeneric();
-                extra = "Chance this projectile may temporarily disable an active part on impact. If a robot core is struck, there is half thsi chance the entire robot may be disabled.";
-                if(proj.disruption > 0)
-                {
-                    Color iPDC = highlightGreen;
-                    if(proj.disruption < 0.33)
-                    {
-                        iPDC = highlightGreen;
-                    }
-                    else if (proj.disruption >= 0.66)
-                    {
-                        iPDC = highSecRed;
+                        iSMatter.Setup(true, false, true, "Matter", Color.white, extra, shot.shotMatter.ToString(), false, "", false, "", normalizedValue); // Bar
                     }
                     else
                     {
-                        iPDC = cautiousYellow;
+                        iSMatter.Setup(true, false, true, "Matter", Color.white, extra, shot.shotMatter.ToString(), true, "", false, "", 0f); // Bar
                     }
+                    // Heat
+                    UIDataGenericDetail iSHeat = UIManager.inst.Data_CreateGeneric();
+                    extra = "Heat produced by firing this weapon. This value is averaged over the number of turns it takes to fire, and therefore not applied all at once.";
+                    if (shot.shotHeat > 0)
+                    {
+                        Color iSC = highlightGreen;
+                        if (shot.shotHeat > 60)
+                        {
+                            iSC = highSecRed;
+                        }
+                        else if (shot.shotHeat <= 20)
+                        {
+                            iSC = highlightGreen;
+                        }
+                        else
+                        {
+                            iSC = cautiousYellow;
+                        }
 
-                    iPD.Setup(true, false, true, "Disruption", iPDC, extra, (proj.disruption * 100) + "%", false, "", false, "", proj.disruption, true); // Bar
-                }
-                else
-                {
-                    iPD.Setup(true, false, true, "Disruption", Color.white, extra, "0%", true, "", false, "", 0f); // Bar
-
-                }
-                // Salvage
-                UIDataGenericDetail iPR = UIManager.inst.Data_CreateGeneric();
-                extra = "Amount by which the salvage potential of a given robot is affected each time shot by a projectile from this weapon. While usually negative, reducing the amount of " +
-                    "usable salvage, some special weapons may increase salvage by disabling a robot with minimal collateral damage.";
-                if (proj.salvage > 0)
-                {
-                    iPR.Setup(true, false, false, "Salvage", Color.white, extra, "+" + proj.salvage.ToString()); // No bar (simple)
-                }
-                else if (proj.salvage == 0)
-                {
-                    iPR.Setup(true, false, false, "Salvage", Color.white, extra, "0", true); // No bar (simple)
-                }
-                else
-                {
-                    iPR.Setup(true, false, false, "Salvage", Color.white, extra, proj.salvage.ToString()); // No bar (simple)
-                }
-
-                Data_CreateSpacer();
-            }
-
-            if(item.itemData.explosionDetails.radius > 0)
-            {
-                UIManager.inst.Data_CreateHeader("Explosion"); // Explosion =========================================================================
-                ExplosionGeneric detail = item.itemData.explosionDetails;
-                // Radius
-                UIDataGenericDetail iERadius = UIManager.inst.Data_CreateGeneric();
-                extra = "Maximum radius of the explosion from its origin.";
-                iERadius.Setup(true, false, true, "Radius", highlightGreen, extra, detail.radius.ToString(), false, "", false, "", detail.radius / 9f, true); // Bar
-                // Damage
-                int average = Mathf.RoundToInt((detail.damage.x + detail.damage.y) / 2);
-                extra = "Range of potential damage at the explosion's origin.";
-                UIDataGenericDetail iEDamage = UIManager.inst.Data_CreateGeneric();
-                iEDamage.Setup(true, false, true, "Damage", highlightGreen, extra, detail.damage.x + "-" + detail.damage.y, false, "", false, "", average / 120f, true); // Bar
-                // Falloff
-                UIDataGenericDetail iEFalloff = UIManager.inst.Data_CreateGeneric();
-                extra = "Amount of damage potential lost per space as the explosion expands from its origin. While targeting, this falloff is represented visually by the AOE color's brightness " +
-                    "relative to the origin (this feature can be toggled via Explosion Predictions option).";
-                if(detail.fallOff <= 0)
-                {
-                    iEFalloff.Setup(true, false, false, " Falloff", Color.white, extra, detail.fallOff.ToString());
-                }
-                else
-                {
-                    iEFalloff.Setup(true, false, false, " Falloff", Color.white, extra, "0", true);
-                }
-                // Chunks
-                if(detail.chunks.y > 1)
-                {
-                    UIDataGenericDetail iEChunks = UIManager.inst.Data_CreateGeneric();
-                    extra = "AOE damage is often spread across each target in the area of effect, dividing the damage into separate chunks before affecting a robot," +
-                        " where each chunk of damage selects its own target part (though they may overlap). Some explosive effects have a static number of chunks, while " +
-                        "others randomly select from within a range for each attack.";
-                    iEFalloff.Setup(true, false, false, " Falloff", Color.white, extra, detail.fallOff.ToString());
-                }
-                // Type
-                UIDataGenericDetail iEType = UIManager.inst.Data_CreateGeneric();
-                extra = "While powerful, explosives generally spread damage across each target in the area of effect.\nExplosions also tend to reduce the amount of salvage remaining after destroying a target.";
-                iEType.Setup(true, false, false, "Type", Color.white, extra, "", false, detail.damageType.ToString());
-                // Spectrum
-                UIDataGenericDetail iESpectrum = UIManager.inst.Data_CreateGeneric();
-                extra = "Range of electromagnetic spectrum, with narrower ranges more likely to trigger chain explosions in power sources. (AOE spectrum only affects power sources being used by Cogmind, or those exposed on the ground.)";
-                if (detail.hasSpectrum)
-                {
-                    string s = "";
-                    if (detail.spectrum <= 0.1f)
-                    {
-                        s = "Wide (10%)";
-                    }
-                    else if (detail.spectrum == 0.3f)
-                    {
-                        s = "Intermediate (30%)";
-                    }
-                    else if (detail.spectrum == 0.5f)
-                    {
-                        s = "Narrow (50%)";
-                    }
-                    else if (detail.spectrum == 1f)
-                    {
-                        s = "Fine (100%)";
-                    }
-
-                    iESpectrum.Setup(true, false, false, "Specturm", Color.white, extra, s); // No bar (simple)
-                }
-                else
-                {
-                    iESpectrum.Setup(true, false, false, "Specturm", Color.white, extra, "N/A", true); // No bar (simple)
-                }
-                // Disruption
-                UIDataGenericDetail iEDisruption = UIManager.inst.Data_CreateGeneric();
-                extra = "Chance this explosion may temporarily disable an active part it damages. If a robot core is struck, there is half this chance the entire robot may be disabled.";
-                if (detail.disruption > 0)
-                {
-                    Color iPDC = highlightGreen;
-                    if (detail.disruption < 0.33)
-                    {
-                        iPDC = highlightGreen;
-                    }
-                    else if (detail.disruption >= 0.66)
-                    {
-                        iPDC = highSecRed;
+                        iSHeat.Setup(true, false, true, "Heat", iSC, extra, "+" + shot.shotHeat.ToString(), false, "", false, "", shot.shotHeat / 100f, true); // Bar
                     }
                     else
                     {
-                        iPDC = cautiousYellow;
+                        iSHeat.Setup(true, false, true, "Heat", Color.white, extra, shot.shotHeat.ToString(), true, "", false, "", 0f); // Bar
                     }
-
-                    iEDisruption.Setup(true, false, true, "Disruption", iPDC, extra, (detail.disruption * 100) + "%", false, "", false, "", detail.disruption, true); // Bar
-                }
-                else
-                {
-                    iEDisruption.Setup(true, false, true, "Disruption", Color.white, extra, "0%", true, "", false, "", 0f); // Bar
-
-                }
-                // Salvage
-                UIDataGenericDetail iESalvage = UIManager.inst.Data_CreateGeneric();
-                extra = "Amount by which the salvage potential of a given robot is affected by being engulfed in this explosion. While usually negative, reducing the amount of usable salvage, some special weapons may increase salvage by disabling a robot with minimal collateral damage.";
-                if (detail.fallOff <= 0)
-                {
-                    iESalvage.Setup(true, false, false, "Salvage", Color.white, extra, detail.salvage.ToString());
-                }
-                else
-                {
-                    iESalvage.Setup(true, false, false, "Salvage", Color.white, extra, "0", true);
-                }
-            }
-
-            if (item.itemData.meleeAttack.isMelee)
-            {
-                // This is split up into "attack" and "hit"
-                ItemMeleeAttack melee = item.itemData.meleeAttack;
-                UIManager.inst.Data_CreateHeader("Attack"); // Attack =========================================================================
-                // Energy
-                UIDataGenericDetail iAEnergy = UIManager.inst.Data_CreateGeneric();
-                extra = "Energy required to attack with this weapon.";
-                if (melee.energy < 0) // Negative
-                {
-                    float clampedValue = Mathf.Clamp(melee.energy, 0, -50);
-                    float normalizedValue = Mathf.InverseLerp(0, -50, clampedValue);
-
-                    iAEnergy.Setup(true, false, true, "Energy", Color.white, extra, melee.energy.ToString(), false, "", false, "", normalizedValue); // Bar
-                }
-                else
-                {
-                    iAEnergy.Setup(true, false, true, "Energy", Color.white, extra, melee.energy.ToString(), true, "", false, "", 0f); // Bar
-                }
-                // Matter
-                UIDataGenericDetail iAMatter = UIManager.inst.Data_CreateGeneric();
-                extra = "Matter consumed when attacking with this weapon.";
-                if (melee.matter < 0) // Negative
-                {
-                    float clampedValue = Mathf.Clamp(melee.matter, 0, -50);
-                    float normalizedValue = Mathf.InverseLerp(0, -50, clampedValue);
-
-                    iAMatter.Setup(true, false, true, "Matter", Color.white, extra, melee.matter.ToString(), false, "", false, "", normalizedValue); // Bar
-                }
-                else
-                {
-                    iAMatter.Setup(true, false, true, "Matter", Color.white, extra, melee.matter.ToString(), true, "", false, "", 0f); // Bar
-                }
-                // Heat
-                UIDataGenericDetail iAHeat = UIManager.inst.Data_CreateGeneric();
-                extra = "Heat produced by attack with this weapon.";
-                if (melee.heat > 0)
-                {
-                    Color iSC = highlightGreen;
-                    if (melee.heat > 60)
+                    // Recoil
+                    UIDataGenericDetail iSR = UIManager.inst.Data_CreateGeneric();
+                    extra = "Recoil causes any other weapons fired in the same volley to suffer this penalty to their accuracy.";
+                    if (shot.shotRecoil > 0)
                     {
-                        iSC = highSecRed;
-                    }
-                    else if (melee.heat <= 20)
-                    {
-                        iSC = highlightGreen;
+                        iSR.Setup(true, false, false, "Recoil", Color.white, extra, shot.shotRecoil.ToString()); // No bar (simple)
                     }
                     else
                     {
-                        iSC = cautiousYellow;
+                        iSR.Setup(true, false, false, "Recoil", Color.white, extra, "0", true); // No bar (simple)
                     }
-
-                    iAHeat.Setup(true, false, true, "Heat", iSC, extra, "+" + melee.heat.ToString(), false, "", false, "", melee.heat / 100f, true); // Bar
-                }
-                else
-                {
-                    iAHeat.Setup(true, false, true, "Heat", Color.white, extra, melee.heat.ToString(), true, "", false, "", 0f); // Bar
-                }
-                // Targeting
-                UIDataGenericDetail iATargeting = UIManager.inst.Data_CreateGeneric();
-                extra = "This is a direct modifier to the weapon's accuracy when attacking with it. Some weapons are inherently easier or more difficult to accurately strike with.";
-                if (melee.targeting != 0)
-                {
-                    iATargeting.Setup(true, false, false, "Targeting", Color.white, extra, (melee.targeting * 100) + "%"); // No bar (simple)
-                }
-                else
-                {
-                    iATargeting.Setup(true, false, false, "Targeting", Color.white, extra, "0%", true); // No bar (simple)
-                }
-                // Delay
-                UIDataGenericDetail iADelay = UIManager.inst.Data_CreateGeneric();
-                extra = "This is a modifier to the time it takes to attack with this weapon. Some weapons are inherently faster or slower to attack with.";
-                if (melee.delay > 0)
-                {
-                    string iSD_text = "";
-                    if (melee.delay > 0)
+                    // Targeting
+                    UIDataGenericDetail iST = UIManager.inst.Data_CreateGeneric();
+                    extra = "This is a direct modifier to the weapon's accuracy calculation when firing. Some weapons are inherently easier or more difficult to accurately target with.";
+                    if (shot.shotTargeting != 0)
                     {
-                        iSD_text = "+";
+                        iST.Setup(true, false, false, "Targeting", Color.white, extra, (shot.shotTargeting * 100) + "%"); // No bar (simple)
+                    }
+                    else
+                    {
+                        iST.Setup(true, false, false, "Targeting", Color.white, extra, "0%", true); // No bar (simple)
+                    }
+                    // Delay
+                    UIDataGenericDetail iSD = UIManager.inst.Data_CreateGeneric();
+                    extra = "This is a direct modifier to the time it takes to fire the weapon. Some weapons are inherently faster or slower to fire.";
+                    if (shot.shotDelay > 0)
+                    {
+                        string iSD_text = "";
+                        if (shot.shotDelay > 0)
+                        {
+                            iSD_text = "+";
+                        }
+
+                        iSD.Setup(true, false, false, "Delay", Color.white, extra, iSD_text += shot.shotDelay); // No bar (simple)
+                    }
+                    else
+                    {
+                        iSD.Setup(true, false, false, "Delay", Color.white, extra, "0", true); // No bar (simple)
+                    }
+                    // Stability
+                    UIDataGenericDetail iSS = UIManager.inst.Data_CreateGeneric();
+                    extra = "Stability represents the ability of this weapon to fire while overloaded without suffering any negative side-effects. Overloading doubles damage and energy cost, " +
+                        "and generates triple the heat. If N/A, this weapon cannot be overloaded; only some energy weapons support overloading. While overloaded, heat transfer is one level high than" +
+                        " usual where applicable.";
+                    if (shot.hasStability)
+                    {
+                        iSS.Setup(true, false, true, "Stability", Color.white, extra, (shot.shotStability * 100) + "%", false, "", false, "", shot.shotStability); // Bar
+                    }
+                    else
+                    {
+                        iSS.Setup(true, false, false, "Stability", Color.white, extra, "N/A", true, "", false, "", 0f); // Empty bar
+                    }
+                    // Arc
+                    UIDataGenericDetail iSA = UIManager.inst.Data_CreateGeneric();
+                    extra = "Total angle within which projectiles are randomly distributed around the target, spreading them along an arc of a circle centered on the shot origin. Improved " +
+                        "targeting has no effect on the spread, which is always centered around the line of fire.";
+                    if (shot.hasArc)
+                    {
+                        iSA.Setup(true, false, false, "Arc", Color.white, extra, shot.shotArc.ToString()); // No bar (simple)
+                    }
+                    else
+                    {
+                        iSA.Setup(true, false, false, "Arc", Color.white, extra, "N/A", true); // No bar (simple)
                     }
 
-                    iADelay.Setup(true, false, false, "Delay", Color.white, extra, iSD_text += melee.delay); // No bar (simple)
-                }
-                else
-                {
-                    iADelay.Setup(true, false, false, "Delay", Color.white, extra, "0", true); // No bar (simple)
+                    Data_CreateSpacer();
                 }
 
-                Data_CreateSpacer();
-                if (!item.itemData.specialAttack.specialMelee)
+                if (item.itemData.projectile.damage.x > 0)
                 {
-                    UIManager.inst.Data_CreateHeader("Hit"); // Hit =========================================================================
-                                                             // Damage
-                    UIDataGenericDetail hDamage = UIManager.inst.Data_CreateGeneric();
+                    ItemProjectile proj = item.itemData.projectile;
+                    string bonus = "";
+                    if (item.itemData.projectileAmount > 1)
+                    {
+                        bonus = "x" + item.itemData.projectileAmount;
+                    }
+
+                    UIManager.inst.Data_CreateHeader("Projectile", bonus); // Projectile =========================================================================
+                                                                           // Damage
+                    UIDataGenericDetail pDamage = UIManager.inst.Data_CreateGeneric();
                     extra = "Range of potential damage at the point of impact.";
-                    hDamage.Setup(true, false, true, "Damage", highlightGreen, extra, melee.damage.x + "-" + melee.damage.y, false, "", false, "", ((melee.damage.x + melee.damage.y) / 2) / 100f, true);
+                    pDamage.Setup(true, false, true, "Damage", highlightGreen, extra, proj.damage.x + "-" + proj.damage.y, false, "", false, "", ((proj.damage.x + proj.damage.y) / 2) / 100f, true);
                     // Type
-                    UIDataGenericDetail hType = UIManager.inst.Data_CreateGeneric();
-                    extra = HF.DamageTypeToString(item.itemData.meleeAttack.damageType);
-                    hType.Setup(true, false, false, "Type", Color.white, extra, "", false, melee.damageType.ToString());
+                    UIDataGenericDetail pType = UIManager.inst.Data_CreateGeneric();
+                    extra = HF.DamageTypeToString(proj.damageType);
+                    pType.Setup(true, false, false, "Type", Color.white, extra, "", false, proj.damageType.ToString());
                     // Critical
-                    UIDataGenericDetail hCrit = UIManager.inst.Data_CreateGeneric();
-                    extra = HF.CriticalEffectsToString(item.itemData.meleeAttack.critType);
-                    if (melee.critical > 0f)
+                    UIDataGenericDetail pCrit = UIManager.inst.Data_CreateGeneric();
+                    extra = HF.CriticalEffectsToString(proj.critType);
+                    if (proj.critChance > 0f)
                     {
-                        hCrit.Setup(true, false, false, "Critical", Color.white, extra, (melee.critical * 100).ToString() + "%", false, melee.critical.ToString());
+                        pCrit.Setup(true, false, false, "Critical", Color.white, extra, (proj.critChance * 100).ToString() + "%", false, proj.critType.ToString());
                     }
                     else
                     {
-                        hCrit.Setup(true, false, false, "Critical", Color.white, extra, "0%", true);
+                        pCrit.Setup(true, false, false, "Critical", Color.white, extra, "0%", true);
+                    }
+                    // Penetration
+                    UIDataGenericDetail pPen = UIManager.inst.Data_CreateGeneric();
+                    extra = "Chance this projectile may penetrate each consecutive object it hits, e.g. 100 / 80 /50 may pass through up to three objects, with a 100% chance for the first," +
+                        " followed by 80% and 50^ for the remaining two. Huge robots count as a single object for penetration purposes.";
+                    if (proj.penetrationCapability > 0)
+                    {
+                        string s = "";
+                        foreach (var P in proj.penetrationChances)
+                        {
+                            s += (P * 100) + " / ";
+                        }
+                        s = s.Substring(0, s.Length - 2); // Remove the extra "/ "
+
+                        pPen.Setup(true, false, false, "Penetration", Color.white, extra, "x" + proj.penetrationCapability, false, s);
+                    }
+                    else
+                    {
+                        pPen.Setup(true, false, false, "Penetration", Color.white, extra, "x0", true);
                     }
                     // Heat Transfer
                     if (item.itemData.itemEffects.Count > 0 && item.itemData.itemEffects[0].heatTransfer > 0)
                     {
-                        UIDataGenericDetail hHT = UIManager.inst.Data_CreateGeneric();
-                        extra = "Thermal weapons attempt to transfer some % of the maximum heat transfer rating of the weapon, and also check for possible robot meltdown (the effect of which might be delayed until the robot's next turn).";
+                        UIDataGenericDetail iPHT = UIManager.inst.Data_CreateGeneric();
                         string s = "";
+                        extra = "Thermal weapons attempt to transfer some % of the maximum heat transfer rating of the weapon, and also check for possible robot meltdown (the effect of which might be delayed until the robot's next turn).";
                         int ht = item.itemData.itemEffects[0].heatTransfer;
                         if (ht == 1)
                         {
@@ -8057,19 +7769,48 @@ public class UIManager : MonoBehaviour
                             s = "Massive (80)";
                         }
 
-                        hHT.Setup(true, false, false, "Heat Transfer", Color.white, extra, "", false, s);
+                        iPHT.Setup(true, false, false, "Heat Transfer", Color.white, extra, "", false, s);
+                    }
+                    // Spectrum
+                    UIDataGenericDetail iPS = UIManager.inst.Data_CreateGeneric();
+                    extra = "Range of electromagnetic spectrum, with narrower ranges more likely to trigger chain explosions in power sources. (Cogmind's power sources are immune to this effect from projectiles.)";
+                    if (proj.hasSpectrum)
+                    {
+                        string s = "";
+                        if (proj.spectrum <= 0.1f)
+                        {
+                            s = "Wide (10%)";
+                        }
+                        else if (proj.spectrum == 0.3f)
+                        {
+                            s = "Intermediate (30%)";
+                        }
+                        else if (proj.spectrum == 0.5f)
+                        {
+                            s = "Narrow (50%)";
+                        }
+                        else if (proj.spectrum == 1f)
+                        {
+                            s = "Fine (100%)";
+                        }
+
+                        iPS.Setup(true, false, false, "Specturm", Color.white, extra, s); // No bar (simple)
+                    }
+                    else
+                    {
+                        iPS.Setup(true, false, false, "Specturm", Color.white, extra, "N/A", true); // No bar (simple)
                     }
                     // Disruption
-                    UIDataGenericDetail iHDisruption = UIManager.inst.Data_CreateGeneric();
-                    extra = "Chance for this weapon to temporarily disable an active part on impact. If a robot core is struck, there is half this chance the entire robot may be disabled.";
-                    if (melee.disruption > 0)
+                    UIDataGenericDetail iPD = UIManager.inst.Data_CreateGeneric();
+                    extra = "Chance this projectile may temporarily disable an active part on impact. If a robot core is struck, there is half thsi chance the entire robot may be disabled.";
+                    if (proj.disruption > 0)
                     {
                         Color iPDC = highlightGreen;
-                        if (melee.disruption < 0.33)
+                        if (proj.disruption < 0.33)
                         {
                             iPDC = highlightGreen;
                         }
-                        else if (melee.disruption >= 0.66)
+                        else if (proj.disruption >= 0.66)
                         {
                             iPDC = highSecRed;
                         }
@@ -8078,326 +7819,664 @@ public class UIManager : MonoBehaviour
                             iPDC = cautiousYellow;
                         }
 
-                        iHDisruption.Setup(true, false, true, "Disruption", iPDC, extra, (melee.disruption * 100) + "%", false, "", false, "", melee.disruption, true); // Bar
+                        iPD.Setup(true, false, true, "Disruption", iPDC, extra, (proj.disruption * 100) + "%", false, "", false, "", proj.disruption, true); // Bar
                     }
                     else
                     {
-                        iHDisruption.Setup(true, false, true, "Disruption", Color.white, extra, "0%", true, "", false, "", 0f); // Bar
+                        iPD.Setup(true, false, true, "Disruption", Color.white, extra, "0%", true, "", false, "", 0f); // Bar
 
                     }
                     // Salvage
-                    UIDataGenericDetail iHSalvage = UIManager.inst.Data_CreateGeneric();
+                    UIDataGenericDetail iPR = UIManager.inst.Data_CreateGeneric();
                     extra = "Amount by which the salvage potential of a given robot is affected each time shot by a projectile from this weapon. While usually negative, reducing the amount of " +
-                    "usable salvage, some special weapons may increase salvage by disabling a robot with minimal collateral damage.";
-                    if (melee.salvage > 0)
+                        "usable salvage, some special weapons may increase salvage by disabling a robot with minimal collateral damage.";
+                    if (proj.salvage > 0)
                     {
-                        iHSalvage.Setup(true, false, false, "Salvage", Color.white, extra, "+" + melee.salvage.ToString()); // No bar (simple)
+                        iPR.Setup(true, false, false, "Salvage", Color.white, extra, "+" + proj.salvage.ToString()); // No bar (simple)
                     }
-                    else if (melee.salvage == 0)
+                    else if (proj.salvage == 0)
                     {
-                        iHSalvage.Setup(true, false, false, "Salvage", Color.white, extra, "0", true); // No bar (simple)
+                        iPR.Setup(true, false, false, "Salvage", Color.white, extra, "0", true); // No bar (simple)
                     }
                     else
                     {
-                        iHSalvage.Setup(true, false, false, "Salvage", Color.white, extra, melee.salvage.ToString()); // No bar (simple)
+                        iPR.Setup(true, false, false, "Salvage", Color.white, extra, proj.salvage.ToString()); // No bar (simple)
+                    }
+
+                    Data_CreateSpacer();
+                }
+
+                if (item.itemData.explosionDetails.radius > 0)
+                {
+                    UIManager.inst.Data_CreateHeader("Explosion"); // Explosion =========================================================================
+                    ExplosionGeneric detail = item.itemData.explosionDetails;
+                    // Radius
+                    UIDataGenericDetail iERadius = UIManager.inst.Data_CreateGeneric();
+                    extra = "Maximum radius of the explosion from its origin.";
+                    iERadius.Setup(true, false, true, "Radius", highlightGreen, extra, detail.radius.ToString(), false, "", false, "", detail.radius / 9f, true); // Bar
+                                                                                                                                                                  // Damage
+                    int average = Mathf.RoundToInt((detail.damage.x + detail.damage.y) / 2);
+                    extra = "Range of potential damage at the explosion's origin.";
+                    UIDataGenericDetail iEDamage = UIManager.inst.Data_CreateGeneric();
+                    iEDamage.Setup(true, false, true, "Damage", highlightGreen, extra, detail.damage.x + "-" + detail.damage.y, false, "", false, "", average / 120f, true); // Bar
+                                                                                                                                                                             // Falloff
+                    UIDataGenericDetail iEFalloff = UIManager.inst.Data_CreateGeneric();
+                    extra = "Amount of damage potential lost per space as the explosion expands from its origin. While targeting, this falloff is represented visually by the AOE color's brightness " +
+                        "relative to the origin (this feature can be toggled via Explosion Predictions option).";
+                    if (detail.fallOff <= 0)
+                    {
+                        iEFalloff.Setup(true, false, false, " Falloff", Color.white, extra, detail.fallOff.ToString());
+                    }
+                    else
+                    {
+                        iEFalloff.Setup(true, false, false, " Falloff", Color.white, extra, "0", true);
+                    }
+                    // Chunks
+                    if (detail.chunks.y > 1)
+                    {
+                        UIDataGenericDetail iEChunks = UIManager.inst.Data_CreateGeneric();
+                        extra = "AOE damage is often spread across each target in the area of effect, dividing the damage into separate chunks before affecting a robot," +
+                            " where each chunk of damage selects its own target part (though they may overlap). Some explosive effects have a static number of chunks, while " +
+                            "others randomly select from within a range for each attack.";
+                        iEFalloff.Setup(true, false, false, " Falloff", Color.white, extra, detail.fallOff.ToString());
+                    }
+                    // Type
+                    UIDataGenericDetail iEType = UIManager.inst.Data_CreateGeneric();
+                    extra = "While powerful, explosives generally spread damage across each target in the area of effect.\nExplosions also tend to reduce the amount of salvage remaining after destroying a target.";
+                    iEType.Setup(true, false, false, "Type", Color.white, extra, "", false, detail.damageType.ToString());
+                    // Spectrum
+                    UIDataGenericDetail iESpectrum = UIManager.inst.Data_CreateGeneric();
+                    extra = "Range of electromagnetic spectrum, with narrower ranges more likely to trigger chain explosions in power sources. (AOE spectrum only affects power sources being used by Cogmind, or those exposed on the ground.)";
+                    if (detail.hasSpectrum)
+                    {
+                        string s = "";
+                        if (detail.spectrum <= 0.1f)
+                        {
+                            s = "Wide (10%)";
+                        }
+                        else if (detail.spectrum == 0.3f)
+                        {
+                            s = "Intermediate (30%)";
+                        }
+                        else if (detail.spectrum == 0.5f)
+                        {
+                            s = "Narrow (50%)";
+                        }
+                        else if (detail.spectrum == 1f)
+                        {
+                            s = "Fine (100%)";
+                        }
+
+                        iESpectrum.Setup(true, false, false, "Specturm", Color.white, extra, s); // No bar (simple)
+                    }
+                    else
+                    {
+                        iESpectrum.Setup(true, false, false, "Specturm", Color.white, extra, "N/A", true); // No bar (simple)
+                    }
+                    // Disruption
+                    UIDataGenericDetail iEDisruption = UIManager.inst.Data_CreateGeneric();
+                    extra = "Chance this explosion may temporarily disable an active part it damages. If a robot core is struck, there is half this chance the entire robot may be disabled.";
+                    if (detail.disruption > 0)
+                    {
+                        Color iPDC = highlightGreen;
+                        if (detail.disruption < 0.33)
+                        {
+                            iPDC = highlightGreen;
+                        }
+                        else if (detail.disruption >= 0.66)
+                        {
+                            iPDC = highSecRed;
+                        }
+                        else
+                        {
+                            iPDC = cautiousYellow;
+                        }
+
+                        iEDisruption.Setup(true, false, true, "Disruption", iPDC, extra, (detail.disruption * 100) + "%", false, "", false, "", detail.disruption, true); // Bar
+                    }
+                    else
+                    {
+                        iEDisruption.Setup(true, false, true, "Disruption", Color.white, extra, "0%", true, "", false, "", 0f); // Bar
+
+                    }
+                    // Salvage
+                    UIDataGenericDetail iESalvage = UIManager.inst.Data_CreateGeneric();
+                    extra = "Amount by which the salvage potential of a given robot is affected by being engulfed in this explosion. While usually negative, reducing the amount of usable salvage, some special weapons may increase salvage by disabling a robot with minimal collateral damage.";
+                    if (detail.fallOff <= 0)
+                    {
+                        iESalvage.Setup(true, false, false, "Salvage", Color.white, extra, detail.salvage.ToString());
+                    }
+                    else
+                    {
+                        iESalvage.Setup(true, false, false, "Salvage", Color.white, extra, "0", true);
                     }
                 }
-            }
 
-            // Effect is above fabrication
-            if (item.itemData.itemEffects.Count > 0)
-            {
-                if (!item.itemData.itemEffects[0].hasLegEffect && !item.itemData.itemEffects[0].chainExplode)
+                if (item.itemData.meleeAttack.isMelee)
                 {
-                    UIManager.inst.Data_CreateHeader("Effect"); // Effect =========================================================================
-
-                    foreach (var E in item.itemData.itemEffects)
+                    // This is split up into "attack" and "hit"
+                    ItemMeleeAttack melee = item.itemData.meleeAttack;
+                    UIManager.inst.Data_CreateHeader("Attack"); // Attack =========================================================================
+                                                                // Energy
+                    UIDataGenericDetail iAEnergy = UIManager.inst.Data_CreateGeneric();
+                    extra = "Energy required to attack with this weapon.";
+                    if (melee.energy < 0) // Negative
                     {
-                        // There is A LOT to consider here and its gonna take a while to fill it all out
-                        string textWall = " ";
-                        #region Effects
+                        float clampedValue = Mathf.Clamp(melee.energy, 0, -50);
+                        float normalizedValue = Mathf.InverseLerp(0, -50, clampedValue);
 
-                        if (E.heatDissipation.hasEffect)
+                        iAEnergy.Setup(true, false, true, "Energy", Color.white, extra, melee.energy.ToString(), false, "", false, "", normalizedValue); // Bar
+                    }
+                    else
+                    {
+                        iAEnergy.Setup(true, false, true, "Energy", Color.white, extra, melee.energy.ToString(), true, "", false, "", 0f); // Bar
+                    }
+                    // Matter
+                    UIDataGenericDetail iAMatter = UIManager.inst.Data_CreateGeneric();
+                    extra = "Matter consumed when attacking with this weapon.";
+                    if (melee.matter < 0) // Negative
+                    {
+                        float clampedValue = Mathf.Clamp(melee.matter, 0, -50);
+                        float normalizedValue = Mathf.InverseLerp(0, -50, clampedValue);
+
+                        iAMatter.Setup(true, false, true, "Matter", Color.white, extra, melee.matter.ToString(), false, "", false, "", normalizedValue); // Bar
+                    }
+                    else
+                    {
+                        iAMatter.Setup(true, false, true, "Matter", Color.white, extra, melee.matter.ToString(), true, "", false, "", 0f); // Bar
+                    }
+                    // Heat
+                    UIDataGenericDetail iAHeat = UIManager.inst.Data_CreateGeneric();
+                    extra = "Heat produced by attack with this weapon.";
+                    if (melee.heat > 0)
+                    {
+                        Color iSC = highlightGreen;
+                        if (melee.heat > 60)
                         {
-                            if (E.heatDissipation.dissipationPerTurn > 0)
+                            iSC = highSecRed;
+                        }
+                        else if (melee.heat <= 20)
+                        {
+                            iSC = highlightGreen;
+                        }
+                        else
+                        {
+                            iSC = cautiousYellow;
+                        }
+
+                        iAHeat.Setup(true, false, true, "Heat", iSC, extra, "+" + melee.heat.ToString(), false, "", false, "", melee.heat / 100f, true); // Bar
+                    }
+                    else
+                    {
+                        iAHeat.Setup(true, false, true, "Heat", Color.white, extra, melee.heat.ToString(), true, "", false, "", 0f); // Bar
+                    }
+                    // Targeting
+                    UIDataGenericDetail iATargeting = UIManager.inst.Data_CreateGeneric();
+                    extra = "This is a direct modifier to the weapon's accuracy when attacking with it. Some weapons are inherently easier or more difficult to accurately strike with.";
+                    if (melee.targeting != 0)
+                    {
+                        iATargeting.Setup(true, false, false, "Targeting", Color.white, extra, (melee.targeting * 100) + "%"); // No bar (simple)
+                    }
+                    else
+                    {
+                        iATargeting.Setup(true, false, false, "Targeting", Color.white, extra, "0%", true); // No bar (simple)
+                    }
+                    // Delay
+                    UIDataGenericDetail iADelay = UIManager.inst.Data_CreateGeneric();
+                    extra = "This is a modifier to the time it takes to attack with this weapon. Some weapons are inherently faster or slower to attack with.";
+                    if (melee.delay > 0)
+                    {
+                        string iSD_text = "";
+                        if (melee.delay > 0)
+                        {
+                            iSD_text = "+";
+                        }
+
+                        iADelay.Setup(true, false, false, "Delay", Color.white, extra, iSD_text += melee.delay); // No bar (simple)
+                    }
+                    else
+                    {
+                        iADelay.Setup(true, false, false, "Delay", Color.white, extra, "0", true); // No bar (simple)
+                    }
+
+                    Data_CreateSpacer();
+                    if (!item.itemData.specialAttack.specialMelee)
+                    {
+                        UIManager.inst.Data_CreateHeader("Hit"); // Hit =========================================================================
+                                                                 // Damage
+                        UIDataGenericDetail hDamage = UIManager.inst.Data_CreateGeneric();
+                        extra = "Range of potential damage at the point of impact.";
+                        hDamage.Setup(true, false, true, "Damage", highlightGreen, extra, melee.damage.x + "-" + melee.damage.y, false, "", false, "", ((melee.damage.x + melee.damage.y) / 2) / 100f, true);
+                        // Type
+                        UIDataGenericDetail hType = UIManager.inst.Data_CreateGeneric();
+                        extra = HF.DamageTypeToString(item.itemData.meleeAttack.damageType);
+                        hType.Setup(true, false, false, "Type", Color.white, extra, "", false, melee.damageType.ToString());
+                        // Critical
+                        UIDataGenericDetail hCrit = UIManager.inst.Data_CreateGeneric();
+                        extra = HF.CriticalEffectsToString(item.itemData.meleeAttack.critType);
+                        if (melee.critical > 0f)
+                        {
+                            hCrit.Setup(true, false, false, "Critical", Color.white, extra, (melee.critical * 100).ToString() + "%", false, melee.critical.ToString());
+                        }
+                        else
+                        {
+                            hCrit.Setup(true, false, false, "Critical", Color.white, extra, "0%", true);
+                        }
+                        // Heat Transfer
+                        if (item.itemData.itemEffects.Count > 0 && item.itemData.itemEffects[0].heatTransfer > 0)
+                        {
+                            UIDataGenericDetail hHT = UIManager.inst.Data_CreateGeneric();
+                            extra = "Thermal weapons attempt to transfer some % of the maximum heat transfer rating of the weapon, and also check for possible robot meltdown (the effect of which might be delayed until the robot's next turn).";
+                            string s = "";
+                            int ht = item.itemData.itemEffects[0].heatTransfer;
+                            if (ht == 1)
                             {
-                                textWall += "Dissipates " + E.heatDissipation.dissipationPerTurn + " heat per turn";
-                                if (E.heatDissipation.integrityLossPerTurn > 0)
-                                {
-                                    textWall += ", losing " + E.heatDissipation.integrityLossPerTurn + " integrity in the process";
-                                }
-                                if (E.heatDissipation.minTempToActivate > 0)
-                                {
-                                    textWall += ", but is applied after all standard heat dissipation, and only when heat levels rise above ";
-                                    textWall += E.heatDissipation.minTempToActivate.ToString();
-                                }
-                                textWall += ".";
+                                s = "Low (25)";
                             }
-                            else if (E.heatDissipation.lowerBaseTemp > 0)
+                            else if (ht == 2)
                             {
-                                textWall += "Lowers base temperature to " + E.heatDissipation.lowerBaseTemp + ".";
-                                if (E.heatDissipation.preventPowerShutdown)
+                                s = "Medium (37)";
+                            }
+                            else if (ht == 3)
+                            {
+                                s = "High (50)";
+                            }
+                            else if (ht == 4)
+                            {
+                                s = "Massive (80)";
+                            }
+
+                            hHT.Setup(true, false, false, "Heat Transfer", Color.white, extra, "", false, s);
+                        }
+                        // Disruption
+                        UIDataGenericDetail iHDisruption = UIManager.inst.Data_CreateGeneric();
+                        extra = "Chance for this weapon to temporarily disable an active part on impact. If a robot core is struck, there is half this chance the entire robot may be disabled.";
+                        if (melee.disruption > 0)
+                        {
+                            Color iPDC = highlightGreen;
+                            if (melee.disruption < 0.33)
+                            {
+                                iPDC = highlightGreen;
+                            }
+                            else if (melee.disruption >= 0.66)
+                            {
+                                iPDC = highSecRed;
+                            }
+                            else
+                            {
+                                iPDC = cautiousYellow;
+                            }
+
+                            iHDisruption.Setup(true, false, true, "Disruption", iPDC, extra, (melee.disruption * 100) + "%", false, "", false, "", melee.disruption, true); // Bar
+                        }
+                        else
+                        {
+                            iHDisruption.Setup(true, false, true, "Disruption", Color.white, extra, "0%", true, "", false, "", 0f); // Bar
+
+                        }
+                        // Salvage
+                        UIDataGenericDetail iHSalvage = UIManager.inst.Data_CreateGeneric();
+                        extra = "Amount by which the salvage potential of a given robot is affected each time shot by a projectile from this weapon. While usually negative, reducing the amount of " +
+                        "usable salvage, some special weapons may increase salvage by disabling a robot with minimal collateral damage.";
+                        if (melee.salvage > 0)
+                        {
+                            iHSalvage.Setup(true, false, false, "Salvage", Color.white, extra, "+" + melee.salvage.ToString()); // No bar (simple)
+                        }
+                        else if (melee.salvage == 0)
+                        {
+                            iHSalvage.Setup(true, false, false, "Salvage", Color.white, extra, "0", true); // No bar (simple)
+                        }
+                        else
+                        {
+                            iHSalvage.Setup(true, false, false, "Salvage", Color.white, extra, melee.salvage.ToString()); // No bar (simple)
+                        }
+                    }
+                }
+
+                // Effect is above fabrication
+                if (item.itemData.itemEffects.Count > 0)
+                {
+                    if (!item.itemData.itemEffects[0].hasLegEffect && !item.itemData.itemEffects[0].chainExplode)
+                    {
+                        UIManager.inst.Data_CreateHeader("Effect"); // Effect =========================================================================
+
+                        foreach (var E in item.itemData.itemEffects)
+                        {
+                            // There is A LOT to consider here and its gonna take a while to fill it all out
+                            string textWall = " ";
+                            #region Effects
+
+                            if (E.heatDissipation.hasEffect)
+                            {
+                                if (E.heatDissipation.dissipationPerTurn > 0)
                                 {
-                                    textWall += "Also protects power sources from forced shutdown while overheating";
-                                    if (E.heatDissipation.preventOverheatSideEffects > 0)
+                                    textWall += "Dissipates " + E.heatDissipation.dissipationPerTurn + " heat per turn";
+                                    if (E.heatDissipation.integrityLossPerTurn > 0)
                                     {
-                                        textWall += ", and has a " + E.heatDissipation.preventOverheatSideEffects * 100 + "% chance to prevent other types of overheating side effects";
+                                        textWall += ", losing " + E.heatDissipation.integrityLossPerTurn + " integrity in the process";
+                                    }
+                                    if (E.heatDissipation.minTempToActivate > 0)
+                                    {
+                                        textWall += ", but is applied after all standard heat dissipation, and only when heat levels rise above ";
+                                        textWall += E.heatDissipation.minTempToActivate.ToString();
                                     }
                                     textWall += ".";
                                 }
-                            }
-                            else if (E.heatDissipation.heatToEnergyAmount > 0)
-                            {
-                                textWall += "Generates " + E.heatDissipation.energyGeneration + " energy per ";
-                                textWall += E.heatDissipation.heatToEnergyAmount + " surplus heat every turn.";
-                            }
-
-
-                            if (E.heatDissipation.stacks)
-                            {
-                                textWall += "\n <stacks>";
-                            }
-                            else if (E.heatDissipation.parallel)
-                            {
-                                textWall += "\n <parallel_ok>";
-                            }
-                            else
-                            {
-                                textWall += "\n <no_stack>";
-                            }
-                        }
-                        else if (E.ramCrushEffect)
-                        {
-                            textWall += E.ramCrushChance * 100 + "% chance to crush robots when ramming them.";
-                            if (E.ramCrush_canDoLarge && E.ramCrush_canDoGigantic)
-                            {
-                                textWall += "Cannot crush targets of large or greater size";
-                                if (E.ramCrush_integLimit > 0)
+                                else if (E.heatDissipation.lowerBaseTemp > 0)
                                 {
-                                    textWall += ", or those with more than " + E.ramCrush_integLimit + " core integrity";
-                                }
-                                textWall += ".";
-                            }
-
-                            if (E.ramCrush_canStack)
-                            {
-                                if (E.ramCrush_stackCap > 0)
-                                {
-                                    textWall += "\n <stacks, capped at " + E.ramCrush_stackCap * 100 + "%>";
-                                }
-                                else
-                                {
-                                    textWall += "\n <stacks>";
-                                }
-                            }
-                            else
-                            {
-                                textWall += "\n <no_stack>";
-                            }
-                            textWall += "\n\n";
-                        }
-
-                        if (E.hasStabEffect)
-                        {
-                            textWall += E.stab_recoilPerWeapon + " recoil from each weapon";
-                            if (E.stab_KnockbackImmune)
-                            {
-                                textWall += ", and immunity to knockback";
-                            }
-                            textWall += ".";
-                        }
-
-                        if (E.armorProtectionEffect.hasEffect)
-                        {
-                            ItemProtectionEffect p = E.armorProtectionEffect;
-
-                            if (p.armorEffect_absorbtion > 0)
-                            {
-                                textWall += "Absorbs " + p.armorEffect_absorbtion * 100 + "% of damage that would otherwise affect ";
-                                string type = "";
-                                switch (p.armorEffect_slotType)
-                                {
-                                    case ArmorType.Power:
-                                        type = "Power sources.";
-                                        break;
-                                    case ArmorType.Propulsion:
-                                        type = "Propulsion units.";
-                                        break;
-                                    case ArmorType.Utility:
-                                        type = "Utilities.";
-                                        break;
-                                    case ArmorType.Weapon:
-                                        type = "Weapons.";
-                                        break;
-                                    case ArmorType.General:
-                                        type = "other parts.";
-                                        break;
-                                    case ArmorType.None:
-                                        type = "Core.";
-                                        break;
-                                }
-                                textWall += type;
-                                if (p.armorEffect_preventCritStrikesVSSlot)
-                                {
-                                    textWall += "Also negates extra effects of critical strikes against " + type;
-                                    if (p.armorEffect_preventChainReactions)
+                                    textWall += "Lowers base temperature to " + E.heatDissipation.lowerBaseTemp + ".";
+                                    if (E.heatDissipation.preventPowerShutdown)
                                     {
-                                        textWall += ", and prevents chain reactions due to electromagnetic damage";
-                                        if (!p.armorEffect_preventOverflowDamage)
+                                        textWall += "Also protects power sources from forced shutdown while overheating";
+                                        if (E.heatDissipation.preventOverheatSideEffects > 0)
                                         {
-                                            textWall += ", but cannot protect against overflow damage";
+                                            textWall += ", and has a " + E.heatDissipation.preventOverheatSideEffects * 100 + "% chance to prevent other types of overheating side effects";
                                         }
+                                        textWall += ".";
                                     }
                                 }
-                                textWall += ".";
+                                else if (E.heatDissipation.heatToEnergyAmount > 0)
+                                {
+                                    textWall += "Generates " + E.heatDissipation.energyGeneration + " energy per ";
+                                    textWall += E.heatDissipation.heatToEnergyAmount + " surplus heat every turn.";
+                                }
 
-                                if (p.stacks)
+
+                                if (E.heatDissipation.stacks)
                                 {
                                     textWall += "\n <stacks>";
                                 }
-                                else
-                                {
-                                    textWall += "\n <no_stack>";
-                                }
-                            }
-                            else if (p.projectionExchange)
-                            {
-                                textWall += "Blocks " + p.pe_blockPercent * 100 + "% of damage ";
-                                if (p.pe_global)
-                                {
-                                    textWall += "in exchange for energy loss at a ";
-                                }
-                                else if (p.pe_includeVisibileAllies)
-                                {
-                                    textWall += "to self and any visibile allies within a range of ";
-                                    textWall += p.pe_alliesDistance + " in exchange for energy loss at a ";
-                                }
-                                else
-                                {
-                                    textWall += "to this part in exchange for energy loss at a ";
-                                }
-                                textWall += p.pe_exchange.x + ":" + p.pe_exchange.y + " ratio";
-                                if (p.pe_requireEnergy)
-                                    textWall += " (no effect if insufficient energy).";
-                                textWall += ".";
-
-                                if (p.stacks)
-                                {
-                                    textWall += "\n <stacks>";
-                                }
-                                else
-                                {
-                                    textWall += "\n <no_stack>";
-                                }
-                            }
-                            else if (p.highCoverage)
-                            {
-                                textWall += "Protects other parts via high coverage.";
-                            }
-                            else if (p.type_hasTypeResistance)
-                            {
-                                textWall += "Enables ";
-                                if (p.type_allTypes)
-                                {
-                                    textWall += "general damage resistance: ";
-                                }
-                                else
-                                {
-                                    textWall += p.type_damageType.ToString().ToLower() + " damage resistance: ";
-                                }
-                                textWall += p.type_percentage * 100 + "%";
-                                if (p.type_includeAllies)
-                                {
-                                    textWall += ", applying benefit to both self and any allies within a range of ";
-                                    textWall += p.type_alliesRange.ToString();
-                                }
-                                textWall += ".";
-
-                                if (p.stacks)
-                                {
-                                    textWall += "\n <stacks>";
-                                }
-                                else
-                                {
-                                    textWall += "\n <no_stack>";
-                                }
-                            }
-                            else if (p.selfRepair)
-                            {
-                                textWall += "Regenerates integrity at a rate of ";
-                                textWall += p.selfRepair_amount + " per " + p.selfRepairTurns + " turn";
-                                if (p.selfRepairTurns > 1)
-                                    textWall += "s";
-                                textWall += ".";
-
-                                if (p.parallel && p.resume)
-                                {
-                                    textWall += "\n <parallel_ok, resume_ok>";
-                                }
-                                else if (p.parallel)
+                                else if (E.heatDissipation.parallel)
                                 {
                                     textWall += "\n <parallel_ok>";
                                 }
-                                else if (p.resume)
+                                else
                                 {
-                                    textWall += "\n <resume_ok>";
+                                    textWall += "\n <no_stack>";
                                 }
                             }
-                            else if (p.critImmunity)
+                            else if (E.ramCrushEffect)
                             {
-                                textWall += "100% chance to negate effects of incoming critical strikes.";
-                            }
-                        }
-
-                        if (E.detectionEffect.hasEffect)
-                        {
-                            ItemDetectionEffect d = E.detectionEffect;
-
-                            if (d.botDetection)
-                            {
-                                textWall += "Enables robots scanning up to a distance of " + d.range + ", once per turn";
-
-                                if (d.bd_maxInterpreterEffect)
+                                textWall += E.ramCrushChance * 100 + "% chance to crush robots when ramming them.";
+                                if (E.ramCrush_canDoLarge && E.ramCrush_canDoGigantic)
                                 {
-                                    textWall += ", in addition to all effects of a maximum-strength signal interpreter.";
-                                    if (d.bd_previousActivity)
+                                    textWall += "Cannot crush targets of large or greater size";
+                                    if (E.ramCrush_integLimit > 0)
                                     {
-                                        textWall += " Also detects long-term residual evidence of prior robot activity within field of view.";
+                                        textWall += ", or those with more than " + E.ramCrush_integLimit + " core integrity";
                                     }
+                                    textWall += ".";
+                                }
 
-                                    if (d.bd_botReporting)
+                                if (E.ramCrush_canStack)
+                                {
+                                    if (E.ramCrush_stackCap > 0)
                                     {
-                                        textWall += " 0b10 combat robots scanned by this device will report the event, once per bot.";
+                                        textWall += "\n <stacks, capped at " + E.ramCrush_stackCap * 100 + "%>";
+                                    }
+                                    else
+                                    {
+                                        textWall += "\n <stacks>";
                                     }
                                 }
                                 else
                                 {
-                                    textWall += ".";
+                                    textWall += "\n <no_stack>";
                                 }
+                                textWall += "\n\n";
                             }
-                            else if (d.terrainScanning)
-                            {
-                                textWall += "Enabled terrain scanning up to a distance of " + d.range + ", once per turn.";
-                            }
-                            else if (d.haulerTracking)
-                            {
-                                textWall += "Enables real-time tracking of 0b10 Haulers across the entire floor";
-                                if (d.ht_viewInventories)
-                                {
-                                    textWall += ", and gives access to their current manifest. Toggle active state to temporarily list all inventories in view.";
-                                }
-                                else
-                                {
-                                    textWall += ".";
-                                }
-                                textWall += " Only applies in 0b10-controlled areas.";
-                            }
-                            else if (d.seismic)
-                            {
-                                textWall += "Enables real-time seismic detection and analysis up to a distance of ";
-                                textWall += d.range + ".";
 
-                                if (d.stacks)
+                            if (E.hasStabEffect)
+                            {
+                                textWall += E.stab_recoilPerWeapon + " recoil from each weapon";
+                                if (E.stab_KnockbackImmune)
+                                {
+                                    textWall += ", and immunity to knockback";
+                                }
+                                textWall += ".";
+                            }
+
+                            if (E.armorProtectionEffect.hasEffect)
+                            {
+                                ItemProtectionEffect p = E.armorProtectionEffect;
+
+                                if (p.armorEffect_absorbtion > 0)
+                                {
+                                    textWall += "Absorbs " + p.armorEffect_absorbtion * 100 + "% of damage that would otherwise affect ";
+                                    string type = "";
+                                    switch (p.armorEffect_slotType)
+                                    {
+                                        case ArmorType.Power:
+                                            type = "Power sources.";
+                                            break;
+                                        case ArmorType.Propulsion:
+                                            type = "Propulsion units.";
+                                            break;
+                                        case ArmorType.Utility:
+                                            type = "Utilities.";
+                                            break;
+                                        case ArmorType.Weapon:
+                                            type = "Weapons.";
+                                            break;
+                                        case ArmorType.General:
+                                            type = "other parts.";
+                                            break;
+                                        case ArmorType.None:
+                                            type = "Core.";
+                                            break;
+                                    }
+                                    textWall += type;
+                                    if (p.armorEffect_preventCritStrikesVSSlot)
+                                    {
+                                        textWall += "Also negates extra effects of critical strikes against " + type;
+                                        if (p.armorEffect_preventChainReactions)
+                                        {
+                                            textWall += ", and prevents chain reactions due to electromagnetic damage";
+                                            if (!p.armorEffect_preventOverflowDamage)
+                                            {
+                                                textWall += ", but cannot protect against overflow damage";
+                                            }
+                                        }
+                                    }
+                                    textWall += ".";
+
+                                    if (p.stacks)
+                                    {
+                                        textWall += "\n <stacks>";
+                                    }
+                                    else
+                                    {
+                                        textWall += "\n <no_stack>";
+                                    }
+                                }
+                                else if (p.projectionExchange)
+                                {
+                                    textWall += "Blocks " + p.pe_blockPercent * 100 + "% of damage ";
+                                    if (p.pe_global)
+                                    {
+                                        textWall += "in exchange for energy loss at a ";
+                                    }
+                                    else if (p.pe_includeVisibileAllies)
+                                    {
+                                        textWall += "to self and any visibile allies within a range of ";
+                                        textWall += p.pe_alliesDistance + " in exchange for energy loss at a ";
+                                    }
+                                    else
+                                    {
+                                        textWall += "to this part in exchange for energy loss at a ";
+                                    }
+                                    textWall += p.pe_exchange.x + ":" + p.pe_exchange.y + " ratio";
+                                    if (p.pe_requireEnergy)
+                                        textWall += " (no effect if insufficient energy).";
+                                    textWall += ".";
+
+                                    if (p.stacks)
+                                    {
+                                        textWall += "\n <stacks>";
+                                    }
+                                    else
+                                    {
+                                        textWall += "\n <no_stack>";
+                                    }
+                                }
+                                else if (p.highCoverage)
+                                {
+                                    textWall += "Protects other parts via high coverage.";
+                                }
+                                else if (p.type_hasTypeResistance)
+                                {
+                                    textWall += "Enables ";
+                                    if (p.type_allTypes)
+                                    {
+                                        textWall += "general damage resistance: ";
+                                    }
+                                    else
+                                    {
+                                        textWall += p.type_damageType.ToString().ToLower() + " damage resistance: ";
+                                    }
+                                    textWall += p.type_percentage * 100 + "%";
+                                    if (p.type_includeAllies)
+                                    {
+                                        textWall += ", applying benefit to both self and any allies within a range of ";
+                                        textWall += p.type_alliesRange.ToString();
+                                    }
+                                    textWall += ".";
+
+                                    if (p.stacks)
+                                    {
+                                        textWall += "\n <stacks>";
+                                    }
+                                    else
+                                    {
+                                        textWall += "\n <no_stack>";
+                                    }
+                                }
+                                else if (p.selfRepair)
+                                {
+                                    textWall += "Regenerates integrity at a rate of ";
+                                    textWall += p.selfRepair_amount + " per " + p.selfRepairTurns + " turn";
+                                    if (p.selfRepairTurns > 1)
+                                        textWall += "s";
+                                    textWall += ".";
+
+                                    if (p.parallel && p.resume)
+                                    {
+                                        textWall += "\n <parallel_ok, resume_ok>";
+                                    }
+                                    else if (p.parallel)
+                                    {
+                                        textWall += "\n <parallel_ok>";
+                                    }
+                                    else if (p.resume)
+                                    {
+                                        textWall += "\n <resume_ok>";
+                                    }
+                                }
+                                else if (p.critImmunity)
+                                {
+                                    textWall += "100% chance to negate effects of incoming critical strikes.";
+                                }
+                            }
+
+                            if (E.detectionEffect.hasEffect)
+                            {
+                                ItemDetectionEffect d = E.detectionEffect;
+
+                                if (d.botDetection)
+                                {
+                                    textWall += "Enables robots scanning up to a distance of " + d.range + ", once per turn";
+
+                                    if (d.bd_maxInterpreterEffect)
+                                    {
+                                        textWall += ", in addition to all effects of a maximum-strength signal interpreter.";
+                                        if (d.bd_previousActivity)
+                                        {
+                                            textWall += " Also detects long-term residual evidence of prior robot activity within field of view.";
+                                        }
+
+                                        if (d.bd_botReporting)
+                                        {
+                                            textWall += " 0b10 combat robots scanned by this device will report the event, once per bot.";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        textWall += ".";
+                                    }
+                                }
+                                else if (d.terrainScanning)
+                                {
+                                    textWall += "Enabled terrain scanning up to a distance of " + d.range + ", once per turn.";
+                                }
+                                else if (d.haulerTracking)
+                                {
+                                    textWall += "Enables real-time tracking of 0b10 Haulers across the entire floor";
+                                    if (d.ht_viewInventories)
+                                    {
+                                        textWall += ", and gives access to their current manifest. Toggle active state to temporarily list all inventories in view.";
+                                    }
+                                    else
+                                    {
+                                        textWall += ".";
+                                    }
+                                    textWall += " Only applies in 0b10-controlled areas.";
+                                }
+                                else if (d.seismic)
+                                {
+                                    textWall += "Enables real-time seismic detection and analysis up to a distance of ";
+                                    textWall += d.range + ".";
+
+                                    if (d.stacks)
+                                    {
+                                        textWall += "\n <stacks>";
+                                    }
+                                    else
+                                    {
+                                        textWall += "\n <no_stack>";
+                                    }
+                                }
+                                else if (d.machine)
+                                {
+                                    textWall += "Analyzes visible machines to locate others on the 0b10 network. Also determines whether an explosive machine has been destabilized and how long until detonation.";
+                                }
+                                else if (d.structural)
+                                {
+                                    textWall += "Scans all visible walls to analyze the structure behind them, out to a depth of ";
+                                    textWall += d.structural_depth;
+                                    textWall += ". Also identifies hidden doorways and highlights areas that will soon cave in due to instability even without further stimulation.";
+                                }
+                                else if (d.warlordComms)
+                                {
+                                    textWall += "Enables long-distance communication with Warlord forces to determine their composition and hiding locations. Toggle active state to temporarily list all squads in the area. If active while near a squad, will signal it to emerge and assist.";
+                                }
+                            }
+
+                            if (E.hasSignalInterp)
+                            {
+                                // Unlike other effects, each text wall is different for the different strengths
+                                // 1 -> 4
+                                switch (E.signalInterp_strength)
+                                {
+                                    case 1:
+                                        textWall += "Strength 1: Robot scan signals differentiate between object sizes. (Requires data from a Sensor Array.) Also enables deciphering of signals emitted from adjacent exits, revealing where they lead, and at garrisons know the time until the next response dispatch, if any. When multiple exits lead to the same destination, after having identified the first, subsequent ones will be identified on sight even without an interpreter.";
+                                        break;
+                                    case 2:
+                                        textWall += "Strength 2: Robot scan signals accurately reflect target size and class, and are unaffected by system corruption. (Requires data from a Sensor Array.) Also enables deciphering of signals emitted from adjacent exits, revealing where they lead, and at garrisons know the time until the next response dispatch, if any. When multiple exits lead to the same destination, after having identified the first, subsequent ones will be identified on sight even without an interpreter.";
+                                        break;
+                                    case 3:
+                                        textWall += "Strength 3: Robot scan signals accurately reflect target size and specific class rating, and are unaffected by system corruption. (Requires data from a Sensor Array.) Also enables deciphering of signals emitted from adjacent exits, revealing where they lead, and at garrisons know the time until the next response dispatch, if any. When multiple exits lead to the same destination, after having identified the first, subsequent ones will be identified on sight even without an interpreter.";
+                                        break;
+                                    case 4:
+                                        textWall += "Strength 4: Robot scan signals accurately reflect target size and specific class rating, are unaffected by system corruption, and can discern dormant, unpowered, disabled, and broken robots. (Requires data from a Sensor Array.) Also enables deciphering of signals emitted from adjacent exits, revealing where they lead, and at garrisons know the time until the next response dispatch, if any. When multiple exits lead to the same destination, after having identified the first, subsequent ones will be identified on sight even without an interpreter.";
+                                        break;
+                                }
+                            }
+
+                            if (E.hasMassSupport)
+                            {
+                                textWall += "Increase mass support by " + E.massSupport + ".";
+
+                                if (E.massSupport_stacks)
                                 {
                                     textWall += "\n <stacks>";
                                 }
@@ -8406,529 +8485,137 @@ public class UIManager : MonoBehaviour
                                     textWall += "\n <no_stack>";
                                 }
                             }
-                            else if (d.machine)
-                            {
-                                textWall += "Analyzes visible machines to locate others on the 0b10 network. Also determines whether an explosive machine has been destabilized and how long until detonation.";
-                            }
-                            else if (d.structural)
-                            {
-                                textWall += "Scans all visible walls to analyze the structure behind them, out to a depth of ";
-                                textWall += d.structural_depth;
-                                textWall += ". Also identifies hidden doorways and highlights areas that will soon cave in due to instability even without further stimulation.";
-                            }
-                            else if (d.warlordComms)
-                            {
-                                textWall += "Enables long-distance communication with Warlord forces to determine their composition and hiding locations. Toggle active state to temporarily list all squads in the area. If active while near a squad, will signal it to emerge and assist.";
-                            }
-                        }
 
-                        if (E.hasSignalInterp)
-                        {
-                            // Unlike other effects, each text wall is different for the different strengths
-                            // 1 -> 4
-                            switch (E.signalInterp_strength)
+                            if (E.collectsMatterBeam)
                             {
-                                case 1:
-                                    textWall += "Strength 1: Robot scan signals differentiate between object sizes. (Requires data from a Sensor Array.) Also enables deciphering of signals emitted from adjacent exits, revealing where they lead, and at garrisons know the time until the next response dispatch, if any. When multiple exits lead to the same destination, after having identified the first, subsequent ones will be identified on sight even without an interpreter.";
-                                    break;
-                                case 2:
-                                    textWall += "Strength 2: Robot scan signals accurately reflect target size and class, and are unaffected by system corruption. (Requires data from a Sensor Array.) Also enables deciphering of signals emitted from adjacent exits, revealing where they lead, and at garrisons know the time until the next response dispatch, if any. When multiple exits lead to the same destination, after having identified the first, subsequent ones will be identified on sight even without an interpreter.";
-                                    break;
-                                case 3:
-                                    textWall += "Strength 3: Robot scan signals accurately reflect target size and specific class rating, and are unaffected by system corruption. (Requires data from a Sensor Array.) Also enables deciphering of signals emitted from adjacent exits, revealing where they lead, and at garrisons know the time until the next response dispatch, if any. When multiple exits lead to the same destination, after having identified the first, subsequent ones will be identified on sight even without an interpreter.";
-                                    break;
-                                case 4:
-                                    textWall += "Strength 4: Robot scan signals accurately reflect target size and specific class rating, are unaffected by system corruption, and can discern dormant, unpowered, disabled, and broken robots. (Requires data from a Sensor Array.) Also enables deciphering of signals emitted from adjacent exits, revealing where they lead, and at garrisons know the time until the next response dispatch, if any. When multiple exits lead to the same destination, after having identified the first, subsequent ones will be identified on sight even without an interpreter.";
-                                    break;
-                            }
-                        }
-
-                        if (E.hasMassSupport)
-                        {
-                            textWall += "Increase mass support by " + E.massSupport + ".";
-
-                            if (E.massSupport_stacks)
-                            {
-                                textWall += "\n <stacks>";
-                            }
-                            else
-                            {
-                                textWall += "\n <no_stack>";
-                            }
-                        }
-
-                        if (E.collectsMatterBeam)
-                        {
-                            textWall += "Automatically collects matter within a range of " + E.matterCollectionRange + ".";
-                        }
-
-                        if (E.internalStorage)
-                        {
-                            textWall += "Increases ";
-                            if (E.internalStorageType == 0) // Matter
-                            {
-                                textWall += "matter storage capcity by " + E.internalStorageCapacity + ".";
-                                textWall += " Also stores surplus collected matter while in inventory, but cannot be accessed for use until attached. Stored matter can also be extracted directly if on the ground at current position.";
-                            }
-                            else if (E.internalStorageType == 1) // Power
-                            {
-                                textWall += "energy storage capcity by " + E.internalStorageCapacity + ".";
-                                textWall += " Also stores surplus collected energy while in inventory, but cannot be accessed for use until attached. Stored energy can also be extracted directly if on the ground at current position.";
+                                textWall += "Automatically collects matter within a range of " + E.matterCollectionRange + ".";
                             }
 
-                            if (E.internalStorageType_stacks)
+                            if (E.internalStorage)
                             {
-                                textWall += "\n <stacks>";
-                            }
-                            else
-                            {
-                                textWall += "\n <no_stack>";
-                            }
-                        }
-
-                        if (E.hackBonuses.hasHackBonus || E.hackBonuses.hasSystemShieldBonus)
-                        {
-                            HackBonus h = E.hackBonuses;
-
-                            if (h.hasHackBonus)
-                            {
-                                textWall += "Increases chance of successful machine hack by " + h.hackSuccessBonus * 100;
-                                textWall += ". Also provides a +" + h.rewireBonus * 100 + "% bonus to rewiring traps and disrupted robots, and applies a ";
-                                textWall += h.programmerHackDefenseBonus * 100 + "% penalty to hostile programmers attempting to defend their allies against your hacks.";
-                            }
-                            else if (h.hasSystemShieldBonus)
-                            {
-                                textWall += "While hacking machines, reduces both chance of detection and rate of detection chance increase by ";
-                                textWall += h.hackDetectRateBonus + ". Reduces tracing progress advances by the same amount. Also a lower chance that hacking machines will be considered serious enough to trigger an increase in security level, and reduces central database lockout chance by ";
-                                textWall += h.databaseLockoutBonus * 100 + "%. Blocks hacking feedback side effects ";
-                                textWall += h.hackFeedbackPreventBonus * 100 + "% of the time, and repels " + h.allyHackDefenseBonus * 100 + "% of hacking attempts against allies within a range of ";
-                                textWall += h.allyHackRange + ".";
-                            }
-
-                            if (h.stacks)
-                            {
-                                textWall += "\n <stacks>";
-                            }
-                            else
-                            {
-                                textWall += "\n <no_stack>";
-                            }
-                        }
-
-                        if (E.emitEffect.hasEffect)
-                        {
-                            textWall += "Every " + E.emitEffect.turnTime + " turns emits a powerful signal tuned to power down all ";
-                            if (E.emitEffect.target)
-                            {
-                                textWall += "0b10 ";
-                            }
-                            else
-                            {
-                                textWall += "Assembled ";
-                            }
-                            textWall += "within a range of " + E.emitEffect.range + ".";
-                        }
-
-                        if (E.fireTimeEffect.hasEffect)
-                        {
-                            ItemFiretimeEffect f = E.fireTimeEffect;
-
-                            if (f.launchersOnly)
-                            {
-                                textWall += "Reduces firing time for any launcher by " + f.fireTimeReduction * 100 + "%, if fired alone.";
-                            }
-                            else
-                            {
-                                textWall += "Reduces collective firing time of all guns, cannons, and launchers by " + f.fireTimeReduction * 100 + "%.";
-                            }
-
-                            if (!f.compatability)
-                            {
-                                textWall += " Incompatible with Weapon Cyclers and Autonomous or overloaded weapons.";
-                            }
-
-                            if (f.stacks)
-                            {
-                                if (f.capped)
+                                textWall += "Increases ";
+                                if (E.internalStorageType == 0) // Matter
                                 {
-                                    textWall += "\n <stacks, capped at " + f.cap * 100 + "%>";
+                                    textWall += "matter storage capcity by " + E.internalStorageCapacity + ".";
+                                    textWall += " Also stores surplus collected matter while in inventory, but cannot be accessed for use until attached. Stored matter can also be extracted directly if on the ground at current position.";
                                 }
-                                else
+                                else if (E.internalStorageType == 1) // Power
+                                {
+                                    textWall += "energy storage capcity by " + E.internalStorageCapacity + ".";
+                                    textWall += " Also stores surplus collected energy while in inventory, but cannot be accessed for use until attached. Stored energy can also be extracted directly if on the ground at current position.";
+                                }
+
+                                if (E.internalStorageType_stacks)
                                 {
                                     textWall += "\n <stacks>";
                                 }
-                            }
-                            else
-                            {
-                                textWall += "\n <no_stack>";
-                            }
-                        }
-
-                        if (E.transmissionJammingEffect.hasEffect)
-                        {
-                            ItemTransmissionJamming f = E.transmissionJammingEffect;
-
-                            textWall += "Blocks local transmissions from visible hostiles within a range of ";
-                            textWall += f.range + ", making it impossible for them to share information about your current position.";
-
-                            if (f.preventReinforcementCall)
-                            {
-                                textWall += " Also prevents calls for reinforcements";
-                                if (f.suppressAlarmTraps)
+                                else
                                 {
-                                    textWall += ", and suppresses alarm traps";
+                                    textWall += "\n <no_stack>";
                                 }
-                                textWall += ".";
                             }
-                        }
 
-                        if (E.effectiveCorruptionEffect.hasEffect)
-                        {
-                            ItemEffectiveCorruptionPrevention f = E.effectiveCorruptionEffect;
-
-                            textWall += "Reduces effective system corruption by " + f.amount + ".";
-
-                            if (f.stacks)
+                            if (E.hackBonuses.hasHackBonus || E.hackBonuses.hasSystemShieldBonus)
                             {
-                                textWall += "\n <stacks>";
-                            }
-                            else
-                            {
-                                textWall += "\n <no_stack>";
-                            }
-                        }
+                                HackBonus h = E.hackBonuses;
 
-                        if (E.partRestoreEffect.hasEffect)
-                        {
-                            ItemPartRestore f = E.partRestoreEffect;
-
-                            textWall += f.percentChance * 100 + "% chance each turn to restore a broken or malfunctioning part, attached or in inventory, to functionality.";
-                            if (!f.canRepairAlienTech)
-                            {
-                                textWall += " Unable to repair alien technology";
-                                if (f.protoRepairCap > 0)
+                                if (h.hasHackBonus)
                                 {
-                                    textWall += ", or prototypes above rating " + f.protoRepairCap + ".";
+                                    textWall += "Increases chance of successful machine hack by " + h.hackSuccessBonus * 100;
+                                    textWall += ". Also provides a +" + h.rewireBonus * 100 + "% bonus to rewiring traps and disrupted robots, and applies a ";
+                                    textWall += h.programmerHackDefenseBonus * 100 + "% penalty to hostile programmers attempting to defend their allies against your hacks.";
+                                }
+                                else if (h.hasSystemShieldBonus)
+                                {
+                                    textWall += "While hacking machines, reduces both chance of detection and rate of detection chance increase by ";
+                                    textWall += h.hackDetectRateBonus + ". Reduces tracing progress advances by the same amount. Also a lower chance that hacking machines will be considered serious enough to trigger an increase in security level, and reduces central database lockout chance by ";
+                                    textWall += h.databaseLockoutBonus * 100 + "%. Blocks hacking feedback side effects ";
+                                    textWall += h.hackFeedbackPreventBonus * 100 + "% of the time, and repels " + h.allyHackDefenseBonus * 100 + "% of hacking attempts against allies within a range of ";
+                                    textWall += h.allyHackRange + ".";
+                                }
+
+                                if (h.stacks)
+                                {
+                                    textWall += "\n <stacks>";
                                 }
                                 else
                                 {
+                                    textWall += "\n <no_stack>";
+                                }
+                            }
+
+                            if (E.emitEffect.hasEffect)
+                            {
+                                textWall += "Every " + E.emitEffect.turnTime + " turns emits a powerful signal tuned to power down all ";
+                                if (E.emitEffect.target)
+                                {
+                                    textWall += "0b10 ";
+                                }
+                                else
+                                {
+                                    textWall += "Assembled ";
+                                }
+                                textWall += "within a range of " + E.emitEffect.range + ".";
+                            }
+
+                            if (E.fireTimeEffect.hasEffect)
+                            {
+                                ItemFiretimeEffect f = E.fireTimeEffect;
+
+                                if (f.launchersOnly)
+                                {
+                                    textWall += "Reduces firing time for any launcher by " + f.fireTimeReduction * 100 + "%, if fired alone.";
+                                }
+                                else
+                                {
+                                    textWall += "Reduces collective firing time of all guns, cannons, and launchers by " + f.fireTimeReduction * 100 + "%.";
+                                }
+
+                                if (!f.compatability)
+                                {
+                                    textWall += " Incompatible with Weapon Cyclers and Autonomous or overloaded weapons.";
+                                }
+
+                                if (f.stacks)
+                                {
+                                    if (f.capped)
+                                    {
+                                        textWall += "\n <stacks, capped at " + f.cap * 100 + "%>";
+                                    }
+                                    else
+                                    {
+                                        textWall += "\n <stacks>";
+                                    }
+                                }
+                                else
+                                {
+                                    textWall += "\n <no_stack>";
+                                }
+                            }
+
+                            if (E.transmissionJammingEffect.hasEffect)
+                            {
+                                ItemTransmissionJamming f = E.transmissionJammingEffect;
+
+                                textWall += "Blocks local transmissions from visible hostiles within a range of ";
+                                textWall += f.range + ", making it impossible for them to share information about your current position.";
+
+                                if (f.preventReinforcementCall)
+                                {
+                                    textWall += " Also prevents calls for reinforcements";
+                                    if (f.suppressAlarmTraps)
+                                    {
+                                        textWall += ", and suppresses alarm traps";
+                                    }
                                     textWall += ".";
                                 }
                             }
-                            else
+
+                            if (E.effectiveCorruptionEffect.hasEffect)
                             {
-                                textWall += " Able to repair alien technology";
-                                if (f.protoRepairCap > 0)
-                                {
-                                    textWall += ", but unable to repair prototypes above rating " + f.protoRepairCap + ".";
-                                }
-                                else
-                                {
-                                    textWall += ".";
-                                }
-                            }
+                                ItemEffectiveCorruptionPrevention f = E.effectiveCorruptionEffect;
 
-                            if (f.canRunInParralel)
-                            {
-                                textWall += "\n <parallel_ok>";
-                            }
-                        }
-
-                        if (E.exilesEffects.hasEffect)
-                        {
-                            ItemExilesSpecific f = E.exilesEffects;
-
-                            if (f.isAutoWeapon)
-                            {
-                                textWall += "Selects its own targets and attacks them if in range, at no time cost to you.";
-                            }
-
-                            if (f.chronoWheelEffect)
-                            {
-                                textWall += "Sets a temporal reversion point when attached, then loses 1 integrity per turn. Once integrity is depleted naturally, you are forced back to that point in time. If destroyed prematurely the reversion will not occur.";
-                            }
-
-                            if (f.lifetimeDecay)
-                            {
-                                textWall += "\n\n Eventually breaks down.";
-                            }
-
-                            // add more later
-                        }
-
-                        if (E.toHitBuffs.hasEffect)
-                        {
-                            ItemToHitEffects f = E.toHitBuffs;
-
-                            if (f.bonusCritChance)
-                            {
-                                textWall += "Increases weapon critical chances by " + f.amount * 100 + "%.";
-                                textWall += " Only affects weapons that are already capable of critical hits, and not applicable for the Meltdown critical.";
-                            }
-
-                            if (f.bypassArmor)
-                            {
-                                textWall += "Enables " + f.amount * 100 + "% chance to bypass target armor. Does not apply to AOE attacks.";
-                            }
-
-                            if (f.coreExposureEffect)
-                            {
-                                textWall += "Increases target core exposure by " + f.amount * 100 + "%.";
-                                if (f.coreExposureGCM_only)
-                                {
-                                    textWall += " Applies to only gun, cannon, and melee attacks.";
-                                }
-                            }
-
-                            if (f.flatBonus)
-                            {
-                                textWall += "Increase non-melee weapon accuracy by " + f.amount * 100 + "%";
-                            }
-
-                            if (f.stacks)
-                            {
-                                textWall += "\n <stacks>";
-                            }
-                            else if (f.halfStacks)
-                            {
-                                textWall += "\n <half_stacks>";
-                            }
-                            else
-                            {
-                                textWall += "\n <no_stack>";
-                            }
-                        }
-
-                        if (E.partIdent.hasEffect)
-                        {
-                            textWall += E.partIdent.amount * 100 + "% chance to identify a random unidentified part in inventory each turn. ";
-                            if (!E.partIdent.canIdentifyAlien)
-                            {
-                                textWall += "Cannot identify alien technology.";
-                            }
-
-                            if (E.partIdent.parallel)
-                            {
-                                textWall += "\n <parallel_ok>";
-                            }
-                        }
-
-                        if (E.antiCorruption.hasEffect)
-                        {
-                            textWall += E.antiCorruption.amount * 100 + "% chance each turn to purge 1% of system corruption";
-                            if (E.antiCorruption.integrityLossPer > 0)
-                            {
-                                textWall += ", losing " + E.antiCorruption.integrityLossPer + " integrity each time the effect is applied";
-                            }
-
-                            textWall += ".";
-
-                            if (E.antiCorruption.parallel)
-                            {
-                                textWall += "\n <parallel_ok>";
-                            }
-                        }
-
-                        if (E.rcsEffect.hasEffect)
-                        {
-                            ItemRCS f = E.rcsEffect;
-
-                            textWall += "Enables responsive movement to avoid direct attacks, " + f.percentage * 100 + "% to dodge while on legs, or " + f.percentage * 200 + "% while hovering or flying (no effect on tracked or wheeled movement). Same chance to evade triggered traps";
-                            if (f.momentumBonus > 0)
-                            {
-                                textWall += ", and a +" + f.momentumBonus + " to effective momentum for melee attacks and ramming. No effects while overweight";
-                            }
-                            textWall += ".";
-
-                            if (f.stacks)
-                            {
-                                textWall += "\n <stacks>";
-                            }
-                            else
-                            {
-                                textWall += "\n <no_stack>";
-                            }
-                        }
-
-                        if (E.phasingEffect.hasEffect)
-                        {
-                            textWall += "Reduces enemy ranged targeting accuracy by " + E.phasingEffect.percentage * 100 + "%.";
-                            if (E.phasingEffect.stacks)
-                            {
-                                textWall += "\n <stacks>";
-                            }
-                            else
-                            {
-                                textWall += "\n <no_stack>";
-                            }
-                        }
-
-                        if (E.cloakingEffect.hasEffect)
-                        {
-                            ItemCloaking f = E.cloakingEffect;
-
-                            textWall += "Effective sight range of robots attempting to spot you reduced by " + f.rangedReduction + ". ";
-                            if (f.noticeReduction > 0)
-                            {
-                                textWall += "Also " + f.noticeReduction * 100 + "% chance of being noticed by hostiles if passing through their field of view when not their turn.";
-                            }
-
-                            if (f.halfStacks)
-                            {
-                                textWall += "\n <half_stacks>";
-                            }
-                            else
-                            {
-                                textWall += "\n <no_stack>";
-                            }
-                        }
-
-                        if (E.meleeBonus.hasEffect)
-                        {
-                            ItemMeleeBonus f = E.meleeBonus;
-
-                            if (f.melee_followUpChance > 0)
-                            {
-                                textWall += "Increases per-weapon chance of follow-up melee attacks by" + f.melee_followUpChance * 100 + "%";
-                            }
-
-                            if (f.melee_maxDamageBoost > 0)
-                            {
-                                textWall += "Increases melee weapons maximum damage by " + f.melee_maxDamageBoost * 100 + "%";
-                                if (f.melee_accuracyDecrease > 0)
-                                {
-                                    textWall += ", and decreases melee attack accuracy by " + f.melee_accuracyDecrease * 100 + "%";
-                                }
-                                textWall += ".";
-                            }
-
-                            if (f.melee_accuracyIncrease > 0)
-                            {
-                                textWall += "Increases melee attack accuracy by " + f.melee_accuracyIncrease * 100 + "%";
-                                if (f.melee_minDamageBoost > 0)
-                                {
-                                    textWall += ", and minimum damage by " + f.melee_minDamageBoost + " (cannot exceed weapon's maximum damage)"; ;
-                                }
-                                textWall += ".";
-                            }
-
-                            if (f.melee_attackTimeDecrease > 0)
-                            {
-                                textWall += "Increases per-weapon chance of follow-up melee attacks by " + f.melee_attackTimeDecrease * 100 + "%";
-                            }
-
-                            if (f.stacks)
-                            {
-                                textWall += "\n <stack>";
-                            }
-                            else if (f.halfStacks)
-                            {
-                                textWall += "\n <half_stacks>";
-                            }
-                            else
-                            {
-                                textWall += "\n <no_stack>";
-                            }
-                        }
-
-                        if (E.launcherBonus.hasEffect)
-                        {
-                            ItemLauncherBonuses f = E.launcherBonus;
-
-                            if (f.launcherAccuracy > 0)
-                            {
-                                textWall += "Increases launcher accuracy by " + f.launcherAccuracy * 100 + "%. Also prevents launcher misfires caused by system corruption.";
-                            }
-
-                            if (f.launcherLoading > 0)
-                            {
-                                if (f.forEnergyOrCannon)
-                                {
-                                    textWall += "Reduces firing time for an energy gun or cannon by 50%, if fired alone. Incompatible with Weapon Cyclers and autonomous or overloaded weapons.";
-                                }
-                                else
-                                {
-                                    textWall += "Reduces firing time for any launcher by 50%, if fired alone. Incompatible with Weapon Cyclers and autonomous or overloaded weapons.";
-                                }
-                            }
-
-                            if (f.stacks)
-                            {
-                                textWall += "\n <stacks>";
-                            }
-                            else
-                            {
-                                textWall += "\n <no_stack>";
-                            }
-                        }
-
-                        if (E.bonusSlots.hasEffect)
-                        {
-                            ItemBonusSlots f = E.bonusSlots;
-
-                            // ?
-                        }
-
-                        if (E.flatDamageBonus.hasEffect)
-                        {
-                            ItemFlatDamageBonus f = E.flatDamageBonus;
-
-                            string types = "";
-                            foreach (var T in f.types)
-                            {
-                                types += T.ToString() + "/";
-                            }
-                            types = types.Substring(0, types.Length - 1); // Remove the spare "/"
-
-                            textWall += "Increases " + types + " damage by " + f.damageBonus * 100 + "%.";
-
-                            if (f.stacks)
-                            {
-                                textWall += "\n <stacks>";
-                            }
-                            else if (f.halfStacks)
-                            {
-                                textWall += "\n <half_stacks>";
-                            }
-                            else
-                            {
-                                textWall += "\n <no_stack>";
-                            }
-                        }
-
-                        if (E.salvageBonus.hasEffect)
-                        {
-                            ItemSalvageBonuses f = E.salvageBonus;
-
-                            textWall += "Increases salvage recovered from targets, +" + f.bonus + " modifier.";
-
-                            if (f.gunTypeOnly)
-                            {
-                                textWall += " Compatible only with gun-type weapons that fire a single projectile.";
-                            }
-
-                            if (f.stacks)
-                            {
-                                textWall += "\n <stacks>";
-                            }
-                            else
-                            {
-                                textWall += "\n <no_stack>";
-                            }
-                        }
-
-                        if (E.alienBonus.hasEffect)
-                        {
-                            ItemAlienBonuses f = E.alienBonus;
-
-                            if (f.singleDamageToCore)
-                            {
-                                textWall += "While active, " + f.amount * 100 + "% of damage to this part is intead passed along to core.";
-                            }
-
-                            if (f.allDamageToCore)
-                            {
-                                textWall += f.amount * 100 + "% of damage to parts is instead transferred directly to the core.";
+                                textWall += "Reduces effective system corruption by " + f.amount + ".";
 
                                 if (f.stacks)
                                 {
@@ -8940,56 +8627,397 @@ public class UIManager : MonoBehaviour
                                 }
                             }
 
-                            // Expand this later
+                            if (E.partRestoreEffect.hasEffect)
+                            {
+                                ItemPartRestore f = E.partRestoreEffect;
+
+                                textWall += f.percentChance * 100 + "% chance each turn to restore a broken or malfunctioning part, attached or in inventory, to functionality.";
+                                if (!f.canRepairAlienTech)
+                                {
+                                    textWall += " Unable to repair alien technology";
+                                    if (f.protoRepairCap > 0)
+                                    {
+                                        textWall += ", or prototypes above rating " + f.protoRepairCap + ".";
+                                    }
+                                    else
+                                    {
+                                        textWall += ".";
+                                    }
+                                }
+                                else
+                                {
+                                    textWall += " Able to repair alien technology";
+                                    if (f.protoRepairCap > 0)
+                                    {
+                                        textWall += ", but unable to repair prototypes above rating " + f.protoRepairCap + ".";
+                                    }
+                                    else
+                                    {
+                                        textWall += ".";
+                                    }
+                                }
+
+                                if (f.canRunInParralel)
+                                {
+                                    textWall += "\n <parallel_ok>";
+                                }
+                            }
+
+                            if (E.exilesEffects.hasEffect)
+                            {
+                                ItemExilesSpecific f = E.exilesEffects;
+
+                                if (f.isAutoWeapon)
+                                {
+                                    textWall += "Selects its own targets and attacks them if in range, at no time cost to you.";
+                                }
+
+                                if (f.chronoWheelEffect)
+                                {
+                                    textWall += "Sets a temporal reversion point when attached, then loses 1 integrity per turn. Once integrity is depleted naturally, you are forced back to that point in time. If destroyed prematurely the reversion will not occur.";
+                                }
+
+                                if (f.lifetimeDecay)
+                                {
+                                    textWall += "\n\n Eventually breaks down.";
+                                }
+
+                                // add more later
+                            }
+
+                            if (E.toHitBuffs.hasEffect)
+                            {
+                                ItemToHitEffects f = E.toHitBuffs;
+
+                                if (f.bonusCritChance)
+                                {
+                                    textWall += "Increases weapon critical chances by " + f.amount * 100 + "%.";
+                                    textWall += " Only affects weapons that are already capable of critical hits, and not applicable for the Meltdown critical.";
+                                }
+
+                                if (f.bypassArmor)
+                                {
+                                    textWall += "Enables " + f.amount * 100 + "% chance to bypass target armor. Does not apply to AOE attacks.";
+                                }
+
+                                if (f.coreExposureEffect)
+                                {
+                                    textWall += "Increases target core exposure by " + f.amount * 100 + "%.";
+                                    if (f.coreExposureGCM_only)
+                                    {
+                                        textWall += " Applies to only gun, cannon, and melee attacks.";
+                                    }
+                                }
+
+                                if (f.flatBonus)
+                                {
+                                    textWall += "Increase non-melee weapon accuracy by " + f.amount * 100 + "%";
+                                }
+
+                                if (f.stacks)
+                                {
+                                    textWall += "\n <stacks>";
+                                }
+                                else if (f.halfStacks)
+                                {
+                                    textWall += "\n <half_stacks>";
+                                }
+                                else
+                                {
+                                    textWall += "\n <no_stack>";
+                                }
+                            }
+
+                            if (E.partIdent.hasEffect)
+                            {
+                                textWall += E.partIdent.amount * 100 + "% chance to identify a random unidentified part in inventory each turn. ";
+                                if (!E.partIdent.canIdentifyAlien)
+                                {
+                                    textWall += "Cannot identify alien technology.";
+                                }
+
+                                if (E.partIdent.parallel)
+                                {
+                                    textWall += "\n <parallel_ok>";
+                                }
+                            }
+
+                            if (E.antiCorruption.hasEffect)
+                            {
+                                textWall += E.antiCorruption.amount * 100 + "% chance each turn to purge 1% of system corruption";
+                                if (E.antiCorruption.integrityLossPer > 0)
+                                {
+                                    textWall += ", losing " + E.antiCorruption.integrityLossPer + " integrity each time the effect is applied";
+                                }
+
+                                textWall += ".";
+
+                                if (E.antiCorruption.parallel)
+                                {
+                                    textWall += "\n <parallel_ok>";
+                                }
+                            }
+
+                            if (E.rcsEffect.hasEffect)
+                            {
+                                ItemRCS f = E.rcsEffect;
+
+                                textWall += "Enables responsive movement to avoid direct attacks, " + f.percentage * 100 + "% to dodge while on legs, or " + f.percentage * 200 + "% while hovering or flying (no effect on tracked or wheeled movement). Same chance to evade triggered traps";
+                                if (f.momentumBonus > 0)
+                                {
+                                    textWall += ", and a +" + f.momentumBonus + " to effective momentum for melee attacks and ramming. No effects while overweight";
+                                }
+                                textWall += ".";
+
+                                if (f.stacks)
+                                {
+                                    textWall += "\n <stacks>";
+                                }
+                                else
+                                {
+                                    textWall += "\n <no_stack>";
+                                }
+                            }
+
+                            if (E.phasingEffect.hasEffect)
+                            {
+                                textWall += "Reduces enemy ranged targeting accuracy by " + E.phasingEffect.percentage * 100 + "%.";
+                                if (E.phasingEffect.stacks)
+                                {
+                                    textWall += "\n <stacks>";
+                                }
+                                else
+                                {
+                                    textWall += "\n <no_stack>";
+                                }
+                            }
+
+                            if (E.cloakingEffect.hasEffect)
+                            {
+                                ItemCloaking f = E.cloakingEffect;
+
+                                textWall += "Effective sight range of robots attempting to spot you reduced by " + f.rangedReduction + ". ";
+                                if (f.noticeReduction > 0)
+                                {
+                                    textWall += "Also " + f.noticeReduction * 100 + "% chance of being noticed by hostiles if passing through their field of view when not their turn.";
+                                }
+
+                                if (f.halfStacks)
+                                {
+                                    textWall += "\n <half_stacks>";
+                                }
+                                else
+                                {
+                                    textWall += "\n <no_stack>";
+                                }
+                            }
+
+                            if (E.meleeBonus.hasEffect)
+                            {
+                                ItemMeleeBonus f = E.meleeBonus;
+
+                                if (f.melee_followUpChance > 0)
+                                {
+                                    textWall += "Increases per-weapon chance of follow-up melee attacks by" + f.melee_followUpChance * 100 + "%";
+                                }
+
+                                if (f.melee_maxDamageBoost > 0)
+                                {
+                                    textWall += "Increases melee weapons maximum damage by " + f.melee_maxDamageBoost * 100 + "%";
+                                    if (f.melee_accuracyDecrease > 0)
+                                    {
+                                        textWall += ", and decreases melee attack accuracy by " + f.melee_accuracyDecrease * 100 + "%";
+                                    }
+                                    textWall += ".";
+                                }
+
+                                if (f.melee_accuracyIncrease > 0)
+                                {
+                                    textWall += "Increases melee attack accuracy by " + f.melee_accuracyIncrease * 100 + "%";
+                                    if (f.melee_minDamageBoost > 0)
+                                    {
+                                        textWall += ", and minimum damage by " + f.melee_minDamageBoost + " (cannot exceed weapon's maximum damage)"; ;
+                                    }
+                                    textWall += ".";
+                                }
+
+                                if (f.melee_attackTimeDecrease > 0)
+                                {
+                                    textWall += "Increases per-weapon chance of follow-up melee attacks by " + f.melee_attackTimeDecrease * 100 + "%";
+                                }
+
+                                if (f.stacks)
+                                {
+                                    textWall += "\n <stack>";
+                                }
+                                else if (f.halfStacks)
+                                {
+                                    textWall += "\n <half_stacks>";
+                                }
+                                else
+                                {
+                                    textWall += "\n <no_stack>";
+                                }
+                            }
+
+                            if (E.launcherBonus.hasEffect)
+                            {
+                                ItemLauncherBonuses f = E.launcherBonus;
+
+                                if (f.launcherAccuracy > 0)
+                                {
+                                    textWall += "Increases launcher accuracy by " + f.launcherAccuracy * 100 + "%. Also prevents launcher misfires caused by system corruption.";
+                                }
+
+                                if (f.launcherLoading > 0)
+                                {
+                                    if (f.forEnergyOrCannon)
+                                    {
+                                        textWall += "Reduces firing time for an energy gun or cannon by 50%, if fired alone. Incompatible with Weapon Cyclers and autonomous or overloaded weapons.";
+                                    }
+                                    else
+                                    {
+                                        textWall += "Reduces firing time for any launcher by 50%, if fired alone. Incompatible with Weapon Cyclers and autonomous or overloaded weapons.";
+                                    }
+                                }
+
+                                if (f.stacks)
+                                {
+                                    textWall += "\n <stacks>";
+                                }
+                                else
+                                {
+                                    textWall += "\n <no_stack>";
+                                }
+                            }
+
+                            if (E.bonusSlots.hasEffect)
+                            {
+                                ItemBonusSlots f = E.bonusSlots;
+
+                                // ?
+                            }
+
+                            if (E.flatDamageBonus.hasEffect)
+                            {
+                                ItemFlatDamageBonus f = E.flatDamageBonus;
+
+                                string types = "";
+                                foreach (var T in f.types)
+                                {
+                                    types += T.ToString() + "/";
+                                }
+                                types = types.Substring(0, types.Length - 1); // Remove the spare "/"
+
+                                textWall += "Increases " + types + " damage by " + f.damageBonus * 100 + "%.";
+
+                                if (f.stacks)
+                                {
+                                    textWall += "\n <stacks>";
+                                }
+                                else if (f.halfStacks)
+                                {
+                                    textWall += "\n <half_stacks>";
+                                }
+                                else
+                                {
+                                    textWall += "\n <no_stack>";
+                                }
+                            }
+
+                            if (E.salvageBonus.hasEffect)
+                            {
+                                ItemSalvageBonuses f = E.salvageBonus;
+
+                                textWall += "Increases salvage recovered from targets, +" + f.bonus + " modifier.";
+
+                                if (f.gunTypeOnly)
+                                {
+                                    textWall += " Compatible only with gun-type weapons that fire a single projectile.";
+                                }
+
+                                if (f.stacks)
+                                {
+                                    textWall += "\n <stacks>";
+                                }
+                                else
+                                {
+                                    textWall += "\n <no_stack>";
+                                }
+                            }
+
+                            if (E.alienBonus.hasEffect)
+                            {
+                                ItemAlienBonuses f = E.alienBonus;
+
+                                if (f.singleDamageToCore)
+                                {
+                                    textWall += "While active, " + f.amount * 100 + "% of damage to this part is intead passed along to core.";
+                                }
+
+                                if (f.allDamageToCore)
+                                {
+                                    textWall += f.amount * 100 + "% of damage to parts is instead transferred directly to the core.";
+
+                                    if (f.stacks)
+                                    {
+                                        textWall += "\n <stacks>";
+                                    }
+                                    else
+                                    {
+                                        textWall += "\n <no_stack>";
+                                    }
+                                }
+
+                                // Expand this later
+                            }
+
+                            #endregion
+
+                            Data_CreateTextWall(textWall);
+                            Data_CreateSpacer();
                         }
-
-                        #endregion
-
-                        Data_CreateTextWall(textWall);
-                        Data_CreateSpacer();
                     }
+
+
                 }
 
-                
-            }
-
-
-
-            // Fabrication goes at the very bottom
-            if (item.itemData.fabricationInfo.canBeFabricated && item.itemData.schematicDetails.hasSchematic)
-            {
-                string mult = "";
-                ItemFabInfo info = item.itemData.fabricationInfo;
-
-                if(info.amountMadePer > 1)
+                // Fabrication goes at the very bottom
+                if (item.itemData.fabricationInfo.canBeFabricated && item.itemData.schematicDetails.hasSchematic)
                 {
-                    mult = " x" + info.amountMadePer;
-                }
+                    string mult = "";
+                    ItemFabInfo info = item.itemData.fabricationInfo;
 
-                UIManager.inst.Data_CreateHeader("Fabrication" + mult); // Fabrication =========================================================================
-
-                UIDataGenericDetail fTime = UIManager.inst.Data_CreateGeneric();
-                extra = "The time in turns required to fabricate this item at a fabricator. Fabricators with higher security levels fabricator quicker, as indicated by the times. Security level: 1 / 2 / 3.";
-                fTime.Setup(true, false, false, "Time", Color.white, extra, "", false, info.fabTime.x + "/" + info.fabTime.y + "/" + info.fabTime.z);
-                UIDataGenericDetail fComp = UIManager.inst.Data_CreateGeneric();
-                extra = "Any extra components required to fabricate this item. Normally only matter is required. Some special items may require extra components.";
-                if (info.componenetsRequired.Count > 0)
-                {
-                    string comps = "";
-                    foreach (var C in info.componenetsRequired)
+                    if (info.amountMadePer > 1)
                     {
-                        comps += C.itemName + "/";
+                        mult = " x" + info.amountMadePer;
                     }
-                    comps = comps.Substring(0, comps.Length - 1); // Remove the extra "/"
-                    fComp.Setup(true, false, false, "Components", Color.white, extra, "", false, comps);
-                }
-                else
-                {
-                    fComp.Setup(true, false, false, "Components", Color.white, extra, "", false, "None", true);
-                }
-            }
 
-            #endregion
+                    UIManager.inst.Data_CreateHeader("Fabrication" + mult); // Fabrication =========================================================================
+
+                    UIDataGenericDetail fTime = UIManager.inst.Data_CreateGeneric();
+                    extra = "The time in turns required to fabricate this item at a fabricator. Fabricators with higher security levels fabricator quicker, as indicated by the times. Security level: 1 / 2 / 3.";
+                    fTime.Setup(true, false, false, "Time", Color.white, extra, "", false, info.fabTime.x + "/" + info.fabTime.y + "/" + info.fabTime.z);
+                    UIDataGenericDetail fComp = UIManager.inst.Data_CreateGeneric();
+                    extra = "Any extra components required to fabricate this item. Normally only matter is required. Some special items may require extra components.";
+                    if (info.componenetsRequired.Count > 0)
+                    {
+                        string comps = "";
+                        foreach (var C in info.componenetsRequired)
+                        {
+                            comps += C.itemName + "/";
+                        }
+                        comps = comps.Substring(0, comps.Length - 1); // Remove the extra "/"
+                        fComp.Setup(true, false, false, "Components", Color.white, extra, "", false, comps);
+                    }
+                    else
+                    {
+                        fComp.Setup(true, false, false, "Components", Color.white, extra, "", false, "None", true);
+                    }
+                }
+
+                #endregion
+            }
         }
         else if(bot != null)
         {
