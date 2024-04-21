@@ -301,10 +301,7 @@ public class Part : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse1)) // Right Click to open /DATA/ Menu
         {
-            if (!UIManager.inst.dataMenu.data_parent.gameObject.activeInHierarchy)
-            {
-                UIManager.inst.Data_OpenMenu(_item);
-            }
+            UIManager.inst.Data_OpenMenu(_item);
         }
     }
 

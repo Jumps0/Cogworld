@@ -453,7 +453,7 @@ public class ItemPropulsion
     public float propHeat;
     public int support;
     public int penalty;
-    [Tooltip("Percentage value.")]
+    [Tooltip("Percentage value. | Seeing as overloading forces a part to output beyond what it was designed to regularly handle, over the long term the additional strain will cause it to gradually lose integrity dependent on its “burnout rate.” So overloading is more than just a tradeoff of energy/heat for speed, as it could eventually render your propulsion useless")]
     public int burnout;
     public bool hasBurnout = false;
 
@@ -474,9 +474,8 @@ public class ItemProjectile // (Disregarded in AOE attacks except for projectile
     public float critChance;
     // https://www.gridsagegames.com/blog/2021/05/design-overhaul-3-damage-types-and-criticals/
     public CritType critType;
-    public int heatTrasfer;
     [Tooltip("0 = None | 1 = Low | 2 = Medium | 3 = High | 4 = Massive")]
-    public int heatTransferDegree;
+    public int heatTrasfer;
     [Tooltip("0.##% > Can be: Wide(10%) | Intermediate (30%) | Narrow (50%) | Fine (100%)")]
     public float spectrum;
     public bool hasSpectrum = false;
@@ -1115,7 +1114,6 @@ public enum ItemDamageType
     Thermal,
     Explosive,
     EMP,
-    Energy,
     Phasic,
     Impact,
     Slashing,

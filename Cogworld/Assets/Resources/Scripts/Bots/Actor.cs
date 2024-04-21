@@ -1008,10 +1008,7 @@ public class Actor : Entity
     {
         if (Input.GetKeyDown(KeyCode.Mouse1)) // Right Click to open /DATA/ Menu
         {
-            if (!UIManager.inst.dataMenu.data_parent.gameObject.activeInHierarchy)
-            {
-                UIManager.inst.Data_OpenMenu(null, this.gameObject, this);
-            }
+            UIManager.inst.Data_OpenMenu(null, this.gameObject, this);
         }
     }
 

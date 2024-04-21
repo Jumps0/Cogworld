@@ -89,10 +89,4 @@ public class UIDataComparisonDetail : MonoBehaviour
         }
     }
 
-    public void Close()
-    {
-        // Just a simple deletion
-        Destroy(this.gameObject);
-    }
-
 }

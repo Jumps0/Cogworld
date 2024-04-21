@@ -6052,21 +6052,24 @@ public class UIManager : MonoBehaviour
         MachinePart machine = null;
         TileBlock tile = null;
 
-        if (other.GetComponent<Actor>())
+        if(other != null)
         {
-            bot = other.GetComponent<Actor>();
-        }
-        else if(other.GetComponent<MachinePart>())
-        {
-            machine = other.GetComponent<MachinePart>().parentPart;
-        }
-        else if (other.GetComponent<TileBlock>())
-        {
-            tile = other.GetComponent<TileBlock>();
-            // But we only want walls & doors
-            if(tile.tileInfo.type == TileType.Floor || tile.tileInfo.type == TileType.Machine || tile.tileInfo.type == TileType.Exit || tile.tileInfo.type == TileType.Default)
+            if (other.GetComponent<Actor>())
             {
-                tile = null;
+                bot = other.GetComponent<Actor>();
+            }
+            else if (other.GetComponent<MachinePart>())
+            {
+                machine = other.GetComponent<MachinePart>().parentPart;
+            }
+            else if (other.GetComponent<TileBlock>())
+            {
+                tile = other.GetComponent<TileBlock>();
+                // But we only want walls & doors
+                if (tile.tileInfo.type == TileType.Floor || tile.tileInfo.type == TileType.Machine || tile.tileInfo.type == TileType.Exit || tile.tileInfo.type == TileType.Default)
+                {
+                    tile = null;
+                }
             }
         }
 
@@ -6088,8 +6091,8 @@ public class UIManager : MonoBehaviour
             }
             dataMenu.data_objects.Clear();
 
-            // Was the previous selected object an item?
-            if(dataMenu.selection_item != null)
+            // Was the previous selected object an item? (and its not the exact same thing)
+            if(dataMenu.selection_item != null && dataMenu.selection_item != item)
             {
                 dataMenu.selected_comparison_item = item; // Assign the item
 
@@ -6118,31 +6121,32 @@ public class UIManager : MonoBehaviour
 
                 // - Firstly, when comparing two items, we start at mass in the overview section, which all items have.
                 int diff = 0;
+                string text = "";
 
                 #region Overview
                 // Mass
-                diff = item1.itemData.mass - item2.itemData.mass;
-                if (diff > 0) // Red (item1 is better)
+                (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.mass, item2.itemData.mass); // inverted (positive is worse)
+                if (diff < 0) // Red (item1 is better)
                 {
-                    UIManager.inst.Data_CreateComparison(false, diff.ToString());
+                    UIManager.inst.Data_CreateComparison(false, text);
                 }
-                else if (diff < 0) // Green (item2 is better)
+                else if (diff > 0) // Green (item2 is better)
                 {
-                    UIManager.inst.Data_CreateComparison(true, diff.ToString());
+                    UIManager.inst.Data_CreateComparison(true, text);
                 }
                 else
                 {
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
                 }
                 // Rating
-                diff = item1.itemData.rating - item2.itemData.rating;
+                (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.rating, item2.itemData.rating);
                 if (diff > 0) // Red (item1 is better)
                 {
-                    UIManager.inst.Data_CreateComparison(false, diff.ToString());
+                    UIManager.inst.Data_CreateComparison(false, text);
                 }
                 else if (diff < 0) // Green (item2 is better)
                 {
-                    UIManager.inst.Data_CreateComparison(true, diff.ToString());
+                    UIManager.inst.Data_CreateComparison(true, text);
                 }
                 else
                 {
@@ -6189,28 +6193,28 @@ public class UIManager : MonoBehaviour
                     }
                 }
                 // Integrity
-                diff = item1.integrityCurrent - item2.integrityCurrent;
-                if(diff > 0) // Red (item1 is better)
+                (text, diff) = HF.GetDifferenceAsStringAndValue(item1.integrityCurrent, item2.integrityCurrent);
+                if (diff > 0) // Red (item1 is better)
                 {
-                    UIManager.inst.Data_CreateComparison(false, diff.ToString());
+                    UIManager.inst.Data_CreateComparison(false, text);
                 }
                 else if(diff < 0) // Green (item2 is better)
                 {
-                    UIManager.inst.Data_CreateComparison(true, diff.ToString());
+                    UIManager.inst.Data_CreateComparison(true, text);
                 }
                 else
                 {
                     UIManager.inst.Data_CreateComparison(false, "EMPTY");
                 }
                 // Coverage
-                diff = item1.itemData.coverage - item2.itemData.coverage;
+                (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.coverage, item2.itemData.coverage);
                 if (diff > 0) // Red (item1 is better)
                 {
-                    UIManager.inst.Data_CreateComparison(false, diff.ToString());
+                    UIManager.inst.Data_CreateComparison(false, text);
                 }
                 else if (diff < 0) // Green (item2 is better)
                 {
-                    UIManager.inst.Data_CreateComparison(false, diff.ToString());
+                    UIManager.inst.Data_CreateComparison(false, text);
                 }
                 else
                 {
@@ -6230,19 +6234,52 @@ public class UIManager : MonoBehaviour
                 // Upkeep
                 if (item1.itemData.hasUpkeep && item2.itemData.hasUpkeep)
                 {
-                    diff = item1.itemData.mass - item2.itemData.mass;
-                    if (diff > 0) // Red (item1 is better)
+                    // Energy
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.energyUpkeep, item2.itemData.energyUpkeep); // inverted (positive is worse)
+                    if (diff < 0) // Red (item1 is better)
                     {
-                        UIManager.inst.Data_CreateComparison(false, diff.ToString());
+                        UIManager.inst.Data_CreateComparison(false, text);
                     }
-                    else if (diff < 0) // Green (item2 is better)
+                    else if (diff > 0) // Green (item2 is better)
                     {
-                        UIManager.inst.Data_CreateComparison(true, diff.ToString());
+                        UIManager.inst.Data_CreateComparison(true, text);
                     }
                     else
                     {
                         UIManager.inst.Data_CreateComparison(false, "EMPTY");
                     }
+                    // Matter
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.matterUpkeep, item2.itemData.matterUpkeep); // inverted (positive is worse)
+                    if (diff < 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff > 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Heat
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.heatUpkeep, item2.itemData.heatUpkeep); // inverted (positive is worse)
+                    if (diff < 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff > 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+
+                    // and 2 spacers
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
                 }
                 else
                 {
@@ -6256,32 +6293,776 @@ public class UIManager : MonoBehaviour
                 // (Power) Supply
                 if (item1.itemData.supply > 0 && item2.itemData.supply > 0)
                 {
+                    // Supply
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.supply, item2.itemData.supply);
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Storage
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.storage, item2.itemData.storage);
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Stability
+                    if(item1.itemData.power_HasStability && item2.itemData.power_HasStability)
+                    {
+                        (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.power_stability, item2.itemData.power_stability);
+                        if (diff > 0) // Red (item1 is better)
+                        {
+                            UIManager.inst.Data_CreateComparison(false, text);
+                        }
+                        else if (diff < 0) // Green (item2 is better)
+                        {
+                            UIManager.inst.Data_CreateComparison(true, text);
+                        }
+                        else
+                        {
+                            UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                        }
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
 
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                }
+                else
+                {
+                    // Create 5 spacers
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
                 }
                 // Propulsion
                 if (item1.itemData.propulsion.Count > 0 && item2.itemData.propulsion.Count > 0)
                 {
+                    // Time/Move
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.propulsion[0].timeToMove, item2.itemData.propulsion[0].timeToMove); // inverted (positive is worse)
+                    if (diff < 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff > 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Drag
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.propulsion[0].drag, item2.itemData.propulsion[0].drag);
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Energy
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.propulsion[0].propEnergy, item2.itemData.propulsion[0].propEnergy); // inverted (positive is worse)
+                    if (diff < 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff > 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Heat
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.propulsion[0].propHeat, item2.itemData.propulsion[0].propHeat); // inverted (positive is worse)
+                    if (diff < 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff > 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Support
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.propulsion[0].support, item2.itemData.propulsion[0].support);
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Penalty
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.propulsion[0].penalty, item2.itemData.propulsion[0].penalty); // inverted (positive is worse)
+                    if (diff < 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff > 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Burnout
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.propulsion[0].burnout, item2.itemData.propulsion[0].burnout);
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Siege (conditional)
+                    if(item1.itemData.type == ItemType.Treads && item1.itemData.type == ItemType.Treads)
+                    {
+                        (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.propulsion[0].canSiege, item2.itemData.propulsion[0].canSiege);
+                        if (diff > 0) // Red (item1 is better)
+                        {
+                            UIManager.inst.Data_CreateComparison(false, "*");
+                        }
+                        else if (diff < 0) // Green (item2 is better)
+                        {
+                            UIManager.inst.Data_CreateComparison(true, "*");
+                        }
+                        else
+                        {
+                            UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                        }
+                    }
+                    else if (item.itemData.type == ItemType.Treads) // Don't wanna mess up the spacing
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
 
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                }
+                else
+                {
+                    // Create spacers
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    if(item.itemData.type == ItemType.Treads) // Siege
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Cover the gap + header
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
                 }
                 // Shot
                 if (item1.itemData.shot.shotRange > 0 && item2.itemData.shot.shotRange > 0)
                 {
+                    // Range
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.shot.shotRange, item2.itemData.shot.shotRange);
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Energy
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.shot.shotEnergy, item2.itemData.shot.shotEnergy); // inverted (positive is worse)
+                    if (diff < 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff > 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Matter
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.shot.shotMatter, item2.itemData.shot.shotMatter); // inverted (positive is worse)
+                    if (diff < 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff > 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Heat
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.shot.shotHeat, item2.itemData.shot.shotHeat); // inverted (positive is worse)
+                    if (diff < 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff > 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Recoil
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.shot.shotRecoil, item2.itemData.shot.shotRecoil);
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Targeting
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.shot.shotTargeting, item2.itemData.shot.shotTargeting);
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Delay
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.shot.shotDelay, item2.itemData.shot.shotDelay); // inverted (positive is worse)
+                    if (diff < 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff > 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Stability
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.shot.shotStability, item2.itemData.shot.shotStability);
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Arc
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.shot.shotArc, item2.itemData.shot.shotArc);
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
 
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                }
+                else
+                {
+                    // Create spacers
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
                 }
                 // Projectile
                 if (item1.itemData.projectile.damage.x > 0 && item2.itemData.projectile.damage.x > 0)
                 {
+                    // Damage (semi different text since its a range)
+                    Vector2Int diffV2 = new Vector2Int((int)item1.itemData.projectile.damage.x - (int)item2.itemData.projectile.damage.x, (int)item1.itemData.projectile.damage.y - (int)item2.itemData.projectile.damage.y);
+                    if(diffV2.x > 0)
+                    {
+                        text = "+ ";
+                    }
+                    text += diffV2.x + "/";
+                    if (diffV2.y > 0)
+                    {
+                        text = "+ ";
+                    }
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    // Type (special text)
+                    if(item1.itemData.projectile.damageType == item2.itemData.projectile.damageType)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    else
+                    {
+                        text = "(" + HF.ShortenDamageType(item1.itemData.projectile.damageType) + ")";
+                        UIManager.inst.Data_CreateComparison(true, text, true);
+                    }
+                    // Critical (special text)
+                    if (item1.itemData.projectile.critChance == item2.itemData.projectile.critChance)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    else
+                    {
+                        string typeC = item1.itemData.projectile.critType.ToString();
+                        typeC = typeC.Substring(0, 5); // Shorten crit type
+                        text = "(" + typeC + ")";
+                        UIManager.inst.Data_CreateComparison(true, text, true);
+                    }
+                    // Penetration
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.projectile.penetrationCapability, item2.itemData.projectile.penetrationCapability);
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    // Heat Transfer (conditional)
+                    if (item1.itemData.projectile.heatTrasfer > 0 && item2.itemData.projectile.heatTrasfer > 0) // inverted (positive is worse)
+                    {
+                        (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.projectile.heatTrasfer, item2.itemData.projectile.heatTrasfer);
+                        if (diff < 0) // Red (item1 is better)
+                        {
+                            UIManager.inst.Data_CreateComparison(false, text);
+                        }
+                        else if (diff > 0) // Green (item2 is better)
+                        {
+                            UIManager.inst.Data_CreateComparison(true, text);
+                        }
+                    }
+                    else if (item.itemData.projectile.heatTrasfer > 0)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, "*");
+                    }
+                    // Spectrum (conditional & special text)
+                    if (item1.itemData.projectile.hasSpectrum && item2.itemData.projectile.hasSpectrum)
+                    {
+                        text = "(" + ((item2.itemData.projectile.spectrum * 100) - (item1.itemData.projectile.spectrum * 100)) + ")"; // not too sure why this is swapped?
 
+                        UIManager.inst.Data_CreateComparison(false, text, true);
+                    }
+                    else if (item.itemData.projectile.hasSpectrum)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+
+                    // Disruption
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.projectile.disruption, item2.itemData.projectile.disruption);
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    // Salvage
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.projectile.salvage, item2.itemData.projectile.salvage);
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                }
+                else
+                {
+                    // Create spacers
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
                 }
                 // Explosion
                 if (item1.itemData.explosionDetails.radius > 0 && item2.itemData.explosionDetails.radius > 0)
                 {
+                    // Radius
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.explosionDetails.radius, item2.itemData.explosionDetails.radius);
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Damage (semi different text since its a range)
+                    Vector2Int diffV2 = new Vector2Int((int)item1.itemData.explosionDetails.damage.x - (int)item2.itemData.explosionDetails.damage.x, (int)item1.itemData.explosionDetails.damage.y - (int)item2.itemData.explosionDetails.damage.y);
+                    if (diffV2.x > 0)
+                    {
+                        text = "+ ";
+                    }
+                    text += diffV2.x + "/";
+                    if (diffV2.y > 0)
+                    {
+                        text = "+ ";
+                    }
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    // Falloff
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.explosionDetails.fallOff, item2.itemData.explosionDetails.fallOff);
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Type (special text)
+                    if (item1.itemData.explosionDetails.damageType == item2.itemData.explosionDetails.damageType)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    else
+                    {
+                        text = "(" + HF.ShortenDamageType(item1.itemData.explosionDetails.damageType) + ")";
+                        UIManager.inst.Data_CreateComparison(true, text, true);
+                    }
 
+                    // Spectrum (conditional & special text)
+                    if (item1.itemData.explosionDetails.hasSpectrum && item2.itemData.explosionDetails.hasSpectrum)
+                    {
+                        text = "(" + ((item2.itemData.explosionDetails.spectrum * 100) - (item1.itemData.explosionDetails.spectrum * 100)) + ")"; // not too sure why this is swapped?
+
+                        UIManager.inst.Data_CreateComparison(false, text, true);
+                    }
+                    else if (item.itemData.explosionDetails.hasSpectrum)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+
+                    // Disruption
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.explosionDetails.disruption, item2.itemData.explosionDetails.disruption);
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    // Salvage
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.explosionDetails.salvage, item2.itemData.explosionDetails.salvage);
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                }
+                else
+                {
+                    // Create spacers
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
                 }
                 // Melee (Attack & Hit)
                 if (item1.itemData.meleeAttack.isMelee && item2.itemData.meleeAttack.isMelee)
                 {
+                    // Energy
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.meleeAttack.energy, item2.itemData.meleeAttack.energy); // inverted (positive is worse)
+                    if (diff < 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff > 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Matter
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.meleeAttack.matter, item2.itemData.meleeAttack.matter); // inverted (positive is worse)
+                    if (diff < 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff > 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Heat
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.meleeAttack.heat, item2.itemData.meleeAttack.heat); // inverted (positive is worse)
+                    if (diff < 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff > 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Targeting
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.meleeAttack.targeting, item2.itemData.meleeAttack.targeting);
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // Delay
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.meleeAttack.delay, item2.itemData.meleeAttack.delay); // inverted (positive is worse)
+                    if (diff < 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff > 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    else
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    // --- Two spacers ---
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
 
+                    // Damage (semi different text since its a range)
+                    Vector2Int diffV2 = new Vector2Int((int)item1.itemData.meleeAttack.damage.x - (int)item2.itemData.meleeAttack.damage.x, (int)item1.itemData.meleeAttack.damage.y - (int)item2.itemData.meleeAttack.damage.y);
+                    if (diffV2.x > 0)
+                    {
+                        text = "+ ";
+                    }
+                    text += diffV2.x + "/";
+                    if (diffV2.y > 0)
+                    {
+                        text = "+ ";
+                    }
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    // Type (special text)
+                    if (item1.itemData.meleeAttack.damageType == item2.itemData.meleeAttack.damageType)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    else
+                    {
+                        text = "(" + HF.ShortenDamageType(item1.itemData.meleeAttack.damageType) + ")";
+                        UIManager.inst.Data_CreateComparison(true, text, true);
+                    }
+                    // Critical (special text)
+                    if (item1.itemData.meleeAttack.critical == item2.itemData.meleeAttack.critical)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    }
+                    else
+                    {
+                        string typeC = item1.itemData.meleeAttack.critType.ToString();
+                        typeC = typeC.Substring(0, 5); // Shorten crit type
+                        text = "(" + typeC + ")";
+                        UIManager.inst.Data_CreateComparison(true, text, true);
+                    }
+
+                    // Heat Transfer (conditional)
+                    if (HF.GetHeatTransfer(item1) > 0 && HF.GetHeatTransfer(item2) > 0) // inverted (positive is worse)
+                    {
+                        (text, diff) = HF.GetDifferenceAsStringAndValue(HF.GetHeatTransfer(item1), HF.GetHeatTransfer(item2));
+                        if (diff < 0) // Red (item1 is better)
+                        {
+                            UIManager.inst.Data_CreateComparison(false, text);
+                        }
+                        else if (diff > 0) // Green (item2 is better)
+                        {
+                            UIManager.inst.Data_CreateComparison(true, text);
+                        }
+                    }
+                    else if (HF.GetHeatTransfer(item) > 0)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, "*");
+                    }
+                    // Disruption
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.meleeAttack.disruption, item2.itemData.meleeAttack.disruption);
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+                    // Salvage
+                    (text, diff) = HF.GetDifferenceAsStringAndValue(item1.itemData.meleeAttack.salvage, item2.itemData.meleeAttack.salvage);
+                    if (diff > 0) // Red (item1 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(false, text);
+                    }
+                    else if (diff < 0) // Green (item2 is better)
+                    {
+                        UIManager.inst.Data_CreateComparison(true, text);
+                    }
+
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                }
+                else
+                {
+                    // Create spacers
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+
+                    if(item.itemData.meleeAttack.isMelee && HF.GetHeatTransfer(item) > 0)
+                        UIManager.inst.Data_CreateComparison(false, "EMPTY");
+
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
+                    UIManager.inst.Data_CreateComparison(false, "EMPTY");
                 }
                 #endregion
             }
@@ -9299,6 +10080,9 @@ public class UIManager : MonoBehaviour
 
         // Disable the super image
         dataMenu.data_superImageParent.gameObject.SetActive(false);
+
+        // Disable the comparison bar
+        dataMenu.data_comparisonParent.SetActive(false);
 
         // Fade out the title text
         StartCoroutine(DataAnim_TitleTextClose());

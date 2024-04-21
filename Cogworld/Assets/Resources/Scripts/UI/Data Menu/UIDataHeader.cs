@@ -46,7 +46,7 @@ public class UIDataHeader : MonoBehaviour
         int len = primaryStart.Length;
 
         float delay = 0f;
-        float perDelay = 0.75f / len;
+        float perDelay = 0.5f / len;
         mainText.text = "";
 
         List<string> segments = HF.StringToList(primaryStart);

@@ -1670,6 +1670,26 @@ public static class HF
 
     #region Find & Get
 
+    public static int GetHeatTransfer(Item item)
+    {
+        int ht = 0;
+
+        if(item.itemData.projectile.damage.x > 0)
+        {
+            ht = item.itemData.projectile.heatTrasfer;
+        }
+
+        foreach (var E in item.itemData.itemEffects)
+        {
+            if(E.heatTransfer > ht)
+            {
+                ht = E.heatTransfer;
+            }
+        }
+
+        return ht;
+    }
+
     /// <summary>
     /// Determines the relations between the "source" Actor and "target" actor. Returns the relation.
     /// </summary>
@@ -3787,38 +3807,6 @@ public static class HF
         return originalName;
     }
 
-    /// <summary>
-    /// Accepts a damage type and returns a shortened two character string respective to that damage type.
-    /// </summary>
-    /// <param name="damageType">The damage type (ItemDamageType).</param>
-    /// <returns>A two character string. example: "EM"</returns>
-    public static string ShortenDamageType(ItemDamageType damageType)
-    {
-        switch (damageType)
-        {
-            case ItemDamageType.Kinetic:
-                return "KI";
-            case ItemDamageType.Thermal:
-                return "TH";
-            case ItemDamageType.Explosive:
-                return "EX";
-            case ItemDamageType.EMP:
-                return "EM";
-            case ItemDamageType.Energy:
-                return "EN";
-            case ItemDamageType.Phasic:
-                return "PH";
-            case ItemDamageType.Impact:
-                return "IM";
-            case ItemDamageType.Slashing:
-                return "SL";
-            case ItemDamageType.Piercing:
-                return "PR";
-            default:
-                return "??";
-        }
-    }
-
     // UNUSED (doesnt work)
     public static string GenerateMarkedString(string input)
     {
@@ -3867,7 +3855,84 @@ public static class HF
         s = s.Replace("_", " ");
 
         return s;
-    } 
+    }
+
+    public static (string differenceString, int differenceValue) GetDifferenceAsStringAndValue(object value1, object value2)
+    {
+        float num1, num2;
+
+        // Check if the values are float percentages
+        bool isPercentage = (value1 is float && value2 is float);
+
+        if (isPercentage)
+        {
+            // Convert the float percentages to standard float values
+            num1 = (float)value1 * 100;
+            num2 = (float)value2 * 100;
+        }
+        else
+        {
+            // Convert values to floats (assuming they are numeric types)
+            num1 = System.Convert.ToSingle(value1);
+            num2 = System.Convert.ToSingle(value2);
+        }
+
+        // Compute the difference
+        float difference = num2 - num1;
+
+        // Convert the difference to an integer
+        int differenceInt = Mathf.RoundToInt(difference);
+
+        // Format the difference as a string
+        string differenceString = differenceInt.ToString();
+
+        // Add a '+' sign if the difference is positive
+        if (differenceInt > 0)
+        {
+            differenceString = "+" + differenceString;
+        }
+
+        // Add a "%" sign if the values were float percentages
+        if (isPercentage)
+        {
+            differenceString += "%";
+        }
+
+        return (differenceString, differenceInt);
+    }
+
+
+    /// <summary>
+    /// Accepts a damage type and returns a shortened two character string respective to that damage type.
+    /// </summary>
+    /// <param name="type">The damage type (ItemDamageType).</param>
+    /// <returns>A (sometimes) two character string. example: "EM"</returns>
+    public static string ShortenDamageType(ItemDamageType type)
+    {
+        switch (type)
+        {
+            case ItemDamageType.Kinetic:
+                return "KI";
+            case ItemDamageType.Thermal:
+                return "TH";
+            case ItemDamageType.Explosive:
+                return "EX";
+            case ItemDamageType.EMP:
+                return "EM";
+            case ItemDamageType.Phasic:
+                return "PH";
+            case ItemDamageType.Impact:
+                return "I";
+            case ItemDamageType.Slashing:
+                return "S";
+            case ItemDamageType.Piercing:
+                return "P";
+            case ItemDamageType.Entropic:
+                return "E";
+            default:
+                return "?";
+        }
+    }
 
     #endregion
 

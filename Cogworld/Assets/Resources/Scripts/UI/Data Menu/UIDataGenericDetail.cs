@@ -237,7 +237,7 @@ public class UIDataGenericDetail : MonoBehaviour
         int len = primaryStart.Length;
 
         float delay = 0f;
-        float perDelay = 0.75f / len;
+        float perDelay = 0.5f / len;
         primary_text.text = "";
 
         List<string> segments = HF.StringToList(primaryStart);
@@ -278,7 +278,7 @@ public class UIDataGenericDetail : MonoBehaviour
         int len = secondaryStart.Length;
 
         float delay = 0f;
-        float perDelay = 0.75f / len;
+        float perDelay = 0.5f / len;
         secondary_text.text = "";
 
         List<string> segments = HF.StringToList(secondaryStart);
