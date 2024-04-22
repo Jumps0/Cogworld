@@ -7,6 +7,7 @@ public class MachinePart : MonoBehaviour
     [Header("Core Info")]
     [Header("----Overview----")]
     public string displayName;
+    public MachineType type;
     [Tooltip("Basically health. X = current, Y = max.")]
     public Vector2Int armor;
     public bool state = true; // Active
@@ -66,26 +67,32 @@ public class MachinePart : MonoBehaviour
         if(this.GetComponent<Terminal>() || (parentPart && parentPart.GetComponent<Terminal>()))
         {
             displayName = "Terminal";
+            type = MachineType.Terminal;
         }
         else if (this.GetComponent<Fabricator>() || (parentPart && parentPart.GetComponent<Fabricator>()))
         {
             displayName = "Fabricator";
+            type = MachineType.Fabricator;
         }
         else if (this.GetComponent<RecyclingUnit>() || (parentPart && parentPart.GetComponent<RecyclingUnit>()))
         {
             displayName = "Recycling Unit";
+            type = MachineType.Recycling;
         }
         else if (this.GetComponent<Garrison>() || (parentPart && parentPart.GetComponent<Garrison>()))
         {
             displayName = "Garrison";
+            type = MachineType.Garrison;
         }
         else if (this.GetComponent<RepairStation>() || (parentPart && parentPart.GetComponent<RepairStation>()))
         {
             displayName = "Repair Station";
+            type = MachineType.RepairStation;
         }
         else if (this.GetComponent<Scanalyzer>() || (parentPart && parentPart.GetComponent<Scanalyzer>()))
         {
             displayName = "Scanalyzer";
+            type = MachineType.Scanalyzer;
         }
         else if (this.GetComponent<TerminalCustom>() || (parentPart && parentPart.GetComponent<TerminalCustom>()))
         {
@@ -97,6 +104,7 @@ public class MachinePart : MonoBehaviour
             {
                 displayName = this.GetComponent<TerminalCustom>().systemType;
             }
+            type = MachineType.CustomTerminal;
         }
         else if(this.GetComponent<StaticMachine>() || (parentPart && parentPart.GetComponent<StaticMachine>()))
         {
@@ -108,6 +116,7 @@ public class MachinePart : MonoBehaviour
             {
                 displayName = this.GetComponent<StaticMachine>()._name;
             }
+            type = MachineType.Misc;
         }
     }
 
@@ -118,6 +127,7 @@ public class MachinePart : MonoBehaviour
             CheckVisibility();
     }
 
+    #region Visibility
     private void CheckVisibility()
     {
         Color actiColor = activeColor;
@@ -169,6 +179,24 @@ public class MachinePart : MonoBehaviour
         
     }
 
+    public void RevealMe()
+    {
+        // We need to:
+        // 1. Reveal the indicator
+        // 2. Set all parts of this machine to explored
+
+        // 1.
+
+
+        // 2.
+        parentPart.isExplored = true;
+        foreach (var M in connectedParts)
+        {
+            M.isExplored = true;
+        }
+    }
+    #endregion
+
     private void OnMouseOver()
     {
         if (Input.GetKeyDown(KeyCode.Mouse1)) // Right Click to open /DATA/ Menu
@@ -216,7 +244,14 @@ public class MachinePart : MonoBehaviour
 
         state = false;
 
-        Destroy(this.gameObject);
+        // Remove from MapManager data
+        Vector2Int pos = HF.V3_to_V2I(this.transform.position);
+        MapManager.inst._layeredObjsRealized.Remove(pos);
+        HF.RemoveMachineFromList(this);
+        MapManager.inst._allTilesRealized[pos].occupied = false;
+        MapManager.inst._allTilesRealized[pos].walkable = true; // should be fine?
+
+        Destroy(this.transform);
     }
 
     bool annouced = false;

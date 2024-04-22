@@ -49,6 +49,8 @@ public class MapManager : MonoBehaviour
     [Header("Level Data")]
     public int currentLevel; // Goes from -10 to -1
     public int currentBranch;// Goes from 0 (no branch) to ~5
+    [Tooltip("Is the current level a branch?")]
+    public bool currentLevelIsBranch = false;
     public string currentLevelName;
     public int mapSeed = 0;
     //
@@ -341,6 +343,10 @@ public class MapManager : MonoBehaviour
                 rogueBotArrivalMessage = false;
             }
         }
+
+        // Load stored intel (non-branches)
+        if (!currentLevelIsBranch)
+            GameManager.inst.RevealStoredIntel();
 
         loaded = true;
     }
@@ -2624,6 +2630,7 @@ public class MapManager : MonoBehaviour
             currentLevel += 1;
             playerRef.GetComponent<PlayerData>().NewLevelRestore();
         }
+        isBranch = isBranch;
 
         switch (target)
         {

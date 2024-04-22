@@ -1056,33 +1056,214 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    #region Machine Revealing
     public void IndexMachinesGeneric(int id)
     {
+        // We don't need to do any messaging for this since the hack reward already handled that
+
+        StartCoroutine(IndexMachinesAction(id));
+    }
+
+    private IEnumerator IndexMachinesAction(int id)
+    {
+        // We need to stall while the terminal window is open
+        while (UIManager.inst.terminal_hackinfoArea1.activeInHierarchy)
+        {
+            yield return null;
+        }
+
+        // And play the sound
+        AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[0]); // (0 - ACCESS)
+
         switch (id)
         {
             case 0: // Fabricators
-
+                foreach (var M in MapManager.inst.machines_fabricators)
+                {
+                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
+                }
                 break;
             case 1: // Garrisons
-
+                foreach (var M in MapManager.inst.machines_garrisons)
+                {
+                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
+                }
                 break;
-            case 2: // Machines
-
+            case 2: // Machines (all interactable)
+                foreach (var M in MapManager.inst.machines_fabricators)
+                {
+                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
+                }
+                foreach (var M in MapManager.inst.machines_garrisons)
+                {
+                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
+                }
+                foreach (var M in MapManager.inst.machines_recyclingUnits)
+                {
+                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
+                }
+                foreach (var M in MapManager.inst.machines_repairStation)
+                {
+                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
+                }
+                foreach (var M in MapManager.inst.machines_scanalyzers)
+                {
+                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
+                }
+                foreach (var M in MapManager.inst.machines_terminals)
+                {
+                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
+                }
                 break;
             case 3: // Recycling Units
-
+                foreach (var M in MapManager.inst.machines_recyclingUnits)
+                {
+                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
+                }
                 break;
             case 4: // Repair Stations
-
+                foreach (var M in MapManager.inst.machines_repairStation)
+                {
+                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
+                }
                 break;
             case 5: // Scanalyzers
-
+                foreach (var M in MapManager.inst.machines_scanalyzers)
+                {
+                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
+                }
                 break;
             case 6: // Terminals
-
+                foreach (var M in MapManager.inst.machines_terminals)
+                {
+                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
+                }
                 break;
         }
     }
+
+    public void RevealWorldMachine(GameObject specificMachine = null, MachineType type = MachineType.Misc)
+    {
+        if(specificMachine != null) // Reveal this specific machine
+        {
+            specificMachine.GetComponent<MachinePart>().RevealMe();
+        }
+        else // Reveal a random machine based on type
+        {
+            MachinePart m = null;
+            switch (type)
+            {
+                case MachineType.Fabricator:
+                    m = MapManager.inst.machines_fabricators[Random.Range(0, MapManager.inst.machines_fabricators.Count - 1)].GetComponentInChildren<MachinePart>();
+                    if (m.parentPart.isExplored) // We already know this one, roll again
+                    {
+                        GameManager.inst.RevealWorldMachine(null, type);
+                    }
+                    else
+                    {
+                        m.parentPart.RevealMe();
+                    }
+                    break;
+                case MachineType.Garrison:
+                    m = MapManager.inst.machines_garrisons[Random.Range(0, MapManager.inst.machines_garrisons.Count - 1)].GetComponentInChildren<MachinePart>();
+                    if (m.parentPart.isExplored) // We already know this one, roll again
+                    {
+                        GameManager.inst.RevealWorldMachine(null, type);
+                    }
+                    else
+                    {
+                        m.parentPart.RevealMe();
+                    }
+                    break;
+                case MachineType.Recycling:
+                    m = MapManager.inst.machines_recyclingUnits[Random.Range(0, MapManager.inst.machines_recyclingUnits.Count - 1)].GetComponentInChildren<MachinePart>();
+                    if (m.parentPart.isExplored) // We already know this one, roll again
+                    {
+                        GameManager.inst.RevealWorldMachine(null, type);
+                    }
+                    else
+                    {
+                        m.parentPart.RevealMe();
+                    }
+                    break;
+                case MachineType.RepairStation:
+                    m = MapManager.inst.machines_repairStation[Random.Range(0, MapManager.inst.machines_repairStation.Count - 1)].GetComponentInChildren<MachinePart>();
+                    if (m.parentPart.isExplored) // We already know this one, roll again
+                    {
+                        GameManager.inst.RevealWorldMachine(null, type);
+                    }
+                    else
+                    {
+                        m.parentPart.RevealMe();
+                    }
+                    break;
+                case MachineType.Scanalyzer:
+                    m = MapManager.inst.machines_scanalyzers[Random.Range(0, MapManager.inst.machines_scanalyzers.Count - 1)].GetComponentInChildren<MachinePart>();
+                    if (m.parentPart.isExplored) // We already know this one, roll again
+                    {
+                        GameManager.inst.RevealWorldMachine(null, type);
+                    }
+                    else
+                    {
+                        m.parentPart.RevealMe();
+                    }
+                    break;
+                case MachineType.Terminal:
+                    m = MapManager.inst.machines_terminals[Random.Range(0, MapManager.inst.machines_terminals.Count - 1)].GetComponentInChildren<MachinePart>();
+                    if (m.parentPart.isExplored) // We already know this one, roll again
+                    {
+                        GameManager.inst.RevealWorldMachine(null, type);
+                    }
+                    else
+                    {
+                        m.parentPart.RevealMe();
+                    }
+                    break;
+                case MachineType.CustomTerminal:
+                    m = MapManager.inst.machines_customTerminals[Random.Range(0, MapManager.inst.machines_customTerminals.Count - 1)].GetComponentInChildren<MachinePart>();
+                    if (m.parentPart.isExplored) // We already know this one, roll again
+                    {
+                        GameManager.inst.RevealWorldMachine(null, type);
+                    }
+                    else
+                    {
+                        m.parentPart.RevealMe();
+                    }
+                    break;
+                case MachineType.DoorTerminal:
+                    break;
+                case MachineType.Misc:
+                    break;
+            }
+        }
+    }
+
+    public List<char> storedIntel = new List<char>(); // TODO: Change this to appropriate variables later
+
+    /// <summary>
+    /// Acts on (and reveals) any stored intel collected on previous levels. Called on the start of every (non-branch) floor.
+    /// </summary>
+    public void RevealStoredIntel() // TODO
+    {
+        if(storedIntel.Count > 0)
+        {
+            // Play the sound
+            AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[0]); // (0 - ACCESS)
+
+            // Merge all intel into types
+            // - Zones (areas)
+            // - Access points
+            // - (ALL) Machines OR Individual machine groups
+            // - Traps
+            // - Access points
+
+            // Do a *blue* log message for each group
+
+            string message = "";
+            UIManager.inst.CreateNewLogMessage(message, UIManager.inst.deepInfoBlue, UIManager.inst.infoBlue, false, true);
+        }
+    }
+    #endregion
 
     #endregion
 

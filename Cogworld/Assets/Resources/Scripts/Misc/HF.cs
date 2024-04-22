@@ -34,7 +34,7 @@ public static class HF
 
     public static List<Vector2Int> LIST_IV2_to_V2I(List<IntVector2> v2)
     {
-        List<Vector2Int> retList = new List <Vector2Int>();
+        List<Vector2Int> retList = new List<Vector2Int>();
 
         foreach (IntVector2 V in v2)
         {
@@ -49,11 +49,11 @@ public static class HF
     {
         switch (type)
         {
-            case Tile.Wall: 
+            case Tile.Wall:
                 return TileType.Wall;
             case Tile.Floor:
                 return TileType.Floor;
-            case Tile.Door: 
+            case Tile.Door:
                 return TileType.Door;
             default:
                 return TileType.Floor;
@@ -63,7 +63,7 @@ public static class HF
     public static int IDbyTheme(TileType type)
     {
         // This is going to suck
-        if(type == TileType.Wall)
+        if (type == TileType.Wall)
         {
             #region Tile ID Guide
             /* Guide:
@@ -152,7 +152,7 @@ public static class HF
                     // EXPAND THIS LATER
             }
         }
-        else if(type == TileType.Floor)
+        else if (type == TileType.Floor)
         {
             switch (MapManager.inst.currentLevelName)
             { // We have two types of floor tiles at the moment. One thats clean (for caves), and one thats industrial (for everythign else)
@@ -528,7 +528,7 @@ public static class HF
         {
             foreach (ItemObject item in hackware)
             {
-                if(item.itemEffects.Count > 0)
+                if (item.itemEffects.Count > 0)
                 {
                     foreach (ItemEffect effect in item.itemEffects)
                     {
@@ -564,7 +564,7 @@ public static class HF
                 {
                     // Now do the distance check
                     float distance = Vector3.Distance(PlayerData.inst.gameObject.transform.position, ally.gameObject.transform.position);
-                    if(distance <= 20f)
+                    if (distance <= 20f)
                     {
                         // Success!
                         PlayerData.inst.linkedOperators++;
@@ -576,21 +576,21 @@ public static class HF
         int linked = PlayerData.inst.linkedOperators;
         if (linked > 0)
         {
-            if(linked == 1)
+            if (linked == 1)
             {
                 operatorBonus += -0.1f;
             }
-            else if(linked == 2)
+            else if (linked == 2)
             {
                 operatorBonus += -0.1f;
                 operatorBonus += -0.05f;
             }
-            else if(linked == 3){
+            else if (linked == 3) {
                 operatorBonus += -0.1f;
                 operatorBonus += -0.05f;
                 operatorBonus += -0.02f;
             }
-            else if(linked > 3)
+            else if (linked > 3)
             {
                 operatorBonus += -0.1f;
                 operatorBonus += -0.05f;
@@ -633,14 +633,14 @@ public static class HF
     {
         string result = "";
 
-        if(command.knowledge != null) // This is a knowledge reward
+        if (command.knowledge != null) // This is a knowledge reward
         {
-            if(command.bot != null) // This is a bot knowledge reward
+            if (command.bot != null) // This is a bot knowledge reward
             {
                 command.bot.playerHasAnalysisData = true;
-                return "Downloading analysis...\n    "+ command.bot.name + "\n    Tier: " + command.bot.tier + "\n" + command.bot.description;
+                return "Downloading analysis...\n    " + command.bot.name + "\n    Tier: " + command.bot.tier + "\n" + command.bot.description;
             }
-            else if(command.item != null) // This is an item (prototype) knowledge reward
+            else if (command.item != null) // This is an item (prototype) knowledge reward
             {
                 command.item.knowByPlayer = true;
                 return "Downloading analysis...\n    " + command.item.name + "\n    Rating: " + command.item.rating + "\n" + command.item.description;
@@ -757,32 +757,101 @@ public static class HF
                     else if (parsedName.Contains("Garrisons"))
                     {
                         GameManager.inst.IndexMachinesGeneric(1);
-                        return ("Found " + MapManager.inst.machines_fabricators.Count + " garrisons.\nDownloaded coordinate data.");
+                        return ("Found " + MapManager.inst.machines_garrisons.Count + " garrisons.\nDownloaded coordinate data.");
                     }
-                    else if (parsedName.Contains("Machines"))
+                    else if (parsedName.Contains("Machines")) // aka all interactable
                     {
                         GameManager.inst.IndexMachinesGeneric(2);
-                        return ("Found " + MapManager.inst.machines_fabricators.Count + " machines.\nDownloaded coordinate data.");
+                        string mrs = "Found " + (MapManager.inst.machines_fabricators.Count + MapManager.inst.machines_repairStation.Count + MapManager.inst.machines_recyclingUnits.Count + MapManager.inst.machines_scanalyzers.Count + MapManager.inst.machines_garrisons.Count) +
+                            " machines: \n";
+                        if(MapManager.inst.machines_terminals.Count > 0)
+                        {
+                            if(MapManager.inst.machines_terminals.Count > 9) // 2 digits
+                            {
+                                mrs += "  " + MapManager.inst.machines_terminals.Count + " Terminals\n";
+                            }
+                            else
+                            {
+                                mrs += "   " + MapManager.inst.machines_terminals.Count + " Terminals\n";
+                            }
+                        }
+                        if (MapManager.inst.machines_fabricators.Count > 0)
+                        {
+                            if (MapManager.inst.machines_fabricators.Count > 9) // 2 digits
+                            {
+                                mrs += "  " + MapManager.inst.machines_fabricators.Count + " Fabricators\n";
+                            }
+                            else
+                            {
+                                mrs += "   " + MapManager.inst.machines_fabricators.Count + " Fabricators\n";
+                            }
+                        }
+                        if (MapManager.inst.machines_repairStation.Count > 0)
+                        {
+                            if (MapManager.inst.machines_repairStation.Count > 9) // 2 digits
+                            {
+                                mrs += "  " + MapManager.inst.machines_repairStation.Count + " Repair Stations\n";
+                            }
+                            else
+                            {
+                                mrs += "   " + MapManager.inst.machines_repairStation.Count + " Repair Stations\n";
+                            }
+                        }
+                        if (MapManager.inst.machines_recyclingUnits.Count > 0)
+                        {
+                            if (MapManager.inst.machines_recyclingUnits.Count > 9) // 2 digits
+                            {
+                                mrs += "  " + MapManager.inst.machines_recyclingUnits.Count + " Recycling Units\n";
+                            }
+                            else
+                            {
+                                mrs += "   " + MapManager.inst.machines_recyclingUnits.Count + " Recycling Units\n";
+                            }
+                        }
+                        if (MapManager.inst.machines_scanalyzers.Count > 0)
+                        {
+                            if (MapManager.inst.machines_scanalyzers.Count > 9) // 2 digits
+                            {
+                                mrs += "  " + MapManager.inst.machines_scanalyzers.Count + " Scanalyzers\n";
+                            }
+                            else
+                            {
+                                mrs += "   " + MapManager.inst.machines_scanalyzers.Count + " Scanalyzers\n";
+                            }
+                        }
+                        if (MapManager.inst.machines_garrisons.Count > 0)
+                        {
+                            if (MapManager.inst.machines_garrisons.Count > 9) // 2 digits
+                            {
+                                mrs += "  " + MapManager.inst.machines_garrisons.Count + " Garrison Accesses\n";
+                            }
+                            else
+                            {
+                                mrs += "   " + MapManager.inst.machines_garrisons.Count + " Garrison Accesses\n";
+                            }
+                        }
+
+                        return (mrs + "Downloaded coordinate data.");
                     }
                     else if (parsedName.Contains("Recycling Units"))
                     {
                         GameManager.inst.IndexMachinesGeneric(3);
-                        return ("Found " + MapManager.inst.machines_fabricators.Count + " recycling units.\nDownloaded coordinate data.");
+                        return ("Found " + MapManager.inst.imp_recyclingunits.Count + " recycling units.\nDownloaded coordinate data.");
                     }
                     else if (parsedName.Contains("Repair Stations"))
                     {
                         GameManager.inst.IndexMachinesGeneric(4);
-                        return ("Found " + MapManager.inst.machines_fabricators.Count + " repair stations.\nDownloaded coordinate data.");
+                        return ("Found " + MapManager.inst.machines_repairStation.Count + " repair stations.\nDownloaded coordinate data.");
                     }
                     else if (parsedName.Contains("Scanalyzers"))
                     {
                         GameManager.inst.IndexMachinesGeneric(5);
-                        return ("Found " + MapManager.inst.machines_fabricators.Count + " scanalyzers.\nDownloaded coordinate data.");
+                        return ("Found " + MapManager.inst.machines_scanalyzers.Count + " scanalyzers.\nDownloaded coordinate data.");
                     }
                     else if (parsedName.Contains("Terminals"))
                     {
                         GameManager.inst.IndexMachinesGeneric(6);
-                        return ("Found " + MapManager.inst.machines_fabricators.Count + " terminals.\nDownloaded coordinate data.");
+                        return ("Found " + MapManager.inst.machines_terminals.Count + " terminals.\nDownloaded coordinate data.");
                     }
                     break;
                 case TerminalCommandType.Inventory:
@@ -888,14 +957,14 @@ public static class HF
                 case TerminalCommandType.Analysis:
                     break;
                 case TerminalCommandType.Schematic:
-                    if(item != null)
+                    if (item != null)
                     {
                         command.item.knowByPlayer = true;
 
                         return "Downloading schematic...\n    " + HF.ExtractText(parsedName) + "\n    Rating: "
                             + item.rating + "\n    Schematic downloaded.";
                     }
-                    else if(bot != null)
+                    else if (bot != null)
                     {
                         command.bot.schematicDetails.hasSchematic = true;
 
@@ -923,7 +992,7 @@ public static class HF
                 case TerminalCommandType.Unlock:
                     break;
                 case TerminalCommandType.LoadIndirect: // This opens up the schematic menu
-                    if(!UIManager.inst.schematics_parent.activeInHierarchy)
+                    if (!UIManager.inst.schematics_parent.activeInHierarchy)
                         UIManager.inst.Schematics_Open();
 
                     break;
@@ -931,18 +1000,18 @@ public static class HF
 
                     int matterCost = 0;
                     string name = "";
-                    if(item != null)
+                    if (item != null)
                     {
                         matterCost = item.fabricationInfo.matterCost;
                         name = item.itemName;
                     }
-                    else if(bot != null)
+                    else if (bot != null)
                     {
                         matterCost = bot.fabricationInfo.matterCost;
                         name = bot.name;
                     }
 
-                    if(PlayerData.inst.currentMatter >= matterCost)
+                    if (PlayerData.inst.currentMatter >= matterCost)
                     {
                         int buildTime = 0;
                         int secLvl = GetMachineSecLvl(UIManager.inst.terminal_targetTerm);
@@ -1110,7 +1179,7 @@ public static class HF
                         {
                             target.GetComponent<TerminalCustom>().trojans.Add(TrojanType.Botnet);
                         }
-                        return print; 
+                        return print;
 
                     }
                     else if (parsedName.Contains("Detonate"))
@@ -1291,7 +1360,7 @@ public static class HF
         // Trim any leading or trailing spaces
         result = result.Trim();
 
-        if(fill != "")
+        if (fill != "")
         {
             result = result + "(" + fill + ")";
         }
@@ -1450,7 +1519,7 @@ public static class HF
         if (!detected)
         {
             // Do detection rolls
-            if(Random.Range(0f, 1f) < detectionChance)
+            if (Random.Range(0f, 1f) < detectionChance)
             {
                 // Detected!
                 detected = true;
@@ -1461,7 +1530,7 @@ public static class HF
             {
                 // Potentially increase detection chance
                 float increaseChance = 0.3f * secLvl; // probably wrong
-                if(Random.Range(0f,1f) < (increaseChance - bonuses[0]))
+                if (Random.Range(0f, 1f) < (increaseChance - bonuses[0]))
                 {
                     // Increase detection chance
                     detectionChance += (increaseChance - bonuses[0]);
@@ -1670,18 +1739,51 @@ public static class HF
 
     #region Find & Get
 
+    public static List<GameObject> GetAllInteractableMachines()
+    {
+        List<GameObject> machines = new List<GameObject>();
+
+        // Remember that we are returning the parent gameObject. The actual scripts are on the child of the parent.
+        foreach (var M in MapManager.inst.machines_fabricators)
+        {
+            machines.Add(M);
+        }
+        foreach (var M in MapManager.inst.machines_garrisons)
+        {
+            machines.Add(M);
+        }
+        foreach (var M in MapManager.inst.machines_recyclingUnits)
+        {
+            machines.Add(M);
+        }
+        foreach (var M in MapManager.inst.machines_repairStation)
+        {
+            machines.Add(M);
+        }
+        foreach (var M in MapManager.inst.machines_scanalyzers)
+        {
+            machines.Add(M);
+        }
+        foreach (var M in MapManager.inst.machines_terminals)
+        {
+            machines.Add(M);
+        }
+
+        return machines;
+    }
+
     public static int GetHeatTransfer(Item item)
     {
         int ht = 0;
 
-        if(item.itemData.projectile.damage.x > 0)
+        if (item.itemData.projectile.damage.x > 0)
         {
             ht = item.itemData.projectile.heatTrasfer;
         }
 
         foreach (var E in item.itemData.itemEffects)
         {
-            if(E.heatTransfer > ht)
+            if (E.heatTransfer > ht)
             {
                 ht = E.heatTransfer;
             }
@@ -1789,7 +1891,7 @@ public static class HF
 
         foreach (var bot in GameManager.inst.entities)
         {
-            if(bot != source && Vector2.Distance(source.transform.position, bot.transform.position) <= range)
+            if (bot != source && Vector2.Distance(source.transform.position, bot.transform.position) <= range)
             {
                 bots.Add(bot.GetComponent<Actor>());
             }
@@ -1804,9 +1906,9 @@ public static class HF
 
         foreach (var item in items)
         {
-            if(item.Id >= 0)
+            if (item.Id >= 0)
             {
-                foreach(var E in item.itemData.itemEffects)
+                foreach (var E in item.itemData.itemEffects)
                 {
                     if (E.armorProtectionEffect.hasEffect)
                     {
@@ -1881,9 +1983,9 @@ public static class HF
 
         foreach (var item in items)
         {
-            if(item.Id > -1 && item.itemData.type == ItemType.Treads)
+            if (item.Id > -1 && item.itemData.type == ItemType.Treads)
             {
-                if(mode == 2) // Stop early if we can reach High siege mode
+                if (mode == 2) // Stop early if we can reach High siege mode
                 {
                     break;
                 }
@@ -1906,13 +2008,13 @@ public static class HF
 
         foreach (BotObject bot in MapManager.inst.botDatabase.Bots)
         {
-            if(bot.tier == tier)
+            if (bot.tier == tier)
             {
                 bots.Add(bot);
             }
         }
 
-        if(bots.Count > 0)
+        if (bots.Count > 0)
         {
             return bots[Random.Range(0, bots.Count - 1)];
         }
@@ -1977,7 +2079,7 @@ public static class HF
 
         foreach (ItemObject item in MapManager.inst.itemDatabase.Items)
         {
-            if(item.itemEffects.Count > 0)
+            if (item.itemEffects.Count > 0)
             {
                 foreach (var E in item.itemEffects)
                 {
@@ -2039,7 +2141,7 @@ public static class HF
 
             if (c == "load")
             {
-                if(item != null)
+                if (item != null)
                 {
                     hack = MapManager.inst.hackDatabase.Hack[26];
                 }
@@ -2048,17 +2150,17 @@ public static class HF
                     Debug.LogError("ERROR: `item` is null! Cannot parse.");
                 }
             }
-            else if(c == "network")
+            else if (c == "network")
             {
                 hack = MapManager.inst.hackDatabase.Hack[27];
             }
-            else if(c == "recycle")
+            else if (c == "recycle")
             {
-                if(item != null)
+                if (item != null)
                 {
                     hack = MapManager.inst.hackDatabase.Hack[31];
                 }
-                else if(right.ToLower() == "process")
+                else if (right.ToLower() == "process")
                 {
                     hack = MapManager.inst.hackDatabase.Hack[32];
                 }
@@ -2125,7 +2227,7 @@ public static class HF
                 {
                     hack = MapManager.inst.hackDatabase.Hack[76];
                 }
-                else if(right.ToLower() == "purge")
+                else if (right.ToLower() == "purge")
                 {
                     hack = MapManager.inst.hackDatabase.Hack[77];
                 }
@@ -2617,7 +2719,7 @@ public static class HF
             {
                 hack = MapManager.inst.hackDatabase.Hack[28];
             }
-            else if(c == "seal")
+            else if (c == "seal")
             {
                 hack = MapManager.inst.hackDatabase.Hack[29];
             }
@@ -2643,7 +2745,7 @@ public static class HF
             BotObject bot = GetBotByString(right);
             if (c == "build")
             {
-                if(bot != null)
+                if (bot != null)
                 {
                     int rating = bot.rating;
                     switch (rating)
@@ -2774,7 +2876,7 @@ public static class HF
                     Debug.LogError("ERROR: Both `bot` and `item` are null! Cannot parse.");
                 }
             }
-            else if(c == "refit")
+            else if (c == "refit")
             {
                 hack = MapManager.inst.hackDatabase.Hack[36];
             }
@@ -2878,7 +2980,7 @@ public static class HF
             }
             else if (c == "scanalyze")
             {
-                if(item != null)
+                if (item != null)
                 {
                     int rating = item.rating;
                     bool starred = item.star;
@@ -3055,9 +3157,9 @@ public static class HF
         foreach (var I in MapManager.inst.itemDatabase.Items)
         {
             string name = I.itemName.ToLower();
-            if(name == target || name == target.ToLower())
+            if (name == target || name == target.ToLower())
             {
-                item = I; 
+                item = I;
                 break;
             }
         }
@@ -3245,7 +3347,7 @@ public static class HF
         // Roundabout way of doing this since i'm not sure how to access the list directly
         foreach (Transform child in UIManager.inst.partContentArea.transform)
         {
-            if(child.GetComponent<InvDisplayItem>() && child.GetComponent<InvDisplayItem>()._assignedItem != null)
+            if (child.GetComponent<InvDisplayItem>() && child.GetComponent<InvDisplayItem>()._assignedItem != null)
             {
                 if (child.GetComponent<InvDisplayItem>()._assignedItem == item)
                 {
@@ -3253,7 +3355,7 @@ public static class HF
                 }
             }
         }
-        
+
         return null;
     }
 
@@ -3502,7 +3604,7 @@ public static class HF
 
     public static Sprite GetBlackAndWhiteSprite(Sprite coloredSprite)
     {
-        if(coloredSprite == null)
+        if (coloredSprite == null)
         {
             return null;
         }
@@ -3522,7 +3624,7 @@ public static class HF
     {
         foreach (var I in inventory)
         {
-            if(I.item.itemData == item)
+            if (I.item.itemData == item)
             {
                 return I.dropChance;
             }
@@ -3557,7 +3659,7 @@ public static class HF
 
         if (Action.HasTreads(target.GetComponent<Actor>()))
         {
-            if(trap.type == TrapType.Stasis)
+            if (trap.type == TrapType.Stasis)
             {
                 triggerChance = 1f - 1f;
             }
@@ -3566,7 +3668,7 @@ public static class HF
                 triggerChance = 1f;
             }
         }
-        else if(Action.HasLegs(target.GetComponent<Actor>()))
+        else if (Action.HasLegs(target.GetComponent<Actor>()))
         {
             if (trap.type == TrapType.Stasis)
             {
@@ -3623,7 +3725,7 @@ public static class HF
         }
 
         // Now do the roll
-        if(Random.Range(0f, 1f) < triggerChance) // Hit!
+        if (Random.Range(0f, 1f) < triggerChance) // Hit!
         {
             trap.TripTrap(target);
         }
@@ -3828,11 +3930,11 @@ public static class HF
 
     public static string GetLastCharOfString(string input)
     {
-        if(input.Length == 0)
+        if (input.Length == 0)
         {
             return "";
         }
-        else if(input.Length == 1)
+        else if (input.Length == 1)
         {
             return input;
         }
@@ -4062,6 +4164,90 @@ public static class HF
     #endregion
 
     #region Misc
+
+    public static void RemoveMachineFromList(MachinePart go)
+    {
+        switch (go.type)
+        {
+            case MachineType.Fabricator:
+                foreach (var P in MapManager.inst.machines_fabricators.ToList())
+                {
+                    if(P == go.gameObject.transform.parent.gameObject)
+                    {
+                        MapManager.inst.machines_fabricators.Remove(P);
+                    }
+                }
+                break;
+            case MachineType.Garrison:
+                foreach (var P in MapManager.inst.machines_garrisons.ToList())
+                {
+                    if (P == go.gameObject.transform.parent.gameObject)
+                    {
+                        MapManager.inst.machines_garrisons.Remove(P);
+                    }
+                }
+                break;
+            case MachineType.Recycling:
+                foreach (var P in MapManager.inst.machines_recyclingUnits.ToList())
+                {
+                    if (P == go.gameObject.transform.parent.gameObject)
+                    {
+                        MapManager.inst.machines_recyclingUnits.Remove(P);
+                    }
+                }
+                break;
+            case MachineType.RepairStation:
+                foreach (var P in MapManager.inst.machines_repairStation.ToList())
+                {
+                    if (P == go.gameObject.transform.parent.gameObject)
+                    {
+                        MapManager.inst.machines_repairStation.Remove(P);
+                    }
+                }
+                break;
+            case MachineType.Scanalyzer:
+                foreach (var P in MapManager.inst.machines_scanalyzers.ToList())
+                {
+                    if (P == go.gameObject.transform.parent.gameObject)
+                    {
+                        MapManager.inst.machines_scanalyzers.Remove(P);
+                    }
+                }
+                break;
+            case MachineType.Terminal:
+                foreach (var P in MapManager.inst.machines_terminals.ToList())
+                {
+                    if (P == go.gameObject.transform.parent.gameObject)
+                    {
+                        MapManager.inst.machines_terminals.Remove(P);
+                    }
+                }
+                break;
+            case MachineType.CustomTerminal:
+                foreach (var P in MapManager.inst.machines_customTerminals.ToList())
+                {
+                    if (P == go.gameObject.transform.parent.gameObject)
+                    {
+                        MapManager.inst.machines_customTerminals.Remove(P);
+                    }
+                }
+                break;
+            case MachineType.DoorTerminal:
+
+                break;
+            case MachineType.Misc:
+                foreach (var P in MapManager.inst.machines_static.ToList())
+                {
+                    if (P == go.gameObject.transform.parent.gameObject)
+                    {
+                        MapManager.inst.machines_static.Remove(P);
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }
 
     /// <summary>
     /// Function to rotate coordinates in 90-degree increments. Used primarily in *DungeonGeneratorCTR*
