@@ -9584,7 +9584,12 @@ public class UIManager : MonoBehaviour
             {
                 aC = cautiousYellow;
             }
-            mArmor.Setup(true, false, true, "Armor", aC, extra, machine.armor.y.ToString(), false, "", false, "", machine.armor.y / 75f, true);
+            string a = machine.armor.y.ToString();
+            if(machine.armor.y >= 999) // No chance buster
+            {
+                a = "**";
+            }
+            mArmor.Setup(true, false, true, "Armor", aC, extra, a, false, "", false, "", machine.armor.y / 75f, true);
 
             // State - there is some variance in this
             float detectionChance = 0f;
@@ -9984,7 +9989,12 @@ public class UIManager : MonoBehaviour
             {
                 aC = cautiousYellow;
             }
-            mArmor.Setup(true, false, true, "Armor", aC, extra, armor.ToString(), false, "", false, "", armor / 75f, true);
+            string a = armor.ToString();
+            if (armor >= 999) // No chance buster
+            {
+                a = "**";
+            }
+            mArmor.Setup(true, false, true, "Armor", aC, extra, a, false, "", false, "", armor / 75f, true);
 
             // Resistances
             if (tile.tileInfo.resistances.Count > 0)
