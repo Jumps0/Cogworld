@@ -32318,6 +32318,13 @@ MonoBehaviour:
       disposable: -1
       siege: 0
     selection_obj: {fileID: 0}
+    bits:
+    - {fileID: 1613454663}
+    - {fileID: 1563824742}
+    - {fileID: 1636729885}
+    - {fileID: 1429354299}
+    - {fileID: 1168675216}
+    - {fileID: 1015091510}
     data_SuperImageAnimator: {fileID: 2051464422}
     data_ComparisonAnimator: {fileID: 1414622424}
     data_onTraits: 0

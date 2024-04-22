@@ -566,7 +566,8 @@ public class UIDataGenericDetail : MonoBehaviour
         // So basically we are just gonna gather up all the text and lerp it.
         // For the boxes though we are going to put an image behind it.
 
-        barBacker.gameObject.SetActive(true);
+        //barBacker.gameObject.SetActive(true);
+        secondaryParent.gameObject.SetActive(false); // I'm gonna do whats called a pro gamer move
 
         // --
         string o1 = primary_text.text;
@@ -590,7 +591,7 @@ public class UIDataGenericDetail : MonoBehaviour
             variableB_text.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(color)}>{o4}</mark>";
 
             // Set the image color
-            barBacker.color = color;
+            //barBacker.color = color;
 
             elapsedTime += Time.deltaTime;
 

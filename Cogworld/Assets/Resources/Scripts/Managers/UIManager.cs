@@ -10139,11 +10139,10 @@ public class UIManager : MonoBehaviour
 
         // Transparency out the menu (0.5s delay)
         #region Image Fade-out
-        Image[] bits = dataMenu.data_parent.GetComponentsInChildren<Image>();
 
         float delay = 0.1f;
 
-        foreach (Image I in bits)
+        foreach (Image I in dataMenu.bits)
         {
             if (I.gameObject != null)
             {
@@ -10154,7 +10153,7 @@ public class UIManager : MonoBehaviour
 
         yield return new WaitForSeconds(delay);
 
-        foreach (Image I in bits)
+        foreach (Image I in dataMenu.bits)
         {
             if (I.gameObject != null)
             {
@@ -10165,7 +10164,7 @@ public class UIManager : MonoBehaviour
 
         yield return new WaitForSeconds(delay);
 
-        foreach (Image I in bits)
+        foreach (Image I in dataMenu.bits)
         {
             if (I.gameObject != null)
             {
@@ -10176,7 +10175,7 @@ public class UIManager : MonoBehaviour
 
         yield return new WaitForSeconds(delay);
 
-        foreach (Image I in bits)
+        foreach (Image I in dataMenu.bits)
         {
             if (I.gameObject != null)
             {
@@ -10187,7 +10186,7 @@ public class UIManager : MonoBehaviour
 
         yield return new WaitForSeconds(delay);
 
-        foreach (Image I in bits)
+        foreach (Image I in dataMenu.bits)
         {
             if(I.gameObject != null)
             {
@@ -10212,8 +10211,7 @@ public class UIManager : MonoBehaviour
         // Reset the transparency
         #region Image Transparency Reset
 
-        bits = dataMenu.data_parent.GetComponentsInChildren<Image>();
-        foreach (Image I in bits)
+        foreach (Image I in dataMenu.bits)
         {
             Color setColor = I.color;
             I.color = new Color(setColor.r, setColor.g, setColor.b, 1f);
@@ -10436,6 +10434,7 @@ public class UIDataDisplay
     [Tooltip("A second item we compare the first against.")]
     public Item selected_comparison_item;
     public GameObject selection_obj;
+    public List<Image> bits = new List<Image>(); // Gets faded out/in when the menu closes
 
     [Header("Animation")]
     public Animator data_SuperImageAnimator;
