@@ -110,6 +110,7 @@ public class UIManager : MonoBehaviour
             Evasion_VolleyCheck();
 
         // - Check to close the /DATA/ menu via left click
+        #region Data
         if (dataMenu.data_parent.gameObject.activeInHierarchy)
         {
             if ((Input.GetMouseButtonDown(0) && dataMenu.data_focusObject == null && dataMenu.data_onTraits == false && dataMenu.data_onAnalysis == false) || Input.GetKeyDown(KeyCode.Escape)) // Close the menu
@@ -138,6 +139,7 @@ public class UIManager : MonoBehaviour
                 }
             }
         }
+        #endregion
     }
 
     #region > New Floor & Fresh Start Animations <

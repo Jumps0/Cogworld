@@ -1151,6 +1151,29 @@ public class MapManager : MonoBehaviour
                 spawnedTile.GetComponent<SpriteRenderer>().sortingOrder = 5;
 
                 GridManager.inst.grid[(int)pos.x, (int)pos.y] = spawnedTile.gameObject; // Fill grid
+
+                // As a failsafe, if this door is being placed on top of a wall, we need to turn that wall into a floor tile.
+                if (_allTilesRealized.ContainsKey(new Vector2Int((int)pos.x, (int)pos.y)))
+                {
+                    TileBlock T = _allTilesRealized[new Vector2Int((int)pos.x, (int)pos.y)];
+                    if(T.tileInfo.type == TileType.Wall) // Is it a wall? We need to change that
+                    {
+                        // First get what type of floor tile we need to place
+                        int id = HF.IDbyTheme(TileType.Floor);
+
+                        _allTilesRealized[new Vector2Int((int)pos.x, (int)pos.y)].gameObject.name = $"Tile {pos.x} {pos.y} - "; // Give grid based name
+                        _allTilesRealized[new Vector2Int((int)pos.x, (int)pos.y)].tileInfo = MapManager.inst.tileDatabase.Tiles[id]; // Assign tile data from database by ID
+                        _allTilesRealized[new Vector2Int((int)pos.x, (int)pos.y)].gameObject.name += _allTilesRealized[new Vector2Int((int)pos.x, (int)pos.y)].tileInfo.type.ToString(); // Modify name with type
+                        _allTilesRealized[new Vector2Int((int)pos.x, (int)pos.y)].StartCheck();
+
+                        // And update the grid too
+                        if (GridManager.inst.grid[(int)pos.x, (int)pos.y] != null)
+                        {
+                            GridManager.inst.grid[(int)pos.x, (int)pos.y] = _allTilesRealized[new Vector2Int((int)pos.x, (int)pos.y)].gameObject;
+                        }
+                    }
+
+                }
             }
             //
         }
@@ -2630,7 +2653,7 @@ public class MapManager : MonoBehaviour
             currentLevel += 1;
             playerRef.GetComponent<PlayerData>().NewLevelRestore();
         }
-        isBranch = isBranch;
+        currentLevelIsBranch = isBranch;
 
         switch (target)
         {

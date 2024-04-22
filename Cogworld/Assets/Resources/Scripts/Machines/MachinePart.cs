@@ -30,14 +30,18 @@ public class MachinePart : MonoBehaviour
 
     public bool destroyed = false;
 
+    [Header("Colors")]
     public Color activeColor;
     public Color disabledColor;
 
+    [Header("Components")]
     public List<MachinePart> connectedParts;
     public MachinePart parentPart;
 
+    [Header("Visibility")]
     public bool isExplored = false;
     public bool isVisible = false;
+    public GameObject indicator = null;
 
     private void Start()
     {
@@ -243,6 +247,7 @@ public class MachinePart : MonoBehaviour
         }
 
         state = false;
+        Destroy(parentPart.indicator);
 
         // Remove from MapManager data
         Vector2Int pos = HF.V3_to_V2I(this.transform.position);

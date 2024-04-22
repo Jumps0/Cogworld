@@ -45,16 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8802ef5af2b8fd41b64b1ecaf1db787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sprites:
-  - {fileID: 932017115, guid: 1dae7a0e94ed95c4e977ed3db317d744, type: 3}
-  - {fileID: -402817584, guid: 30822d2ee993ea24cbcb997aead9f614, type: 3}
-  - {fileID: -853045465, guid: 91b1289d1dfbb9b42ab48c1824c00fa1, type: 3}
-  - {fileID: -1655162106, guid: 30822d2ee993ea24cbcb997aead9f614, type: 3}
-  - {fileID: 422613513, guid: 1dae7a0e94ed95c4e977ed3db317d744, type: 3}
-  - {fileID: -1489681065, guid: a0f149f32da53b84cbc73bcc63b033d2, type: 3}
-  - {fileID: -409347224, guid: a5f7bd6703b80224eb2151967ffa32ed, type: 3}
-  - {fileID: 1171570517, guid: 0135ad032d3d64548990237d233a09a4, type: 3}
-  - {fileID: -299694529, guid: bff79aee0c2d42b44a0cc527a3f0f2e6, type: 3}
+  sprite: {fileID: 2340879184640640181}
+  parent: {fileID: 0}
 --- !u!212 &2340879184640640181
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -95,7 +87,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 55
   m_Sprite: {fileID: 932017115, guid: 1dae7a0e94ed95c4e977ed3db317d744, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

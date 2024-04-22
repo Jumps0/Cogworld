@@ -12,12 +12,21 @@ public class CameraController : MonoBehaviour
     [Tooltip("Reference to the Camera Core GameObject.")]
     public GameObject cameraReference;
 
-    [SerializeField] private float _offsetX = 11;
-    [SerializeField] private float _offsetY = 5;
+    public float _offsetX = 17;
+    public float _offsetY = 5;
+
+    private void Start()
+    {
+#if (UNITY_EDITOR) // For zoom level of 20
+        _offsetX = 11;
+        _offsetY = 5;
+#endif
+    }
 
     void Update()
     {
-        if(!MapManager.inst.debugDisabled && MapManager.inst.playerRef != null)
+
+        if (!MapManager.inst.debugDisabled && MapManager.inst.playerRef != null)
         {
             CheckCamSettings();
         }
