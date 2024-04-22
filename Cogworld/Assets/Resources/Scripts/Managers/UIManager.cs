@@ -112,7 +112,7 @@ public class UIManager : MonoBehaviour
         // - Check to close the /DATA/ menu via left click
         if (dataMenu.data_parent.gameObject.activeInHierarchy)
         {
-            if ((Input.GetMouseButtonDown(0) && dataMenu.data_focusObject == null && dataMenu.data_onTraits == false) || Input.GetKeyDown(KeyCode.Escape)) // Close the menu
+            if ((Input.GetMouseButtonDown(0) && dataMenu.data_focusObject == null && dataMenu.data_onTraits == false && dataMenu.data_onAnalysis == false) || Input.GetKeyDown(KeyCode.Escape)) // Close the menu
             {
                 Data_CloseMenu();
             }
@@ -124,6 +124,13 @@ public class UIManager : MonoBehaviour
                 }
             }
             else if (Input.GetMouseButtonDown(0) && dataMenu.data_onTraits && dataMenu.selection_obj != null) // Open the traits menu
+            {
+                if (!dataMenu.data_traitBox.activeInHierarchy) // Menu isn't already open
+                {
+                    dataMenu.data_traitBox.GetComponent<UIDataTraitbox>().Open();
+                }
+            }
+            else if (Input.GetMouseButtonDown(0) && dataMenu.data_onAnalysis && dataMenu.selection_obj != null) // Open the analysis menu
             {
                 if (!dataMenu.data_traitBox.activeInHierarchy) // Menu isn't already open
                 {
@@ -9184,7 +9191,7 @@ public class UIManager : MonoBehaviour
                         }
                         else
                         {
-                            cName = HF.ItemPrototypeName(item);
+                            cName = HF.ItemPrototypeName(I.item);
                         }
 
                         string displayString = cName + " (" + HF.FindExposureInBotObject(bot.botInfo.armament, I.item.itemData) * 100 + "%)";
@@ -9512,7 +9519,32 @@ public class UIManager : MonoBehaviour
                     }
                 }
 
-                dataMenu.data_traitBox.GetComponent<UIDataTraitbox>().Setup(combiText);
+                dataMenu.data_traitBox.GetComponent<UIDataTraitbox>().Setup(combiText, true);
+            }
+
+            // Analysis
+            if (bot.botInfo.playerHasAnalysisData)
+            {
+                Data_CreateSpacer(); // Spacer
+
+                // Create the object
+                GameObject go = Instantiate(dataMenu.data_analysisPrefab, dataMenu.data_contentArea.transform.position, Quaternion.identity);
+                go.transform.SetParent(dataMenu.data_contentArea.transform);
+                go.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+                // Add it to list
+                dataMenu.data_objects.Add(go);
+                go.name = "[Analysis]";
+
+                // This has its own dropdown menu!
+                string combiText = "";
+
+                // First the description of the bot
+                combiText = bot.botInfo.description;
+                // And what we get for knowing this
+                combiText += "\n ";
+                combiText += "<weaknesses identified: +5% hit, +10% dmg>"; // (pretty sure this doesn't change)
+
+                dataMenu.data_traitBox.GetComponent<UIDataTraitbox>().Setup(combiText, false);
             }
 
             #endregion
@@ -10041,6 +10073,10 @@ public class UIManager : MonoBehaviour
             {
                 O.GetComponent<UIDataTraits>().AppearAnimate();
             }
+            else if (O.GetComponent<UIDataAnalysis>())
+            {
+                O.GetComponent<UIDataAnalysis>().AppearAnimate();
+            }
         }
 
     }
@@ -10072,6 +10108,10 @@ public class UIManager : MonoBehaviour
         // Fade out the title text
         StartCoroutine(DataAnim_TitleTextClose());
 
+        dataMenu.data_traitBox.GetComponent<UIDataTraitbox>().Close();
+        dataMenu.data_onAnalysis = false;
+        dataMenu.data_onTraits = false;
+
         // Animate out & Destroy all the prefabs we create
         foreach (var O in dataMenu.data_objects.ToList())
         {
@@ -10091,9 +10131,13 @@ public class UIManager : MonoBehaviour
             {
                 O.GetComponent<UIDataTraits>().Close();
             }
+            else if (O.GetComponent<UIDataAnalysis>())
+            {
+                O.GetComponent<UIDataAnalysis>().Close();
+            }
         }
 
-        // Transparency out the menu
+        // Transparency out the menu (0.5s delay)
         #region Image Fade-out
         Image[] bits = dataMenu.data_parent.GetComponentsInChildren<Image>();
 
@@ -10101,44 +10145,59 @@ public class UIManager : MonoBehaviour
 
         foreach (Image I in bits)
         {
-            Color setColor = I.color;
-            I.color = new Color(setColor.r, setColor.g, setColor.b, 0.8f);
+            if (I.gameObject != null)
+            {
+                Color setColor = I.color;
+                I.color = new Color(setColor.r, setColor.g, setColor.b, 0.8f);
+            }
         }
 
         yield return new WaitForSeconds(delay);
 
         foreach (Image I in bits)
         {
-            Color setColor = I.color;
-            I.color = new Color(setColor.r, setColor.g, setColor.b, 0.6f);
+            if (I.gameObject != null)
+            {
+                Color setColor = I.color;
+                I.color = new Color(setColor.r, setColor.g, setColor.b, 0.6f);
+            }
         }
 
         yield return new WaitForSeconds(delay);
 
         foreach (Image I in bits)
         {
-            Color setColor = I.color;
-            I.color = new Color(setColor.r, setColor.g, setColor.b, 0.4f);
+            if (I.gameObject != null)
+            {
+                Color setColor = I.color;
+                I.color = new Color(setColor.r, setColor.g, setColor.b, 0.4f);
+            }
         }
 
         yield return new WaitForSeconds(delay);
 
         foreach (Image I in bits)
         {
-            Color setColor = I.color;
-            I.color = new Color(setColor.r, setColor.g, setColor.b, 0.2f);
+            if (I.gameObject != null)
+            {
+                Color setColor = I.color;
+                I.color = new Color(setColor.r, setColor.g, setColor.b, 0.2f);
+            }
         }
 
         yield return new WaitForSeconds(delay);
 
         foreach (Image I in bits)
         {
-            Color setColor = I.color;
-            I.color = new Color(setColor.r, setColor.g, setColor.b, 0f);
+            if(I.gameObject != null)
+            {
+                Color setColor = I.color;
+                I.color = new Color(setColor.r, setColor.g, setColor.b, 0f);
+            }
         }
+
+        yield return new WaitForSeconds(delay);
         #endregion
-
-        yield return new WaitForSeconds(delay);
 
         foreach (var O in dataMenu.data_objects.ToList()) // Clear up any remaining things (like spacers)
         {
@@ -10357,6 +10416,7 @@ public class UIDataDisplay
     [Tooltip("The object where all the prefabs should be spawned in.")]
     public GameObject data_contentArea;
     public GameObject data_extraDetail;
+    //
     public GameObject data_traitBox;
 
     [Header("Prefabs")]
@@ -10365,6 +10425,7 @@ public class UIDataDisplay
     public GameObject data_spacerPrefab;
     public GameObject data_textWallPrefab;
     public GameObject data_traitPrefab;
+    public GameObject data_analysisPrefab;
     public GameObject data_comparisonPrefab;
 
     [Header("Objects")]
@@ -10381,6 +10442,7 @@ public class UIDataDisplay
     public Animator data_ComparisonAnimator;
 
     public bool data_onTraits = false;
+    public bool data_onAnalysis = false;
 
     [Header("Comparison")]
     public GameObject data_comparisonParent;

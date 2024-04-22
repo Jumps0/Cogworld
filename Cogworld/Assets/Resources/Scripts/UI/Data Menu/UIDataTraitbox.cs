@@ -10,6 +10,7 @@ public class UIDataTraitbox : MonoBehaviour
     public Image image_titleBacker;
     public Image image_borders;
     public TextMeshProUGUI text_main;
+    public TextMeshProUGUI text_title;
 
     [Header("Colors")]
     public Color darkGreen;
@@ -18,9 +19,22 @@ public class UIDataTraitbox : MonoBehaviour
     public Color highlightColor;
     public Color brightColor;
 
-    public void Setup(string text)
+    [Header("Values")]
+    private string displayTraits;
+    private string displayAnalysis;
+
+    public void Setup(string text, bool traits)
     {
         text_main.text = text;
+
+        if(traits)
+        {
+            displayTraits = text;
+        }
+        else
+        {
+            displayAnalysis = text;
+        }
     }
 
     public void Open()
@@ -32,6 +46,17 @@ public class UIDataTraitbox : MonoBehaviour
 
     private IEnumerator OpenAnim()
     {
+        if (UIManager.inst.dataMenu.data_onTraits)
+        {
+            text_title.text = @"\TRAITS\";
+            text_main.text = displayTraits;
+        }
+        else if (UIManager.inst.dataMenu.data_analysisPrefab)
+        {
+            text_title.text = @"\ANALYSIS\";
+            text_main.text = displayAnalysis;
+        }
+
         StartCoroutine(OpenTitle());
         StartCoroutine(OpenBox());
 
@@ -90,6 +115,7 @@ public class UIDataTraitbox : MonoBehaviour
 
             yield return null;
         }
+        image_titleBacker.color = Color.black;
 
         yield return null;
     }
@@ -149,5 +175,10 @@ public class UIDataTraitbox : MonoBehaviour
     {
         // Nothing fancy!
         this.gameObject.SetActive(false);
+    }
+
+    private void OnDestroy()
+    {
+        StopAllCoroutines();
     }
 }

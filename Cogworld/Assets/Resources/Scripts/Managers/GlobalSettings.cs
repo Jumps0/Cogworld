@@ -13,6 +13,10 @@ public class GlobalSettings : MonoBehaviour
     public void Awake()
     {
         inst = this;
+
+#if (UNITY_EDITOR)
+        Camera.main.orthographicSize = 20; // So testing in editor isn't nearly impossible to see
+#endif
     }
 
     [Header("Cheats")]

@@ -4,11 +4,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIDataTraits : MonoBehaviour
+public class UIDataAnalysis : MonoBehaviour
 {
     [Header("References")]
     public Image image_backer;
-    public Image image_T;
+    public Image image_A;
     public Image image_cover;
     public TextMeshProUGUI text_main;
 
@@ -27,14 +27,14 @@ public class UIDataTraits : MonoBehaviour
 
     private IEnumerator AppearAnimation()
     {
-        StartCoroutine(TBoxAppear());
+        StartCoroutine(ABoxAppear());
         Color lerp = Color.white;
 
         float delay = 0f;
         float perDelay = 0.01f;
 
         // This animation goes:
-        // (Text color): Green -> Black -> Bright Green -> Black -> Bright Green -> Green. The first "T" is unaffected and stays bright green.
+        // (Text color): Green -> Black -> Bright Green -> Black -> Bright Green -> Green. The first "A" is unaffected and stays bright green.
 
         float elapsedTime = 0f;
         float duration = 0.1f;
@@ -42,7 +42,7 @@ public class UIDataTraits : MonoBehaviour
         {
             lerp = Color.Lerp(green, Color.black, elapsedTime / duration);
 
-            StartCoroutine(HF.DelayedSetText(text_main, $"<color=#{ColorUtility.ToHtmlStringRGB(lerp)}>[</color><color=#{ColorUtility.ToHtmlStringRGB(brightGreen)}>T</color><color=#{ColorUtility.ToHtmlStringRGB(lerp)}>RAITS]</color>"
+            StartCoroutine(HF.DelayedSetText(text_main, $"<color=#{ColorUtility.ToHtmlStringRGB(lerp)}>[</color><color=#{ColorUtility.ToHtmlStringRGB(brightGreen)}>A</color><color=#{ColorUtility.ToHtmlStringRGB(lerp)}>NALYSIS]</color>"
 , delay += perDelay));
 
             elapsedTime += Time.deltaTime;
@@ -55,7 +55,7 @@ public class UIDataTraits : MonoBehaviour
         {
             lerp = Color.Lerp(Color.black, brightGreen, elapsedTime / duration);
 
-            StartCoroutine(HF.DelayedSetText(text_main, $"<color=#{ColorUtility.ToHtmlStringRGB(lerp)}>[</color><color=#{ColorUtility.ToHtmlStringRGB(brightGreen)}>T</color><color=#{ColorUtility.ToHtmlStringRGB(lerp)}>RAITS]</color>"
+            StartCoroutine(HF.DelayedSetText(text_main, $"<color=#{ColorUtility.ToHtmlStringRGB(lerp)}>[</color><color=#{ColorUtility.ToHtmlStringRGB(brightGreen)}>A</color><color=#{ColorUtility.ToHtmlStringRGB(lerp)}>NALYSIS]</color>"
 , delay += perDelay));
 
             elapsedTime += Time.deltaTime;
@@ -68,7 +68,7 @@ public class UIDataTraits : MonoBehaviour
         {
             lerp = Color.Lerp(brightGreen, Color.black, elapsedTime / duration);
 
-            StartCoroutine(HF.DelayedSetText(text_main, $"<color=#{ColorUtility.ToHtmlStringRGB(lerp)}>[</color><color=#{ColorUtility.ToHtmlStringRGB(brightGreen)}>T</color><color=#{ColorUtility.ToHtmlStringRGB(lerp)}>RAITS]</color>"
+            StartCoroutine(HF.DelayedSetText(text_main, $"<color=#{ColorUtility.ToHtmlStringRGB(lerp)}>[</color><color=#{ColorUtility.ToHtmlStringRGB(brightGreen)}>A</color><color=# {ColorUtility.ToHtmlStringRGB(lerp)} >NALYSIS]</color>"
 , delay += perDelay));
 
             elapsedTime += Time.deltaTime;
@@ -81,7 +81,7 @@ public class UIDataTraits : MonoBehaviour
         {
             lerp = Color.Lerp(Color.black, brightGreen, elapsedTime / duration);
 
-            StartCoroutine(HF.DelayedSetText(text_main, $"<color=#{ColorUtility.ToHtmlStringRGB(lerp)}>[</color><color=#{ColorUtility.ToHtmlStringRGB(brightGreen)}>T</color><color=#{ColorUtility.ToHtmlStringRGB(lerp)}>RAITS]</color>"
+            StartCoroutine(HF.DelayedSetText(text_main, $"<color=#{ColorUtility.ToHtmlStringRGB(lerp)}>[</color><color=#{ColorUtility.ToHtmlStringRGB(brightGreen)}>A</color><color=# {ColorUtility.ToHtmlStringRGB(lerp)} >NALYSIS]</color>"
 , delay += perDelay));
 
             elapsedTime += Time.deltaTime;
@@ -94,7 +94,7 @@ public class UIDataTraits : MonoBehaviour
         {
             lerp = Color.Lerp(brightGreen, green, elapsedTime / duration);
 
-            StartCoroutine(HF.DelayedSetText(text_main, $"<color=#{ColorUtility.ToHtmlStringRGB(lerp)}>[</color><color=#{ColorUtility.ToHtmlStringRGB(brightGreen)}>T</color><color=#{ColorUtility.ToHtmlStringRGB(lerp)}>RAITS]</color>"
+            StartCoroutine(HF.DelayedSetText(text_main, $"<color=#{ColorUtility.ToHtmlStringRGB(lerp)}>[</color><color=#{ColorUtility.ToHtmlStringRGB(brightGreen)}>A</color><color=# {ColorUtility.ToHtmlStringRGB(lerp)} >NALYSIS]</color>"
 , delay += perDelay));
 
             elapsedTime += Time.deltaTime;
@@ -103,7 +103,7 @@ public class UIDataTraits : MonoBehaviour
 
         // And then set the text to its final state.
         string final = $"<color=#{ColorUtility.ToHtmlStringRGB(darkGreen)}>[</color>";
-        final += $"<color=#{ColorUtility.ToHtmlStringRGB(brightGreen)}>T</color><color=#{ColorUtility.ToHtmlStringRGB(green)}>RAITS</color>";
+        final += $"<color=#{ColorUtility.ToHtmlStringRGB(brightGreen)}>A</color><color=#{ColorUtility.ToHtmlStringRGB(green)}>NALYSIS</color>";
         final += $"<color=#{ColorUtility.ToHtmlStringRGB(darkGreen)}>]</color>";
         StartCoroutine(HF.DelayedSetText(text_main, final, delay += perDelay));
     }
@@ -137,32 +137,32 @@ public class UIDataTraits : MonoBehaviour
         Destroy(this.gameObject);
     }
 
-    private IEnumerator TBoxAppear()
+    private IEnumerator ABoxAppear()
     {
-        image_T.color = green;
+        image_A.color = green;
         // Green -> Bright -> Black
 
         float elapsedTime = 0f;
         float duration = 0.2f;
         while (elapsedTime < duration) // Green -> Bright
         {
-            image_T.color = Color.Lerp(green, brightGreen, elapsedTime / duration);
+            image_A.color = Color.Lerp(green, brightGreen, elapsedTime / duration);
 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        image_T.color = brightGreen;
+        image_A.color = brightGreen;
 
         elapsedTime = 0f;
         duration = 0.2f;
         while (elapsedTime < duration) // Bright -> Black
         {
-            image_T.color = Color.Lerp(brightGreen, Color.black, elapsedTime / duration);
+            image_A.color = Color.Lerp(brightGreen, Color.black, elapsedTime / duration);
 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        image_T.color = Color.black;
+        image_A.color = Color.black;
     }
 
     public void MouseOver()
@@ -174,7 +174,7 @@ public class UIDataTraits : MonoBehaviour
         }
         hoverAnim = StartCoroutine(HoverAnim());
 
-        UIManager.inst.dataMenu.data_onTraits = true;
+        UIManager.inst.dataMenu.data_onAnalysis = true;
     }
 
     public void MouseLeave()
@@ -186,7 +186,7 @@ public class UIDataTraits : MonoBehaviour
         }
         leaveAnim = StartCoroutine(LeaveAnim());
 
-        UIManager.inst.dataMenu.data_onTraits = false;
+        UIManager.inst.dataMenu.data_onAnalysis = false;
         UIManager.inst.dataMenu.data_traitBox.GetComponent<UIDataTraitbox>().Close(); // Close the menu
     }
 
@@ -201,13 +201,13 @@ public class UIDataTraits : MonoBehaviour
         while (elapsedTime < duration)
         {
             image_backer.color = Color.Lerp(Color.black, darkGreen, elapsedTime / duration);
-            image_T.color = Color.Lerp(Color.black, darkGreen, elapsedTime / duration);
+            image_A.color = Color.Lerp(Color.black, darkGreen, elapsedTime / duration);
 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
         image_backer.color = darkGreen;
-        image_T.color = darkGreen;
+        image_A.color = darkGreen;
     }
 
     private IEnumerator LeaveAnim()
@@ -218,13 +218,13 @@ public class UIDataTraits : MonoBehaviour
         while (elapsedTime < duration)
         {
             image_backer.color = Color.Lerp(darkGreen, Color.black, elapsedTime / duration);
-            image_T.color = Color.Lerp(darkGreen, Color.black, elapsedTime / duration);
+            image_A.color = Color.Lerp(darkGreen, Color.black, elapsedTime / duration);
 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
         image_backer.color = Color.black;
-        image_T.color = Color.black;
+        image_A.color = Color.black;
     }
 
     private void OnDestroy()
