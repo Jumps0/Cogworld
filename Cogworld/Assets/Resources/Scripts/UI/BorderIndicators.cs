@@ -8,14 +8,17 @@ public class BorderIndicators : MonoBehaviour
 {
     [Header("Border")]
     public Transform borderParent;
+    public RectTransform borderRect;
     public List<Transform> points = new List<Transform>();
     public Dictionary<Vector2Int, GameObject> locations = new Dictionary<Vector2Int, GameObject>();
 
     [Header("Values")]
     private float screenEdgeBuffer = 35f; // Buffer distance from the screen edge
+    public float size;
 
     [Header("Prefabs")]
     public GameObject prefab_indicator;
+    public GameObject prefab_indicator_alt;
 
     private Camera mainCamera;
     private void Start()
@@ -32,12 +35,12 @@ public class BorderIndicators : MonoBehaviour
                 || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow)
                 || Input.GetMouseButton(0)) // This last one might get a bit rough but we need to update it every time the camera moves (maybe have a separate call in camera movement?)
             {
-                // Reposition the border
-                borderParent.position = mainCamera.transform.position - new Vector3(mainCamera.GetComponentInParent<CameraController>()._offsetX, mainCamera.GetComponentInParent<CameraController>()._offsetY);
-
                 // Update the indicators
                 UpdateAllIndicators();
             }
+
+            // Reposition the border
+            borderParent.position = mainCamera.transform.position - new Vector3(mainCamera.GetComponentInParent<CameraController>()._offsetX, mainCamera.GetComponentInParent<CameraController>()._offsetY);
         }
     }
 
@@ -50,13 +53,19 @@ public class BorderIndicators : MonoBehaviour
             MachinePart m = machine.GetComponentInChildren<MachinePart>();
             if (m.isExplored)
             {
-                UpdateIndicator(m);
+                //UpdateIndicator(m);
+                if (m.parentPart.indicator == null)
+                {
+                    CreateMachineIndicator(m);
+                }
+                m.parentPart.indicator.GetComponent<UIBorderIndicator>().LocationUpdate();
             }
         }
     }
 
     private void UpdateIndicator(MachinePart machine)
     {
+        
         // Check if machine is off-screen
         if (!IsMachineVisible(machine))
         {
@@ -78,6 +87,7 @@ public class BorderIndicators : MonoBehaviour
             Vector3 screenPosition = mainCamera.WorldToScreenPoint(machine.transform.position);
             PlaceIndicatorAboveMachine(screenPosition, machine);
         }
+        
     }
 
     public float topCoveredPercentage = 0.25f; // Percentage of the top of the screen covered by UI
@@ -136,7 +146,14 @@ public class BorderIndicators : MonoBehaviour
             CreateMachineIndicator(machine);
         }
         GameObject indicator = machine.parentPart.indicator;
-        indicator.transform.position = screenPosition;
+        //indicator.transform.position = screenPosition;
+        /*
+        indicator.transform.position = new Vector3(
+            Mathf.Clamp(indicator.transform.position.x, borderParent.position.x - size, size + borderParent.position.x),
+            Mathf.Clamp(indicator.transform.position.y, borderParent.position.y - size, size + borderParent.position.y),
+            indicator.transform.position.z
+        );
+        */
     }
 
     private void PlaceIndicatorAboveMachine(Vector3 screenPosition, MachinePart machine)
@@ -149,7 +166,7 @@ public class BorderIndicators : MonoBehaviour
             CreateMachineIndicator(machine);
         }
         GameObject indicator = machine.parentPart.indicator;
-        indicator.transform.position = machine.parentPart.transform.position;
+        //indicator.transform.position = machine.parentPart.transform.position;
     }
 
     /*
@@ -215,10 +232,22 @@ public class BorderIndicators : MonoBehaviour
     {
         GameObject go = Instantiate(prefab_indicator, machine.parentPart.transform.parent.transform.position, Quaternion.identity);
         go.transform.SetParent(machine.parentPart.transform.parent.transform);
+        //GameObject go = Instantiate(prefab_indicator_alt, machine.parentPart.transform.parent.transform.position, Quaternion.identity);
+        //go.transform.SetParent(machine.parentPart.transform.parent.transform);
+        //go.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Assign it the to machine
         machine.parentPart.indicator = go;
         // Assign Sprite
-        go.GetComponent<UIBorderIndicator>().sprite.sprite = machine.parentPart.GetComponent<SpriteRenderer>().sprite;
-        go.GetComponent<UIBorderIndicator>().parent = machine.parentPart;
+        if(go.GetComponent<UIBorderIndicator>().sprite != null)
+        {
+            go.GetComponent<UIBorderIndicator>().sprite.sprite = machine.parentPart.GetComponent<SpriteRenderer>().sprite;
+        }
+        else
+        {
+            go.GetComponent<UIBorderIndicator>().image.sprite = machine.parentPart.GetComponent<SpriteRenderer>().sprite;
+        }
+
+        // Assign Parent
+        go.GetComponent<UIBorderIndicator>().machine_parent = machine.parentPart;
     }
 }
