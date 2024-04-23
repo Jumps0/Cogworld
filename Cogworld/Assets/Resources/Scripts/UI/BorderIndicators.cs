@@ -12,7 +12,7 @@ public class BorderIndicators : MonoBehaviour
     public Dictionary<Vector2Int, GameObject> locations = new Dictionary<Vector2Int, GameObject>();
 
     [Header("Values")]
-    public float screenEdgeBuffer = 50f; // Buffer distance from the screen edge
+    private float screenEdgeBuffer = 35f; // Buffer distance from the screen edge
 
     [Header("Prefabs")]
     public GameObject prefab_indicator;
@@ -60,9 +60,17 @@ public class BorderIndicators : MonoBehaviour
         // Check if machine is off-screen
         if (!IsMachineVisible(machine))
         {
-            // Position indicator at edge of screen
-            Vector3 screenPosition = GetScreenPosition(machine.transform.position);
-            PlaceIndicatorAtScreenEdge(screenPosition, machine);
+            // Convert machine's world position to screen coordinates
+            Vector3 screenPosition = mainCamera.WorldToScreenPoint(machine.transform.position);
+
+            // Adjust screen position for covered areas and screen buffer
+            Vector3 adjustedScreenPosition = AdjustScreenPosition(screenPosition);
+
+            // Convert adjusted screen position back to world coordinates
+            Vector3 worldPosition = mainCamera.ScreenToWorldPoint(adjustedScreenPosition);
+
+            // Place indicator at adjusted world position
+            PlaceIndicatorAtScreenEdge(worldPosition, machine);
         }
         else
         {
@@ -72,13 +80,29 @@ public class BorderIndicators : MonoBehaviour
         }
     }
 
+    public float topCoveredPercentage = 0.25f; // Percentage of the top of the screen covered by UI
+    public float rightCoveredPercentage = 0.25f; // Percentage of the right of the screen covered by UI
+
+
+    private Vector3 AdjustScreenPosition(Vector3 screenPosition)
+    {
+        float topCoveredHeight = Screen.height * topCoveredPercentage;
+        float rightCoveredWidth = Screen.width * rightCoveredPercentage;
+
+        // Adjust screen position for covered areas and screen buffer
+        float x = Mathf.Clamp(screenPosition.x, screenEdgeBuffer, Screen.width - screenEdgeBuffer - rightCoveredWidth);
+        float y = Mathf.Clamp(screenPosition.y, screenEdgeBuffer, Screen.height - screenEdgeBuffer - topCoveredHeight);
+
+        return new Vector3(x, y, screenPosition.z);
+    }
+
     private bool IsMachineVisible(MachinePart machine)
     {
         // Check if machine is within camera's view frustum, adjusted for UI coverage
         Vector3 screenPosition = mainCamera.WorldToViewportPoint(machine.transform.position);
 
-        float topCoveredHeight = Screen.height * 0.15f;
-        float rightCoveredWidth = Screen.width * 0.2f;
+        float topCoveredHeight = Screen.height * topCoveredPercentage;
+        float rightCoveredWidth = Screen.width * rightCoveredPercentage;
 
         return (screenPosition.x >= 0 && screenPosition.x <= 1 &&
                 screenPosition.y >= topCoveredHeight / Screen.height && screenPosition.y <= 1 &&

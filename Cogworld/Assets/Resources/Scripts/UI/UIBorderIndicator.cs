@@ -10,7 +10,7 @@ public class UIBorderIndicator : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (UIManager.inst.GetComponent<BorderIndicators>().locations.ContainsValue(this.gameObject))
+        if (UIManager.inst && UIManager.inst.GetComponent<BorderIndicators>().locations.ContainsValue(this.gameObject))
         {
             UIManager.inst.GetComponent<BorderIndicators>().locations.Remove(HF.V3_to_V2I(this.gameObject.transform.position)); // This should work?
         }
