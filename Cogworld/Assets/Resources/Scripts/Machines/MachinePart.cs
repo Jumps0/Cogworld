@@ -60,7 +60,10 @@ public class MachinePart : MonoBehaviour
             this.GetComponent<SpriteRenderer>().color = sealedStorageBlue;
         }
 
+        // Set the name
         SetName();
+
+        activeColor = this.GetComponent<SpriteRenderer>().color;
     }
 
     private void SetName()

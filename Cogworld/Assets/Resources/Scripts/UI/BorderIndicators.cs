@@ -51,7 +51,7 @@ public class BorderIndicators : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (PlayerData.inst)
+        if (PlayerData.inst && MapManager.inst.loaded)
         {
             // Update the indicators
             foreach (KeyValuePair<GameObject, GameObject> pair in _targetIndicators)
@@ -78,6 +78,7 @@ public class BorderIndicators : MonoBehaviour
 
             // Minor adjustment
             Vector3 offset = new Vector3(0, 0);
+            /*
             if(worldPosition.x < PlayerData.inst.transform.position.x) // Left side of screen
             {
                 offset.x = 1;
@@ -86,6 +87,7 @@ public class BorderIndicators : MonoBehaviour
             {
                 offset.x = -1;
             }
+            */
             /*
             if(worldPosition.y < PlayerData.inst.transform.position.y) // Bottom part of screen
             {

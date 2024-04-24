@@ -496,6 +496,8 @@ public class MapManager : MonoBehaviour
 
         UIManager.inst.CreateNewLogMessage("Arrived at Hideout...", UIManager.inst.deepInfoBlue, UIManager.inst.coolBlue, true);
         UIManager.inst.CreateNewLogMessage("LOCATION=" + BaseManager.inst.data.layerName.ToUpper(), UIManager.inst.deepInfoBlue, UIManager.inst.coolBlue, true);
+
+        loaded = true;
     }
 
     public void PlaceGenericOutpost(Vector2Int center)

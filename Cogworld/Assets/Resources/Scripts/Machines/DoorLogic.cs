@@ -40,6 +40,11 @@ public class DoorLogic : MonoBehaviour
         source.spatialBlend = 1;
     }
 
+    private void LateUpdate()
+    {
+        StateCheck();
+    }
+
     /// <summary>
     /// Check if the door should open/close.
     /// </summary>
@@ -69,8 +74,6 @@ public class DoorLogic : MonoBehaviour
                 Close();
             }
         }
-
-        Debug.Log("Update (" + state + ")");
     }
 
     public void Open()
@@ -85,7 +88,7 @@ public class DoorLogic : MonoBehaviour
         this.GetComponent<TileBlock>().specialNoBlockVis = true;
 
         // Need to update FOV!
-        TurnManager.inst.AllEntityVisUpdate();
+        TurnManager.inst.AllEntityVisUpdate(true);
     }
 
     public void Close()
@@ -100,7 +103,7 @@ public class DoorLogic : MonoBehaviour
         this.GetComponent<TileBlock>().specialNoBlockVis = false;
 
         // Need to update FOV!
-        TurnManager.inst.AllEntityVisUpdate();
+        TurnManager.inst.AllEntityVisUpdate(true);
     }
 
 }

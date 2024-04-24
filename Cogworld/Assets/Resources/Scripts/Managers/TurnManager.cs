@@ -256,8 +256,26 @@ public class TurnManager : MonoBehaviour
     /// <summary>
     /// Go through all actors and refresh their visibility state.
     /// </summary>
-    public void AllEntityVisUpdate()
+    public void AllEntityVisUpdate(bool late = false)
     {
+        if (late)
+        {
+            StartCoroutine(LateAllEntityVisUpdate());
+        }
+        else
+        {
+            foreach (Actor A in actors)
+            {
+                A.UpdateFieldOfView();
+                A.CheckVisibility();
+            }
+        }
+    }
+
+    private IEnumerator LateAllEntityVisUpdate()
+    {
+        yield return null;
+        
         foreach (Actor A in actors)
         {
             A.UpdateFieldOfView();

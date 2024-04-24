@@ -49,6 +49,11 @@ MonoBehaviour:
   sprite: {fileID: 2340879184640640181}
   machine_parent: {fileID: 0}
   animator: {fileID: 8730518660875476068}
+  material: {fileID: 2100000, guid: a8ee627e1c7040942bf4f5afaa8e8fcf, type: 2}
+  normalBrightness: 1
+  flashBrightnessLow: 0.6
+  flashBrightnessHigh: 2
+  flashDuration: 2
 --- !u!212 &2340879184640640181
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -69,7 +74,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a8ee627e1c7040942bf4f5afaa8e8fcf, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
