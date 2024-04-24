@@ -191,5 +191,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 0}
-  image: {fileID: 7033872896826832883}
   machine_parent: {fileID: 0}
+  animator: {fileID: 0}

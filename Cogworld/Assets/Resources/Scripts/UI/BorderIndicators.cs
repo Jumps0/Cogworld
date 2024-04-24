@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.XR;
+
+// from tutorial: https://www.youtube.com/watch?v=-zOMX7CcxAo
 
 public class BorderIndicators : MonoBehaviour
 {
@@ -48,7 +49,7 @@ public class BorderIndicators : MonoBehaviour
     }
 
 
-    private void Update()
+    private void LateUpdate()
     {
         if (PlayerData.inst)
         {
@@ -57,20 +58,6 @@ public class BorderIndicators : MonoBehaviour
             {
                 UpdateIndicator(pair.Key, pair.Value);
             }
-
-            /*
-            // We are gonna do this instead of update so we aren't calling 9 for loops every frame.
-            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.A)
-                || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow)
-                || Input.GetMouseButton(0)) // This last one might get a bit rough but we need to update it every time the camera moves (maybe have a separate call in camera movement?)
-            {
-                // Update the indicators
-                foreach (KeyValuePair<GameObject, GameObject> pair in _targetIndicators)
-                {
-                    UpdateIndicator(pair.Key, pair.Value);
-                }
-            }
-            */
         }
     }
 
@@ -114,12 +101,18 @@ public class BorderIndicators : MonoBehaviour
             // Set the position
             indicator.transform.position = worldPosition;
 
+            // Make sure its flashing
+            indicator.GetComponent<UIBorderIndicator>().SetFlash(true);
+
             //Vector3 direction = target.transform.position - indicator.transform.position;
             //float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             //indicator.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
         }
         else
         {
+            // Stop it from flashing
+            indicator.GetComponent<UIBorderIndicator>().SetFlash(false);
+
             indicator.SetActive(false);
         }
     }
@@ -134,14 +127,7 @@ public class BorderIndicators : MonoBehaviour
         // Assign it the to machine
         machine.parentPart.indicator = go;
         // Assign Sprite
-        if(go.GetComponent<UIBorderIndicator>().sprite != null)
-        {
-            go.GetComponent<UIBorderIndicator>().sprite.sprite = machine.parentPart.GetComponent<SpriteRenderer>().sprite;
-        }
-        else
-        {
-            go.GetComponent<UIBorderIndicator>().image.sprite = machine.parentPart.GetComponent<SpriteRenderer>().sprite;
-        }
+        go.GetComponent<UIBorderIndicator>().sprite.sprite = machine.parentPart.GetComponent<SpriteRenderer>().sprite;
 
         // Assign Parent
         go.GetComponent<UIBorderIndicator>().machine_parent = machine.parentPart;

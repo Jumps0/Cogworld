@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2765357372228034208}
   - component: {fileID: 6922223026114882872}
   - component: {fileID: 2340879184640640181}
+  - component: {fileID: 8730518660875476068}
   m_Layer: 0
   m_Name: UI Border Indicator
   m_TagString: Untagged
@@ -46,7 +47,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 2340879184640640181}
-  parent: {fileID: 0}
+  machine_parent: {fileID: 0}
+  animator: {fileID: 8730518660875476068}
 --- !u!212 &2340879184640640181
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -99,3 +101,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &8730518660875476068
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 47576572676144994}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7708271a3060b624982a332f55a3866f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
