@@ -39,6 +39,7 @@ public class PlayerGridMovement : MonoBehaviour
         if(Input.GetAxis("Mouse ScrollWheel") != 0f)
         {
             TurnManager.inst.AdvanceTime();
+            Action.SkipAction(this.GetComponent<Actor>());
         }
     }
 
@@ -220,8 +221,6 @@ public class PlayerGridMovement : MonoBehaviour
         // Attempt to move in the *direction* described by X & Y
         // So we need to add that to our current position to obtain where we want to end up
 
-        TurnManager.inst.DoorCheck(); // !!! MOVE THIS LATER !!!
-
         isMoving = true;
 
         TileBlock currentTile = GetCurrentPlayerTile();
@@ -364,7 +363,6 @@ public class PlayerGridMovement : MonoBehaviour
 
         if(playerMovementAllowed)
             this.GetComponent<Actor>().UpdateFieldOfView();
-        TurnManager.inst.DoorCheck(); // !!! MOVE THIS LATER !!!
     }
 
     public TileBlock GetCurrentPlayerTile()

@@ -48,10 +48,10 @@ public class DoorLogic : MonoBehaviour
         state = false;
         foreach (TileBlock T in activationTiles)
         {
-            
             if (T.GetBotOnTop() != null) // Is there a bot nearby?
             {
                 state = true;
+                break;
             }
         }
 
@@ -69,6 +69,8 @@ public class DoorLogic : MonoBehaviour
                 Close();
             }
         }
+
+        Debug.Log("Update (" + state + ")");
     }
 
     public void Open()

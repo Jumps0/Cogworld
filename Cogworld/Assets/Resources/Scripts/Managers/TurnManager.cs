@@ -185,7 +185,6 @@ public class TurnManager : MonoBehaviour
                 timer += Time.deltaTime;
             HandleClockTime();
             HandleRunTime();
-            DoorCheck(); // change this later?
         }
     }
 
@@ -253,21 +252,6 @@ public class TurnManager : MonoBehaviour
     }
 
     #endregion
-
-    /// <summary>
-    /// Check all the doors if they need to change state.
-    /// </summary>
-    public void DoorCheck()
-    {
-
-        foreach (KeyValuePair<Vector2Int,GameObject> door in MapManager.inst._layeredObjsRealized)
-        {
-            if (door.Value && door.Value.GetComponent<DoorLogic>()) // Only want to check doors
-            {
-                door.Value.GetComponent<DoorLogic>().StateCheck();
-            }
-        }
-    }
 
     /// <summary>
     /// Go through all actors and refresh their visibility state.

@@ -4,16 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Linq;
-using Color = UnityEngine.Color;
-using Random = UnityEngine.Random;
 using System.Text;
-using Vector3 = UnityEngine.Vector3;
-using Quaternion = UnityEngine.Quaternion;
-using Vector2 = UnityEngine.Vector2;
-using ColorUtility = UnityEngine.ColorUtility;
-using Image = UnityEngine.UI.Image;
-using Slider = UnityEngine.UI.Slider;
-using Button = UnityEngine.UI.Button;
 //using static UnityEditor.Progress;
 
 public class UIManager : MonoBehaviour

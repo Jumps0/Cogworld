@@ -5,7 +5,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 using Color = UnityEngine.Color;
+using Transform = UnityEngine.Transform;
 
 public static class Action
 {
@@ -1069,6 +1071,10 @@ public static class Action
     {
         actor.momentum = 0; // Stopped moving? Lose all momentum.
         TurnManager.inst.EndTurn(actor);
+
+        // Update any nearby doors
+        GameManager.inst.LocalDoorUpdate(new Vector2Int((int)actor.transform.position.x, (int)actor.transform.position.y));
+        actor.UpdateFieldOfView();
     }
 
     /// <summary>

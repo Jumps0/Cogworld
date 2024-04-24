@@ -60,6 +60,9 @@ public class Entity : MonoBehaviour
             momentum = 0;
         }
         lastDirection = direction;
+
+        // Update any nearby doors
+        GameManager.inst.LocalDoorUpdate(new Vector2Int((int)transform.position.x, (int)transform.position.y));
     }
 
     public void AddToGameManager()

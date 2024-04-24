@@ -279,14 +279,14 @@ public class MapManager : MonoBehaviour
         AssignMachineNames(); // Assign names to all placed machines
         AssignMachineCommands(); // Assign commands (for terminal interaction) to all placed machines.
         ZoneTerminals(); // Create terminal zones
+        UIManager.inst.GetComponent<BorderIndicators>().CreateIndicators(); // Create indicators for all (interactable) machines
 
-        TurnManager.inst.AllEntityVisUpdate(); // Update vis
         //
         // --            --
 
         //if (mapType == 2)
         //{
-            TurnManager.inst.LoadActors();
+        TurnManager.inst.LoadActors();
         //}
 
         yield return new WaitForEndOfFrame();
@@ -343,6 +343,8 @@ public class MapManager : MonoBehaviour
                 rogueBotArrivalMessage = false;
             }
         }
+
+        TurnManager.inst.AllEntityVisUpdate(); // Update vis
 
         // Load stored intel (non-branches)
         if (!currentLevelIsBranch)

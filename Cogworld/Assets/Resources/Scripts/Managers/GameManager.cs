@@ -210,6 +210,38 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Given a location, will attempt to update any neighboring doors to open/close.
+    /// </summary>
+    /// <param name="pos">The central position. Any neighbors will get updated.</param>
+    public void LocalDoorUpdate(Vector2Int pos)
+    {
+        List<Vector2Int> neighbors = new List<Vector2Int>();
+        neighbors.Add(pos + Vector2Int.up);
+        neighbors.Add(pos + Vector2Int.up + Vector2Int.left);
+        neighbors.Add(pos + Vector2Int.up + Vector2Int.right);
+        neighbors.Add(pos + Vector2Int.down);
+        neighbors.Add(pos + Vector2Int.down + Vector2Int.left);
+        neighbors.Add(pos + Vector2Int.down + Vector2Int.right);
+        neighbors.Add(pos + Vector2Int.left);
+        neighbors.Add(pos + Vector2Int.right);
+        neighbors.Add(pos);
+
+        foreach (var L in neighbors)
+        {
+            if (MapManager.inst._layeredObjsRealized.ContainsKey(L))
+            {
+                GameObject go = MapManager.inst._layeredObjsRealized[L];
+
+                if(go.GetComponent<DoorLogic>() != null)
+                {
+                    go.GetComponent<DoorLogic>().StateCheck();
+                }
+            }
+        }
+
+    }
+
     private void Start()
     {
         // - Startup Logic -
