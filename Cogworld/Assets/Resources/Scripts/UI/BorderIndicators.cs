@@ -20,215 +20,111 @@ public class BorderIndicators : MonoBehaviour
     public GameObject prefab_indicator;
     public GameObject prefab_indicator_alt;
 
-    private Camera mainCamera;
-    private void Start()
+    private Camera _camera;
+    private float _spriteWidth;
+    private float _spriteHeight;
+
+    private Dictionary<GameObject, GameObject> _targetIndicators = new Dictionary<GameObject, GameObject>();
+
+    public void CreateIndicators()
     {
-        mainCamera = Camera.main;
+        _camera = Camera.main;
+
+        var bounds = prefab_indicator.GetComponent<SpriteRenderer>().bounds;
+        _spriteHeight = bounds.size.y / 2f;
+        _spriteWidth = bounds.size.x / 2f;
+
+        List<GameObject> machines = HF.GetAllInteractableMachines();
+
+        foreach (GameObject machine in machines)
+        {
+            MachinePart m = machine.GetComponentInChildren<MachinePart>();
+            if (m.parentPart.indicator == null)
+            {
+                var indicator = CreateMachineIndicator(m.parentPart);
+                _targetIndicators.Add(machine, indicator);
+            }
+        }
     }
+
 
     private void Update()
     {
         if (PlayerData.inst)
         {
+            // Update the indicators
+            foreach (KeyValuePair<GameObject, GameObject> pair in _targetIndicators)
+            {
+                UpdateIndicator(pair.Key, pair.Value);
+            }
+
+            /*
             // We are gonna do this instead of update so we aren't calling 9 for loops every frame.
             if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.A)
                 || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow)
                 || Input.GetMouseButton(0)) // This last one might get a bit rough but we need to update it every time the camera moves (maybe have a separate call in camera movement?)
             {
                 // Update the indicators
-                UpdateAllIndicators();
-            }
-
-            // Reposition the border
-            borderParent.position = mainCamera.transform.position - new Vector3(mainCamera.GetComponentInParent<CameraController>()._offsetX, mainCamera.GetComponentInParent<CameraController>()._offsetY);
-        }
-    }
-
-    public void UpdateAllIndicators()
-    {
-        List<GameObject> machines = HF.GetAllInteractableMachines();
-
-        foreach (GameObject machine in machines)
-        {
-            MachinePart m = machine.GetComponentInChildren<MachinePart>();
-            if (m.isExplored)
-            {
-                //UpdateIndicator(m);
-                if (m.parentPart.indicator == null)
+                foreach (KeyValuePair<GameObject, GameObject> pair in _targetIndicators)
                 {
-                    CreateMachineIndicator(m);
+                    UpdateIndicator(pair.Key, pair.Value);
                 }
-                m.parentPart.indicator.GetComponent<UIBorderIndicator>().LocationUpdate();
             }
+            */
         }
     }
 
-    private void UpdateIndicator(MachinePart machine)
+    private void UpdateIndicator(GameObject target, GameObject indicator)
     {
-        
-        // Check if machine is off-screen
-        if (!IsMachineVisible(machine))
+        var screenPos = _camera.WorldToViewportPoint(target.transform.position);
+        bool isOffScreen = screenPos.x <= 0 || screenPos.x >= 1 || screenPos.y <= 0 || screenPos.y >= 1;
+        if (isOffScreen)
         {
-            // Convert machine's world position to screen coordinates
-            Vector3 screenPosition = mainCamera.WorldToScreenPoint(machine.transform.position);
+            indicator.SetActive(true);
+            var spriteSizeInViewPort = _camera.WorldToViewportPoint(new Vector3(_spriteWidth, _spriteHeight, 0)) - _camera.WorldToViewportPoint(Vector3.zero);
 
-            // Adjust screen position for covered areas and screen buffer
-            Vector3 adjustedScreenPosition = AdjustScreenPosition(screenPosition);
+            screenPos.x = Mathf.Clamp(screenPos.x, spriteSizeInViewPort.x, 1 - spriteSizeInViewPort.x);
+            screenPos.y = Mathf.Clamp(screenPos.y, spriteSizeInViewPort.y, 1 - spriteSizeInViewPort.y);
 
-            // Convert adjusted screen position back to world coordinates
-            Vector3 worldPosition = mainCamera.ScreenToWorldPoint(adjustedScreenPosition);
+            var worldPosition = _camera.ViewportToWorldPoint(screenPos);
+            worldPosition.z = 0;
 
-            // Place indicator at adjusted world position
-            PlaceIndicatorAtScreenEdge(worldPosition, machine);
+            // Minor adjustment
+            Vector3 offset = new Vector3(0, 0);
+            if(worldPosition.x < PlayerData.inst.transform.position.x) // Left side of screen
+            {
+                offset.x = 1;
+            }
+            else // Right side of screen
+            {
+                offset.x = -1;
+            }
+            /*
+            if(worldPosition.y < PlayerData.inst.transform.position.y) // Bottom part of screen
+            {
+                offset.y = 1;
+            }
+            else // Top part of screen
+            {
+                offset.y = -1;
+            }
+            */
+            worldPosition += offset;
+
+            // Set the position
+            indicator.transform.position = worldPosition;
+
+            //Vector3 direction = target.transform.position - indicator.transform.position;
+            //float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            //indicator.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
         }
         else
         {
-            // If machine is on screen, position indicator above machine
-            Vector3 screenPosition = mainCamera.WorldToScreenPoint(machine.transform.position);
-            PlaceIndicatorAboveMachine(screenPosition, machine);
-        }
-        
-    }
-
-    public float topCoveredPercentage = 0.25f; // Percentage of the top of the screen covered by UI
-    public float rightCoveredPercentage = 0.25f; // Percentage of the right of the screen covered by UI
-
-
-    private Vector3 AdjustScreenPosition(Vector3 screenPosition)
-    {
-        float topCoveredHeight = Screen.height * topCoveredPercentage;
-        float rightCoveredWidth = Screen.width * rightCoveredPercentage;
-
-        // Adjust screen position for covered areas and screen buffer
-        float x = Mathf.Clamp(screenPosition.x, screenEdgeBuffer, Screen.width - screenEdgeBuffer - rightCoveredWidth);
-        float y = Mathf.Clamp(screenPosition.y, screenEdgeBuffer, Screen.height - screenEdgeBuffer - topCoveredHeight);
-
-        return new Vector3(x, y, screenPosition.z);
-    }
-
-    private bool IsMachineVisible(MachinePart machine)
-    {
-        // Check if machine is within camera's view frustum, adjusted for UI coverage
-        Vector3 screenPosition = mainCamera.WorldToViewportPoint(machine.transform.position);
-
-        float topCoveredHeight = Screen.height * topCoveredPercentage;
-        float rightCoveredWidth = Screen.width * rightCoveredPercentage;
-
-        return (screenPosition.x >= 0 && screenPosition.x <= 1 &&
-                screenPosition.y >= topCoveredHeight / Screen.height && screenPosition.y <= 1 &&
-                screenPosition.x >= 0 && screenPosition.x <= (1 - rightCoveredWidth / Screen.width));
-    }
-
-    private Vector3 GetScreenPosition(Vector3 worldPosition)
-    {
-        // Convert world position to screen position
-        return mainCamera.WorldToScreenPoint(worldPosition);
-    }
-
-    private void PlaceIndicatorAtScreenEdge(Vector3 screenPosition, MachinePart machine)
-    {
-        // Clamp screen position to edge of screen
-        float screenWidth = Screen.width;
-        float screenHeight = Screen.height;
-        float buffer = screenEdgeBuffer;
-
-        // Clamp X position
-        screenPosition.x = Mathf.Clamp(screenPosition.x, buffer, screenWidth - buffer);
-
-        // Clamp Y position
-        screenPosition.y = Mathf.Clamp(screenPosition.y, buffer, screenHeight - buffer);
-
-        // Set indicator position
-        // Instantiate or move indicator prefab to the calculated screen position
-        // If an indicator doesn't exist for this machine create one
-        if (machine.parentPart.indicator == null)
-        {
-            CreateMachineIndicator(machine);
-        }
-        GameObject indicator = machine.parentPart.indicator;
-        //indicator.transform.position = screenPosition;
-        /*
-        indicator.transform.position = new Vector3(
-            Mathf.Clamp(indicator.transform.position.x, borderParent.position.x - size, size + borderParent.position.x),
-            Mathf.Clamp(indicator.transform.position.y, borderParent.position.y - size, size + borderParent.position.y),
-            indicator.transform.position.z
-        );
-        */
-    }
-
-    private void PlaceIndicatorAboveMachine(Vector3 screenPosition, MachinePart machine)
-    {
-        // Set indicator position above the machine
-        // Instantiate or move indicator prefab to the calculated screen position
-        // If an indicator doesn't exist for this machine create one
-        if (machine.parentPart.indicator == null)
-        {
-            CreateMachineIndicator(machine);
-        }
-        GameObject indicator = machine.parentPart.indicator;
-        //indicator.transform.position = machine.parentPart.transform.position;
-    }
-
-    /*
-    private void PlaceIndicatorAtScreenEdge(Vector3 screenPosition, MachinePart machine)
-    {
-        // If an indicator doesn't exist for this machine create one
-        if (machine.parentPart.indicator == null)
-        {
-            CreateMachineIndicator(machine);
-        }
-        GameObject indicator = machine.parentPart.indicator;
-        Vector3 pos = machine.parentPart.transform.position;
-        // We want to place this indicator to the nearest free border point
-        Transform closest = points[0];
-
-        foreach (Transform P in points)
-        {
-            // Is this position already taken?
-            if (!locations.ContainsKey(HF.V3_to_V2I(P.transform.position)))
-            {
-                float distance1 = Vector2.Distance(pos, closest.position);
-                float distance2 = Vector2.Distance(pos, P.position);
-
-                if(distance1 < distance2) // What we have is better, don't add it
-                {
-
-                }
-                else // This point is better, replace it
-                {
-                    closest = P;
-                }
-            }
-        }
-
-        // Assign the indicator to the new position (as child)
-        indicator.transform.SetParent(closest);
-        // And mark that spot as taken in the dictionary
-        if (!locations.ContainsKey(HF.V3_to_V2I(closest.transform.position)))
-        {
-            locations.Add(HF.V3_to_V2I(closest.transform.position), indicator);
+            indicator.SetActive(false);
         }
     }
 
-    private void PlaceIndicatorAboveMachine(Vector3 screenPosition, MachinePart machine)
-    {
-        // If an indicator doesn't exist for this machine create one
-        if (machine.parentPart.indicator == null)
-        {
-            CreateMachineIndicator(machine);
-        }
-        GameObject indicator = machine.parentPart.indicator;
-        indicator.transform.position = machine.parentPart.transform.position; // Reset position
-
-        // And remove it from the dictionary
-        if (locations.ContainsKey(HF.V3_to_V2I(indicator.transform.position)))
-        {
-            locations.Remove(HF.V3_to_V2I(indicator.transform.position));
-        }
-    }
-    */
-
-    public void CreateMachineIndicator(MachinePart machine)
+    public GameObject CreateMachineIndicator(MachinePart machine)
     {
         GameObject go = Instantiate(prefab_indicator, machine.parentPart.transform.parent.transform.position, Quaternion.identity);
         go.transform.SetParent(machine.parentPart.transform.parent.transform);
@@ -249,5 +145,7 @@ public class BorderIndicators : MonoBehaviour
 
         // Assign Parent
         go.GetComponent<UIBorderIndicator>().machine_parent = machine.parentPart;
+
+        return go;
     }
 }

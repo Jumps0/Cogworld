@@ -442,6 +442,7 @@ public class MapManager : MonoBehaviour
         AssignMachineNames(); // Assign names to all placed machines
         AssignMachineCommands(); // Assign commands (for terminal interaction) to all placed machines.
         ZoneTerminals(); // Create terminal zones
+        UIManager.inst.GetComponent<BorderIndicators>().CreateIndicators(); // Create indicators for all (interactable) machines
 
         // Spawn the player
         var spawnedPlayer = Instantiate(_playerPrefab, new Vector3(playerSpawnLocation.x * GridManager.inst.globalScale, playerSpawnLocation.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
