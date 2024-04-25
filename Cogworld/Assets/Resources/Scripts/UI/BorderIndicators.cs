@@ -14,7 +14,7 @@ public class BorderIndicators : MonoBehaviour
     public Dictionary<Vector2Int, GameObject> locations = new Dictionary<Vector2Int, GameObject>();
 
     [Header("Values")]
-    private float screenEdgeBuffer = 35f; // Buffer distance from the screen edge
+    private Vector2 buffer = new Vector2(0.68f, 0.77f);
     public float size;
 
     [Header("Prefabs")]
@@ -64,11 +64,18 @@ public class BorderIndicators : MonoBehaviour
     private void UpdateIndicator(GameObject target, GameObject indicator)
     {
         var screenPos = _camera.WorldToViewportPoint(target.transform.position);
-        bool isOffScreen = screenPos.x <= 0 || screenPos.x >= 1 || screenPos.y <= 0 || screenPos.y >= 1;
+        bool isOffScreen = screenPos.x <= 0 || screenPos.x >= buffer.x || screenPos.y <= 0 || screenPos.y >= buffer.y; // Defaults are 0 | 1 | 0 | 1. We modify due to UI covering some of the screen
         if (isOffScreen)
         {
             indicator.SetActive(true);
             var spriteSizeInViewPort = _camera.WorldToViewportPoint(new Vector3(_spriteWidth, _spriteHeight, 0)) - _camera.WorldToViewportPoint(Vector3.zero);
+
+            // UI Clamping
+            if (screenPos.x >= buffer.x || screenPos.y >= buffer.y)
+            {
+                screenPos.x = Mathf.Clamp(screenPos.x, 0, buffer.x);
+                screenPos.y = Mathf.Clamp(screenPos.y, 0, buffer.y);
+            }
 
             screenPos.x = Mathf.Clamp(screenPos.x, spriteSizeInViewPort.x, 1 - spriteSizeInViewPort.x);
             screenPos.y = Mathf.Clamp(screenPos.y, spriteSizeInViewPort.y, 1 - spriteSizeInViewPort.y);
