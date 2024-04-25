@@ -12,6 +12,8 @@ using Random = UnityEngine.Random;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 using static UnityEngine.GraphicsBuffer;
+using static UnityEngine.RuleTile.TilingRuleOutput;
+using Transform = UnityEngine.Transform;
 
 /// <summary>
 /// Contains helper functions to be used globally.
@@ -1738,6 +1740,26 @@ public static class HF
     #endregion
 
     #region Find & Get
+
+    public static Part TryFindPartAtLocation(Vector2Int pos)
+    {
+        Vector3 lowerPosition = new Vector3(pos.x, pos.y, 2);
+        Vector3 upperPosition = new Vector3(pos.x, pos.y, -2);
+        Vector3 direction = lowerPosition - upperPosition;
+        float distance = 4f;
+        direction.Normalize();
+        RaycastHit2D[] hits = Physics2D.RaycastAll(upperPosition, direction, distance);
+
+        foreach (var hit in hits)
+        {
+            if (hit.collider.gameObject.GetComponent<Part>())
+            {
+                return hit.collider.gameObject.GetComponent<Part>();
+            }
+        }
+
+        return null;
+    }
 
     public static List<GameObject> GetAllInteractableMachines()
     {

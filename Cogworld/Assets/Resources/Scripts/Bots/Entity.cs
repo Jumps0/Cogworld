@@ -62,11 +62,141 @@ public class Entity : MonoBehaviour
         lastDirection = direction;
 
         // Update any nearby doors
-        GameManager.inst.LocalDoorUpdate(new Vector2Int((int)transform.position.x, (int)transform.position.y));
+        Vector2Int newLocation = new Vector2Int((int)transform.position.x, (int)transform.position.y);
+        GameManager.inst.LocalDoorUpdate(newLocation);
+
+        // Matter Check (if player)
+        if (this.GetComponent<PlayerData>())
+        {
+            SpecialPickupCheck(newLocation);
+        }
     }
 
     public void AddToGameManager()
     {
         GameManager.inst.Entities.Add(this);
+    }
+
+    /// <summary>
+    /// Checks if the player has moved ontop of a special unique item, such-as: Matter, Data Logs, Scrap, etc.
+    /// </summary>
+    /// <param name="pos">The position to check.</param>
+    private void SpecialPickupCheck(Vector2Int pos)
+    {
+        // 1. Is there an item at this position?
+        Part P = HF.TryFindPartAtLocation(pos);
+        if(P != null)
+        {
+            // 2. Is this a unique item?
+            Item item = P._item;
+            if (item != null && item.itemData.instantUnique)
+            {
+                // 3. What type of unique item is this?
+                if (item.uniqueDetail.isScrap) // Scrap
+                {
+
+                }
+                else if (item.uniqueDetail.isDataLog) // Data Log
+                {
+
+                }
+                else if (item.uniqueDetail.isDataCore) // Data Core
+                {
+
+                }
+                else // Matter
+                {
+                    // 4. Does the player have spare space for matter?
+                    if(PlayerData.inst.currentMatter < PlayerData.inst.maxMatter) // Add it to the normal storage
+                    {
+                        int diff = (PlayerData.inst.maxMatter - PlayerData.inst.currentMatter);
+                        if (diff >= item.amount) // Player can pick-up all of this matter
+                        {
+                            PlayerData.inst.currentMatter += item.amount; // Add it to inventory
+                            Destroy(P.gameObject); // Destroy the part
+                        }
+                        else if (diff < item.amount && diff != 0) // Player can only pick-up some of this matter
+                        {
+                            PlayerData.inst.currentMatter += diff; // Add it to inventory
+                            item.amount -= diff;
+                            P.SetMatterColors(); // May need to change to color of the ground item.
+                        }
+
+                        UIManager.inst.UpdatePSUI();
+                        UIManager.inst.CreateNewLogMessage(($"Aquired {item.amount} Matter."), UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+                    }
+                    else if (PlayerData.inst.maxInternalMatter > 0 && PlayerData.inst.currentInternalMatter < PlayerData.inst.maxInternalMatter) // Add it to internal storage
+                    {
+                        // A bit clunky but we do it this way.
+                        
+                        // Collect up all items
+                        List<Item> items = Action.CollectAllBotItems(PlayerData.inst.GetComponent<Actor>());
+
+                        // Collect up all *matter* storage items.
+                        List<Item> storage = new List<Item>();
+                        foreach (var I in items)
+                        {
+                            foreach (var E in I.itemData.itemEffects)
+                            {
+                                if(E.internalStorage && E.internalStorageType == 0)
+                                {
+                                    storage.Add(I);
+                                }
+                            }
+                        }
+
+                        int toAdd = item.amount; // In total, we need to add this much matter to our internal storage.
+                        foreach (var S in storage) // Go through each item, and start filling them up until we have none left.
+                        {
+                            int storageSize = 0;
+                            foreach (var E in S.itemData.itemEffects)
+                            {
+                                if (E.internalStorage)
+                                {
+                                    storageSize = E.internalStorageCapacity; // Get the storage size
+                                }
+                            }
+
+                            if (S.storageAmount < storageSize) // Is there space in this storage item?
+                            {
+                                int space = storageSize - S.storageAmount; // This individual item can hold this much.
+
+                                if (space >= toAdd) // We can fit all of it
+                                {
+                                    S.storageAmount += toAdd;
+                                    PlayerData.inst.currentInternalMatter += toAdd;
+                                }
+                                else // Can't fit it all
+                                {
+                                    S.storageAmount = storageSize; // Fill up this item
+                                    PlayerData.inst.currentInternalMatter += space; // Add bits to player
+                                    toAdd -= space; // Subtract from what we have left
+                                }
+                            }
+
+                            if(toAdd <= 0) // Any left?
+                            {
+                                // Stop!
+                                break;
+                            }
+                        }
+
+                        // Did we add everything? (yea i know we are checking twice)
+                        if(toAdd <= 0) // Yes! (Delete the matter)
+                        {
+                            Destroy(P.gameObject); // Destroy the part
+                        }
+                        else // No. Reduce the Matter
+                        {
+                            item.amount = toAdd;
+                            P.SetMatterColors(); // May need to change to color of the ground item.
+                        }
+
+                        return; // bail out, we are done
+                    }
+                }
+            }
+        }
+
     }
 }

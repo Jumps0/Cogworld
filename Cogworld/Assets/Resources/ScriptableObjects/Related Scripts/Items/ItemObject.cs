@@ -55,14 +55,21 @@ public class Item
 {
     public string Name;
     public int Id = -1;
+
     public bool stackable = false;
     public int amount = 1;
+
     public ItemObject itemData;
+
     // This section WILL need to be expanded later (probably BotObject too)
     [Tooltip("Active or In-active")]
     public bool state = true; // Active/In-Active
     [Tooltip("Current integrity of this item.")]
     public int integrityCurrent;
+    [Tooltip("If this item is a unique item (like Scrap, Data Logs, etc.), the details of what it does go in here.")]
+    public ItemUnique uniqueDetail;
+    [Tooltip("If this item is storing some amount of something (energy, matter), how much is it currently storing?")]
+    public int storageAmount = 0;
 
     [Header("Special States/Effects")]
     [Tooltip("Is this item currently overloaded?")]
@@ -93,7 +100,10 @@ public class Item
         Id = item.data.Id;
         itemData = item;
         integrityCurrent = item.integrityMax;
+
+        unstable = item.unstable;
         disposable = item.disposable;
+        uniqueDetail = item.uniqueDetail;
         SetupText();
     }
 
@@ -157,8 +167,6 @@ public class Item
 public abstract class ItemObject : ScriptableObject
 {
     [Header("Standard Info")]
-    [Tooltip("For unique items like matter, scrap, derelict info caches, etc.")]
-    public bool instantUnique = false; // For unique items like matter, scrap, derelict info caches, etc.
     public int amount = 1;
     public Item data = new Item();
     [Tooltip("If false, the player doesn't know what it is, so it should be classified as a prototype until they equip/learn about it.")]
@@ -241,7 +249,7 @@ public abstract class ItemObject : ScriptableObject
     public bool canOverload = false; // TODO: Complete functionality for relevant items
     public bool consumable = false; // TODO: Functionality for this too
     public int disposable = -1; // TODO: Functionality for this
-
+    public int unstable = -1; // TODO: Functionality for this
 
     [Header("Primary Details")]
     public ItemQuality quality;
@@ -254,6 +262,11 @@ public abstract class ItemObject : ScriptableObject
 
     [Header("Fabrication Details")]
     public ItemFabInfo fabricationInfo;
+
+    [Header("Special Unique")]
+    [Tooltip("For unique items like matter, scrap, derelict info caches, etc.")]
+    public bool instantUnique = false; // For unique items like matter, scrap, derelict info caches, etc.
+    public ItemUnique uniqueDetail;
 
     public Item CreateItem()
     {
@@ -1048,35 +1061,6 @@ public class ItemDetectionEffect
     public bool stacks = false;
 }
 
-#endregion
-
-
-[System.Serializable]
-public class ItemFabInfo
-{
-    public bool canBeFabricated = true;
-
-    public int amountMadePer = 1;
-
-    [Tooltip("How much time it takes to fabricate this item. Long/Normal/Quick")]
-    public Vector3Int fabTime;
-
-    public int matterCost;
-
-    [Tooltip("Some items require other items to craft. Leave this empty if that's not required.")]
-    public List<ItemObject> componenetsRequired = new List<ItemObject>();
-}
-
-[System.Serializable]
-public class SchematicInfo
-{
-    public bool hackable = true;
-    [Tooltip("Min Terminal Sec lvl / Depth")]
-    public List<Vector2Int> location = new List<Vector2Int>();
-
-    [Tooltip("Does the player have this schematic?")]
-    public bool hasSchematic = false;
-}
 
 [System.Serializable]
 public class HackBonus
@@ -1106,6 +1090,51 @@ public class HackBonus
     [Tooltip("Repels ##% of hacking attempts against allies within a range of ##")]
     public float allyHackDefenseBonus = 0f;
     public int allyHackRange;
+}
+#endregion
+
+[System.Serializable]
+public class ItemUnique 
+{
+    [Header("Scrap")]
+    public bool isScrap = false;
+    public ItemObject scrapReward;
+
+    [Header("Data Log")]
+    public bool isDataLog = false;
+    public string logMessage = "";
+    public GlobalActions logAction;
+
+    [Header("Data Core")]
+    public bool isDataCore;
+    public Terminal coreTerminal;
+}
+
+[System.Serializable]
+public class ItemFabInfo
+{
+    public bool canBeFabricated = true;
+
+    public int amountMadePer = 1;
+
+    [Tooltip("How much time it takes to fabricate this item. Long/Normal/Quick")]
+    public Vector3Int fabTime;
+
+    public int matterCost;
+
+    [Tooltip("Some items require other items to craft. Leave this empty if that's not required.")]
+    public List<ItemObject> componenetsRequired = new List<ItemObject>();
+}
+
+[System.Serializable]
+public class SchematicInfo
+{
+    public bool hackable = true;
+    [Tooltip("Min Terminal Sec lvl / Depth")]
+    public List<Vector2Int> location = new List<Vector2Int>();
+
+    [Tooltip("Does the player have this schematic?")]
+    public bool hasSchematic = false;
 }
 
 [System.Serializable]

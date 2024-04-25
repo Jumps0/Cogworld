@@ -78,7 +78,7 @@ public class Part : MonoBehaviour
         
     }
 
-    private void SetMatterColors()
+    public void SetMatterColors()
     {
         // - Now we want to set what shade of purple we will use. This depends on the amount of matter in the stack.
         // - Pink-ish purple = (>100)
@@ -478,57 +478,6 @@ public class Part : MonoBehaviour
         UpdateVisibility();
         CheckShowFloatingText();
         HighlightCheck();
-
-        if (isMatterItem) // Matter Check
-            CheckMatter();
-    }
-
-
-    /// <summary>
-    /// =================================================
-    ///  TODO:
-    /// 
-    ///      IN THE FUTURE, MOVE THIS MATTER CHECK
-    ///      INTO THE PLAYER'S LOGIC SO THAT INSTEAD
-    ///      OF EVERY MATTER DROP ON THE MAP CHECKING
-    ///      THIS EVERY FRAME, THE PLAYER JUST DOES
-    ///      IT INSTEAD (ONLY ONE CALL PER FRAME).
-    ///      
-    ///      WILL MOST LIKELY INVOLVE A RAYCAST AND
-    ///      SENDING A SIGNAL TO THIS ITEM/PART.
-    ///         
-    /// =================================================
-    /// </summary>
-
-    bool mCheck = true;
-    public void CheckMatter()
-    {
-        // Player is current ON-TOP of this item && has space for more matter.
-        if (PlayerData.inst.gameObject != null & PlayerData.inst.gameObject.transform.position == this.transform.position && mCheck && (PlayerData.inst.maxMatter != PlayerData.inst.currentMatter))
-        {
-            int diff = (PlayerData.inst.maxMatter - PlayerData.inst.currentMatter);
-            if (diff >= this._item.amount) // Player can pick-up all of this matter
-            {
-                PlayerData.inst.currentMatter += this._item.amount; // Add it to inventory
-                Destroy(this.gameObject); // Destroy this item
-            }
-            else if(diff < this._item.amount && diff != 0) // Player can only pick-up some of this matter
-            {
-                PlayerData.inst.currentMatter += diff; // Add it to inventory
-                this._item.amount -= diff;
-                SetMatterColors(); // May need to change to color of the ground item.
-            }
-
-            UIManager.inst.UpdatePSUI();
-            UIManager.inst.CreateNewLogMessage(($"Aquired {this._item.amount} Matter."), UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
-            // Include something for internal matter later
-
-            mCheck = false;
-        }
-        else if (PlayerData.inst.gameObject != null & PlayerData.inst.gameObject.transform.position != this.transform.position)
-        {
-            mCheck = true; // Don't want to keep checking when player is on top, only once.
-        }
     }
 
     private void CheckShowFloatingText()
