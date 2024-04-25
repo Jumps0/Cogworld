@@ -217,6 +217,9 @@ public class GameManager : MonoBehaviour
     public void LocalDoorUpdate(Vector2Int pos)
     {
         List<Vector2Int> neighbors = new List<Vector2Int>();
+        neighbors.Add(pos); // Center
+
+        // Neighbors
         neighbors.Add(pos + Vector2Int.up);
         neighbors.Add(pos + Vector2Int.up + Vector2Int.left);
         neighbors.Add(pos + Vector2Int.up + Vector2Int.right);
@@ -225,7 +228,24 @@ public class GameManager : MonoBehaviour
         neighbors.Add(pos + Vector2Int.down + Vector2Int.right);
         neighbors.Add(pos + Vector2Int.left);
         neighbors.Add(pos + Vector2Int.right);
-        neighbors.Add(pos);
+
+        // Neighbors + 1 (for closing)
+        neighbors.Add(pos + Vector2Int.up * 2);
+        neighbors.Add(pos + Vector2Int.up * 2 + Vector2Int.right);
+        neighbors.Add(pos + Vector2Int.up * 2 + Vector2Int.left);
+        neighbors.Add(pos + Vector2Int.up * 2 + Vector2Int.right * 2);
+        neighbors.Add(pos + Vector2Int.up * 2 + Vector2Int.left * 2);
+        neighbors.Add(pos + Vector2Int.down * 2);
+        neighbors.Add(pos + Vector2Int.down * 2 + Vector2Int.right);
+        neighbors.Add(pos + Vector2Int.down * 2 + Vector2Int.left);
+        neighbors.Add(pos + Vector2Int.down * 2 + Vector2Int.right * 2);
+        neighbors.Add(pos + Vector2Int.down * 2 + Vector2Int.left * 2);
+        neighbors.Add(pos + Vector2Int.left * 2);
+        neighbors.Add(pos + Vector2Int.left * 2 + Vector2Int.up);
+        neighbors.Add(pos + Vector2Int.left * 2 + Vector2Int.down);
+        neighbors.Add(pos + Vector2Int.right * 2);
+        neighbors.Add(pos + Vector2Int.right * 2 + Vector2Int.up);
+        neighbors.Add(pos + Vector2Int.right * 2 + Vector2Int.down);
 
         foreach (var L in neighbors)
         {

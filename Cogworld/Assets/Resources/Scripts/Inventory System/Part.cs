@@ -108,22 +108,6 @@ public class Part : MonoBehaviour
 
     public void UpdateVisibility()
     {
-        // =============================================
-        //    NOTE
-        // 
-        // There is an issue right now with this
-        // because the IMAGEs being used for items
-        // are mostly all BLUE and the SPRITE
-        // being used is also set to BLUE (because
-        // of the items level) so this ends up making
-        // the item appear darker.
-        // 
-        // This will be fixed later if/when the IMAGE
-        // for items are all set to white like they
-        // should be.
-        //
-        // ==============================================
-        
         if (isVisible)
         {
             _sprite.color = realColor;

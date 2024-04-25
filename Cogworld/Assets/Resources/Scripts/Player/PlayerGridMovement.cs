@@ -182,39 +182,6 @@ public class PlayerGridMovement : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Directly move the player.
-    /// </summary>
-    /// <param name="moveDirection">Direction for player to be moved.</param>
-    private IEnumerator MovePlayer(Vector3 moveDirection)
-    {
-
-        isMoving = true;
-
-        float elapsedTime = 0;
-
-        originPos = transform.position;
-        targetPos = originPos + moveDirection;
-
-        if (!doInstantMovement)
-        {
-            while (elapsedTime < timeToMove)
-            {
-                transform.position = Vector3.Lerp(originPos, targetPos, (elapsedTime / timeToMove));
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }
-        }
-        else
-        {
-            yield return null;
-        }
-
-        transform.position = targetPos;
-
-        isMoving = false;
-    }
-
     [SerializeField] private bool moveKeyHeld;
     public void AttemptMovement(int X, int Y)
     {
@@ -360,9 +327,6 @@ public class PlayerGridMovement : MonoBehaviour
         // <Use Something>
 
         isMoving = false;
-
-        if(playerMovementAllowed)
-            this.GetComponent<Actor>().UpdateFieldOfView();
     }
 
     public TileBlock GetCurrentPlayerTile()

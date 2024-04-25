@@ -7,8 +7,10 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 /// <summary>
 /// A script used for the physical *real world* tiles used to build the world. What this tile is gets determined by its "tileInfo" (a TileObject variable).
@@ -417,11 +419,12 @@ public class TileBlock : MonoBehaviour
 
     public Actor GetBotOnTop()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.TransformDirection(Vector3.zero), 10f);
-
-        if (hit)
+        foreach (var E in GameManager.inst.entities) // A bit more performance heavy but raycasting wasn't working
         {
-            return hit.collider.gameObject.GetComponent<Actor>(); // Success
+            if (HF.V3_to_V2I(E.transform.position) == new Vector2Int(locX, locY))
+            {
+                return E.GetComponent<Actor>();
+            }
         }
 
         return null; // Failure

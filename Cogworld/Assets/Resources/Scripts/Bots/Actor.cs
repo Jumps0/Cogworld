@@ -724,7 +724,6 @@ public class Actor : Entity
 
     public void UpdateFieldOfView()
     {
- 
         Vector3 location = this.transform.position;
         Vector3Int gridPosition = new Vector3Int((int)location.x, (int)location.y, (int)location.z);
 

@@ -40,36 +40,31 @@ public class DoorLogic : MonoBehaviour
         source.spatialBlend = 1;
     }
 
-    private void LateUpdate()
-    {
-        StateCheck();
-    }
-
     /// <summary>
     /// Check if the door should open/close.
     /// </summary>
     public void StateCheck()
     {
-        state = false;
+        bool botNearby = false;
         foreach (TileBlock T in activationTiles)
         {
             if (T.GetBotOnTop() != null) // Is there a bot nearby?
             {
-                state = true;
+                botNearby = true;
                 break;
             }
         }
 
-        if (state) // If there is a bot nearby
+        if (botNearby) // If there is a bot nearby
         {
-            if (this.GetComponent<SpriteRenderer>().sprite == _closed) // If we're currently closed, we need to open
+            if (!state) // If we're currently closed, we need to open
             {
                 Open();
             }
         }
-        else if(!state) // If there isn't a bot nearby
+        else if(!botNearby) // If there isn't a bot nearby
         {
-            if (this.GetComponent<SpriteRenderer>().sprite == _open) // If we're currently open, we need to close
+            if (state) // If we're currently open, we need to close
             {
                 Close();
             }
@@ -80,6 +75,9 @@ public class DoorLogic : MonoBehaviour
     {
         // Change Sprite
         this.GetComponent<SpriteRenderer>().sprite = _open;
+
+        // Change state
+        state = true; // open
 
         // Play Sound
         source.PlayOneShot(openSound);
@@ -95,6 +93,9 @@ public class DoorLogic : MonoBehaviour
     {
         // Change Sprite
         this.GetComponent<SpriteRenderer>().sprite = _closed;
+
+        // Change state
+        state = false; // closed
 
         // Play Sound
         source.PlayOneShot(closedSound);
