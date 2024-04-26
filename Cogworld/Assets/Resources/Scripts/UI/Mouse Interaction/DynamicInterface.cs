@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+/// <summary>
+/// This is the interface over the player's / PARTS /.
+/// </summary>
 public class DynamicInterface : UserInterface
 {
 
@@ -18,7 +21,7 @@ public class DynamicInterface : UserInterface
         for (int i = 0; i < InventoryControl.inst.p_inventoryPower.Container.Items.Length; i++)
         {
             var obj = Instantiate(_itemHeldPrefab, Vector3.zero, Quaternion.identity, inventoryArea.transform);
-            obj.GetComponent<InvDisplayItem>()._assignedItem = null;
+            obj.GetComponent<InvDisplayItem>().item = null;
             obj.GetComponent<InvDisplayItem>().SetEmpty();
 
             AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnter(obj); });
@@ -41,7 +44,7 @@ public class DynamicInterface : UserInterface
         for (int i = 0; i < InventoryControl.inst.p_inventoryPropulsion.Container.Items.Length; i++)
         {
             var obj = Instantiate(_itemHeldPrefab, Vector3.zero, Quaternion.identity, inventoryArea.transform);
-            obj.GetComponent<InvDisplayItem>()._assignedItem = null;
+            obj.GetComponent<InvDisplayItem>().item = null;
             obj.GetComponent<InvDisplayItem>().SetEmpty();
 
             AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnter(obj); });
@@ -64,7 +67,7 @@ public class DynamicInterface : UserInterface
         for (int i = 0; i < InventoryControl.inst.p_inventoryUtilities.Container.Items.Length; i++)
         {
             var obj = Instantiate(_itemHeldPrefab, Vector3.zero, Quaternion.identity, inventoryArea.transform);
-            obj.GetComponent<InvDisplayItem>()._assignedItem = null;
+            obj.GetComponent<InvDisplayItem>().item = null;
             obj.GetComponent<InvDisplayItem>().SetEmpty();
 
             AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnter(obj); });
@@ -87,7 +90,7 @@ public class DynamicInterface : UserInterface
         for (int i = 0; i < InventoryControl.inst.p_inventoryWeapons.Container.Items.Length; i++)
         {
             var obj = Instantiate(_itemHeldPrefab, Vector3.zero, Quaternion.identity, inventoryArea.transform);
-            obj.GetComponent<InvDisplayItem>()._assignedItem = null;
+            obj.GetComponent<InvDisplayItem>().item = null;
             obj.GetComponent<InvDisplayItem>().SetEmpty();
 
             AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnter(obj); });

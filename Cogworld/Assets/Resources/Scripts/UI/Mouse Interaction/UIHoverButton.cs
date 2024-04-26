@@ -20,11 +20,6 @@ public class UIHoverButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             case "c":
                 UIManager.inst.SetActiveLAICMenu(identifier);
                 break;
-
-            case "INV_ITEM":
-                // Turn on hover animation
-                if(this.GetComponent<InvDisplayItem>()._assignedItem != null)
-                    this.GetComponent<InvDisplayItem>().DoHighlight();
                 break;
 
             default:
@@ -41,11 +36,6 @@ public class UIHoverButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             case "a":
             case "c":
                 //UIManager.inst.SetActiveLAICMenu(identifier);
-                break;
-
-            case "INV_ITEM":
-                // Turn off hover animation
-                this.GetComponent<InvDisplayItem>().StopHighlight();
                 break;
 
             default:

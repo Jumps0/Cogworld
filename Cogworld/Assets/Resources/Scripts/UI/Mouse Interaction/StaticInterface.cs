@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+/// <summary>
+/// This is the interface over the player's / INVENTORY /.
+/// </summary>
 public class StaticInterface : UserInterface
 {
     public GameObject[] slots;
@@ -16,7 +19,7 @@ public class StaticInterface : UserInterface
         {
 
             var obj = slots[i];
-            obj.GetComponent<InvDisplayItem>()._assignedItem = null;
+            obj.GetComponent<InvDisplayItem>().item = null;
             obj.GetComponent<InvDisplayItem>().SetEmpty();
 
             AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnter(obj); });

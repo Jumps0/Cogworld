@@ -3369,9 +3369,9 @@ public static class HF
         // Roundabout way of doing this since i'm not sure how to access the list directly
         foreach (Transform child in UIManager.inst.partContentArea.transform)
         {
-            if (child.GetComponent<InvDisplayItem>() && child.GetComponent<InvDisplayItem>()._assignedItem != null)
+            if (child.GetComponent<InvDisplayItem>() && child.GetComponent<InvDisplayItem>().item != null)
             {
-                if (child.GetComponent<InvDisplayItem>()._assignedItem == item)
+                if (child.GetComponent<InvDisplayItem>().item == item)
                 {
                     return child.GetComponent<InvDisplayItem>()._assignedChar.ToString();
                 }
@@ -4056,6 +4056,48 @@ public static class HF
             default:
                 return "?";
         }
+    }
+
+    public static string HighlightDamageType(string input)
+    {
+        // Dictionary of colors
+        Dictionary<string, string> damageTypeColors = new Dictionary<string, string>
+        {
+            { "KI", "#BABABA" },
+            { "TH", "#B75E00" },
+            { "EX", "#980400" },
+            { "EM", "#0079C6" },
+            { "PH", "#7F00C5" },
+            { "I", "#9FC880" },
+            { "S", "#AEAEAE" },
+            { "P", "#A6006C" },
+            { "E", "#C57F00" },
+        };
+
+
+        // Define the regular expression pattern to match damage type segments (and only match at the end)
+        string pattern = @"\b(KI|TH|EX|EM|PH|I|S|P|E)\b$";
+
+        // Use Regex.Replace to find and replace the matches
+        string output = Regex.Replace(input, pattern, match =>
+        {
+            // Get the matched damage type
+            string damageType = match.Groups[1].Value;
+
+            // Check if the damage type has a color defined in the dictionary
+            if (damageTypeColors.ContainsKey(damageType))
+            {
+                // Use the color defined in the dictionary
+                return $"<color={damageTypeColors[damageType]}>{damageType}</color>";
+            }
+            else
+            {
+                // Use a default color if no color is defined for the damage type
+                return $"<color=#000000>{damageType}</color>";
+            }
+        });
+
+        return output;
     }
 
     public static string ItemPrototypeName(Item item)

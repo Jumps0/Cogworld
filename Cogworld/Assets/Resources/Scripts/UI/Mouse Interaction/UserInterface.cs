@@ -89,8 +89,8 @@ public abstract class UserInterface : MonoBehaviour
 
             var rt = tempItem;
             //CopyInvDisplayItem(obj.GetComponent<InvDisplayItem>(), rt.GetComponent<InvDisplayItem>());
-            rt.GetComponent<InvMovingDisplayItem>().Setup(obj.GetComponent<InvDisplayItem>()._assignedItem.itemData.itemName);
-            tempItem.transform.SetParent(inventoryArea.transform.parent);
+            rt.GetComponent<InvMovingDisplayItem>().Setup(obj.GetComponent<InvDisplayItem>().item.itemData.itemName);
+            tempItem.transform.SetParent(inventoryArea.transform.parent.transform.parent); // Set parent to *[RightCore] - Area* so that it isn't layered under any of the menus.
 
             // Is there an actual item there?
             if (slotsOnInterface[obj].item.Id >= 0)
@@ -109,7 +109,7 @@ public abstract class UserInterface : MonoBehaviour
         if(MouseData.interfaceMouseIsOver == null)
         {
             // Drop the item on the floor
-            InventoryControl.inst.DropItemOnFloor(obj.GetComponent<InvDisplayItem>()._assignedItem, PlayerData.inst.GetComponent<Actor>(), _inventory);
+            InventoryControl.inst.DropItemOnFloor(obj.GetComponent<InvDisplayItem>().item, PlayerData.inst.GetComponent<Actor>(), _inventory);
 
             if (this.GetComponent<StaticInterface>())
             {  
@@ -117,12 +117,14 @@ public abstract class UserInterface : MonoBehaviour
             }
             else if (this.GetComponent<DynamicInterface>()) // If this item was equipped we need to change the player's stats
             {
-                PlayerData.inst.currentWeight -= obj.GetComponent<InvDisplayItem>()._assignedItem.itemData.mass;
-                if (obj.GetComponent<InvDisplayItem>()._assignedItem.itemData.propulsion.Count > 0)
+                PlayerData.inst.currentWeight -= obj.GetComponent<InvDisplayItem>().item.itemData.mass;
+                if (obj.GetComponent<InvDisplayItem>().item.itemData.propulsion.Count > 0)
                 {
-                    PlayerData.inst.maxWeight -= obj.GetComponent<InvDisplayItem>()._assignedItem.itemData.propulsion[0].support;
+                    PlayerData.inst.maxWeight -= obj.GetComponent<InvDisplayItem>().item.itemData.propulsion[0].support;
                 }
-                
+
+                // Play a little animation to let the player know THIS item was just equipped
+                obj.GetComponent<InvDisplayItem>().RecentAttachmentAnimation();
             }
 
             UIManager.inst.UpdatePSUI();
@@ -160,7 +162,7 @@ public abstract class UserInterface : MonoBehaviour
         t.dangerRed = s.dangerRed;
         t.emptyGray = s.emptyGray;
         t.letterWhite = s.letterWhite;
-        t._assignedItem = s._assignedItem;
+        t.item = s.item;
     }
 
     public void ClearSlots()
@@ -190,8 +192,8 @@ public static class ExtensionMethods
             {
                 if (_slot.Value.item.Id != -1)
                 {
-                    _slot.Key.GetComponent<InvDisplayItem>()._assignedItem = _slot.Value.item;
-                    _slot.Key.GetComponent<InvDisplayItem>().SetUnEmpty();
+                    _slot.Key.GetComponent<InvDisplayItem>().item = _slot.Value.item;
+                    _slot.Key.GetComponent<InvDisplayItem>().SetAsFilled();
                     _slot.Key.GetComponent<InvDisplayItem>().UpdateDisplay();
                 }
                 else

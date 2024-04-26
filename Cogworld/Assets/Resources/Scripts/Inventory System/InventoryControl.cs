@@ -372,7 +372,7 @@ public class InventoryControl : MonoBehaviour
             {
                 foreach (var item in I.GetComponentInChildren<DynamicInterface>().slotsOnInterface)
                 {
-                    if(item.Key.GetComponent<InvDisplayItem>()._assignedItem != null)
+                    if(item.Key.GetComponent<InvDisplayItem>().item != null)
                     {
                         item.Key.GetComponent<InvDisplayItem>().SetLetter(UIManager.inst.alphabet[i]);
                         i++;
@@ -389,7 +389,7 @@ public class InventoryControl : MonoBehaviour
             {
                 foreach (var item in I.GetComponentInChildren<StaticInterface>().slotsOnInterface)
                 {
-                    if (item.Key.GetComponent<InvDisplayItem>()._assignedItem != null)
+                    if (item.Key.GetComponent<InvDisplayItem>().item != null)
                     {
                         item.Key.GetComponent<InvDisplayItem>().SetLetter(UIManager.inst.alphabet[i]);
                         i++;
@@ -406,7 +406,7 @@ public class InventoryControl : MonoBehaviour
             {
                 foreach (var item in I.GetComponentInChildren<UserInterface>().slotsOnInterface)
                 {
-                    if (item.Key.GetComponent<InvDisplayItem>()._assignedItem != null)
+                    if (item.Key.GetComponent<InvDisplayItem>().item != null)
                     {
                         item.Key.GetComponent<InvDisplayItem>().SetLetter(UIManager.inst.alphabet[i]);
                         i++;
