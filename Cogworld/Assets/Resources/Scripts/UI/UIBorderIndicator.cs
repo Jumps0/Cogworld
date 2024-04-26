@@ -22,17 +22,6 @@ public class UIBorderIndicator : MonoBehaviour
     private bool isFlashing = false;
     private float startTime;
 
-    /*
-    public void SetFlash(bool flash)
-    {
-        animator.gameObject.SetActive(flash);
-
-        if (animator.gameObject.activeInHierarchy && !this.animator.GetCurrentAnimatorStateInfo(0).IsName("TileIndicatorFlash"))
-        {
-            animator.Play("TileIndicatorFlash");
-        }
-    }*/
-
     bool setup = false;
     private void Setup()
     {
@@ -59,22 +48,30 @@ public class UIBorderIndicator : MonoBehaviour
     public void SetFlash(bool flash)
     {
         isFlashing = flash;
-        if (isFlashing)
+
+        if (GlobalSettings.inst.animateBorderIndicators)
         {
-            if (animate == null)
+            if (isFlashing)
             {
-                material.SetFloat("_Brightness", flashBrightnessLow);
-                animate = StartCoroutine(AnimateFlash());
+                if (animate == null)
+                {
+                    material.SetFloat("_Brightness", flashBrightnessLow);
+                    animate = StartCoroutine(AnimateFlash());
+                }
+            }
+            else
+            {
+                if (animate != null)
+                {
+                    StopCoroutine(animate);
+                }
+
+                // Reset to normal brightness when exiting flash state
+                material.SetFloat("_Brightness", normalBrightness);
             }
         }
         else
         {
-            if(animate != null)
-            {
-                StopCoroutine(animate);
-            }
-
-            // Reset to normal brightness when exiting flash state
             material.SetFloat("_Brightness", normalBrightness);
         }
     }

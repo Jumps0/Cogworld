@@ -58,6 +58,9 @@ public class GlobalSettings : MonoBehaviour
     public float itemPopupLifetime = 5;
     public float globalTextSpeed = 0.35f;
     public List<TMP_FontAsset> fonts = new List<TMP_FontAsset>();
+    //
+    [Tooltip("When not in view, indicators that hug the border will slowly flash (if true).")]
+    public bool animateBorderIndicators = true;
 
     [Header("Settings")]
     [Tooltip("The scanning/UI animation when the player enters a new level.")]
