@@ -1,16 +1,13 @@
 /*
  * Originally Created by: TaroDev
+ * Expanded by: Cody Jackson
  * Youtube Link: https://www.youtube.com/watch?v=kkAjpQAM-jE
  * 
  * 
  */
 
 using System.Collections;
-using System.Collections.Generic;
-using Unity.Burst.CompilerServices;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 /// <summary>
 /// A script used for the physical *real world* tiles used to build the world. What this tile is gets determined by its "tileInfo" (a TileObject variable).

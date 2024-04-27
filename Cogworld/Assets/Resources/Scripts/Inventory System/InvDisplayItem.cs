@@ -111,14 +111,7 @@ public class InvDisplayItem : MonoBehaviour
             assignedOrderText.text = _assignedNumber.ToString();
             assignedOrderString = _assignedNumber.ToString();
 
-            if (item.state)
-            {
-                assignedOrderText.color = activeGreen;
-            }
-            else
-            {
-                assignedOrderText.color = emptyGray;
-            }
+            assignedOrderText.color = letterWhite;
         }
         else // Parts menu items use letters
         {

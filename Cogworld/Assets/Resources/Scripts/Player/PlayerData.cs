@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -142,7 +143,7 @@ public class PlayerData : MonoBehaviour
         if (this.gameObject.GetComponent<PartInventory>())
         {
             CombatInputs();
-            //InventoryInputDetection();
+            InventoryInputDetection();
             UpdateStats();
         }
     }
@@ -1499,7 +1500,18 @@ public class PlayerData : MonoBehaviour
                     detect = number.ToString();
                 }
 
-                if (detect != "" && Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), detect))) // Is that key currenlty down?
+                KeyCode parse = KeyCode.None;
+                try
+                {
+                    parse = (KeyCode)System.Enum.Parse(typeof(KeyCode), detect);
+                }
+                catch (Exception e)
+                {
+                    // do nothing
+                    return;
+                }
+
+                if (detect != "" && parse != KeyCode.None && Input.GetKeyDown(parse)) // Is that key currenlty down?
                 {
                     // Toggle!
                     if(reference != null)
