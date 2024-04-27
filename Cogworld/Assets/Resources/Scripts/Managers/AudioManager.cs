@@ -25,24 +25,27 @@ public class AudioManager : MonoBehaviour
     public AudioSource globalTypingSource;
 
     [Header("Audio Clips")]
+    [Tooltip("Only map ambience in here. Machine ambience gets assigned individually.")]
     public List<AudioClip> AMBIENT_Clips = new List<AudioClip>();
     public List<AudioClip> DIALOGUE_Clips = new List<AudioClip>();
     public List<AudioClip> DOOR_Clips = new List<AudioClip>();
     public List<AudioClip> ENDINGS_Clips = new List<AudioClip>();
-    public List<AudioClip> globalMiscClips = new List<AudioClip>();
-    //
-    public List<AudioClip> TRAPS_Clips = new List<AudioClip>();
-    public List<AudioClip> INTRO_Clips = new List<AudioClip>();
+    public List<AudioClip> EVOLVE_Clips = new List<AudioClip>();
     public List<AudioClip> GAME_Clips = new List<AudioClip>();
+    public List<AudioClip> GAMEOVER_Clips = new List<AudioClip>();
+    public List<AudioClip> INTRO_Clips = new List<AudioClip>();
+    public List<AudioClip> ITEMS_Clips = new List<AudioClip>();
+    public List<AudioClip> TITLE_Clips = new List<AudioClip>();
+    public List<AudioClip> TRAPS_Clips = new List<AudioClip>();
     public List<AudioClip> UI_Clips = new List<AudioClip>();
+    public List<AudioClip> ROBOTHACK_Clips = new List<AudioClip>();
+    [Header("   MATERIALS")]
     public List<AudioClip> equipItem_Clips = new List<AudioClip>();
     public List<AudioClip> dropItem_Clips = new List<AudioClip>();
-    public List<AudioClip> nonBotDestruction_Clips = new List<AudioClip>();
-    //
-    [Header("  MATERIAL")]
-    [Header("      Destroy")]
-    [Header("          Robot")]
     public List<AudioClip> RobotDestruction_Clips = new List<AudioClip>();
+    public List<AudioClip> nonBotDestruction_Clips = new List<AudioClip>();
+
+    public List<AudioClip> globalMiscClips = new List<AudioClip>();
     //
     public List<AudioClip> globalMusicClips = new List<AudioClip>(); // Will probably never be used
 
