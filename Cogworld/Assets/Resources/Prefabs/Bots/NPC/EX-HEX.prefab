@@ -450,7 +450,7 @@ MonoBehaviour:
       guys. Go see BIN. I can't imagine you'll want to stay in our boring little
       cave for long, and we could use some help with the project in the back.
   moveToNextDialogue: 0
-  uniqueDialogueSound: {fileID: 8300000, guid: c4c5a05400d34ef4b8766d09b9947e74, type: 3}
+  uniqueDialogueSound: {fileID: 8300000, guid: 736a5df1b7c0cc345bdc1a07b9d36000, type: 3}
   uniqueName: EX-HEX
 --- !u!1 &9212121307027914503
 GameObject:

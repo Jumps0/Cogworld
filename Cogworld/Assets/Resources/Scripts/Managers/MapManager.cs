@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Networking.Types;
 using static StructureCTR;
 using Random = UnityEngine.Random;
 
@@ -70,7 +71,7 @@ public class MapManager : MonoBehaviour
     [Header("MapGen Debug")]
     [Tooltip("1 = Caves | 2 = Normal | 3 = Custom")]
     public int mapType = 0;
-    [Tooltip("-1 = Starting Cave | ???")]
+    [Tooltip("-1 = Starting Cave | 0 = Exiles")]
     public int customMapType = -1;
     [Tooltip("!! Must be an Odd number !!")]
     public Vector2Int setMapSize = new Vector2Int(21, 21);
@@ -2660,6 +2661,7 @@ public class MapManager : MonoBehaviour
         }
         currentLevelIsBranch = isBranch;
 
+        // FLAG - UPDATE NEW LEVELS
         switch (target)
         {
             // TODO: In each of these statements (or those relevent) add: DungeonManagerCTR.instance.genData =
@@ -2755,6 +2757,34 @@ public class MapManager : MonoBehaviour
                 break;
             case 22:
                 currentLevelName = "HUB_04(d)";
+                mapType = 2;
+                break;
+            case 23:
+                currentLevelName = "ZION";
+                mapType = 2;
+                break;
+            case 24:
+                currentLevelName = "ZDC";
+                mapType = 2;
+                break;
+            case 25:
+                currentLevelName = "MINES";
+                mapType = 2;
+                break;
+            case 26:
+                currentLevelName = "RECYCLING";
+                mapType = 2;
+                break;
+            case 27:
+                currentLevelName = "SUBCAVES";
+                mapType = 2;
+                break;
+            case 28:
+                currentLevelName = "WASTES";
+                mapType = 2;
+                break;
+            case 29: // not actually in the real game yet but will be eventually
+                currentLevelName = "JUNKYARD";
                 mapType = 2;
                 break;
             default: // CUSTOM
@@ -2995,6 +3025,8 @@ public class MapManager : MonoBehaviour
 
     public void PlayAmbientMusic()
     {
+        // FLAG - UPDATE NEW LEVELS
+
         int ambID = 0;
 
         switch (currentLevelName)
@@ -3036,10 +3068,70 @@ public class MapManager : MonoBehaviour
                 ambID = 3;
                 break;
             case "WASTE":
+                ambID = 4;
+                break;
+            case "HUB":
+                ambID = 4;
+                break;
+            case "ARCHIVES":
+                ambID = 2;
+                break;
+            case "CETUS":
+                ambID = 5;
+                break;
+            case "ARCHITECT":
+                ambID = 0;
+                break;
+            case "ZHIROV":
+                ambID = 26;
+                break;
+            case "DATA MINER":
+                ambID = 16;
+                break;
+            case "EXILES":
+                ambID = 9;
+                break;
+            case "WARLORD":
                 ambID = 24;
                 break;
+            case "SECTION 7":
+                ambID = 20;
+                break;
+            case "TESTING":
+                ambID = 23;
+                break;
+            case "QUARANTINE":
+                ambID = 17;
+                break;
+            case "LAB":
+                ambID = 14;
+                break;
+            case "HUB_04(d)":
+                ambID = 13;
+                break;
+            case "ZION":
+                ambID = 27;
+                break;
+            case "ZDC":
+                ambID = 7;
+                break;
+            case "MINES":
+                ambID = 16;
+                break;
+            case "RECYCLING":
+                ambID = 18;
+                break;
+            case "SUBCAVES":
+                ambID = 22;
+                break;
+            case "WASTES":
+                ambID = 25;
+                break;
+            case "JUNKYARD": // not in the game yet, change when it comes out
+                ambID = 4; 
+                break;
             default:
-                ambID = 4; // change later
+                ambID = 4;
                 break;
                 // EXPAND THIS LATER
         }

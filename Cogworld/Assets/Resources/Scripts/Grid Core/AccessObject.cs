@@ -73,6 +73,8 @@ public class AccessObject : MonoBehaviour
         }
     }
 
+    // FLAG - UPDATE NEW LEVELS
+
     // - Destination ID Guide -
     //
     // 0 - Materials
@@ -98,12 +100,19 @@ public class AccessObject : MonoBehaviour
     // 20 - Quarantine 
     // 21 - Lab
     // 22 - Hub_04(d)
+    // 23 - Zion
+    // 24 - Zion Deep Caves
+    // 25 - Mines
+    // 26 - Recycling
+    // 27 - Subcaves
+    // 28 - Wastes
+    // 29 - Junkyard
     //
     // Things that you also need to update when you change this:
     // MapManager: PlayAmbientMusic()
     // MapManager: ChangeMap()
     // HF:         IDbyTheme()
-    //
+    // 
     // -                     -
 
     public void QueryName()

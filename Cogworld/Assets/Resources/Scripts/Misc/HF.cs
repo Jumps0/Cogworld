@@ -16,6 +16,7 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 using Transform = UnityEngine.Transform;
 using UnityEngine.UIElements;
 using UnityEngine.Windows;
+using UnityEngine.Networking.Types;
 
 /// <summary>
 /// Contains helper functions to be used globally.
@@ -66,6 +67,8 @@ public static class HF
 
     public static int IDbyTheme(TileType type)
     {
+        // FLAG - UPDATE NEW LEVELS
+
         // This is going to suck
         if (type == TileType.Wall)
         {
@@ -151,6 +154,20 @@ public static class HF
                     return 20;
                 case "HUB_04(d)":
                     return 21;
+                case "ZION":
+                    return 2;
+                case "ZDC":
+                    return 18;
+                case "MINES":
+                    return 2;
+                case "RECYCLING":
+                    return 9;
+                case "SUBCAVES":
+                    return 2;
+                case "WASTES":
+                    return 10;
+                case "JUNKYARD": // not in the game yet, change when it comes out
+                    return 2;
                 default:
                     return 1;
                     // EXPAND THIS LATER
@@ -212,6 +229,20 @@ public static class HF
                     return 4;
                 case "HUB_04(d)":
                     return 4;
+                case "ZION":
+                    return 22;
+                case "ZDC":
+                    return 22;
+                case "MINES":
+                    return 22;
+                case "RECYCLING":
+                    return 4;
+                case "SUBCAVES":
+                    return 22;
+                case "WASTES":
+                    return 4;
+                case "JUNKYARD": // not in the game yet, change when it comes out
+                    return 22;
                 default:
                     return 4;
                     // EXPAND THIS LATER
@@ -272,6 +303,20 @@ public static class HF
                 case "LAB":
                     return 19;
                 case "HUB_04(d)":
+                    return 5;
+                case "ZION":
+                    return 5;
+                case "ZDC":
+                    return 5;
+                case "MINES":
+                    return 5;
+                case "RECYCLING":
+                    return 5;
+                case "SUBCAVES":
+                    return 5;
+                case "WASTES":
+                    return 5;
+                case "JUNKYARD": // not in the game yet, change when it comes out
                     return 5;
                 default:
                     return 5;

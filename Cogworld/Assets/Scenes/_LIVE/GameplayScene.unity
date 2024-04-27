@@ -9329,7 +9329,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 120.675674, y: 0}
   m_SizeDelta: {x: 0, y: 22.777779}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &272249432
@@ -40160,7 +40160,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 137.30501
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -43703,51 +43703,8 @@ MonoBehaviour:
   globalMisc2: {fileID: 2007858756}
   globalMisc3: {fileID: 1018721593}
   globalTypingSource: {fileID: 277910273}
-  ambientClips:
-  - {fileID: 8300000, guid: 924ddace88751c3458c544a6056cc7fe, type: 3}
-  - {fileID: 8300000, guid: 4349a3762579aa249bb87adc4e7dc534, type: 3}
-  - {fileID: 8300000, guid: e6dd629bb569db341b0322d3ae4b6c98, type: 3}
-  - {fileID: 8300000, guid: b55920106a9eddb42a963cce84b86533, type: 3}
-  - {fileID: 8300000, guid: 584081f65a730eb4cb1f40bf19f4d7f7, type: 3}
-  - {fileID: 8300000, guid: 426c97105e92de44dab56ab289358364, type: 3}
-  - {fileID: 8300000, guid: 26e5207272b5d3549823b055d3611e32, type: 3}
-  - {fileID: 8300000, guid: 53a8ab6352d3ad74c9ef633460317e4e, type: 3}
-  - {fileID: 8300000, guid: 082c6b4b8b072c0409af19a8aaf67057, type: 3}
-  - {fileID: 8300000, guid: 3e8703fa19e4e6b4a8a63d361e2224c9, type: 3}
-  - {fileID: 8300000, guid: 69f2db80cc7407c42ab726f46534654c, type: 3}
-  - {fileID: 8300000, guid: 8f549a8aa67f576488b823e02f18205f, type: 3}
-  - {fileID: 8300000, guid: 013b66011d1796b4aa726c0828a7a952, type: 3}
-  - {fileID: 8300000, guid: 60658b2b00898bc40ab064cf7cb4df3f, type: 3}
-  - {fileID: 8300000, guid: 0ae830c3e6576804ebebfda062c2e7c7, type: 3}
-  - {fileID: 8300000, guid: 95b880d3f776ec14a8b1b0cc45506599, type: 3}
-  - {fileID: 8300000, guid: 531d128215ff063439adf7428f500d7b, type: 3}
-  - {fileID: 8300000, guid: 1f1a50d1540cef54082a287c789797a5, type: 3}
-  - {fileID: 8300000, guid: c223478e6f3d9a24f83b5a2d000330ef, type: 3}
-  - {fileID: 8300000, guid: e63a9a3333c65a649892a2392e74e6ac, type: 3}
-  - {fileID: 8300000, guid: 46bbe27724f04c440a3b30cc1bbb5e11, type: 3}
-  - {fileID: 8300000, guid: 0438da4011ec37341a7c3f3ca7fed792, type: 3}
-  - {fileID: 8300000, guid: 219a4e7c02f911e43bacbde01334519d, type: 3}
-  - {fileID: 8300000, guid: edf79170fdcbad74e964de1ea1a9e254, type: 3}
-  - {fileID: 8300000, guid: 8888083a986295e42887fde8dcb7905a, type: 3}
-  - {fileID: 8300000, guid: 8ed0ad91cdf5b2b42aa759870bf77491, type: 3}
-  - {fileID: 8300000, guid: cf1cea25470008248840ad91b1de049f, type: 3}
-  globalMusicClips: []
-  globalMiscClips:
-  - {fileID: 8300000, guid: e7dda75f1ff6c9b45964c7459a0c448c, type: 3}
-  - {fileID: 8300000, guid: ade30fe02e1ae5e4d81d3e8cd6068ae5, type: 3}
-  - {fileID: 8300000, guid: 7c93db1da99032e4c9b3d6828c5c2703, type: 3}
-  - {fileID: 8300000, guid: ddc14b312d7eca54ebe1f228ed49fddf, type: 3}
-  - {fileID: 8300000, guid: e5148531fd4775d41a885553df5984bc, type: 3}
-  - {fileID: 8300000, guid: 529d3f5aebc92154db9dea7fb57afa8c, type: 3}
-  - {fileID: 8300000, guid: 77b70a89e44948f42aa504f46f0c22a5, type: 3}
-  - {fileID: 8300000, guid: ef4cc23f3f6521449b635ea553986cd7, type: 3}
-  - {fileID: 8300000, guid: 096537bec62c2a94a81788da3490536b, type: 3}
-  - {fileID: 8300000, guid: ed282b1a87ee3fd44a8a7eaa47ed5ff8, type: 3}
-  - {fileID: 8300000, guid: c7fc031fa3316fc48b36687eb44e3c57, type: 3}
-  - {fileID: 8300000, guid: 603200521e3428b42a3a4bc587f6e419, type: 3}
-  - {fileID: 8300000, guid: 3ee73189fccd4de43b6316edc0059068, type: 3}
-  - {fileID: 8300000, guid: 2343b8cdd8282ab46bd295cdc57143a3, type: 3}
-  - {fileID: 8300000, guid: 074fb952f08352a408de69874f1fbf0a, type: 3}
+  AMBIENT_Clips: []
+  DIALOGUE_Clips: []
   DOOR_Clips:
   - {fileID: 8300000, guid: a31da553c23a4bd4798a55ba35b5069e, type: 3}
   - {fileID: 8300000, guid: e979493692bdfcf4b8a2b7a10049af7d, type: 3}
@@ -43774,6 +43731,23 @@ MonoBehaviour:
   - {fileID: 8300000, guid: c150e695a78c33448a9288d550149def, type: 3}
   - {fileID: 8300000, guid: e574d61f9971de349845c0fcb0d00a78, type: 3}
   - {fileID: 8300000, guid: 8b700e05bfdaba74c84d1d4c81c46b2d, type: 3}
+  ENDINGS_Clips: []
+  globalMiscClips:
+  - {fileID: 8300000, guid: e7dda75f1ff6c9b45964c7459a0c448c, type: 3}
+  - {fileID: 8300000, guid: ade30fe02e1ae5e4d81d3e8cd6068ae5, type: 3}
+  - {fileID: 8300000, guid: 7c93db1da99032e4c9b3d6828c5c2703, type: 3}
+  - {fileID: 8300000, guid: ddc14b312d7eca54ebe1f228ed49fddf, type: 3}
+  - {fileID: 8300000, guid: e5148531fd4775d41a885553df5984bc, type: 3}
+  - {fileID: 8300000, guid: 529d3f5aebc92154db9dea7fb57afa8c, type: 3}
+  - {fileID: 8300000, guid: 77b70a89e44948f42aa504f46f0c22a5, type: 3}
+  - {fileID: 8300000, guid: ef4cc23f3f6521449b635ea553986cd7, type: 3}
+  - {fileID: 8300000, guid: 096537bec62c2a94a81788da3490536b, type: 3}
+  - {fileID: 8300000, guid: ed282b1a87ee3fd44a8a7eaa47ed5ff8, type: 3}
+  - {fileID: 8300000, guid: c7fc031fa3316fc48b36687eb44e3c57, type: 3}
+  - {fileID: 8300000, guid: 603200521e3428b42a3a4bc587f6e419, type: 3}
+  - {fileID: 8300000, guid: 3ee73189fccd4de43b6316edc0059068, type: 3}
+  - {fileID: 8300000, guid: 2343b8cdd8282ab46bd295cdc57143a3, type: 3}
+  - {fileID: 8300000, guid: 074fb952f08352a408de69874f1fbf0a, type: 3}
   TRAPS_Clips:
   - {fileID: 8300000, guid: 1f70ae38399cf1c4bb8d7bccb4ab6f2d, type: 3}
   - {fileID: 8300000, guid: 4886df45e8c063b4da7c82f7efda9a82, type: 3}
@@ -44017,22 +43991,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 1f33824988f31054c9323ba1d7aa8bba, type: 3}
   - {fileID: 8300000, guid: 2fd88e2144f803b4cade1797260b4e37, type: 3}
   - {fileID: 8300000, guid: 8ae79c0624068204cb4e17bab27b7f65, type: 3}
-  dialogue_Clips:
-  - {fileID: 8300000, guid: f8f72e8fbc24f7b4ea34dded4b921f27, type: 3}
-  - {fileID: 8300000, guid: 18199767ce89c6c40b54d47d41f73f99, type: 3}
-  - {fileID: 8300000, guid: f30ce6a1a970244479db33a02acbf126, type: 3}
-  - {fileID: 8300000, guid: cca813bacc54bb843a076072a634ebc2, type: 3}
-  - {fileID: 8300000, guid: 0aa82a8b798a54e47902613cf441fa2c, type: 3}
-  - {fileID: 8300000, guid: 3f27802c937f2fb48b9e00b77c621488, type: 3}
-  - {fileID: 8300000, guid: c4c5a05400d34ef4b8766d09b9947e74, type: 3}
-  - {fileID: 8300000, guid: 5c36c4528ff0e324c9fa82840fe05016, type: 3}
-  - {fileID: 8300000, guid: 013f2c0fc009bfa48bb28bf014a9390d, type: 3}
-  - {fileID: 8300000, guid: 48f9e5222ba39a7408614881a8742d5e, type: 3}
-  - {fileID: 8300000, guid: 893015e34f2c50746b3075fba6ad228c, type: 3}
-  - {fileID: 8300000, guid: 7d5f85d169822ba46b6370f0ba6a5eee, type: 3}
-  - {fileID: 8300000, guid: 32ea0684159adbc4b807bafe7bbfaae7, type: 3}
-  - {fileID: 8300000, guid: 6adc9ab5a56319f4d972eab5232e4343, type: 3}
-  - {fileID: 8300000, guid: 545eb491382239f43be50c4006fd4f81, type: 3}
   nonBotDestruction_Clips:
   - {fileID: 8300000, guid: 3cf17984fbc0f91449b416d547c34253, type: 3}
   - {fileID: 8300000, guid: 054cd98a6bf4b4c4484ec70bf570fe11, type: 3}
@@ -44106,6 +44064,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 42b5f665a5ff0d845947bc0ea145246b, type: 3}
   - {fileID: 8300000, guid: 89517850112ff744bb50bdcb9b02ad8d, type: 3}
   - {fileID: 8300000, guid: 11b6a8ff1b6d91445bd6cd404c9503fe, type: 3}
+  globalMusicClips: []
   activeTempClips: []
 --- !u!1 &1100993166
 GameObject:
@@ -60479,7 +60438,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 137.30501
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -88374,7 +88333,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 137.30501
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -91666,7 +91625,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 137.30501
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -93788,7 +93747,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 137.30501
       objectReference: {fileID: 0}
     - target: {fileID: 1370240326355195226, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
       propertyPath: m_AnchoredPosition.y

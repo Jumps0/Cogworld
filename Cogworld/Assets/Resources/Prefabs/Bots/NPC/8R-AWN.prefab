@@ -438,7 +438,7 @@ MonoBehaviour:
   - id: 2
     speech: Keep your grabby things to yourself, though. I've got my sensors on you.
   moveToNextDialogue: 0
-  uniqueDialogueSound: {fileID: 8300000, guid: f8f72e8fbc24f7b4ea34dded4b921f27, type: 3}
+  uniqueDialogueSound: {fileID: 8300000, guid: 90c69b1b5df42714cb31ded0323c7d13, type: 3}
   uniqueName: 8R-AWN
 --- !u!1 &9212121307027914503
 GameObject:

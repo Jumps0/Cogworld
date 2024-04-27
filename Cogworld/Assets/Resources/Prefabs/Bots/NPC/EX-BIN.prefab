@@ -457,7 +457,7 @@ MonoBehaviour:
       participate in the trials you can have one of our prototypes. How's that for
       a sweet deal?
   moveToNextDialogue: 0
-  uniqueDialogueSound: {fileID: 8300000, guid: 0aa82a8b798a54e47902613cf441fa2c, type: 3}
+  uniqueDialogueSound: {fileID: 8300000, guid: cc99fae9d73fc4d45954e7684010e8e2, type: 3}
   uniqueName: EX-BIN
 --- !u!1 &9212121307027914503
 GameObject:

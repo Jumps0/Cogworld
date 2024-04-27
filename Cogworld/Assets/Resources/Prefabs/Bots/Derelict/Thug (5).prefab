@@ -439,7 +439,7 @@ MonoBehaviour:
   - id: 3
     speech: Favor the cannon, eh? I'm a broadsword man, myself.
   moveToNextDialogue: 0
-  uniqueDialogueSound: {fileID: 0}
+  uniqueDialogueSound: {fileID: 8300000, guid: d0a5727c41bf9d243bca490fab214caf, type: 3}
   uniqueName: A10-FR3N
 --- !u!1 &9212121307027914503
 GameObject:

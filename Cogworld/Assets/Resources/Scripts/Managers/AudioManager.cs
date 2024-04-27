@@ -25,24 +25,26 @@ public class AudioManager : MonoBehaviour
     public AudioSource globalTypingSource;
 
     [Header("Audio Clips")]
-    public List<AudioClip> ambientClips = new List<AudioClip>();
-    public List<AudioClip> globalMusicClips = new List<AudioClip>(); // Will probably never be used
+    public List<AudioClip> AMBIENT_Clips = new List<AudioClip>();
+    public List<AudioClip> DIALOGUE_Clips = new List<AudioClip>();
+    public List<AudioClip> DOOR_Clips = new List<AudioClip>();
+    public List<AudioClip> ENDINGS_Clips = new List<AudioClip>();
     public List<AudioClip> globalMiscClips = new List<AudioClip>();
     //
-    public List<AudioClip> DOOR_Clips = new List<AudioClip>();
     public List<AudioClip> TRAPS_Clips = new List<AudioClip>();
     public List<AudioClip> INTRO_Clips = new List<AudioClip>();
     public List<AudioClip> GAME_Clips = new List<AudioClip>();
     public List<AudioClip> UI_Clips = new List<AudioClip>();
     public List<AudioClip> equipItem_Clips = new List<AudioClip>();
     public List<AudioClip> dropItem_Clips = new List<AudioClip>();
-    public List<AudioClip> dialogue_Clips = new List<AudioClip>();
     public List<AudioClip> nonBotDestruction_Clips = new List<AudioClip>();
     //
     [Header("  MATERIAL")]
     [Header("      Destroy")]
     [Header("          Robot")]
     public List<AudioClip> RobotDestruction_Clips = new List<AudioClip>();
+    //
+    public List<AudioClip> globalMusicClips = new List<AudioClip>(); // Will probably never be used
 
     public void PlayAmbient(int id, float volume = -1)
     {
@@ -52,7 +54,7 @@ public class AudioManager : MonoBehaviour
             globalAmbient.volume = volume;
         }
         globalAmbient.loop = true;
-        globalAmbient.clip = ambientClips[id];
+        globalAmbient.clip = AMBIENT_Clips[id];
         globalAmbient.Play();
 
         
@@ -151,7 +153,7 @@ public class AudioManager : MonoBehaviour
             globalDialogueBackground.volume = volume;
         }
         globalDialogueBackground.loop = true;
-        globalDialogueBackground.clip = dialogue_Clips[id];
+        globalDialogueBackground.clip = DIALOGUE_Clips[id];
         globalDialogueBackground.Play();
     }
 

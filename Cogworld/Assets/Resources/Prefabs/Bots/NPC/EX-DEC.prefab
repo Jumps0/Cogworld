@@ -436,7 +436,7 @@ MonoBehaviour:
     speech: Ah I see we have a visitor. One wrong move in here and I'll invert your
       atomic chain!
   moveToNextDialogue: 0
-  uniqueDialogueSound: {fileID: 8300000, guid: 3f27802c937f2fb48b9e00b77c621488, type: 3}
+  uniqueDialogueSound: {fileID: 8300000, guid: d6d8fa8c590a76e4eb230edf2562f9e9, type: 3}
   uniqueName: EX-DEC
 --- !u!1 &9212121307027914503
 GameObject:

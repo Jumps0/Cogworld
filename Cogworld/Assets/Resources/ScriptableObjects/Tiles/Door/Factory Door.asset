@@ -26,8 +26,9 @@ MonoBehaviour:
   armor: 5
   currentVis: 0
   destructionClips:
-  - {fileID: 8300000, guid: 3cf68cc75769acb45b44f81c8f0ef052, type: 3}
-  - {fileID: 8300000, guid: d7e184a400fe5de448e78d8e2cbbb1c6, type: 3}
-  - {fileID: 8300000, guid: 47cda3adb3d2c264d9d182875af8fae9, type: 3}
-  - {fileID: 8300000, guid: 021a5754e018e7e478de926709916ea5, type: 3}
-  - {fileID: 8300000, guid: c0346681758c0134e9b9a051e906b4c5, type: 3}
+  - {fileID: 8300000, guid: a698ee5db52a7bf4dabc96531e061c58, type: 3}
+  - {fileID: 8300000, guid: d5aa2a971e2b8ce4c8aa1763c05abe4f, type: 3}
+  - {fileID: 8300000, guid: 81c9cabbed6a6534396c54e2a118b9f0, type: 3}
+  - {fileID: 8300000, guid: 1e23b937bbf71bc499db4d800e23d337, type: 3}
+  - {fileID: 8300000, guid: 1cfa603e37179e045b452c8f396abc83, type: 3}
+  resistances: []
