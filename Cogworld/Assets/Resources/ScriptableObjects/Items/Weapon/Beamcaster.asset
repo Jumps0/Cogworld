@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
   m_Name: Beamcaster
   m_EditorClassIdentifier: 
-  instantUnique: 0
   amount: 1
   data:
     Name: 
@@ -22,9 +21,24 @@ MonoBehaviour:
     itemData: {fileID: 11400000}
     state: 1
     integrityCurrent: 0
+    uniqueDetail:
+      isScrap: 0
+      scrapReward: {fileID: 0}
+      isDataLog: 0
+      logMessage: 
+      logAction:
+        type: 0
+        connectedMachine: {fileID: 0}
+      isDataCore: 0
+      coreTerminal: {fileID: 0}
+    storageAmount: 0
     isOverloaded: 0
+    isDeteriorating: 0
+    isRigged: 0
     corrupted: 0
     disabledTimer: 0
+    unstable: -1
+    disposable: -1
     siege: 0
   knowByPlayer: 0
   floorDisplay: {fileID: -593278526, guid: de1bd95886cf7e3458436c5f8ca70a8d, type: 3}
@@ -40,6 +54,7 @@ MonoBehaviour:
   star: 0
   ratingType: 0
   integrityMax: 90
+  repairable: 1
   coverage: 60
   schematicDetails:
     hackable: 0
@@ -70,19 +85,17 @@ MonoBehaviour:
     hasStability: 0
     hasArc: 0
     shotSound:
-    - {fileID: 8300000, guid: e070043e348f2e1498eb5d09dbd6d843, type: 3}
-    - {fileID: 8300000, guid: b590c25584a1c774ebc2986780fd770e, type: 3}
-    - {fileID: 8300000, guid: b871b9cfdfd312e4694813a3910caac5, type: 3}
-    - {fileID: 8300000, guid: 90ae9c49052d4ee4aafec5ef6bbfbaac, type: 3}
+    - {fileID: 8300000, guid: 48ac1e18efcc7cf49b6f49dd75fe7f26, type: 3}
+    - {fileID: 8300000, guid: 3785b352d73542b46a5490dccbe2efd5, type: 3}
+    - {fileID: 8300000, guid: 3c2fa3abc892f7a49b2cd537f1b09e1c, type: 3}
+    - {fileID: 8300000, guid: d77b66a2bc970484692cb40334a2422a, type: 3}
   projectileAmount: 1
   projectile:
     damage: {x: 20, y: 22}
     damageType: 1
     critChance: 0.1
     critType: 1
-    penChance: {x: 0, y: 0, z: 0}
     heatTrasfer: 37
-    heatTransferDegree: 2
     spectrum: 0
     hasSpectrum: 0
     disruption: 0
@@ -127,6 +140,8 @@ MonoBehaviour:
     directional: 0
     d_arc: 0
     d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
   deployableItem:
     deployable: 0
     type: 0
@@ -149,11 +164,17 @@ MonoBehaviour:
     stasis_strength: 0
   isSpecialAttack: 0
   specialAttack:
+    specialMelee: 0
     datajack: 0
     stasisBeam: 0
     tearClaw: 0
   itemEffects: []
   canOverload: 0
+  consumable: 0
+  disposable: -1
+  unstable: -1
+  destroyOnRemove: 0
+  canBeDisabled: 1
   quality: 2
   itemName: Beamcaster
   description: A powerful laser weapon that fires a beam of energy across long distances.
@@ -164,3 +185,14 @@ MonoBehaviour:
     fabTime: {x: 95, y: 47, z: 31}
     matterCost: 90
     componenetsRequired: []
+  instantUnique: 0
+  uniqueDetail:
+    isScrap: 0
+    scrapReward: {fileID: 0}
+    isDataLog: 0
+    logMessage: 
+    logAction:
+      type: 0
+      connectedMachine: {fileID: 0}
+    isDataCore: 0
+    coreTerminal: {fileID: 0}

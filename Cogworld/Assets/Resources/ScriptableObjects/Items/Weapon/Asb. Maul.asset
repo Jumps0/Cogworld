@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
   m_Name: Asb. Maul
   m_EditorClassIdentifier: 
-  instantUnique: 0
   amount: 1
   data:
     Name: 
@@ -22,12 +21,30 @@ MonoBehaviour:
     itemData: {fileID: 11400000}
     state: 1
     integrityCurrent: 0
+    uniqueDetail:
+      isScrap: 0
+      scrapReward: {fileID: 0}
+      isDataLog: 0
+      logMessage: 
+      logAction:
+        type: 0
+        connectedMachine: {fileID: 0}
+      isDataCore: 0
+      coreTerminal: {fileID: 0}
+    storageAmount: 0
     isOverloaded: 0
+    isDeteriorating: 0
+    isRigged: 0
     corrupted: 0
+    disabledTimer: 0
+    unstable: -1
+    disposable: -1
+    siege: 0
   knowByPlayer: 1
   floorDisplay: {fileID: -1450326510, guid: 852a45b6ee03edf4d9a3d311fd721d6d, type: 3}
   inventoryDisplay: {fileID: -1932154928, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
   asciiRep: {fileID: -1932154928, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  bigDisplay: {fileID: 0}
   itemColor: {r: 0, g: 1, b: 0.6862745, a: 1}
   type: 20
   slot: 3
@@ -35,7 +52,9 @@ MonoBehaviour:
   mass: 3
   rating: 2
   star: 1
+  ratingType: 0
   integrityMax: 56
+  repairable: 1
   coverage: 20
   schematicDetails:
     hackable: 0
@@ -66,18 +85,16 @@ MonoBehaviour:
     hasStability: 0
     hasArc: 0
     shotSound:
-    - {fileID: 8300000, guid: ca831a1d85dcc054891d2d8708a204d5, type: 3}
-    - {fileID: 8300000, guid: 0f99349a8a2f9d041a04d1bd20ffeefa, type: 3}
-    - {fileID: 8300000, guid: 2d2347bc1a5a316449b3e6623ba54ec2, type: 3}
+    - {fileID: 8300000, guid: 86520e9639d43fe44a0d77c6078143a5, type: 3}
+    - {fileID: 8300000, guid: 245e7e9d655bcf344993a2f0fa224c9c, type: 3}
+    - {fileID: 8300000, guid: 8dd1148a6e076144c8f1cd62e38dcede, type: 3}
   projectileAmount: 0
   projectile:
     damage: {x: 10, y: 15}
     damageType: 0
     critChance: 0
     critType: 0
-    penChance: {x: 0, y: 0, z: 0}
     heatTrasfer: 0
-    heatTransferDegree: 0
     spectrum: 0
     hasSpectrum: 0
     disruption: 0
@@ -102,26 +119,64 @@ MonoBehaviour:
     disruption: 0
     salvage: 0
     visualAttackTime: 0.5
-    missSound: []
+    missSound:
+    - {fileID: 8300000, guid: 4d2bd2bb138f6d64b8e09bc49db9a8fa, type: 3}
+    - {fileID: 8300000, guid: ca13af4715bc85c48813b4f07b14c428, type: 3}
+    - {fileID: 8300000, guid: c0579e07d6435ae459dca2f72acf9945, type: 3}
   explosion:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
-    damageType: 2
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
-    salvage: 0
     explosionSounds: []
     explosionGFX: 0
+  explosionDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
+    damageType: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
+    salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  deployableItem:
+    deployable: 0
+    type: 0
+    trapType: 0
+    canSever: 0
+    sever_amount: {x: 0, y: 0}
+    sever_damage: {x: 0, y: 0}
+    canShock: 0
+    shock_amount: {x: 0, y: 0}
+    canBurn: 0
+    burn_amount: {x: 0, y: 0}
+    burn_damage: {x: 0, y: 0}
+    burn_heat: {x: 0, y: 0}
+    burn_affectsNeighbors: 0
+    canPierce: 0
+    pierce_amount: 0
+    pierce_damage: {x: 0, y: 0}
+    pierce_impaleChance: 0
+    canStasis: 0
+    stasis_strength: 0
   isSpecialAttack: 0
   specialAttack:
+    specialMelee: 0
     datajack: 0
     stasisBeam: 0
     tearClaw: 0
-  itemEffect: []
+  itemEffects: []
   canOverload: 0
+  consumable: 0
+  disposable: -1
+  unstable: -1
+  destroyOnRemove: 0
+  canBeDisabled: 1
   quality: 21
   itemName: Asb. Maul
   description: A clump of metal focused into a blunt maul. Used by the Assembled
@@ -133,3 +188,14 @@ MonoBehaviour:
     fabTime: {x: 51, y: 25, z: 17}
     matterCost: 30
     componenetsRequired: []
+  instantUnique: 0
+  uniqueDetail:
+    isScrap: 0
+    scrapReward: {fileID: 0}
+    isDataLog: 0
+    logMessage: 
+    logAction:
+      type: 0
+      connectedMachine: {fileID: 0}
+    isDataCore: 0
+    coreTerminal: {fileID: 0}

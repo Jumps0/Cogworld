@@ -124,25 +124,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
+  type: 0
   armor: {x: 0, y: 0}
   state: 1
-  resistances: []
   explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
   heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
     damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
     salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
+    explosionSounds: []
+    explosionGFX: 0
+  resistances: []
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -165,6 +180,7 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}
 --- !u!1 &2044744791478106855
 GameObject:
   m_ObjectHideFlags: 0
@@ -289,25 +305,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
+  type: 0
   armor: {x: 0, y: 0}
   state: 1
-  resistances: []
   explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
   heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
     damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
     salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
+    explosionSounds: []
+    explosionGFX: 0
+  resistances: []
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -330,6 +361,7 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}
 --- !u!1 &2111964075145715699
 GameObject:
   m_ObjectHideFlags: 0
@@ -454,25 +486,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
+  type: 0
   armor: {x: 0, y: 0}
   state: 1
-  resistances: []
   explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
   heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
     damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
     salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
+    explosionSounds: []
+    explosionGFX: 0
+  resistances: []
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -495,6 +542,7 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}
 --- !u!1 &2437682090712717721
 GameObject:
   m_ObjectHideFlags: 0
@@ -619,25 +667,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
+  type: 0
   armor: {x: 0, y: 0}
   state: 1
-  resistances: []
   explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
   heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
     damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
     salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
+    explosionSounds: []
+    explosionGFX: 0
+  resistances: []
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -660,6 +723,7 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}
 --- !u!1 &3017128286030515165
 GameObject:
   m_ObjectHideFlags: 0
@@ -784,25 +848,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
+  type: 0
   armor: {x: 0, y: 0}
   state: 1
-  resistances: []
   explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
   heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
     damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
     salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
+    explosionSounds: []
+    explosionGFX: 0
+  resistances: []
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -825,6 +904,7 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}
 --- !u!1 &3480941757257615802
 GameObject:
   m_ObjectHideFlags: 0
@@ -949,25 +1029,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
+  type: 0
   armor: {x: 0, y: 0}
   state: 1
-  resistances: []
   explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
   heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
     damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
     salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
+    explosionSounds: []
+    explosionGFX: 0
+  resistances: []
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -990,6 +1085,7 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}
 --- !u!1 &4107557846088723758
 GameObject:
   m_ObjectHideFlags: 0
@@ -1114,25 +1210,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
+  type: 0
   armor: {x: 0, y: 0}
   state: 1
-  resistances: []
   explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
   heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
     damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
     salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
+    explosionSounds: []
+    explosionGFX: 0
+  resistances: []
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -1155,6 +1266,7 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}
 --- !u!1 &4303234480025886870
 GameObject:
   m_ObjectHideFlags: 0
@@ -1279,25 +1391,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
+  type: 0
   armor: {x: 0, y: 0}
   state: 1
-  resistances: []
   explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
   heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
     damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
     salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
+    explosionSounds: []
+    explosionGFX: 0
+  resistances: []
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -1320,6 +1447,7 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}
 --- !u!1 &5451814798195513305
 GameObject:
   m_ObjectHideFlags: 0
@@ -1444,25 +1572,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
+  type: 0
   armor: {x: 0, y: 0}
   state: 1
-  resistances: []
   explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
   heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
     damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
     salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
+    explosionSounds: []
+    explosionGFX: 0
+  resistances: []
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -1485,6 +1628,7 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}
 --- !u!1 &5944979410217269297
 GameObject:
   m_ObjectHideFlags: 0
@@ -1609,25 +1753,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
+  type: 0
   armor: {x: 0, y: 0}
   state: 1
-  resistances: []
   explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
   heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
     damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
     salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
+    explosionSounds: []
+    explosionGFX: 0
+  resistances: []
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -1650,6 +1809,7 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}
 --- !u!1 &7173313474100761777
 GameObject:
   m_ObjectHideFlags: 0
@@ -1774,25 +1934,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
+  type: 0
   armor: {x: 0, y: 0}
   state: 1
-  resistances: []
   explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
   heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
     damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
     salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
+    explosionSounds: []
+    explosionGFX: 0
+  resistances: []
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -1815,6 +1990,7 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}
 --- !u!1 &7456691822352536937
 GameObject:
   m_ObjectHideFlags: 0
@@ -1991,7 +2167,10 @@ MonoBehaviour:
   _size: {x: 5, y: 3}
   explosive: 0
   _source: {fileID: 8764870974595713040}
-  _ambient: {fileID: 8300000, guid: a4cdc39232017034199cf96d24472f3c, type: 3}
+  _ambient: {fileID: 8300000, guid: db245fe6ae4f3b540abd13d5f63de2da, type: 3}
+  s_detonate: 0
+  detonate_timer: 15
+  s_unstable: 0
 --- !u!114 &457395203926888844
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2004,8 +2183,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
+  type: 0
   armor: {x: 15, y: 15}
   state: 1
+  explodes: 0
+  heatTransfer: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
+    damageType: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
+    salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
+    explosionSounds: []
+    explosionGFX: 0
   resistances:
   - damageType: 0
     resistanceAmount: 0
@@ -2028,22 +2232,12 @@ MonoBehaviour:
   - damageType: 8
     resistanceAmount: 0
     immune: 0
-  explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
-  heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
-    damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
-    salvage: 0
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -2066,6 +2260,7 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}
 --- !u!82 &8764870974595713040
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2286,25 +2481,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
+  type: 0
   armor: {x: 0, y: 0}
   state: 1
-  resistances: []
   explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
   heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
     damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
     salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
+    explosionSounds: []
+    explosionGFX: 0
+  resistances: []
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -2327,6 +2537,7 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}
 --- !u!1 &8723625850120875290
 GameObject:
   m_ObjectHideFlags: 0
@@ -2451,25 +2662,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
+  type: 0
   armor: {x: 0, y: 0}
   state: 1
-  resistances: []
   explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
   heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
     damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
     salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
+    explosionSounds: []
+    explosionGFX: 0
+  resistances: []
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -2492,6 +2718,7 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}
 --- !u!1 &8915152697158610336
 GameObject:
   m_ObjectHideFlags: 0
@@ -2616,25 +2843,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
+  type: 0
   armor: {x: 0, y: 0}
   state: 1
-  resistances: []
   explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
   heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
     damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
     salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
+    explosionSounds: []
+    explosionGFX: 0
+  resistances: []
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -2657,3 +2899,4 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}

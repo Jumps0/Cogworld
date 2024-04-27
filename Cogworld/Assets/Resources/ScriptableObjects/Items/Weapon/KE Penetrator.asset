@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
   m_Name: KE Penetrator
   m_EditorClassIdentifier: 
-  instantUnique: 0
   amount: 1
   data:
     Name: 
@@ -22,9 +21,24 @@ MonoBehaviour:
     itemData: {fileID: 11400000}
     state: 1
     integrityCurrent: 0
+    uniqueDetail:
+      isScrap: 0
+      scrapReward: {fileID: 0}
+      isDataLog: 0
+      logMessage: 
+      logAction:
+        type: 0
+        connectedMachine: {fileID: 0}
+      isDataCore: 0
+      coreTerminal: {fileID: 0}
+    storageAmount: 0
     isOverloaded: 0
+    isDeteriorating: 0
+    isRigged: 0
     corrupted: 0
     disabledTimer: 0
+    unstable: -1
+    disposable: -1
     siege: 0
   knowByPlayer: 0
   floorDisplay: {fileID: 678505362, guid: 29b93740c1620a54b8cc50531ce485a5, type: 3}
@@ -40,6 +54,7 @@ MonoBehaviour:
   star: 0
   ratingType: 0
   integrityMax: 165
+  repairable: 1
   coverage: 100
   schematicDetails:
     hackable: 1
@@ -70,18 +85,16 @@ MonoBehaviour:
     hasStability: 0
     hasArc: 0
     shotSound:
-    - {fileID: 8300000, guid: 2bb8f30769de566419b5215b8a56bc2e, type: 3}
-    - {fileID: 8300000, guid: 54761d27be21fb64f8a69add96a2dc62, type: 3}
-    - {fileID: 8300000, guid: cfad399c8333757419e8af9f686130b2, type: 3}
+    - {fileID: 8300000, guid: 365a94d2610cc044484cc4b60d2993bd, type: 3}
+    - {fileID: 8300000, guid: fc6ec2f174c39ee41b61b2491b4a4935, type: 3}
+    - {fileID: 8300000, guid: f16bf6b956f0735409fcbc4f52cbd124, type: 3}
   projectileAmount: 1
   projectile:
     damage: {x: 19, y: 28}
     damageType: 0
     critChance: 0.05
     critType: 3
-    penChance: {x: 1, y: 80, z: 0}
     heatTrasfer: 0
-    heatTransferDegree: 0
     spectrum: 0
     hasSpectrum: 0
     disruption: 0
@@ -127,6 +140,8 @@ MonoBehaviour:
     directional: 0
     d_arc: 0
     d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
   deployableItem:
     deployable: 0
     type: 0
@@ -149,11 +164,17 @@ MonoBehaviour:
     stasis_strength: 0
   isSpecialAttack: 0
   specialAttack:
+    specialMelee: 0
     datajack: 0
     stasisBeam: 0
     tearClaw: 0
   itemEffects: []
   canOverload: 0
+  consumable: 0
+  disposable: -1
+  unstable: -1
+  destroyOnRemove: 0
+  canBeDisabled: 1
   quality: 2
   itemName: KE Penetrator
   description: A heavy ballistic gun capable of firing a high velocity round capable
@@ -165,3 +186,14 @@ MonoBehaviour:
     fabTime: {x: 106, y: 53, z: 35}
     matterCost: 105
     componenetsRequired: []
+  instantUnique: 0
+  uniqueDetail:
+    isScrap: 0
+    scrapReward: {fileID: 0}
+    isDataLog: 0
+    logMessage: 
+    logAction:
+      type: 0
+      connectedMachine: {fileID: 0}
+    isDataCore: 0
+    coreTerminal: {fileID: 0}

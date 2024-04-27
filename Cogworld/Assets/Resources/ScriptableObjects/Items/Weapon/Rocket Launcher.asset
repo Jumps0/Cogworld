@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
   m_Name: Rocket Launcher
   m_EditorClassIdentifier: 
-  instantUnique: 0
   amount: 1
   data:
     Name: 
@@ -22,10 +21,24 @@ MonoBehaviour:
     itemData: {fileID: 11400000}
     state: 1
     integrityCurrent: 0
+    uniqueDetail:
+      isScrap: 0
+      scrapReward: {fileID: 0}
+      isDataLog: 0
+      logMessage: 
+      logAction:
+        type: 0
+        connectedMachine: {fileID: 0}
+      isDataCore: 0
+      coreTerminal: {fileID: 0}
+    storageAmount: 0
     isOverloaded: 0
     isDeteriorating: 0
+    isRigged: 0
     corrupted: 0
     disabledTimer: 0
+    unstable: -1
+    disposable: -1
     siege: 0
   knowByPlayer: 1
   floorDisplay: {fileID: -1062765988, guid: 888df3e4d78aa8747aa9841c000c889a, type: 3}
@@ -41,6 +54,7 @@ MonoBehaviour:
   star: 0
   ratingType: 0
   integrityMax: 70
+  repairable: 1
   coverage: 110
   schematicDetails:
     hackable: 1
@@ -71,8 +85,8 @@ MonoBehaviour:
     hasStability: 0
     hasArc: 0
     shotSound:
-    - {fileID: 8300000, guid: 3aba9c4b8ffe5b14cbaa3635d01f9579, type: 3}
-    - {fileID: 8300000, guid: 4615a04452aacae4790d9f8a0098aca1, type: 3}
+    - {fileID: 8300000, guid: 3eaf8d4631159c24f949129dc0bcea1b, type: 3}
+    - {fileID: 8300000, guid: eeff73011978e8e459192b37ae424ff7, type: 3}
   projectileAmount: 1
   projectile:
     damage: {x: 0, y: 0}
@@ -80,7 +94,6 @@ MonoBehaviour:
     critChance: 0
     critType: 0
     heatTrasfer: 0
-    heatTransferDegree: 0
     spectrum: 0
     hasSpectrum: 0
     disruption: 0
@@ -128,6 +141,8 @@ MonoBehaviour:
     directional: 0
     d_arc: 0
     d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
   deployableItem:
     deployable: 0
     type: 0
@@ -150,11 +165,17 @@ MonoBehaviour:
     stasis_strength: 0
   isSpecialAttack: 0
   specialAttack:
+    specialMelee: 0
     datajack: 0
     stasisBeam: 0
     tearClaw: 0
   itemEffects: []
   canOverload: 0
+  consumable: 0
+  disposable: -1
+  unstable: -1
+  destroyOnRemove: 0
+  canBeDisabled: 1
   quality: 2
   itemName: Rocket Launcher
   description: A standard rocket launcher capable of effective AOE damage.
@@ -165,3 +186,14 @@ MonoBehaviour:
     fabTime: {x: 62, y: 31, z: 20}
     matterCost: 60
     componenetsRequired: []
+  instantUnique: 0
+  uniqueDetail:
+    isScrap: 0
+    scrapReward: {fileID: 0}
+    isDataLog: 0
+    logMessage: 
+    logAction:
+      type: 0
+      connectedMachine: {fileID: 0}
+    isDataCore: 0
+    coreTerminal: {fileID: 0}

@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
   m_Name: Assault Rifle
   m_EditorClassIdentifier: 
-  instantUnique: 0
   amount: 1
   data:
     Name: 
@@ -22,9 +21,24 @@ MonoBehaviour:
     itemData: {fileID: 11400000}
     state: 1
     integrityCurrent: 0
+    uniqueDetail:
+      isScrap: 0
+      scrapReward: {fileID: 0}
+      isDataLog: 0
+      logMessage: 
+      logAction:
+        type: 0
+        connectedMachine: {fileID: 0}
+      isDataCore: 0
+      coreTerminal: {fileID: 0}
+    storageAmount: 0
     isOverloaded: 0
+    isDeteriorating: 0
+    isRigged: 0
     corrupted: 0
     disabledTimer: 0
+    unstable: -1
+    disposable: -1
     siege: 0
   knowByPlayer: 1
   floorDisplay: {fileID: 678505362, guid: 29b93740c1620a54b8cc50531ce485a5, type: 3}
@@ -40,6 +54,7 @@ MonoBehaviour:
   star: 0
   ratingType: 0
   integrityMax: 100
+  repairable: 1
   coverage: 100
   schematicDetails:
     hackable: 1
@@ -70,20 +85,18 @@ MonoBehaviour:
     hasStability: 0
     hasArc: 0
     shotSound:
-    - {fileID: 8300000, guid: af2a115abd7240945bbf2afbc17a18cf, type: 3}
-    - {fileID: 8300000, guid: 50dacb74b16c3124eb80773c32472739, type: 3}
-    - {fileID: 8300000, guid: a3d2fef54e204bc49866c1cda0538bd1, type: 3}
-    - {fileID: 8300000, guid: 3b6173f5ae4fbdb4a9c39072af9be6cb, type: 3}
-    - {fileID: 8300000, guid: 8e9bee95fa2653042ba62f5fa91ddf7c, type: 3}
+    - {fileID: 8300000, guid: ec3e8e66de5b6b142bb8a1ec9491e9c9, type: 3}
+    - {fileID: 8300000, guid: 76805cdffb7debd4a91e3500eeb4383e, type: 3}
+    - {fileID: 8300000, guid: 33b982c102c098040ba44d8a01f96fbe, type: 3}
+    - {fileID: 8300000, guid: 13b7e6e70e01dbc4f80501dfe93e2ee1, type: 3}
+    - {fileID: 8300000, guid: 2be1a202e35ebc94693b9b1c4d805135, type: 3}
   projectileAmount: 1
   projectile:
     damage: {x: 10, y: 15}
     damageType: 0
     critChance: 0.01
     critType: 3
-    penChance: {x: 0, y: 0, z: 0}
     heatTrasfer: 0
-    heatTransferDegree: 0
     spectrum: 0
     hasSpectrum: 0
     disruption: 0
@@ -128,6 +141,8 @@ MonoBehaviour:
     directional: 0
     d_arc: 0
     d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
   deployableItem:
     deployable: 0
     type: 0
@@ -150,11 +165,17 @@ MonoBehaviour:
     stasis_strength: 0
   isSpecialAttack: 0
   specialAttack:
+    specialMelee: 0
     datajack: 0
     stasisBeam: 0
     tearClaw: 0
   itemEffects: []
   canOverload: 0
+  consumable: 0
+  disposable: -1
+  unstable: -1
+  destroyOnRemove: 0
+  canBeDisabled: 1
   quality: 2
   itemName: Assault Rifle
   description: A standard lightweight assault rifle that is able to pepper targets
@@ -166,3 +187,14 @@ MonoBehaviour:
     fabTime: {x: 51, y: 25, z: 17}
     matterCost: 30
     componenetsRequired: []
+  instantUnique: 0
+  uniqueDetail:
+    isScrap: 0
+    scrapReward: {fileID: 0}
+    isDataLog: 0
+    logMessage: 
+    logAction:
+      type: 0
+      connectedMachine: {fileID: 0}
+    isDataCore: 0
+    coreTerminal: {fileID: 0}

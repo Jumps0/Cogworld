@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
   m_Name: Asb. F-Torch
   m_EditorClassIdentifier: 
-  instantUnique: 0
   amount: 1
   data:
     Name: 
@@ -22,10 +21,30 @@ MonoBehaviour:
     itemData: {fileID: 11400000}
     state: 1
     integrityCurrent: 0
+    uniqueDetail:
+      isScrap: 0
+      scrapReward: {fileID: 0}
+      isDataLog: 0
+      logMessage: 
+      logAction:
+        type: 0
+        connectedMachine: {fileID: 0}
+      isDataCore: 0
+      coreTerminal: {fileID: 0}
+    storageAmount: 0
+    isOverloaded: 0
+    isDeteriorating: 0
+    isRigged: 0
+    corrupted: 0
+    disabledTimer: 0
+    unstable: -1
+    disposable: -1
+    siege: 0
   knowByPlayer: 1
   floorDisplay: {fileID: -923958525, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
   inventoryDisplay: {fileID: -923958525, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
   asciiRep: {fileID: -441784439, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  bigDisplay: {fileID: 0}
   itemColor: {r: 0, g: 1, b: 0.6862745, a: 1}
   type: 21
   slot: 3
@@ -33,7 +52,9 @@ MonoBehaviour:
   mass: 2
   rating: 2
   star: 1
+  ratingType: 0
   integrityMax: 30
+  repairable: 1
   coverage: 100
   schematicDetails:
     hackable: 0
@@ -41,6 +62,7 @@ MonoBehaviour:
     - {x: 1, y: -10}
     - {x: 2, y: -10}
     - {x: 3, y: -10}
+    hasSchematic: 0
   hasUpkeep: 0
   energyUpkeep: 0
   matterUpkeep: 0
@@ -63,20 +85,24 @@ MonoBehaviour:
     hasStability: 0
     hasArc: 0
     shotSound:
-    - {fileID: 8300000, guid: f21a3fba47ab1894999fa33e4d79acd1, type: 3}
+    - {fileID: 8300000, guid: 9b505d3a7317fc2458b8d6e31c9a848b, type: 3}
   projectileAmount: 1
   projectile:
     damage: {x: 10, y: 20}
     damageType: 1
     critChance: 0
     critType: 0
-    penChance: {x: 0, y: 0, z: 0}
     heatTrasfer: 80
-    heatTransferDegree: 4
     spectrum: 0
     hasSpectrum: 0
     disruption: 0.25
     salvage: -5
+    projectileColor: {r: 1, g: 0, b: 0, a: 1}
+    projectileSprite: {fileID: 0}
+    projectileRotates: 1
+    projectileTrail: 2
+    penetrationCapability: 0
+    penetrationChances: []
   meleeAttack:
     isMelee: 0
     energy: 0
@@ -90,17 +116,81 @@ MonoBehaviour:
     critType: 0
     disruption: 0
     salvage: 0
-  itemEffect: []
+    visualAttackTime: 0.5
+    missSound: []
+  explosion:
+    explosionSounds: []
+    explosionGFX: 0
+  explosionDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
+    damageType: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
+    salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  deployableItem:
+    deployable: 0
+    type: 0
+    trapType: 0
+    canSever: 0
+    sever_amount: {x: 0, y: 0}
+    sever_damage: {x: 0, y: 0}
+    canShock: 0
+    shock_amount: {x: 0, y: 0}
+    canBurn: 0
+    burn_amount: {x: 0, y: 0}
+    burn_damage: {x: 0, y: 0}
+    burn_heat: {x: 0, y: 0}
+    burn_affectsNeighbors: 0
+    canPierce: 0
+    pierce_amount: 0
+    pierce_damage: {x: 0, y: 0}
+    pierce_impaleChance: 0
+    canStasis: 0
+    stasis_strength: 0
+  isSpecialAttack: 0
+  specialAttack:
+    specialMelee: 0
+    datajack: 0
+    stasisBeam: 0
+    tearClaw: 0
+  itemEffects: []
+  canOverload: 0
+  consumable: 0
+  disposable: -1
+  unstable: -1
+  destroyOnRemove: 0
+  canBeDisabled: 1
   quality: 21
   itemName: Asb. F-Torch
   description: A weapon similar to a mining torch but very poorly built. Has a very
     high heat transfer.
   mechanicalDescription: 
-  details:
-    temp: 
   fabricationInfo:
     canBeFabricated: 0
     amountMadePer: 0
     fabTime: {x: 51, y: 25, z: 17}
     matterCost: 30
     componenetsRequired: []
+  instantUnique: 0
+  uniqueDetail:
+    isScrap: 0
+    scrapReward: {fileID: 0}
+    isDataLog: 0
+    logMessage: 
+    logAction:
+      type: 0
+      connectedMachine: {fileID: 0}
+    isDataCore: 0
+    coreTerminal: {fileID: 0}

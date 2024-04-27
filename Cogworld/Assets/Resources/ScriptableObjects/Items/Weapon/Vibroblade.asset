@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
   m_Name: Vibroblade
   m_EditorClassIdentifier: 
-  instantUnique: 0
   amount: 1
   data:
     Name: 
@@ -22,9 +21,24 @@ MonoBehaviour:
     itemData: {fileID: 11400000}
     state: 1
     integrityCurrent: 0
+    uniqueDetail:
+      isScrap: 0
+      scrapReward: {fileID: 0}
+      isDataLog: 0
+      logMessage: 
+      logAction:
+        type: 0
+        connectedMachine: {fileID: 0}
+      isDataCore: 0
+      coreTerminal: {fileID: 0}
+    storageAmount: 0
     isOverloaded: 0
+    isDeteriorating: 0
+    isRigged: 0
     corrupted: 0
     disabledTimer: 0
+    unstable: -1
+    disposable: -1
     siege: 0
   knowByPlayer: 0
   floorDisplay: {fileID: 1832069135, guid: 707e95711a4c98246b820a5a5f6d1167, type: 3}
@@ -40,6 +54,7 @@ MonoBehaviour:
   star: 1
   ratingType: 0
   integrityMax: 50
+  repairable: 1
   coverage: 5
   schematicDetails:
     hackable: 0
@@ -70,19 +85,17 @@ MonoBehaviour:
     hasStability: 0
     hasArc: 0
     shotSound:
-    - {fileID: 8300000, guid: e1fbac215f297154daae015d0370f1a8, type: 3}
-    - {fileID: 8300000, guid: 525eb56e04660764da5f89eaf53dea31, type: 3}
-    - {fileID: 8300000, guid: 434666feb8bf23d4986d4be4404c34ec, type: 3}
-    - {fileID: 8300000, guid: 3bae116b356d43b41830ff06b2e18497, type: 3}
+    - {fileID: 8300000, guid: f089e23318bdb4c40be57b506de915f1, type: 3}
+    - {fileID: 8300000, guid: e1e0b1ceaffb00c4daeb9186a13953dc, type: 3}
+    - {fileID: 8300000, guid: 80ce383baa694ed4090ab38322d37364, type: 3}
+    - {fileID: 8300000, guid: 38a2315a1cf31f541b648da9c7ebb4e8, type: 3}
   projectileAmount: 0
   projectile:
     damage: {x: 10, y: 15}
     damageType: 0
     critChance: 0.3
     critType: 7
-    penChance: {x: 0, y: 0, z: 0}
     heatTrasfer: 0
-    heatTransferDegree: 0
     spectrum: 0
     hasSpectrum: 0
     disruption: 0
@@ -108,8 +121,8 @@ MonoBehaviour:
     salvage: 0
     visualAttackTime: 0.5
     missSound:
-    - {fileID: 8300000, guid: 5e1a306dbdcbd16479baf7292a2da0fd, type: 3}
-    - {fileID: 8300000, guid: 7d37b912e27a4344f92a098a48c04d44, type: 3}
+    - {fileID: 8300000, guid: caea2ba6958c2ee4abca563df04a8656, type: 3}
+    - {fileID: 8300000, guid: cc4c8812f35c2264ba5d9bcdb636c930, type: 3}
   explosion:
     explosionSounds: []
     explosionGFX: 0
@@ -129,6 +142,8 @@ MonoBehaviour:
     directional: 0
     d_arc: 0
     d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
   deployableItem:
     deployable: 0
     type: 0
@@ -151,11 +166,17 @@ MonoBehaviour:
     stasis_strength: 0
   isSpecialAttack: 0
   specialAttack:
+    specialMelee: 0
     datajack: 0
     stasisBeam: 0
     tearClaw: 0
   itemEffects: []
   canOverload: 0
+  consumable: 0
+  disposable: -1
+  unstable: -1
+  destroyOnRemove: 0
+  canBeDisabled: 1
   quality: 2
   itemName: Vibroblade
   description: A high damage slashing weapon comprised of a blade vibrating at extreme
@@ -167,3 +188,14 @@ MonoBehaviour:
     fabTime: {x: 187, y: 93, z: 62}
     matterCost: 70
     componenetsRequired: []
+  instantUnique: 0
+  uniqueDetail:
+    isScrap: 0
+    scrapReward: {fileID: 0}
+    isDataLog: 0
+    logMessage: 
+    logAction:
+      type: 0
+      connectedMachine: {fileID: 0}
+    isDataCore: 0
+    coreTerminal: {fileID: 0}

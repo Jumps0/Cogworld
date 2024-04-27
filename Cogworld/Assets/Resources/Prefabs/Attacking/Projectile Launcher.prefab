@@ -135,7 +135,6 @@ MonoBehaviour:
   _origin: {fileID: 0}
   projColor: {r: 1, g: 1, b: 1, a: 1}
   highlightColor: {r: 1, g: 1, b: 1, a: 1}
-  _speed: 0.5
 --- !u!82 &4705294413729429588
 AudioSource:
   m_ObjectHideFlags: 0

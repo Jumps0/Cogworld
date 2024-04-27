@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
   m_Name: Asb. Heavy Rifle
   m_EditorClassIdentifier: 
-  instantUnique: 0
   amount: 1
   data:
     Name: 
@@ -22,10 +21,30 @@ MonoBehaviour:
     itemData: {fileID: 11400000}
     state: 1
     integrityCurrent: 0
+    uniqueDetail:
+      isScrap: 0
+      scrapReward: {fileID: 0}
+      isDataLog: 0
+      logMessage: 
+      logAction:
+        type: 0
+        connectedMachine: {fileID: 0}
+      isDataCore: 0
+      coreTerminal: {fileID: 0}
+    storageAmount: 0
+    isOverloaded: 0
+    isDeteriorating: 0
+    isRigged: 0
+    corrupted: 0
+    disabledTimer: 0
+    unstable: -1
+    disposable: -1
+    siege: 0
   knowByPlayer: 1
   floorDisplay: {fileID: 678505362, guid: 29b93740c1620a54b8cc50531ce485a5, type: 3}
   inventoryDisplay: {fileID: 678505362, guid: 29b93740c1620a54b8cc50531ce485a5, type: 3}
   asciiRep: {fileID: -441784439, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  bigDisplay: {fileID: 0}
   itemColor: {r: 0, g: 1, b: 0.6862745, a: 1}
   type: 15
   slot: 3
@@ -33,7 +52,9 @@ MonoBehaviour:
   mass: 2
   rating: 2
   star: 0
+  ratingType: 0
   integrityMax: 100
+  repairable: 1
   coverage: 100
   schematicDetails:
     hackable: 0
@@ -41,6 +62,7 @@ MonoBehaviour:
     - {x: 1, y: -10}
     - {x: 2, y: -10}
     - {x: 3, y: -10}
+    hasSchematic: 0
   hasUpkeep: 0
   energyUpkeep: 0
   matterUpkeep: 0
@@ -63,24 +85,26 @@ MonoBehaviour:
     hasStability: 0
     hasArc: 0
     shotSound:
-    - {fileID: 8300000, guid: af2a115abd7240945bbf2afbc17a18cf, type: 3}
-    - {fileID: 8300000, guid: 50dacb74b16c3124eb80773c32472739, type: 3}
-    - {fileID: 8300000, guid: a3d2fef54e204bc49866c1cda0538bd1, type: 3}
-    - {fileID: 8300000, guid: 3b6173f5ae4fbdb4a9c39072af9be6cb, type: 3}
-    - {fileID: 8300000, guid: 8e9bee95fa2653042ba62f5fa91ddf7c, type: 3}
+    - {fileID: 8300000, guid: 33b982c102c098040ba44d8a01f96fbe, type: 3}
+    - {fileID: 8300000, guid: 13b7e6e70e01dbc4f80501dfe93e2ee1, type: 3}
+    - {fileID: 8300000, guid: 2be1a202e35ebc94693b9b1c4d805135, type: 3}
   projectileAmount: 1
   projectile:
     damage: {x: 10, y: 20}
     damageType: 0
     critChance: 0.02
     critType: 3
-    penChance: {x: 0, y: 0, z: 0}
     heatTrasfer: 0
-    heatTransferDegree: 0
     spectrum: 0
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    projectileColor: {r: 1, g: 0, b: 0, a: 1}
+    projectileSprite: {fileID: 0}
+    projectileRotates: 1
+    projectileTrail: 2
+    penetrationCapability: 0
+    penetrationChances: []
   meleeAttack:
     isMelee: 0
     energy: 0
@@ -94,16 +118,80 @@ MonoBehaviour:
     critType: 0
     disruption: 0
     salvage: 0
-  itemEffect: []
+    visualAttackTime: 0.5
+    missSound: []
+  explosion:
+    explosionSounds: []
+    explosionGFX: 0
+  explosionDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
+    damageType: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
+    salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  deployableItem:
+    deployable: 0
+    type: 0
+    trapType: 0
+    canSever: 0
+    sever_amount: {x: 0, y: 0}
+    sever_damage: {x: 0, y: 0}
+    canShock: 0
+    shock_amount: {x: 0, y: 0}
+    canBurn: 0
+    burn_amount: {x: 0, y: 0}
+    burn_damage: {x: 0, y: 0}
+    burn_heat: {x: 0, y: 0}
+    burn_affectsNeighbors: 0
+    canPierce: 0
+    pierce_amount: 0
+    pierce_damage: {x: 0, y: 0}
+    pierce_impaleChance: 0
+    canStasis: 0
+    stasis_strength: 0
+  isSpecialAttack: 0
+  specialAttack:
+    specialMelee: 0
+    datajack: 0
+    stasisBeam: 0
+    tearClaw: 0
+  itemEffects: []
+  canOverload: 0
+  consumable: 0
+  disposable: -1
+  unstable: -1
+  destroyOnRemove: 0
+  canBeDisabled: 1
   quality: 21
   itemName: Asb. Heavy Rifle
   description: A heavier ballistic rifle utilized by the Assembled.
   mechanicalDescription: 
-  details:
-    temp: 
   fabricationInfo:
     canBeFabricated: 0
     amountMadePer: 0
     fabTime: {x: 51, y: 25, z: 17}
     matterCost: 30
     componenetsRequired: []
+  instantUnique: 0
+  uniqueDetail:
+    isScrap: 0
+    scrapReward: {fileID: 0}
+    isDataLog: 0
+    logMessage: 
+    logAction:
+      type: 0
+      connectedMachine: {fileID: 0}
+    isDataCore: 0
+    coreTerminal: {fileID: 0}

@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
   m_Name: Med. Laser
   m_EditorClassIdentifier: 
-  instantUnique: 0
   amount: 1
   data:
     Name: 
@@ -22,6 +21,17 @@ MonoBehaviour:
     itemData: {fileID: 11400000}
     state: 1
     integrityCurrent: 0
+    uniqueDetail:
+      isScrap: 0
+      scrapReward: {fileID: 0}
+      isDataLog: 0
+      logMessage: 
+      logAction:
+        type: 0
+        connectedMachine: {fileID: 0}
+      isDataCore: 0
+      coreTerminal: {fileID: 0}
+    storageAmount: 0
     isOverloaded: 0
     isDeteriorating: 0
     isRigged: 0
@@ -75,10 +85,10 @@ MonoBehaviour:
     hasStability: 0
     hasArc: 0
     shotSound:
-    - {fileID: 8300000, guid: e070043e348f2e1498eb5d09dbd6d843, type: 3}
-    - {fileID: 8300000, guid: b590c25584a1c774ebc2986780fd770e, type: 3}
-    - {fileID: 8300000, guid: b871b9cfdfd312e4694813a3910caac5, type: 3}
-    - {fileID: 8300000, guid: 90ae9c49052d4ee4aafec5ef6bbfbaac, type: 3}
+    - {fileID: 8300000, guid: 1f3dfb3cd999d2e4e9cea19866484930, type: 3}
+    - {fileID: 8300000, guid: 8e1d36001690e0a49b8096848ab19731, type: 3}
+    - {fileID: 8300000, guid: 0ea8cba05386a6c4babbf0fa33f17b40, type: 3}
+    - {fileID: 8300000, guid: ef8f96ba9d6e63d4f807d4eb7f7746c9, type: 3}
   projectileAmount: 1
   projectile:
     damage: {x: 12, y: 13}
@@ -162,6 +172,9 @@ MonoBehaviour:
   canOverload: 0
   consumable: 0
   disposable: -1
+  unstable: -1
+  destroyOnRemove: 0
+  canBeDisabled: 1
   quality: 2
   itemName: Med. Laser
   description: A moderately powerful laser that shoots beams of energy that do thermal
@@ -173,3 +186,14 @@ MonoBehaviour:
     fabTime: {x: 51, y: 25, z: 17}
     matterCost: 25
     componenetsRequired: []
+  instantUnique: 0
+  uniqueDetail:
+    isScrap: 0
+    scrapReward: {fileID: 0}
+    isDataLog: 0
+    logMessage: 
+    logAction:
+      type: 0
+      connectedMachine: {fileID: 0}
+    isDataCore: 0
+    coreTerminal: {fileID: 0}
