@@ -221,6 +221,16 @@ public class MachinePart : MonoBehaviour
     {
         destroyed = true;
 
+        // Disable any ambient audio (Terminals & Static Machines have this)
+        if (parentPart.GetComponent<Terminal>())
+        {
+            parentPart.GetComponent<Terminal>().GetComponent<AudioSource>().enabled = false;
+        }
+        else if (parentPart.GetComponent<StaticMachine>())
+        {
+            parentPart.GetComponent<StaticMachine>().GetComponent<AudioSource>().enabled = false;
+        }
+
         // Decide if this should leave debris or note (random)
         if (Random.Range(0f, 1f) > 0.5f) // Yes, debris
         {

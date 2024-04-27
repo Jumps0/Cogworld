@@ -44,7 +44,9 @@ public class Terminal : MonoBehaviour
     [Header("Trojans")]
     public List<TrojanType> trojans = new List<TrojanType>();
 
-
+    [Header("Audio")]
+    public AudioSource _source;
+    public AudioClip _ambient;
 
 
 
