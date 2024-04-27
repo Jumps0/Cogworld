@@ -45,8 +45,6 @@ public class AudioManager : MonoBehaviour
     public List<AudioClip> RobotDestruction_Clips = new List<AudioClip>();
     public List<AudioClip> nonBotDestruction_Clips = new List<AudioClip>();
 
-    public List<AudioClip> globalMiscClips = new List<AudioClip>();
-    //
     public List<AudioClip> globalMusicClips = new List<AudioClip>(); // Will probably never be used
 
     public void PlayAmbient(int id, float volume = -1)
@@ -66,17 +64,6 @@ public class AudioManager : MonoBehaviour
     public void StopAmbient()
     {
         globalAmbient.Stop();
-    }
-
-    public void PlayMiscClip(int id, float volume = -1)
-    {
-        StopMisc();
-        if (volume != -1)
-        {
-            globalOneShot.volume = volume;
-        }
-        globalOneShot.PlayOneShot(globalMiscClips[id]);
-        
     }
 
     public void StopMisc()

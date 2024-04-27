@@ -492,7 +492,7 @@ public class MapManager : MonoBehaviour
         spawnedPlayer.GetComponent<PlayerGridMovement>().playerMovementAllowed = true;
 
         // - Completion Effects -
-        AudioManager.inst.PlayMiscClip(4, 0.25f); // DONE
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.INTRO_Clips[4], 0.25f); // DONE
         PlayAmbientMusic(); // Ambient music
 
         UIManager.inst.CreateNewLogMessage("Arrived at Hideout...", UIManager.inst.deepInfoBlue, UIManager.inst.coolBlue, true);
