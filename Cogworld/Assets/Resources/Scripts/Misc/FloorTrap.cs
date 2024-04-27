@@ -171,7 +171,7 @@ public class FloorTrap : MonoBehaviour
 
         UIManager.inst.CreateItemPopup(this.gameObject, fullName, Color.black, setColor, HF.GetDarkerColor(setColor, 20f));
 
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[101]);
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[101]); // TRAP_SCAN
     }
 
     public void SetAlignment(BotAlignment newA)
@@ -192,7 +192,7 @@ public class FloorTrap : MonoBehaviour
         }
 
         // Play trap triggered sound
-        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.TRAPS_Clips[0]);
+        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.TRAPS_Clips[0]); // TRAP_TRIGGER
 
         // Log a message
         UIManager.inst.CreateNewLogMessage("Triggered " + fullName, UIManager.inst.warningOrange, UIManager.inst.corruptOrange_faded, false, true);

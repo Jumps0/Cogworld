@@ -264,7 +264,7 @@ public class Fabricator : MonoBehaviour
 
         Vector2Int dropLocation = HF.LocateFreeSpace(HF.V3_to_V2I(ejectionSpot.transform.position));
 
-        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.GAME_Clips[29], 0.5f); // Play fabrication complete sound
+        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.GAME_Clips[29], 0.5f); // FABRICATION
 
         if (targetPart != null)
         {

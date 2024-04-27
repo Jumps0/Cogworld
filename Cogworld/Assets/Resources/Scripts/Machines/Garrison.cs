@@ -55,7 +55,7 @@ public class Garrison : MonoBehaviour
         g_sealed = true;
         this.GetComponentInChildren<AudioSource>().loop = false;
         this.GetComponentInChildren<AudioSource>().playOnAwake = false;
-        this.GetComponentInChildren<AudioSource>().PlayOneShot(AudioManager.inst.DOOR_Clips[3]);
+        this.GetComponentInChildren<AudioSource>().PlayOneShot(AudioManager.inst.DOOR_Clips[3]); // GARRISON_SEAL
     }
 
     public void CouplerStatus()

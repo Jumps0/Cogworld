@@ -56,7 +56,7 @@ public class UIEvasionAnimation : MonoBehaviour
 
         SetStartConditions(); // Reset colors
         mainWindow_ref.SetActive(true); // Enable window
-        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[9]);
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[9]); // BLEEPS
 
         StartCoroutine(Open()); // Begin
     }

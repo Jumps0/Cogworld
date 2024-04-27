@@ -477,22 +477,22 @@ public class InventoryControl : MonoBehaviour
         {
             if (isLight)
             {
-                AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dropItem_Clips[Random.Range(2, 3)], 0.7f);
+                AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dropItem_Clips[Random.Range(2, 3)], 0.7f); // EARTH_PART_LGT_1/2
             }
             else
             {
-                AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dropItem_Clips[Random.Range(0, 1)], 0.5f);
+                AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dropItem_Clips[Random.Range(0, 1)], 0.5f); // EARTH_PART_1/2
             }
         }
         else
         {
             if (isLight)
             {
-                AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dropItem_Clips[Random.Range(8, 10)], 0.7f);
+                AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dropItem_Clips[Random.Range(8, 10)], 0.7f); // STONE_PART_LGT_1/2/3
             }
             else
             {
-                AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dropItem_Clips[Random.Range(4, 7)], 0.5f);
+                AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dropItem_Clips[Random.Range(4, 7)], 0.5f); // STONE_PART_1/2/3/4
             }
         }
     }

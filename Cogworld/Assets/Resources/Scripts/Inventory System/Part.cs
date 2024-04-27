@@ -532,11 +532,11 @@ public class Part : MonoBehaviour
             || _item.itemData.itemName.Contains("LGT.") 
             || _item.itemData.itemName.Contains("Light"))
         {
-            AudioManager.inst.PlayMiscSpecific(AudioManager.inst.equipItem_Clips[Random.Range(4,6)]);
+            AudioManager.inst.PlayMiscSpecific(AudioManager.inst.equipItem_Clips[Random.Range(4,6)]); // PART_LIGHT_1/2/3
         }
         else
         {
-            AudioManager.inst.PlayMiscSpecific(AudioManager.inst.equipItem_Clips[Random.Range(0,3)]);
+            AudioManager.inst.PlayMiscSpecific(AudioManager.inst.equipItem_Clips[Random.Range(0,3)]); // PART_1/2/3/4
         }
     }
 

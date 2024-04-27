@@ -339,7 +339,7 @@ public class GlobalSettings : MonoBehaviour
 
         if (debugLeftMessageTest && !doOnce2)
         {
-            UIManager.inst.CreateLeftMessage("ALERT: Lockdown in effect, collecting threat data.", 10, AudioManager.inst.GAME_Clips[30]);
+            UIManager.inst.CreateLeftMessage("ALERT: Lockdown in effect, collecting threat data.", 10, AudioManager.inst.GAME_Clips[30]); // FACILITY_ALERT
             doOnce2 = true;
             debugLeftMessageTest = false;
         }

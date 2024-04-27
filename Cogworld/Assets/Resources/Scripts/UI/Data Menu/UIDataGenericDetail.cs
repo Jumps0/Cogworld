@@ -608,7 +608,7 @@ public class UIDataGenericDetail : MonoBehaviour
             sideBrackets.gameObject.SetActive(true);
 
             // Play a sound
-            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[44]);
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[44]); // HOVER
 
             StopCoroutine(AnimFlashBrackets());
             StartCoroutine(AnimFlashBrackets());

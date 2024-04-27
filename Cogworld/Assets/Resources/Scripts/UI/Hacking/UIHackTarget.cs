@@ -155,7 +155,7 @@ public class UIHackTarget : MonoBehaviour
             if(UIManager.inst.terminal_activeInput  == null) // dont wanna double-up
             {
                 // Play the "MANUAL" sound (51)
-                AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[51]);
+                AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[51]); // MANUAL
                 UIManager.inst.Terminal_CreateManualInput();
             }
         }
