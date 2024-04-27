@@ -1449,7 +1449,7 @@ public class PlayerData : MonoBehaviour
     }
 
     /// <summary>
-    /// For items in the /PARTS/ & /INVENTORY/ menus. If the corresponding letter/number is pressed on the keyboard, that item should be toggled.
+    /// For items in the /PARTS/ menu. If the corresponding letter is pressed on the keyboard, that item should be toggled. WE IGNORE INVENTORY ITEMS.
     /// </summary>
     private void InventoryInputDetection()
     {
@@ -1459,12 +1459,10 @@ public class PlayerData : MonoBehaviour
             // Go through all the interfaces
             foreach (var I in InventoryControl.inst.interfaces)
             {
-                string character = "";
-                int number = -1;
                 string detect = "";
                 InvDisplayItem reference = null;
 
-                // Get the character/number
+                // Get the letter
                 if (I.GetComponentInChildren<DynamicInterface>()) // Includes all items found in /PARTS/ menus (USES LETTER)
                 {
                     foreach (var item in I.GetComponentInChildren<DynamicInterface>().slotsOnInterface)
@@ -1472,38 +1470,15 @@ public class PlayerData : MonoBehaviour
                         if (item.Key.GetComponent<InvDisplayItem>().item != null)
                         {
                             reference = item.Key.GetComponent<InvDisplayItem>();
-                            character = reference._assignedChar.ToString();
-                            number = reference._assignedNumber;
+                            detect = reference._assignedChar.ToString();
                         }
                     }
-                }
-                else if (I.GetComponentInChildren<StaticInterface>()) // Includes all items found in /INVENTORY/ menu (USES NUMBERS)
-                {
-                    foreach (var item in I.GetComponentInChildren<StaticInterface>().slotsOnInterface)
-                    {
-                        if (item.Key.GetComponent<InvDisplayItem>().item != null)
-                        {
-                            reference = item.Key.GetComponent<InvDisplayItem>();
-                            character = reference._assignedChar.ToString();
-                            number = reference._assignedNumber;
-                        }
-                    }
-                }
-
-                // Is that character/number currently being held down?
-                if(character != "")
-                {
-                    detect = character;
-                }
-                else if(number >= 0)
-                {
-                    detect = number.ToString();
                 }
 
                 KeyCode parse = KeyCode.None;
                 try
                 {
-                    parse = (KeyCode)System.Enum.Parse(typeof(KeyCode), detect);
+                    parse = (KeyCode)System.Enum.Parse(typeof(KeyCode), detect); // Make sure this is an actual key we can press
                 }
                 catch (Exception e)
                 {
@@ -1511,12 +1486,13 @@ public class PlayerData : MonoBehaviour
                     return;
                 }
 
-                if (detect != "" && parse != KeyCode.None && Input.GetKeyDown(parse)) // Is that key currenlty down?
+                if (detect != "" && parse != KeyCode.None && Input.GetKey(parse)) // Is that key currenlty down?
                 {
                     // Toggle!
                     if(reference != null)
                     {
                         reference.Click();
+                        return;
                     }
                 }
             }

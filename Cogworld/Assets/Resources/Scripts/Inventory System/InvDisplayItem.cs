@@ -51,6 +51,15 @@ public class InvDisplayItem : MonoBehaviour
     public Item item;
     public char _assignedChar;
     public int _assignedNumber = -1;
+    private bool canSiege = false;
+
+    private void Update()
+    {
+        if (canSiege)
+        {
+            CheckSiegeStatus();
+        }
+    }
 
     /// <summary>
     /// This slot is empty, and therefore should not display anything besides "Unused"
@@ -133,6 +142,15 @@ public class InvDisplayItem : MonoBehaviour
             {
                 assignedOrderText.text = ":" + _assignedChar.ToString();
                 assignedOrderString = assignedOrderText.text;
+            }
+
+            // We're gonna shove in the siege check here too since its convienient
+            if(item.itemData.type == ItemType.Treads)
+            {
+                if (item.itemData.propulsion[0].canSiege > 0)
+                {
+                    canSiege = true;
+                }
             }
         }
     }
@@ -379,38 +397,6 @@ public class InvDisplayItem : MonoBehaviour
         }
     }
 
-    private void UIDisable()
-    {
-        // Set the item's state to disabled
-        item.state = false;
-
-        // Do a little animation
-        StartCoroutine(SecondaryDataFlash()); // Flash the secondary
-        TextTypeOutAnimation(true);
-
-        // Play a sound
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[62]); // PART_OFF
-
-        // Update the UI
-
-    }
-
-    private void UIEnable()
-    {
-        // Set the item's state to enabled
-        item.state = true;
-
-        // Do a little animation
-        StartCoroutine(SecondaryDataFlash()); // Flash the secondary
-        TextTypeOutAnimation(false);
-
-        // Play a sound
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[64]); // PART_ON
-
-        // Update the UI
-
-    }
-
     private IEnumerator SecondaryDataFlash()
     {
         // Take the secondary data backer image, enable it and set it to dark green, and fade it out.
@@ -521,6 +507,174 @@ public class InvDisplayItem : MonoBehaviour
             }
             healthDisplayBacker.color = letterWhite;
             unusedHighlight = StartCoroutine(UnusedHighlightAnim(false));
+        }
+    }
+
+    #endregion
+
+    #region Cycling
+
+    /// <summary>
+    /// Cycle to being DISABLED
+    /// </summary>
+    public void UIDisable()
+    {
+        // Set the item's state to disabled
+        item.state = false;
+
+        // Do a little animation
+        StartCoroutine(SecondaryDataFlash()); // Flash the secondary
+        TextTypeOutAnimation(true);
+
+        // Play a sound
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[62]); // PART_OFF
+
+        // Update the UI
+        UIManager.inst.UpdateInventory();
+        UIManager.inst.UpdateParts();
+    }
+
+    /// <summary>
+    /// Cycle to being ENABLED
+    /// </summary>
+    public void UIEnable()
+    {
+        // Set the item's state to enabled
+        item.state = true;
+
+        // Do a little animation
+        StartCoroutine(SecondaryDataFlash()); // Flash the secondary
+        TextTypeOutAnimation(false);
+
+        // Play a sound
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[64]); // PART_ON
+
+        // Update the UI
+        UIManager.inst.UpdateInventory();
+        UIManager.inst.UpdateParts();
+    }
+
+    int siegeState = 0; // See below for possible states
+    Coroutine siegeTransition = null;
+
+    /// <summary>
+    /// Transition from one state to another in siege mode. 0 = Disabled, 1 = (begin) SIEGE, 2 = SIEGE, 3 = (end) SIEGE, 4 = Enabled
+    /// </summary>
+    /// <param name="state"></param>
+    public void SiegeTransitionTo(int startState, int endState)
+    {
+        // We have multiple possible transition states here:
+        // -Disabled -> (begin)    | 0
+        // -(begin) -> SIEGE       | 1
+        // -SIEGE -> (end)         | 2
+        // -(end) -> Enabled       | 3
+
+        int type = 0;
+
+        if(startState == 0 && endState == 1)
+        {
+            type = 0;
+            MapManager.inst.FreezePlayer(true);
+            PlayerData.inst.timeTilSiege = 5;
+
+            // Play a sound
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[64]); // PART_ON
+        }
+        else if (startState == 1 && endState == 2)
+        {
+            type = 1;
+            MapManager.inst.FreezePlayer(true);
+            PlayerData.inst.timeTilSiege = 0;
+
+            // Play a sound
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[0]); // TODO: WHAT IS THE SIEGE SOUND NAMED????
+        }
+        else if (startState == 2 && endState == 3)
+        {
+            type = 2;
+            MapManager.inst.FreezePlayer(true);
+            PlayerData.inst.timeTilSiege = -5;
+
+            // Play a sound
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[62]); // PART_OFF
+        }
+        else if (startState == 3 && endState == 4)
+        {
+            type = 3;
+            MapManager.inst.FreezePlayer(false);
+            PlayerData.inst.timeTilSiege = 100;
+        }
+
+        StartCoroutine(SecondaryDataFlash()); // Flash the secondary
+
+        if (siegeTransition != null)
+        {
+            StopCoroutine(siegeTransition);
+        }
+        siegeTransition = StartCoroutine(SiegeTransitionAnimation(type));
+    }
+
+    private IEnumerator SiegeTransitionAnimation(int type)
+    {
+        switch (type)
+        {
+            case 0: // Disabled -> (begin) 
+                UISetBoxDisplay("SIEGE 5", emptyGray); // Enable the box
+                // Change the text color from gray to yellow using our animation
+                Color start = Color.white, end = Color.white, highlight = Color.white;
+                string text = item.itemData.itemName; // (this also resets old mark & color tags)
+
+                // GRAY -> YELLOW
+                start = emptyGray;
+                end = UIManager.inst.siegeYellow;
+                highlight = inActiveGreen;
+
+                // Set the assigned letter to a color while we're a it
+                assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(end)}>{assignedOrderString}</color>";
+
+                // Get the string list
+                List<string> strings = HF.SteppedStringHighlightAnimation(text, highlight, start, end);
+
+                // Animate the strings via our delay trick
+                float delay = 0f;
+                float perDelay = 0.35f / text.Length;
+
+                foreach (string s in strings)
+                {
+                    StartCoroutine(HF.DelayedSetText(itemNameText, s, delay += perDelay));
+                }
+                break;
+            case 1: // (begin) -> SIEGE
+                UISetBoxDisplay("SIEGE", UIManager.inst.siegeYellow); // Alter the box
+                // No actual animation here
+
+                break;
+            case 2: // SIEGE -> (end)
+                UISetBoxDisplay("SIEGE -5", emptyGray); // Alter the box
+
+                break;
+            case 3: // (end) -> Enabled
+                modeMain.SetActive(false); // Disable the box
+
+                break;
+        }
+
+        yield return null;
+    }
+
+    public void UISetBoxDisplay(string display, Color backgroundColor)
+    {
+        modeMain.SetActive(true);
+
+        modeText.text = display;
+        modeImage.color = backgroundColor;
+    }
+
+    private void CheckSiegeStatus()
+    {
+        if(siegeState == 1 || siegeState == 3) // Transition states
+        {
+            UISetBoxDisplay("SIEGE " + PlayerData.inst.timeTilSiege, emptyGray); // Set the time
         }
     }
 

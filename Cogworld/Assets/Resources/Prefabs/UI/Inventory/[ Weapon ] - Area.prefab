@@ -65,6 +65,9 @@ MonoBehaviour:
   image_backer: {fileID: 5539824908830308818}
   text_main: {fileID: 4619964497693575620}
   type: 3
+  darkGreen: {r: 0.08235294, g: 0.2509804, b: 0.078431375, a: 1}
+  normalGreen: {r: 0, g: 0.84705883, b: 0, a: 1}
+  headerWhite: {r: 0.6117647, g: 0.6117647, b: 0.6117647, a: 1}
 --- !u!114 &2049228486362446973
 MonoBehaviour:
   m_ObjectHideFlags: 0

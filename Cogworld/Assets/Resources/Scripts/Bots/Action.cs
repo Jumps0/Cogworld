@@ -3288,7 +3288,7 @@ public static class Action
         {
             foreach (var item in actor.armament.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && item.item.state)
                 {
                     totalMass += item.item.itemData.mass;
                 }
@@ -3296,7 +3296,7 @@ public static class Action
 
             foreach (var item in actor.components.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && item.item.state)
                 {
                     totalMass += item.item.itemData.mass;
                 }
@@ -3306,28 +3306,28 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPower.Container.Items)
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state)
                 {
                     totalMass += item.item.itemData.mass;
                 }
             }
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items)
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state)
                 {
                     totalMass += item.item.itemData.mass;
                 }
             }
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items)
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state)
                 {
                     totalMass += item.item.itemData.mass;
                 }
             }
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invWeapon.Container.Items)
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state)
                 {
                     totalMass += item.item.itemData.mass;
                 }
@@ -3365,7 +3365,7 @@ public static class Action
         {
             foreach (var item in actor.components.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0) // There's something there
+                if (item.item.itemData.data.Id >= 0 && item.item.state) // There's something there
                 {
                     if (item.item.itemData.propulsion.Count > 0) // And its got propulsion data
                     {
@@ -3387,7 +3387,7 @@ public static class Action
 
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items)
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state)
                 {
                     if (item.item.itemData.propulsion.Count > 0) // And its got propulsion data
                     {
@@ -3423,7 +3423,7 @@ public static class Action
         {
             foreach (var item in actor.components.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0) // There's something there
+                if (item.item.itemData.data.Id >= 0 && item.item.state) // There's something there
                 {
                     foreach(var E in item.item.itemData.itemEffects)
                     {
@@ -3452,7 +3452,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items)
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state)
                 {
                     foreach (var E in item.item.itemData.itemEffects)
                     {
