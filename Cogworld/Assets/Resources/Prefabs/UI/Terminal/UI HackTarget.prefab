@@ -1141,6 +1141,9 @@ MonoBehaviour:
     available: 1
     hack: {fileID: 0}
     knowledge: {fileID: 0}
+    specialAction:
+      type: 0
+      connectedMachine: {fileID: 0}
     bot: {fileID: 0}
     item: {fileID: 0}
   darkGreenColor: {r: 0.098039225, g: 0.38431376, b: 0.09019608, a: 1}
@@ -1152,7 +1155,6 @@ MonoBehaviour:
   chanceOfSuccess: 0
   buttonStuff: {fileID: 8519707058798226528}
   buttonBacker: {fileID: 490044095951275742}
-  textSpeed: 0.007
 --- !u!114 &7452252841924527143
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1236,12 +1238,24 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: SetColor, Assembly-CSharp
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onHoverEnd:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3942687885911542117}
-        m_TargetAssemblyTypeName: SetColor, Assembly-CSharp
-        m_MethodName: SetColorB
+      - m_Target: {fileID: 8730821926339009864}
+        m_TargetAssemblyTypeName: UIHackTarget, Assembly-CSharp
+        m_MethodName: PlayHoverSound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1251,6 +1265,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  disabled: 0
 --- !u!114 &3942687885911542117
 MonoBehaviour:
   m_ObjectHideFlags: 0

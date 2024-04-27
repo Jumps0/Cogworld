@@ -414,4 +414,10 @@ public class UIHackTarget : MonoBehaviour
 
         return true;
     }
+
+    public void PlayHoverSound()
+    {
+        // Play the hover UI sound
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[44]); // HOVER
+    }
 }

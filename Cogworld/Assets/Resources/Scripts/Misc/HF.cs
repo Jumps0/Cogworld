@@ -14,6 +14,8 @@ using Vector3 = UnityEngine.Vector3;
 using static UnityEngine.GraphicsBuffer;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 using Transform = UnityEngine.Transform;
+using UnityEngine.UIElements;
+using UnityEngine.Windows;
 
 /// <summary>
 /// Contains helper functions to be used globally.
@@ -3819,6 +3821,83 @@ public static class HF
     #endregion
 
     #region String/Name Manipulation
+
+    /// <summary>
+    /// Given an input string, will output a list of strings that when quickly swapped out will show an "animation" of one letter at a time being highlighted,
+    /// changing from the start color to the end color of the text.
+    /// </summary>
+    /// <param name="text">The input string.</param>
+    /// <param name="highlight">The highlight color.</param>
+    /// <param name="start">The color the text starts as.</param>
+    /// <param name="end">The color the text ends as.</param>
+    /// <returns>A list of strings that when changed together looks like an animated highlight.</returns>
+    public static List<string> SteppedStringHighlightAnimation(string text, Color highlight, Color start, Color end)
+    {
+        List<string> output = new List<string>();
+
+        // We do this using:                                                   (fun fact, adding: aa to the end of mark makes it transparent)
+        // = $"<mark=#{ColorUtility.ToHtmlStringRGB(Color.black)}aa><color=#{ColorUtility.ToHtmlStringRGB(Color.black)}>{"["}</color></mark>";
+
+        // Starting state:
+        output.Add($"<color=#{ColorUtility.ToHtmlStringRGB(start)}>{text}</color>");
+
+        // Transition states:
+        for (int i = 0; i < text.Length; i++)
+        {
+            // Split the string
+            string left, middle, right;
+            HF.SplitString(text, i, out left, out middle, out right);
+
+            string result = "";
+
+            // Add components with color & highlight
+            if(left != "")
+                result += $"<color=#{ColorUtility.ToHtmlStringRGB(end)}>{left}</color>";
+
+            result += $"<mark=#{ColorUtility.ToHtmlStringRGB(highlight)}aa><color=#{ColorUtility.ToHtmlStringRGB(end)}>{middle}</color></mark>";
+
+            if (right != "")
+                result += $"<color=#{ColorUtility.ToHtmlStringRGB(start)}>{right}</color>";
+
+            // Add result to list
+            output.Add(result);
+        }
+
+        // End state:
+        output.Add($"<color=#{ColorUtility.ToHtmlStringRGB(end)}>{text}</color>");
+
+        return output;
+    }
+
+    /// <summary>
+    /// Given a single input string, will split it up given a position value within the string. Ex: (apple, 1) -> (a, p, ple)
+    /// </summary>
+    /// <param name="input">The input string to split.</param>
+    /// <param name="position">The position within the string to select as our "split point".</param>
+    /// <param name="left">All the characters to the left of the split point.</param>
+    /// <param name="middle">The single character at the split point.</param>
+    /// <param name="right">All the characters to the right of the split point.</param>
+    public static void SplitString(string input, int position, out string left, out string middle, out string right)
+    {
+        // Check if the position is within the bounds of the string
+        if (position < 0 || position >= input.Length)
+        {
+            // If the position is out of bounds, set all output strings to empty
+            left = "";
+            middle = "";
+            right = "";
+            return;
+        }
+
+        // Get the substring to the left of the character at the given position
+        left = input.Substring(0, position);
+
+        // Get the character at the given position
+        middle = input.Substring(position, 1);
+
+        // Get the substring to the right of the character at the given position
+        right = input.Substring(position + 1);
+    }
 
     /// <summary>
     /// Extracts text from the inside of (   ). Example Name(This)

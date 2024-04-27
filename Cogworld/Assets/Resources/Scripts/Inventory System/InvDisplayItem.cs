@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using TMPro;
 using Unity.VisualScripting;
+using ColorUtility = UnityEngine.ColorUtility;
 
 public class InvDisplayItem : MonoBehaviour
 {
@@ -18,6 +19,7 @@ public class InvDisplayItem : MonoBehaviour
     public TextMeshProUGUI itemNameText;
     public TextMeshProUGUI specialDescText;
     public Button _button;
+    public Image _highlight;
     //
     public GameObject modeMain;
     public Image modeImage;
@@ -26,6 +28,7 @@ public class InvDisplayItem : MonoBehaviour
     public GameObject healthMode;
     public TextMeshProUGUI healthModeNumber; // The right side "##"
     public TextMeshProUGUI healthModeTextRep; // The bars
+    public Image secondaryBacker;
     //
     // --               --
     [Header("Colors")]
@@ -40,14 +43,14 @@ public class InvDisplayItem : MonoBehaviour
     public Color emptyGray;
     public Color letterWhite;
     //
+    public Color highlightColor;
+    //
     // --        --
 
+    [Header("Assignments")]
     public Item item;
     public char _assignedChar;
-
-    [Header("Animation")]
-    public Image _highlight;
-    public Animator _highlightAnim;
+    public int _assignedNumber = -1;
 
     /// <summary>
     /// This slot is empty, and therefore should not display anything besides "Unused"
@@ -111,7 +114,22 @@ public class InvDisplayItem : MonoBehaviour
         {
             assignedOrderText.color = emptyGray;
         }
-        
+
+        // If this item is in the player's inventory we don't show letters, we show numbers
+        if(this.transform.parent.gameObject == UIManager.inst.inventoryArea)
+        {
+            int position = char.ToUpperInvariant(assignment) - 'A' + 1; // Convert from letter to number
+            //_assignedNumber = position;
+            //assignedOrderText.text = position.ToString(); // NOTE: DOING THIS BREAKS STUFF. LOOK INTO HOW THE INTERFACE/UIMANAGER SETS THIS AND FIX IT TO HAVE 2 SYSTEMS.
+        }
+        else
+        {
+            // Also add an ":" before the indicator if removing it will destroy the item
+            if (item.itemData.destroyOnRemove)
+            {
+                assignedOrderText.text = ":" + assignedOrderText.text;
+            }
+        }
     }
 
     public void UpdateDisplay()
@@ -213,52 +231,43 @@ public class InvDisplayItem : MonoBehaviour
     }
 
     #region Highlight Animation
-    private Coroutine unusedHighlight;
-    public void HoverBegin()
+
+    private IEnumerator ActiveHighlightAnim(bool fadeIn)
     {
-        if(item != null)
+        float elapsedTime = 0f;
+        float duration = 0.45f;
+        Color lerp = highlightColor;
+
+        if (fadeIn)
         {
-            DoHighlight();
+            while (elapsedTime < duration) // Empty -> Green
+            {
+                float transparency = Mathf.Lerp(0, 0.7f, elapsedTime / duration);
+
+                lerp = new Color(highlightColor.r, highlightColor.g, highlightColor.b, transparency);
+
+                _highlight.color = lerp;
+
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            _highlight.color = new Color(highlightColor.r, highlightColor.g, highlightColor.b, 0.7f);
         }
         else
         {
-            if(unusedHighlight != null)
+            while (elapsedTime < duration) // Green -> Empty
             {
-                StopCoroutine(unusedHighlight);
+                float transparency = Mathf.Lerp(0.7f, 0, elapsedTime / duration);
+
+                lerp = new Color(highlightColor.r, highlightColor.g, highlightColor.b, transparency);
+
+                _highlight.color = lerp;
+
+                elapsedTime += Time.deltaTime;
+                yield return null;
             }
-            healthDisplayBacker.color = emptyGray;
-            unusedHighlight = StartCoroutine(UnusedHighlightAnim(true));
+            _highlight.color = new Color(highlightColor.r, highlightColor.g, highlightColor.b, 0.0f);
         }
-    }
-
-    public void HoverEnd()
-    {
-        if (item != null)
-        {
-            StopHighlight();
-        }
-        else
-        {
-            if (unusedHighlight != null)
-            {
-                StopCoroutine(unusedHighlight);
-            }
-            healthDisplayBacker.color = letterWhite;
-            unusedHighlight = StartCoroutine(UnusedHighlightAnim(false));
-        }
-    }
-
-
-    public void DoHighlight()
-    {
-        _highlight.gameObject.SetActive(true);
-        _highlightAnim.Play("item_highlight");
-
-    }
-
-    public void StopHighlight()
-    {
-        _highlight.gameObject.SetActive(false);
     }
 
     private IEnumerator UnusedHighlightAnim(bool fadeIn)
@@ -269,7 +278,7 @@ public class InvDisplayItem : MonoBehaviour
 
         if (fadeIn)
         {
-            while (elapsedTime < duration) // Emtpy -> White
+            while (elapsedTime < duration) // Empty -> White
             {
                 lerp = Color.Lerp(emptyGray, letterWhite, elapsedTime / duration);
 
@@ -335,6 +344,8 @@ public class InvDisplayItem : MonoBehaviour
 
     #endregion
 
+    #region Interaction
+
     private void OnMouseOver()
     {
         if (Input.GetKeyDown(KeyCode.Mouse1)) // Right Click to open /DATA/ Menu
@@ -342,4 +353,167 @@ public class InvDisplayItem : MonoBehaviour
             UIManager.inst.Data_OpenMenu(item, null, PlayerData.inst.GetComponent<Actor>());
         }
     }
+
+    public void Click()
+    {
+        if(item != null)
+        {
+            // If the player clicks on this item, it should enable/disable the item itself.
+            if (item.state) // DISABLE the item
+            {
+                UIDisable();
+            }
+            else // ENABLE the item
+            {
+                UIEnable();
+            }
+        }
+    }
+
+    private void UIDisable()
+    {
+        // Set the item's state to disabled
+        item.state = false;
+
+        // Do a little animation
+        StartCoroutine(SecondaryDataFlash()); // Flash the secondary
+        TextTypeOutAnimation(true);
+
+        // Play a sound
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[62]); // PART_OFF
+
+        // Update the UI
+
+    }
+
+    private void UIEnable()
+    {
+        // Set the item's state to enabled
+        item.state = true;
+
+        // Do a little animation
+        StartCoroutine(SecondaryDataFlash()); // Flash the secondary
+        TextTypeOutAnimation(false);
+
+        // Play a sound
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[64]); // PART_ON
+
+        // Update the UI
+
+    }
+
+    private IEnumerator SecondaryDataFlash()
+    {
+        // Take the secondary data backer image, enable it and set it to dark green, and fade it out.
+
+        secondaryBacker.enabled = true;
+
+        float elapsedTime = 0f;
+        float duration = 0.5f;
+        Color lerp = inActiveGreen;
+
+        while (elapsedTime < duration)
+        {
+            lerp = Color.Lerp(inActiveGreen, Color.black, elapsedTime / duration);
+
+            secondaryBacker.color = lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        secondaryBacker.enabled = false;
+    }
+
+    private void TextTypeOutAnimation(bool disable)
+    {
+        Color start = Color.white, end = Color.white, highlight = Color.white;
+        string text = item.itemData.itemName; // (this also resets old mark & color tags)
+
+        // Assign values based on what we want to do
+        if (disable)
+        {
+            // We want to DISABLE the text, so going from GREEN -> GRAY
+            start = activeGreen;
+            end = emptyGray;
+            highlight = inActiveGreen;
+
+            // Set the assigned letter to a color while we're a it
+            assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(emptyGray)}>{assignedOrderText.text}</color>";
+        }
+        else
+        {
+            // We want to ENABLE the text, so going from GRAY -> GREEN
+            start = emptyGray;
+            end = activeGreen;
+            highlight = inActiveGreen;
+
+            // Set the assigned letter to a color while we're a it
+            assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(activeGreen)}>{assignedOrderText.text}</color>";
+        }
+
+        // Get the string list
+        List<string> strings = HF.SteppedStringHighlightAnimation(text, highlight, start, end);
+
+        // Animate the strings via our delay trick
+        float delay = 0f;
+        float perDelay = 0.75f / text.Length;
+
+        foreach (string s in strings)
+        {
+            StartCoroutine(HF.DelayedSetText(itemNameText, s, delay += perDelay));
+        }
+
+    }
+
+    private Coroutine unusedHighlight;
+    private Coroutine activeHighlight;
+    public void HoverBegin()
+    {
+        if (item != null) // Active
+        {
+            if (activeHighlight != null)
+            {
+                StopCoroutine(activeHighlight);
+            }
+            _highlight.color = new Color(highlightColor.r, highlightColor.g, highlightColor.b, 0.0f);
+            activeHighlight = StartCoroutine(ActiveHighlightAnim(true));
+        }
+        else // Unused
+        {
+            if (unusedHighlight != null)
+            {
+                StopCoroutine(unusedHighlight);
+            }
+            healthDisplayBacker.color = emptyGray;
+            unusedHighlight = StartCoroutine(UnusedHighlightAnim(true));
+        }
+
+        // Play the hover UI sound
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[44]); // HOVER
+    }
+
+    public void HoverEnd()
+    {
+        if (item != null) // Active
+        {
+            if (activeHighlight != null)
+            {
+                StopCoroutine(activeHighlight);
+            }
+            _highlight.color = new Color(highlightColor.r, highlightColor.g, highlightColor.b, 0.7f);
+            activeHighlight = StartCoroutine(ActiveHighlightAnim(false));
+        }
+        else // Unused
+        {
+            if (unusedHighlight != null)
+            {
+                StopCoroutine(unusedHighlight);
+            }
+            healthDisplayBacker.color = letterWhite;
+            unusedHighlight = StartCoroutine(UnusedHighlightAnim(false));
+        }
+    }
+
+    #endregion
 }

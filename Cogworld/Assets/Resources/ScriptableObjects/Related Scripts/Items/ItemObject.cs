@@ -250,6 +250,8 @@ public abstract class ItemObject : ScriptableObject
     public bool consumable = false; // TODO: Functionality for this too
     public int disposable = -1; // TODO: Functionality for this
     public int unstable = -1; // TODO: Functionality for this
+    [Tooltip("Certain items (like processors), will destroy themselves when they are removed. Items like this give a warning to the player if they attempt to remove it.")]
+    public bool destroyOnRemove = false; // TODO: Functionality for this
 
     [Header("Primary Details")]
     public ItemQuality quality;
