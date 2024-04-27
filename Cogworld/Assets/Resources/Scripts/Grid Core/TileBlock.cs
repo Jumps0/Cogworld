@@ -150,8 +150,9 @@ public class TileBlock : MonoBehaviour
         }
 
         vis = tileInfo.currentVis;
-        HighlightCheck();
-        CheckVisibility();
+        HighlightCheck(); // TODO: NOTE: Don't do this, its bad, its nuking the framerate. We don't need to call this every frame. Just do a check on the player's mouse or something. Anything but this.
+        CheckVisibility(); // This too this is also pretty bad. Finding a good solution for this may be difficult.
+        // See https://www.youtube.com/watch?v=XNcEZHqtC0g for the many ways to finding problems when optimizing in Unity
 
         /*
         if (this.GetComponent<PotentialField>() && isExplored)

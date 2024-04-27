@@ -252,6 +252,8 @@ public abstract class ItemObject : ScriptableObject
     public int unstable = -1; // TODO: Functionality for this
     [Tooltip("Certain items (like processors), will destroy themselves when they are removed. Items like this give a warning to the player if they attempt to remove it.")]
     public bool destroyOnRemove = false; // TODO: Functionality for this
+    [Tooltip("Certain items (like storage units), can't be disabled. This is pretty rare actually.")]
+    public bool canBeDisabled = true; // TODO: Functionality for this
 
     [Header("Primary Details")]
     public ItemQuality quality;

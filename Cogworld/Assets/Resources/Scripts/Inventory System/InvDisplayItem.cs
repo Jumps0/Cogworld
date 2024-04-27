@@ -102,10 +102,13 @@ public class InvDisplayItem : MonoBehaviour
         healthModeTextRep.raycastTarget = false;
     }
 
+    private string assignedOrderString = "";
     public void SetLetter(char assignment)
     {
         _assignedChar = assignment;
         assignedOrderText.text = _assignedChar.ToString();
+        assignedOrderString = _assignedChar.ToString();
+
         if (item.state)
         {
             assignedOrderText.color = activeGreen;
@@ -127,7 +130,8 @@ public class InvDisplayItem : MonoBehaviour
             // Also add an ":" before the indicator if removing it will destroy the item
             if (item.itemData.destroyOnRemove)
             {
-                assignedOrderText.text = ":" + assignedOrderText.text;
+                assignedOrderText.text = ":" + _assignedChar.ToString();
+                assignedOrderString = assignedOrderText.text;
             }
         }
     }
@@ -359,13 +363,17 @@ public class InvDisplayItem : MonoBehaviour
         if(item != null)
         {
             // If the player clicks on this item, it should enable/disable the item itself.
-            if (item.state) // DISABLE the item
+            // Also they need to actually be able to toggle this. Some items forbid it.
+            if (item.itemData.canBeDisabled)
             {
-                UIDisable();
-            }
-            else // ENABLE the item
-            {
-                UIEnable();
+                if (item.state) // DISABLE the item
+                {
+                    UIDisable();
+                }
+                else // ENABLE the item
+                {
+                    UIEnable();
+                }
             }
         }
     }
@@ -439,7 +447,7 @@ public class InvDisplayItem : MonoBehaviour
             highlight = inActiveGreen;
 
             // Set the assigned letter to a color while we're a it
-            assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(emptyGray)}>{assignedOrderText.text}</color>";
+            assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(emptyGray)}>{assignedOrderString}</color>";
         }
         else
         {
@@ -449,7 +457,7 @@ public class InvDisplayItem : MonoBehaviour
             highlight = inActiveGreen;
 
             // Set the assigned letter to a color while we're a it
-            assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(activeGreen)}>{assignedOrderText.text}</color>";
+            assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(activeGreen)}>{assignedOrderString}</color>";
         }
 
         // Get the string list
