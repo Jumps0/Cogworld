@@ -103,30 +103,38 @@ public class InvDisplayItem : MonoBehaviour
     }
 
     private string assignedOrderString = "";
-    public void SetLetter(char assignment)
+    public void SetLetter(char assignment, int number = -1)
     {
-        _assignedChar = assignment;
-        assignedOrderText.text = _assignedChar.ToString();
-        assignedOrderString = _assignedChar.ToString();
+        if(number >= 0) // Inventory items use numbers instead of letters for assignments
+        {
+            _assignedNumber = number;
+            assignedOrderText.text = _assignedNumber.ToString();
+            assignedOrderString = _assignedNumber.ToString();
 
-        if (item.state)
-        {
-            assignedOrderText.color = activeGreen;
+            if (item.state)
+            {
+                assignedOrderText.color = activeGreen;
+            }
+            else
+            {
+                assignedOrderText.color = emptyGray;
+            }
         }
-        else
+        else // Parts menu items use letters
         {
-            assignedOrderText.color = emptyGray;
-        }
+            _assignedChar = assignment;
+            assignedOrderText.text = _assignedChar.ToString();
+            assignedOrderString = _assignedChar.ToString();
 
-        // If this item is in the player's inventory we don't show letters, we show numbers
-        if(this.transform.parent.gameObject == UIManager.inst.inventoryArea)
-        {
-            int position = char.ToUpperInvariant(assignment) - 'A' + 1; // Convert from letter to number
-            //_assignedNumber = position;
-            //assignedOrderText.text = position.ToString(); // NOTE: DOING THIS BREAKS STUFF. LOOK INTO HOW THE INTERFACE/UIMANAGER SETS THIS AND FIX IT TO HAVE 2 SYSTEMS.
-        }
-        else
-        {
+            if (item.state)
+            {
+                assignedOrderText.color = activeGreen;
+            }
+            else
+            {
+                assignedOrderText.color = emptyGray;
+            }
+
             // Also add an ":" before the indicator if removing it will destroy the item
             if (item.itemData.destroyOnRemove)
             {
@@ -465,7 +473,7 @@ public class InvDisplayItem : MonoBehaviour
 
         // Animate the strings via our delay trick
         float delay = 0f;
-        float perDelay = 0.75f / text.Length;
+        float perDelay = 0.35f / text.Length;
 
         foreach (string s in strings)
         {

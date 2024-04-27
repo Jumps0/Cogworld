@@ -365,19 +365,21 @@ public class InventoryControl : MonoBehaviour
 
     public void SetInterfaceInvKeys()
     {
-        int i = 0;
+        int alphabet = 0;
+        int numbers = 0;
+
         foreach (var I in interfaces)
         {
-            if (I.GetComponentInChildren<DynamicInterface>())
+            if (I.GetComponentInChildren<DynamicInterface>()) // Includes all items found in /PARTS/ menus (USES LETTER)
             {
                 foreach (var item in I.GetComponentInChildren<DynamicInterface>().slotsOnInterface)
                 {
                     if(item.Key.GetComponent<InvDisplayItem>().item != null)
                     {
-                        item.Key.GetComponent<InvDisplayItem>().SetLetter(UIManager.inst.alphabet[i]);
-                        i++;
+                        item.Key.GetComponent<InvDisplayItem>().SetLetter(UIManager.inst.alphabet[alphabet]);
+                        alphabet++;
 
-                        if (i >= 26) // Impossible to have more than 26 parts so should be good here.
+                        if (alphabet >= 26) // Impossible to have more than 26 parts so should be good here.
                         {
                             Debug.LogError("ERROR: Letter overflow in assigning keys to parts.");
                             Debug.Break();
@@ -385,37 +387,14 @@ public class InventoryControl : MonoBehaviour
                     }
                 }
             }
-            else if (I.GetComponentInChildren<StaticInterface>())
+            else if (I.GetComponentInChildren<StaticInterface>()) // Includes all items found in /INVENTORY/ menu (USES NUMBERS)
             {
                 foreach (var item in I.GetComponentInChildren<StaticInterface>().slotsOnInterface)
                 {
                     if (item.Key.GetComponent<InvDisplayItem>().item != null)
                     {
-                        item.Key.GetComponent<InvDisplayItem>().SetLetter(UIManager.inst.alphabet[i]);
-                        i++;
-
-                        if (i >= 26) // Impossible to have more than 26 parts so should be good here.
-                        {
-                            Debug.LogError("ERROR: Letter overflow in assigning keys to parts.");
-                            Debug.Break();
-                        }
-                    }
-                }
-            }
-            else if (I.GetComponentInChildren<UserInterface>())
-            {
-                foreach (var item in I.GetComponentInChildren<UserInterface>().slotsOnInterface)
-                {
-                    if (item.Key.GetComponent<InvDisplayItem>().item != null)
-                    {
-                        item.Key.GetComponent<InvDisplayItem>().SetLetter(UIManager.inst.alphabet[i]);
-                        i++;
-
-                        if (i >= 26) // Impossible to have more than 26 parts so should be good here.
-                        {
-                            Debug.LogError("ERROR: Letter overflow in assigning keys to parts.");
-                            Debug.Break();
-                        }
+                        item.Key.GetComponent<InvDisplayItem>().SetLetter(UIManager.inst.alphabet[0], numbers + 1);
+                        numbers++;
                     }
                 }
             }

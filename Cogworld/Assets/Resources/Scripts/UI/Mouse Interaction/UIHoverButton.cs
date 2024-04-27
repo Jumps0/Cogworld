@@ -20,7 +20,6 @@ public class UIHoverButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             case "c":
                 UIManager.inst.SetActiveLAICMenu(identifier);
                 break;
-                break;
 
             default:
                 break;

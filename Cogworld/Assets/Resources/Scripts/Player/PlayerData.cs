@@ -142,6 +142,7 @@ public class PlayerData : MonoBehaviour
         if (this.gameObject.GetComponent<PartInventory>())
         {
             CombatInputs();
+            //InventoryInputDetection();
             UpdateStats();
         }
     }
@@ -1444,6 +1445,70 @@ public class PlayerData : MonoBehaviour
         GetComponent<PartInventory>()._invPropulsion.Load();
         GetComponent<PartInventory>()._invUtility.Load();
         GetComponent<PartInventory>()._invWeapon.Load();
+    }
+
+    /// <summary>
+    /// For items in the /PARTS/ & /INVENTORY/ menus. If the corresponding letter/number is pressed on the keyboard, that item should be toggled.
+    /// </summary>
+    private void InventoryInputDetection()
+    {
+        // Check for player input
+        if (Input.anyKey)
+        {
+            // Go through all the interfaces
+            foreach (var I in InventoryControl.inst.interfaces)
+            {
+                string character = "";
+                int number = -1;
+                string detect = "";
+                InvDisplayItem reference = null;
+
+                // Get the character/number
+                if (I.GetComponentInChildren<DynamicInterface>()) // Includes all items found in /PARTS/ menus (USES LETTER)
+                {
+                    foreach (var item in I.GetComponentInChildren<DynamicInterface>().slotsOnInterface)
+                    {
+                        if (item.Key.GetComponent<InvDisplayItem>().item != null)
+                        {
+                            reference = item.Key.GetComponent<InvDisplayItem>();
+                            character = reference._assignedChar.ToString();
+                            number = reference._assignedNumber;
+                        }
+                    }
+                }
+                else if (I.GetComponentInChildren<StaticInterface>()) // Includes all items found in /INVENTORY/ menu (USES NUMBERS)
+                {
+                    foreach (var item in I.GetComponentInChildren<StaticInterface>().slotsOnInterface)
+                    {
+                        if (item.Key.GetComponent<InvDisplayItem>().item != null)
+                        {
+                            reference = item.Key.GetComponent<InvDisplayItem>();
+                            character = reference._assignedChar.ToString();
+                            number = reference._assignedNumber;
+                        }
+                    }
+                }
+
+                // Is that character/number currently being held down?
+                if(character != "")
+                {
+                    detect = character;
+                }
+                else if(number >= 0)
+                {
+                    detect = number.ToString();
+                }
+
+                if (detect != "" && Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), detect))) // Is that key currenlty down?
+                {
+                    // Toggle!
+                    if(reference != null)
+                    {
+                        reference.Click();
+                    }
+                }
+            }
+        }
     }
 
     #endregion
