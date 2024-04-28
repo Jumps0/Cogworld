@@ -433,7 +433,7 @@ public class InvDisplayItem : MonoBehaviour
             end = emptyGray;
             highlight = inActiveGreen;
 
-            // Set the assigned letter to a color while we're a it
+            // Set the assigned letter to a color while we're at it
             assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(emptyGray)}>{assignedOrderString}</color>";
         }
         else
@@ -554,7 +554,59 @@ public class InvDisplayItem : MonoBehaviour
         UIManager.inst.UpdateParts();
     }
 
-    int siegeState = 0; // See below for possible states
+    /// <summary>
+    /// Cycle from being anabled to being overloaded
+    /// </summary>
+    public void UIOverload()
+    {
+        // Set the item's flag
+        item.isOverloaded = true;
+
+        // Enable the box
+        UISetBoxDisplay("OVERLOADED", UIManager.inst.siegeYellow);
+
+        // Do a little animation
+        StartCoroutine(SecondaryDataFlash()); // Flash the secondary
+        OverloadTransitionAnimation();
+
+        // Play a sound
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[73]); // PART_ON
+
+        // Update the UI
+        UIManager.inst.UpdateInventory();
+        UIManager.inst.UpdateParts();
+    }
+
+    private void OverloadTransitionAnimation()
+    {
+        // Go from active Green -> Yellow
+        Color start = Color.white, end = Color.white, highlight = Color.white;
+        string text = item.itemData.itemName; // (this also resets old mark & color tags)
+
+        // GREEN -> YELLOW
+        start = activeGreen;
+        end = UIManager.inst.siegeYellow;
+        highlight = inActiveGreen;
+
+        // Set the assigned letter to a color while we're at it
+        assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(end)}>{assignedOrderString}</color>";
+
+        // Get the string list
+        List<string> strings = HF.SteppedStringHighlightAnimation(text, highlight, start, end);
+
+        // Animate the strings via our delay trick
+        float delay = 0f;
+        float perDelay = 0.35f / text.Length;
+
+        foreach (string s in strings)
+        {
+            StartCoroutine(HF.DelayedSetText(itemNameText, s, delay += perDelay));
+        }
+    }
+
+    public int siegeStartTurn = -1;
+    [Tooltip("Possible states: 0 = Disabled, 1 = (begin) SIEGE, 2 = SIEGE, 3 = (end) SIEGE, 4 = Enabled")]
+    public int siegeState = 0;
     Coroutine siegeTransition = null;
 
     /// <summary>
@@ -571,38 +623,42 @@ public class InvDisplayItem : MonoBehaviour
 
         int type = 0;
 
-        if(startState == 0 && endState == 1)
+        if(startState == 0 && endState == 1) // DISABLED -> (begin)
         {
             type = 0;
             MapManager.inst.FreezePlayer(true);
             PlayerData.inst.timeTilSiege = 5;
+            item.siege = true;
 
             // Play a sound
             AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[73]); // PART_ON
         }
-        else if (startState == 1 && endState == 2)
+        else if (startState == 1 && endState == 2) // (begin) -> SIEGE
         {
             type = 1;
             MapManager.inst.FreezePlayer(true);
             PlayerData.inst.timeTilSiege = 0;
+            item.siege = true;
 
             // Play a sound
             AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.ITEMS_Clips[66]); // ITEMS/SIEGE_TREADS_ACTIVE
         }
-        else if (startState == 2 && endState == 3)
+        else if (startState == 2 && endState == 3) // SIEGE -> (end)
         {
             type = 2;
             MapManager.inst.FreezePlayer(true);
             PlayerData.inst.timeTilSiege = -5;
+            item.siege = true;
 
             // Play a sound
             AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[71]); // PART_OFF
         }
-        else if (startState == 3 && endState == 4)
+        else if (startState == 3 && endState == 4) // (end) -> Enabled
         {
             type = 3;
             MapManager.inst.FreezePlayer(false);
             PlayerData.inst.timeTilSiege = 100;
+            item.siege = false;
 
             // Play a sound
             AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.ITEMS_Clips[67]); // ITEMS/SIEGE_TREADS_END
@@ -632,7 +688,7 @@ public class InvDisplayItem : MonoBehaviour
                 end = UIManager.inst.siegeYellow;
                 highlight = inActiveGreen;
 
-                // Set the assigned letter to a color while we're a it
+                // Set the assigned letter to a color while we're at it
                 assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(end)}>{assignedOrderString}</color>";
 
                 // Get the string list
@@ -675,6 +731,10 @@ public class InvDisplayItem : MonoBehaviour
 
     private void CheckSiegeStatus()
     {
+        // Here we need to check and update the player's siege status
+
+        // One of these is timeTilSiege, so we need to track turn time.
+
         if(siegeState == 1 || siegeState == 3) // Transition states
         {
             UISetBoxDisplay("SIEGE " + PlayerData.inst.timeTilSiege, emptyGray); // Set the time

@@ -240,6 +240,10 @@ public class PlayerData : MonoBehaviour
         {
             moveType = BotMoveType.Treading;
         }
+        if(timeTilSiege == 0)
+        {
+            moveType = BotMoveType.SIEGE;
+        }
 
         float energyUse, heatUse;
         (moveSpeed1, energyUse, heatUse) = Action.GetSpeed(this.GetComponent<Actor>());

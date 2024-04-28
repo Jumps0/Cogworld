@@ -49,19 +49,126 @@ public class UICycleInventory : MonoBehaviour
             }
         }
 
-        // Tell all the elements in our list to cycle.
+        // Go through the list and determine what we should do.
+        bool allEnabled = true, allDisabled = true, sieging = false, inSiege = false, overloaded = false, canSiege = false, canOverload = false;
         foreach (var E in elements)
         {
-            // TODO: Check if we can cycle to SIEGE or OVERLOAD modes too
+            // Enabled / Disabled
+            if (E.item.state)
+            {
+                allDisabled = false;
+            }
+            else
+            {
+                allEnabled = false;
+            }
 
-            if (E.item.state) // Cycle OFF
+            // Overloaded
+            if (E.item.isOverloaded)
             {
-                E.UIDisable();
+                overloaded = true;
             }
-            else // Cycle ON
+            if (E.item.itemData.canOverload)
             {
-                E.UIEnable();
+                canOverload = true;
             }
+
+            // Siege
+            if(E.item.itemData.propulsion.Count > 0 && E.item.itemData.propulsion[0].canSiege > 0)
+            {
+                canSiege = true;
+                if (E.item.siege)
+                {
+                    inSiege = true;
+                }
+            }
+        }
+
+        if(PlayerData.inst.timeTilSiege > 0 && PlayerData.inst.timeTilSiege <= 5) // Player is transitioning to siege mode, they should be unable to bail out
+        {
+            sieging = true;
+        }
+
+        // Now that we have determine the state of our items, we decide what to do, and apply it to all of them.
+        int choice = 0; // 0 = Disable all | 1 = Enable all | 2 = Enter Siege | 3 = Exit Siege | 4 = Enter Overload | 5 = Do nothing
+        if(!allDisabled && !allEnabled) // We have a mix of enabled/disable. Here we disable everything that is currently enabled.
+        {
+            choice = 0;
+        }
+        else if (allDisabled) // If everything is disabled, we want to enable everything.
+        {
+            if (canSiege) // Unless we can enter siege mode?
+            {
+                choice = 2;
+            }
+            else // No siege, enable all.
+            {
+                choice = 1;
+            }
+        }
+        else if (allEnabled) // If everything is enabled, we want to turn everything off.
+        {
+            if (canOverload) // Unless we can overload some items?
+            {
+                choice = 4;
+            }
+            else // No overload, disable all.
+            {
+                choice = 0;
+            }
+        }
+        if (overloaded) // One or more items are overloaded, we need to disable everything.
+        {
+            choice = 0;
+        }
+        if (sieging) // We are trying to enter siege, do nothing
+        {
+            choice = 5;
+        }
+        if (inSiege) // Are we actively in siege, we should be able to bail out
+        {
+            choice = 3;
+        }
+
+        foreach (var E in elements)
+        {
+            // NOTE: Don't forget to check the current states of items! And if items can do the thing we want them to do.
+            switch (choice)
+            {
+                case 0: // DISABLE all
+                    if (E.item.state)
+                    {
+                        E.modeMain.SetActive(false); // Just incase its overloaded
+                        E.item.isOverloaded = false; //
+
+                        E.UIDisable();
+                    }
+                    break;
+                case 1: // ENABLE all
+                    if (!E.item.state)
+                    {
+                        E.UIEnable();
+                    }
+                    break;
+                case 2: // Enter SIEGE
+                    E.siegeStartTurn = TurnManager.inst.globalTime; // Set the start time
+                    E.siegeState = 1; // Set the flag
+
+                    E.SiegeTransitionTo(0, 1); // Begin transition
+                    break;
+                case 3: // Exit SIEGE
+                    E.siegeState = 3; // Set the flag
+
+                    E.SiegeTransitionTo(2, 3); // Begin transition
+                    break;
+                case 4: // Overload
+                    E.UIOverload();
+                    break;
+                case 5: // Do nothing
+
+                    break;
+            }
+
         }
     }
 
@@ -106,7 +213,7 @@ public class UICycleInventory : MonoBehaviour
         // While the "CYCLE" text lerps between darkGreen and headerWhite
 
         float elapsedTime = 0f;
-        float duration = 0.45f;
+        float duration = 0.25f;
         Color lerp = normalGreen;
 
         if (fadeIn)
