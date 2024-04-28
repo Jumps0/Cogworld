@@ -18,6 +18,7 @@ public class InvDisplayItem : MonoBehaviour
     public Image healthDisplayBacker;
     public TextMeshProUGUI itemNameText;
     public TextMeshProUGUI specialDescText;
+    [Tooltip("Used primarily for dragging around this item on the interface. UserInterface adds properties to this on startup.")]
     public Button _button;
     public Image _highlight;
     //

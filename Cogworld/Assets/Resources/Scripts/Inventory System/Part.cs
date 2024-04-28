@@ -309,43 +309,44 @@ public class Part : MonoBehaviour
             // If the player clicks on this item, we want to first try and put it in one of their / PARTS / slots.
             bool slotAvailable = false;
 
+            // First we want to see if there is space to add this item
+            // - Check if the current amount of items the player holds in this sub-inventory is < the max,
+            int size = _item.itemData.slotsRequired;
+
             switch (_item.itemData.slot)
             {
-                // First we want to see if there is space to add this item
-                // - Check if the current amount of items the player holds in this sub-inventory is < the max,
-
                 case ItemSlot.Power:
-                    if (PlayerData.inst.GetComponent<PartInventory>()._invPower.EmptySlotCount > 0)
+                    if (PlayerData.inst.GetComponent<PartInventory>()._invPower.EmptySlotCount >= size)
                     {
                         slotAvailable = true;
                     }
                     break;
                 case ItemSlot.Propulsion:
-                    if (PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.EmptySlotCount > 0)
+                    if (PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.EmptySlotCount >= size)
                     {
                         slotAvailable = true;
                     }
                     break;
                 case ItemSlot.Utilities:
-                    if (PlayerData.inst.GetComponent<PartInventory>()._invUtility.EmptySlotCount > 0)
+                    if (PlayerData.inst.GetComponent<PartInventory>()._invUtility.EmptySlotCount >= size)
                     {
                         slotAvailable = true;
                     }
                     break;
                 case ItemSlot.Weapons:
-                    if (PlayerData.inst.GetComponent<PartInventory>()._invWeapon.EmptySlotCount > 0)
+                    if (PlayerData.inst.GetComponent<PartInventory>()._invWeapon.EmptySlotCount >= size)
                     {
                         slotAvailable = true;
                     }
                     break;
                 case ItemSlot.Other: // This one goes into inventory instead
-                    if (PlayerData.inst.GetComponent<PartInventory>()._inventory.EmptySlotCount > 0)
+                    if (PlayerData.inst.GetComponent<PartInventory>()._inventory.EmptySlotCount >= size)
                     {
                         slotAvailable = true;
                     }
                     break;
                 case ItemSlot.Inventory: // This one goes into inventory instead
-                    if (PlayerData.inst.GetComponent<PartInventory>()._inventory.EmptySlotCount > 0)
+                    if (PlayerData.inst.GetComponent<PartInventory>()._inventory.EmptySlotCount >= size)
                     {
                         slotAvailable = true;
                     }
@@ -409,7 +410,7 @@ public class Part : MonoBehaviour
             else // No space available in slot, try adding to inventory instead
             {
 
-                if (PlayerData.inst.GetComponent<PartInventory>()._inventory.EmptySlotCount > 0)
+                if (PlayerData.inst.GetComponent<PartInventory>()._inventory.EmptySlotCount >= size)
                 {
                     Debug.Log($"Adding item {this._item} to inventory.");
                     
@@ -434,7 +435,8 @@ public class Part : MonoBehaviour
                     Debug.Log($"Failed to add item {this._item} to inventory.");
                     InventoryControl.inst.UpdateInterfaceInventories();
                     // Full here too, give up
-                    // Display a message(?)
+                    // Display a message(
+                    UIManager.inst.ShowCenterMessageTop("No free slot", UIManager.inst.dangerRed, Color.black);
                     return;
                 }
             }
