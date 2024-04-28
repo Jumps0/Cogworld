@@ -21,7 +21,7 @@ public class UIHackLocked : MonoBehaviour
         displayText.text = setText;
 
         // Play sound
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[42]); // HACK_TRACED
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[46]); // HACK_TRACED
     }
 
     public void ShutDown()

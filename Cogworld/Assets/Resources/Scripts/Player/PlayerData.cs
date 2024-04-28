@@ -1140,7 +1140,7 @@ public class PlayerData : MonoBehaviour
 
 
         // Play the scanline sound. ("UI/SCAN 5")
-        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[80]); // SCAN_5
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[92]); // SCAN_5
 
         // Now go through each row, and ping every block in the row
         foreach (var kvp in sortedResult)

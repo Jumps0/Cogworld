@@ -171,7 +171,7 @@ public class FloorTrap : MonoBehaviour
 
         UIManager.inst.CreateItemPopup(this.gameObject, fullName, Color.black, setColor, HF.GetDarkerColor(setColor, 20f));
 
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[101]); // TRAP_SCAN
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[113]); // TRAP_SCAN
     }
 
     public void SetAlignment(BotAlignment newA)

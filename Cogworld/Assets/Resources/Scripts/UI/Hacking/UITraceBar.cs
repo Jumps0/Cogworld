@@ -162,7 +162,7 @@ public class UITraceBar : MonoBehaviour
     public void ExpandByPercent(float percentNew)
     {
         // Play sound
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[43]); // HACK_TRACING
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[47]); // HACK_TRACING
 
         // Update value
         traceAmount += percentNew;

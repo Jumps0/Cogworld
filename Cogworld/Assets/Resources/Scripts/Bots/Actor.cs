@@ -943,7 +943,7 @@ public class Actor : Entity
             // Player a warning message
             UIManager.inst.ShowCenterMessageTop("Collision imminent! Confirm direction.", UIManager.inst.dangerRed, Color.black);
             // Play a warning sound
-            AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[18], 0.7f); // UI - COLLISION_WARNING
+            AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[21], 0.7f); // UI - COLLISION_WARNING
             // Flash an indicator on the target
             target.FlashAlertIndicator();
             // Start the timer

@@ -553,7 +553,7 @@ public class GameManager : MonoBehaviour
         EvolveButtonVisuals();
 
         doEvolutionCheck = true;
-        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[108]); // SCAN_7
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.EVOLVE_Clips[1]); // SCAN_7
     }
 
     public void CloseEvolutionScreen()
@@ -1075,12 +1075,12 @@ public class GameManager : MonoBehaviour
 
     public void EvoButtonSound()
     {
-        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[53], 0.5f); // MODE_ON
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[62], 0.5f); // MODE_ON
     }
 
     public void EvoHoverSound()
     {
-        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[44], 0.5f); // HOVER
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[48], 0.5f); // HOVER
     }
 
     #endregion

@@ -1573,7 +1573,7 @@ public static class HF
                 // Detected!
                 detected = true;
                 UIManager.inst.Terminal_InitTrace();
-                AudioManager.inst.CreateTempClip(UIManager.inst.transform.position, AudioManager.inst.UI_Clips[39]); // HACK_DETECTED
+                AudioManager.inst.CreateTempClip(UIManager.inst.transform.position, AudioManager.inst.UI_Clips[43]); // HACK_DETECTED
             }
             else
             {

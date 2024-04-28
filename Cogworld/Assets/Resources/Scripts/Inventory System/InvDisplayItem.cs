@@ -485,7 +485,7 @@ public class InvDisplayItem : MonoBehaviour
         }
 
         // Play the hover UI sound
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[44]); // HOVER
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[48]); // HOVER
     }
 
     public void HoverEnd()
@@ -527,7 +527,7 @@ public class InvDisplayItem : MonoBehaviour
         TextTypeOutAnimation(true);
 
         // Play a sound
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[62]); // PART_OFF
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[71]); // PART_OFF
 
         // Update the UI
         UIManager.inst.UpdateInventory();
@@ -547,7 +547,7 @@ public class InvDisplayItem : MonoBehaviour
         TextTypeOutAnimation(false);
 
         // Play a sound
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[64]); // PART_ON
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[73]); // PART_ON
 
         // Update the UI
         UIManager.inst.UpdateInventory();
@@ -578,7 +578,7 @@ public class InvDisplayItem : MonoBehaviour
             PlayerData.inst.timeTilSiege = 5;
 
             // Play a sound
-            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[64]); // PART_ON
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[73]); // PART_ON
         }
         else if (startState == 1 && endState == 2)
         {
@@ -587,7 +587,7 @@ public class InvDisplayItem : MonoBehaviour
             PlayerData.inst.timeTilSiege = 0;
 
             // Play a sound
-            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[0]); // TODO: WHAT IS THE SIEGE SOUND NAMED????
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.ITEMS_Clips[66]); // ITEMS/SIEGE_TREADS_ACTIVE
         }
         else if (startState == 2 && endState == 3)
         {
@@ -596,13 +596,16 @@ public class InvDisplayItem : MonoBehaviour
             PlayerData.inst.timeTilSiege = -5;
 
             // Play a sound
-            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[62]); // PART_OFF
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[71]); // PART_OFF
         }
         else if (startState == 3 && endState == 4)
         {
             type = 3;
             MapManager.inst.FreezePlayer(false);
             PlayerData.inst.timeTilSiege = 100;
+
+            // Play a sound
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.ITEMS_Clips[67]); // ITEMS/SIEGE_TREADS_END
         }
 
         StartCoroutine(SecondaryDataFlash()); // Flash the secondary

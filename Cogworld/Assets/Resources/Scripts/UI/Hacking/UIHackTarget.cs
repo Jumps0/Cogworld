@@ -154,8 +154,8 @@ public class UIHackTarget : MonoBehaviour
         {
             if(UIManager.inst.terminal_activeInput  == null) // dont wanna double-up
             {
-                // Play the "MANUAL" sound (51)
-                AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[51]); // MANUAL
+                // Play the "MANUAL" sound (56)
+                AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[56]); // MANUAL
                 UIManager.inst.Terminal_CreateManualInput();
             }
         }
@@ -418,6 +418,6 @@ public class UIHackTarget : MonoBehaviour
     public void PlayHoverSound()
     {
         // Play the hover UI sound
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[44]); // HOVER
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[48]); // HOVER
     }
 }

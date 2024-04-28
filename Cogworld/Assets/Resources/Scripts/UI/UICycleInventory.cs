@@ -83,7 +83,7 @@ public class UICycleInventory : MonoBehaviour
         buttonAnim = StartCoroutine(ButtonHoverAnim(true));
 
         // Play the hover UI sound
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[44]); // HOVER
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[48]); // HOVER
     }
 
     public void HoverEnd()
