@@ -222,7 +222,7 @@ public class Inventory
 [System.Serializable]
 public class InventorySlot{
 
-    public ItemType[] AllowedItems = new ItemType[0];
+    public List<ItemSlot> AllowedItems = new List<ItemSlot>();
     [System.NonSerialized] // No touchy!
     public UserInterface parent;
     public Item item; // Item stored in this inventory slot
@@ -271,17 +271,14 @@ public class InventorySlot{
 
     public bool CanPlaceInSlot(ItemObject _itemObject)
     {
-        if(AllowedItems.Length <= 0 || _itemObject == null || _itemObject.data.Id < 0)
+        if(AllowedItems.Count <= 0 || _itemObject == null || _itemObject.data.Id < 0)
         {
             return true;
         }
 
-        for (int i = 0; i < AllowedItems.Length; i++)
+        if (AllowedItems.Contains(_itemObject.slot))
         {
-            if(_itemObject.type == AllowedItems[i])
-            {
-                return true;
-            }
+            return true;
         }
 
         return false;

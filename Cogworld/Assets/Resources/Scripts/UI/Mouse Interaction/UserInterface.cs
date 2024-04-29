@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -36,7 +37,6 @@ public abstract class UserInterface : MonoBehaviour
         {
             slotsOnInterface.UpdateSlotDisplay();
         }
-            
     }
 
     public abstract void CreateSlots();
@@ -63,14 +63,12 @@ public abstract class UserInterface : MonoBehaviour
 
     public void OnEnterInterface(GameObject obj)
     {
-        MouseData.interfaceMouseIsOver = obj.GetComponent<UserInterface>();
-        //Debug.Log("Interface Enter");
+        MouseData.interfaceMouseIsOver = obj.GetComponent<InvDisplayItem>().my_interface;
     }
 
     public void OnExitInterface(GameObject obj)
     {
         MouseData.interfaceMouseIsOver = null;
-        //Debug.Log("Interface Exit");
     }
 
     public void OnDragStart(GameObject obj)
@@ -102,12 +100,18 @@ public abstract class UserInterface : MonoBehaviour
         return tempItem;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="obj">The InventorySlot which holds the item we are currently dragging. Most data is inside the [InvDisplayItem] attached to it.</param>
     public void OnDragEnd(GameObject obj)
     {
         Destroy(MouseData.tempItemBeingDragged);
-        Debug.Log(MouseData.interfaceMouseIsOver);
-        if(MouseData.interfaceMouseIsOver == null)
+
+        Debug.Log($"Interface over mouse is: {MouseData.interfaceMouseIsOver}");
+        if(MouseData.interfaceMouseIsOver == null && obj.GetComponent<InvDisplayItem>().item != null) // If we're not over an inventory & we are dragging a real item
         {
+            #region Item Dropping
             // Drop the item on the floor
             InventoryControl.inst.DropItemOnFloor(obj.GetComponent<InvDisplayItem>().item, PlayerData.inst.GetComponent<Actor>(), _inventory);
 
@@ -134,13 +138,143 @@ public abstract class UserInterface : MonoBehaviour
             slotsOnInterface[obj].RemoveItem();
             InventoryControl.inst.UpdateInterfaceInventories();
             return;
+            #endregion
         }
 
-        if (MouseData.slotHoveredOver)
+        Debug.Log($"Slot hovered over: {MouseData.slotHoveredOver}. Item is: {obj.GetComponent<InvDisplayItem>().item}");
+        if (MouseData.slotHoveredOver && obj.GetComponent<InvDisplayItem>().item != null) // Are we hovering over a slot with an item? Lets attempt to swap the two parts.
         {
-            InventorySlot mouseHoverSlotData = MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver]; // Get data from slot hovered over
-            _inventory.SwapItems(slotsOnInterface[obj], mouseHoverSlotData);
-            InventoryControl.inst.UpdateInterfaceInventories();
+            #region Item Swapping
+
+            // Get data from the two things we are trying to swap
+            InventorySlot destinationSlot = MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver]; // Get data from slot hovered over
+            InventorySlot originSlot = obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj]; // And get data from the slot we are swapping with
+
+            Item destinationItem = destinationSlot.item;
+            Item originItem = originSlot.item;
+
+            bool canSwap = true;
+
+            // First check if both items will be compatible with their new slots (there are a couple different cases here)
+            if ((originSlot.AllowedItems.Count < 0 && destinationSlot.AllowedItems.Count < 0)) // Both items share the same slot type, obviously we shouldn't swap these.
+            {
+                return; // Bail out
+            }
+            else if(originSlot.AllowedItems.Count > 0 && destinationSlot.AllowedItems.Count > 0 && originSlot.AllowedItems[0] == destinationSlot.AllowedItems[0])
+            { // NOTE: This is a bit risky here, but all slots should only have one type
+                return; // Bail out
+            }
+
+            if (originSlot.AllowedItems.Count < 0) // The origin slot & item is in the inventory (destination item can always go in there)
+            {
+                if (destinationSlot.AllowedItems.Count > 0)
+                {
+                    if (destinationSlot.AllowedItems.Contains(originItem.itemData.slot)) // The destination slot allows the origin item to be placed there
+                    {
+                        canSwap = true;
+                    }
+                    else
+                    {
+                        canSwap = false;
+                    }
+                }
+            }
+
+            if(destinationSlot.AllowedItems.Count < 0) // The destination slot is in the inventory
+            {
+                if(originSlot.AllowedItems.Count > 0)
+                {
+                    if (originSlot.AllowedItems.Contains(destinationItem.itemData.slot)) // The origin slot allows the destination item to be placed there
+                    {
+                        canSwap = true;
+                    }
+                    else
+                    {
+                        canSwap = false;
+                    }
+                }
+            }
+
+            if (canSwap) // We can swap the items!
+            {
+                _inventory.SwapItems(slotsOnInterface[obj], destinationSlot); // Swap item positions
+                // Swap item data
+                obj.GetComponent<InvDisplayItem>().item = destinationItem; // Origin -> Destination
+                MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().item = originItem; // Destination -> Origin
+                // Force Enable both items, and animate them
+                if (!obj.GetComponent<InvDisplayItem>().item.state) // [ORIGIN]
+                {
+                    obj.GetComponent<InvDisplayItem>().UIEnable();
+                }
+                if (!MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().item.state) // [DESTINATION]
+                {
+                    MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().UIEnable();
+                }
+                // Flash both item's images
+                obj.GetComponent<InvDisplayItem>().FlashItemDisplay();
+                MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().FlashItemDisplay();
+
+                InventoryControl.inst.UpdateInterfaceInventories(); // Update the UI
+            }
+            else // We can't swap the items, do a message.
+            {
+                UIManager.inst.ShowCenterMessageTop("Item cannot be placed in this slot", UIManager.inst.dangerRed, Color.black);
+            }
+            #endregion
+        }
+        else if (MouseData.slotHoveredOver && obj.GetComponent<InvDisplayItem>().item == null) // Are we hovering over a slot thats empty? Attempt to move this item
+        {
+            #region Item Relocation
+            InventorySlot destinationSlot = MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver]; // Get data from slot hovered over
+            InventorySlot originSlot = obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj]; // And get data from the slot we are swapping with
+
+            Item originItem = originSlot.item;
+
+            // Is this item allowed to be placed in this slot?
+            if(destinationSlot.AllowedItems.Count < 0 || destinationSlot.AllowedItems.Contains(originItem.itemData.slot)) // Yes! Move the item
+            {
+                // Add the item to the player (aka just make a new item)
+                Item _item = new Item(originItem);
+                // - Try to find which inventory we need to add it to
+                if(_item.itemData.slot == ItemSlot.Power)
+                {
+                    PlayerData.inst.GetComponent<PartInventory>()._invPower.AddItem(_item, 1);
+                }
+                else if (_item.itemData.slot == ItemSlot.Propulsion)
+                {
+                    PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.AddItem(_item, 1);
+                }
+                else if (_item.itemData.slot == ItemSlot.Utilities)
+                {
+                    PlayerData.inst.GetComponent<PartInventory>()._invUtility.AddItem(_item, 1);
+                }
+                else if (_item.itemData.slot == ItemSlot.Weapons)
+                {
+                    PlayerData.inst.GetComponent<PartInventory>()._invWeapon.AddItem(_item, 1);
+                }
+                else // Add to inventory
+                {
+                    PlayerData.inst.GetComponent<PartInventory>()._inventory.AddItem(_item, 1);
+                }
+
+                // Remove the old item from wherever its stored
+                Action.FindRemoveItemFromPlayer(originItem);
+
+                // Force enable the item and animate it (if its disabled)
+                if (!MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().item.state) // [DESTINATION]
+                {
+                    MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().UIEnable();
+                }
+                // Flash the item's display square
+                MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().FlashItemDisplay();
+            }
+            else // No. Don't move the item.
+            {
+                UIManager.inst.ShowCenterMessageTop("Item cannot be placed in this slot", UIManager.inst.dangerRed, Color.black);
+            }
+
+            InventoryControl.inst.UpdateInterfaceInventories(); // Update the UI
+            #endregion
         }
     }
 
@@ -192,9 +326,21 @@ public static class ExtensionMethods
             {
                 if (_slot.Value.item.Id != -1)
                 {
+                    bool first = false;
+                    if(_slot.Key.GetComponent<InvDisplayItem>().item == null) // This should only be triggered once
+                    {
+                        first = true;
+                    }
+
                     _slot.Key.GetComponent<InvDisplayItem>().item = _slot.Value.item;
                     _slot.Key.GetComponent<InvDisplayItem>().SetAsFilled();
                     _slot.Key.GetComponent<InvDisplayItem>().UpdateDisplay();
+
+                    if (first)
+                    {
+                        _slot.Key.GetComponent<InvDisplayItem>().FlashItemDisplay(); // We do this after we have finished assigning and setting up everything
+                        _slot.Key.GetComponent<InvDisplayItem>().InitialReveal();
+                    }
                 }
                 else
                 {

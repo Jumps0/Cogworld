@@ -94,7 +94,7 @@ public class DungeonGenerator : MonoBehaviour{
 		cardinal.Add(new IntVector2( 0,-1));	//South
 		cardinal.Add(new IntVector2(-1, 0));	//West	
 		
-		CreateMap();
+		//CreateMap(); // this shows a 2d map of the level in the bottom right corner of the screen. We don't really need this
 		
 	}
 			
@@ -230,7 +230,7 @@ public class DungeonGenerator : MonoBehaviour{
 
 		PerformanceMeter.AddLog("Finished<"+printAbleSeed+">, Attempts:["+placeAttempt+","+graphAttempt+","+portalAttempt+"]");		
 		PerformanceMeter.AddLog("");		
-		UpdateMap(ref _dungeon);		
+		//UpdateMap(ref _dungeon);		
 		
 		//Color Path for debugging
 		ColorRoomDungeonSolutionPath( path );		
@@ -1698,8 +1698,8 @@ public class DungeonGenerator : MonoBehaviour{
 		dungeon.entrance	= FindFloorInDungeon(dungeon);
 		dungeon.entranceSet	= true;
 		
-		UpdateMap(ref _dungeon);
-		//UpdateMap(ref _regions);
+		//UpdateMap(ref _dungeon);
+		//UpdateMap(ref _regions); // unused
 		
 		return dungeon;		
 	}
@@ -2233,7 +2233,7 @@ public class DungeonGenerator : MonoBehaviour{
 		dungeon.entrance	= FindFloorInDungeon(dungeon);
 		dungeon.entranceSet	= true;
 		
-		UpdateMap(ref _dungeon);
+		//UpdateMap(ref _dungeon);
 		
 		return dungeon;	
 	}
@@ -2310,7 +2310,7 @@ public class DungeonGenerator : MonoBehaviour{
 		dungeon.entrance	= FindFloorInDungeon(dungeon);
 		dungeon.entranceSet	= true;
 		
-		UpdateMap(ref _dungeon);
+		//UpdateMap(ref _dungeon);
 		
 		return dungeon;	
 	}

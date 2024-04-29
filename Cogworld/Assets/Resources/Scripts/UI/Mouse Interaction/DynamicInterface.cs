@@ -23,6 +23,7 @@ public class DynamicInterface : UserInterface
             var obj = Instantiate(_itemHeldPrefab, Vector3.zero, Quaternion.identity, inventoryArea.transform);
             obj.GetComponent<InvDisplayItem>().item = null;
             obj.GetComponent<InvDisplayItem>().SetEmpty();
+            obj.GetComponent<InvDisplayItem>().my_interface = this;
 
             AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnter(obj); });
             AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExit(obj); });
@@ -33,6 +34,7 @@ public class DynamicInterface : UserInterface
             AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnterInterface(obj); });
             AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExitInterface(obj); });
 
+            InventoryControl.inst.p_inventoryPower.Container.Items[i].AllowedItems.Add(ItemSlot.Power); // Restrict the slot to only *Power* items
             slotsOnInterface.Add(obj, InventoryControl.inst.p_inventoryPower.Container.Items[i]);
         }
 
@@ -46,6 +48,7 @@ public class DynamicInterface : UserInterface
             var obj = Instantiate(_itemHeldPrefab, Vector3.zero, Quaternion.identity, inventoryArea.transform);
             obj.GetComponent<InvDisplayItem>().item = null;
             obj.GetComponent<InvDisplayItem>().SetEmpty();
+            obj.GetComponent<InvDisplayItem>().my_interface = this;
 
             AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnter(obj); });
             AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExit(obj); });
@@ -56,6 +59,7 @@ public class DynamicInterface : UserInterface
             AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnterInterface(obj); });
             AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExitInterface(obj); });
 
+            InventoryControl.inst.p_inventoryPropulsion.Container.Items[i].AllowedItems.Add(ItemSlot.Propulsion); // Restrict the slot to only *Propulsion* items
             slotsOnInterface.Add(obj, InventoryControl.inst.p_inventoryPropulsion.Container.Items[i]);
         }
 
@@ -69,6 +73,7 @@ public class DynamicInterface : UserInterface
             var obj = Instantiate(_itemHeldPrefab, Vector3.zero, Quaternion.identity, inventoryArea.transform);
             obj.GetComponent<InvDisplayItem>().item = null;
             obj.GetComponent<InvDisplayItem>().SetEmpty();
+            obj.GetComponent<InvDisplayItem>().my_interface = this;
 
             AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnter(obj); });
             AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExit(obj); });
@@ -79,6 +84,7 @@ public class DynamicInterface : UserInterface
             AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnterInterface(obj); });
             AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExitInterface(obj); });
 
+            InventoryControl.inst.p_inventoryUtilities.Container.Items[i].AllowedItems.Add(ItemSlot.Utilities); // Restrict the slot to only *Utilities* items
             slotsOnInterface.Add(obj, InventoryControl.inst.p_inventoryUtilities.Container.Items[i]);
         }
 
@@ -92,6 +98,7 @@ public class DynamicInterface : UserInterface
             var obj = Instantiate(_itemHeldPrefab, Vector3.zero, Quaternion.identity, inventoryArea.transform);
             obj.GetComponent<InvDisplayItem>().item = null;
             obj.GetComponent<InvDisplayItem>().SetEmpty();
+            obj.GetComponent<InvDisplayItem>().my_interface = this;
 
             AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnter(obj); });
             AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExit(obj); });
@@ -102,6 +109,7 @@ public class DynamicInterface : UserInterface
             AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnterInterface(obj); });
             AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExitInterface(obj); });
 
+            InventoryControl.inst.p_inventoryWeapons.Container.Items[i].AllowedItems.Add(ItemSlot.Weapons); // Restrict the slot to only *Weapon* items
             slotsOnInterface.Add(obj, InventoryControl.inst.p_inventoryWeapons.Container.Items[i]);
         }
     }

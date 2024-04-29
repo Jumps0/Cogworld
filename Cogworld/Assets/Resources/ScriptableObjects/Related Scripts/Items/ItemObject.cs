@@ -94,6 +94,19 @@ public class Item
         Id = -1;
     }
 
+    public Item(Item item)
+    {
+        Name = item.itemData.itemName;
+        Id = item.itemData.data.Id;
+        itemData = item.itemData;
+        integrityCurrent = item.itemData.integrityMax;
+
+        unstable = item.unstable;
+        disposable = item.disposable;
+        uniqueDetail = item.uniqueDetail;
+        SetupText();
+    }
+
     public Item(ItemObject item)
     {
         Name = item.itemName;

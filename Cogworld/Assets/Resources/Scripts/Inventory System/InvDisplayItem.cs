@@ -6,6 +6,7 @@ using UnityEngine.Events;
 using TMPro;
 using Unity.VisualScripting;
 using ColorUtility = UnityEngine.ColorUtility;
+using static UnityEditor.Progress;
 
 public class InvDisplayItem : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class InvDisplayItem : MonoBehaviour
     //
     public TextMeshProUGUI assignedOrderText;
     public Image partDisplay;
+    public Image partDisplayFlasher;
     public Image healthDisplay;
     public Image healthDisplayBacker;
     public TextMeshProUGUI itemNameText;
@@ -53,6 +55,7 @@ public class InvDisplayItem : MonoBehaviour
     public char _assignedChar;
     public int _assignedNumber = -1;
     private bool canSiege = false;
+    public UserInterface my_interface;
 
     private void Update()
     {
@@ -75,7 +78,7 @@ public class InvDisplayItem : MonoBehaviour
         partDisplay.gameObject.SetActive(false);
         healthDisplay.gameObject.SetActive(false);
         modeMain.SetActive(false);
-        _button.gameObject.SetActive(false);
+        //_button.gameObject.SetActive(false);
         specialDescText.gameObject.SetActive(false);
         healthMode.gameObject.SetActive(false);
 
@@ -93,7 +96,7 @@ public class InvDisplayItem : MonoBehaviour
         partDisplay.gameObject.SetActive(true);
         healthDisplay.gameObject.SetActive(true);
         modeMain.SetActive(true);
-        _button.gameObject.SetActive(true);
+        //_button.gameObject.SetActive(true);
         specialDescText.gameObject.SetActive(true);
         healthMode.gameObject.SetActive(true);
     }
@@ -105,7 +108,7 @@ public class InvDisplayItem : MonoBehaviour
         healthDisplay.raycastTarget = false;
         itemNameText.raycastTarget = false;
         specialDescText.raycastTarget = false;
-        _button.gameObject.SetActive(false);
+        //_button.gameObject.SetActive(false);
         modeImage.raycastTarget = false;
         modeText.raycastTarget = false;
         healthModeNumber.raycastTarget = false;
@@ -254,6 +257,19 @@ public class InvDisplayItem : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Happens when this item is first added to its respective menu. Basically just UIEnable but BLACK -> ENABLED
+    /// </summary>
+    public void InitialReveal()
+    {
+
+    }
+
+    private IEnumerator InitialRevealAnimation()
+    {
+        yield return null;
+    }
+
     #region Highlight Animation
 
     private IEnumerator ActiveHighlightAnim(bool fadeIn)
@@ -380,10 +396,16 @@ public class InvDisplayItem : MonoBehaviour
 
     public void Click()
     {
+        if (!my_interface.GetComponent<StaticInterface>()) // No toggling items in the inventory!!!
+        {
+            return;
+        }
+
         if(item != null)
         {
             // If the player clicks on this item, it should enable/disable the item itself.
             // Also they need to actually be able to toggle this. Some items forbid it.
+
             if (item.itemData.canBeDisabled)
             {
                 if (item.state) // DISABLE the item
@@ -392,10 +414,64 @@ public class InvDisplayItem : MonoBehaviour
                 }
                 else // ENABLE the item
                 {
-                    UIEnable();
+                    if(item.itemData.canOverload && !item.isOverloaded) // Unless we can overload this item?
+                    {
+                        UIOverload();
+                    }
+                    else // Nope. Enable it
+                    {
+                        UIEnable();
+                    }
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// Briefly animate the cover that is on top of the item display. (or the cover under the health)
+    /// </summary>
+    public void FlashItemDisplay()
+    {
+        // Very cheeky workaround check here
+        partDisplay.gameObject.SetActive(my_interface.GetComponent<StaticInterface>()); // Part display should only be on in the inventory window
+
+        if (partDisplay.gameObject.activeInHierarchy)
+        {
+            StartCoroutine(FlashItemDisplayAnim(partDisplayFlasher));
+        }
+        else
+        {
+            StartCoroutine(FlashItemDisplayAnim(healthDisplayBacker));
+        }
+    }
+
+    private IEnumerator FlashItemDisplayAnim(Image I)
+    {
+        // 1. Enable the display
+        I.enabled = true;
+
+        // 2. Set the color to dark green, with a bit of transparency
+        float startTP = 0.6f;
+        float endTP = 0f;
+        float TP;
+        I.color = new Color(inActiveGreen.r, inActiveGreen.g, inActiveGreen.b, startTP);
+
+        // 3. Over a set period of time, lerp the transparency to our end value
+        float elapsedTime = 0f;
+        float duration = 3.5f;
+
+        while (elapsedTime < duration)
+        {
+            TP = Mathf.Lerp(startTP, endTP, elapsedTime / duration);
+
+            I.color = new Color(inActiveGreen.r, inActiveGreen.g, inActiveGreen.b, TP);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // 4. Disable the display
+        I.enabled = false;
     }
 
     private IEnumerator SecondaryDataFlash()
@@ -522,6 +598,8 @@ public class InvDisplayItem : MonoBehaviour
     {
         // Set the item's state to disabled
         item.state = false;
+        item.isOverloaded = false;
+        item.siege = false;
 
         // Do a little animation
         StartCoroutine(SecondaryDataFlash()); // Flash the secondary
@@ -542,6 +620,8 @@ public class InvDisplayItem : MonoBehaviour
     {
         // Set the item's state to enabled
         item.state = true;
+        item.isOverloaded = false;
+        item.siege = false;
 
         // Do a little animation
         StartCoroutine(SecondaryDataFlash()); // Flash the secondary
@@ -553,10 +633,56 @@ public class InvDisplayItem : MonoBehaviour
         // Update the UI
         UIManager.inst.UpdateInventory();
         UIManager.inst.UpdateParts();
+
+        // -- Melee Check --
+        if (item.itemData.meleeAttack.isMelee)
+        {
+            // Melee weapons are unique in that, only one can be active at the same time. We need to do some checks here
+
+            // Enable the box
+            UISetBoxDisplay("MELEE", activeGreen);
+
+            // Disable ALL other active weapons
+            foreach (var I in InventoryControl.inst.interfaces)
+            {
+                if (I.GetComponentInChildren<DynamicInterface>()) // Includes all items found in /PARTS/ menus
+                {
+                    foreach (var item in I.GetComponentInChildren<DynamicInterface>().slotsOnInterface)
+                    {
+                        if (item.Key.GetComponent<InvDisplayItem>().item != null && item.Key.GetComponent<InvDisplayItem>() != this)
+                        {
+                            item.Key.GetComponent<InvDisplayItem>().UIDisable();
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            // We also need to check if there are any melee weapons active (if this is a non-melee weapon), cause they need to be disabled too.
+
+            // Disable the box
+            modeMain.SetActive(false);
+
+            // Disable ALL other active melee weapons
+            foreach (var I in InventoryControl.inst.interfaces)
+            {
+                if (I.GetComponentInChildren<DynamicInterface>()) // Includes all items found in /PARTS/ menus
+                {
+                    foreach (var item in I.GetComponentInChildren<DynamicInterface>().slotsOnInterface)
+                    {
+                        if (item.Key.GetComponent<InvDisplayItem>().item != null && item.Key.GetComponent<InvDisplayItem>() != this && item.Key.GetComponent<InvDisplayItem>().item.itemData.meleeAttack.isMelee)
+                        {
+                            item.Key.GetComponent<InvDisplayItem>().UIDisable();
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /// <summary>
-    /// Cycle from being anabled to being overloaded
+    /// Cycle from being Enabled to being Overloaded
     /// </summary>
     public void UIOverload()
     {
@@ -676,13 +802,17 @@ public class InvDisplayItem : MonoBehaviour
 
     private IEnumerator SiegeTransitionAnimation(int type)
     {
+        Color start = Color.white, end = Color.white, highlight = Color.white;
+        string text = item.itemData.itemName; // (this also resets old mark & color tags)
+        List<string> strings = new List<string>();
+        float delay = 0;
+        float perDelay = 0;
+
         switch (type)
         {
             case 0: // Disabled -> (begin) 
                 UISetBoxDisplay("SIEGE 5", emptyGray); // Enable the box
                 // Change the text color from gray to yellow using our animation
-                Color start = Color.white, end = Color.white, highlight = Color.white;
-                string text = item.itemData.itemName; // (this also resets old mark & color tags)
 
                 // GRAY -> YELLOW
                 start = emptyGray;
@@ -693,11 +823,11 @@ public class InvDisplayItem : MonoBehaviour
                 assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(end)}>{assignedOrderString}</color>";
 
                 // Get the string list
-                List<string> strings = HF.SteppedStringHighlightAnimation(text, highlight, start, end);
+                strings = HF.SteppedStringHighlightAnimation(text, highlight, start, end);
 
                 // Animate the strings via our delay trick
-                float delay = 0f;
-                float perDelay = 0.35f / text.Length;
+                delay = 0f;
+                perDelay = 0.35f / text.Length;
 
                 foreach (string s in strings)
                 {
@@ -716,6 +846,27 @@ public class InvDisplayItem : MonoBehaviour
             case 3: // (end) -> Enabled
                 modeMain.SetActive(false); // Disable the box
 
+                // Change the text color from yellow to green using our animation
+
+                // YELLOW -> GREEN
+                start = UIManager.inst.siegeYellow;
+                end = activeGreen;
+                highlight = inActiveGreen;
+
+                // Set the assigned letter to a color while we're at it
+                assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(end)}>{assignedOrderString}</color>";
+
+                // Get the string list
+                strings = HF.SteppedStringHighlightAnimation(text, highlight, start, end);
+
+                // Animate the strings via our delay trick
+                delay = 0f;
+                perDelay = 0.35f / text.Length;
+
+                foreach (string s in strings)
+                {
+                    StartCoroutine(HF.DelayedSetText(itemNameText, s, delay += perDelay));
+                }
                 break;
         }
 
@@ -739,6 +890,28 @@ public class InvDisplayItem : MonoBehaviour
         if(siegeState == 1 || siegeState == 3) // Transition states
         {
             UISetBoxDisplay("SIEGE " + PlayerData.inst.timeTilSiege, emptyGray); // Set the time
+
+            // Check for time
+            if (siegeState == 1) // waiting in (begin) state
+            {
+                if (TurnManager.inst.globalTime >= siegeStartTurn + 5)
+                {
+                    siegeState = 2;
+                    siegeStartTurn = -1;
+
+                    SiegeTransitionTo(1, 2); // Transition from (begin) to SIEGE
+                }
+            }
+            else if(siegeState == 3) // waiting in (end) state
+            {
+                if (TurnManager.inst.globalTime >= siegeStartTurn + 5)
+                {
+                    siegeState = 4;
+                    siegeStartTurn = -1;
+
+                    SiegeTransitionTo(3, 4); // Transition from (end) to ENABLED
+                }
+            }
         }
     }
 

@@ -428,7 +428,7 @@ public class InventoryControl : MonoBehaviour
     public void AddItemToPlayer(Part part, InventoryObject inventory)
     {
         part._item.state = true;
-        Item _item = new Item(part._item.itemData); // surley this couldn't backfire? (instead of Item _item = part._item)
+        Item _item = new Item(part._item);
         if(inventory.AddItem(_item, 1))
         {
             // Destroying is handled internally

@@ -21,6 +21,7 @@ public class StaticInterface : UserInterface
             var obj = slots[i];
             obj.GetComponent<InvDisplayItem>().item = null;
             obj.GetComponent<InvDisplayItem>().SetEmpty();
+            obj.GetComponent<InvDisplayItem>().my_interface = this;
 
             AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnter(obj); });
             AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExit(obj); });

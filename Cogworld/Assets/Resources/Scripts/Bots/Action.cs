@@ -4973,53 +4973,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot I in owner.GetComponent<PartInventory>()._invPower.Container.Items.ToList())
-            {
-                if (I.item.itemData.data.Id >= 0)
-                {
-                    if (I.item == item)
-                    {
-                        owner.GetComponent<PartInventory>()._invPower.RemoveItem(I.item);
-                        break;
-                    }
-                }
-            }
-
-            foreach (InventorySlot I in owner.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
-            {
-                if (I.item.itemData.data.Id >= 0)
-                {
-                    if (I.item == item)
-                    {
-                        owner.GetComponent<PartInventory>()._invPropulsion.RemoveItem(I.item);
-                        break;
-                    }
-                }
-            }
-
-            foreach (InventorySlot I in owner.GetComponent<PartInventory>()._invUtility.Container.Items.ToList())
-            {
-                if (I.item.itemData.data.Id >= 0)
-                {
-                    if (I.item == item)
-                    {
-                        owner.GetComponent<PartInventory>()._invUtility.RemoveItem(I.item);
-                        break;
-                    }
-                }
-            }
-
-            foreach (InventorySlot I in owner.GetComponent<PartInventory>()._invWeapon.Container.Items.ToList())
-            {
-                if (I.item.itemData.data.Id >= 0)
-                {
-                    if (I.item == item)
-                    {
-                        owner.GetComponent<PartInventory>()._invWeapon.RemoveItem(I.item);
-                        break;
-                    }
-                }
-            }
+            Action.FindRemoveItemFromPlayer(item);
 
             // TODO:
             // Play a little destruction animation in the UI
@@ -5038,6 +4992,57 @@ public static class Action
         }
 
         item.Id = -1;
+    }
+
+    public static void FindRemoveItemFromPlayer(Item item)
+    {
+        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invPower.Container.Items.ToList())
+        {
+            if (I.item.itemData.data.Id >= 0)
+            {
+                if (I.item == item)
+                {
+                    PlayerData.inst.GetComponent<PartInventory>()._invPower.RemoveItem(I.item);
+                    return;
+                }
+            }
+        }
+
+        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
+        {
+            if (I.item.itemData.data.Id >= 0)
+            {
+                if (I.item == item)
+                {
+                    PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.RemoveItem(I.item);
+                    return;
+                }
+            }
+        }
+
+        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invUtility.Container.Items.ToList())
+        {
+            if (I.item.itemData.data.Id >= 0)
+            {
+                if (I.item == item)
+                {
+                    PlayerData.inst.GetComponent<PartInventory>()._invUtility.RemoveItem(I.item);
+                    return;
+                }
+            }
+        }
+
+        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invWeapon.Container.Items.ToList())
+        {
+            if (I.item.itemData.data.Id >= 0)
+            {
+                if (I.item == item)
+                {
+                    PlayerData.inst.GetComponent<PartInventory>()._invWeapon.RemoveItem(I.item);
+                    return;
+                }
+            }
+        }
     }
 
     public static float GatherCritBonuses(Actor actor)

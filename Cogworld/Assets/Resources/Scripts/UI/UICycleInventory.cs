@@ -158,6 +158,7 @@ public class UICycleInventory : MonoBehaviour
                     break;
                 case 3: // Exit SIEGE
                     E.siegeState = 3; // Set the flag
+                    E.siegeStartTurn = TurnManager.inst.globalTime; // Set the start time
 
                     E.SiegeTransitionTo(2, 3); // Begin transition
                     break;
