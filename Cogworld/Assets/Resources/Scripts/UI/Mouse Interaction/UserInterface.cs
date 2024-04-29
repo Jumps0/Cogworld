@@ -17,13 +17,26 @@ public abstract class UserInterface : MonoBehaviour
     public GameObject inventoryArea;
 
     bool startUpComplete = false;
-    public void StartUp() // at the moment this is never called
+    public void StartUp()
     {
         for (int i = 0; i < _inventory.Container.Items.Length; i++)
         {
             _inventory.Container.Items[i].parent = this;
         }
-        CreateSlots();
+
+        if (this.GetComponent<DynamicInterface>())
+        {
+            foreach (var I in this.GetComponent<DynamicInterface>().inventories)
+            {
+                foreach (var slot in I.Container.Items)
+                {
+                    slot.parent = this;
+                }
+            }
+        }
+
+        //CreateSlots(); // We call this in InventoryControl
+       
         AddEvent(gameObject, EventTriggerType.PointerEnter, delegate { OnEnterInterface(gameObject); });
         AddEvent(gameObject, EventTriggerType.PointerExit, delegate { OnExitInterface(gameObject); });
 

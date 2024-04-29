@@ -325,6 +325,12 @@ public class InventoryControl : MonoBehaviour
             if (I.GetComponentInChildren<DynamicInterface>())
             {
                 I._inventory = PlayerData.inst.GetComponent<PartInventory>()._invPower;
+
+                I.GetComponentInChildren<DynamicInterface>().inventories.Add(PlayerData.inst.GetComponent<PartInventory>()._invPower);
+                I.GetComponentInChildren<DynamicInterface>().inventories.Add(PlayerData.inst.GetComponent<PartInventory>()._invPropulsion);
+                I.GetComponentInChildren<DynamicInterface>().inventories.Add(PlayerData.inst.GetComponent<PartInventory>()._invUtility);
+                I.GetComponentInChildren<DynamicInterface>().inventories.Add(PlayerData.inst.GetComponent<PartInventory>()._invWeapon);
+
                 I.CreateSlots();
             }
             else if (I.GetComponentInChildren<StaticInterface>())
@@ -332,11 +338,9 @@ public class InventoryControl : MonoBehaviour
                 I._inventory = PlayerData.inst.GetComponent<PartInventory>()._inventory;
                 I.CreateSlots();
             }
-            else if(I.GetComponentInChildren<UserInterface>())
-            {
-                I._inventory = PlayerData.inst.GetComponent<PartInventory>()._inventory;
-                I.StartUp();
-            }
+
+            I.StartUp();
+            
         }
 
         SetInterfaceInvKeys();

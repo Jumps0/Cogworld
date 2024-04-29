@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class DynamicInterface : UserInterface
 {
+    public List<InventoryObject> inventories = new List<InventoryObject>();
 
     public override void CreateSlots()
     {
