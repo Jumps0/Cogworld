@@ -21,7 +21,7 @@ public class DynamicInterface : UserInterface
 
         for (int i = 0; i < InventoryControl.inst.p_inventoryPower.Container.Items.Length; i++)
         {
-            var obj = Instantiate(_itemHeldPrefab, Vector3.zero, Quaternion.identity, inventoryArea.transform);
+            var obj = Instantiate(prefab_item, Vector3.zero, Quaternion.identity, inventoryArea.transform);
             obj.GetComponent<InvDisplayItem>().item = null;
             obj.GetComponent<InvDisplayItem>().SetEmpty();
             obj.GetComponent<InvDisplayItem>().my_interface = this;
@@ -47,7 +47,7 @@ public class DynamicInterface : UserInterface
 
         for (int i = 0; i < InventoryControl.inst.p_inventoryPropulsion.Container.Items.Length; i++)
         {
-            var obj = Instantiate(_itemHeldPrefab, Vector3.zero, Quaternion.identity, inventoryArea.transform);
+            var obj = Instantiate(prefab_item, Vector3.zero, Quaternion.identity, inventoryArea.transform);
             obj.GetComponent<InvDisplayItem>().item = null;
             obj.GetComponent<InvDisplayItem>().SetEmpty();
             obj.GetComponent<InvDisplayItem>().my_interface = this;
@@ -73,7 +73,7 @@ public class DynamicInterface : UserInterface
 
         for (int i = 0; i < InventoryControl.inst.p_inventoryUtilities.Container.Items.Length; i++)
         {
-            var obj = Instantiate(_itemHeldPrefab, Vector3.zero, Quaternion.identity, inventoryArea.transform);
+            var obj = Instantiate(prefab_item, Vector3.zero, Quaternion.identity, inventoryArea.transform);
             obj.GetComponent<InvDisplayItem>().item = null;
             obj.GetComponent<InvDisplayItem>().SetEmpty();
             obj.GetComponent<InvDisplayItem>().my_interface = this;
@@ -99,7 +99,7 @@ public class DynamicInterface : UserInterface
 
         for (int i = 0; i < InventoryControl.inst.p_inventoryWeapons.Container.Items.Length; i++)
         {
-            var obj = Instantiate(_itemHeldPrefab, Vector3.zero, Quaternion.identity, inventoryArea.transform);
+            var obj = Instantiate(prefab_item, Vector3.zero, Quaternion.identity, inventoryArea.transform);
             obj.GetComponent<InvDisplayItem>().item = null;
             obj.GetComponent<InvDisplayItem>().SetEmpty();
             obj.GetComponent<InvDisplayItem>().my_interface = this;

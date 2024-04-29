@@ -262,12 +262,41 @@ public class InvDisplayItem : MonoBehaviour
     /// </summary>
     public void InitialReveal()
     {
+        // Set the item's state to enabled
+        item.state = true;
+        item.isOverloaded = false;
+        item.siege = false;
 
-    }
+        modeMain.SetActive(false); // Turn off the box
 
-    private IEnumerator InitialRevealAnimation()
-    {
-        yield return null;
+        // Do the text animation (BLACK -> Green)
+        Color start = Color.white, end = Color.white, highlight = Color.white;
+        string text = item.itemData.itemName; // (this also resets old mark & color tags)
+
+        // We want to ENABLE the text, so going from GRAY -> GREEN
+        start = Color.black;
+        end = activeGreen;
+        highlight = inActiveGreen;
+
+        // Set the assigned letter to a color while we're a it
+        assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(activeGreen)}>{assignedOrderString}</color>";
+        
+
+        // Get the string list
+        List<string> strings = HF.SteppedStringHighlightAnimation(text, highlight, start, end);
+
+        // Animate the strings via our delay trick
+        float delay = 0f;
+        float perDelay = 0.35f / text.Length;
+
+        foreach (string s in strings)
+        {
+            StartCoroutine(HF.DelayedSetText(itemNameText, s, delay += perDelay));
+        }
+
+        // Update the UI
+        UIManager.inst.UpdateInventory();
+        UIManager.inst.UpdateParts();
     }
 
     #region Highlight Animation
@@ -623,6 +652,8 @@ public class InvDisplayItem : MonoBehaviour
         item.isOverloaded = false;
         item.siege = false;
 
+        modeMain.SetActive(false); // Turn off the box
+
         // Do a little animation
         StartCoroutine(SecondaryDataFlash()); // Flash the secondary
         TextTypeOutAnimation(false);
@@ -731,6 +762,15 @@ public class InvDisplayItem : MonoBehaviour
         }
     }
 
+    public void UISetBoxDisplay(string display, Color backgroundColor)
+    {
+        modeMain.SetActive(true);
+
+        modeText.text = display;
+        modeImage.color = backgroundColor;
+    }
+
+    #region SIEGE
     public int siegeStartTurn = -1;
     [Tooltip("Possible states: 0 = Disabled, 1 = (begin) SIEGE, 2 = SIEGE, 3 = (end) SIEGE, 4 = Enabled")]
     public int siegeState = 0;
@@ -873,14 +913,6 @@ public class InvDisplayItem : MonoBehaviour
         yield return null;
     }
 
-    public void UISetBoxDisplay(string display, Color backgroundColor)
-    {
-        modeMain.SetActive(true);
-
-        modeText.text = display;
-        modeImage.color = backgroundColor;
-    }
-
     private void CheckSiegeStatus()
     {
         // Here we need to check and update the player's siege status
@@ -914,6 +946,7 @@ public class InvDisplayItem : MonoBehaviour
             }
         }
     }
+    #endregion
 
     #endregion
 }

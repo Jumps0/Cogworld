@@ -17,12 +17,16 @@ public class StaticInterface : UserInterface
 
         for (int i = 0; i < InventoryControl.inst.p_inventory.Container.Items.Length; i++)
         {
+            // Create a new *InvDisplayItem* object
+            var obj = Instantiate(prefab_item, Vector3.zero, Quaternion.identity, inventoryArea.transform);
+            slots[i] = obj;
 
-            var obj = slots[i];
+            // Set it to empty
             obj.GetComponent<InvDisplayItem>().item = null;
             obj.GetComponent<InvDisplayItem>().SetEmpty();
             obj.GetComponent<InvDisplayItem>().my_interface = this;
 
+            // Add events
             AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnter(obj); });
             AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExit(obj); });
             AddEvent(obj, EventTriggerType.BeginDrag, delegate { OnDragStart(obj); });
@@ -32,6 +36,7 @@ public class StaticInterface : UserInterface
             AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnterInterface(obj); });
             AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExitInterface(obj); });
 
+            // Set parent and store it
             InventoryControl.inst.p_inventory.Container.Items[i].parent = this;
             slotsOnInterface.Add(obj, InventoryControl.inst.p_inventory.Container.Items[i]);
         }
@@ -45,25 +50,30 @@ public class StaticInterface : UserInterface
 
     public void UpdateSlots()
     {
-        slotsOnInterface = new Dictionary<GameObject, InventorySlot>();
+        slotsOnInterface = new Dictionary<GameObject, InventorySlot>(); // Reset list
 
-        foreach (Transform child in this.gameObject.transform) // Clear out the old gameobjects
+        foreach (Transform child in inventoryArea.transform) // Clear out the old gameobjects
         {
             if (child.gameObject.GetComponent<InvDisplayItem>())
             {
                 Destroy(child.gameObject);
             }
         }
-        slots = new GameObject[InventoryControl.inst.p_inventory.Container.Items.Length];
+
+        slots = new GameObject[InventoryControl.inst.p_inventory.Container.Items.Length]; // Reset array
 
         for (int i = 0; i < InventoryControl.inst.p_inventory.Container.Items.Length; i++)
         {
+            // Create a new *InvDisplayItem* object
+            var obj = Instantiate(prefab_item, Vector3.zero, Quaternion.identity, inventoryArea.transform);
+            slots[i] = obj;
 
-            var obj = slots[i];
+            // Set it to empty
             obj.GetComponent<InvDisplayItem>().item = null;
             obj.GetComponent<InvDisplayItem>().SetEmpty();
             obj.GetComponent<InvDisplayItem>().my_interface = this;
 
+            // Add events
             AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnter(obj); });
             AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExit(obj); });
             AddEvent(obj, EventTriggerType.BeginDrag, delegate { OnDragStart(obj); });
@@ -73,6 +83,7 @@ public class StaticInterface : UserInterface
             AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnterInterface(obj); });
             AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExitInterface(obj); });
 
+            // Set parent and store it
             InventoryControl.inst.p_inventory.Container.Items[i].parent = this;
             slotsOnInterface.Add(obj, InventoryControl.inst.p_inventory.Container.Items[i]);
         }

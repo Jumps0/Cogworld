@@ -12,8 +12,10 @@ public abstract class UserInterface : MonoBehaviour
     public Dictionary<GameObject, InventorySlot> slotsOnInterface = new Dictionary<GameObject, InventorySlot>();
     public InventoryObject _inventory;
 
-    public GameObject _hoverMovingItemPrefab;
-    public GameObject _itemHeldPrefab;
+    [Tooltip("The object that only displays the item's name in gray while its being moved around the menu.")]
+    public GameObject prefab_movingItem;
+    [Tooltip("The actual gameObject that represents the item on the UI.")]
+    public GameObject prefab_item;
     public GameObject inventoryArea;
 
     bool startUpComplete = false;
@@ -40,23 +42,25 @@ public abstract class UserInterface : MonoBehaviour
         AddEvent(gameObject, EventTriggerType.PointerEnter, delegate { OnEnterInterface(gameObject); });
         AddEvent(gameObject, EventTriggerType.PointerExit, delegate { OnExitInterface(gameObject); });
 
-        startUpComplete = true;
-    }
-
-    private void Update()
-    {
-        if (startUpComplete)
-        {
-            slotsOnInterface.UpdateSlotDisplay();
-        }
+        slotsOnInterface.UpdateSlotDisplay();
     }
 
     public abstract void CreateSlots();
 
     protected void AddEvent(GameObject obj, EventTriggerType type, UnityAction<BaseEventData> action)
     {
-        Button _b = obj.GetComponent<InvDisplayItem>()._button; // Convoluted workaround due to null errors
-        EventTrigger trigger = _b.GetComponent<EventTrigger>();
+        EventTrigger trigger = null;
+
+        if (obj.GetComponent<InvDisplayItem>())
+        {
+            Button _b = obj.GetComponent<InvDisplayItem>()._button; // Convoluted workaround due to null errors
+            trigger = _b.GetComponent<EventTrigger>();
+        }
+        else
+        {
+            trigger = this.GetComponent<EventTrigger>();
+        }
+
         var eventTrigger = new EventTrigger.Entry();
         eventTrigger.eventID = type;
         eventTrigger.callback.AddListener(action);
@@ -75,7 +79,17 @@ public abstract class UserInterface : MonoBehaviour
 
     public void OnEnterInterface(GameObject obj)
     {
-        MouseData.interfaceMouseIsOver = obj.GetComponent<InvDisplayItem>().my_interface;
+        UserInterface found = null;
+        if (obj.GetComponent<InvDisplayItem>()) // Check if this is an item, and we can get the interface from that.
+        {
+            found = obj.GetComponent<InvDisplayItem>().my_interface;
+        }
+        else // Interface is probably on the object itself
+        {
+            found = obj.GetComponent<UserInterface>();
+        }
+
+        MouseData.interfaceMouseIsOver = found;
     }
 
     public void OnExitInterface(GameObject obj)
@@ -100,7 +114,7 @@ public abstract class UserInterface : MonoBehaviour
         if (slotsOnInterface[obj].item.Id >= 0) // If this object does exist on our inventory
         {
             // Create a (visual) copy of the item that gets attached to the mouse
-            tempItem = Instantiate(_hoverMovingItemPrefab, Vector3.zero, Quaternion.identity, inventoryArea.transform);
+            tempItem = Instantiate(prefab_movingItem, Vector3.zero, Quaternion.identity, inventoryArea.transform);
 
             var rt = tempItem;
             //CopyInvDisplayItem(obj.GetComponent<InvDisplayItem>(), rt.GetComponent<InvDisplayItem>());
