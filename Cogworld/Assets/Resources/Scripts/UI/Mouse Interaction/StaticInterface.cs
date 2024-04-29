@@ -32,6 +32,7 @@ public class StaticInterface : UserInterface
             AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnterInterface(obj); });
             AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExitInterface(obj); });
 
+            InventoryControl.inst.p_inventory.Container.Items[i].parent = this;
             slotsOnInterface.Add(obj, InventoryControl.inst.p_inventory.Container.Items[i]);
         }
 

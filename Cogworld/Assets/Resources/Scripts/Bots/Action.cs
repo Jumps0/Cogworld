@@ -2752,7 +2752,7 @@ public static class Action
     {
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
-            foreach (var item in actor.components.Container.Items)
+            foreach (var item in actor.components.Container.Items.ToList())
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -2767,7 +2767,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
             {
                 if (item.item.Id >= 0)
                 {
@@ -2787,7 +2787,7 @@ public static class Action
     {
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
-            foreach (var item in actor.components.Container.Items)
+            foreach (var item in actor.components.Container.Items.ToList())
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -2802,7 +2802,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
             {
                 if (item.item.Id >= 0)
                 {
@@ -2822,7 +2822,7 @@ public static class Action
     {
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
-            foreach (var item in actor.components.Container.Items)
+            foreach (var item in actor.components.Container.Items.ToList())
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -2837,7 +2837,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
             {
                 if(item.item.Id >= 0)
                 {
@@ -2857,7 +2857,7 @@ public static class Action
     {
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
-            foreach (var item in actor.components.Container.Items)
+            foreach (var item in actor.components.Container.Items.ToList())
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -2872,7 +2872,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
             {
                 if (item.item.Id >= 0)
                 {
@@ -2892,7 +2892,7 @@ public static class Action
     {
         if (actor != PlayerData.inst.GetComponent<Actor>()) // Bot
         {
-            foreach (var item in actor.components.Container.Items)
+            foreach (var item in actor.components.Container.Items.ToList())
             {
                 if (item.item.itemData.data.Id >= 0)
                 {
@@ -2907,7 +2907,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
             {
                 if (item.item.Id >= 0)
                 {
@@ -3304,28 +3304,28 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPower.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPower.Container.Items.ToList())
             {
                 if (item.item.Id >= 0 && item.item.state)
                 {
                     totalMass += item.item.itemData.mass;
                 }
             }
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
             {
                 if (item.item.Id >= 0 && item.item.state)
                 {
                     totalMass += item.item.itemData.mass;
                 }
             }
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items.ToList())
             {
                 if (item.item.Id >= 0 && item.item.state)
                 {
                     totalMass += item.item.itemData.mass;
                 }
             }
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invWeapon.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invWeapon.Container.Items.ToList())
             {
                 if (item.item.Id >= 0 && item.item.state)
                 {
@@ -4998,7 +4998,8 @@ public static class Action
     {
         foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invPower.Container.Items.ToList())
         {
-            if (I.item.itemData.data.Id >= 0)
+            Debug.Log(I);
+            if (I.item.Id >= 0)
             {
                 if (I.item == item)
                 {
@@ -5010,7 +5011,7 @@ public static class Action
 
         foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
         {
-            if (I.item.itemData.data.Id >= 0)
+            if (I.item.Id >= 0)
             {
                 if (I.item == item)
                 {
@@ -5022,7 +5023,7 @@ public static class Action
 
         foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invUtility.Container.Items.ToList())
         {
-            if (I.item.itemData.data.Id >= 0)
+            if (I.item.Id >= 0)
             {
                 if (I.item == item)
                 {
@@ -5034,7 +5035,7 @@ public static class Action
 
         foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invWeapon.Container.Items.ToList())
         {
-            if (I.item.itemData.data.Id >= 0)
+            if (I.item.Id >= 0)
             {
                 if (I.item == item)
                 {

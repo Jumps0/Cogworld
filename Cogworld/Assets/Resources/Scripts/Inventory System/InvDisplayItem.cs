@@ -396,7 +396,7 @@ public class InvDisplayItem : MonoBehaviour
 
     public void Click()
     {
-        if (!my_interface.GetComponent<StaticInterface>()) // No toggling items in the inventory!!!
+        if (my_interface.GetComponent<StaticInterface>()) // No toggling items in the inventory!!!
         {
             return;
         }

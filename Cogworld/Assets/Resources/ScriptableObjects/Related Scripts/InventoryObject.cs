@@ -182,9 +182,9 @@ public class InventoryObject : ScriptableObject//, ISerializationCallbackReceive
         
         if (item2.CanPlaceInSlot(item1.ItemObject) && item1.CanPlaceInSlot(item2.ItemObject))
         {
-            InventorySlot temp = new InventorySlot(item2.item, item2.amount);
-            item2.UpdateSlot(item1.item, item1.amount);
-            item1.UpdateSlot(temp.item, temp.amount);
+            InventorySlot temp = new InventorySlot(item2.item, item2.amount, item2.parent);
+            item2.UpdateSlot(item1.item, item1.amount, item1.parent);
+            item1.UpdateSlot(temp.item, temp.amount, temp.parent);
         }
         
         
@@ -246,16 +246,24 @@ public class InventorySlot{
         amount = 0;
     }
     
-    public InventorySlot(Item _item, int _amount)
+    public InventorySlot(Item _item, int _amount, UserInterface _parent = null)
     {
         item = _item;
         amount = _amount;
+        if(_parent != null)
+        {
+            parent = _parent;
+        }
     }
 
-    public void UpdateSlot(Item _item, int _amount)
+    public void UpdateSlot(Item _item, int _amount, UserInterface _parent = null)
     {
         item = _item;
         amount = _amount;
+        if(_parent != null)
+        {
+            parent = _parent;
+        }
     }
 
     public void RemoveItem()

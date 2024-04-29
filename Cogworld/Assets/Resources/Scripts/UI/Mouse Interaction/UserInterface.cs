@@ -17,9 +17,8 @@ public abstract class UserInterface : MonoBehaviour
     public GameObject inventoryArea;
 
     bool startUpComplete = false;
-    public void StartUp()
+    public void StartUp() // at the moment this is never called
     {
-
         for (int i = 0; i < _inventory.Container.Items.Length; i++)
         {
             _inventory.Container.Items[i].parent = this;
@@ -73,7 +72,12 @@ public abstract class UserInterface : MonoBehaviour
 
     public void OnDragStart(GameObject obj)
     {
-        MouseData.tempItemBeingDragged = CreatetempItem(obj);
+        if(obj.GetComponent<InvDisplayItem>().item != null) // Don't drag empty slots!
+        {
+            MouseData.tempItemBeingDragged = CreatetempItem(obj);
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[27]);
+        }
+            
     }
 
     public GameObject CreatetempItem(GameObject obj)
@@ -103,12 +107,14 @@ public abstract class UserInterface : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="obj">The InventorySlot which holds the item we are currently dragging. Most data is inside the [InvDisplayItem] attached to it.</param>
+    /// <param name="obj">The InventorySlot which holds the item we are currently dragging (aka Origin). Most data is inside the [InvDisplayItem] attached to it.</param>
     public void OnDragEnd(GameObject obj)
     {
+        if (obj.GetComponent<InvDisplayItem>().item == null) // Don't drag empty slots!
+            return;
+
         Destroy(MouseData.tempItemBeingDragged);
 
-        Debug.Log($"Interface over mouse is: {MouseData.interfaceMouseIsOver}");
         if(MouseData.interfaceMouseIsOver == null && obj.GetComponent<InvDisplayItem>().item != null) // If we're not over an inventory & we are dragging a real item
         {
             #region Item Dropping
@@ -141,8 +147,9 @@ public abstract class UserInterface : MonoBehaviour
             #endregion
         }
 
-        Debug.Log($"Slot hovered over: {MouseData.slotHoveredOver}. Item is: {obj.GetComponent<InvDisplayItem>().item}");
-        if (MouseData.slotHoveredOver && obj.GetComponent<InvDisplayItem>().item != null) // Are we hovering over a slot with an item? Lets attempt to swap the two parts.
+        Debug.Log($"Slot hovered over: {MouseData.slotHoveredOver} | Source item is: {obj.GetComponent<InvDisplayItem>().item.Id} | Destination item is: {MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].item.Id}");
+        if (MouseData.slotHoveredOver && obj.GetComponent<InvDisplayItem>().item != null 
+            && MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].item.Id >= 0) // Are we hovering over a slot with an item? Lets attempt to swap the two parts.
         {
             #region Item Swapping
 
@@ -156,7 +163,7 @@ public abstract class UserInterface : MonoBehaviour
             bool canSwap = true;
 
             // First check if both items will be compatible with their new slots (there are a couple different cases here)
-            if ((originSlot.AllowedItems.Count < 0 && destinationSlot.AllowedItems.Count < 0)) // Both items share the same slot type, obviously we shouldn't swap these.
+            if ((originSlot.AllowedItems.Count == 0 && destinationSlot.AllowedItems.Count == 0)) // Both items share the same slot type, obviously we shouldn't swap these.
             {
                 return; // Bail out
             }
@@ -165,7 +172,7 @@ public abstract class UserInterface : MonoBehaviour
                 return; // Bail out
             }
 
-            if (originSlot.AllowedItems.Count < 0) // The origin slot & item is in the inventory (destination item can always go in there)
+            if (originSlot.AllowedItems.Count == 0) // The origin slot & item is in the inventory (destination item can always go in there)
             {
                 if (destinationSlot.AllowedItems.Count > 0)
                 {
@@ -180,7 +187,7 @@ public abstract class UserInterface : MonoBehaviour
                 }
             }
 
-            if(destinationSlot.AllowedItems.Count < 0) // The destination slot is in the inventory
+            if(destinationSlot.AllowedItems.Count == 0) // The destination slot is in the inventory
             {
                 if(originSlot.AllowedItems.Count > 0)
                 {
@@ -197,10 +204,14 @@ public abstract class UserInterface : MonoBehaviour
 
             if (canSwap) // We can swap the items!
             {
-                _inventory.SwapItems(slotsOnInterface[obj], destinationSlot); // Swap item positions
+                _inventory.SwapItems(slotsOnInterface[obj], destinationSlot); // Swap item positions  !!! MAY BE A PROBLEM HERE, SEPARATE INVENTORIES !!!
                 // Swap item data
                 obj.GetComponent<InvDisplayItem>().item = destinationItem; // Origin -> Destination
                 MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().item = originItem; // Destination -> Origin
+                // (Swapping the slot's parents happens inside *SwapItems*)
+                // Swap interface assignments
+                obj.GetComponent<InvDisplayItem>().my_interface = destinationSlot.parent;
+                MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().my_interface = slotsOnInterface[obj].parent;
                 // Force Enable both items, and animate them
                 if (!obj.GetComponent<InvDisplayItem>().item.state) // [ORIGIN]
                 {
@@ -214,6 +225,8 @@ public abstract class UserInterface : MonoBehaviour
                 obj.GetComponent<InvDisplayItem>().FlashItemDisplay();
                 MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().FlashItemDisplay();
 
+                UIManager.inst.ShowCenterMessageTop("Attached " + originItem.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+
                 InventoryControl.inst.UpdateInterfaceInventories(); // Update the UI
             }
             else // We can't swap the items, do a message.
@@ -222,7 +235,8 @@ public abstract class UserInterface : MonoBehaviour
             }
             #endregion
         }
-        else if (MouseData.slotHoveredOver && obj.GetComponent<InvDisplayItem>().item == null) // Are we hovering over a slot thats empty? Attempt to move this item
+        else if (MouseData.slotHoveredOver && obj.GetComponent<InvDisplayItem>().item != null 
+            && MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].item.Id < 0) // Are we hovering over a slot thats empty? Attempt to move this item
         {
             #region Item Relocation
             InventorySlot destinationSlot = MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver]; // Get data from slot hovered over
@@ -231,7 +245,7 @@ public abstract class UserInterface : MonoBehaviour
             Item originItem = originSlot.item;
 
             // Is this item allowed to be placed in this slot?
-            if(destinationSlot.AllowedItems.Count < 0 || destinationSlot.AllowedItems.Contains(originItem.itemData.slot)) // Yes! Move the item
+            if(destinationSlot.AllowedItems.Count == 0 || destinationSlot.AllowedItems.Contains(originItem.itemData.slot)) // Yes! Move the item
             {
                 // Add the item to the player (aka just make a new item)
                 Item _item = new Item(originItem);
@@ -239,27 +253,39 @@ public abstract class UserInterface : MonoBehaviour
                 if(_item.itemData.slot == ItemSlot.Power)
                 {
                     PlayerData.inst.GetComponent<PartInventory>()._invPower.AddItem(_item, 1);
+                    UIManager.inst.ShowCenterMessageTop("Attached " + _item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
                 }
                 else if (_item.itemData.slot == ItemSlot.Propulsion)
                 {
                     PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.AddItem(_item, 1);
+                    UIManager.inst.ShowCenterMessageTop("Attached " + _item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
                 }
                 else if (_item.itemData.slot == ItemSlot.Utilities)
                 {
                     PlayerData.inst.GetComponent<PartInventory>()._invUtility.AddItem(_item, 1);
+                    UIManager.inst.ShowCenterMessageTop("Attached " + _item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
                 }
                 else if (_item.itemData.slot == ItemSlot.Weapons)
                 {
                     PlayerData.inst.GetComponent<PartInventory>()._invWeapon.AddItem(_item, 1);
+                    UIManager.inst.ShowCenterMessageTop("Attached " + _item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
                 }
                 else // Add to inventory
                 {
                     PlayerData.inst.GetComponent<PartInventory>()._inventory.AddItem(_item, 1);
+                    UIManager.inst.ShowCenterMessageTop("Detached " + _item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
                 }
 
                 // Remove the old item from wherever its stored
                 Action.FindRemoveItemFromPlayer(originItem);
 
+                // Update parent interfaces
+                UserInterface temp = MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].parent;
+                MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].parent = originSlot.parent;
+                obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].parent = temp;
+
+                obj.GetComponent<InvDisplayItem>().my_interface = originSlot.parent; // [ORIGIN]
+                MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().my_interface = temp; // [DESTINATION]
                 // Force enable the item and animate it (if its disabled)
                 if (!MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().item.state) // [DESTINATION]
                 {
