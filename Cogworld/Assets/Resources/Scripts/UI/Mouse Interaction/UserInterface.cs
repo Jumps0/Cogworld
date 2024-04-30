@@ -18,7 +18,6 @@ public abstract class UserInterface : MonoBehaviour
     public GameObject prefab_item;
     public GameObject inventoryArea;
 
-    bool startUpComplete = false;
     public void StartUp()
     {
         for (int i = 0; i < _inventory.Container.Items.Length; i++)

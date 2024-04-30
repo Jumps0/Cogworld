@@ -119,6 +119,7 @@ public class InvDisplayItem : MonoBehaviour
     }
 
     private string assignedOrderString = "";
+    private string bonusAOS = "";
     public void SetLetter(char assignment, int number = -1)
     {
         if(number >= 0) // Inventory items use numbers instead of letters for assignments
@@ -147,7 +148,8 @@ public class InvDisplayItem : MonoBehaviour
             // Also add an ":" before the indicator if removing it will destroy the item
             if (item.itemData.destroyOnRemove)
             {
-                assignedOrderText.text = ":" + _assignedChar.ToString();
+                bonusAOS = ":";
+                assignedOrderText.text = bonusAOS + _assignedChar.ToString();
                 assignedOrderString = assignedOrderText.text;
             }
 

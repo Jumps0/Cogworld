@@ -12,21 +12,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
   m_Name: Exp. Core Analyzer
   m_EditorClassIdentifier: 
-  instantUnique: 0
   amount: 1
   data:
     Name: 
-    Id: 14
+    Id: 93
     stackable: 0
     amount: 1
     itemData: {fileID: 11400000}
     state: 1
     integrityCurrent: 0
+    uniqueDetail:
+      isScrap: 0
+      scrapReward: {fileID: 0}
+      isDataLog: 0
+      logMessage: 
+      logAction:
+        type: 0
+        connectedMachine: {fileID: 0}
+      isDataCore: 0
+      coreTerminal: {fileID: 0}
+    storageAmount: 0
     isOverloaded: 0
+    isDeteriorating: 0
+    isRigged: 0
     corrupted: 0
     disabledTimer: 0
+    unstable: -1
+    disposable: -1
     siege: 0
-  knowByPlayer: 1
+  knowByPlayer: 0
   floorDisplay: {fileID: 1246546731, guid: dfd95b0f98c184e41ba9683fe5415d0c, type: 3}
   inventoryDisplay: {fileID: 1246546731, guid: dfd95b0f98c184e41ba9683fe5415d0c, type: 3}
   asciiRep: {fileID: -923958525, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
@@ -40,6 +54,7 @@ MonoBehaviour:
   star: 1
   ratingType: 0
   integrityMax: 36
+  repairable: 1
   coverage: 2
   schematicDetails:
     hackable: 1
@@ -76,9 +91,7 @@ MonoBehaviour:
     damageType: 0
     critChance: 0
     critType: 0
-    penChance: {x: 0, y: 0, z: 0}
     heatTrasfer: 0
-    heatTransferDegree: 0
     spectrum: 0
     hasSpectrum: 0
     disruption: 0
@@ -123,6 +136,8 @@ MonoBehaviour:
     directional: 0
     d_arc: 0
     d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
   deployableItem:
     deployable: 0
     type: 0
@@ -145,11 +160,17 @@ MonoBehaviour:
     stasis_strength: 0
   isSpecialAttack: 0
   specialAttack:
+    specialMelee: 0
     datajack: 0
     stasisBeam: 0
     tearClaw: 0
   itemEffects: []
   canOverload: 0
+  consumable: 0
+  disposable: -1
+  unstable: -1
+  destroyOnRemove: 1
+  canBeDisabled: 1
   quality: 6
   itemName: Exp. Core Analyzer
   description: An experimental variant of a core analysis chip, increases the users
@@ -162,3 +183,14 @@ MonoBehaviour:
     fabTime: {x: 222, y: 111, z: 74}
     matterCost: 150
     componenetsRequired: []
+  instantUnique: 0
+  uniqueDetail:
+    isScrap: 0
+    scrapReward: {fileID: 0}
+    isDataLog: 0
+    logMessage: 
+    logAction:
+      type: 0
+      connectedMachine: {fileID: 0}
+    isDataCore: 0
+    coreTerminal: {fileID: 0}
