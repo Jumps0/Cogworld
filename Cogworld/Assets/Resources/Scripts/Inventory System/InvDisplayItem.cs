@@ -458,6 +458,13 @@ public class InvDisplayItem : MonoBehaviour
                     }
                 }
             }
+            else
+            {
+                if (!item.state)
+                {
+                    UIManager.inst.ShowCenterMessageTop($"{item.itemData.itemName} cannot be disabled", UIManager.inst.dangerRed, Color.black);
+                }
+            }
         }
     }
 
@@ -645,6 +652,7 @@ public class InvDisplayItem : MonoBehaviour
         // Update the UI
         UIManager.inst.UpdateInventory();
         UIManager.inst.UpdateParts();
+
     }
 
     /// <summary>

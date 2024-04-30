@@ -36,11 +36,6 @@ public abstract class UserInterface : MonoBehaviour
             }
         }
 
-        //CreateSlots(); // We call this in InventoryControl
-       
-        AddEvent(gameObject, EventTriggerType.PointerEnter, delegate { OnEnterInterface(gameObject); });
-        AddEvent(gameObject, EventTriggerType.PointerExit, delegate { OnExitInterface(gameObject); });
-
         slotsOnInterface.UpdateSlotDisplay();
     }
 
