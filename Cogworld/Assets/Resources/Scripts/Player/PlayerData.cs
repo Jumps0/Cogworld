@@ -1467,36 +1467,36 @@ public class PlayerData : MonoBehaviour
                 InvDisplayItem reference = null;
 
                 // Get the letter
-                if (I.GetComponentInChildren<DynamicInterface>()) // Includes all items found in /PARTS/ menus (USES LETTER)
+                if (I.GetComponent<DynamicInterface>()) // Includes all items found in /PARTS/ menus (USES LETTER)
                 {
-                    foreach (var item in I.GetComponentInChildren<DynamicInterface>().slotsOnInterface)
+                    foreach (var item in I.GetComponent<DynamicInterface>().slotsOnInterface)
                     {
-                        if (item.Key.GetComponent<InvDisplayItem>().item != null)
+                        reference = item.Key.GetComponent<InvDisplayItem>();
+                        if (reference.item != null && reference.item.Id >= 0)
                         {
-                            reference = item.Key.GetComponent<InvDisplayItem>();
                             detect = reference._assignedChar.ToString();
+
+                            KeyCode parse = KeyCode.None;
+                            try
+                            {
+                                parse = (KeyCode)System.Enum.Parse(typeof(KeyCode), detect); // Make sure this is an actual key we can press
+                            }
+                            catch (Exception e)
+                            {
+                                // do nothing
+                                return;
+                            }
+
+                            if (detect != "" && parse != KeyCode.None && Input.GetKeyDown(parse)) // Is that key currenlty down?
+                            {
+                                // Toggle!
+                                if (reference != null)
+                                {
+                                    reference.Click();
+                                    return;
+                                }
+                            }
                         }
-                    }
-                }
-
-                KeyCode parse = KeyCode.None;
-                try
-                {
-                    parse = (KeyCode)System.Enum.Parse(typeof(KeyCode), detect); // Make sure this is an actual key we can press
-                }
-                catch (Exception e)
-                {
-                    // do nothing
-                    return;
-                }
-
-                if (detect != "" && parse != KeyCode.None && Input.GetKey(parse)) // Is that key currenlty down?
-                {
-                    // Toggle!
-                    if(reference != null)
-                    {
-                        reference.Click();
-                        return;
                     }
                 }
             }
