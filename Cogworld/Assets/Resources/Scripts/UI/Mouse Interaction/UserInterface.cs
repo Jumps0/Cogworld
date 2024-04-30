@@ -183,7 +183,7 @@ public abstract class UserInterface : MonoBehaviour
             bool canSwap = true;
 
             // First check if both items will be compatible with their new slots (there are a couple different cases here)
-            if ((originSlot.AllowedItems.Count == 0 && destinationSlot.AllowedItems.Count == 0)) // Both items share the same slot type, obviously we shouldn't swap these.
+            if ((originSlot.AllowedItems.Count == 0 && destinationSlot.AllowedItems.Count == 0)) // Both items share the same (inventory) slot type, obviously we shouldn't swap these.
             {
                 return; // Bail out
             }
@@ -222,16 +222,25 @@ public abstract class UserInterface : MonoBehaviour
                 }
             }
 
+            Debug.Log($"Attempting to swap:\n {originItem.Name} with {destinationItem.Name}. Slots: {originSlot} with {destinationSlot}.");
+
             if (canSwap) // We can swap the items!
             {
-                _inventory.SwapItems(slotsOnInterface[obj], destinationSlot); // Swap item positions  !!! MAY BE A PROBLEM HERE, SEPARATE INVENTORIES !!!
-                // Swap item data
+                /* == IDENTIFICATION GUIDE ==
+                 * 
+                 *  MouseData.slotHoveredOver                                                  | This is the DESTINATION *gameObject* (since we are currently hovering over it)
+                 *  MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver] | This is the DESTINATION *InventorySlot*
+                 *                                                                             |
+                 *  obj.GetComponent<InvDisplayItem>()                                         | This is the ORIGIN's *gameObject* (that we are dragging from)
+                 *  obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj]      | This is the ORIGIN's *InventorySlot*
+                 */
+
+                _inventory.SwapItems(slotsOnInterface[obj], destinationSlot); // Swap item positions
+
+                // Swap item data on objects
                 obj.GetComponent<InvDisplayItem>().item = destinationItem; // Origin -> Destination
                 MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().item = originItem; // Destination -> Origin
-                // (Swapping the slot's parents happens inside *SwapItems*)
-                // Swap interface assignments
-                obj.GetComponent<InvDisplayItem>().my_interface = destinationSlot.parent;
-                MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().my_interface = slotsOnInterface[obj].parent;
+
                 // Force Enable both items, and animate them
                 if (!obj.GetComponent<InvDisplayItem>().item.state) // [ORIGIN]
                 {
@@ -247,7 +256,18 @@ public abstract class UserInterface : MonoBehaviour
 
                 UIManager.inst.ShowCenterMessageTop("Attached " + originItem.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
 
-                InventoryControl.inst.UpdateInterfaceInventories(); // Update the UI
+                /*
+                Debug.Log($"*SLOT STATUS*\n [DESTINATION] <obj>:{MouseData.slotHoveredOver.name} | <slot>:{MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].item.Name} " +
+                    $"<<>> [ORIGIN] <obj>: {obj.GetComponent<InvDisplayItem>().name} | <slot>: {obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].item.Name}");
+
+                Debug.Log($"*PARENT INTERFACES*\n [DESTINATION]: {MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].parent} <<>> [ORIGIN]: {obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].parent}");
+
+                Debug.Log($"my_interface values*\n [DESTINATION]: {MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().my_interface} <<>> [ORIGIN]: {obj.GetComponent<InvDisplayItem>().my_interface}");
+
+                Debug.Log($"*ITEM VALUES (slot)*\n [DESTINATION]: {MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].item.Name} <<>> [ORIGIN]: {obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].item.Name}");
+
+                Debug.Log($"*ITEM VALUES (obj)*\n [DESTINATION]: {MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().item.Name} <<>> [ORIGIN]: {obj.GetComponent<InvDisplayItem>().item.Name}");
+                */
             }
             else // We can't swap the items, do a message.
             {
@@ -324,19 +344,6 @@ public abstract class UserInterface : MonoBehaviour
 
                 MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().item = _item; // Set the item on the [DESTINATION] object
                 //MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].item = _item; // Set the item on the [DESTINATION] slot
-
-                /*
-                Debug.Log($"*SLOT STATUS*\n [DESTINATION] <obj>:{MouseData.slotHoveredOver.name} | <slot>:{MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].item.Name} " +
-                    $"<<>> [ORIGIN] <obj>: {obj.GetComponent<InvDisplayItem>().name} | <slot>: {obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].item.Name}");
-
-                Debug.Log($"*PARENT INTERFACES*\n [DESTINATION]: {MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].parent} <<>> [ORIGIN]: {obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].parent}");
-
-                Debug.Log($"my_interface values*\n [DESTINATION]: {MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().my_interface} <<>> [ORIGIN]: {obj.GetComponent<InvDisplayItem>().my_interface}");
-
-                Debug.Log($"*ITEM VALUES (slot)*\n [DESTINATION]: {MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].item.Name} <<>> [ORIGIN]: {obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].item.Name}");
-
-                Debug.Log($"*ITEM VALUES (obj)*\n [DESTINATION]: {MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().item.Name} <<>> [ORIGIN]: {obj.GetComponent<InvDisplayItem>().item.Name}");
-                */
 
                 //InventoryControl.inst.UpdateInterfaceInventories(); // Update UI
 
