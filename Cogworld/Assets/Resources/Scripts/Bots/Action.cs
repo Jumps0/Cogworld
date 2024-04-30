@@ -4998,7 +4998,6 @@ public static class Action
     {
         foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invPower.Container.Items.ToList())
         {
-            Debug.Log(I);
             if (I.item.Id >= 0)
             {
                 if (I.item == item)

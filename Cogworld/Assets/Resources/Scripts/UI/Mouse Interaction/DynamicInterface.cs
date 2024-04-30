@@ -36,7 +36,7 @@ public class DynamicInterface : UserInterface
             AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExitInterface(obj); });
 
             InventoryControl.inst.p_inventoryPower.Container.Items[i].parent = this;
-            InventoryControl.inst.p_inventoryPower.Container.Items[i].AllowedItems.Add(ItemSlot.Power); // Restrict the slot to only *Power* items
+            InventoryControl.inst.p_inventoryPower.Container.Items[i].AllowedItems[0] = ItemSlot.Power; // Restrict the slot to only *Power* items
             slotsOnInterface.Add(obj, InventoryControl.inst.p_inventoryPower.Container.Items[i]);
         }
 
@@ -62,7 +62,7 @@ public class DynamicInterface : UserInterface
             AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExitInterface(obj); });
 
             InventoryControl.inst.p_inventoryPropulsion.Container.Items[i].parent = this;
-            InventoryControl.inst.p_inventoryPropulsion.Container.Items[i].AllowedItems.Add(ItemSlot.Propulsion); // Restrict the slot to only *Propulsion* items
+            InventoryControl.inst.p_inventoryPropulsion.Container.Items[i].AllowedItems[0] = ItemSlot.Propulsion; // Restrict the slot to only *Propulsion* items
             slotsOnInterface.Add(obj, InventoryControl.inst.p_inventoryPropulsion.Container.Items[i]);
         }
 
@@ -88,7 +88,7 @@ public class DynamicInterface : UserInterface
             AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExitInterface(obj); });
 
             InventoryControl.inst.p_inventoryUtilities.Container.Items[i].parent = this;
-            InventoryControl.inst.p_inventoryUtilities.Container.Items[i].AllowedItems.Add(ItemSlot.Utilities); // Restrict the slot to only *Utilities* items
+            InventoryControl.inst.p_inventoryUtilities.Container.Items[i].AllowedItems[0] = ItemSlot.Utilities; // Restrict the slot to only *Utilities* items
             slotsOnInterface.Add(obj, InventoryControl.inst.p_inventoryUtilities.Container.Items[i]);
         }
 
@@ -114,7 +114,7 @@ public class DynamicInterface : UserInterface
             AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExitInterface(obj); });
 
             InventoryControl.inst.p_inventoryWeapons.Container.Items[i].parent = this;
-            InventoryControl.inst.p_inventoryWeapons.Container.Items[i].AllowedItems.Add(ItemSlot.Weapons); // Restrict the slot to only *Weapon* items
+            InventoryControl.inst.p_inventoryWeapons.Container.Items[i].AllowedItems[0] = ItemSlot.Weapons; // Restrict the slot to only *Weapon* items
             slotsOnInterface.Add(obj, InventoryControl.inst.p_inventoryWeapons.Container.Items[i]);
         }
     }

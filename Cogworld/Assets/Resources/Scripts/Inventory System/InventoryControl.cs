@@ -358,10 +358,6 @@ public class InventoryControl : MonoBehaviour
             {
                 I.slotsOnInterface.UpdateSlotDisplay();
             }
-            else if (I.GetComponentInChildren<UserInterface>())
-            {
-                I.slotsOnInterface.UpdateSlotDisplay();
-            }
         }
 
         SetInterfaceInvKeys();

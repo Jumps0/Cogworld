@@ -35,6 +35,19 @@ public class InventoryObject : ScriptableObject//, ISerializationCallbackReceive
         }
     }
 
+    public int InventoryItemCount()
+    {
+        int amount = 0;
+        for (int i = 0; i < Container.Items.Length; i++)
+        {
+            if (Container.Items[i] != null && Container.Items[i].item != null && Container.Items[i].item.Id >= 0)
+            {
+                amount++;
+            }
+        }
+
+        return amount;
+    }
     
     public bool AddItem(Item _item, int _amount)
     {

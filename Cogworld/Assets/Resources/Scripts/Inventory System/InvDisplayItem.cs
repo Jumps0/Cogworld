@@ -83,6 +83,7 @@ public class InvDisplayItem : MonoBehaviour
         healthMode.gameObject.SetActive(false);
 
         itemNameText.text = "Unused";
+        this.gameObject.name = "IDI: Unused";
     }
 
     /// <summary>
@@ -99,6 +100,8 @@ public class InvDisplayItem : MonoBehaviour
         //_button.gameObject.SetActive(true);
         specialDescText.gameObject.SetActive(true);
         healthMode.gameObject.SetActive(true);
+
+        this.gameObject.name = $"IDI: {item.itemData.itemName}";
     }
 
     public void ForceIgnoreRaycasts()

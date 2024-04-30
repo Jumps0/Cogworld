@@ -148,21 +148,15 @@ public abstract class UserInterface : MonoBehaviour
             // Drop the item on the floor
             InventoryControl.inst.DropItemOnFloor(obj.GetComponent<InvDisplayItem>().item, PlayerData.inst.GetComponent<Actor>(), _inventory);
 
-            if (this.GetComponent<StaticInterface>())
-            {  
-                PlayerData.inst.currentInvCount -= 1; // If this item was in the player's inventory we need to decrement the count.
-            }
-            else if (this.GetComponent<DynamicInterface>()) // If this item was equipped we need to change the player's stats
+            // Update player mass
+            PlayerData.inst.currentWeight -= obj.GetComponent<InvDisplayItem>().item.itemData.mass;
+            if (obj.GetComponent<InvDisplayItem>().item.itemData.propulsion.Count > 0)
             {
-                PlayerData.inst.currentWeight -= obj.GetComponent<InvDisplayItem>().item.itemData.mass;
-                if (obj.GetComponent<InvDisplayItem>().item.itemData.propulsion.Count > 0)
-                {
-                    PlayerData.inst.maxWeight -= obj.GetComponent<InvDisplayItem>().item.itemData.propulsion[0].support;
-                }
-
-                // Play a little animation to let the player know THIS item was just equipped
-                obj.GetComponent<InvDisplayItem>().RecentAttachmentAnimation();
+                PlayerData.inst.maxWeight -= obj.GetComponent<InvDisplayItem>().item.itemData.propulsion[0].support;
             }
+
+            // Play a little animation to let the player know THIS item was just equipped
+            obj.GetComponent<InvDisplayItem>().RecentAttachmentAnimation();
 
             UIManager.inst.UpdatePSUI();
             UIManager.inst.UpdateInventory();
@@ -174,7 +168,6 @@ public abstract class UserInterface : MonoBehaviour
             #endregion
         }
 
-        Debug.Log($"Slot hovered over: {MouseData.slotHoveredOver} | Source item is: {obj.GetComponent<InvDisplayItem>().item.Id} | Destination item is: {MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].item.Id}");
         if (MouseData.slotHoveredOver && obj.GetComponent<InvDisplayItem>().item != null 
             && MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].item.Id >= 0) // Are we hovering over a slot with an item? Lets attempt to swap the two parts.
         {
@@ -277,42 +270,76 @@ public abstract class UserInterface : MonoBehaviour
                 // Add the item to the player (aka just make a new item)
                 Item _item = new Item(originItem);
                 // - Try to find which inventory we need to add it to
-                if(_item.itemData.slot == ItemSlot.Power)
-                {
-                    PlayerData.inst.GetComponent<PartInventory>()._invPower.AddItem(_item, 1);
-                    UIManager.inst.ShowCenterMessageTop("Attached " + _item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                }
-                else if (_item.itemData.slot == ItemSlot.Propulsion)
-                {
-                    PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.AddItem(_item, 1);
-                    UIManager.inst.ShowCenterMessageTop("Attached " + _item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                }
-                else if (_item.itemData.slot == ItemSlot.Utilities)
-                {
-                    PlayerData.inst.GetComponent<PartInventory>()._invUtility.AddItem(_item, 1);
-                    UIManager.inst.ShowCenterMessageTop("Attached " + _item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                }
-                else if (_item.itemData.slot == ItemSlot.Weapons)
-                {
-                    PlayerData.inst.GetComponent<PartInventory>()._invWeapon.AddItem(_item, 1);
-                    UIManager.inst.ShowCenterMessageTop("Attached " + _item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                }
-                else // Add to inventory
+                // - Due to how item interactions work, this interaction can only happen between the inventory and one type of slot.
+                if (destinationSlot.parent.GetComponent<StaticInterface>()) // Moving TO the /INVENTORY/
                 {
                     PlayerData.inst.GetComponent<PartInventory>()._inventory.AddItem(_item, 1);
                     UIManager.inst.ShowCenterMessageTop("Detached " + _item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                }
+                else if (destinationSlot.parent.GetComponent<DynamicInterface>())// Moving TO a /PARTS/ slot
+                {
+                    if (_item.itemData.slot == ItemSlot.Power)
+                    {
+                        PlayerData.inst.GetComponent<PartInventory>()._invPower.AddItem(_item, 1);
+                        UIManager.inst.ShowCenterMessageTop("Attached " + _item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    }
+                    else if (_item.itemData.slot == ItemSlot.Propulsion)
+                    {
+                        PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.AddItem(_item, 1);
+                        UIManager.inst.ShowCenterMessageTop("Attached " + _item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    }
+                    else if (_item.itemData.slot == ItemSlot.Utilities)
+                    {
+                        PlayerData.inst.GetComponent<PartInventory>()._invUtility.AddItem(_item, 1);
+                        UIManager.inst.ShowCenterMessageTop("Attached " + _item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    }
+                    else if (_item.itemData.slot == ItemSlot.Weapons)
+                    {
+                        PlayerData.inst.GetComponent<PartInventory>()._invWeapon.AddItem(_item, 1);
+                        UIManager.inst.ShowCenterMessageTop("Attached " + _item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    }
+                }
+                else
+                {
+                    Debug.LogError(destinationSlot + " has no assigned interface!");
+                    return;
                 }
 
                 // Remove the old item from wherever its stored
                 Action.FindRemoveItemFromPlayer(originItem);
 
-                // Update parent interfaces
-                UserInterface temp = MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].parent;
-                MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].parent = originSlot.parent;
-                obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].parent = temp;
+                // ~~~ At this point, the item now exists in the correct inventory, and no longer exists in its old inventory. All we need to do is update the UI and other related variables. ~~~
 
-                obj.GetComponent<InvDisplayItem>().my_interface = originSlot.parent; // [ORIGIN]
-                MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().my_interface = temp; // [DESTINATION]
+                /* == IDENTIFICATION GUIDE ==
+                 * 
+                 *  MouseData.slotHoveredOver                                                  | This is the DESTINATION *gameObject* (since we are currently hovering over it)
+                 *  MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver] | This is the DESTINATION *InventorySlot*
+                 *                                                                             |
+                 *  obj.GetComponent<InvDisplayItem>()                                         | This is the ORIGIN's *gameObject* (that we are dragging from)
+                 *  obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj]      | This is the ORIGIN's *InventorySlot*
+                 */
+
+                obj.GetComponent<InvDisplayItem>().item = new Item(); // Set [ORIGIN]'s item to be empty in object
+                obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].item = new Item(); // Set [ORIGIN]'s item slot to be empty so we don't get errors
+
+                MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().item = _item; // Set the item on the [DESTINATION] object
+                //MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].item = _item; // Set the item on the [DESTINATION] slot
+
+                /*
+                Debug.Log($"*SLOT STATUS*\n [DESTINATION] <obj>:{MouseData.slotHoveredOver.name} | <slot>:{MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].item.Name} " +
+                    $"<<>> [ORIGIN] <obj>: {obj.GetComponent<InvDisplayItem>().name} | <slot>: {obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].item.Name}");
+
+                Debug.Log($"*PARENT INTERFACES*\n [DESTINATION]: {MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].parent} <<>> [ORIGIN]: {obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].parent}");
+
+                Debug.Log($"my_interface values*\n [DESTINATION]: {MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().my_interface} <<>> [ORIGIN]: {obj.GetComponent<InvDisplayItem>().my_interface}");
+
+                Debug.Log($"*ITEM VALUES (slot)*\n [DESTINATION]: {MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].item.Name} <<>> [ORIGIN]: {obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].item.Name}");
+
+                Debug.Log($"*ITEM VALUES (obj)*\n [DESTINATION]: {MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().item.Name} <<>> [ORIGIN]: {obj.GetComponent<InvDisplayItem>().item.Name}");
+                */
+
+                //InventoryControl.inst.UpdateInterfaceInventories(); // Update UI
+
                 // Force enable the item and animate it (if its disabled)
                 if (!MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().item.state) // [DESTINATION]
                 {
@@ -325,10 +352,17 @@ public abstract class UserInterface : MonoBehaviour
             {
                 UIManager.inst.ShowCenterMessageTop("Item cannot be placed in this slot", UIManager.inst.dangerRed, Color.black);
             }
-
-            InventoryControl.inst.UpdateInterfaceInventories(); // Update the UI
             #endregion
         }
+
+        // Update Inventory Count
+        PlayerData.inst.currentInvCount = PlayerData.inst.GetComponent<PartInventory>()._inventory.InventoryItemCount();
+
+        // Update UI
+        UIManager.inst.UpdatePSUI();
+        UIManager.inst.UpdateInventory();
+        UIManager.inst.UpdateParts();
+        InventoryControl.inst.UpdateInterfaceInventories();
     }
 
     public void OnDrag(GameObject obj)

@@ -412,12 +412,10 @@ public class Part : MonoBehaviour
 
                 if (PlayerData.inst.GetComponent<PartInventory>()._inventory.EmptySlotCount >= size)
                 {
-                    Debug.Log($"Adding item {this._item} to inventory.");
-                    
                     // There is space, we can add it to the inventory
                     InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>()._inventory);
                     InventoryControl.inst.UpdateInterfaceInventories();
-                    PlayerData.inst.currentInvCount += 1;
+                    PlayerData.inst.currentInvCount = PlayerData.inst.GetComponent<PartInventory>()._inventory.InventoryItemCount();
                     UIManager.inst.CreateNewLogMessage("Aquired " + this._item.itemData.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
                     // Play a sound
                     PlayEquipSound();
@@ -432,7 +430,6 @@ public class Part : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log($"Failed to add item {this._item} to inventory.");
                     InventoryControl.inst.UpdateInterfaceInventories();
                     // Full here too, give up
                     // Display a message(
@@ -444,6 +441,10 @@ public class Part : MonoBehaviour
 
         showFloatingName = false;
         
+        // Update UI
+        UIManager.inst.UpdatePSUI();
+        UIManager.inst.UpdateInventory();
+        UIManager.inst.UpdateParts();
     }
 
     public void TryDisableConnectedPopup()
