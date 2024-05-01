@@ -668,6 +668,7 @@ public class MapManager : MonoBehaviour
 
                     InventoryControl.inst.CreateItemInWorld(45, new Vector2Int(57, 57), true); // ONLY FOR TESTING. REMOVE LATER
                     InventoryControl.inst.CreateItemInWorld(102, new Vector2Int(56, 57), true); // ONLY FOR TESTING. REMOVE LATER
+                    InventoryControl.inst.CreateItemInWorld(101, new Vector2Int(55, 57), true); // ONLY FOR TESTING. REMOVE LATER
                 }
 
 

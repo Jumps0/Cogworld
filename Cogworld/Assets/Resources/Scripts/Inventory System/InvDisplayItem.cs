@@ -259,6 +259,9 @@ public class InvDisplayItem : MonoBehaviour
             // - Special Extra Text - //
             // Figure out if it needs to be on or not
             specialDescText.gameObject.SetActive(false);
+
+            // Melee check
+            MeleeCheck();
         }
     }
 
@@ -298,6 +301,9 @@ public class InvDisplayItem : MonoBehaviour
         {
             StartCoroutine(HF.DelayedSetText(itemNameText, s, delay += perDelay));
         }
+
+        // Melee Check
+        MeleeCheck();
 
         // Update the UI
         UIManager.inst.UpdateInventory();
@@ -642,6 +648,9 @@ public class InvDisplayItem : MonoBehaviour
         item.isOverloaded = false;
         item.siege = false;
 
+        // Turn off the box
+        modeMain.SetActive(false);
+
         // Do a little animation
         StartCoroutine(SecondaryDataFlash()); // Flash the secondary
         TextTypeOutAnimation(true);
@@ -679,10 +688,22 @@ public class InvDisplayItem : MonoBehaviour
         UIManager.inst.UpdateParts();
 
         // -- Melee Check --
+        MeleeCheck();
+    }
+
+    /// <summary>
+    /// Melee weapons are unique in that, only one can be active at the same time. We need to do some checks here.
+    /// </summary>
+    public void MeleeCheck()
+    {
+        // Pre-check incase this is being spamming
+        if(item.itemData.meleeAttack.isMelee && modeMain.activeInHierarchy && modeText.text.Contains("MELEE")) // Box is already on
+        {
+            return;
+        }
+
         if (item.itemData.meleeAttack.isMelee)
         {
-            // Melee weapons are unique in that, only one can be active at the same time. We need to do some checks here
-
             // Enable the box
             UISetBoxDisplay("MELEE", activeGreen);
 
@@ -693,7 +714,7 @@ public class InvDisplayItem : MonoBehaviour
                 {
                     foreach (var item in I.GetComponentInChildren<DynamicInterface>().slotsOnInterface)
                     {
-                        if (item.Key.GetComponent<InvDisplayItem>().item != null && item.Key.GetComponent<InvDisplayItem>() != this)
+                        if (item.Key.GetComponent<InvDisplayItem>().item != null && item.Key.GetComponent<InvDisplayItem>() != this && item.Key.GetComponent<InvDisplayItem>().item.state)
                         {
                             item.Key.GetComponent<InvDisplayItem>().UIDisable();
                         }
@@ -715,9 +736,11 @@ public class InvDisplayItem : MonoBehaviour
                 {
                     foreach (var item in I.GetComponentInChildren<DynamicInterface>().slotsOnInterface)
                     {
-                        if (item.Key.GetComponent<InvDisplayItem>().item != null && item.Key.GetComponent<InvDisplayItem>() != this && item.Key.GetComponent<InvDisplayItem>().item.itemData.meleeAttack.isMelee)
+                        InvDisplayItem reference = item.Key.GetComponent<InvDisplayItem>();
+
+                        if (reference.item != null && reference != this && reference.item.itemData.meleeAttack.isMelee && reference.modeMain.activeInHierarchy)
                         {
-                            item.Key.GetComponent<InvDisplayItem>().UIDisable();
+                            reference.UIDisable();
                         }
                     }
                 }

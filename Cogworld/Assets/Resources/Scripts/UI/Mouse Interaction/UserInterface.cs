@@ -244,6 +244,7 @@ public abstract class UserInterface : MonoBehaviour
                 {
                     MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().UIEnable();
                 }
+
                 // Flash both item's images
                 obj.GetComponent<InvDisplayItem>().FlashItemDisplay();
                 MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().FlashItemDisplay();
@@ -391,6 +392,7 @@ public abstract class UserInterface : MonoBehaviour
                 {
                     MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().UIEnable();
                 }
+
                 // Flash the item's display square
                 MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().FlashItemDisplay();
             }
