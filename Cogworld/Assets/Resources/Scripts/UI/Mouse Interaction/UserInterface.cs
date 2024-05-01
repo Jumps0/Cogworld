@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.Experimental.GraphView;
+using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -152,12 +153,14 @@ public abstract class UserInterface : MonoBehaviour
             // Play a little animation to let the player know THIS item was just equipped
             obj.GetComponent<InvDisplayItem>().RecentAttachmentAnimation();
 
+            // Update UI
             UIManager.inst.UpdatePSUI();
             UIManager.inst.UpdateInventory();
             UIManager.inst.UpdateParts();
 
-            slotsOnInterface[obj].RemoveItem();
-            InventoryControl.inst.UpdateInterfaceInventories();
+            slotsOnInterface[obj].RemoveItem(); // Remove from slot
+            InventoryControl.inst.animatedItems.Remove(slotsOnInterface[obj]); // Remove from animation tracking HashSet
+            InventoryControl.inst.UpdateInterfaceInventories(); // Update UI
             return;
             #endregion
         }
@@ -395,6 +398,10 @@ public abstract class UserInterface : MonoBehaviour
 
                 // Flash the item's display square
                 MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().FlashItemDisplay();
+                if (movingToInventory)
+                {
+                    //MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().InitialReveal();
+                }
             }
             else // No. Don't move the item.
             {
@@ -461,19 +468,15 @@ public static class ExtensionMethods
             {
                 if (_slot.Value.item.Id != -1)
                 {
-                    bool first = false;
-                    if(_slot.Key.GetComponent<InvDisplayItem>().item == null) // This should only be triggered once
-                    {
-                        first = true;
-                    }
-
                     _slot.Key.GetComponent<InvDisplayItem>().item = _slot.Value.item;
                     _slot.Key.GetComponent<InvDisplayItem>().SetAsFilled();
                     _slot.Key.GetComponent<InvDisplayItem>().UpdateDisplay();
 
-                    if (first) // TODO: This is being called EVERY time (mainly) because we keep destroying them in StaticInterface's update. Find a solution!
+                    // Play the initial animation (only once tho)
+                    if (!InventoryControl.inst.animatedItems.Contains(_slot.Value))
                     {
-                        _slot.Key.GetComponent<InvDisplayItem>().FlashItemDisplay(); // We do this after we have finished assigning and setting up everything
+                        // Add the item to the set of animated items
+                        InventoryControl.inst.animatedItems.Add(_slot.Value);
                         _slot.Key.GetComponent<InvDisplayItem>().InitialReveal();
                     }
                 }

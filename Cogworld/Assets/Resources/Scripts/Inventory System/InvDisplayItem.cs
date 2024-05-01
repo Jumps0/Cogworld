@@ -714,7 +714,9 @@ public class InvDisplayItem : MonoBehaviour
                 {
                     foreach (var item in I.GetComponentInChildren<DynamicInterface>().slotsOnInterface)
                     {
-                        if (item.Key.GetComponent<InvDisplayItem>().item != null && item.Key.GetComponent<InvDisplayItem>() != this && item.Key.GetComponent<InvDisplayItem>().item.state)
+                        InvDisplayItem reference = item.Key.GetComponent<InvDisplayItem>();
+
+                        if (reference.item != null && reference.item.Id >= 0 && reference != this && reference.item.state)
                         {
                             item.Key.GetComponent<InvDisplayItem>().UIDisable();
                         }
@@ -738,9 +740,13 @@ public class InvDisplayItem : MonoBehaviour
                     {
                         InvDisplayItem reference = item.Key.GetComponent<InvDisplayItem>();
 
-                        if (reference.item != null && reference != this && reference.item.itemData.meleeAttack.isMelee && reference.modeMain.activeInHierarchy)
+                        if (reference != null && reference.item != null && reference.item.Id >= 0 && reference != this)
                         {
-                            reference.UIDisable();
+                            if (reference.item.itemData.meleeAttack.isMelee && reference.modeMain.activeInHierarchy)
+                            {
+                                reference.UIDisable();
+                            }
+                            
                         }
                     }
                 }

@@ -59,6 +59,8 @@ public class InventoryControl : MonoBehaviour
     [Header("Inventory UI")]
     public Dictionary<GameObject, InventorySlot> itemsDisplayed = new Dictionary<GameObject, InventorySlot>();
 
+    public HashSet<InventorySlot> animatedItems = new HashSet<InventorySlot>(); // For tracking InitialAnimation on the InvDisplayObjects
+
     public void InitBasicKnownItems()
     {
         
@@ -426,7 +428,7 @@ public class InventoryControl : MonoBehaviour
     /// </summary>
     /// <param name="part">The part to add.</param>
     /// <param name="inventory">The inventory to target.</param>
-    public void AddItemToPlayer(Part part, InventoryObject inventory)
+    public Item AddItemToPlayer(Part part, InventoryObject inventory)
     {
         part._item.state = true;
         Item _item = new Item(part._item);
@@ -434,6 +436,8 @@ public class InventoryControl : MonoBehaviour
         {
             // Destroying is handled internally
         }
+
+        return _item;
     }
 
     public void DropItemOnFloor(Item _item, Actor source, InventoryObject sourceInventory)
