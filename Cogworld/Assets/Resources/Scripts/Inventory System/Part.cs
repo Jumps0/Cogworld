@@ -342,13 +342,13 @@ public class Part : MonoBehaviour
                 case ItemSlot.Other: // This one goes into inventory instead
                     if (PlayerData.inst.GetComponent<PartInventory>()._inventory.EmptySlotCount >= size)
                     {
-                        slotAvailable = true;
+                        slotAvailable = false;
                     }
                     break;
                 case ItemSlot.Inventory: // This one goes into inventory instead
                     if (PlayerData.inst.GetComponent<PartInventory>()._inventory.EmptySlotCount >= size)
                     {
-                        slotAvailable = true;
+                        slotAvailable = false;
                     }
                     break;
                 default:
@@ -356,9 +356,28 @@ public class Part : MonoBehaviour
                     break;
             }
 
-            if (slotAvailable) // There is space, we can add it!
+            // By default we want to try and add it to the inventory first
+            if (PlayerData.inst.GetComponent<PartInventory>()._inventory.EmptySlotCount >= size)
             {
-                //Debug.Log(">> Adding " + this._item.itemData.itemName + " - " + this._item + " - " + this._item.itemData.type + " - to inventory.");
+                // There is space, we can add it to the inventory
+                InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>()._inventory);
+                InventoryControl.inst.UpdateInterfaceInventories();
+                PlayerData.inst.currentInvCount = PlayerData.inst.GetComponent<PartInventory>()._inventory.InventoryItemCount();
+                UIManager.inst.CreateNewLogMessage("Aquired " + this._item.itemData.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+
+                // Play a sound
+                PlayEquipSound();
+                // Play an animation
+                showFloatingName = false;
+                _highlight.SetActive(false);
+                // Remove this item from the ground
+                TryDisableConnectedPopup();
+                _tile._partOnTop = null;
+                InventoryControl.inst.worldItems.Remove(new Vector2Int(_tile.locX, _tile.locY));
+                Destroy(this.gameObject);
+            }
+            else if(slotAvailable) // If no space in inventory, then we try to add it to the slots
+            {
                 switch (_item.itemData.slot)
                 {
                     case ItemSlot.Power:
@@ -393,7 +412,6 @@ public class Part : MonoBehaviour
 
                 InventoryControl.inst.UpdateInterfaceInventories();
                 UIManager.inst.CreateNewLogMessage("Aquired " + this._item.itemData.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
-                //PlayerData.inst.currentWeight += _item.mass;
 
                 // Play a sound
                 PlayEquipSound();
@@ -407,35 +425,13 @@ public class Part : MonoBehaviour
                 InventoryControl.inst.worldItems.Remove(new Vector2Int(_tile.locX, _tile.locY));
                 Destroy(this.gameObject);
             }
-            else // No space available in slot, try adding to inventory instead
+            else // No slot available
             {
-
-                if (PlayerData.inst.GetComponent<PartInventory>()._inventory.EmptySlotCount >= size)
-                {
-                    // There is space, we can add it to the inventory
-                    InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>()._inventory);
-                    InventoryControl.inst.UpdateInterfaceInventories();
-                    PlayerData.inst.currentInvCount = PlayerData.inst.GetComponent<PartInventory>()._inventory.InventoryItemCount();
-                    UIManager.inst.CreateNewLogMessage("Aquired " + this._item.itemData.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
-                    // Play a sound
-                    PlayEquipSound();
-                    // Play an animation
-                    showFloatingName = false;
-                    _highlight.SetActive(false);
-                    // Remove this item from the ground
-                    TryDisableConnectedPopup();
-                    _tile._partOnTop = null;
-                    InventoryControl.inst.worldItems.Remove(new Vector2Int(_tile.locX, _tile.locY));
-                    Destroy(this.gameObject);
-                }
-                else
-                {
-                    InventoryControl.inst.UpdateInterfaceInventories();
-                    // Full here too, give up
-                    // Display a message(
-                    UIManager.inst.ShowCenterMessageTop("No free slot", UIManager.inst.dangerRed, Color.black);
-                    return;
-                }
+                InventoryControl.inst.UpdateInterfaceInventories();
+                // Full here too, give up
+                // Display a message(
+                UIManager.inst.ShowCenterMessageTop("No free slot", UIManager.inst.dangerRed, Color.black);
+                return;
             }
         }
 
