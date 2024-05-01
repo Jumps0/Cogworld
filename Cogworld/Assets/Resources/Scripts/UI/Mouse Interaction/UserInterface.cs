@@ -269,12 +269,43 @@ public abstract class UserInterface : MonoBehaviour
             }
             #endregion
         }
-        else if (MouseData.slotHoveredOver && obj.GetComponent<InvDisplayItem>().item != null 
-            && MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].item.Id < 0) // Are we hovering over a slot thats empty? Attempt to move this item
+        else if (((MouseData.slotHoveredOver && MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].item.Id < 0) 
+            || MouseData.interfaceMouseIsOver.GetComponent<StaticInterface>()) && obj.GetComponent<InvDisplayItem>().item != null) // Are we hovering over a slot thats empty? Attempt to move this item
         {
             #region Item Relocation
-            InventorySlot destinationSlot = MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver]; // Get data from slot hovered over
-            InventorySlot originSlot = obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj]; // And get data from the slot we are swapping with
+            bool movingToInventory = false;
+
+            InventorySlot destinationSlot = null;
+            InventorySlot originSlot = null;
+
+            // In cases where we are moving an item TO the /INVENTORY/, we actually need to create a new inventory slot (object) due to how the display works.
+            // This is done automatically (though we need to call the interface update function), but we do need to find the latest free slot if there is one.
+            if (MouseData.interfaceMouseIsOver.GetComponent<StaticInterface>())
+            {
+                movingToInventory = true;
+
+                // Go through all slots in the inventory to find an empty one.
+                for (int i = 0; i < MouseData.interfaceMouseIsOver.GetComponent<StaticInterface>()._inventory.Container.Items.Length; i++)
+                {
+                    if (MouseData.interfaceMouseIsOver.GetComponent<StaticInterface>()._inventory.Container.Items[i].item.Id == -1)
+                    {
+                        destinationSlot = MouseData.interfaceMouseIsOver.GetComponent<StaticInterface>()._inventory.Container.Items[i];
+                        break;
+                    }
+                }
+
+                if(destinationSlot == null) // We didn't find a free slot which probably means the inventory is full.
+                {
+                    UIManager.inst.ShowCenterMessageTop("Inventory full", UIManager.inst.dangerRed, Color.black);
+                    return; // Bail out
+                }
+            }
+            else
+            {
+                destinationSlot = MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver]; // Get data from slot hovered over
+            }
+
+            originSlot = obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj]; // And get data from the slot we are swapping with
 
             Item originItem = originSlot.item;
 
@@ -335,6 +366,20 @@ public abstract class UserInterface : MonoBehaviour
 
                 obj.GetComponent<InvDisplayItem>().item = new Item(); // Set [ORIGIN]'s item to be empty in object
                 obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].item = new Item(); // Set [ORIGIN]'s item slot to be empty so we don't get errors
+
+                if (movingToInventory)
+                {
+                    MouseData.interfaceMouseIsOver.GetComponent<StaticInterface>().UpdateSlots(); // Force update the slots (destroy old, make new)
+                    MouseData.interfaceMouseIsOver.slotsOnInterface.UpdateSlotDisplay(); // Give the new slots data
+                    foreach (var S in MouseData.interfaceMouseIsOver.slotsOnInterface) // Then go through the list of objects, find the one that matches, and assign it to slotHoveredOver.
+                    {
+                        if(S.Value == destinationSlot)
+                        {
+                            MouseData.slotHoveredOver = S.Key;
+                            break;
+                        }
+                    }
+                }
 
                 MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().item = _item; // Set the item on the [DESTINATION] object
                 //MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].item = _item; // Set the item on the [DESTINATION] slot
@@ -424,7 +469,7 @@ public static class ExtensionMethods
                     _slot.Key.GetComponent<InvDisplayItem>().SetAsFilled();
                     _slot.Key.GetComponent<InvDisplayItem>().UpdateDisplay();
 
-                    if (first)
+                    if (first) // TODO: This is being called EVERY time (mainly) because we keep destroying them in StaticInterface's update. Find a solution!
                     {
                         _slot.Key.GetComponent<InvDisplayItem>().FlashItemDisplay(); // We do this after we have finished assigning and setting up everything
                         _slot.Key.GetComponent<InvDisplayItem>().InitialReveal();

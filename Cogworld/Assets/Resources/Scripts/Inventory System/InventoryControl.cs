@@ -356,6 +356,7 @@ public class InventoryControl : MonoBehaviour
             }
             else if (I.GetComponentInChildren<StaticInterface>())
             {
+                I.GetComponentInChildren<StaticInterface>().UpdateSlots();
                 I.slotsOnInterface.UpdateSlotDisplay();
             }
         }
