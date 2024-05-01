@@ -170,7 +170,7 @@ MonoBehaviour:
   disposable: -1
   unstable: -1
   destroyOnRemove: 1
-  canBeDisabled: 1
+  canBeDisabled: 0
   quality: 2
   itemName: EX Chip 1
   description: A unique chip used by the EXILEs that greatly increases hacking skills.
