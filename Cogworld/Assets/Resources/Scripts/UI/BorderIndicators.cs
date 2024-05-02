@@ -14,7 +14,7 @@ public class BorderIndicators : MonoBehaviour
     public Dictionary<Vector2Int, GameObject> locations = new Dictionary<Vector2Int, GameObject>();
 
     [Header("Values")]
-    private Vector2 buffer = new Vector2(0.705f, 0.77f);
+    private Vector2 buffer = new Vector2(0.705f, 0.813f);
     public float size;
 
     [Header("Prefabs")]
