@@ -1474,7 +1474,7 @@ public class PlayerData : MonoBehaviour
                         reference = item.Key.GetComponent<InvDisplayItem>();
                         if (reference.item != null && reference.item.Id >= 0)
                         {
-                            detect = reference._assignedChar.ToString();
+                            detect = reference._assignedChar;
 
                             KeyCode parse = KeyCode.None;
                             try

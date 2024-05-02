@@ -468,9 +468,13 @@ public static class ExtensionMethods
             {
                 if (_slot.Value.item.Id != -1)
                 {
+                    bool oneTime = false;
+                    if (!InventoryControl.inst.animatedItems.Contains(_slot.Value)) // Only want to start the text black once
+                        oneTime = true;
+
                     _slot.Key.GetComponent<InvDisplayItem>().item = _slot.Value.item;
                     _slot.Key.GetComponent<InvDisplayItem>().SetAsFilled();
-                    _slot.Key.GetComponent<InvDisplayItem>().UpdateDisplay();
+                    _slot.Key.GetComponent<InvDisplayItem>().UpdateDisplay(oneTime);
 
                     // Play the initial animation (only once tho)
                     if (!InventoryControl.inst.animatedItems.Contains(_slot.Value))

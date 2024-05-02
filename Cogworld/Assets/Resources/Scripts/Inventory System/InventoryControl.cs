@@ -379,7 +379,7 @@ public class InventoryControl : MonoBehaviour
                 {
                     if(item.Key.GetComponent<InvDisplayItem>().item != null)
                     {
-                        item.Key.GetComponent<InvDisplayItem>().SetLetter(UIManager.inst.alphabet[alphabet]);
+                        item.Key.GetComponent<InvDisplayItem>().SetLetter(UIManager.inst.alphabet[alphabet].ToString());
                         alphabet++;
 
                         if (alphabet >= 26) // Impossible to have more than 26 parts so should be good here.
@@ -396,7 +396,7 @@ public class InventoryControl : MonoBehaviour
                 {
                     if (item.Key.GetComponent<InvDisplayItem>().item != null)
                     {
-                        item.Key.GetComponent<InvDisplayItem>().SetLetter(UIManager.inst.alphabet[0], numbers + 1);
+                        item.Key.GetComponent<InvDisplayItem>().SetLetter(UIManager.inst.alphabet[0].ToString(), numbers + 1);
                         numbers++;
                     }
                 }

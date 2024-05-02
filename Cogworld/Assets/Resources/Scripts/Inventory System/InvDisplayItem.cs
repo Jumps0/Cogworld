@@ -52,7 +52,7 @@ public class InvDisplayItem : MonoBehaviour
 
     [Header("Assignments")]
     public Item item;
-    public char _assignedChar;
+    public string _assignedChar;
     public int _assignedNumber = -1;
     private bool canSiege = false;
     public UserInterface my_interface;
@@ -82,8 +82,12 @@ public class InvDisplayItem : MonoBehaviour
         specialDescText.gameObject.SetActive(false);
         healthMode.gameObject.SetActive(false);
 
+        _assignedChar = "";
         itemNameText.text = "Unused";
         this.gameObject.name = "IDI: Unused";
+
+        assignedOrderString = "";
+        bonusAOS = "";
     }
 
     /// <summary>
@@ -120,7 +124,7 @@ public class InvDisplayItem : MonoBehaviour
 
     private string assignedOrderString = "";
     private string bonusAOS = "";
-    public void SetLetter(char assignment, int number = -1)
+    public void SetLetter(string assignment, int number = -1)
     {
         if(number >= 0) // Inventory items use numbers instead of letters for assignments
         {
@@ -164,7 +168,7 @@ public class InvDisplayItem : MonoBehaviour
         }
     }
 
-    public void UpdateDisplay()
+    public void UpdateDisplay(bool startEmpty = false)
     {
         if(item != null)
         {
@@ -179,6 +183,11 @@ public class InvDisplayItem : MonoBehaviour
 
             // - Name - //
             itemNameText.text = item.itemData.itemName;
+            if (startEmpty)
+            {
+                // For the one time initial animation we have the start text set to black
+                itemNameText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(Color.black)}>" + item.itemData.itemName + "</color>";
+            }
 
             // - Letter Assignment - //
             // ?
