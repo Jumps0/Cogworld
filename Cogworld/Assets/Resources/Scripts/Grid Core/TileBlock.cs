@@ -147,7 +147,6 @@ public class TileBlock : MonoBehaviour
         }
 
         vis = tileInfo.currentVis;
-        HighlightCheck(); // TODO: NOTE: Don't do this, its bad, its nuking the framerate. We don't need to call this every frame. Just do a check on the player's mouse or something. Anything but this.
         CheckVisibility(); // This too this is also pretty bad. Finding a good solution for this may be difficult.
         // See https://www.youtube.com/watch?v=XNcEZHqtC0g for the many ways to finding problems when optimizing in Unity
 
@@ -160,31 +159,6 @@ public class TileBlock : MonoBehaviour
     }
 
     #region Vision/Display
-
-    /// <summary>
-    /// Should the white highlight animation be played?
-    /// </summary>
-    private void HighlightCheck()
-    {
-        if (_highlightPerm.activeInHierarchy) // Don't highlight when it's permanently on.
-        {
-            return;
-        }
-
-        if (_highlight.activeInHierarchy && // If the highlight is on
-            (_highlight.GetComponent<SpriteRenderer>().color.r == highlight_white.r) && // R
-            (_highlight.GetComponent<SpriteRenderer>().color.g == highlight_white.g) && // G
-            (_highlight.GetComponent<SpriteRenderer>().color.b == highlight_white.b)    // B
-            ) // and the RGB (white) matches with the highlight color
-        {
-            flashWhite.enabled = true;
-            flashWhite.Play("FlashWhite");
-        }
-        else
-        {
-            flashWhite.enabled = false;
-        }
-    }
 
     public void CheckVisibility()
     {

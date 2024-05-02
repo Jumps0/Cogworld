@@ -202,7 +202,7 @@ MonoBehaviour:
   _collapseAnim: {fileID: 6749864060239302422}
   _partOnTop: {fileID: 0}
   targetingHighlight: {fileID: 9102771288249447294}
-  flashWhite: {fileID: 7318842101929300165}
+  flashWhite: {fileID: 0}
   dosLetter: {fileID: 0}
   subTile: {fileID: 3502561631040395862}
   tileInfo: {fileID: 0}
@@ -220,9 +220,10 @@ MonoBehaviour:
   trojan_Blue: {r: 0, g: 0.27757612, b: 0.4811321, a: 0.78431374}
   highlight_white: {r: 1, g: 1, b: 1, a: 0.3529412}
   caution_yellow: {r: 0.6431373, g: 0.6431373, b: 0.007843138, a: 0.78431374}
-  phaseWall_blue: {r: 0, g: 0.37254903, b: 0.7490196, a: 1}
   phaseWall: 0
   phaseWallTeam: 0
+  phaseWallSprite: {fileID: 0}
+  phaseWall_revealed: 0
   vis: 0
   _secretDoorAnimator: {fileID: 7073974668509362935}
 --- !u!61 &6168004057917419483
@@ -302,7 +303,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4244014415382642439}
   - component: {fileID: 5121802062948635318}
-  - component: {fileID: 7318842101929300165}
   m_Layer: 0
   m_Name: Highlight
   m_TagString: Untagged
@@ -377,26 +377,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &7318842101929300165
-Animator:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1646736230279944977}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: c13dfdcf9abcc1a46be1738cf72d5715, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &3358479945113562065
 GameObject:
   m_ObjectHideFlags: 0
