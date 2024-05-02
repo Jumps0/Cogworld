@@ -1458,7 +1458,7 @@ public class PlayerData : MonoBehaviour
     private void InventoryInputDetection()
     {
         // Check for player input
-        if (Input.anyKey)
+        if (Input.anyKey && !UIManager.inst.terminal_targetresultsAreaRef.gameObject.activeInHierarchy)
         {
             // Go through all the interfaces
             foreach (var I in InventoryControl.inst.interfaces)

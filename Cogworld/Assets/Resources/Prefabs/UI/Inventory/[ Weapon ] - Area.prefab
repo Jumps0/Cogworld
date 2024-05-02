@@ -166,6 +166,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onDoubleClick:
+    m_PersistentCalls:
+      m_Calls: []
   disabled: 0
 --- !u!114 &5539824908830308818
 MonoBehaviour:
@@ -513,7 +516,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '[CYCLE]'
+  m_text: <color=#00D800>[</color>CYCLE<color=#00D800>]</color>
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3f1bf64e23c81b149a75c74890c74f84, type: 2}
   m_sharedMaterial: {fileID: -6821579221814523707, guid: 3f1bf64e23c81b149a75c74890c74f84, type: 2}
@@ -522,8 +525,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278206464
-  m_fontColor: {r: 0, g: 0.2509804, b: 0, a: 1}
+    rgba: 4279648535
+  m_fontColor: {r: 0.09019608, g: 0.25490198, b: 0.08627451, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

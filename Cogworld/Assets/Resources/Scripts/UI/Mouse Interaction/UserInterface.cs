@@ -159,6 +159,12 @@ public abstract class UserInterface : MonoBehaviour
                 }
                 else // Not the first time, destroy the item
                 {
+                    string key = obj.GetComponent<InvDisplayItem>()._assignedChar;
+                    string name = obj.GetComponent<InvDisplayItem>().nameUnmodified;
+
+                    // Stop the animation
+                    obj.GetComponent<InvDisplayItem>().DiscardForceStop();
+
                     // Make a log message
                     UIManager.inst.CreateNewLogMessage("Discarded " + obj.GetComponent<InvDisplayItem>().item.itemData.itemName + ".", UIManager.inst.cautiousYellow, UIManager.inst.dullGreen, false, true); // Do a UI message
 
@@ -182,6 +188,9 @@ public abstract class UserInterface : MonoBehaviour
                     slotsOnInterface[obj].RemoveItem(); // Remove from slot
                     InventoryControl.inst.animatedItems.Remove(slotsOnInterface[obj]); // Remove from animation tracking HashSet
                     InventoryControl.inst.UpdateInterfaceInventories(); // Update UI
+
+                    // Lastly, have the reference object do a little animation to show the item is gone.
+                    obj.GetComponent<InvDisplayItem>().DiscardedAnimation(key, name);
                 }
 
                 // We also want to turn off any other warnings that may be on right now (we want to focus on this).
@@ -190,7 +199,7 @@ public abstract class UserInterface : MonoBehaviour
                     if (IDI.gameObject.GetComponent<InvDisplayItem>())
                     {
                         InvDisplayItem reference = IDI.gameObject.GetComponent<InvDisplayItem>();
-                        if (reference.item != null && reference.item.Id >= 0)
+                        if (reference.item != null && reference.item.Id >= 0 && reference != obj.GetComponent<InvDisplayItem>())
                         {
                             if (reference.item.itemData.destroyOnRemove && reference.discard_readyToDestroy)
                             {
@@ -487,6 +496,95 @@ public abstract class UserInterface : MonoBehaviour
         {
             MouseData.tempItemBeingDragged.transform.position = Input.mousePosition;
         }
+    }
+
+    /// <summary>
+    /// Attempt to directly equip this item (from the inventory), to an empty slot that matches this item's type. Called externally from an InvDisplayItem object upon a double click.
+    /// </summary>
+    /// <param name="obj">A reference to the InvDisplayObject.</param>
+    /// <param name="item">A reference to the IDO's item.</param>
+    public void TryDirectEquip(GameObject obj, Item item)
+    {
+        // We are essentially doing item relocation here. So we can copy most of the code from above.
+
+        // First we need to try and find a free slot of the matching type.
+        InventorySlot destinationSlot = null;
+        GameObject destinationObject = null;
+
+        foreach (var I in InventoryControl.inst.interfaces)
+        {
+            if (I.GetComponent<DynamicInterface>()) // This double loop shouldn't be too bad. v
+            {
+                foreach (KeyValuePair<GameObject, InventorySlot> S in I.GetComponent<DynamicInterface>().slotsOnInterface)
+                {
+                    if(S.Value.item != null && S.Value.item.Id == -1) // An empty slot
+                    {
+                        if(S.Value.AllowedItems.Count > 0 && S.Value.AllowedItems.Contains(item.itemData.slot)) // And allows for our item's slot type
+                        { // Note: ^ Since we are adding to /PARTS/ slots this should always have 1 type and not be == 0.
+                            // We've found our slot
+                            destinationSlot = S.Value;
+                            destinationObject = S.Key;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Did we succeed on finding a slot?
+        if(destinationSlot == null) // No. Display a message
+        {
+            UIManager.inst.ShowCenterMessageTop($"No free {item.itemData.slot.ToString()} slots", UIManager.inst.dangerRed, Color.black);
+        }
+        else // Yes! Relocate the item.
+        {
+            if (item.itemData.slot == ItemSlot.Power)
+            {
+                PlayerData.inst.GetComponent<PartInventory>()._invPower.AddItem(item, 1);
+                UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+            }
+            else if (item.itemData.slot == ItemSlot.Propulsion)
+            {
+                PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.AddItem(item, 1);
+                UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+            }
+            else if (item.itemData.slot == ItemSlot.Utilities)
+            {
+                PlayerData.inst.GetComponent<PartInventory>()._invUtility.AddItem(item, 1);
+                UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+            }
+            else if (item.itemData.slot == ItemSlot.Weapons)
+            {
+                PlayerData.inst.GetComponent<PartInventory>()._invWeapon.AddItem(item, 1);
+                UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+            }
+        }
+
+        // Remove the old item from wherever its stored
+        Action.FindRemoveItemFromPlayer(item);
+
+        obj.GetComponent<InvDisplayItem>().item = new Item(); // Set [ORIGIN]'s item to be empty in object
+        obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].item = new Item(); // Set [ORIGIN]'s item slot to be empty so we don't get errors
+
+        destinationObject.GetComponent<InvDisplayItem>().item = item; // Set the item on the [DESTINATION] object
+
+        // Force enable the item and animate it (if its disabled)
+        if (!destinationObject.GetComponent<InvDisplayItem>().item.state) // [DESTINATION]
+        {
+            destinationObject.GetComponent<InvDisplayItem>().UIEnable();
+        }
+
+        // Flash the item's display square
+        destinationObject.GetComponent<InvDisplayItem>().FlashItemDisplay();
+
+        // Update Inventory Count
+        PlayerData.inst.currentInvCount = PlayerData.inst.GetComponent<PartInventory>()._inventory.InventoryItemCount();
+
+        // Update UI
+        UIManager.inst.UpdatePSUI();
+        UIManager.inst.UpdateInventory();
+        UIManager.inst.UpdateParts();
+        InventoryControl.inst.UpdateInterfaceInventories();
     }
 
     public void CopyInvDisplayItem(InvDisplayItem s, InvDisplayItem t) // Source | Target

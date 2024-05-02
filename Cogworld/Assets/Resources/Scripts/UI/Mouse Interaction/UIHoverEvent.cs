@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UIHoverEvent : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class UIHoverEvent : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     /*
      * CAUTION:
@@ -16,6 +16,7 @@ public class UIHoverEvent : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     [Header("Events")]
     public UnityEvent onHoverStart;
     public UnityEvent onHoverEnd;
+    public UnityEvent onDoubleClick;
 
     [Header("Variables")]
     public bool disabled = false;
@@ -30,6 +31,18 @@ public class UIHoverEvent : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     {
         if (!disabled)
             onHoverEnd.Invoke();
+    }
+
+    public virtual void OnPointerClick(PointerEventData eventData)
+    {
+        if (!disabled)
+        {
+            if(eventData.clickCount == 2)
+            {
+                onDoubleClick.Invoke();
+                eventData.clickCount = 0;
+            }
+        }
     }
 
     public void DebugTestMessage(string message)

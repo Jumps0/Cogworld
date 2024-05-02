@@ -14,6 +14,7 @@ public class InvDisplayItem : MonoBehaviour
     // -- UI References --
     //
     public TextMeshProUGUI assignedOrderText;
+    public Image assignedOrderBacker;
     public Image partDisplay;
     public Image partDisplayFlasher;
     public Image healthDisplay;
@@ -53,6 +54,8 @@ public class InvDisplayItem : MonoBehaviour
     [Header("Assignments")]
     public Item item;
     public string _assignedChar;
+    [Tooltip("The display name of this item (excluding any <color>'s).")]
+    public string nameUnmodified;
     public int _assignedNumber = -1;
     private bool canSiege = false;
     public UserInterface my_interface;
@@ -85,6 +88,7 @@ public class InvDisplayItem : MonoBehaviour
         _assignedChar = "";
         itemNameText.text = "Unused";
         this.gameObject.name = "IDI: Unused";
+        nameUnmodified = "Unused";
 
         assignedOrderString = "";
         bonusAOS = "";
@@ -181,8 +185,9 @@ public class InvDisplayItem : MonoBehaviour
             //if(_assignedItem != null)
             //    _part = InventoryControl.inst._itemDatabase.Items[_assignedItem.Id].data;
 
-            // - Name - //
-            itemNameText.text = item.itemData.itemName;
+            // - Name - // TODO: This will need to change with things like trap storage which update based on internal values
+            nameUnmodified = item.itemData.itemName;
+            itemNameText.text = nameUnmodified;
             if (startEmpty)
             {
                 // For the one time initial animation we have the start text set to black
@@ -445,7 +450,7 @@ public class InvDisplayItem : MonoBehaviour
 
     public void Click()
     {
-        if (my_interface.GetComponent<StaticInterface>()) // No toggling items in the inventory!!!
+        if (my_interface.GetComponent<StaticInterface>() || discardAnimationCoroutine != null) // We shouldn't toggle items in the inventory. And we should forbid toggling while in the middle of animating.
         {
             return;
         }
@@ -641,6 +646,34 @@ public class InvDisplayItem : MonoBehaviour
             healthDisplayBacker.color = letterWhite;
             unusedHighlight = StartCoroutine(UnusedHighlightAnim(false));
         }
+    }
+
+    /// <summary>
+    /// If double clicked on (in the inventory), we want to try and directly equip this item into an empty slot of its type. [This is triggered by UIHoverEvent.cs]
+    /// </summary>
+    public void TryDirectEquip()
+    {
+        if (my_interface.GetComponent<StaticInterface>() && canTryDirectEquip) // Inventory only
+        {
+            // Do the rest of the logic inside UserInterface.cs
+            my_interface.TryDirectEquip(this.gameObject, item);
+
+            // Enable a cooldown so this can't be spammed
+            if (directEquipCooldown != null)
+            {
+                StopCoroutine(directEquipCooldown);
+            }
+            directEquipCooldown = StartCoroutine(directEquipCooldownIE());
+        }
+    }
+
+    private bool canTryDirectEquip = true;
+    private Coroutine directEquipCooldown = null;
+    private IEnumerator directEquipCooldownIE()
+    {
+        canTryDirectEquip = false;
+        yield return new WaitForSeconds(3.5f);
+        canTryDirectEquip = true;
     }
 
     #endregion
@@ -1007,6 +1040,7 @@ public class InvDisplayItem : MonoBehaviour
     float discard_delay = 5f;
     public bool discard_readyToDestroy = false;
     Coroutine discardCoroutine = null;
+    public Coroutine discardAnimationCoroutine = null;
 
     public void StartDiscardTimeout()
     {
@@ -1024,32 +1058,260 @@ public class InvDisplayItem : MonoBehaviour
     {
         yield return new WaitForSeconds(discard_delay);
 
-        if (this.gameObject != null)
+        if (this.gameObject != null) // Incase this object is discard & destroyed
         {
             DiscardSetAsNormal();
+            discardCoroutine = null;
         }
-        discardCoroutine = null;
     }
 
     // Set the visuals back to normal.
     public void DiscardSetAsNormal()
     {
-        discard_readyToDestroy = false;
+        if(this.gameObject != null)
+        {
+            discard_readyToDestroy = false;
 
+            if (discardAnimationCoroutine != null)
+            {
+                StopCoroutine(discardAnimationCoroutine);
+            }
+
+            if (item.state)
+            {
+                itemNameText.color = activeGreen;
+                assignedOrderText.color = activeGreen;
+            }
+            else
+            {
+                itemNameText.color = emptyGray;
+                assignedOrderText.color = emptyGray;
+            }
+
+            // Disabled the backer
+            assignedOrderBacker.enabled = false;
+        }
     }
 
     // Change the visuals to indicate this may be discarded.
     private void DiscardWaitingVisual()
     {
+        if (discardAnimationCoroutine != null)
+        {
+            StopCoroutine(discardAnimationCoroutine);
+        }
+        discardAnimationCoroutine = StartCoroutine(DiscardWaitingAnimation());
+    }
 
+    public void DiscardForceStop()
+    {
+        if (discardAnimationCoroutine != null)
+        {
+            StopCoroutine(discardAnimationCoroutine);
+        }
+
+        if (discardCoroutine != null)
+        {
+            StopCoroutine(discardCoroutine);
+        }
+
+        assignedOrderBacker.enabled = false;
+        itemNameText.color = emptyGray;
+        assignedOrderText.color = emptyGray;
     }
 
     private IEnumerator DiscardWaitingAnimation()
     {
         // This is a continuous looping animation that lasts for 5 seconds. It heavily uses the color gray and slowly flashing images.
 
+        // Start by setting the assigned :# to black text.
+        assignedOrderText.color = Color.black;
 
-        yield break;
+        // Activate the backer behind the assigned :#
+        assignedOrderBacker.enabled = true;
+
+        // Set the backer and the main text to their starting color (letter white).
+        string modifiedName = itemNameText.text;
+        itemNameText.text = nameUnmodified; // Set name to its state but without any <color>'s
+        assignedOrderBacker.color = letterWhite;
+        itemNameText.color = letterWhite;
+
+        // Now we want to flash both the :# backer AND the main text from emtpy grey to letter white.
+        #region Flashing
+        float elapsedTime;
+        float duration;
+        Color lerp = Color.white;
+
+        // 1.
+        elapsedTime = 0f;
+        duration = 0.5f;
+        while (elapsedTime < duration) // WHITE -> GRAY
+        {
+            lerp = Color.Lerp(letterWhite, emptyGray, elapsedTime / duration);
+            assignedOrderBacker.color = lerp;
+            itemNameText.color = lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        elapsedTime = 0f;
+        while (elapsedTime < duration) // GRAY -> WHITE
+        {
+            lerp = Color.Lerp(emptyGray, letterWhite, elapsedTime / duration);
+            assignedOrderBacker.color = lerp;
+            itemNameText.color = lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // 2.
+        elapsedTime = 0f;
+        while (elapsedTime < duration) // WHITE -> GRAY
+        {
+            lerp = Color.Lerp(letterWhite, emptyGray, elapsedTime / duration);
+            assignedOrderBacker.color = lerp;
+            itemNameText.color = lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        elapsedTime = 0f;
+        while (elapsedTime < duration) // GRAY -> WHITE
+        {
+            lerp = Color.Lerp(emptyGray, letterWhite, elapsedTime / duration);
+            assignedOrderBacker.color = lerp;
+            itemNameText.color = lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // 3.
+        elapsedTime = 0f;
+        while (elapsedTime < duration) // WHITE -> GRAY
+        {
+            lerp = Color.Lerp(letterWhite, emptyGray, elapsedTime / duration);
+            assignedOrderBacker.color = lerp;
+            itemNameText.color = lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        elapsedTime = 0f;
+        while (elapsedTime < duration) // GRAY -> WHITE
+        {
+            lerp = Color.Lerp(emptyGray, letterWhite, elapsedTime / duration);
+            assignedOrderBacker.color = lerp;
+            itemNameText.color = lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // 4.
+        elapsedTime = 0f;
+        while (elapsedTime < duration) // WHITE -> GRAY
+        {
+            lerp = Color.Lerp(letterWhite, emptyGray, elapsedTime / duration);
+            assignedOrderBacker.color = lerp;
+            itemNameText.color = lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        elapsedTime = 0f;
+        while (elapsedTime < duration) // GRAY -> WHITE
+        {
+            lerp = Color.Lerp(emptyGray, letterWhite, elapsedTime / duration);
+            assignedOrderBacker.color = lerp;
+            itemNameText.color = lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // 5.
+        elapsedTime = 0f;
+        while (elapsedTime < duration) // WHITE -> GRAY
+        {
+            lerp = Color.Lerp(letterWhite, emptyGray, elapsedTime / duration);
+            assignedOrderBacker.color = lerp;
+            itemNameText.color = lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        elapsedTime = 0f;
+        while (elapsedTime < duration) // GRAY -> WHITE
+        {
+            lerp = Color.Lerp(emptyGray, letterWhite, elapsedTime / duration);
+            assignedOrderBacker.color = lerp;
+            itemNameText.color = lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        #endregion
+
+        // Now that we're done, set it back to its original state (aka Disabled or Enabled visuals).
+        Debug.Log("State: " + item.state);
+        if (item.state)
+        {
+            itemNameText.color = activeGreen;
+            assignedOrderText.color = activeGreen;
+        }
+        else
+        {
+            itemNameText.color = emptyGray;
+            assignedOrderText.color = emptyGray;
+        }
+        itemNameText.text = modifiedName; // Reset name with <color>'s.
+
+        // Disabled the backer
+        assignedOrderBacker.enabled = false;
+
+        discardAnimationCoroutine = null;
+    }
+
+    /// <summary>
+    /// To be played when this item has just been discarded. Transitions to Unusued visuals.
+    /// </summary>
+    public void DiscardedAnimation(string key, string iName)
+    {
+        StartCoroutine(DiscardedAnim(key, iName));
+    }
+
+    private IEnumerator DiscardedAnim(string key, string iName)
+    {
+        // 1. Set both the indicator & name text do red, and temporarly reset the name & key to what they were.
+        itemNameText.color = UIManager.inst.highSecRed;
+        assignedOrderText.color = UIManager.inst.highSecRed;
+        assignedOrderText.text = key;
+        itemNameText.text = iName;
+
+        // 2. Fade text to black
+        Color lerp = Color.white;
+        float elapsedTime = 0f;
+        float duration = 1.2f;
+
+        while (elapsedTime < duration) // RED -> BLACK
+        {
+            lerp = Color.Lerp(UIManager.inst.highSecRed, Color.black, elapsedTime / duration);
+            assignedOrderText.color = lerp;
+            itemNameText.color = lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // 3. Set as empty
+        SetEmpty();
     }
 
     #endregion
