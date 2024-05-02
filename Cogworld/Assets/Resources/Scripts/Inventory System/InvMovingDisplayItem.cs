@@ -11,15 +11,21 @@ using UnityEngine.UI;
 public class InvMovingDisplayItem : MonoBehaviour
 {
     public Color backColor;
+    public Color redColor;
     public Image backImage;
     public TextMeshProUGUI _text;
 
-    public void Setup(string name)
+    public void Setup(string name, bool useRed = false)
     {
         _text.text = name;
         _text.color = Color.black;
         backImage.color = backColor;
         this.GetComponentInParent<Canvas>().sortingOrder = 40;
+
+        if (useRed)
+        {
+            backImage.color = redColor;
+        }
     }
 
     public void SetUnRaycast()

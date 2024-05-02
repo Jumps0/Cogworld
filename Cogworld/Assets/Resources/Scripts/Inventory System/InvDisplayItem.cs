@@ -1000,4 +1000,57 @@ public class InvDisplayItem : MonoBehaviour
     #endregion
 
     #endregion
+
+    #region Forced Item Discarding
+    // For things like processors that are destroyed upon being removed
+
+    float discard_delay = 5f;
+    public bool discard_readyToDestroy = false;
+    Coroutine discardCoroutine = null;
+
+    public void StartDiscardTimeout()
+    {
+        discard_readyToDestroy = true;
+        DiscardWaitingVisual();
+
+        if (discardCoroutine != null)
+        {
+            StopCoroutine(discardCoroutine);
+        }
+        discardCoroutine = StartCoroutine(DiscardCountdown());
+    }
+
+    private IEnumerator DiscardCountdown()
+    {
+        yield return new WaitForSeconds(discard_delay);
+
+        if (this.gameObject != null)
+        {
+            DiscardSetAsNormal();
+        }
+        discardCoroutine = null;
+    }
+
+    // Set the visuals back to normal.
+    public void DiscardSetAsNormal()
+    {
+        discard_readyToDestroy = false;
+
+    }
+
+    // Change the visuals to indicate this may be discarded.
+    private void DiscardWaitingVisual()
+    {
+
+    }
+
+    private IEnumerator DiscardWaitingAnimation()
+    {
+        // This is a continuous looping animation that lasts for 5 seconds. It heavily uses the color gray and slowly flashing images.
+
+
+        yield break;
+    }
+
+    #endregion
 }

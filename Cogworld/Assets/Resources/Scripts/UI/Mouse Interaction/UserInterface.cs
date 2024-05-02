@@ -113,7 +113,14 @@ public abstract class UserInterface : MonoBehaviour
 
             var rt = tempItem;
             //CopyInvDisplayItem(obj.GetComponent<InvDisplayItem>(), rt.GetComponent<InvDisplayItem>());
-            rt.GetComponent<InvMovingDisplayItem>().Setup(obj.GetComponent<InvDisplayItem>().item.itemData.itemName);
+
+            bool destroyOnRemove = false;
+            if (slotsOnInterface[obj].item.itemData.destroyOnRemove && obj.GetComponent<InvDisplayItem>().my_interface.GetComponent<DynamicInterface>()) // It should be red if it will be destroyed on remove
+            {
+                destroyOnRemove = true;
+            }
+
+            rt.GetComponent<InvMovingDisplayItem>().Setup(obj.GetComponent<InvDisplayItem>().item.itemData.itemName, destroyOnRemove);
             tempItem.transform.SetParent(inventoryArea.transform.parent.transform.parent); // Set parent to *[RightCore] - Area* so that it isn't layered under any of the menus.
 
             // Is there an actual item there?
@@ -140,27 +147,81 @@ public abstract class UserInterface : MonoBehaviour
         if(MouseData.interfaceMouseIsOver == null && obj.GetComponent<InvDisplayItem>().item != null) // If we're not over an inventory & we are dragging a real item
         {
             #region Item Dropping
-            // Drop the item on the floor
-            InventoryControl.inst.DropItemOnFloor(obj.GetComponent<InvDisplayItem>().item, PlayerData.inst.GetComponent<Actor>(), _inventory);
-
-            // Update player mass
-            PlayerData.inst.currentWeight -= obj.GetComponent<InvDisplayItem>().item.itemData.mass;
-            if (obj.GetComponent<InvDisplayItem>().item.itemData.propulsion.Count > 0)
+            // Before we actually try to drop the item, we want to consider if attempting to do so would destroy it.
+            if (obj.GetComponent<InvDisplayItem>().item.itemData.destroyOnRemove && obj.GetComponent<InvDisplayItem>().my_interface.GetComponent<DynamicInterface>()) // Also only do this in /PARTS/ menu
             {
-                PlayerData.inst.maxWeight -= obj.GetComponent<InvDisplayItem>().item.itemData.propulsion[0].support;
+                #region Item Force Discarding
+                // First of all, if this is the first time we try to do this, we want to warn the player.
+                if (!obj.GetComponent<InvDisplayItem>().discard_readyToDestroy) // First time, give a warning, and start the reset time
+                {
+                    obj.GetComponent<InvDisplayItem>().StartDiscardTimeout();
+                    UIManager.inst.ShowCenterMessageTop($"Will discard {obj.GetComponent<InvDisplayItem>().item.itemData.itemName}, repeat to confirm", UIManager.inst.dangerRed, Color.black);
+                }
+                else // Not the first time, destroy the item
+                {
+                    // Make a log message
+                    UIManager.inst.CreateNewLogMessage("Discarded " + obj.GetComponent<InvDisplayItem>().item.itemData.itemName + ".", UIManager.inst.cautiousYellow, UIManager.inst.dullGreen, false, true); // Do a UI message
+
+                    // Play the discard sound
+                    AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[82]); // UI/PT_DISC
+
+                    _inventory.RemoveItem(obj.GetComponent<InvDisplayItem>().item); // Remove item from inventory
+
+                    // Update player mass
+                    PlayerData.inst.currentWeight -= obj.GetComponent<InvDisplayItem>().item.itemData.mass;
+                    if (obj.GetComponent<InvDisplayItem>().item.itemData.propulsion.Count > 0)
+                    {
+                        PlayerData.inst.maxWeight -= obj.GetComponent<InvDisplayItem>().item.itemData.propulsion[0].support;
+                    }
+
+                    // Update UI
+                    UIManager.inst.UpdatePSUI();
+                    UIManager.inst.UpdateInventory();
+                    UIManager.inst.UpdateParts();
+
+                    slotsOnInterface[obj].RemoveItem(); // Remove from slot
+                    InventoryControl.inst.animatedItems.Remove(slotsOnInterface[obj]); // Remove from animation tracking HashSet
+                    InventoryControl.inst.UpdateInterfaceInventories(); // Update UI
+                }
+
+                // We also want to turn off any other warnings that may be on right now (we want to focus on this).
+                foreach (Transform IDI in obj.GetComponent<InvDisplayItem>().my_interface.inventoryArea.transform)
+                {
+                    if (IDI.gameObject.GetComponent<InvDisplayItem>())
+                    {
+                        InvDisplayItem reference = IDI.gameObject.GetComponent<InvDisplayItem>();
+                        if (reference.item != null && reference.item.Id >= 0)
+                        {
+                            if (reference.item.itemData.destroyOnRemove && reference.discard_readyToDestroy)
+                            {
+                                reference.DiscardSetAsNormal();
+                            }
+                        }
+                    }
+                }
+                #endregion
             }
+            else
+            {
+                // Drop the item on the floor
+                InventoryControl.inst.DropItemOnFloor(obj.GetComponent<InvDisplayItem>().item, PlayerData.inst.GetComponent<Actor>(), _inventory);
 
-            // Play a little animation to let the player know THIS item was just equipped
-            obj.GetComponent<InvDisplayItem>().RecentAttachmentAnimation();
+                // Update player mass
+                PlayerData.inst.currentWeight -= obj.GetComponent<InvDisplayItem>().item.itemData.mass;
+                if (obj.GetComponent<InvDisplayItem>().item.itemData.propulsion.Count > 0)
+                {
+                    PlayerData.inst.maxWeight -= obj.GetComponent<InvDisplayItem>().item.itemData.propulsion[0].support;
+                }
 
-            // Update UI
-            UIManager.inst.UpdatePSUI();
-            UIManager.inst.UpdateInventory();
-            UIManager.inst.UpdateParts();
+                // Update UI
+                UIManager.inst.UpdatePSUI();
+                UIManager.inst.UpdateInventory();
+                UIManager.inst.UpdateParts();
 
-            slotsOnInterface[obj].RemoveItem(); // Remove from slot
-            InventoryControl.inst.animatedItems.Remove(slotsOnInterface[obj]); // Remove from animation tracking HashSet
-            InventoryControl.inst.UpdateInterfaceInventories(); // Update UI
+                slotsOnInterface[obj].RemoveItem(); // Remove from slot
+                InventoryControl.inst.animatedItems.Remove(slotsOnInterface[obj]); // Remove from animation tracking HashSet
+                InventoryControl.inst.UpdateInterfaceInventories(); // Update UI
+            }
             return;
             #endregion
         }
