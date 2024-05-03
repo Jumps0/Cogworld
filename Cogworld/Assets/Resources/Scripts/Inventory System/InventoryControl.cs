@@ -57,6 +57,7 @@ public class InventoryControl : MonoBehaviour
     // --            --
 
     [Header("Inventory UI")]
+    public int uuids = 0;
     public Dictionary<GameObject, InventorySlot> itemsDisplayed = new Dictionary<GameObject, InventorySlot>();
 
     public HashSet<InventorySlot> animatedItems = new HashSet<InventorySlot>(); // For tracking InitialAnimation on the InvDisplayObjects
@@ -428,16 +429,26 @@ public class InventoryControl : MonoBehaviour
     /// </summary>
     /// <param name="part">The part to add.</param>
     /// <param name="inventory">The inventory to target.</param>
-    public Item AddItemToPlayer(Part part, InventoryObject inventory)
+    public void AddItemToPlayer(Part part, InventoryObject inventory)
     {
         part._item.state = true;
         Item _item = new Item(part._item);
-        if(inventory.AddItem(_item, 1))
-        {
-            // Destroying is handled internally
-        }
+        inventory.AddItem(_item, 1);
 
-        return _item;
+        // If an item takes up more than 1 slot, we add duplicate items (and track using a hashset)
+        for (int i = 0; i < _item.itemData.slotsRequired - 1; i++)
+        {
+            Item duplicate = new Item(part._item);
+            int uuid = uuids;
+
+            duplicate.isDuplicate = true;
+            duplicate.duplicate_uuid = uuid;
+
+            inventory.AddItem(duplicate, 1);
+
+            _item.duplicates.Add(uuids);
+            uuids++;
+        }
     }
 
     public void DropItemOnFloor(Item _item, Actor source, InventoryObject sourceInventory)
@@ -502,9 +513,25 @@ public class InventoryControl : MonoBehaviour
         }
     }
 
-    public void RemoveItemFromPlayer(Part part, InventoryObject inventory)
+    public void RemoveItemFromAnInventory(Item item, InventoryObject inventory)
     {
+        inventory.RemoveItem(item);
 
+        // Also remove any duplicates if this item has multiple slots
+        if(!item.isDuplicate && item.duplicates.Count > 0)
+        {
+            foreach (var D in item.duplicates)
+            {
+                // Check specified inventory for duplicates as specified in the parent item
+                foreach (var I in inventory.Container.Items.ToList())
+                {
+                    if(D == I.item.duplicate_uuid)
+                    {
+                        inventory.RemoveItem(I.item);
+                    }
+                }
+            }
+        }
     }
 
     public Part CloneItem(Part part)

@@ -88,6 +88,12 @@ public class Item
     [Tooltip("Is this item currently in siege mode?")]
     public bool siege = false; // https://www.gridsagegames.com/blog/2019/09/siege-tread-mechanics/
 
+    [Header("Multi-slot")]
+    public bool isDuplicate = false;
+    public int duplicate_uuid = -1; // I really do hate using UUIDs for this. It's stupid and is bad code.
+    [Tooltip("Stores duplicate items that help represent multi-slot items.")]
+    public List<int> duplicates;
+
     public Item()
     {
         Name = "";
@@ -104,6 +110,18 @@ public class Item
         unstable = item.unstable;
         disposable = item.disposable;
         uniqueDetail = item.uniqueDetail;
+
+        isDuplicate = item.isDuplicate;
+        duplicate_uuid = item.duplicate_uuid;
+        if (item.duplicates == null)
+        {
+            duplicates = new List<int>();
+        }
+        else
+        {
+            duplicates = item.duplicates;
+        }
+
         SetupText();
     }
 
@@ -117,6 +135,8 @@ public class Item
         unstable = item.unstable;
         disposable = item.disposable;
         uniqueDetail = item.uniqueDetail;
+
+        duplicates = new List<int>();
         SetupText();
     }
 
@@ -318,17 +338,21 @@ public class ItemEffect
 
     [Header("Crush/Ram")]
     public bool ramCrushEffect = false;
-    [Tooltip("Percent so: 0.##")]
+    [Tooltip("What is the % chance for this to crush/ram? | Percent so: 0.##")]
     public float ramCrushChance = 0f;
-    [Tooltip("Can crush targets of this size")]
+    [Tooltip("Can crush targets of large.")]
     public bool ramCrush_canDoLarge = false;
+    [Tooltip("Can crush targets of gigantic.")]
     public bool ramCrush_canDoGigantic = false;
+    [Tooltip("Cannot crush bots with more than ## core integrity.")]
     public int ramCrush_integLimit = 0;
+    [Tooltip("Can this effect stack?")]
     public bool ramCrush_canStack = false;
-    [Tooltip("Percent so: 0.##")]
+    [Tooltip("If this effect can stack, is there a max amount? | Percent so: 0.##")]
     public float ramCrush_stackCap = 0f;
 
     [Header("Stability")]
+    [Tooltip("-# recoil from each weapon, and immunity to knockback.")]
     public bool hasStabEffect = false;
     public int stab_recoilPerWeapon = 0;
     public bool stab_KnockbackImmune = false;

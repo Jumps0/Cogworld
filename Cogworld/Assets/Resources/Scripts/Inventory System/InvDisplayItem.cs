@@ -32,7 +32,7 @@ public class InvDisplayItem : MonoBehaviour
     public GameObject healthMode;
     public TextMeshProUGUI healthModeNumber; // The right side "##"
     public TextMeshProUGUI healthModeTextRep; // The bars
-    public Image secondaryBacker;
+    public Image secondaryBacker; // Not actually for secondary objects
     //
     // --               --
     [Header("Colors")]
@@ -60,6 +60,11 @@ public class InvDisplayItem : MonoBehaviour
     private bool canSiege = false;
     public UserInterface my_interface;
 
+    [Header("Secondary")] // For Multi-Slot items
+    public bool isSecondaryItem = false;
+    public GameObject secondaryParent; // Reference to the InvDisplayItem that is in charge.
+    public List<GameObject> secondaryChildren; // List to any secondary children
+
     private void Update()
     {
         if (canSiege)
@@ -68,6 +73,7 @@ public class InvDisplayItem : MonoBehaviour
         }
     }
 
+    #region Setup
     /// <summary>
     /// This slot is empty, and therefore should not display anything besides "Unused"
     /// </summary>
@@ -81,12 +87,12 @@ public class InvDisplayItem : MonoBehaviour
         partDisplay.gameObject.SetActive(false);
         healthDisplay.gameObject.SetActive(false);
         modeMain.SetActive(false);
-        //_button.gameObject.SetActive(false);
         specialDescText.gameObject.SetActive(false);
         healthMode.gameObject.SetActive(false);
 
         _assignedChar = "";
         itemNameText.text = "Unused";
+        assignedOrderText.text = "#";
         this.gameObject.name = "IDI: Unused";
         nameUnmodified = "Unused";
 
@@ -276,8 +282,33 @@ public class InvDisplayItem : MonoBehaviour
 
             // Melee check
             MeleeCheck();
+
+            // Duplicates setup
+            if(!item.isDuplicate && item.duplicates.Count > 0)
+            {
+                // Find & Collect
+                foreach (var I in item.duplicates)
+                {
+                    // We need to locate these duplicate items in their created slots, and link the related variables.
+                    foreach (KeyValuePair<GameObject, InventorySlot> display in my_interface.slotsOnInterface)
+                    {
+                        //Debug.Log($"[INFO: {display.Key.name}]\n Duplicate?: {display.Value.item.isDuplicate} / {I.Name} / {display.Value.item.Name} / The same?: {I == display.Value.item} ");
+                        if(display.Value.item.isDuplicate && I == display.Value.item.duplicate_uuid)
+                        {
+                            secondaryChildren.Add(display.Key);
+                        }
+                    }
+                }
+
+                // Then assign values & set display via the function
+                foreach (GameObject C in secondaryChildren)
+                {
+                    C.GetComponent<InvDisplayItem>().SetAsSecondaryItem(this.gameObject);
+                }
+            }
         }
     }
+    #endregion
 
     /// <summary>
     /// Happens when this item is first added to its respective menu. Basically just UIEnable but BLACK -> ENABLED
@@ -293,12 +324,15 @@ public class InvDisplayItem : MonoBehaviour
 
         // Do the text animation (BLACK -> Green)
         Color start = Color.white, end = Color.white, highlight = Color.white;
-        string text = item.itemData.itemName; // (this also resets old mark & color tags)
+        string text = nameUnmodified; // (this also resets old mark & color tags)
 
         // We want to ENABLE the text, so going from GRAY -> GREEN
         start = Color.black;
         end = activeGreen;
         highlight = inActiveGreen;
+
+        if (isSecondaryItem)
+            end = wideBlue;
 
         // Set the assigned letter to a color while we're a it
         assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(activeGreen)}>{assignedOrderString}</color>";
@@ -450,8 +484,8 @@ public class InvDisplayItem : MonoBehaviour
 
     public void Click()
     {
-        if (my_interface.GetComponent<StaticInterface>() || discardAnimationCoroutine != null) // We shouldn't toggle items in the inventory. And we should forbid toggling while in the middle of animating.
-        {
+        if (my_interface.GetComponent<StaticInterface>() || discardAnimationCoroutine != null || isSecondaryItem)
+        { // We shouldn't toggle items in the inventory. We should forbid toggling while in the middle of animating. Only lead items should be able to be toggled. 
             return;
         }
 
@@ -653,7 +687,7 @@ public class InvDisplayItem : MonoBehaviour
     /// </summary>
     public void TryDirectEquip()
     {
-        if (my_interface.GetComponent<StaticInterface>() && canTryDirectEquip) // Inventory only
+        if (my_interface.GetComponent<StaticInterface>() && canTryDirectEquip && !isSecondaryItem) // Inventory only
         {
             // Do the rest of the logic inside UserInterface.cs
             my_interface.TryDirectEquip(this.gameObject, item);
@@ -1314,5 +1348,32 @@ public class InvDisplayItem : MonoBehaviour
         SetEmpty();
     }
 
+    #endregion
+
+    #region Secondary Item Related
+    public void SetAsSecondaryItem(GameObject parent) // Called by its parent (doesn't have assignments yet)
+    {
+        isSecondaryItem = true;
+        secondaryParent = parent;
+
+        // We only want to display the order text, and name
+        partDisplay.gameObject.SetActive(false);
+        healthDisplay.gameObject.SetActive(false);
+        modeMain.SetActive(false);
+        specialDescText.gameObject.SetActive(false);
+        healthMode.gameObject.SetActive(false);
+    }
+
+    public void SecondaryCompleteSetup() // Called after the above function when being updated in UserInterface. Now it actually has its item assignment
+    {
+        // Set name
+        nameUnmodified = item.itemData.itemName;
+        itemNameText.text = nameUnmodified;
+        this.gameObject.name = $"IDI: <DUPE> {item.itemData.itemName}";
+
+        // Set color
+        itemNameText.color = wideBlue;
+        assignedOrderText.color = wideBlue;
+    }
     #endregion
 }

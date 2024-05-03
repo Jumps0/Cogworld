@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 using Color = UnityEngine.Color;
 using Transform = UnityEngine.Transform;
@@ -1340,7 +1341,7 @@ public static class Action
         {
             foreach (var item in source.components.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0 && stacks)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate && stacks)
                 {
                     foreach(var E in item.item.itemData.itemEffects)
                     {
@@ -1367,7 +1368,7 @@ public static class Action
         {
             foreach (InventorySlot item in source.GetComponent<PartInventory>()._invUtility.Container.Items)
             {
-                if (item.item.Id >= 0 && stacks)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && stacks)
                 {
                     foreach (var E in item.item.itemData.itemEffects)
                     {
@@ -2483,7 +2484,7 @@ public static class Action
         {
             foreach (var item in actor.armament.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if (item.item.itemData.meleeAttack.isMelee)
                     {
@@ -2499,9 +2500,9 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invWeapon.Container.Items)
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
-                    if (item.item.itemData.meleeAttack.isMelee && item.item.state)
+                    if (item.item.itemData.meleeAttack.isMelee)
                     {
                         weapon = item.item.itemData.data;
                         return weapon;
@@ -2523,7 +2524,7 @@ public static class Action
         {
             foreach (var item in actor.armament.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if (item.item.itemData.shot.shotRange > 3)
                     {
@@ -2539,7 +2540,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invWeapon.Container.Items)
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if (item.item.itemData.shot.shotRange > 3 && item.item.state)
                     {
@@ -2589,7 +2590,7 @@ public static class Action
         {
             foreach (var item in actor.armament.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if (item.item.itemData.data.state)
                     {
@@ -2602,7 +2603,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invWeapon.Container.Items)
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if (item.item.state)
                     {
@@ -2641,7 +2642,7 @@ public static class Action
             {
                 foreach (var item in actor.armament.Container.Items)
                 {
-                    if (item.item.itemData.data.Id >= 0)
+                    if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                     {
                         if (item.item.itemData.meleeAttack.isMelee && item.item.itemData.data != mainWeapon && !item.item.itemData.isSpecialAttack) // Is a melee weapon, isn't the main weapon, and isn't a datajack
                         {
@@ -2656,7 +2657,7 @@ public static class Action
             {
                 foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invWeapon.Container.Items)
                 {
-                    if (item.item.Id >= 0)
+                    if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                     {
                         if (item.item.itemData.meleeAttack.isMelee && item.item != mainWeapon && !item.item.itemData.isSpecialAttack) // Is a melee weapon, isn't the main weapon, and isn't a datajack
                         {
@@ -2683,7 +2684,7 @@ public static class Action
         {
             foreach (var item in actor.armament.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if (item.item.itemData.type == ItemType.Launcher && item.item.itemData.data.state)
                     {
@@ -2699,7 +2700,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invWeapon.Container.Items)
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if (item.item.itemData.type == ItemType.Launcher && item.item.state)
                     {
@@ -2754,7 +2755,7 @@ public static class Action
         {
             foreach (var item in actor.components.Container.Items.ToList())
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if (item.item.itemData.type == ItemType.Treads)
                     {
@@ -2769,7 +2770,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if (item.item.itemData.type == ItemType.Treads && item.item.state)
                     {
@@ -2789,7 +2790,7 @@ public static class Action
         {
             foreach (var item in actor.components.Container.Items.ToList())
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if (item.item.itemData.type == ItemType.Legs)
                     {
@@ -2804,7 +2805,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if (item.item.itemData.type == ItemType.Legs && item.item.state)
                     {
@@ -2824,7 +2825,7 @@ public static class Action
         {
             foreach (var item in actor.components.Container.Items.ToList())
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if (item.item.itemData.type == ItemType.Wheels)
                     {
@@ -2839,7 +2840,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
             {
-                if(item.item.Id >= 0)
+                if(item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if (item.item.itemData.type == ItemType.Wheels && item.item.state)
                     {
@@ -2859,7 +2860,7 @@ public static class Action
         {
             foreach (var item in actor.components.Container.Items.ToList())
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if (item.item.itemData.type == ItemType.Hover)
                     {
@@ -2874,7 +2875,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if (item.item.itemData.type == ItemType.Hover && item.item.state)
                     {
@@ -2894,7 +2895,7 @@ public static class Action
         {
             foreach (var item in actor.components.Container.Items.ToList())
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if (item.item.itemData.type == ItemType.Flight)
                     {
@@ -2909,7 +2910,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if (item.item.itemData.type == ItemType.Flight && item.item.state)
                     {
@@ -2938,7 +2939,7 @@ public static class Action
         {
             foreach (var item in actor.components.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     foreach (var E in item.item.itemData.itemEffects)
                     {
@@ -2972,7 +2973,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items)
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     foreach (var E in item.item.itemData.itemEffects)
                     {
@@ -3069,7 +3070,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items)
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     foreach (var E in item.item.itemData.itemEffects)
                     {
@@ -3129,7 +3130,7 @@ public static class Action
         {
             foreach (var item in actor.components.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     foreach(var E in item.item.itemData.itemEffects)
                     {
@@ -3161,7 +3162,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items)
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     foreach (var E in item.item.itemData.itemEffects)
                     {
@@ -3202,7 +3203,7 @@ public static class Action
         {
             foreach (var item in actor.components.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if (item.item.itemData.type == ItemType.Armor)
                     {
@@ -3217,7 +3218,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items)
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if (item.item.itemData.type == ItemType.Armor)
                     {
@@ -3260,7 +3261,7 @@ public static class Action
 
         foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>()._invUtility.Container.Items)
         {
-            if (item.item.Id >= 0)
+            if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
             {
                 if (item.item.itemData.type == ItemType.Hackware)
                 {
@@ -3568,7 +3569,7 @@ public static class Action
         {
             foreach (var item in target.armament.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     items.Add(item.item);
                 }
@@ -3576,7 +3577,7 @@ public static class Action
 
             foreach (var item in target.components.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     items.Add(item.item);
                 }
@@ -3586,7 +3587,7 @@ public static class Action
         {
             foreach (InventorySlot item in target.GetComponent<PartInventory>()._invPower.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     items.Add(item.item);
                 }
@@ -3594,7 +3595,7 @@ public static class Action
 
             foreach (InventorySlot item in target.GetComponent<PartInventory>()._invPropulsion.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     items.Add(item.item);
                 }
@@ -3602,7 +3603,7 @@ public static class Action
 
             foreach (InventorySlot item in target.GetComponent<PartInventory>()._invUtility.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     items.Add(item.item);
                 }
@@ -3610,7 +3611,7 @@ public static class Action
 
             foreach (InventorySlot item in target.GetComponent<PartInventory>()._invWeapon.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     items.Add(item.item);
                 }
@@ -4490,7 +4491,7 @@ public static class Action
                         // If the 2nd part survives, forcefully drop it.
                         if (target.botInfo)
                         {
-                            HF.RemovePartFromBotInventory(target, part);
+                            Action.RemovePartFromBotInventory(target, part);
                             InventoryControl.inst.DropItemOnFloor(part, target, null);
                             
                         }
@@ -4521,7 +4522,7 @@ public static class Action
                         // If the 2nd part survives, forcefully drop it.
                         if (target.botInfo)
                         {
-                            HF.RemovePartFromBotInventory(target, part2);
+                            Action.RemovePartFromBotInventory(target, part2);
                             InventoryControl.inst.DropItemOnFloor(part2, target, null);
                         }
                         else
@@ -4549,7 +4550,7 @@ public static class Action
                         Item dropItem = items[Random.Range(0, items.Count - 1)];
                         if (target.botInfo)
                         {
-                            HF.RemovePartFromBotInventory(target, dropItem);
+                            Action.RemovePartFromBotInventory(target, dropItem);
                             InventoryControl.inst.DropItemOnFloor(dropItem, target, null);
                         }
                         else
@@ -4567,7 +4568,7 @@ public static class Action
                             // If the 2nd part survives, forcefully drop it.
                             if (target.botInfo)
                             {
-                                HF.RemovePartFromBotInventory(target, hitItem);
+                                Action.RemovePartFromBotInventory(target, hitItem);
                                 InventoryControl.inst.DropItemOnFloor(hitItem, target, null);
                             }
                             else
@@ -4620,7 +4621,7 @@ public static class Action
                         // If the 2nd part survives, forcefully drop it.
                         if (target.botInfo)
                         {
-                            HF.RemovePartFromBotInventory(target, item4);
+                            Action.RemovePartFromBotInventory(target, item4);
                             InventoryControl.inst.DropItemOnFloor(item4, target, null);
                         }
                         else
@@ -4953,23 +4954,7 @@ public static class Action
     {
         if (owner.botInfo) // Bot
         {
-            foreach (var I in owner.components.Container.Items.ToList())
-            {
-                if (I.item.Id >= 0 && I.item == item)
-                {
-                    owner.components.RemoveItem(I.item); // Remove the item
-                    break;
-                }
-            }
-
-            foreach (var I in owner.armament.Container.Items.ToList())
-            {
-                if (I.item.Id >= 0 && I.item == item)
-                {
-                    owner.armament.RemoveItem(I.item); // Remove the item
-                    break;
-                }
-            }
+            Action.RemovePartFromBotInventory(owner, item);
         }
         else // Player
         {
@@ -5002,7 +4987,7 @@ public static class Action
             {
                 if (I.item == item)
                 {
-                    PlayerData.inst.GetComponent<PartInventory>()._invPower.RemoveItem(I.item);
+                    InventoryControl.inst.RemoveItemFromAnInventory(I.item, PlayerData.inst.GetComponent<PartInventory>()._invPower);
                     return;
                 }
             }
@@ -5014,7 +4999,7 @@ public static class Action
             {
                 if (I.item == item)
                 {
-                    PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.RemoveItem(I.item);
+                    InventoryControl.inst.RemoveItemFromAnInventory(I.item, PlayerData.inst.GetComponent<PartInventory>()._invPropulsion);
                     return;
                 }
             }
@@ -5026,7 +5011,7 @@ public static class Action
             {
                 if (I.item == item)
                 {
-                    PlayerData.inst.GetComponent<PartInventory>()._invUtility.RemoveItem(I.item);
+                    InventoryControl.inst.RemoveItemFromAnInventory(I.item, PlayerData.inst.GetComponent<PartInventory>()._invUtility);
                     return;
                 }
             }
@@ -5038,7 +5023,40 @@ public static class Action
             {
                 if (I.item == item)
                 {
-                    PlayerData.inst.GetComponent<PartInventory>()._invWeapon.RemoveItem(I.item);
+                    InventoryControl.inst.RemoveItemFromAnInventory(I.item, PlayerData.inst.GetComponent<PartInventory>()._invWeapon);
+                    return;
+                }
+            }
+        }
+    }
+
+    public static void RemovePartFromBotInventory(Actor bot, Item item)
+    {
+        if (bot.botInfo) // Bot
+        {
+            foreach (var I in bot.components.Container.Items.ToList())
+            {
+                if (I.item.Id >= 0 && I.item == item)
+                {
+                    InventoryControl.inst.RemoveItemFromAnInventory(I.item, bot.components);
+                    return;
+                }
+            }
+
+            foreach (var I in bot.armament.Container.Items.ToList())
+            {
+                if (I.item.Id >= 0 && I.item == item)
+                {
+                    InventoryControl.inst.RemoveItemFromAnInventory(I.item, bot.armament);
+                    return;
+                }
+            }
+
+            foreach (var I in bot.inventory.Container.Items.ToList())
+            {
+                if (I.item == item)
+                {
+                    InventoryControl.inst.RemoveItemFromAnInventory(I.item, bot.inventory);
                     return;
                 }
             }
@@ -5081,7 +5099,7 @@ public static class Action
         {
             foreach (var item in attacker.components.Container.Items)
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     foreach(var E in item.item.itemData.itemEffects)
                     {
@@ -5114,7 +5132,7 @@ public static class Action
         {
             foreach (InventorySlot item in attacker.GetComponent<PartInventory>()._invUtility.Container.Items)
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     foreach (var E in item.item.itemData.itemEffects)
                     {
@@ -5240,7 +5258,7 @@ public static class Action
             {
                 foreach (var item in actor.components.Container.Items)
                 {
-                    if (item.item.itemData.data.Id >= 0)
+                    if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                     {
                         // I still have no idea how this is actually calculated, this is just a guess
                         if (item.item.itemData.type == ItemType.Flight)
@@ -5294,7 +5312,7 @@ public static class Action
             BotMoveType myMoveType = DetermineBotMoveType(actor);
             foreach (var item in actor.components.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if(actor.momentum > 0)
                     {
@@ -5383,7 +5401,7 @@ public static class Action
 
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items)
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if (item.item.itemData.type == ItemType.Flight && item.item.state)
                     {
@@ -5438,7 +5456,7 @@ public static class Action
             BotMoveType myMoveType = DetermineBotMoveType(actor);
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items)
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if (actor.momentum > 0)
                     {
@@ -5467,7 +5485,7 @@ public static class Action
 
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items)
             {
-                if (item.item.Id >= 0)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     if (item.item.itemData.type == ItemType.Device && actor.weightCurrent <= actor.weightMax && rcsStack)
                     {
@@ -6030,7 +6048,7 @@ public static class Action
         {
             foreach (var item in actor.armament.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && !item.item.isDuplicate)
                 {
                     items.Add(item.item);
                 }
@@ -6038,7 +6056,7 @@ public static class Action
 
             foreach (var item in actor.armament.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && !item.item.isDuplicate)
                 {
                     items.Add(item.item);
                 }
@@ -6048,7 +6066,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPower.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && !item.item.isDuplicate)
                 {
                     items.Add(item.item);
                 }
@@ -6056,7 +6074,7 @@ public static class Action
 
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && !item.item.isDuplicate)
                 {
                     items.Add(item.item);
                 }
@@ -6064,7 +6082,7 @@ public static class Action
 
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && !item.item.isDuplicate)
                 {
                     items.Add(item.item);
                 }
@@ -6072,7 +6090,7 @@ public static class Action
 
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invWeapon.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item.item.itemData.data.Id >= 0 && !item.item.isDuplicate)
                 {
                     items.Add(item.item);
                 }
@@ -6090,7 +6108,7 @@ public static class Action
 
         foreach (var item in items)
         {
-            if(item.Id >= 0 && item.itemData.slot == slot)
+            if(item.Id >= 0 && item.itemData.slot == slot && !item.isDuplicate)
             {
                 found.Add(item);
             }
@@ -6128,7 +6146,7 @@ public static class Action
         List<SimplifiedItemEffect> eList = new List<SimplifiedItemEffect>();
         foreach (Item item in items)
         {
-            if(item.Id > -1)
+            if(item.Id > -1 && !item.isDuplicate)
             {
                 foreach (var E in item.itemData.itemEffects)
                 {

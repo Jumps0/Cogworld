@@ -632,8 +632,16 @@ public static class ExtensionMethods
                         oneTime = true;
 
                     _slot.Key.GetComponent<InvDisplayItem>().item = _slot.Value.item;
-                    _slot.Key.GetComponent<InvDisplayItem>().SetAsFilled();
-                    _slot.Key.GetComponent<InvDisplayItem>().UpdateDisplay(oneTime);
+                    _slot.Key.GetComponent<InvDisplayItem>().isSecondaryItem = _slot.Value.item.isDuplicate;
+                    if (!_slot.Value.item.isDuplicate)
+                    { // Duplicates get setup via the parent
+                        _slot.Key.GetComponent<InvDisplayItem>().SetAsFilled();
+                        _slot.Key.GetComponent<InvDisplayItem>().UpdateDisplay(oneTime);
+                    }
+                    else
+                    {
+                        _slot.Key.GetComponent<InvDisplayItem>().SecondaryCompleteSetup();
+                    }
 
                     // Play the initial animation (only once tho)
                     if (!InventoryControl.inst.animatedItems.Contains(_slot.Value))

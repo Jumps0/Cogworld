@@ -50,6 +50,7 @@ public static class HF
     }
     #endregion
 
+    #region ID Lookup
     public static TileType Tile_to_TileType(Tile type)
     {
         switch (type)
@@ -328,6 +329,7 @@ public static class HF
             return 1;
         }
     }
+    #endregion
 
     #region Machines/Hacking
     public static string HackDescription(TrojanType type)
@@ -2146,13 +2148,13 @@ public static class HF
         //[Tooltip("Repels ##% of hacking attempts against allies within a range of ##")]
         float allyHackDefenseBonus = 0f;
 
-        foreach (ItemObject item in MapManager.inst.itemDatabase.Items)
+        foreach (Item item in Action.CollectAllBotItems(PlayerData.inst.GetComponent<Actor>()))
         {
-            if (item.itemEffects.Count > 0)
+            if (item != null && item.Id >= 0 && item.itemData.itemEffects.Count > 0)
             {
-                foreach (var E in item.itemEffects)
+                foreach (var E in item.itemData.itemEffects)
                 {
-                    if (E.hackBonuses.hasSystemShieldBonus && item.data.state)
+                    if (E.hackBonuses.hasSystemShieldBonus && item.state)
                     {
                         hackDetectRateBonus += E.hackBonuses.hackDetectRateBonus;
                         hackDetectChanceBonus += E.hackBonuses.hackDetectChanceBonus;
@@ -3574,7 +3576,7 @@ public static class HF
     {
         foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invPower.Container.Items.ToList())
         {
-            if (I.item.itemData.data.Id >= 0)
+            if (I.item.itemData.data.Id >= 0 && !I.item.isDuplicate)
             {
                 if (I.item == item)
                 {
@@ -3585,7 +3587,7 @@ public static class HF
 
         foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
         {
-            if (I.item.itemData.data.Id >= 0)
+            if (I.item.itemData.data.Id >= 0 && !I.item.isDuplicate)
             {
                 if (I.item == item)
                 {
@@ -3596,7 +3598,7 @@ public static class HF
 
         foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invUtility.Container.Items.ToList())
         {
-            if (I.item.itemData.data.Id >= 0)
+            if (I.item.itemData.data.Id >= 0 && !I.item.isDuplicate)
             {
                 if (I.item == item)
                 {
@@ -3607,7 +3609,7 @@ public static class HF
 
         foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invWeapon.Container.Items.ToList())
         {
-            if (I.item.itemData.data.Id >= 0)
+            if (I.item.itemData.data.Id >= 0 && !I.item.isDuplicate)
             {
                 if (I.item == item)
                 {
@@ -3818,7 +3820,7 @@ public static class HF
         // Check for structural scanners
         foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>()._invWeapon.Container.Items)
         {
-            if (item.item.Id >= 0)
+            if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
             {
                 if (item.item.itemData.itemEffects.Count > 0)
                 {
@@ -4753,39 +4755,6 @@ public static class HF
         return bots;
     }
 
-    public static void RemovePartFromBotInventory(Actor bot, Item item)
-    {
-        if (bot.botInfo) // Bot
-        {
-            foreach (var I in bot.components.Container.Items.ToList())
-            {
-                if (I.item.Id >= 0 && I.item == item)
-                {
-                    bot.components.RemoveItem(I.item); // Remove the item
-                    return;
-                }
-            }
-
-            foreach (var I in bot.armament.Container.Items.ToList())
-            {
-                if (I.item.Id >= 0 && I.item == item)
-                {
-                    bot.armament.RemoveItem(I.item); // Remove the item
-                    return;
-                }
-            }
-
-            foreach (var I in bot.inventory.Container.Items.ToList())
-            {
-                if(I.item == item)
-                {
-                    bot.inventory.RemoveItem(item);
-                    return;
-                }
-            }
-        }
-    }
-
     public static float CalculateItemCoverage(Actor actor, Item item)
     {
         // We aren't going to consider to hit bonuses or any other effects here.
@@ -4920,7 +4889,7 @@ public static class HF
 
         foreach (var item in inv.Container.Items)
         {
-            if(item.item.Id >= 0)
+            if(item.item.Id >= 0 && !item.item.isDuplicate)
             {
                 // Storage items
                 if (item.item.itemData.itemEffects.Count > 0)
