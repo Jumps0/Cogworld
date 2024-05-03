@@ -1,0 +1,415 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
+  m_Name: Hvy. Siege Treads
+  m_EditorClassIdentifier: 
+  amount: 1
+  data:
+    Name: 
+    Id: 105
+    stackable: 0
+    amount: 1
+    itemData: {fileID: 11400000}
+    state: 1
+    integrityCurrent: 0
+    uniqueDetail:
+      isScrap: 0
+      scrapReward: {fileID: 0}
+      isDataLog: 0
+      logMessage: 
+      logAction:
+        type: 0
+        connectedMachine: {fileID: 0}
+      isDataCore: 0
+      coreTerminal: {fileID: 0}
+    storageAmount: 0
+    isOverloaded: 0
+    isDeteriorating: 0
+    isRigged: 0
+    corrupted: 0
+    disabledTimer: 0
+    unstable: -1
+    disposable: -1
+    siege: 0
+  knowByPlayer: 0
+  floorDisplay: {fileID: 21300000, guid: 011fe9552d317cf43ac2f4cfbd3cf39a, type: 3}
+  inventoryDisplay: {fileID: 21300000, guid: 011fe9552d317cf43ac2f4cfbd3cf39a, type: 3}
+  asciiRep: {fileID: -1087548489, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  bigDisplay: {fileID: 21300000, guid: f5aa2298d0d291447be520f8d1f68615, type: 3}
+  itemColor: {r: 1, g: 0, b: 0, a: 1}
+  type: 4
+  slot: 1
+  slotsRequired: 2
+  mass: 0
+  rating: 7
+  star: 0
+  ratingType: 0
+  integrityMax: 500
+  repairable: 1
+  coverage: 280
+  schematicDetails:
+    hackable: 1
+    location:
+    - {x: 1, y: -4}
+    - {x: 2, y: -5}
+    - {x: 3, y: -6}
+    hasSchematic: 0
+  hasUpkeep: 0
+  energyUpkeep: 0
+  matterUpkeep: 0
+  heatUpkeep: 0
+  supply: 0
+  storage: 0
+  power_HasStability: 0
+  power_stability: 0
+  propulsion:
+  - timeToMove: 180
+    modExtra: 0
+    drag: 50
+    propEnergy: -5
+    propHeat: 10
+    support: 70
+    penalty: 90
+    burnout: 0
+    hasBurnout: 0
+    canSiege: 2
+  shot:
+    shotRange: 0
+    shotEnergy: 0
+    shotMatter: 0
+    shotHeat: 0
+    shotRecoil: 0
+    shotTargeting: 0
+    shotDelay: 0
+    shotStability: 0
+    shotArc: 0
+    hasStability: 0
+    hasArc: 0
+    shotSound: []
+  projectileAmount: 1
+  projectile:
+    damage: {x: 0, y: 0}
+    damageType: 0
+    critChance: 0
+    critType: 0
+    heatTrasfer: 0
+    spectrum: 0
+    hasSpectrum: 0
+    disruption: 0
+    salvage: 0
+    projectileColor: {r: 1, g: 0, b: 0, a: 1}
+    projectileSprite: {fileID: 0}
+    projectileRotates: 1
+    projectileTrail: 2
+    penetrationCapability: 0
+    penetrationChances: []
+  meleeAttack:
+    isMelee: 0
+    energy: 0
+    matter: 0
+    heat: 0
+    targeting: 0
+    delay: 0
+    damage: {x: 0, y: 0}
+    damageType: 6
+    critical: 0
+    critType: 0
+    disruption: 0
+    salvage: 0
+    visualAttackTime: 0.5
+    missSound: []
+  explosion:
+    explosionSounds: []
+    explosionGFX: 0
+  explosionDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
+    damageType: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
+    salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  deployableItem:
+    deployable: 0
+    type: 0
+    trapType: 0
+    canSever: 0
+    sever_amount: {x: 0, y: 0}
+    sever_damage: {x: 0, y: 0}
+    canShock: 0
+    shock_amount: {x: 0, y: 0}
+    canBurn: 0
+    burn_amount: {x: 0, y: 0}
+    burn_damage: {x: 0, y: 0}
+    burn_heat: {x: 0, y: 0}
+    burn_affectsNeighbors: 0
+    canPierce: 0
+    pierce_amount: 0
+    pierce_damage: {x: 0, y: 0}
+    pierce_impaleChance: 0
+    canStasis: 0
+    stasis_strength: 0
+  isSpecialAttack: 0
+  specialAttack:
+    specialMelee: 0
+    datajack: 0
+    stasisBeam: 0
+    tearClaw: 0
+  itemEffects:
+  - heatTransfer: 0
+    chainExplode: 0
+    hasLegEffect: 0
+    extraKickChance: 0
+    appliesToLargeTargets: 0
+    conferToRunningState: 0
+    evasionNaccuracyChange: 0
+    maxMomentumAmount: 0
+    inventorySizeEffect: 0
+    sizeIncrease: 0
+    effectStacks: 0
+    ramCrushEffect: 1
+    ramCrushChance: 0.1
+    ramCrush_canDoLarge: 0
+    ramCrush_canDoGigantic: 0
+    ramCrush_integLimit: 50
+    ramCrush_canStack: 1
+    ramCrush_stackCap: 0.35
+    hasStabEffect: 1
+    stab_recoilPerWeapon: -2
+    stab_KnockbackImmune: 1
+    armorProtectionEffect:
+      hasEffect: 0
+      armorEffect_slotType: 0
+      armorEffect_absorbtion: 0
+      armorEffect_preventCritStrikesVSSlot: 0
+      armorEffect_preventChainReactions: 0
+      armorEffect_preventOverflowDamage: 0
+      projectionExchange: 0
+      pe_global: 0
+      pe_blockPercent: 0
+      pe_exchange: {x: 0, y: 0}
+      pe_includeVisibileAllies: 0
+      pe_alliesDistance: 0
+      pe_requireEnergy: 0
+      highCoverage: 0
+      type_hasTypeResistance: 0
+      type_damageType: 0
+      type_percentage: 0
+      type_allTypes: 0
+      type_includeAllies: 0
+      type_alliesRange: 0
+      scrapShield: 0
+      selfRepair: 0
+      selfRepair_amount: 0
+      selfRepairTurns: 0
+      critImmunity: 0
+      parallel: 0
+      resume: 0
+      stacks: 0
+    detectionEffect:
+      hasEffect: 0
+      range: 0
+      botDetection: 0
+      bd_maxInterpreterEffect: 0
+      bd_previousActivity: 0
+      bd_botReporting: 0
+      terrainScanning: 0
+      haulerTracking: 0
+      ht_viewInventories: 0
+      seismic: 0
+      machine: 0
+      structural: 0
+      structural_depth: 0
+      warlordComms: 0
+      stacks: 0
+    hasSignalInterp: 0
+    signalInterp_strength: 0
+    hasMassSupport: 0
+    massSupport: 0
+    massSupport_stacks: 0
+    collectsMatterBeam: 0
+    matterCollectionRange: 0
+    internalStorage: 0
+    internalStorageType: 0
+    internalStorageCapacity: 0
+    internalStorageType_stacks: 0
+    hackBonuses:
+      hasHackBonus: 0
+      hackSuccessBonus: 0
+      rewireBonus: 0
+      programmerHackDefenseBonus: 0
+      stacks: 0
+      hasSystemShieldBonus: 0
+      hackDetectRateBonus: 0
+      hackDetectChanceBonus: 0
+      securityLevelIncreaseChance: 0
+      databaseLockoutBonus: 0
+      hackFeedbackPreventBonus: 0
+      allyHackDefenseBonus: 0
+      allyHackRange: 0
+    emitEffect:
+      hasEffect: 0
+      target: 0
+      turnTime: 0
+      range: 0
+    fireTimeEffect:
+      hasEffect: 0
+      launchersOnly: 0
+      fireTimeReduction: 0
+      compatability: 0
+      stacks: 0
+      capped: 0
+      cap: 0
+    transmissionJammingEffect:
+      hasEffect: 0
+      range: 0
+      preventReinforcementCall: 0
+      suppressAlarmTraps: 0
+    effectiveCorruptionEffect:
+      hasEffect: 0
+      amount: 0
+      stacks: 0
+    partRestoreEffect:
+      hasEffect: 0
+      percentChance: 0
+      canRepairAlienTech: 0
+      protoRepairCap: 0
+      canRunInParralel: 0
+    exilesEffects:
+      hasEffect: 0
+      isAutoWeapon: 0
+      chronoWheelEffect: 0
+      lifetimeDecay: 0
+    toHitBuffs:
+      hasEffect: 0
+      amount: 0
+      bonusCritChance: 0
+      bypassArmor: 0
+      coreExposureEffect: 0
+      coreExposureGCM_only: 0
+      flatBonus: 0
+      stacks: 0
+      halfStacks: 0
+    partIdent:
+      hasEffect: 0
+      amount: 0
+      canIdentifyAlien: 0
+      parallel: 0
+    antiCorruption:
+      hasEffect: 0
+      amount: 0
+      integrityLossPer: 0
+      parallel: 0
+    rcsEffect:
+      hasEffect: 0
+      percentage: 0
+      stacks: 0
+      momentumBonus: 0
+    phasingEffect:
+      hasEffect: 0
+      percentage: 0
+      stacks: 0
+    cloakingEffect:
+      hasEffect: 0
+      rangedReduction: 0
+      noticeReduction: 0
+      halfStacks: 0
+    meleeBonus:
+      hasEffect: 0
+      melee_followUpChance: 0
+      melee_maxDamageBoost: 0
+      melee_accuracyDecrease: 0
+      melee_accuracyIncrease: 0
+      melee_minDamageBoost: 0
+      melee_attackTimeDecrease: 0
+      actuator_cap: 0
+      halfStacks: 0
+      stacks: 0
+    launcherBonus:
+      hasEffect: 0
+      launcherAccuracy: 0
+      launcherLoading: 0
+      forEnergyOrCannon: 0
+      stacks: 0
+    heatDissipation:
+      hasEffect: 0
+      dissipationPerTurn: 0
+      lowerBaseTemp: 0
+      preventPowerShutdown: 0
+      preventOverheatSideEffects: 0
+      integrityLossPerTurn: 0
+      minTempToActivate: 0
+      energyGeneration: 0
+      heatToEnergyAmount: 0
+      abalativeArmorEffect: 0
+      parallel: 0
+      stacks: 0
+    bonusSlots:
+      hasEffect: 0
+      slotType: 0
+      slots: 0
+    flatDamageBonus:
+      hasEffect: 0
+      types: 
+      damageBonus: 0
+      stacks: 0
+      halfStacks: 0
+    salvageBonus:
+      hasEffect: 0
+      bonus: 0
+      gunTypeOnly: 0
+      stacks: 0
+    alienBonus:
+      hasEffect: 0
+      amount: 0
+      singleDamageToCore: 0
+      allDamageToCore: 0
+      stacks: 0
+      half_stacks: 0
+  canOverload: 0
+  consumable: 0
+  disposable: -1
+  unstable: -1
+  destroyOnRemove: 0
+  canBeDisabled: 1
+  quality: 8
+  itemName: Hvy. Siege Treads
+  description: A pair of superheavy treads designed for siege mode. This pair is
+    able to enter High Siege Mode. Requires 2 slots to equip.
+  mechanicalDescription: 2 T180 S70
+  fabricationInfo:
+    canBeFabricated: 1
+    amountMadePer: 1
+    fabTime: {x: 117, y: 58, z: 39}
+    matterCost: 110
+    componenetsRequired: []
+  instantUnique: 0
+  uniqueDetail:
+    isScrap: 0
+    scrapReward: {fileID: 0}
+    isDataLog: 0
+    logMessage: 
+    logAction:
+      type: 0
+      connectedMachine: {fileID: 0}
+    isDataCore: 0
+    coreTerminal: {fileID: 0}

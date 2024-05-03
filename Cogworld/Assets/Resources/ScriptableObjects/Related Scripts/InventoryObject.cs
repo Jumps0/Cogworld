@@ -67,7 +67,7 @@ public class InventoryObject : ScriptableObject//, ISerializationCallbackReceive
             return false;
         InventorySlot slot = FindItemOnInventory(_item);
 
-        _item = new Item(_item.itemData);
+        _item = new Item(_item);
         
         if (!database.Items[_item.Id].data.stackable || slot == null)
         {

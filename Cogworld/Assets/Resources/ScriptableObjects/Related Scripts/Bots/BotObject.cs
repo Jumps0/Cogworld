@@ -169,8 +169,8 @@ public class BotArmament
     public Item item;
     [Tooltip("Float so 0.##")]
     public float dropChance;
-    [Tooltip("Alternative Choices for this item")]
-    public List<Item> _altChoices; // TODO: Make this stuff functional
+    [Tooltip("Coverage")]
+    public List<Item> _altChoices; // This is actually the item's coverage
     [Tooltip("Float so 0.##")] public List<float> altChoicesDropChance;
 }
 

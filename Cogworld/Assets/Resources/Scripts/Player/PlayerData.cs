@@ -1514,12 +1514,12 @@ public class PlayerData : MonoBehaviour
         // There are probably other cases where this shouldn't be enabled. Consider them here and add more when needed
         if(UIManager.inst.terminal_targetTerm == null)
         {
-            if(!mouseTile.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("FlashWhite")) // If the animator isn't flashing make it so.
+            mouseTile.SetActive(true);
+
+            if (!mouseTile.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("FlashWhite")) // If the animator isn't flashing make it so.
             {
                 mouseTile.GetComponent<Animator>().Play("FlashWhite");
             }
-
-            mouseTile.SetActive(true);
 
             // Get mouse position
             Vector3 mousePos = Input.mousePosition;
