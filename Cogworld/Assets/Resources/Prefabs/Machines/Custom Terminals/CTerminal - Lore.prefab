@@ -87,7 +87,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 752ed65f43ff5f24d938c4c1433f8022, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -166,12 +166,14 @@ MonoBehaviour:
   detectionChance: 0
   traceProgress: 0
   detected: 0
-  trojans: 0
-  trojan_track: 0
-  trojan_assimilate: 0
-  trojan_botnet: 0
-  trojan_detonate: 0
+  locked: 0
+  trojans: 
   type: 2
+  prototypes: []
+  wallRevealCoordinates: []
+  wallRevealObjs: []
+  _doorSource: {fileID: 0}
+  replaceTile: {fileID: 0}
 --- !u!114 &457395203926888844
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,8 +186,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: 
+  type: 0
   armor: {x: 15, y: 15}
   state: 1
+  explodes: 0
+  heatTransfer: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
+    damageType: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
+    salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
+    explosionSounds: []
+    explosionGFX: 0
   resistances:
   - damageType: 0
     resistanceAmount: 0
@@ -208,22 +235,12 @@ MonoBehaviour:
   - damageType: 8
     resistanceAmount: 0
     immune: 0
-  explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
-  heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
-    damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
-    salvage: 0
+  initializeRandom: 0
+  walkable: 0
+  isSealedDoor: 0
+  isSealedStorage: 0
+  sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
+  sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
@@ -231,3 +248,4 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}

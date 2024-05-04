@@ -86,7 +86,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 752ed65f43ff5f24d938c4c1433f8022, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -177,11 +177,10 @@ MonoBehaviour:
   detectionChance: 0
   traceProgress: 0
   detected: 0
-  trojans: 0
-  trojan_track: 0
-  trojan_assimilate: 0
-  trojan_botnet: 0
-  trojan_detonate: 0
+  databaseLockout: 0
+  trojans: 
+  _source: {fileID: 0}
+  _ambient: {fileID: 0}
 --- !u!114 &1336228829971656047
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,27 +194,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   displayName: 
+  type: 0
   armor: {x: 0, y: 0}
   state: 1
-  resistances: []
   explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
   heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
     damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
     salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
     explosionSounds: []
     explosionGFX: 0
+  resistances: []
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -238,6 +243,7 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}
 --- !u!1 &3017128286030515165
 GameObject:
   m_ObjectHideFlags: 0
@@ -293,7 +299,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 752ed65f43ff5f24d938c4c1433f8022, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -384,11 +390,10 @@ MonoBehaviour:
   detectionChance: 0
   traceProgress: 0
   detected: 0
-  trojans: 0
-  trojan_track: 0
-  trojan_assimilate: 0
-  trojan_botnet: 0
-  trojan_detonate: 0
+  databaseLockout: 0
+  trojans: 
+  _source: {fileID: 0}
+  _ambient: {fileID: 0}
 --- !u!114 &8984484194425307287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -402,27 +407,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   displayName: 
+  type: 0
   armor: {x: 0, y: 0}
   state: 1
-  resistances: []
   explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
   heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
     damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
     salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
     explosionSounds: []
     explosionGFX: 0
+  resistances: []
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -445,6 +456,7 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}
 --- !u!1 &3480941757257615802
 GameObject:
   m_ObjectHideFlags: 0
@@ -500,7 +512,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 752ed65f43ff5f24d938c4c1433f8022, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -591,11 +603,10 @@ MonoBehaviour:
   detectionChance: 0
   traceProgress: 0
   detected: 0
-  trojans: 0
-  trojan_track: 0
-  trojan_assimilate: 0
-  trojan_botnet: 0
-  trojan_detonate: 0
+  databaseLockout: 0
+  trojans: 
+  _source: {fileID: 0}
+  _ambient: {fileID: 0}
 --- !u!114 &2966847661357848934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -609,27 +620,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   displayName: 
+  type: 0
   armor: {x: 0, y: 0}
   state: 1
-  resistances: []
   explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
   heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
     damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
     salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
     explosionSounds: []
     explosionGFX: 0
+  resistances: []
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -652,6 +669,7 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}
 --- !u!1 &4303234480025886870
 GameObject:
   m_ObjectHideFlags: 0
@@ -707,7 +725,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 752ed65f43ff5f24d938c4c1433f8022, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -798,11 +816,10 @@ MonoBehaviour:
   detectionChance: 0
   traceProgress: 0
   detected: 0
-  trojans: 0
-  trojan_track: 0
-  trojan_assimilate: 0
-  trojan_botnet: 0
-  trojan_detonate: 0
+  databaseLockout: 0
+  trojans: 
+  _source: {fileID: 0}
+  _ambient: {fileID: 0}
 --- !u!114 &6625404176670214109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -816,27 +833,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   displayName: 
+  type: 0
   armor: {x: 0, y: 0}
   state: 1
-  resistances: []
   explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
   heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
     damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
     salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
     explosionSounds: []
     explosionGFX: 0
+  resistances: []
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -859,6 +882,7 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}
 --- !u!1 &5451814798195513305
 GameObject:
   m_ObjectHideFlags: 0
@@ -914,7 +938,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 752ed65f43ff5f24d938c4c1433f8022, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1005,11 +1029,10 @@ MonoBehaviour:
   detectionChance: 0
   traceProgress: 0
   detected: 0
-  trojans: 0
-  trojan_track: 0
-  trojan_assimilate: 0
-  trojan_botnet: 0
-  trojan_detonate: 0
+  databaseLockout: 0
+  trojans: 
+  _source: {fileID: 0}
+  _ambient: {fileID: 0}
 --- !u!114 &4543711856285062597
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1023,27 +1046,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   displayName: 
+  type: 0
   armor: {x: 0, y: 0}
   state: 1
-  resistances: []
   explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
   heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
     damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
     salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
     explosionSounds: []
     explosionGFX: 0
+  resistances: []
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -1066,6 +1095,7 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}
 --- !u!1 &7173313474100761777
 GameObject:
   m_ObjectHideFlags: 0
@@ -1121,7 +1151,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 752ed65f43ff5f24d938c4c1433f8022, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1212,11 +1242,10 @@ MonoBehaviour:
   detectionChance: 0
   traceProgress: 0
   detected: 0
-  trojans: 0
-  trojan_track: 0
-  trojan_assimilate: 0
-  trojan_botnet: 0
-  trojan_detonate: 0
+  databaseLockout: 0
+  trojans: 
+  _source: {fileID: 0}
+  _ambient: {fileID: 0}
 --- !u!114 &7598810351545240772
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1230,27 +1259,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   displayName: 
+  type: 0
   armor: {x: 0, y: 0}
   state: 1
-  resistances: []
   explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
   heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
     damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
     salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
     explosionSounds: []
     explosionGFX: 0
+  resistances: []
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -1273,6 +1308,7 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}
 --- !u!1 &7456691822352536937
 GameObject:
   m_ObjectHideFlags: 0
@@ -1368,7 +1404,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 752ed65f43ff5f24d938c4c1433f8022, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1450,16 +1486,10 @@ MonoBehaviour:
   traceProgress: 0
   detected: 0
   locked: 0
-  trojans: 0
-  trojan_track: 0
-  trojan_assimilate: 0
-  trojan_botnet: 0
-  trojan_detonate: 0
-  trojan_broadcast: 0
-  trojan_decoy: 0
-  trojan_redirect: 0
-  trojan_reprogram: 0
+  trojans: 
   ejectionSpot: {fileID: 1276335332577536561}
+  s_transmitting: 0
+  s_redeploying: 0
 --- !u!114 &457395203926888844
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1473,8 +1503,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   displayName: 
+  type: 0
   armor: {x: 30, y: 30}
   state: 1
+  explodes: 0
+  heatTransfer: 0
+  explosiveDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
+    damageType: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
+    salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosivePotential:
+    explosionSounds: []
+    explosionGFX: 0
   resistances:
   - damageType: 0
     resistanceAmount: 0
@@ -1497,24 +1551,6 @@ MonoBehaviour:
   - damageType: 8
     resistanceAmount: 0
     immune: 0
-  explodes: 0
-  stability: 1
-  delay: {x: 0, y: 0}
-  chunks: 0
-  heatTransferLevel: 0
-  heatTransfer: 0
-  explosivePotential:
-    radius: 0
-    damageLow: 0
-    damageHigh: 0
-    falloff: 0
-    damageType: 0
-    spectrum: 0
-    hasSpectrum: 0
-    disruption: 0
-    salvage: 0
-    explosionSounds: []
-    explosionGFX: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -1535,6 +1571,7 @@ MonoBehaviour:
   parentPart: {fileID: 457395203926888844}
   isExplored: 0
   isVisible: 0
+  indicator: {fileID: 0}
 --- !u!82 &8764870974595713040
 AudioSource:
   m_ObjectHideFlags: 0
