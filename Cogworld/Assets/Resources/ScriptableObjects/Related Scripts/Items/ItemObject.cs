@@ -77,6 +77,7 @@ public class Item
     [Tooltip("Is this item currently losing HP because of an external reason (deteriorating)?")] // see: https://www.gridsagegames.com/blog/2013/12/burnout-momentum-em-disruption/
     public bool isDeteriorating = false;
     public bool isRigged = false;
+    public bool isBroken = false;
     [Tooltip("Is this item corrupted?")]
     public bool corrupted = false;
     [Tooltip("If > 0, this item is disabled for the specified turns.")]
@@ -147,33 +148,39 @@ public class Item
         // except Utilities which is done manually.
         if(itemData.mechanicalDescription.Length == 0)
         {
+            itemData.mechanicalDescription += itemData.rating.ToString();
+            if (itemData.star)
+                itemData.mechanicalDescription += "*";
+
             switch (itemData.slot)
             {
                 case ItemSlot.Power: // [Rating] M[Mass] E[Supply]
-                    itemData.mechanicalDescription = itemData.rating.ToString();
-                    if (itemData.star)
-                        itemData.mechanicalDescription += "*";
                     itemData.mechanicalDescription += " M";
                     itemData.mechanicalDescription += itemData.mass;
                     itemData.mechanicalDescription += " E";
                     itemData.mechanicalDescription += itemData.supply;
                     break;
                 case ItemSlot.Propulsion: // [Rating] T[Time to Move] S[Support]
-                    itemData.mechanicalDescription = itemData.rating.ToString();
-                    if (itemData.star)
-                        itemData.mechanicalDescription += "*";
                     itemData.mechanicalDescription += " T";
                     itemData.mechanicalDescription += itemData.propulsion[0].timeToMove;
                     itemData.mechanicalDescription += " S";
                     itemData.mechanicalDescription += itemData.propulsion[0].support;
                     break;
-                case ItemSlot.Utilities:
+                case ItemSlot.Utilities: // [Rating] M[Mass] ???
                     // This is too complex and has too many variables to do here.
+
+                    itemData.mechanicalDescription += " M" + itemData.mass;
+
+                    if (itemData.itemEffects.Count > 0)
+                    {
+                        if (itemData.itemEffects[0].inventorySizeEffect) // Inv size increase
+                        {
+                            itemData.mechanicalDescription += " iCAP/" + itemData.itemEffects[0].sizeIncrease;
+                        }
+                    }
+
                     break;
                 case ItemSlot.Weapons: // [Rating] M[Mass] [Damage Range] [Damage Type (IN COLOR)]
-                    itemData.mechanicalDescription = itemData.rating.ToString();
-                    if (itemData.star)
-                        itemData.mechanicalDescription += "*";
                     itemData.mechanicalDescription += " M";
                     itemData.mechanicalDescription += itemData.mass;
                     if (itemData.meleeAttack.isMelee)
@@ -332,7 +339,9 @@ public class ItemEffect
     public int maxMomentumAmount = 3; // This value seems to always be 3
 
     [Header("Inventory Size")]
+    [Tooltip("Increases the size of the user's inventory.")]
     public bool inventorySizeEffect = false;
+    [Tooltip("Increase the current inventory size by this amount.")]
     public int sizeIncrease;
     public bool effectStacks;
 
@@ -465,7 +474,7 @@ public enum ItemQuality
     Rigged,
     Extra_Large,
     Guided,
-    Combined,
+    Combat, // Cmb.
     Cooled,
     Armorered,
     ASB,

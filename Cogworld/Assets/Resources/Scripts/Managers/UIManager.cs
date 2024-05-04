@@ -7253,7 +7253,12 @@ public class UIManager : MonoBehaviour
                 }
                 // State - there is some variance in this
                 UIDataGenericDetail iState = UIManager.inst.Data_CreateGeneric();
-                if (item.unstable > 0) // Unstable
+                if (item.isBroken) // NON-FUNCTIONAL (Red)
+                {
+                    extra = "This component is completely non-functional, and must be repaired before being able to properly operate again.";
+                    iState.Setup(true, true, false, "State", highSecRed, extra, "", false, "", false, "NON-FUNCTIONAL");
+                }
+                else if (item.unstable > 0) // Unstable
                 {
                     extra = "Unstable weapons implode after the indicated remaining number of shots.";
                     iState.Setup(true, true, false, "State", energyBlue, extra, "", false, "", false, "UNSTABLE " + item.unstable);

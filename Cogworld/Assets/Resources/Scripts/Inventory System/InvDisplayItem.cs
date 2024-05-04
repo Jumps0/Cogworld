@@ -193,6 +193,10 @@ public class InvDisplayItem : MonoBehaviour
 
             // - Name - // TODO: This will need to change with things like trap storage which update based on internal values
             nameUnmodified = item.itemData.itemName;
+            if (item.isBroken)
+            {
+                nameUnmodified = "Broken " + nameUnmodified;
+            }
             itemNameText.text = nameUnmodified;
             if (startEmpty)
             {
@@ -331,6 +335,8 @@ public class InvDisplayItem : MonoBehaviour
         end = activeGreen;
         highlight = inActiveGreen;
 
+        if (item.isBroken)
+            end = UIManager.inst.highSecRed;
         if (isSecondaryItem)
             end = wideBlue;
 
@@ -484,7 +490,7 @@ public class InvDisplayItem : MonoBehaviour
 
     public void Click()
     {
-        if (my_interface.GetComponent<StaticInterface>() || discardAnimationCoroutine != null || isSecondaryItem)
+        if (my_interface.GetComponent<StaticInterface>() || discardAnimationCoroutine != null || isSecondaryItem || item.isBroken)
         { // We shouldn't toggle items in the inventory. We should forbid toggling while in the middle of animating. Only lead items should be able to be toggled. 
             return;
         }

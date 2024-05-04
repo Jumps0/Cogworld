@@ -133,43 +133,45 @@ public class UICycleInventory : MonoBehaviour
         foreach (var E in elements)
         {
             // NOTE: Don't forget to check the current states of items! And if items can do the thing we want them to do.
-            switch (choice)
+            if(!E.isSecondaryItem && !E.item.isBroken)
             {
-                case 0: // DISABLE all
-                    if (E.item.state)
-                    {
-                        E.modeMain.SetActive(false); // Just incase its overloaded
-                        E.item.isOverloaded = false; //
+                switch (choice)
+                {
+                    case 0: // DISABLE all
+                        if (E.item.state)
+                        {
+                            E.modeMain.SetActive(false); // Just incase its overloaded
+                            E.item.isOverloaded = false; //
 
-                        E.UIDisable();
-                    }
-                    break;
-                case 1: // ENABLE all
-                    if (!E.item.state)
-                    {
-                        E.UIEnable();
-                    }
-                    break;
-                case 2: // Enter SIEGE
-                    E.siegeStartTurn = TurnManager.inst.globalTime; // Set the start time
-                    E.siegeState = 1; // Set the flag
+                            E.UIDisable();
+                        }
+                        break;
+                    case 1: // ENABLE all
+                        if (!E.item.state)
+                        {
+                            E.UIEnable();
+                        }
+                        break;
+                    case 2: // Enter SIEGE
+                        E.siegeStartTurn = TurnManager.inst.globalTime; // Set the start time
+                        E.siegeState = 1; // Set the flag
 
-                    E.SiegeTransitionTo(0, 1); // Begin transition
-                    break;
-                case 3: // Exit SIEGE
-                    E.siegeState = 3; // Set the flag
-                    E.siegeStartTurn = TurnManager.inst.globalTime; // Set the start time
+                        E.SiegeTransitionTo(0, 1); // Begin transition
+                        break;
+                    case 3: // Exit SIEGE
+                        E.siegeState = 3; // Set the flag
+                        E.siegeStartTurn = TurnManager.inst.globalTime; // Set the start time
 
-                    E.SiegeTransitionTo(2, 3); // Begin transition
-                    break;
-                case 4: // Overload
-                    E.UIOverload();
-                    break;
-                case 5: // Do nothing
+                        E.SiegeTransitionTo(2, 3); // Begin transition
+                        break;
+                    case 4: // Overload
+                        E.UIOverload();
+                        break;
+                    case 5: // Do nothing
 
-                    break;
+                        break;
+                }
             }
-
         }
     }
 
