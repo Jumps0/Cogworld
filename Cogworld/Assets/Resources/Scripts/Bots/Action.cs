@@ -4955,17 +4955,37 @@ public static class Action
         if (owner.botInfo) // Bot
         {
             Action.RemovePartFromBotInventory(owner, item);
+
+            // Display a (Short) Combat popup targeting on the bot to show what was lost
+            UIManager.inst.CreateShortCombatPopup(owner.gameObject, $"-{item.itemData.itemName}", UIManager.inst.highSecRed, UIManager.inst.dangerRed);
         }
         else // Player
         {
             Action.FindRemoveItemFromPlayer(item);
 
-            // TODO:
-            // Play a little destruction animation in the UI
-            // Play a UI sound
+            // Have the InvDisplayItem we just destroyed do its destruction animation (this also plays the sound, destroys duplicates, & updates the UI.)
+            foreach (var I in InventoryControl.inst.interfaces)
+            {
+                foreach (KeyValuePair<GameObject, InventorySlot> kvp in I.GetComponent<UserInterface>().slotsOnInterface.ToList())
+                {
+                    if(kvp.Value.item == item)
+                    {
+                        kvp.Key.GetComponent<InvDisplayItem>().DestroyAnimation();
+                        break;
+                    }
+                }
+            }
+            // Display a (Short) Combat popup targeting on the bot to show what was lost
+            UIManager.inst.CreateShortCombatPopup(PlayerData.inst.gameObject, $"-{item.itemData.itemName}", UIManager.inst.highSecRed, UIManager.inst.dangerRed);
 
-            if(crit)
-                UIManager.inst.CreateNewLogMessage(item.Name + " has been completely destroyed.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
+            if (crit)
+            {
+                UIManager.inst.CreateNewLogMessage(item.itemData.itemName + " has been completely destroyed.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+            }
+            else
+            {
+                UIManager.inst.CreateNewLogMessage(item.itemData.itemName + " destroyed.", UIManager.inst.highSecRed, UIManager.inst.dangerRed, false, true);
+            }
 
             // "Cogmind automatically recycles 5 matter from each attached part that is destroyed."
             PlayerData.inst.currentMatter += 5;
@@ -4974,6 +4994,7 @@ public static class Action
                 PlayerData.inst.currentMatter = PlayerData.inst.maxMatter;
             }
 
+            UIManager.inst.UpdatePSUI();
         }
 
         item.Id = -1;

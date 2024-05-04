@@ -530,7 +530,7 @@ public class InvDisplayItem : MonoBehaviour
         // Very cheeky workaround check here
         partDisplay.gameObject.SetActive(my_interface.GetComponent<StaticInterface>()); // Part display should only be on in the inventory window
 
-        if (partDisplay.gameObject.activeInHierarchy)
+        if (partDisplay.gameObject.activeInHierarchy && !isSecondaryItem)
         {
             StartCoroutine(FlashItemDisplayAnim(partDisplayFlasher));
         }
@@ -1357,11 +1357,15 @@ public class InvDisplayItem : MonoBehaviour
         secondaryParent = parent;
 
         // We only want to display the order text, and name
-        partDisplay.gameObject.SetActive(false);
-        healthDisplay.gameObject.SetActive(false);
         modeMain.SetActive(false);
         specialDescText.gameObject.SetActive(false);
         healthMode.gameObject.SetActive(false);
+
+        // However we will display these (as black) so the text lines up
+        partDisplay.gameObject.SetActive(true);
+        partDisplay.enabled = false;
+        healthDisplay.gameObject.SetActive(true);
+        healthDisplay.enabled = false;
     }
 
     public void SecondaryCompleteSetup() // Called after the above function when being updated in UserInterface. Now it actually has its item assignment
@@ -1375,5 +1379,65 @@ public class InvDisplayItem : MonoBehaviour
         itemNameText.color = wideBlue;
         assignedOrderText.color = wideBlue;
     }
+    #endregion
+
+    #region Destroyed Animation
+    public void DestroyAnimation()
+    {
+        StartCoroutine(DestroyedAnimation());
+
+        // And destroy any duplicates too
+        if (!isSecondaryItem)
+        {
+            foreach (GameObject D in secondaryChildren)
+            {
+                D.GetComponent<InvDisplayItem>().DestroyAnimation();
+            }
+        }
+    }
+
+    private IEnumerator DestroyedAnimation()
+    {
+        // Play a destroyed item sound
+        AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[85]); // UI/PT_LOST
+
+        // Disabled the health indicator (but keep the spacing)
+        healthDisplay.gameObject.SetActive(true);
+        healthDisplay.enabled = false;
+
+        // Disabled the secondary detail & box
+        modeMain.SetActive(false);
+        specialDescText.gameObject.SetActive(false);
+
+        // Disabled hover interaction (because we are going to use it's image)
+        this.GetComponent<UIHoverEvent>().disabled = true;
+        Color start = new Color(UIManager.inst.highSecRed.r, UIManager.inst.highSecRed.g, UIManager.inst.highSecRed.b, 1f);
+        _button.gameObject.GetComponent<Image>().color = start; // Start at full red
+
+        // Set the text(s) to black
+        itemNameText.color = Color.black;
+        assignedOrderText.color = Color.black;
+
+        // Then slowly fade out the red over a period of 1 second
+        float elapsedTime = 0f;
+        float duration = 1f;
+        float tp = 1f;
+
+        while (elapsedTime < duration)
+        {
+            tp = Mathf.Lerp(1f, 0f, elapsedTime / duration);
+
+            _button.gameObject.GetComponent<Image>().color = new Color(start.r, start.b, start.g, tp);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // And then force a UI update, which will destroy this gameObject.
+        UIManager.inst.UpdatePSUI();
+        UIManager.inst.UpdateParts();
+        InventoryControl.inst.UpdateInterfaceInventories();
+    }
+
     #endregion
 }

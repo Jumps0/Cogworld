@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
@@ -94,7 +95,7 @@ public abstract class UserInterface : MonoBehaviour
 
     public void OnDragStart(GameObject obj)
     {
-        if(obj.GetComponent<InvDisplayItem>().item != null) // Don't drag empty slots!
+        if(obj.GetComponent<InvDisplayItem>().item != null || obj.GetComponent<InvDisplayItem>().isSecondaryItem) // Don't drag empty or secondary items.
         {
             MouseData.tempItemBeingDragged = CreatetempItem(obj);
             AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[27]);
@@ -139,7 +140,7 @@ public abstract class UserInterface : MonoBehaviour
     /// <param name="obj">The InventorySlot which holds the item we are currently dragging (aka Origin). Most data is inside the [InvDisplayItem] attached to it.</param>
     public void OnDragEnd(GameObject obj)
     {
-        if (obj.GetComponent<InvDisplayItem>().item == null) // Don't drag empty slots!
+        if (obj.GetComponent<InvDisplayItem>().item == null || obj.GetComponent<InvDisplayItem>().isSecondaryItem) // Don't drag empty or secondary items.
             return;
 
         Destroy(MouseData.tempItemBeingDragged);

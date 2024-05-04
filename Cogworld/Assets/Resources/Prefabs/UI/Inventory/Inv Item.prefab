@@ -1513,6 +1513,8 @@ MonoBehaviour:
     disposable: -1
     siege: 0
     isDuplicate: 0
+    duplicate_uuid: -1
+    duplicates: 
   _assignedChar: 0
   nameUnmodified: 
   _assignedNumber: -1

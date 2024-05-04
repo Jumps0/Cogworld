@@ -1301,6 +1301,14 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Create a (stubby) UI popup adjacent to a specified object. If an actor is assigned at the end the colors will instead vary on the actor's current health.
+    /// </summary>
+    /// <param name="_parent">The parent object the popup is centered on.</param>
+    /// <param name="message">The message to show.</param>
+    /// <param name="mainColor">The primary color of the banner.</param>
+    /// <param name="edgeColor">The "edge" color that connects the banner to the stick to the player.</param>
+    /// <param name="actor">(Optional) An actor that we can check the health of. If set, the color will instead vary based on the bot's health (green for higher health, red for lower).</param>
     public void CreateShortCombatPopup(GameObject _parent, string message, Color mainColor, Color edgeColor, Actor actor = null)
     {
         // Instantiate it & Assign it to parent
