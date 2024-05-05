@@ -10,19 +10,19 @@ public class PartInventory : MonoBehaviour
 
     [Header("Power")]
     public InventoryObject _invPower;
-    public int maxSize_power;
+    private int maxSize_power;
     [Header("Propulsion")]
     public InventoryObject _invPropulsion;
-    public int maxSize_propulsion;
+    private int maxSize_propulsion;
     [Header("Utility")]
     public InventoryObject _invUtility;
-    public int maxSize_utility;
+    private int maxSize_utility;
     [Header("Weapon")]
     public InventoryObject _invWeapon;
-    public int maxSize_weapon;
+    private int maxSize_weapon;
     [Header("Inventory")]
     public InventoryObject _inventory;
-    public int maxSize_inv;
+    private int maxSize_inv;
 
     // Start is called before the first frame update
     void Start()

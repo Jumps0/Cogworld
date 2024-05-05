@@ -345,7 +345,7 @@ public static class Action
                     // Now for sneak attacks
                     if (source.gameObject != PlayerData.inst.gameObject && !target.GetComponent<BotAI>().canSeePlayer) // Not the player and (currently) can't see the player
                     {
-                        UIManager.inst.CreateNewCalcMessage($"Sneak attack on {source.uniqueName}", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+                        UIManager.inst.CreateNewLogMessage($"Sneak attack on {source.uniqueName}", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
                         damageAmount *= 2; // +100% damage (so x2)
                     }
 
@@ -515,7 +515,7 @@ public static class Action
                             // Now for sneak attacks
                             if (source.gameObject != PlayerData.inst.gameObject && !target.GetComponent<BotAI>().canSeePlayer) // Not the player and (currently) can't see the player
                             {
-                                UIManager.inst.CreateNewCalcMessage($"Sneak attack on {source.uniqueName}", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+                                UIManager.inst.CreateNewLogMessage($"Sneak attack on {source.uniqueName}", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
                                 damageAmount *= 2; // +100% damage (so x2)
                             }
 
@@ -656,7 +656,7 @@ public static class Action
             // Now for sneak attacks
             if (source.gameObject != PlayerData.inst.gameObject && !target.GetComponent<BotAI>().canSeePlayer) // Not the player and (currently) can't see the player
             {
-                UIManager.inst.CreateNewCalcMessage($"Sneak attack on {source.uniqueName}", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+                UIManager.inst.CreateNewLogMessage($"Sneak attack on {source.uniqueName}", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
                 damageAmount *= 2; // +100% damage (so x2)
             }
 

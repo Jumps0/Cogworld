@@ -34,27 +34,6 @@ public class InventoryObject : ScriptableObject//, ISerializationCallbackReceive
             this.name = name;
         }
     }
-
-    /// <summary>
-    /// Checks to see how many REAL items are in this inventory.
-    /// </summary>
-    /// <returns>Returns an int value of how many REAL items are in the inventory.</returns>
-    public int ItemCount
-    {
-        get
-        {
-            int amount = 0;
-            for (int i = 0; i < Container.Items.Length; i++)
-            {
-                if (Container.Items[i] != null && Container.Items[i].item != null && Container.Items[i].item.Id >= 0)
-                {
-                    amount++;
-                }
-            }
-
-            return amount;
-        }
-    }
     
     public bool AddItem(Item _item, int _amount)
     {
@@ -85,7 +64,28 @@ public class InventoryObject : ScriptableObject//, ISerializationCallbackReceive
         return true;
         
     }
-    
+
+    public void SwapItems(InventorySlot item1, InventorySlot item2)
+    {
+        if (item2.CanPlaceInSlot(item1.ItemObject) && item1.CanPlaceInSlot(item2.ItemObject))
+        {
+            InventorySlot temp = new InventorySlot(item2.item, item2.amount, item2.parent);
+            item2.UpdateSlot(item1.item, item1.amount, item1.parent);
+            item1.UpdateSlot(temp.item, temp.amount, temp.parent);
+        }
+    }
+
+    public void RemoveItem(Item _item)
+    {
+        for (int i = 0; i < Container.Items.Length; i++)
+        {
+            if (Container.Items[i].item == _item)
+            {
+                Container.Items[i].UpdateSlot(null, 0);
+            }
+        }
+    }
+
     public int EmptySlotCount
     {
         get
@@ -99,7 +99,28 @@ public class InventoryObject : ScriptableObject//, ISerializationCallbackReceive
             return counter;
         }
     }
-    
+
+    /// <summary>
+    /// Checks to see how many REAL items are in this inventory.
+    /// </summary>
+    /// <returns>Returns an int value of how many REAL items are in the inventory.</returns>
+    public int ItemCount
+    {
+        get
+        {
+            int amount = 0;
+            for (int i = 0; i < Container.Items.Length; i++)
+            {
+                if (Container.Items[i] != null && Container.Items[i].item != null && Container.Items[i].item.Id >= 0)
+                {
+                    amount++;
+                }
+            }
+
+            return amount;
+        }
+    }
+
     public InventorySlot SetEmptySlot(Item _item, int _amount)
     {
         for (int i = 0; i < Container.Items.Length; i++)
@@ -143,6 +164,7 @@ public class InventoryObject : ScriptableObject//, ISerializationCallbackReceive
     }
     */
 
+    #region Serialization
     [ContextMenu("Save")]
     public void Save()
     {
@@ -195,33 +217,7 @@ public class InventoryObject : ScriptableObject//, ISerializationCallbackReceive
     {
         Container.Clear();
     }
-    
-    
-    public void SwapItems(InventorySlot item1, InventorySlot item2)
-    {
-        
-        if (item2.CanPlaceInSlot(item1.ItemObject) && item1.CanPlaceInSlot(item2.ItemObject))
-        {
-            InventorySlot temp = new InventorySlot(item2.item, item2.amount, item2.parent);
-            item2.UpdateSlot(item1.item, item1.amount, item1.parent);
-            item1.UpdateSlot(temp.item, temp.amount, temp.parent);
-        }
-        
-        
-    }
-
-    
-    public void RemoveItem(Item _item)
-    {
-        for (int i = 0; i < Container.Items.Length; i++)
-        {
-            if(Container.Items[i].item == _item)
-            {
-                Container.Items[i].UpdateSlot(null, 0);
-            }
-        }
-    }
-    
+    #endregion
 }
 
 [System.Serializable]

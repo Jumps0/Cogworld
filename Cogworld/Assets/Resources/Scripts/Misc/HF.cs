@@ -1281,7 +1281,7 @@ public static class HF
                     else if (parsedName.Contains("Liberate"))
                     {
                         // hack
-                        return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
+                        return "Trojan loaded successfully.\nTesting...\nReady to liberate!.";
                     }
                     else if (parsedName.Contains("Mask"))
                     {
@@ -4354,6 +4354,105 @@ public static class HF
     #endregion
 
     #region Misc
+
+    /// <summary>
+    /// Converts a list of items to a simple list of *bool*s where true = item & false = no item.
+    /// </summary>
+    /// <param name="inventory">The inventory to convert.</param>
+    /// <returns>A list of bools where: True = an item & False = no item (aka Empty)</returns>
+    public static List<bool> InventoryToSimple(InventoryObject inventory)
+    {
+        List<bool> result = new List<bool>();
+
+        foreach (var item in inventory.Container.Items)
+        {
+            if(item.item == null || item.item.Id == -1) // Empty (no item)
+            {
+                result.Add(false);
+            }
+            else // Item
+            {
+                result.Add(true);
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Compainion function to *InventoryToSimple*. Identifies a "gap" between true bool's in a list of bools.
+    /// </summary>
+    /// <returns>Returns true/false if there is a gap between two true values in the list (where the middle one is false).</returns>
+    public static bool FindGapInList(List<bool> list)
+    {
+        if (list.Count < 3)
+        {
+            // Not enough elements to check for a gap
+            return false;
+        }
+
+        bool foundTrue = false;
+
+        for (int i = 0; i < list.Count; i++)
+        {
+            if (list[i])
+            {
+                foundTrue = true; // Set flag when encountering a true value
+            }
+            else if (foundTrue)
+            {
+                // If a true value has been encountered before and we find a false value now,
+                // it indicates a gap
+                return true;
+            }
+        }
+
+        // No gap found
+        return false;
+    }
+
+    /// <summary>
+    /// Sibling function to *FindGapInList*, used in Auto-Sort. Checks to see if a simplified list has the specified "space" in the list. Returns if it exists, and the index of where it starts.
+    /// </summary>
+    /// <param name="boolList">The simplified list of bools we will search through.</param>
+    /// <param name="spaceSize">The size of space we want to find.</param>
+    /// <returns>(bool, int). If the space exists, and if so, where it begins.</returns>
+    public static (bool, int) HasSpaceInList(List<bool> boolList, int spaceSize)
+    {
+        if (boolList.Count < spaceSize + 1)
+        {
+            // Not enough elements to check for a space
+            return (false, -1);
+        }
+
+        int spaceStartIndex = -1;
+
+        for (int i = 0; i <= boolList.Count - spaceSize; i++)
+        {
+            bool foundSpace = true;
+
+            // Check the next 'spaceSize' elements
+            for (int j = 0; j < spaceSize; j++)
+            {
+                if (boolList[i + j])
+                {
+                    // If any of the elements in the range are true, it's not a space
+                    foundSpace = false;
+                    break;
+                }
+            }
+
+            if (foundSpace)
+            {
+                // Found a space of the specified size
+                spaceStartIndex = i;
+                return (true, spaceStartIndex);
+            }
+        }
+
+        // No space found
+        return (false, -1);
+    }
 
     public static void RemoveMachineFromList(MachinePart go)
     {

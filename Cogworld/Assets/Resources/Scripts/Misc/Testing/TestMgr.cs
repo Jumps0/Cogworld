@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,7 +17,7 @@ public class TestMgr : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(Delay(2.5f));
+        //StartCoroutine(Delay(2.5f));
     }
 
     private IEnumerator Delay(float delay = 0f)

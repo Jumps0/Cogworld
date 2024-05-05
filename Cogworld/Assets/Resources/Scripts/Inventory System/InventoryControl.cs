@@ -249,6 +249,53 @@ public class InventoryControl : MonoBehaviour
     }
 
     /// <summary>
+    /// Called every time the player moves X amount of blocks. Checks to see if any of the /PARTS/ inventories (the 4 of them) need to be auto-sorted.
+    /// </summary>
+    public void PartsSortingCheck()
+    {
+        bool updateNeeded = false;
+
+        // We should only bother if the inventory has atleast 3 slots.
+        if (PlayerData.inst.GetComponent<PartInventory>()._invPower.Container.Items.Length >= 3)
+        {
+            if (UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortCheck(PlayerData.inst.GetComponent<PartInventory>()._invPower)) // Check if we need to sort this
+            {
+                UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortSection(PlayerData.inst.GetComponent<PartInventory>()._invPower); // Perform the sort
+                updateNeeded = true;
+            }
+        }
+        if (PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.Container.Items.Length >= 3)
+        {
+            if (UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortCheck(PlayerData.inst.GetComponent<PartInventory>()._invPropulsion)) // Check if we need to sort this
+            {
+                UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortSection(PlayerData.inst.GetComponent<PartInventory>()._invPropulsion); // Perform the sort
+                updateNeeded = true;
+            }
+        }
+        if (PlayerData.inst.GetComponent<PartInventory>()._invUtility.Container.Items.Length >= 3)
+        {
+            if (UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortCheck(PlayerData.inst.GetComponent<PartInventory>()._invUtility)) // Check if we need to sort this
+            {
+                UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortSection(PlayerData.inst.GetComponent<PartInventory>()._invUtility); // Perform the sort
+                updateNeeded = true;
+            }
+        }
+        if (PlayerData.inst.GetComponent<PartInventory>()._invWeapon.Container.Items.Length >= 3)
+        {
+            if (UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortCheck(PlayerData.inst.GetComponent<PartInventory>()._invWeapon)) // Check if we need to sort this
+            {
+                UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortSection(PlayerData.inst.GetComponent<PartInventory>()._invWeapon); // Perform the sort
+                updateNeeded = true;
+            }
+        }
+
+        if (updateNeeded) // If we performed a sort, we now need to update the UI
+        {
+            UpdateInterfaceInventories();
+        }
+    }
+
+    /// <summary>
     /// Adds an item to either the player's inventory or one of their part slots
     /// </summary>
     /// <param name="part">The part to add.</param>

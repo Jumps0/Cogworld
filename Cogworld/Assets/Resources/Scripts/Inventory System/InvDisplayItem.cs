@@ -152,7 +152,14 @@ public class InvDisplayItem : MonoBehaviour
 
             if (item.state)
             {
-                assignedOrderText.color = activeGreen;
+                if (!isSecondaryItem)
+                {
+                    assignedOrderText.color = activeGreen;
+                }
+                else
+                {
+                    assignedOrderText.color = wideBlue;
+                }
             }
             else
             {
@@ -536,7 +543,7 @@ public class InvDisplayItem : MonoBehaviour
         // Very cheeky workaround check here
         partDisplay.gameObject.SetActive(my_interface.GetComponent<StaticInterface>()); // Part display should only be on in the inventory window
 
-        if (partDisplay.gameObject.activeInHierarchy && !isSecondaryItem)
+        if (partDisplay.gameObject.activeInHierarchy && partDisplay.enabled && !isSecondaryItem)
         {
             StartCoroutine(FlashItemDisplayAnim(partDisplayFlasher));
         }
@@ -1368,8 +1375,11 @@ public class InvDisplayItem : MonoBehaviour
         healthMode.gameObject.SetActive(false);
 
         // However we will display these (as black) so the text lines up
-        partDisplay.gameObject.SetActive(true);
-        partDisplay.enabled = false;
+        if (!my_interface.GetComponent<DynamicInterface>())
+        {
+            partDisplay.gameObject.SetActive(true);
+            partDisplay.enabled = false;
+        }
         healthDisplay.gameObject.SetActive(true);
         healthDisplay.enabled = false;
     }

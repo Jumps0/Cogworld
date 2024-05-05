@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -514,11 +515,24 @@ public abstract class UserInterface : MonoBehaviour
     /// <param name="item">A reference to the IDO's item.</param>
     public void TryDirectEquip(GameObject obj, Item item)
     {
+        // If the item is multi-slot we need to gather up its children and their objects
+        List<KeyValuePair<GameObject, Item>> children = null;
+        if(item.itemData.slotsRequired > 1)
+        {
+            children = new List<KeyValuePair<GameObject, Item>>();
+
+            foreach (var C in obj.GetComponent<InvDisplayItem>().secondaryChildren)
+            {
+                children.Add(new KeyValuePair<GameObject, Item>(C, C.GetComponent<InvDisplayItem>().item));
+            }
+        }
+
         // We are essentially doing item relocation here. So we can copy most of the code from above.
 
         // First we need to try and find a free slot of the matching type.
-        InventorySlot destinationSlot = null;
-        GameObject destinationObject = null;
+        int itemSize = item.itemData.slotsRequired;
+        int freeSlotsFound = 0;
+        List<GameObject> destinationObjects = new List<GameObject>();
 
         foreach (var I in InventoryControl.inst.interfaces)
         {
@@ -529,76 +543,93 @@ public abstract class UserInterface : MonoBehaviour
                     if(S.Value.item != null && S.Value.item.Id == -1) // An empty slot
                     {
                         if(S.Value.AllowedItems.Count > 0 && S.Value.AllowedItems.Contains(item.itemData.slot)) // And allows for our item's slot type
-                        { // Note: ^ Since we are adding to /PARTS/ slots this should always have 1 type and not be == 0.
+                        { // Note: ^ Since we are adding to /PARTS/ slots this should always have (usually) 1 type and not be == 0.
                             // We've found our slot
-                            destinationSlot = S.Value;
-                            destinationObject = S.Key;
-                            break;
+                            destinationObjects.Add(S.Key);
+                            freeSlotsFound++;
+                            if (freeSlotsFound == itemSize)
+                            {
+                                break; // We have space!
+                            }
                         }
                     }
                 }
             }
         }
 
-        // Did we succeed on finding a slot?
-        if(destinationSlot == null) // No. Display a message
+        // Did we succeed on finding a slot(s)?
+        if(freeSlotsFound < itemSize) // No. Display a message
         {
             UIManager.inst.ShowCenterMessageTop($"No free {item.itemData.slot.ToString()} slots", UIManager.inst.dangerRed, Color.black);
         }
         else // Yes! Relocate the item.
         {
-            if (item.itemData.slot == ItemSlot.Power)
+            foreach (var dobj in destinationObjects)
             {
-                PlayerData.inst.GetComponent<PartInventory>()._invPower.AddItem(item, 1);
-                UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                // If this is a multi-slot item, we need to start modifying the children
+                if(dobj != destinationObjects[0]) // Not the first item (parent). This will only happen if we need to move more than 1 slot!
+                {
+                    // We need to re-assign our input variables to the children
+                    int index = destinationObjects.IndexOf(dobj) - 1; // -1 because destinationObjects also includes the parent item (at index 0)
+                    obj = children[index].Key;
+                    item = children[index].Value;
+                }
+
+
+                if (item.itemData.slot == ItemSlot.Power)
+                {
+                    PlayerData.inst.GetComponent<PartInventory>()._invPower.AddItem(item, 1);
+                    UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                }
+                else if (item.itemData.slot == ItemSlot.Propulsion)
+                {
+                    PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.AddItem(item, 1);
+                    UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                }
+                else if (item.itemData.slot == ItemSlot.Utilities)
+                {
+                    PlayerData.inst.GetComponent<PartInventory>()._invUtility.AddItem(item, 1);
+                    UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                }
+                else if (item.itemData.slot == ItemSlot.Weapons)
+                {
+                    PlayerData.inst.GetComponent<PartInventory>()._invWeapon.AddItem(item, 1);
+                    UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                }
+
+                // Remove the old item from wherever its stored
+                Action.FindRemoveItemFromPlayer(item);
+
+                obj.GetComponent<InvDisplayItem>().item = new Item(); // Set [ORIGIN]'s item to be empty in object
+                obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].item = new Item(); // Set [ORIGIN]'s item slot to be empty so we don't get errors
+
+                dobj.GetComponent<InvDisplayItem>().item = item; // Set the item on the [DESTINATION] object
+
+                // Force enable the item and animate it (if its disabled)
+                if (!dobj.GetComponent<InvDisplayItem>().item.state) // [DESTINATION]
+                {
+                    dobj.GetComponent<InvDisplayItem>().UIEnable();
+                }
+
+                // Flash the item's display square
+                dobj.GetComponent<InvDisplayItem>().FlashItemDisplay();
             }
-            else if (item.itemData.slot == ItemSlot.Propulsion)
-            {
-                PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.AddItem(item, 1);
-                UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-            }
-            else if (item.itemData.slot == ItemSlot.Utilities)
-            {
-                PlayerData.inst.GetComponent<PartInventory>()._invUtility.AddItem(item, 1);
-                UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-            }
-            else if (item.itemData.slot == ItemSlot.Weapons)
-            {
-                PlayerData.inst.GetComponent<PartInventory>()._invWeapon.AddItem(item, 1);
-                UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-            }
+
+            // Update Inventory Count
+            PlayerData.inst.currentInvCount = PlayerData.inst.GetComponent<PartInventory>()._inventory.ItemCount;
+
+            // Update UI
+            UIManager.inst.UpdatePSUI();
+            UIManager.inst.UpdateInventory();
+            UIManager.inst.UpdateParts();
+            InventoryControl.inst.UpdateInterfaceInventories();
         }
-
-        // Remove the old item from wherever its stored
-        Action.FindRemoveItemFromPlayer(item);
-
-        obj.GetComponent<InvDisplayItem>().item = new Item(); // Set [ORIGIN]'s item to be empty in object
-        obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].item = new Item(); // Set [ORIGIN]'s item slot to be empty so we don't get errors
-
-        destinationObject.GetComponent<InvDisplayItem>().item = item; // Set the item on the [DESTINATION] object
-
-        // Force enable the item and animate it (if its disabled)
-        if (!destinationObject.GetComponent<InvDisplayItem>().item.state) // [DESTINATION]
-        {
-            destinationObject.GetComponent<InvDisplayItem>().UIEnable();
-        }
-
-        // Flash the item's display square
-        destinationObject.GetComponent<InvDisplayItem>().FlashItemDisplay();
-
-        // Update Inventory Count
-        PlayerData.inst.currentInvCount = PlayerData.inst.GetComponent<PartInventory>()._inventory.ItemCount;
-
-        // Update UI
-        UIManager.inst.UpdatePSUI();
-        UIManager.inst.UpdateInventory();
-        UIManager.inst.UpdateParts();
-        InventoryControl.inst.UpdateInterfaceInventories();
     }
 
     #region Auto-Sorting
     /// <summary>
     /// Called periodically by other functions. Checks to see if an inventory needs to be auto-sorted. Returns True/False.
+    /// <param name="inventory"/>The inventory to check.</param>
     /// <returns>True/False if a sort needs to happen.</returns>
     /// </summary>
     public bool AutoSortCheck(InventoryObject inventory)
@@ -617,22 +648,33 @@ public abstract class UserInterface : MonoBehaviour
             return true;
         }
         // 2. There is a gap inbetween two items.
-        if(1 == 1)
+        if(HF.FindGapInList(HF.InventoryToSimple(inventory)))
         {
-
+            return true;
         }
-
-
 
         return false;
     }
 
     /// <summary>
     /// When called, will attempt to auto-sort an inventory.
+    /// <param name="inventory"/>The inventory to check.</param>
+    /// <param name="animate"/>If true, when the UI update is performed, sorted items will do a little "move" animation to show they have been sorted. If false, they will just auto-reposition with no fanfare.</param>
     /// </summary>
-    public void AutoSortSection()
+    public void AutoSortSection(InventoryObject inventory, bool animate = true)
     {
+        // The whole idea here is to push everything to the top, and leave the empty space at the bottom. (There WILL be empty space thanks to our checks)
+        // We will move the items around in the inventory first, then tell the UserInterface to redraw itself.
 
+
+
+        if (animate) // == ANIMATION ==
+        {
+            
+        }
+
+        // Redraw the UI Display
+        InventoryControl.inst.UpdateInterfaceInventories();
     }
     #endregion
 
