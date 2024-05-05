@@ -1405,7 +1405,8 @@ public class InvDisplayItem : MonoBehaviour
     private IEnumerator DestroyedAnimation()
     {
         // Play a destroyed item sound
-        AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[85]); // UI/PT_LOST
+        if (!isSecondaryItem) // dont play multiple at the same time!
+            AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[85]); // UI/PT_LOST
 
         // Disabled the health indicator (but keep the spacing)
         healthDisplay.gameObject.SetActive(true);

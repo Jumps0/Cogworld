@@ -35,18 +35,25 @@ public class InventoryObject : ScriptableObject//, ISerializationCallbackReceive
         }
     }
 
-    public int InventoryItemCount()
+    /// <summary>
+    /// Checks to see how many REAL items are in this inventory.
+    /// </summary>
+    /// <returns>Returns an int value of how many REAL items are in the inventory.</returns>
+    public int ItemCount
     {
-        int amount = 0;
-        for (int i = 0; i < Container.Items.Length; i++)
+        get
         {
-            if (Container.Items[i] != null && Container.Items[i].item != null && Container.Items[i].item.Id >= 0)
+            int amount = 0;
+            for (int i = 0; i < Container.Items.Length; i++)
             {
-                amount++;
+                if (Container.Items[i] != null && Container.Items[i].item != null && Container.Items[i].item.Id >= 0)
+                {
+                    amount++;
+                }
             }
-        }
 
-        return amount;
+            return amount;
+        }
     }
     
     public bool AddItem(Item _item, int _amount)
@@ -120,7 +127,7 @@ public class InventoryObject : ScriptableObject//, ISerializationCallbackReceive
 
         return null;
     }
-    
+
     /*
     public void OnAfterDeserialize()
     {

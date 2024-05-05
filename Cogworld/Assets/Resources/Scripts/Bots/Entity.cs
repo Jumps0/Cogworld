@@ -14,6 +14,8 @@ public class Entity : MonoBehaviour
     public bool BlocksMovement { get => blocksMovement; set => blocksMovement = value; }
 
     [Header("Bot Values")]
+    public string uniqueName;
+    //
     public int currentHealth;
     public int maxHealth;
     //

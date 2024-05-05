@@ -106,6 +106,7 @@ public class Actor : Entity
                 inventory = new InventoryObject(HF.CalculateMaxInventorySize(components), botInfo.name + "'s Inventory");
 
                 myFaction = botInfo.locations.alignment;
+                uniqueName = botInfo.name; // TODO: Fancy system for names (later)
             }
 
             algorithm = new AdamMilVisibility(this); // Set visual algo

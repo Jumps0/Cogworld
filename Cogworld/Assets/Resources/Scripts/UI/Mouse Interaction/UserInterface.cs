@@ -181,6 +181,10 @@ public abstract class UserInterface : MonoBehaviour
                         PlayerData.inst.maxWeight -= obj.GetComponent<InvDisplayItem>().item.itemData.propulsion[0].support;
                     }
 
+                    // Subtract 10 energy
+                    PlayerData.inst.currentEnergy -= 10;
+                    PlayerData.inst.currentEnergy = Mathf.Clamp(PlayerData.inst.currentEnergy, 0, PlayerData.inst.maxEnergy);
+
                     // Update UI
                     UIManager.inst.UpdatePSUI();
                     UIManager.inst.UpdateInventory();
@@ -222,6 +226,10 @@ public abstract class UserInterface : MonoBehaviour
                 {
                     PlayerData.inst.maxWeight -= obj.GetComponent<InvDisplayItem>().item.itemData.propulsion[0].support;
                 }
+
+                // Subtract 10 energy
+                PlayerData.inst.currentEnergy -= 10;
+                PlayerData.inst.currentEnergy = Mathf.Clamp(PlayerData.inst.currentEnergy, 0, PlayerData.inst.maxEnergy);
 
                 // Update UI
                 UIManager.inst.UpdatePSUI();
@@ -482,7 +490,7 @@ public abstract class UserInterface : MonoBehaviour
         }
 
         // Update Inventory Count
-        PlayerData.inst.currentInvCount = PlayerData.inst.GetComponent<PartInventory>()._inventory.InventoryItemCount();
+        PlayerData.inst.currentInvCount = PlayerData.inst.GetComponent<PartInventory>()._inventory.ItemCount;
 
         // Update UI
         UIManager.inst.UpdatePSUI();
@@ -579,7 +587,7 @@ public abstract class UserInterface : MonoBehaviour
         destinationObject.GetComponent<InvDisplayItem>().FlashItemDisplay();
 
         // Update Inventory Count
-        PlayerData.inst.currentInvCount = PlayerData.inst.GetComponent<PartInventory>()._inventory.InventoryItemCount();
+        PlayerData.inst.currentInvCount = PlayerData.inst.GetComponent<PartInventory>()._inventory.ItemCount;
 
         // Update UI
         UIManager.inst.UpdatePSUI();
@@ -587,6 +595,46 @@ public abstract class UserInterface : MonoBehaviour
         UIManager.inst.UpdateParts();
         InventoryControl.inst.UpdateInterfaceInventories();
     }
+
+    #region Auto-Sorting
+    /// <summary>
+    /// Called periodically by other functions. Checks to see if an inventory needs to be auto-sorted. Returns True/False.
+    /// <returns>True/False if a sort needs to happen.</returns>
+    /// </summary>
+    public bool AutoSortCheck(InventoryObject inventory)
+    {
+        // First of all: 1.) Are there even any items in this inventory? 2.) Is this inventory full?
+        if(inventory.ItemCount <= 0 || inventory.EmptySlotCount <= 0)
+        {
+            return false;
+        }
+
+        // Now that we know that there is atleast 1 item in here, and atleast 1 free space.
+        // There are a few scenarios where we want to sort:
+        // 1. There is a free space at the top. (We want all items to be pushed to the top)
+        if (inventory.Container.Items[0].item == null || inventory.Container.Items[0].item.Id == -1)
+        {
+            return true;
+        }
+        // 2. There is a gap inbetween two items.
+        if(1 == 1)
+        {
+
+        }
+
+
+
+        return false;
+    }
+
+    /// <summary>
+    /// When called, will attempt to auto-sort an inventory.
+    /// </summary>
+    public void AutoSortSection()
+    {
+
+    }
+    #endregion
 
     public void CopyInvDisplayItem(InvDisplayItem s, InvDisplayItem t) // Source | Target
     {

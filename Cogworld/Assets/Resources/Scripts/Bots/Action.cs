@@ -4,6 +4,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static UnityEngine.RuleTile.TilingRuleOutput;
@@ -344,6 +345,7 @@ public static class Action
                     // Now for sneak attacks
                     if (source.gameObject != PlayerData.inst.gameObject && !target.GetComponent<BotAI>().canSeePlayer) // Not the player and (currently) can't see the player
                     {
+                        UIManager.inst.CreateNewCalcMessage($"Sneak attack on {source.uniqueName}", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
                         damageAmount *= 2; // +100% damage (so x2)
                     }
 
@@ -513,6 +515,7 @@ public static class Action
                             // Now for sneak attacks
                             if (source.gameObject != PlayerData.inst.gameObject && !target.GetComponent<BotAI>().canSeePlayer) // Not the player and (currently) can't see the player
                             {
+                                UIManager.inst.CreateNewCalcMessage($"Sneak attack on {source.uniqueName}", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
                                 damageAmount *= 2; // +100% damage (so x2)
                             }
 
@@ -653,6 +656,7 @@ public static class Action
             // Now for sneak attacks
             if (source.gameObject != PlayerData.inst.gameObject && !target.GetComponent<BotAI>().canSeePlayer) // Not the player and (currently) can't see the player
             {
+                UIManager.inst.CreateNewCalcMessage($"Sneak attack on {source.uniqueName}", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
                 damageAmount *= 2; // +100% damage (so x2)
             }
 
@@ -4652,7 +4656,7 @@ public static class Action
 
                     break;
                 case CritType.Phase: // L-Cannon, Drained L-Cannon, Zio. Alpha-Cannon & Zio. Alpha-Cannon MK.2 has this
-                    // "Damage phase-mirrored to [name] %1."
+                    // "Damage phase-mirrored to [name] %1." | [name] enveloped in phasic energy. see: https://youtu.be/0I_-Tuuv4Ww?si=MfiJZ4VfZbAkKsKX&t=9715
                     // (Assumption): Mirror damage to neighbor
                     Actor neighbor = Action.FindNewNeighboringEnemy(target);
                     DamageBot(neighbor, damage, weapon, source, false);

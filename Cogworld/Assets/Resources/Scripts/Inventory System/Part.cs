@@ -362,7 +362,7 @@ public class Part : MonoBehaviour
                 // There is space, we can add it to the inventory
                 InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>()._inventory);
                 InventoryControl.inst.UpdateInterfaceInventories();
-                PlayerData.inst.currentInvCount = PlayerData.inst.GetComponent<PartInventory>()._inventory.InventoryItemCount();
+                PlayerData.inst.currentInvCount = PlayerData.inst.GetComponent<PartInventory>()._inventory.ItemCount;
                 UIManager.inst.CreateNewLogMessage("Aquired " + this._item.itemData.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
 
                 // Play a sound
@@ -378,6 +378,19 @@ public class Part : MonoBehaviour
             }
             else if(slotAvailable) // If no space in inventory, then we try to add it to the slots
             {
+                // Firstly, does the player have the required matter needed to equip this item?
+                // "Attaching a part requires 20 energy and 10 matter. Detaching a part expends 10 energy."
+                if(PlayerData.inst.currentMatter < 10)
+                {
+                    UIManager.inst.ShowCenterMessageTop($"Insufficient matter stored to equip item ({10 - PlayerData.inst.currentMatter})", UIManager.inst.dangerRed, Color.black);
+                    return;
+                }
+                else if (PlayerData.inst.currentEnergy < 20)
+                {
+                    UIManager.inst.ShowCenterMessageTop($"Insufficient energy stored to equip item ({20 - PlayerData.inst.currentEnergy})", UIManager.inst.dangerRed, Color.black);
+                    return;
+                }
+
                 switch (_item.itemData.slot)
                 {
                     case ItemSlot.Power:

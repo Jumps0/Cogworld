@@ -148,9 +148,9 @@ public class Item
         // except Utilities which is done manually.
         if(itemData.mechanicalDescription.Length == 0)
         {
-            itemData.mechanicalDescription += itemData.rating.ToString();
             if (itemData.star)
                 itemData.mechanicalDescription += "*";
+            itemData.mechanicalDescription += itemData.rating.ToString();
 
             switch (itemData.slot)
             {
@@ -169,13 +169,116 @@ public class Item
                 case ItemSlot.Utilities: // [Rating] M[Mass] ???
                     // This is too complex and has too many variables to do here.
 
-                    itemData.mechanicalDescription += " M" + itemData.mass;
+                    itemData.mechanicalDescription += " M" + itemData.mass + " ";
 
                     if (itemData.itemEffects.Count > 0)
                     {
-                        if (itemData.itemEffects[0].inventorySizeEffect) // Inv size increase
+                        foreach (var E in itemData.itemEffects)
                         {
-                            itemData.mechanicalDescription += " iCAP/" + itemData.itemEffects[0].sizeIncrease;
+                            if (E.inventorySizeEffect) // Inv size increase
+                            {
+                                itemData.mechanicalDescription += "iCAP/" + E.sizeIncrease;
+                            }
+                            if (E.viewRangeBonus.hasEffect) // View range extension
+                            {
+                                itemData.mechanicalDescription += "VIS/" + E.viewRangeBonus.amount;
+                            }
+                            if (E.hackBonuses.hasHackBonus) // Hacking bonuses
+                            {
+                                if(E.hackBonuses.hackSuccessBonus > 0)
+                                {
+                                    itemData.mechanicalDescription += "hATK/" + E.hackBonuses.hackSuccessBonus * 100;
+                                }
+                                // TODO
+                            }
+                            if (E.armorProtectionEffect.hasEffect) // Armor
+                            {
+                                if (E.armorProtectionEffect.highCoverage)
+                                {
+                                    // Nothing
+                                }
+                                else
+                                {
+                                    if(E.armorProtectionEffect.armorEffect_slotType != ArmorType.General) // Non slot specific protection
+                                    {
+                                        // TODO
+                                    }
+                                    else // Slot specific
+                                    {
+                                        switch (E.armorProtectionEffect.armorEffect_slotType)
+                                        {
+                                            case ArmorType.Power:
+                                                itemData.mechanicalDescription += "pwr";
+                                                break;
+                                            case ArmorType.Propulsion:
+                                                itemData.mechanicalDescription += "pr";
+                                                break;
+                                            case ArmorType.Utility:
+                                                itemData.mechanicalDescription += "utl";
+                                                break;
+                                            case ArmorType.Weapon:
+                                                itemData.mechanicalDescription += "wep";
+                                                break;
+                                            case ArmorType.None: // Core
+                                                itemData.mechanicalDescription += "cr";
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                        itemData.mechanicalDescription += "SH/" + E.armorProtectionEffect.armorEffect_absorbtion * 100;
+                                    }
+                                }
+                            }
+                            if (E.heatDissipation.hasEffect) // Cooling & Heat dissipation | [Rating] M[Mass] (Type of cooling)/[amount]
+                            {
+                                // TODO
+                                itemData.mechanicalDescription += "COOL/" + E.heatDissipation.dissipationPerTurn;
+                            }
+                            if (E.detectionEffect.hasEffect) // Detection & whatnot (TODO)
+                            {
+                                if (E.detectionEffect.botDetection)
+                                {
+
+                                }
+                                else if (E.detectionEffect.terrainScanning)
+                                {
+
+                                }
+                                else if (E.detectionEffect.haulerTracking)
+                                {
+
+                                }
+                                else if (E.detectionEffect.seismic)
+                                {
+                                    itemData.mechanicalDescription += "SIES/";
+                                }
+                                else if (E.detectionEffect.machine)
+                                {
+                                    itemData.mechanicalDescription += "mNFO/";
+                                }
+                                else if (E.detectionEffect.structural)
+                                {
+
+                                }
+                                else if (E.detectionEffect.warlordComms)
+                                {
+
+                                }
+
+                                itemData.mechanicalDescription += E.detectionEffect.range;
+                            }
+                            if (E.partRestoreEffect.hasEffect)
+                            {
+                                itemData.mechanicalDescription += "SYSR/" + E.partRestoreEffect.percentChance * 100;
+                            }
+                            if (E.hasMassSupport)
+                            {
+                                itemData.mechanicalDescription += "MASS/" + E.massSupport;
+                            }
+                            if (E.authchipDetails.isAuthchip) // Authchip stuff
+                            {
+                                itemData.mechanicalDescription += "AC/0";
+                            }
                         }
                     }
 
@@ -188,6 +291,10 @@ public class Item
                         itemData.mechanicalDescription += " ";
                         itemData.mechanicalDescription += itemData.meleeAttack.damage.x + "-" + itemData.meleeAttack.damage.y + " ";
                         itemData.mechanicalDescription += HF.ShortenDamageType(itemData.meleeAttack.damageType);
+                    }
+                    else if (itemData.isSpecialAttack)
+                    {
+                        itemData.mechanicalDescription += " 0 SP";
                     }
                     else
                     {
@@ -452,6 +559,12 @@ public class ItemEffect
 
     [Header("Alien Bonuses")]
     public ItemAlienBonuses alienBonus;
+
+    [Header("View Range Bonuses")]
+    public ItemViewRangeEffect viewRangeBonus;
+
+    [Header("Authchips")]
+    public ItemAuthChip authchipDetails;
 }
 
 public enum ItemQuality
@@ -1111,7 +1224,6 @@ public class ItemDetectionEffect
     public bool stacks = false;
 }
 
-
 [System.Serializable]
 public class HackBonus
 {
@@ -1141,7 +1253,27 @@ public class HackBonus
     public float allyHackDefenseBonus = 0f;
     public int allyHackRange;
 }
+
+[System.Serializable]
+[Tooltip("Increases visual sensor range by #.")]
+public class ItemViewRangeEffect
+{
+    public bool hasEffect = false;
+    public int amount = 0;
+    public bool stacks = false;
+}
+
+
+
 #endregion
+
+[System.Serializable]
+[Tooltip("Contains data relating to authchips.")]
+public class ItemAuthChip
+{
+    public bool isAuthchip = false;
+
+}
 
 [System.Serializable]
 public class ItemUnique 
