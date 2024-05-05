@@ -447,6 +447,9 @@ public class InvDisplayItem : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// When called, briefly flashes the image behind the part health indicator from black -> green -> black (2.2s total).
+    /// </summary>
     public void RecentAttachmentAnimation()
     {
         StartCoroutine(RAA());
@@ -543,13 +546,16 @@ public class InvDisplayItem : MonoBehaviour
         // Very cheeky workaround check here
         partDisplay.gameObject.SetActive(my_interface.GetComponent<StaticInterface>()); // Part display should only be on in the inventory window
 
-        if (partDisplay.gameObject.activeInHierarchy && partDisplay.enabled && !isSecondaryItem)
+        if (!isSecondaryItem)
         {
-            StartCoroutine(FlashItemDisplayAnim(partDisplayFlasher));
-        }
-        else
-        {
-            StartCoroutine(FlashItemDisplayAnim(healthDisplayBacker));
+            if (partDisplay.gameObject.activeInHierarchy && partDisplay.enabled)
+            {
+                StartCoroutine(FlashItemDisplayAnim(partDisplayFlasher));
+            }
+            else
+            {
+                StartCoroutine(FlashItemDisplayAnim(healthDisplayBacker));
+            }
         }
     }
 

@@ -324,6 +324,11 @@ public class InventoryControl : MonoBehaviour
 
     public void DropItemOnFloor(Item _item, Actor source, InventoryObject sourceInventory)
     {
+        if (_item.isDuplicate) // Don't drop duplicate items!
+        {
+            return;
+        }
+
         // Drop is as close to the source as possible
         TileBlock dropTile = MapManager.inst._allTilesRealized[HF.V3_to_V2I(source.transform.position)];
 

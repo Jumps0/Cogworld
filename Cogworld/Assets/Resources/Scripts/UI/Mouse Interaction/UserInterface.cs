@@ -96,7 +96,7 @@ public abstract class UserInterface : MonoBehaviour
 
     public void OnDragStart(GameObject obj)
     {
-        if(obj.GetComponent<InvDisplayItem>().item != null || obj.GetComponent<InvDisplayItem>().isSecondaryItem) // Don't drag empty or secondary items.
+        if(obj.GetComponent<InvDisplayItem>().item != null && !obj.GetComponent<InvDisplayItem>().isSecondaryItem) // Don't drag empty or secondary items.
         {
             MouseData.tempItemBeingDragged = CreatetempItem(obj);
             AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[27]);
@@ -152,6 +152,7 @@ public abstract class UserInterface : MonoBehaviour
             // Before we actually try to drop the item, we want to consider if attempting to do so would destroy it.
             if (obj.GetComponent<InvDisplayItem>().item.itemData.destroyOnRemove && obj.GetComponent<InvDisplayItem>().my_interface.GetComponent<DynamicInterface>()) // Also only do this in /PARTS/ menu
             {
+                // NOTE: Currently there exists no multi-slot force discardable items IN THE GAME. So we don't have to worry about it ;)
                 #region Item Force Discarding
                 // First of all, if this is the first time we try to do this, we want to warn the player.
                 if (!obj.GetComponent<InvDisplayItem>().discard_readyToDestroy) // First time, give a warning, and start the reset time
@@ -221,6 +222,18 @@ public abstract class UserInterface : MonoBehaviour
                 // Drop the item on the floor
                 InventoryControl.inst.DropItemOnFloor(obj.GetComponent<InvDisplayItem>().item, PlayerData.inst.GetComponent<Actor>(), _inventory);
 
+                #region Multi-Slot items
+                if (obj.GetComponent<InvDisplayItem>().item.itemData.slotsRequired > 1)
+                {
+                    foreach (var C in obj.GetComponent<InvDisplayItem>().secondaryChildren.ToList())
+                    {
+                        InventoryControl.inst.DropItemOnFloor(C.GetComponent<InvDisplayItem>().item, PlayerData.inst.GetComponent<Actor>(), _inventory);
+                        InventoryControl.inst.animatedItems.Remove(slotsOnInterface[C]); // Remove from animation tracking HashSet
+                        slotsOnInterface[C].RemoveItem(); // Remove from slots
+                    }
+                }
+                #endregion
+
                 // Update player mass
                 PlayerData.inst.currentWeight -= obj.GetComponent<InvDisplayItem>().item.itemData.mass;
                 if (obj.GetComponent<InvDisplayItem>().item.itemData.propulsion.Count > 0)
@@ -237,8 +250,8 @@ public abstract class UserInterface : MonoBehaviour
                 UIManager.inst.UpdateInventory();
                 UIManager.inst.UpdateParts();
 
-                slotsOnInterface[obj].RemoveItem(); // Remove from slot
                 InventoryControl.inst.animatedItems.Remove(slotsOnInterface[obj]); // Remove from animation tracking HashSet
+                slotsOnInterface[obj].RemoveItem(); // Remove from slots
                 InventoryControl.inst.UpdateInterfaceInventories(); // Update UI
             }
             return;
