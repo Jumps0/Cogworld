@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -75,28 +76,36 @@ public class StaticInterface : UserInterface
             { // Is there an item here?
 
                 // Create a new *InvDisplayItem* object
-                var obj = Instantiate(prefab_item, Vector3.zero, Quaternion.identity, inventoryArea.transform);
+                var obj = CreateNewEmptySlot();
                 slots[i] = obj;
-
-                // Set it to empty
-                obj.GetComponent<InvDisplayItem>().item = null;
-                obj.GetComponent<InvDisplayItem>().SetEmpty();
-                obj.GetComponent<InvDisplayItem>().my_interface = this;
-
-                // Add events
-                AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnter(obj); });
-                AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExit(obj); });
-                AddEvent(obj, EventTriggerType.BeginDrag, delegate { OnDragStart(obj); });
-                AddEvent(obj, EventTriggerType.EndDrag, delegate { OnDragEnd(obj); });
-                AddEvent(obj, EventTriggerType.Drag, delegate { OnDrag(obj); });
-
-                AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnterInterface(obj); });
-                AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExitInterface(obj); });
 
                 // Set parent and store it
                 InventoryControl.inst.p_inventory.Container.Items[i].parent = this;
                 slotsOnInterface.Add(obj, InventoryControl.inst.p_inventory.Container.Items[i]);
             }
         }
+    }
+
+    public GameObject CreateNewEmptySlot()
+    {
+        // Create a new *InvDisplayItem* object
+        var obj = Instantiate(prefab_item, Vector3.zero, Quaternion.identity, inventoryArea.transform);
+
+        // Set it to empty
+        obj.GetComponent<InvDisplayItem>().item = null;
+        obj.GetComponent<InvDisplayItem>().SetEmpty();
+        obj.GetComponent<InvDisplayItem>().my_interface = this;
+
+        // Add events
+        AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnter(obj); });
+        AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExit(obj); });
+        AddEvent(obj, EventTriggerType.BeginDrag, delegate { OnDragStart(obj); });
+        AddEvent(obj, EventTriggerType.EndDrag, delegate { OnDragEnd(obj); });
+        AddEvent(obj, EventTriggerType.Drag, delegate { OnDrag(obj); });
+
+        AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnterInterface(obj); });
+        AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExitInterface(obj); });
+
+        return obj;
     }
 }

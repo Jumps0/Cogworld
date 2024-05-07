@@ -39,11 +39,15 @@ MonoBehaviour:
         isOverloaded: 0
         isDeteriorating: 0
         isRigged: 0
+        isBroken: 0
         corrupted: 0
         disabledTimer: 0
         unstable: -1
         disposable: -1
         siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
       amount: 0
     - AllowedItems: 01000000
       item:
@@ -68,9 +72,13 @@ MonoBehaviour:
         isOverloaded: 0
         isDeteriorating: 0
         isRigged: 0
+        isBroken: 0
         corrupted: 0
         disabledTimer: 0
         unstable: -1
         disposable: -1
         siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
       amount: 0

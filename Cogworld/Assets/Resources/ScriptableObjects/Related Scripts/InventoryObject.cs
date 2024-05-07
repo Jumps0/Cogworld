@@ -35,7 +35,13 @@ public class InventoryObject : ScriptableObject//, ISerializationCallbackReceive
         }
     }
     
-    public bool AddItem(Item _item, int _amount)
+    /// <summary>
+    /// Tries to add the specified item (and the amount) to this inventory. Returns true/false if successful.
+    /// </summary>
+    /// <param name="_item">The item to add.</param>
+    /// <param name="_amount">The ammount of that item to add. Usually 1.</param>
+    /// <returns>Returns true/false if successful at adding the item.</returns>
+    public bool AddItem(Item _item, int _amount = 1)
     {
         /*
         for (int i = 0; i < Container.Items.Length; i++)
@@ -65,6 +71,11 @@ public class InventoryObject : ScriptableObject//, ISerializationCallbackReceive
         
     }
 
+    /// <summary>
+    /// Swaps two slots in this inventory.
+    /// </summary>
+    /// <param name="item1">The 1st slot.</param>
+    /// <param name="item2">The 2nd slot.</param>
     public void SwapItems(InventorySlot item1, InventorySlot item2)
     {
         if (item2.CanPlaceInSlot(item1.ItemObject) && item1.CanPlaceInSlot(item2.ItemObject))
@@ -75,6 +86,10 @@ public class InventoryObject : ScriptableObject//, ISerializationCallbackReceive
         }
     }
 
+    /// <summary>
+    /// Removes the specified item from this inventory.
+    /// </summary>
+    /// <param name="_item">The item to remove.</param>
     public void RemoveItem(Item _item)
     {
         for (int i = 0; i < Container.Items.Length; i++)
@@ -86,6 +101,33 @@ public class InventoryObject : ScriptableObject//, ISerializationCallbackReceive
         }
     }
 
+    /// <summary>
+    /// Resorts the inventory so that all the slots with items are at the top, and all the empty slots are at the bottom.
+    /// </summary>
+    public void Sort()
+    {
+        int nonNegativeIndex = 0;
+        int negativeIndex = Container.Items.Length - 1;
+
+        while (nonNegativeIndex < negativeIndex)
+        {
+            if (Container.Items[nonNegativeIndex].item.Id == -1)
+            {
+                // Swap the current element with the one at the negative index
+                SwapItems(Container.Items[nonNegativeIndex], Container.Items[negativeIndex]);
+                negativeIndex--;
+            }
+            else
+            {
+                // Move to the next non-negative element
+                nonNegativeIndex++;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Returns how many EMPTY slots this inventory has (getter).
+    /// </summary>
     public int EmptySlotCount
     {
         get
@@ -101,7 +143,7 @@ public class InventoryObject : ScriptableObject//, ISerializationCallbackReceive
     }
 
     /// <summary>
-    /// Checks to see how many REAL items are in this inventory.
+    /// Checks to see how many REAL items are in this inventory (getter).
     /// </summary>
     /// <returns>Returns an int value of how many REAL items are in the inventory.</returns>
     public int ItemCount
@@ -121,7 +163,13 @@ public class InventoryObject : ScriptableObject//, ISerializationCallbackReceive
         }
     }
 
-    public InventorySlot SetEmptySlot(Item _item, int _amount)
+    /// <summary>
+    /// Finds the first empty slot in this inventory and attempts to add the specified item (and amount) at that slot.
+    /// </summary>
+    /// <param name="_item">The item to add.</param>
+    /// <param name="_amount">The amount of said item to add (usually 1).</param>
+    /// <returns></returns>
+    public InventorySlot SetEmptySlot(Item _item, int _amount = 1)
     {
         for (int i = 0; i < Container.Items.Length; i++)
         {
@@ -135,7 +183,11 @@ public class InventoryObject : ScriptableObject//, ISerializationCallbackReceive
         return null;
     }
 
-    
+    /// <summary>
+    /// Attempts to add a slot in the inventory based on an item input (matches ids).
+    /// </summary>
+    /// <param name="_item">An item within the slot we want to look for.</param>
+    /// <returns>The slot found containing our specified input item.</returns>
     public InventorySlot FindItemOnInventory(Item _item)
     {
         for (int i = 0; i < Container.Items.Length; i++)

@@ -3293,7 +3293,7 @@ public static class Action
         {
             foreach (var item in actor.armament.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0 && item.item.state)
+                if (item.item.itemData.data.Id >= 0)
                 {
                     totalMass += item.item.itemData.mass;
                 }
@@ -3301,7 +3301,7 @@ public static class Action
 
             foreach (var item in actor.components.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0 && item.item.state)
+                if (item.item.itemData.data.Id >= 0)
                 {
                     totalMass += item.item.itemData.mass;
                 }
@@ -3311,28 +3311,28 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPower.Container.Items.ToList())
             {
-                if (item.item.Id >= 0 && item.item.state)
+                if (item.item.Id >= 0)
                 {
                     totalMass += item.item.itemData.mass;
                 }
             }
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
             {
-                if (item.item.Id >= 0 && item.item.state)
+                if (item.item.Id >= 0)
                 {
                     totalMass += item.item.itemData.mass;
                 }
             }
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items.ToList())
             {
-                if (item.item.Id >= 0 && item.item.state)
+                if (item.item.Id >= 0)
                 {
                     totalMass += item.item.itemData.mass;
                 }
             }
             foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invWeapon.Container.Items.ToList())
             {
-                if (item.item.Id >= 0 && item.item.state)
+                if (item.item.Id >= 0)
                 {
                     totalMass += item.item.itemData.mass;
                 }

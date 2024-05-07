@@ -96,8 +96,13 @@ public abstract class UserInterface : MonoBehaviour
 
     public void OnDragStart(GameObject obj)
     {
-        if(obj.GetComponent<InvDisplayItem>().item != null && !obj.GetComponent<InvDisplayItem>().isSecondaryItem) // Don't drag empty or secondary items.
+        if(obj.GetComponent<InvDisplayItem>().item != null) // Don't drag empty items.
         {
+            if (obj.GetComponent<InvDisplayItem>().isSecondaryItem) // If we start dragging the secondary item, set the obj to be the parent instead.
+            {
+                obj = obj.GetComponent<InvDisplayItem>().secondaryParent;
+            }
+
             MouseData.tempItemBeingDragged = CreatetempItem(obj);
             AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[27]);
         }
@@ -261,104 +266,386 @@ public abstract class UserInterface : MonoBehaviour
         if (MouseData.slotHoveredOver && obj.GetComponent<InvDisplayItem>().item != null 
             && MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].item.Id >= 0) // Are we hovering over a slot with an item? Lets attempt to swap the two parts.
         {
+            if(MouseData.slotHoveredOver == obj) // If we are attempting to swap the item with itself, cancel and create a message.
+            {
+                UIManager.inst.ShowCenterMessageTop("Swap cancelled", UIManager.inst.highlightGreen, Color.black);
+                return;
+            }
+
             #region Item Swapping
+            /* == IDENTIFICATION GUIDE ==
+            * 
+            *  MouseData.slotHoveredOver                                                  | This is the DESTINATION *gameObject* (since we are currently hovering over it)
+            *  MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver] | This is the DESTINATION *InventorySlot*
+            *                                                                             |
+            *  obj.GetComponent<InvDisplayItem>()                                         | This is the ORIGIN's *gameObject* (that we are dragging from)
+            *  obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj]      | This is the ORIGIN's *InventorySlot*
+            */
 
             // Get data from the two things we are trying to swap
+            #region Information Grabbing
+            GameObject obj_origin = obj;
+            GameObject obj_destination = MouseData.slotHoveredOver;
+
+            Item originItem = obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].item;
+            Item destinationItem = MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].item;
+
+            InventorySlot originSlot = obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj]; // Get data from the slot we are swapping with
             InventorySlot destinationSlot = MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver]; // Get data from slot hovered over
-            InventorySlot originSlot = obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj]; // And get data from the slot we are swapping with
 
-            Item destinationItem = destinationSlot.item;
-            Item originItem = originSlot.item;
+            int size_origin = originItem.itemData.slotsRequired;
+            int size_destination = destinationItem.itemData.slotsRequired;
 
+            int free_origin = 0;
+            int free_destination = 0;
+
+            switch (originItem.itemData.slot)
+            {
+                case ItemSlot.Power:
+                    free_origin = PlayerData.inst.GetComponent<PartInventory>()._invPower.EmptySlotCount;
+                    break;
+                case ItemSlot.Propulsion:
+                    free_origin = PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.EmptySlotCount;
+                    break;
+                case ItemSlot.Utilities:
+                    free_origin = PlayerData.inst.GetComponent<PartInventory>()._invUtility.EmptySlotCount;
+                    break;
+                case ItemSlot.Weapons:
+                    free_origin = PlayerData.inst.GetComponent<PartInventory>()._invWeapon.EmptySlotCount;
+                    break;
+                default: // Inventory
+                    free_origin = PlayerData.inst.GetComponent<PartInventory>()._inventory.EmptySlotCount;
+                    break;
+            }
+
+            switch (destinationItem.itemData.slot)
+            {
+                case ItemSlot.Power:
+                    free_destination = PlayerData.inst.GetComponent<PartInventory>()._invPower.EmptySlotCount;
+                    break;
+                case ItemSlot.Propulsion:
+                    free_destination = PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.EmptySlotCount;
+                    break;
+                case ItemSlot.Utilities:
+                    free_destination = PlayerData.inst.GetComponent<PartInventory>()._invUtility.EmptySlotCount;
+                    break;
+                case ItemSlot.Weapons:
+                    free_destination = PlayerData.inst.GetComponent<PartInventory>()._invWeapon.EmptySlotCount;
+                    break;
+                default: // Inventory
+                    free_destination = PlayerData.inst.GetComponent<PartInventory>()._inventory.EmptySlotCount;
+                    break;
+            }
+
+            // If the item is multi-slot we need to gather up its children and their objects
+            List<KeyValuePair<GameObject, InventorySlot>> children_destination = null, children_origin = null;
+            if (size_origin > 1 || size_destination > 1)
+            {
+                if(size_origin > 1)
+                {
+                    children_origin = new List<KeyValuePair<GameObject, InventorySlot>>();
+                    foreach (var C in obj_origin.GetComponent<InvDisplayItem>().secondaryChildren) // [ORIGIN]
+                    {
+                        children_origin.Add(new KeyValuePair<GameObject, InventorySlot>(C, obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[C]));
+                    }
+                }
+                    
+                if (size_destination > 1)
+                {
+                    children_destination = new List<KeyValuePair<GameObject, InventorySlot>>();
+                    foreach (var C in obj_destination.GetComponent<InvDisplayItem>().secondaryChildren) // [DESTINATION]
+                    {
+                        children_destination.Add(new KeyValuePair<GameObject, InventorySlot>(C, MouseData.interfaceMouseIsOver.slotsOnInterface[C]));
+                    }
+                }
+            }
+            #endregion
+
+            #region Can this item be swapped into this slot?
             bool canSwap = true;
 
-            // First check if both items will be compatible with their new slots (there are a couple different cases here)
+            // First check if both items will be compatible with their new slots (there are a couple different cases here).
+            // 1) Check to see if the items are actually in the slot "area" (aka both in inventory/both in power,propulsion,utility,weapon)
             if ((originSlot.AllowedItems.Count == 0 && destinationSlot.AllowedItems.Count == 0)) // Both items share the same (inventory) slot type, obviously we shouldn't swap these.
             {
+                UIManager.inst.ShowCenterMessageTop("Item cannot be placed in this slot", UIManager.inst.dangerRed, Color.black);
                 return; // Bail out
             }
             else if(originSlot.AllowedItems.Count > 0 && destinationSlot.AllowedItems.Count > 0 && originSlot.AllowedItems[0] == destinationSlot.AllowedItems[0])
-            { // NOTE: This is a bit risky here, but all slots should only have one type
+            { // Both items share the same (parts) slot type, we shouldn't swap these either.
+                UIManager.inst.ShowCenterMessageTop("Item cannot be placed in this slot", UIManager.inst.dangerRed, Color.black);
                 return; // Bail out
             }
 
-            if (originSlot.AllowedItems.Count == 0) // The origin slot & item is in the inventory (destination item can always go in there)
+            // 2) Since the slots don't share the same area/type, we need to make sure the items will be compatible with their new slot.
+            // We need to check the following:
+
+            // -If the [DESTINATION] slot is in the inventory, that it has enough free space.
+            // -If the [ORIGIN] slot is in the inventory, that it has enough free space.
+            canSwap = ((obj_destination.GetComponent<InvDisplayItem>().my_interface.GetComponent<StaticInterface>() && free_destination >= size_destination)
+                || (obj_origin.GetComponent<InvDisplayItem>().my_interface.GetComponent<StaticInterface>() && free_origin >= size_origin));
+
+            // -If the [DESTINATION] slot is NOT in the inventory, that the [ORIGIN] item type is allowed by the slot.
+            if (!obj_destination.GetComponent<InvDisplayItem>().my_interface.GetComponent<StaticInterface>())
             {
-                if (destinationSlot.AllowedItems.Count > 0)
+                if ((destinationSlot.AllowedItems.Count > 0 && destinationSlot.AllowedItems.Contains(originItem.itemData.slot)) || destinationSlot.AllowedItems.Count == 0)
                 {
-                    if (destinationSlot.AllowedItems.Contains(originItem.itemData.slot)) // The destination slot allows the origin item to be placed there
-                    {
-                        canSwap = true;
-                    }
-                    else
-                    {
-                        canSwap = false;
-                    }
+                    canSwap = true;
+                }
+                else
+                {
+                    canSwap = false;
+                }
+            }
+            // -If the [ORIGIN] slot is NOT in the inventory, that the [DESTINATION] item type is allowed by the slot.
+            if (!obj_origin.GetComponent<InvDisplayItem>().my_interface.GetComponent<StaticInterface>())
+            {
+                if ((originSlot.AllowedItems.Count > 0 && originSlot.AllowedItems.Contains(destinationItem.itemData.slot)) || originSlot.AllowedItems.Count == 0)
+                {
+                    canSwap = true;
+                }
+                else
+                {
+                    canSwap = false;
                 }
             }
 
-            if(destinationSlot.AllowedItems.Count == 0) // The destination slot is in the inventory
-            {
-                if(originSlot.AllowedItems.Count > 0)
-                {
-                    if (originSlot.AllowedItems.Contains(destinationItem.itemData.slot)) // The origin slot allows the destination item to be placed there
-                    {
-                        canSwap = true;
-                    }
-                    else
-                    {
-                        canSwap = false;
-                    }
-                }
-            }
-
-            Debug.Log($"Attempting to swap:\n {originItem.Name} with {destinationItem.Name}. Slots: {originSlot} with {destinationSlot}.");
+            #endregion
 
             if (canSwap) // We can swap the items!
             {
-                /* == IDENTIFICATION GUIDE ==
-                 * 
-                 *  MouseData.slotHoveredOver                                                  | This is the DESTINATION *gameObject* (since we are currently hovering over it)
-                 *  MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver] | This is the DESTINATION *InventorySlot*
-                 *                                                                             |
-                 *  obj.GetComponent<InvDisplayItem>()                                         | This is the ORIGIN's *gameObject* (that we are dragging from)
-                 *  obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj]      | This is the ORIGIN's *InventorySlot*
-                 */
-
-                _inventory.SwapItems(slotsOnInterface[obj], destinationSlot); // Swap item positions
-
-                // Swap item data on objects
-                obj.GetComponent<InvDisplayItem>().item = destinationItem; // Origin -> Destination
-                MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().item = originItem; // Destination -> Origin
-
-                // Force Enable both items, and animate them
-                if (!obj.GetComponent<InvDisplayItem>().item.state) // [ORIGIN]
+                // With multi-slot items there may be cases where we need to force auto-sort the items on display so a new item can "fit". We do this check here.
+                if(free_destination > 1 && size_origin > 1 && !obj_destination.GetComponent<InvDisplayItem>().my_interface.GetComponent<StaticInterface>())
                 {
-                    obj.GetComponent<InvDisplayItem>().UIEnable();
+                    InventoryObject inv = null;
+                    switch (originItem.itemData.slot)
+                    {
+                        case ItemSlot.Power:
+                            inv = PlayerData.inst.GetComponent<PartInventory>()._invPower;
+                            break;
+                        case ItemSlot.Propulsion:
+                            inv = PlayerData.inst.GetComponent<PartInventory>()._invPropulsion;
+                            break;
+                        case ItemSlot.Utilities:
+                            inv = PlayerData.inst.GetComponent<PartInventory>()._invUtility;
+                            break;
+                        case ItemSlot.Weapons:
+                            inv = PlayerData.inst.GetComponent<PartInventory>()._invWeapon;
+                            break;
+                        default:
+                            inv = PlayerData.inst.GetComponent<PartInventory>()._inventory;
+                            break;
+                    }
+
+                    if (AutoSortCheck(inv))
+                    {
+                        AutoSortSection(inv, false);
+                    }
                 }
-                if (!MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().item.state) // [DESTINATION]
+                if (free_origin > 1 && size_destination > 1 && !obj_origin.GetComponent<InvDisplayItem>().my_interface.GetComponent<StaticInterface>())
                 {
-                    MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().UIEnable();
+                    InventoryObject inv = null;
+                    switch (originItem.itemData.slot)
+                    {
+                        case ItemSlot.Power:
+                            inv = PlayerData.inst.GetComponent<PartInventory>()._invPower;
+                            break;
+                        case ItemSlot.Propulsion:
+                            inv = PlayerData.inst.GetComponent<PartInventory>()._invPropulsion;
+                            break;
+                        case ItemSlot.Utilities:
+                            inv = PlayerData.inst.GetComponent<PartInventory>()._invUtility;
+                            break;
+                        case ItemSlot.Weapons:
+                            inv = PlayerData.inst.GetComponent<PartInventory>()._invWeapon;
+                            break;
+                        default:
+                            inv = PlayerData.inst.GetComponent<PartInventory>()._inventory;
+                            break;
+                    }
+
+                    if (AutoSortCheck(inv))
+                    {
+                        AutoSortSection(inv, false);
+                    }
                 }
 
-                // Flash both item's images
-                obj.GetComponent<InvDisplayItem>().FlashItemDisplay();
-                MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().FlashItemDisplay();
+                // Now perform the swap, we need to be careful because both items could be of different sizes. Although as we have checked before, there WILL be space for them both since we just did an auto sort.
+                // To handle this we will gather up two lists of what we need to swap, and since the sizes could be different, the smaller item will include the former's empty slots (so we match the largest amount).
+                List<KeyValuePair<GameObject, InventorySlot>> slots_origin = new List<KeyValuePair<GameObject, InventorySlot>>();
+                List<KeyValuePair<GameObject, InventorySlot>> slots_destination = new List<KeyValuePair<GameObject, InventorySlot>>();
+
+                #region Data Matching
+                // - First add the parents because its simple
+                slots_origin.Add(new KeyValuePair<GameObject, InventorySlot>(obj_origin, originSlot));
+                slots_destination.Add(new KeyValuePair<GameObject, InventorySlot>(obj_destination, destinationSlot));
+                
+                // - Then do the children
+                if(children_origin != null && children_destination != null && children_origin.Count == children_destination.Count) // X to X | Same amount (more than 1 each), not that complicated, we do a direct swap
+                {
+                    foreach (var O in children_origin)
+                    {
+                        slots_origin.Add(O);
+                    }
+                    foreach (var O in children_destination)
+                    {
+                        slots_destination.Add(O);
+                    }
+                }
+                else if (children_origin == null && children_destination == null) // 1 to 1
+                {
+                    // nothing to do here
+                }
+                else if (children_origin == null && children_destination != null) // 1 to X (fill from [ORIGIN])
+                {
+                    // Fill destination
+                    foreach (var O in children_destination)
+                    {
+                        slots_destination.Add(O);
+                    }
+                    // Now we need to fill up the difference between these two. We do that by getting the *NEXT* available empty slots (that do exist since we checked for that earlier).
+                    int diff = children_destination.Count; // (Parent(1) + Children(?)) - (Parent(1)) = Children(?)
+                    int start_index = obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface.ToList().IndexOf(slots_origin[0]) + 1; // Get starting index
+                    // We need this many empty slots, and we will need to get them from the origin's slots.
+                    for (int i = start_index; i < diff + start_index; i++)
+                    {
+                        /* NOTE: It is important to remember that (with how we are currently displaying it) the inventory currently is not filled with empty slot objects!
+                        *  The inventory is set dynamically with need, so in cases where we ask for an empty slot (object) from the inventory, we may not get one!
+                        *  So in that case, we will need to quickly make a new one.
+                        */
+                        if (obj.GetComponent<InvDisplayItem>().my_interface.GetComponent<StaticInterface>()) // /INVENTORY/
+                        {
+                            // This is very cheeky (and potentially dangerous) but since we will update the UI right after this by destroying (via parent not the array!) & creating new slots, it should be fine.
+                            GameObject empty = obj.GetComponent<InvDisplayItem>().my_interface.GetComponent<StaticInterface>().CreateNewEmptySlot();
+                            slots_origin.Add(new KeyValuePair<GameObject, InventorySlot>(empty, InventoryControl.inst.p_inventory.Container.Items[i]));
+                        }
+                        else // /PARTS/
+                        {
+                            slots_origin.Add(obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface.ToList()[i]);
+                        }
+                    }
+                }
+                else if (children_origin != null && children_destination == null) // X to 1 (fill from [DESTINATION])
+                {
+                    // Fill origin
+                    foreach (var O in children_origin)
+                    {
+                        slots_origin.Add(O);
+                    }
+                    // Now we need to fill up the difference between these two. We do that by getting the *NEXT* available empty slots (that do exist since we checked for that earlier).
+                    int diff = children_origin.Count; // (Parent(1) + Children(?)) - (Parent(1)) = Children(?)
+                    int start_index = MouseData.interfaceMouseIsOver.slotsOnInterface.ToList().IndexOf(slots_destination[0]) + 1; // Get starting index
+                    // We need this many empty slots, and we will need to get them from the destinations's slots.
+                    for (int i = start_index; i < diff + start_index; i++)
+                    {
+                        /* NOTE: It is important to remember that (with how we are currently displaying it) the inventory currently is not filled with empty slot objects!
+                        *  The inventory is set dynamically with need, so in cases where we ask for an empty slot (object) from the inventory, we may not get one!
+                        *  So in that case, we will need to quickly make a new one.
+                        */
+                        if (MouseData.interfaceMouseIsOver.GetComponent<StaticInterface>()) // /INVENTORY/
+                        {
+                            // This is very cheeky (and potentially dangerous) but since we will update the UI right after this by destroying (via parent not the array!) & creating new slots, it should be fine.
+                            GameObject empty = MouseData.interfaceMouseIsOver.GetComponent<StaticInterface>().CreateNewEmptySlot();
+                            slots_destination.Add(new KeyValuePair<GameObject, InventorySlot>(empty, InventoryControl.inst.p_inventory.Container.Items[i]));
+                        }
+                        else // /PARTS/
+                        {
+                            slots_destination.Add(MouseData.interfaceMouseIsOver.slotsOnInterface.ToList()[i]);
+                        }
+                    }
+                }
+                else if (children_origin.Count > children_destination.Count) // X to Y | [ORIGIN] has more than [DESTINATION], so we need empty slots from [DESTINATION]
+                {
+                    foreach (var O in children_origin)
+                    {
+                        slots_origin.Add(O);
+                    }
+                    foreach (var O in children_destination)
+                    {
+                        slots_destination.Add(O);
+                    }
+
+                    int diff = children_origin.Count - children_destination.Count;
+                    int start_index = MouseData.interfaceMouseIsOver.slotsOnInterface.ToList().IndexOf(slots_destination[0]) + 1; // Get starting index
+                    // We need this many empty slots, and we will need to get them from the destinations's slots.
+                    for (int i = start_index; i < diff + start_index; i++)
+                    {
+                        /* NOTE: It is important to remember that (with how we are currently displaying it) the inventory currently is not filled with empty slot objects!
+                        *  The inventory is set dynamically with need, so in cases where we ask for an empty slot (object) from the inventory, we may not get one!
+                        *  So in that case, we will need to quickly make a new one.
+                        */
+                        if (MouseData.interfaceMouseIsOver.GetComponent<StaticInterface>()) // /INVENTORY/
+                        {
+                            // This is very cheeky (and potentially dangerous) but since we will update the UI right after this by destroying (via parent not the array!) & creating new slots, it should be fine.
+                            GameObject empty = MouseData.interfaceMouseIsOver.GetComponent<StaticInterface>().CreateNewEmptySlot();
+                            slots_destination.Add(new KeyValuePair<GameObject, InventorySlot>(empty, InventoryControl.inst.p_inventory.Container.Items[i]));
+                        }
+                        else // /PARTS/
+                        {
+                            slots_destination.Add(MouseData.interfaceMouseIsOver.slotsOnInterface.ToList()[i]);
+                        }
+                    }
+                }
+                else if (children_destination.Count > children_origin.Count) // Y to X | [DESTINATION] has more than [ORIGIN], so we need empty slots from [ORIGIN]
+                {
+                    foreach (var O in children_origin)
+                    {
+                        slots_origin.Add(O);
+                    }
+                    foreach (var O in children_destination)
+                    {
+                        slots_destination.Add(O);
+                    }
+
+                    int diff = children_destination.Count - children_origin.Count;
+                    int start_index = obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface.ToList().IndexOf(slots_origin[0]) + 1; // Get starting index
+                    // We need this many empty slots, and we will need to get them from the origin's slots.
+                    for (int i = start_index; i < diff + start_index; i++)
+                    {
+                        /* NOTE: It is important to remember that (with how we are currently displaying it) the inventory currently is not filled with empty slot objects!
+                        *  The inventory is set dynamically with need, so in cases where we ask for an empty slot (object) from the inventory, we may not get one!
+                        *  So in that case, we will need to quickly make a new one.
+                        */
+                        if (obj.GetComponent<InvDisplayItem>().my_interface.GetComponent<StaticInterface>()) // /INVENTORY/
+                        {
+                            // This is very cheeky (and potentially dangerous) but since we will update the UI right after this by destroying (via parent not the array!) & creating new slots, it should be fine.
+                            GameObject empty = obj.GetComponent<InvDisplayItem>().my_interface.GetComponent<StaticInterface>().CreateNewEmptySlot();
+                            slots_origin.Add(new KeyValuePair<GameObject, InventorySlot>(empty, InventoryControl.inst.p_inventory.Container.Items[i]));
+                        }
+                        else // /PARTS/
+                        {
+                            slots_origin.Add(obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface.ToList()[i]);
+                        }
+                    }
+                }
+                #endregion
+
+                // Now that we have all our data, we go through both at the same time and start swapping data (they will both have the same length).
+                for (int i = 0; i < slots_origin.Count; i++)
+                {
+                    _inventory.SwapItems(slots_origin[i].Value, slots_destination[i].Value); // Swap the slots
+
+                    // Swap item data on objects
+                    slots_origin[i].Key.GetComponent<InvDisplayItem>().item = slots_destination[i].Value.item; // Origin -> Destination
+                    slots_destination[i].Key.GetComponent<InvDisplayItem>().item = slots_origin[i].Value.item; // Destination -> Origin
+
+                    // Force Enable both items, and animate them
+                    if (!slots_origin[i].Key.GetComponent<InvDisplayItem>().item.state) // [ORIGIN]
+                    {
+                        slots_origin[i].Key.GetComponent<InvDisplayItem>().UIEnable();
+                    }
+                    if (!slots_destination[i].Key.GetComponent<InvDisplayItem>().item.state) // [DESTINATION]
+                    {
+                        slots_destination[i].Key.GetComponent<InvDisplayItem>().UIEnable();
+                    }
+
+                    // Flash both item's images
+                    slots_origin[i].Key.GetComponent<InvDisplayItem>().FlashItemDisplay(); // [ORIGIN]
+                    slots_destination[i].Key.GetComponent<InvDisplayItem>().FlashItemDisplay(); // [DESTINATION]
+                }
 
                 UIManager.inst.ShowCenterMessageTop("Attached " + originItem.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
 
-                /*
-                Debug.Log($"*SLOT STATUS*\n [DESTINATION] <obj>:{MouseData.slotHoveredOver.name} | <slot>:{MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].item.Name} " +
-                    $"<<>> [ORIGIN] <obj>: {obj.GetComponent<InvDisplayItem>().name} | <slot>: {obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].item.Name}");
-
-                Debug.Log($"*PARENT INTERFACES*\n [DESTINATION]: {MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].parent} <<>> [ORIGIN]: {obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].parent}");
-
-                Debug.Log($"my_interface values*\n [DESTINATION]: {MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().my_interface} <<>> [ORIGIN]: {obj.GetComponent<InvDisplayItem>().my_interface}");
-
-                Debug.Log($"*ITEM VALUES (slot)*\n [DESTINATION]: {MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].item.Name} <<>> [ORIGIN]: {obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].item.Name}");
-
-                Debug.Log($"*ITEM VALUES (obj)*\n [DESTINATION]: {MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().item.Name} <<>> [ORIGIN]: {obj.GetComponent<InvDisplayItem>().item.Name}");
-                */
             }
             else // We can't swap the items, do a message.
             {
@@ -370,130 +657,185 @@ public abstract class UserInterface : MonoBehaviour
             || MouseData.interfaceMouseIsOver.GetComponent<StaticInterface>()) && obj.GetComponent<InvDisplayItem>().item != null) // Are we hovering over a slot thats empty? Attempt to move this item
         {
             #region Item Relocation
-            bool movingToInventory = false;
 
-            InventorySlot destinationSlot = null;
-            InventorySlot originSlot = null;
+            #region Information Grabbing
+            GameObject obj_origin = obj;
+            GameObject obj_destination = MouseData.slotHoveredOver;
 
-            // In cases where we are moving an item TO the /INVENTORY/, we actually need to create a new inventory slot (object) due to how the display works.
-            // This is done automatically (though we need to call the interface update function), but we do need to find the latest free slot if there is one.
-            if (MouseData.interfaceMouseIsOver.GetComponent<StaticInterface>())
+            Item originItem = obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].item;
+
+            InventorySlot originSlot = obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj]; // Get data from the slot we are swapping with
+            InventorySlot destinationSlot = MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver]; // Get data from slot hovered over
+
+            int size_origin = originItem.itemData.slotsRequired;
+
+            int free_destination = 0;
+
+            switch (originSlot.item.itemData.slot) // Get empty slots of the destination area
             {
-                movingToInventory = true;
+                case ItemSlot.Power:
+                    free_destination = PlayerData.inst.GetComponent<PartInventory>()._invPower.EmptySlotCount;
+                    break;
+                case ItemSlot.Propulsion:
+                    free_destination = PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.EmptySlotCount;
+                    break;
+                case ItemSlot.Utilities:
+                    free_destination = PlayerData.inst.GetComponent<PartInventory>()._invUtility.EmptySlotCount;
+                    break;
+                case ItemSlot.Weapons:
+                    free_destination = PlayerData.inst.GetComponent<PartInventory>()._invWeapon.EmptySlotCount;
+                    break;
+                default: // Inventory
+                    free_destination = PlayerData.inst.GetComponent<PartInventory>()._inventory.EmptySlotCount;
+                    break;
+            }
 
-                // Go through all slots in the inventory to find an empty one.
-                for (int i = 0; i < MouseData.interfaceMouseIsOver.GetComponent<StaticInterface>()._inventory.Container.Items.Length; i++)
+            // If the item is multi-slot we need to gather up its children and their objects
+            List<KeyValuePair<GameObject, InventorySlot>> children_origin = null;
+            if (size_origin > 1)
+            {
+                children_origin = new List<KeyValuePair<GameObject, InventorySlot>>();
+                foreach (var C in obj_origin.GetComponent<InvDisplayItem>().secondaryChildren) // [ORIGIN]
                 {
-                    if (MouseData.interfaceMouseIsOver.GetComponent<StaticInterface>()._inventory.Container.Items[i].item.Id == -1)
-                    {
-                        destinationSlot = MouseData.interfaceMouseIsOver.GetComponent<StaticInterface>()._inventory.Container.Items[i];
-                        break;
-                    }
-                }
-
-                if(destinationSlot == null) // We didn't find a free slot which probably means the inventory is full.
-                {
-                    UIManager.inst.ShowCenterMessageTop("Inventory full", UIManager.inst.dangerRed, Color.black);
-                    return; // Bail out
+                    children_origin.Add(new KeyValuePair<GameObject, InventorySlot>(C, obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[C]));
                 }
             }
-            else
+            #endregion
+
+            // Firstly, is there enough space for our item to fit into its new destination?
+            if(free_destination < size_origin)
             {
-                destinationSlot = MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver]; // Get data from slot hovered over
+                // Nope. Stop early.
+                UIManager.inst.ShowCenterMessageTop("Not enough space", UIManager.inst.dangerRed, Color.black);
+                return;
             }
-
-            originSlot = obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj]; // And get data from the slot we are swapping with
-
-            Item originItem = originSlot.item;
 
             // Is this item allowed to be placed in this slot?
             if(destinationSlot.AllowedItems.Count == 0 || destinationSlot.AllowedItems.Contains(originItem.itemData.slot)) // Yes! Move the item
             {
-                // Add the item to the player (aka just make a new item)
-                Item _item = new Item(originItem);
-                // - Try to find which inventory we need to add it to
-                // - Due to how item interactions work, this interaction can only happen between the inventory and one type of slot.
-                if (destinationSlot.parent.GetComponent<StaticInterface>()) // Moving TO the /INVENTORY/
+                // Now that we have space and are allowed to move the item there, do we need to sort the slots at all?
+                // With multi-slot items there may be cases where we need to force auto-sort the items on display so a new item can "fit". We do this check here.
+                if (free_destination > 1 && size_origin > 1 && !obj_destination.GetComponent<InvDisplayItem>().my_interface.GetComponent<StaticInterface>())
                 {
-                    PlayerData.inst.GetComponent<PartInventory>()._inventory.AddItem(_item, 1);
-                    UIManager.inst.ShowCenterMessageTop("Detached " + _item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                }
-                else if (destinationSlot.parent.GetComponent<DynamicInterface>())// Moving TO a /PARTS/ slot
-                {
-                    if (_item.itemData.slot == ItemSlot.Power)
+                    InventoryObject inv = null;
+                    switch (originItem.itemData.slot)
                     {
-                        PlayerData.inst.GetComponent<PartInventory>()._invPower.AddItem(_item, 1);
-                        UIManager.inst.ShowCenterMessageTop("Attached " + _item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                    }
-                    else if (_item.itemData.slot == ItemSlot.Propulsion)
-                    {
-                        PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.AddItem(_item, 1);
-                        UIManager.inst.ShowCenterMessageTop("Attached " + _item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                    }
-                    else if (_item.itemData.slot == ItemSlot.Utilities)
-                    {
-                        PlayerData.inst.GetComponent<PartInventory>()._invUtility.AddItem(_item, 1);
-                        UIManager.inst.ShowCenterMessageTop("Attached " + _item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                    }
-                    else if (_item.itemData.slot == ItemSlot.Weapons)
-                    {
-                        PlayerData.inst.GetComponent<PartInventory>()._invWeapon.AddItem(_item, 1);
-                        UIManager.inst.ShowCenterMessageTop("Attached " + _item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                    }
-                }
-                else
-                {
-                    Debug.LogError(destinationSlot + " has no assigned interface!");
-                    return;
-                }
-
-                // Remove the old item from wherever its stored
-                Action.FindRemoveItemFromPlayer(originItem);
-
-                // ~~~ At this point, the item now exists in the correct inventory, and no longer exists in its old inventory. All we need to do is update the UI and other related variables. ~~~
-
-                /* == IDENTIFICATION GUIDE ==
-                 * 
-                 *  MouseData.slotHoveredOver                                                  | This is the DESTINATION *gameObject* (since we are currently hovering over it)
-                 *  MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver] | This is the DESTINATION *InventorySlot*
-                 *                                                                             |
-                 *  obj.GetComponent<InvDisplayItem>()                                         | This is the ORIGIN's *gameObject* (that we are dragging from)
-                 *  obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj]      | This is the ORIGIN's *InventorySlot*
-                 */
-
-                obj.GetComponent<InvDisplayItem>().item = new Item(); // Set [ORIGIN]'s item to be empty in object
-                obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].item = new Item(); // Set [ORIGIN]'s item slot to be empty so we don't get errors
-
-                if (movingToInventory)
-                {
-                    MouseData.interfaceMouseIsOver.GetComponent<StaticInterface>().UpdateSlots(); // Force update the slots (destroy old, make new)
-                    MouseData.interfaceMouseIsOver.slotsOnInterface.UpdateSlotDisplay(); // Give the new slots data
-                    foreach (var S in MouseData.interfaceMouseIsOver.slotsOnInterface) // Then go through the list of objects, find the one that matches, and assign it to slotHoveredOver.
-                    {
-                        if(S.Value == destinationSlot)
-                        {
-                            MouseData.slotHoveredOver = S.Key;
+                        case ItemSlot.Power:
+                            inv = PlayerData.inst.GetComponent<PartInventory>()._invPower;
                             break;
+                        case ItemSlot.Propulsion:
+                            inv = PlayerData.inst.GetComponent<PartInventory>()._invPropulsion;
+                            break;
+                        case ItemSlot.Utilities:
+                            inv = PlayerData.inst.GetComponent<PartInventory>()._invUtility;
+                            break;
+                        case ItemSlot.Weapons:
+                            inv = PlayerData.inst.GetComponent<PartInventory>()._invWeapon;
+                            break;
+                        default:
+                            inv = PlayerData.inst.GetComponent<PartInventory>()._inventory;
+                            break;
+                    }
+
+                    if (AutoSortCheck(inv))
+                    {
+                        AutoSortSection(inv, false);
+                    }
+                }
+
+                // Now that everything is sorted, we need to collect up the slots we need to interact with
+                List<KeyValuePair<GameObject, InventorySlot>> slots_origin = new List<KeyValuePair<GameObject, InventorySlot>>();
+                List<KeyValuePair<GameObject, InventorySlot>> slots_destination = new List<KeyValuePair<GameObject, InventorySlot>>();
+
+                // - First add the parents because its simple
+                slots_origin.Add(new KeyValuePair<GameObject, InventorySlot>(obj_origin, originSlot));
+                slots_destination.Add(new KeyValuePair<GameObject, InventorySlot>(obj_destination, destinationSlot));
+
+                // - Add any child origin slots
+                if(children_origin != null && children_origin.Count > 0)
+                {
+                    foreach (var C in children_origin)
+                    {
+                        slots_origin.Add(C);
+                    }
+
+                    // Then since it is necessary, we need to identify some extra free slots in the [DESTINATION].
+                    // Now we need to fill up the difference between these two. We do that by getting the *NEXT* available empty slots (that do exist since we checked for that earlier).
+                    int diff = children_origin.Count; // (Parent(1) + Children(?)) - (Parent(1)) = Children(?)
+                    int start_index = MouseData.interfaceMouseIsOver.slotsOnInterface.ToList().IndexOf(slots_destination[0]) + 1; // Get starting index
+
+                    // We need this many empty slots, and we will need to get them from the destinations's slots.
+                    for (int i = start_index; i < diff + start_index; i++)
+                    {
+                        /* NOTE: It is important to remember that (with how we are currently displaying it) the inventory currently is not filled with empty slot objects!
+                        *  The inventory is set dynamically with need, so in cases where we ask for an empty slot (object) from the inventory, we may not get one!
+                        *  So in that case, we will need to quickly make a new one.
+                        */
+                        if (MouseData.interfaceMouseIsOver.GetComponent<StaticInterface>()) // /INVENTORY/
+                        {
+                            // This is very cheeky (and potentially dangerous) but since we will update the UI right after this by destroying (via parent not the array!) & creating new slots, it should be fine.
+                            GameObject empty = MouseData.interfaceMouseIsOver.GetComponent<StaticInterface>().CreateNewEmptySlot();
+                            slots_destination.Add(new KeyValuePair<GameObject, InventorySlot>(empty, InventoryControl.inst.p_inventory.Container.Items[i]));
+                        }
+                        else // /PARTS/
+                        {
+                            slots_destination.Add(MouseData.interfaceMouseIsOver.slotsOnInterface.ToList()[i]);
                         }
                     }
                 }
 
-                MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().item = _item; // Set the item on the [DESTINATION] object
-                //MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].item = _item; // Set the item on the [DESTINATION] slot
-
-                //InventoryControl.inst.UpdateInterfaceInventories(); // Update UI
-
-                // Force enable the item and animate it (if its disabled)
-                if (!MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().item.state) // [DESTINATION]
+                // - Figure out what to print out
+                if (destinationSlot.parent.GetComponent<StaticInterface>()) // Moving TO the /INVENTORY/
                 {
-                    MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().UIEnable();
+                    UIManager.inst.ShowCenterMessageTop("Detached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                }
+                else if (destinationSlot.parent.GetComponent<DynamicInterface>())// Moving TO a /PARTS/ slot
+                {
+                    if (originSlot.item.itemData.slot == ItemSlot.Power)
+                    {
+                        UIManager.inst.ShowCenterMessageTop("Attached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    }
+                    else if (originSlot.item.itemData.slot == ItemSlot.Propulsion)
+                    {
+                        UIManager.inst.ShowCenterMessageTop("Attached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    }
+                    else if (originSlot.item.itemData.slot == ItemSlot.Utilities)
+                    {
+                        UIManager.inst.ShowCenterMessageTop("Attached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    }
+                    else if (originSlot.item.itemData.slot == ItemSlot.Weapons)
+                    {
+                        UIManager.inst.ShowCenterMessageTop("Attached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    }
+                    else
+                    {
+                        Debug.LogError(destinationSlot + " has no assigned interface!");
+                        return;
+                    }
                 }
 
-                // Flash the item's display square
-                MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().FlashItemDisplay();
-                if (movingToInventory)
+                // Now that we have all our data, we go through both at the same time and start swapping data (they will both have the same length).
+                for (int i = 0; i < slots_origin.Count; i++)
                 {
-                    //MouseData.slotHoveredOver.GetComponent<InvDisplayItem>().InitialReveal();
+                    _inventory.SwapItems(slots_origin[i].Value, slots_destination[i].Value); // Swap the slots
+
+                    // Swap item data on objects
+                    slots_origin[i].Key.GetComponent<InvDisplayItem>().item = slots_destination[i].Value.item; // Origin -> Destination
+                    slots_destination[i].Key.GetComponent<InvDisplayItem>().item = slots_origin[i].Value.item; // Destination -> Origin
+
+                    // Force Enable both items, and animate them
+                    if (!slots_origin[i].Key.GetComponent<InvDisplayItem>().item.state) // [ORIGIN]
+                    {
+                        slots_origin[i].Key.GetComponent<InvDisplayItem>().UIEnable();
+                    }
+                    if (!slots_destination[i].Key.GetComponent<InvDisplayItem>().item.state) // [DESTINATION]
+                    {
+                        slots_destination[i].Key.GetComponent<InvDisplayItem>().UIEnable();
+                    }
+
+                    // Flash both item's images
+                    slots_origin[i].Key.GetComponent<InvDisplayItem>().FlashItemDisplay(); // [ORIGIN]
+                    slots_destination[i].Key.GetComponent<InvDisplayItem>().FlashItemDisplay(); // [DESTINATION]
                 }
             }
             else // No. Don't move the item.
@@ -679,7 +1021,7 @@ public abstract class UserInterface : MonoBehaviour
         // The whole idea here is to push everything to the top, and leave the empty space at the bottom. (There WILL be empty space thanks to our checks)
         // We will move the items around in the inventory first, then tell the UserInterface to redraw itself.
 
-
+        inventory.Sort();
 
         if (animate) // == ANIMATION ==
         {
@@ -687,7 +1029,7 @@ public abstract class UserInterface : MonoBehaviour
         }
 
         // Redraw the UI Display
-        InventoryControl.inst.UpdateInterfaceInventories();
+        //InventoryControl.inst.UpdateInterfaceInventories();
     }
     #endregion
 

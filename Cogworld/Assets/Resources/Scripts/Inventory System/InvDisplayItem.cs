@@ -500,7 +500,7 @@ public class InvDisplayItem : MonoBehaviour
 
     public void Click()
     {
-        if (my_interface.GetComponent<StaticInterface>() || discardAnimationCoroutine != null || isSecondaryItem || item.isBroken)
+        if ((my_interface != null && my_interface.GetComponent<StaticInterface>()) || discardAnimationCoroutine != null || isSecondaryItem || (item != null && item.isBroken))
         { // We shouldn't toggle items in the inventory. We should forbid toggling while in the middle of animating. Only lead items should be able to be toggled. 
             return;
         }

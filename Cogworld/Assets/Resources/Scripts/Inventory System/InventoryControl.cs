@@ -175,6 +175,8 @@ public class InventoryControl : MonoBehaviour
 
     public void UpdateInterfaceInventories()
     {
+        p_inventory.Sort();
+
         foreach (var I in interfaces)
         {
             if (I.GetComponentInChildren<DynamicInterface>())
