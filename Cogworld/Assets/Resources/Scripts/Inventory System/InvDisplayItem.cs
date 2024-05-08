@@ -189,6 +189,7 @@ public class InvDisplayItem : MonoBehaviour
     {
         if(item != null)
         {
+            bool known = item.itemData.knowByPlayer;
             bool inInventory = false;
             if (this.transform.parent.gameObject == UIManager.inst.inventoryArea)
             {
@@ -203,6 +204,10 @@ public class InvDisplayItem : MonoBehaviour
             if (item.isBroken)
             {
                 nameUnmodified = "Broken " + nameUnmodified;
+            }
+            else if (!known)
+            {
+                nameUnmodified = HF.ItemPrototypeName(item);
             }
             itemNameText.text = nameUnmodified;
             if (startEmpty)
@@ -222,7 +227,14 @@ public class InvDisplayItem : MonoBehaviour
                 partDisplay.sprite = item.itemData.inventoryDisplay;
 
                 // - Icon Color - //
-                partDisplay.color = item.itemData.itemColor;
+                if (known)
+                {
+                    partDisplay.color = item.itemData.itemColor;
+                }
+                else
+                {
+                    partDisplay.color = Color.white; // Prototype
+                }
             }
             else
             {
@@ -346,6 +358,8 @@ public class InvDisplayItem : MonoBehaviour
             end = UIManager.inst.highSecRed;
         if (isSecondaryItem)
             end = wideBlue;
+        if(this.transform.parent.gameObject == UIManager.inst.inventoryArea && item.itemData.knowByPlayer) // Prototype
+            end = Color.white;
 
         // Set the assigned letter to a color while we're a it
         assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(activeGreen)}>{assignedOrderString}</color>";
@@ -492,7 +506,7 @@ public class InvDisplayItem : MonoBehaviour
 
     private void OnMouseOver()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse1)) // Right Click to open /DATA/ Menu
+        if (Input.GetKeyDown(KeyCode.Mouse1)) // Right Click to open /DATA/ Menu  NOTE: This currently doesnt work
         {
             UIManager.inst.Data_OpenMenu(item, null, PlayerData.inst.GetComponent<Actor>());
         }

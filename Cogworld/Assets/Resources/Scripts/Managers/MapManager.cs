@@ -671,6 +671,7 @@ public class MapManager : MonoBehaviour
                     InventoryControl.inst.CreateItemInWorld(101, new Vector2Int(55, 57), true); // ONLY FOR TESTING. REMOVE LATER (Vibroblade)
                     InventoryControl.inst.CreateItemInWorld(91, new Vector2Int(54, 57), true); // ONLY FOR TESTING. REMOVE LATER (Exp. Target Analysis Processor)
                     InventoryControl.inst.CreateItemInWorld(105, new Vector2Int(53, 57), true); // ONLY FOR TESTING. REMOVE LATER (Hvy. Siege Treads)
+                    InventoryControl.inst.CreateItemInWorld(66, new Vector2Int(52, 57), true); // ONLY FOR TESTING. REMOVE LATER (Ex. Chip 1)
                 }
 
 

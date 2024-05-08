@@ -20,6 +20,7 @@ public class Part : MonoBehaviour
 
     public SpriteRenderer _sprite;
 
+    [SerializeField] private Animator protoAnimation;
     public Color protoColor = Color.white;
     public Color realColor;
     public Color halfColor;
@@ -46,20 +47,20 @@ public class Part : MonoBehaviour
         this.realColor = _item.itemData.itemColor;
         inInventory = false;
 
-        if (InventoryControl.inst.knownItems.Contains(_item.itemData)) // We know what this item is
+        if (_item.itemData.knowByPlayer) // We know what this item is
         {
             knownByPlayer = true;
             displayText = _item.itemData.itemName;
             _sprite.color = realColor;
+            halfColor = new Color((realColor.r / 2), (realColor.g / 2), (realColor.b / 2));
         }
         else
         {
             knownByPlayer = false;
-            displayText = "Unknown " + ParseType(_item.itemData.type);
+            displayText = HF.ItemPrototypeName(_item);
             _sprite.color = protoColor;
+            halfColor = Color.gray;
         }
-
-        halfColor = new Color((realColor.r / 2), (realColor.g / 2), (realColor.b / 2));
 
         if (this._item != null && this._item.Id == 17) // Is this item just *Matter*?
         {
@@ -108,27 +109,54 @@ public class Part : MonoBehaviour
 
     public void UpdateVisibility()
     {
+        bool known = _item.itemData.knowByPlayer;
+        Color full, half;
+        if (known)
+        {
+            full = realColor;
+            half = halfColor;
+        }
+        else
+        {
+            full = protoColor;
+            half = Color.gray;
+
+            if (isVisible)
+            {
+                protoAnimation.enabled = true;
+                protoAnimation.Play("PrototypeFlash");
+            }
+            else
+            {
+                protoAnimation.enabled = false;
+            }
+        }
+
         if (isVisible)
         {
-            _sprite.color = realColor;
+            _sprite.color = full;
+
             if(isRigged)
                 _riggedSprite.SetActive(true);
         }
         else if (isExplored && isVisible)
         {
-            _sprite.color = realColor;
+            _sprite.color = full;
+
             if (isRigged)
                 _riggedSprite.SetActive(true);
         }
         else if (isExplored && !isVisible)
         {
-            _sprite.color = halfColor;
+            _sprite.color = half;
+
             if (isRigged)
                 _riggedSprite.SetActive(false);
         }
         else if (!isExplored)
         {
             _sprite.color = Color.black;
+
             if (isRigged)
                 _riggedSprite.SetActive(false);
         }

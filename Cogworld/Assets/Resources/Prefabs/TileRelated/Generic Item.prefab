@@ -304,6 +304,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3266181000014699449}
   - component: {fileID: 2303607126790662248}
+  - component: {fileID: 4442275621142033626}
   m_Layer: 3
   m_Name: Sprite
   m_TagString: Untagged
@@ -378,6 +379,26 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &4442275621142033626
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4849063321115537051}
+  m_Enabled: 0
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0f6a85a74c2fddb48851a658d25801e2, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &5707403940916725959
 GameObject:
   m_ObjectHideFlags: 0
@@ -440,8 +461,32 @@ MonoBehaviour:
     itemData: {fileID: 0}
     state: 1
     integrityCurrent: 0
+    uniqueDetail:
+      isScrap: 0
+      scrapReward: {fileID: 0}
+      isDataLog: 0
+      logMessage: 
+      logAction:
+        type: 0
+        connectedMachine: {fileID: 0}
+      isDataCore: 0
+      coreTerminal: {fileID: 0}
+    storageAmount: 0
+    isOverloaded: 0
+    isDeteriorating: 0
+    isRigged: 0
+    isBroken: 0
+    corrupted: 0
+    disabledTimer: 0
+    unstable: -1
+    disposable: -1
+    siege: 0
+    isDuplicate: 0
+    duplicate_uuid: -1
+    duplicates: 
   native: 0
   _sprite: {fileID: 2303607126790662248}
+  protoAnimation: {fileID: 4442275621142033626}
   protoColor: {r: 1, g: 1, b: 1, a: 1}
   realColor: {r: 0, g: 0, b: 0, a: 0}
   halfColor: {r: 0, g: 0, b: 0, a: 0}
