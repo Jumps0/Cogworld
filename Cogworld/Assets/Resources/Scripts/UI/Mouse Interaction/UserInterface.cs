@@ -620,6 +620,20 @@ public abstract class UserInterface : MonoBehaviour
                 }
                 #endregion
 
+                // Prototype discovery
+                if(originSlot.AllowedItems.Count > 0)
+                {
+                    if (!originItem.itemData.knowByPlayer)
+                        originItem.itemData.knowByPlayer = true;
+                    UIManager.inst.CreateNewLogMessage("Identified " + originItem.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                }
+                else if (destinationSlot.AllowedItems.Count > 0)
+                {
+                    if (!destinationItem.itemData.knowByPlayer)
+                        destinationItem.itemData.knowByPlayer = true;
+                    UIManager.inst.CreateNewLogMessage("Identified " + destinationItem.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                }
+
                 // Now that we have all our data, we go through both at the same time and start swapping data (they will both have the same length).
                 for (int i = 0; i < slots_origin.Count; i++)
                 {
@@ -645,7 +659,7 @@ public abstract class UserInterface : MonoBehaviour
                 }
 
                 UIManager.inst.ShowCenterMessageTop("Attached " + originItem.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-
+                UIManager.inst.CreateNewLogMessage("Attached " + originItem.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
             }
             else // We can't swap the items, do a message.
             {
@@ -788,24 +802,36 @@ public abstract class UserInterface : MonoBehaviour
                 if (destinationSlot.parent.GetComponent<StaticInterface>()) // Moving TO the /INVENTORY/
                 {
                     UIManager.inst.ShowCenterMessageTop("Detached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    UIManager.inst.CreateNewLogMessage("Detached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
                 }
                 else if (destinationSlot.parent.GetComponent<DynamicInterface>())// Moving TO a /PARTS/ slot
                 {
+                    // Prototype discovery (equip only)
+                    if (!originItem.itemData.knowByPlayer)
+                    {
+                        originItem.itemData.knowByPlayer = true;
+                        UIManager.inst.CreateNewLogMessage("Identified " + originItem.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    }
+
                     if (originSlot.item.itemData.slot == ItemSlot.Power)
                     {
                         UIManager.inst.ShowCenterMessageTop("Attached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.CreateNewLogMessage("Attached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
                     }
                     else if (originSlot.item.itemData.slot == ItemSlot.Propulsion)
                     {
                         UIManager.inst.ShowCenterMessageTop("Attached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.CreateNewLogMessage("Attached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
                     }
                     else if (originSlot.item.itemData.slot == ItemSlot.Utilities)
                     {
                         UIManager.inst.ShowCenterMessageTop("Attached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.CreateNewLogMessage("Attached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
                     }
                     else if (originSlot.item.itemData.slot == ItemSlot.Weapons)
                     {
                         UIManager.inst.ShowCenterMessageTop("Attached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.CreateNewLogMessage("Attached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
                     }
                     else
                     {
@@ -930,26 +956,36 @@ public abstract class UserInterface : MonoBehaviour
                     item = children[index].Value;
                 }
 
+                // Prototype discovery
+                if (!item.itemData.knowByPlayer)
+                {
+                    item.itemData.knowByPlayer = true;
+                    UIManager.inst.CreateNewLogMessage("Identified " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                }
 
                 if (item.itemData.slot == ItemSlot.Power)
                 {
                     PlayerData.inst.GetComponent<PartInventory>()._invPower.AddItem(item, 1);
                     UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    UIManager.inst.CreateNewLogMessage("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
                 }
                 else if (item.itemData.slot == ItemSlot.Propulsion)
                 {
                     PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.AddItem(item, 1);
                     UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    UIManager.inst.CreateNewLogMessage("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
                 }
                 else if (item.itemData.slot == ItemSlot.Utilities)
                 {
                     PlayerData.inst.GetComponent<PartInventory>()._invUtility.AddItem(item, 1);
                     UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    UIManager.inst.CreateNewLogMessage("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
                 }
                 else if (item.itemData.slot == ItemSlot.Weapons)
                 {
                     PlayerData.inst.GetComponent<PartInventory>()._invWeapon.AddItem(item, 1);
                     UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    UIManager.inst.CreateNewLogMessage("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
                 }
 
                 // Remove the old item from wherever its stored
