@@ -28,7 +28,6 @@ public class InventoryControl : MonoBehaviour
     [Header("Data Related")]
     // - Data -
     public Dictionary<Vector2Int, GameObject> worldItems = new Dictionary<Vector2Int, GameObject>(); // Spawned in items on the floor in the map
-    public List<ItemObject> knownItems = new List<ItemObject>();
     [Header("Prefabs")]
     // -- Prefabs --
     //

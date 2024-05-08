@@ -1025,7 +1025,33 @@ public abstract class UserInterface : MonoBehaviour
 
         if (animate) // == ANIMATION ==
         {
-            
+            // Now that the inventory is sorted (but the UI still hasn't been updated) we need to find the different between the two, and use that for our animation.
+
+            // Gather up the UI GameObjects
+            List<KeyValuePair<GameObject, InventorySlot>> UIslots = new List<KeyValuePair<GameObject, InventorySlot>>();
+            if (inventory.Container.Items[0].AllowedItems.Count > 0) // /PARTS/
+            {
+                foreach (KeyValuePair<GameObject, InventorySlot> pair in UIManager.inst.partContentArea.GetComponent<DynamicInterface>().slotsOnInterface)
+                {
+                    if (pair.Value.AllowedItems[0] == inventory.Container.Items[0].AllowedItems[0]) // Want to make sure we only get the same type
+                    {
+                        UIslots.Add(pair);
+                    }
+                }
+            }
+            else // /INVENTORY/
+            {
+                foreach (KeyValuePair<GameObject, InventorySlot> pair in UIManager.inst.inventoryArea.GetComponent<StaticInterface>().slotsOnInterface)
+                {
+                    UIslots.Add(pair);
+                }
+            }
+
+
+            // We will use this information to create temporary duplicates that we will move around to the place they need to be.
+            // OR we could just use the originals (since we delete them anyways on update) and then stall the interface refresh
+            int distance = 20; // The UI elements are around this distance apart from each other. 
+
         }
 
         // Redraw the UI Display
