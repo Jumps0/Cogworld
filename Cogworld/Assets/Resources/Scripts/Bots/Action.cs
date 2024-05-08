@@ -6073,7 +6073,7 @@ public static class Action
         {
             foreach (var item in actor.armament.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0 && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && !item.item.isDuplicate)
                 {
                     items.Add(item.item);
                 }
@@ -6081,7 +6081,7 @@ public static class Action
 
             foreach (var item in actor.armament.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0 && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && !item.item.isDuplicate)
                 {
                     items.Add(item.item);
                 }
@@ -6089,33 +6089,33 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPower.Container.Items)
+            foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>()._invPower.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0 && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && !item.item.isDuplicate)
                 {
                     items.Add(item.item);
                 }
             }
 
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items)
+            foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0 && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && !item.item.isDuplicate)
                 {
                     items.Add(item.item);
                 }
             }
 
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items)
+            foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>()._invUtility.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0 && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && !item.item.isDuplicate)
                 {
                     items.Add(item.item);
                 }
             }
 
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invWeapon.Container.Items)
+            foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>()._invWeapon.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0 && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && !item.item.isDuplicate)
                 {
                     items.Add(item.item);
                 }

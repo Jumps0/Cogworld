@@ -4876,7 +4876,7 @@ public static class HF
         }
 
 
-        int totalExposure = 0; // Calculate total exposure
+        int totalExposure = coreExposure; // Calculate total exposure
         foreach (var I in items)
         {
             totalExposure += I.itemData.coverage;

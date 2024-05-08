@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.Progress;
 using Random = UnityEngine.Random;
 
 public class Part : MonoBehaviour
@@ -450,6 +451,10 @@ public class Part : MonoBehaviour
                         Debug.LogError("ERROR: Item slot type not set!");
                         break;
                 }
+
+                // If this item was unknown to us, now add that data
+                if (!_item.itemData.knowByPlayer)
+                    _item.itemData.knowByPlayer = true;
 
                 InventoryControl.inst.UpdateInterfaceInventories();
                 UIManager.inst.CreateNewLogMessage("Aquired " + this._item.itemData.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);

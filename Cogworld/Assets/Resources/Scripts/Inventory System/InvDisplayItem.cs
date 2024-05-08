@@ -106,7 +106,14 @@ public class InvDisplayItem : MonoBehaviour
     public void SetAsFilled()
     {
         assignedOrderText.color = letterWhite;
-        itemNameText.color = activeGreen;
+        Color textColor = activeGreen;
+        if (item.isBroken)
+            textColor = UIManager.inst.highSecRed;
+        if (isSecondaryItem)
+            textColor = wideBlue;
+        if (this.transform.parent.gameObject == UIManager.inst.inventoryArea && !item.itemData.knowByPlayer) // Prototype
+            textColor = Color.white;
+        itemNameText.color = textColor;
 
         partDisplay.gameObject.SetActive(true);
         healthDisplay.gameObject.SetActive(true);
@@ -115,7 +122,7 @@ public class InvDisplayItem : MonoBehaviour
         specialDescText.gameObject.SetActive(true);
         healthMode.gameObject.SetActive(true);
 
-        this.gameObject.name = $"IDI: {item.itemData.itemName}";
+        this.gameObject.name = $"IDI: {nameUnmodified}";
     }
 
     public void ForceIgnoreRaycasts()
@@ -358,7 +365,7 @@ public class InvDisplayItem : MonoBehaviour
             end = UIManager.inst.highSecRed;
         if (isSecondaryItem)
             end = wideBlue;
-        if(this.transform.parent.gameObject == UIManager.inst.inventoryArea && item.itemData.knowByPlayer) // Prototype
+        if(this.transform.parent.gameObject == UIManager.inst.inventoryArea && !item.itemData.knowByPlayer) // Prototype
             end = Color.white;
 
         // Set the assigned letter to a color while we're a it
@@ -504,12 +511,10 @@ public class InvDisplayItem : MonoBehaviour
 
     #region Interaction
 
-    private void OnMouseOver()
+    public void RightClick()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse1)) // Right Click to open /DATA/ Menu  NOTE: This currently doesnt work
-        {
-            UIManager.inst.Data_OpenMenu(item, null, PlayerData.inst.GetComponent<Actor>());
-        }
+        Debug.Log("Click");
+        UIManager.inst.Data_OpenMenu(item, null, PlayerData.inst.GetComponent<Actor>());
     }
 
     public void Click()
@@ -647,6 +652,9 @@ public class InvDisplayItem : MonoBehaviour
             start = emptyGray;
             end = activeGreen;
             highlight = inActiveGreen;
+
+            if (this.transform.parent.gameObject == UIManager.inst.inventoryArea && !item.itemData.knowByPlayer) // Prototype
+                end = Color.white;
 
             // Set the assigned letter to a color while we're a it
             assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(activeGreen)}>{assignedOrderString}</color>";
@@ -1408,6 +1416,10 @@ public class InvDisplayItem : MonoBehaviour
     {
         // Set name
         nameUnmodified = item.itemData.itemName;
+        if (!item.itemData.knowByPlayer)
+        {
+            nameUnmodified = HF.ItemPrototypeName(item);
+        }
         itemNameText.text = nameUnmodified;
         this.gameObject.name = $"IDI: <DUPE> {item.itemData.itemName}";
 

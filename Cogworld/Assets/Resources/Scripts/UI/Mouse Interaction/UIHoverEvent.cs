@@ -17,6 +17,7 @@ public class UIHoverEvent : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     public UnityEvent onHoverStart;
     public UnityEvent onHoverEnd;
     public UnityEvent onDoubleClick;
+    public UnityEvent onRightClick;
 
     [Header("Variables")]
     public bool disabled = false;
@@ -41,6 +42,11 @@ public class UIHoverEvent : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             {
                 onDoubleClick.Invoke();
                 eventData.clickCount = 0;
+            }
+
+            if(eventData.button == PointerEventData.InputButton.Right)
+            {
+                onRightClick.Invoke();
             }
         }
     }
