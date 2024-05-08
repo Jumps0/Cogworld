@@ -2578,8 +2578,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -430, y: -403.1112}
+  m_AnchoredPosition: {x: 0, y: 0.000030517578}
+  m_SizeDelta: {x: -430, y: -403.11002}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &64064824
 MonoBehaviour:
@@ -3958,6 +3958,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   onDoubleClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onRightClick:
     m_PersistentCalls:
       m_Calls: []
   disabled: 0
@@ -6292,6 +6295,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   onDoubleClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onRightClick:
     m_PersistentCalls:
       m_Calls: []
   disabled: 0
@@ -10931,6 +10937,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   onDoubleClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onRightClick:
     m_PersistentCalls:
       m_Calls: []
   disabled: 0
@@ -21235,6 +21244,9 @@ MonoBehaviour:
   onDoubleClick:
     m_PersistentCalls:
       m_Calls: []
+  onRightClick:
+    m_PersistentCalls:
+      m_Calls: []
   disabled: 0
 --- !u!114 &462778043
 MonoBehaviour:
@@ -25448,6 +25460,9 @@ MonoBehaviour:
   onDoubleClick:
     m_PersistentCalls:
       m_Calls: []
+  onRightClick:
+    m_PersistentCalls:
+      m_Calls: []
   disabled: 0
 --- !u!114 &579575215
 MonoBehaviour:
@@ -25991,6 +26006,9 @@ MonoBehaviour:
   onDoubleClick:
     m_PersistentCalls:
       m_Calls: []
+  onRightClick:
+    m_PersistentCalls:
+      m_Calls: []
   disabled: 0
 --- !u!1 &596917344
 GameObject:
@@ -26337,6 +26355,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   onDoubleClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onRightClick:
     m_PersistentCalls:
       m_Calls: []
   disabled: 0
@@ -27731,6 +27752,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   onDoubleClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onRightClick:
     m_PersistentCalls:
       m_Calls: []
   disabled: 0
@@ -29466,8 +29490,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -1275, y: -115}
-  m_SizeDelta: {x: 430.0717, y: 831.33}
+  m_AnchoredPosition: {x: -1226.2, y: -92.443}
+  m_SizeDelta: {x: 432.34, y: 876.44}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!82 &690459397
 AudioSource:
@@ -31697,6 +31721,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   onDoubleClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onRightClick:
     m_PersistentCalls:
       m_Calls: []
   disabled: 0
@@ -34834,6 +34861,9 @@ MonoBehaviour:
   onDoubleClick:
     m_PersistentCalls:
       m_Calls: []
+  onRightClick:
+    m_PersistentCalls:
+      m_Calls: []
   disabled: 0
 --- !u!1 &857223890
 GameObject:
@@ -36280,7 +36310,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 465, y: -69.1}
+  m_AnchoredPosition: {x: 465, y: -122.4}
   m_SizeDelta: {x: 0, y: -831.33}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &904073058
@@ -36595,6 +36625,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   onDoubleClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onRightClick:
     m_PersistentCalls:
       m_Calls: []
   disabled: 0
@@ -40865,6 +40898,9 @@ MonoBehaviour:
   onDoubleClick:
     m_PersistentCalls:
       m_Calls: []
+  onRightClick:
+    m_PersistentCalls:
+      m_Calls: []
   disabled: 0
 --- !u!114 &1012511640
 MonoBehaviour:
@@ -41671,8 +41707,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -815.0358, y: -115}
-  m_SizeDelta: {x: 430.0717, y: 832}
+  m_AnchoredPosition: {x: -767.4, y: -92.611984}
+  m_SizeDelta: {x: 430.0717, y: 876.78}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1048324209
 GameObject:
@@ -41709,8 +41745,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -199.11435}
-  m_SizeDelta: {x: 0, y: -398.2188}
+  m_AnchoredPosition: {x: 0, y: -221.66998}
+  m_SizeDelta: {x: 0, y: -443.33}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1048767336
 GameObject:
@@ -48923,6 +48959,9 @@ MonoBehaviour:
   onDoubleClick:
     m_PersistentCalls:
       m_Calls: []
+  onRightClick:
+    m_PersistentCalls:
+      m_Calls: []
   disabled: 0
 --- !u!114 &1293853772
 MonoBehaviour:
@@ -56115,7 +56154,6 @@ MonoBehaviour:
   p_inventoryUtilities: {fileID: 11400000, guid: c0380eaf0eee54c48b43ace639398c8f, type: 2}
   p_inventoryWeapons: {fileID: 11400000, guid: 6aa1badc3199c65498015bc6890f9a42, type: 2}
   p_inventory: {fileID: 11400000, guid: da50f0f374a8a1c4b8f1b441e112aa18, type: 2}
-  knownItems: []
   _itemHeldPrefab: {fileID: 8519707058798226528, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
   _hoverMovingItemPrefab: {fileID: 0}
   _itemGroundPrefab: {fileID: 5707403940916725959, guid: 9fded638afd59384bafbca643201372b, type: 3}
@@ -56822,6 +56860,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   onDoubleClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onRightClick:
     m_PersistentCalls:
       m_Calls: []
   disabled: 0
@@ -59502,8 +59543,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -830, y: -115.00002}
-  m_SizeDelta: {x: 460, y: 831.33}
+  m_AnchoredPosition: {x: -780, y: -92.445}
+  m_SizeDelta: {x: 460, y: 876.44}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!82 &1589001469
 AudioSource:
@@ -81305,6 +81346,9 @@ MonoBehaviour:
   onDoubleClick:
     m_PersistentCalls:
       m_Calls: []
+  onRightClick:
+    m_PersistentCalls:
+      m_Calls: []
   disabled: 0
 --- !u!1 &1715576575
 GameObject:
@@ -81651,6 +81695,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   onDoubleClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onRightClick:
     m_PersistentCalls:
       m_Calls: []
   disabled: 0
@@ -94025,6 +94072,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   onDoubleClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onRightClick:
     m_PersistentCalls:
       m_Calls: []
   disabled: 0
