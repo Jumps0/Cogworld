@@ -289,6 +289,17 @@ public class TurnManager : MonoBehaviour
         {
             T.Value.isExplored = false;
             T.Value.isVisible = false;
+
+            // While we're here, we will assign tiles to their respective regions.
+
+            // Find the region that contains this object
+            int regionX = Mathf.FloorToInt((float)T.Key.x / MapManager.inst.regionSize);
+            int regionY = Mathf.FloorToInt((float)T.Key.y / MapManager.inst.regionSize);
+
+            Vector2Int pos = new Vector2Int(regionX, regionY);
+            Debug.Log(pos);
+            // Add the object to the corresponding region
+            MapManager.inst.regions[pos].objects.Add(T.Value.gameObject);
         }
 
         foreach (KeyValuePair<Vector2Int, GameObject> T in MapManager.inst._layeredObjsRealized)

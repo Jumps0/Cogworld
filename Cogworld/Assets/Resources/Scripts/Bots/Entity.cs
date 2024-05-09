@@ -61,9 +61,10 @@ public class Entity : MonoBehaviour
         {
             momentum = 0;
 
-            if (this.GetComponent<PlayerData>()) // Check to see if the inventory needs to be auto-sorted.
+            if (this.GetComponent<PlayerData>()) 
             {
-                InventoryControl.inst.PartsSortingCheck();
+                InventoryControl.inst.PartsSortingCheck(); // Check to see if the inventory needs to be auto-sorted.
+                //GameManager.inst.UpdateNearbyVis(); // Update nearby vision on objects
             }
         }
         lastDirection = direction;

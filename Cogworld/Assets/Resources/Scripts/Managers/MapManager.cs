@@ -214,7 +214,8 @@ public class MapManager : MonoBehaviour
         _mapSizeX = mapSize.x;
         _mapSizeY = mapSize.y;
 
-        TurnManager.inst.SetAllUnknown();
+        CreateRegions();
+        TurnManager.inst.SetAllUnknown(); // Also fills the regions
 
         // Spawn the player
         var spawnedPlayer = Instantiate(_playerPrefab, new Vector3(playerSpawnLocation.x * GridManager.inst.globalScale, playerSpawnLocation.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
@@ -432,7 +433,8 @@ public class MapManager : MonoBehaviour
 
         DrawBorder(mapSize.x, mapSize.y); // Draw the border
 
-        TurnManager.inst.SetAllUnknown();
+        CreateRegions();
+        TurnManager.inst.SetAllUnknown(); // Also fills the regions
 
         foreach (KeyValuePair<Vector2Int, GameObject> door in _layeredObjsRealized) // Setup all the doors
         {
@@ -747,6 +749,47 @@ public class MapManager : MonoBehaviour
             {
                 CreateBlock(new Vector2(x + xOff, y + yOff), HF.IDbyTheme(HF.Tile_to_TileType(grid[x, y])));
             }
+        }
+    }
+
+    [Header("Regions")]
+    public int regionSize = 15;
+    public Dictionary<Vector2Int, Region> regions = new Dictionary<Vector2Int, Region>();
+
+    /// <summary>
+    /// Creates a number of regions determined by the map size, each TileBlock within that region gets assigned to it.
+    /// </summary>
+    public void CreateRegions()
+    {
+        // Calculate the number of regions in each axis
+        int numRegionsX = Mathf.CeilToInt((float)_mapSizeX / regionSize);
+        int numRegionsY = Mathf.CeilToInt((float)_mapSizeY / regionSize);
+
+        // Iterate through each region
+        for (int x = 0; x < numRegionsX; x++)
+        {
+            for (int y = 0; y < numRegionsY; y++)
+            {
+                // Calculate the position of the region
+                Vector2Int regionPosition = new Vector2Int(x, y);
+
+                // Create a new region
+                Region region = new Region()
+                {
+                    size = regionSize,
+                    pos = regionPosition,
+                    objects = new List<GameObject>()
+                };
+
+                // Add the region to the dictionary
+                regions.Add(regionPosition, region);
+            }
+        }
+
+        // Example: Display the regions in the console
+        foreach (KeyValuePair<Vector2Int, Region> entry in regions)
+        {
+            
         }
     }
 
@@ -2823,6 +2866,7 @@ public class MapManager : MonoBehaviour
             Destroy(L.Value.gameObject);
         }
         _allTilesRealized.Clear();
+        regions.Clear();
 
         // Clear triggers
         foreach (GameObject T in triggers.ToList())
@@ -3182,4 +3226,28 @@ public class MapManager : MonoBehaviour
     }
 
     #endregion
+}
+
+public class Region
+{
+    [Tooltip("The size of this region, ?x?.")]
+    public int size { get; set; }
+    [Tooltip("The positions of this region among the other regions.")]
+    public Vector2Int pos { get; set; }
+    [Tooltip("All objects currently in this region.")]
+    public List<GameObject> objects { get; set; }
+
+    /// <summary>
+    /// Updates vision of all objects stored when called.
+    /// </summary>
+    public void UpdateVis()
+    {
+        foreach (var obj in objects)
+        {
+            if (obj.GetComponent<TileBlock>())
+            {
+                obj.GetComponent<TileBlock>().CheckVisibility();
+            }
+        }
+    }
 }

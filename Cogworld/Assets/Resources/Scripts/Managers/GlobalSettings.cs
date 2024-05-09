@@ -398,4 +398,42 @@ public class GlobalSettings : MonoBehaviour
             }
         }
     }
+
+    /*
+    // Size of each grid cell
+    public float cellSize = 15f;
+
+    // Number of rows and columns in the grid
+    public int numRows = 10;
+    public int numColumns = 10;
+
+    private void OnDrawGizmos()
+    {
+        // Set the color of the grid lines
+        Gizmos.color = Color.white;
+
+        // Calculate the total width and height of the grid
+        float totalWidth = cellSize * numColumns;
+        float totalHeight = cellSize * numRows;
+
+        // Calculate the starting position for drawing the grid
+        Vector3 startPosition = transform.position - new Vector3(totalWidth / 2f, totalHeight / 2f, 0f);
+
+        // Draw vertical lines
+        for (int x = 0; x <= numColumns; x++)
+        {
+            Vector3 start = startPosition + new Vector3(x * cellSize, 0f, 0f);
+            Vector3 end = start + new Vector3(0f, totalHeight, 0f);
+            Gizmos.DrawLine(start, end);
+        }
+
+        // Draw horizontal lines
+        for (int y = 0; y <= numRows; y++)
+        {
+            Vector3 start = startPosition + new Vector3(0f, y * cellSize, 0f);
+            Vector3 end = start + new Vector3(totalWidth, 0f, 0f);
+            Gizmos.DrawLine(start, end);
+        }
+    }
+    */
 }

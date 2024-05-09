@@ -212,6 +212,38 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Called whenever the player moves. Updates vision on objects in current and adjacent regions.
+    /// </summary>
+    public void UpdateNearbyVis()
+    {
+        Vector2Int pos = HF.V3_to_V2I(PlayerData.inst.transform.position); // Get player's position
+
+        // Get the position of the current region
+        Vector2Int currentRegionPosition = pos / MapManager.inst.regionSize;
+        // Iterate through the current region and adjacent regions
+        for (int xOffset = -1; xOffset <= 1; xOffset++)
+        {
+            for (int yOffset = -1; yOffset <= 1; yOffset++)
+            {
+                Vector2Int adjacentRegionPosition = currentRegionPosition + new Vector2Int(xOffset, yOffset);
+                Debug.Log($"Attempting to update: {adjacentRegionPosition}");
+                if (MapManager.inst.regions.ContainsKey(adjacentRegionPosition))
+                {
+                    // Call UpdateVis for the region if it exists
+                    Debug.Log($"Updating vis for {adjacentRegionPosition}");
+                    MapManager.inst.regions[adjacentRegionPosition].UpdateVis();
+                }
+            }
+        }
+
+        Debug.Log($"Region count is: {MapManager.inst.regions.Count}");
+        foreach (var R in MapManager.inst.regions)
+        {
+            Debug.Log($"Region: {R.Key} | {R.Value}");
+        }
+    }
+
+    /// <summary>
     /// Given a location, will attempt to update any neighboring doors to open/close.
     /// </summary>
     /// <param name="pos">The central position. Any neighbors will get updated.</param>
