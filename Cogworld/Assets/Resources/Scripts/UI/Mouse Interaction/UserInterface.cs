@@ -1083,11 +1083,37 @@ public abstract class UserInterface : MonoBehaviour
                 }
             }
 
+            // Save the old positions & Find the new positions
+            List<Vector3> oldPositions = new List<Vector3>();
+            List<Vector3> newPositions = new List<Vector3>();
+            foreach (KeyValuePair<GameObject, InventorySlot> kvp in UIslots)
+            {
+                oldPositions.Add(kvp.Key.transform.position);
+
+                foreach (InventorySlot slot in inventory.Container.Items) // Find where this slot *SHOULD BE* in the new arrangement
+                {
+                    if(slot == kvp.Value)
+                    {
+                        newPositions.Add(kvp.Key.transform.position);
+                        break;
+                    }
+                }
+            }
 
             // We will use this information to create temporary duplicates that we will move around to the place they need to be.
             // OR we could just use the originals (since we delete them anyways on update) and then stall the interface refresh
             int distance = 20; // The UI elements are around this distance apart from each other. 
 
+            // Now go through and perform the movement, we should only be slots that NEED to be moved.
+            for (int i = 0; i < UIslots.Count; i++)
+            {
+                if (oldPositions[i] != newPositions[i]) // Only move ones that need to be moved.
+                {
+                    GameObject obj = UIslots[i].Key; // Get the object that needs to be moved
+
+                    // TODO: do the thing here
+                }
+            }
         }
 
         // Redraw the UI Display
