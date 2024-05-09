@@ -35,17 +35,21 @@ MonoBehaviour:
     isOverloaded: 0
     isDeteriorating: 0
     isRigged: 0
+    isBroken: 0
     corrupted: 0
     disabledTimer: 0
     unstable: -1
     disposable: -1
     siege: 0
+    isDuplicate: 0
+    duplicate_uuid: -1
+    duplicates: 
   knowByPlayer: 0
-  floorDisplay: {fileID: 1832069135, guid: 707e95711a4c98246b820a5a5f6d1167, type: 3}
-  inventoryDisplay: {fileID: 1832069135, guid: 707e95711a4c98246b820a5a5f6d1167, type: 3}
+  floorDisplay: {fileID: 21300000, guid: 347163d30a4afe04f9d8ebeebb80a1af, type: 3}
+  inventoryDisplay: {fileID: 21300000, guid: 347163d30a4afe04f9d8ebeebb80a1af, type: 3}
   asciiRep: {fileID: -1932154928, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
   bigDisplay: {fileID: 21300000, guid: 7f64f5c0b236ea548a405d238dec85ba, type: 3}
-  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemColor: {r: 0.77283573, g: 0, b: 1, a: 1}
   type: 22
   slot: 3
   slotsRequired: 1
@@ -181,7 +185,7 @@ MonoBehaviour:
   itemName: Vibroblade
   description: A high damage slashing weapon comprised of a blade vibrating at extreme
     speed.
-  mechanicalDescription: 
+  mechanicalDescription: '*7 M4 40-62 P'
   fabricationInfo:
     canBeFabricated: 1
     amountMadePer: 1
