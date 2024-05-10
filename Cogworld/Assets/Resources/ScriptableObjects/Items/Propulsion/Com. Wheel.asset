@@ -45,8 +45,8 @@ MonoBehaviour:
     duplicate_uuid: -1
     duplicates: 
   knowByPlayer: 1
-  floorDisplay: {fileID: 1529295200, guid: 1e763b4e9de4d1d49979f964b3615e31, type: 3}
-  inventoryDisplay: {fileID: 1529295200, guid: 1e763b4e9de4d1d49979f964b3615e31, type: 3}
+  floorDisplay: {fileID: 21300000, guid: abb0042d5d628f24e8ef14d48d81ff99, type: 3}
+  inventoryDisplay: {fileID: 21300000, guid: abb0042d5d628f24e8ef14d48d81ff99, type: 3}
   asciiRep: {fileID: -1087548489, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
   bigDisplay: {fileID: 21300000, guid: 63f1b5c8eab5d03418ede6d5c7dfbb26, type: 3}
   itemColor: {r: 0, g: 1, b: 0.6862745, a: 1}
