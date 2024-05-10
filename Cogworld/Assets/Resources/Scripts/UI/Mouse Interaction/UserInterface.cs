@@ -945,6 +945,7 @@ public abstract class UserInterface : MonoBehaviour
         }
         else // Yes! Relocate the item.
         {
+            bool once = false;
             foreach (var dobj in destinationObjects)
             {
                 // If this is a multi-slot item, we need to start modifying the children
@@ -966,26 +967,38 @@ public abstract class UserInterface : MonoBehaviour
                 if (item.itemData.slot == ItemSlot.Power)
                 {
                     PlayerData.inst.GetComponent<PartInventory>()._invPower.AddItem(item, 1);
-                    UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                    UIManager.inst.CreateNewLogMessage("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    if (!once)
+                    {
+                        UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.CreateNewLogMessage("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    }
                 }
                 else if (item.itemData.slot == ItemSlot.Propulsion)
                 {
                     PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.AddItem(item, 1);
-                    UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                    UIManager.inst.CreateNewLogMessage("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    if (!once)
+                    {
+                        UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.CreateNewLogMessage("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    }
                 }
                 else if (item.itemData.slot == ItemSlot.Utilities)
                 {
                     PlayerData.inst.GetComponent<PartInventory>()._invUtility.AddItem(item, 1);
-                    UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                    UIManager.inst.CreateNewLogMessage("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    if (!once)
+                    {
+                        UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.CreateNewLogMessage("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    }
                 }
                 else if (item.itemData.slot == ItemSlot.Weapons)
                 {
                     PlayerData.inst.GetComponent<PartInventory>()._invWeapon.AddItem(item, 1);
-                    UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                    UIManager.inst.CreateNewLogMessage("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    if (!once)
+                    {
+                        UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.CreateNewLogMessage("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    }
                 }
 
                 // Remove the old item from wherever its stored
@@ -1004,6 +1017,8 @@ public abstract class UserInterface : MonoBehaviour
 
                 // Flash the item's display square
                 dobj.GetComponent<InvDisplayItem>().FlashItemDisplay();
+
+                once = true;
             }
 
             // Update Inventory Count
@@ -1061,8 +1076,10 @@ public abstract class UserInterface : MonoBehaviour
 
         if (animate) // == ANIMATION ==
         {
-            // Now that the inventory is sorted (but the UI still hasn't been updated) we need to find the different between the two, and use that for our animation.
+            InventoryControl.inst.awaitingSort = true;
 
+            // Now that the inventory is sorted (but the UI still hasn't been updated) we need to find the different between the two, and use that for our animation.
+            Debug.Log("Animating the auto sort");
             // Gather up the UI GameObjects
             List<KeyValuePair<GameObject, InventorySlot>> UIslots = new List<KeyValuePair<GameObject, InventorySlot>>();
             if (inventory.Container.Items[0].AllowedItems.Count > 0) // /PARTS/
@@ -1102,7 +1119,7 @@ public abstract class UserInterface : MonoBehaviour
 
             // We will use this information to create temporary duplicates that we will move around to the place they need to be.
             // OR we could just use the originals (since we delete them anyways on update) and then stall the interface refresh
-            int distance = 20; // The UI elements are around this distance apart from each other. 
+            int distance = 21; // The UI elements are around this distance apart from each other. 
 
             // Now go through and perform the movement, we should only be slots that NEED to be moved.
             for (int i = 0; i < UIslots.Count; i++)
@@ -1111,7 +1128,7 @@ public abstract class UserInterface : MonoBehaviour
                 {
                     GameObject obj = UIslots[i].Key; // Get the object that needs to be moved
 
-                    // TODO: do the thing here
+                    obj.GetComponent<InvDisplayItem>().Sort_StaggeredMove(newPositions[i], distance);
                 }
             }
         }

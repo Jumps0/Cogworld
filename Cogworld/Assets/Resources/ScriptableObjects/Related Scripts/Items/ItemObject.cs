@@ -678,6 +678,8 @@ public class ItemProjectile // (Disregarded in AOE attacks except for projectile
     [Tooltip("(0.##%) The chance for each penetration event. This list should be equal to the amount of things this projectile can pen.")]
     public List<float> penetrationChances = new List<float>();
 
+    // Guided
+    public ItemProjectileGuided guided;
 }
 
 [System.Serializable]
@@ -818,6 +820,14 @@ public class ItemSpecialAttack
     public bool stasisBeam = false;
     public bool tearClaw = false;
 
+}
+
+[System.Serializable]
+public class ItemProjectileGuided
+{
+    public bool isGuided = false;
+    [Tooltip("How many waypoints this weapon's projectile can have along its path.")]
+    public int waypoints = 0;
 }
 
 #region Misc Effects

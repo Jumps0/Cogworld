@@ -38,7 +38,6 @@ public class PlayerGridMovement : MonoBehaviour
 
         if(Input.GetAxis("Mouse ScrollWheel") != 0f)
         {
-            TurnManager.inst.AdvanceTime();
             Action.SkipAction(this.GetComponent<Actor>());
         }
     }

@@ -176,6 +176,11 @@ public class InventoryControl : MonoBehaviour
     {
         p_inventory.Sort();
 
+        if (awaitingSort) // Stall until the sort animation is done
+        {
+
+        }
+
         foreach (var I in interfaces)
         {
             if (I.GetComponentInChildren<DynamicInterface>())
@@ -249,6 +254,7 @@ public class InventoryControl : MonoBehaviour
         }
     }
 
+    public bool awaitingSort = false;
     /// <summary>
     /// Called every time the player moves X amount of blocks. Checks to see if any of the /PARTS/ inventories (the 4 of them) need to be auto-sorted.
     /// </summary>
