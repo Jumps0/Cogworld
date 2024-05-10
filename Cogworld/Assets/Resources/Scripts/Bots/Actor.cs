@@ -227,6 +227,21 @@ public class Actor : Entity
         //TurnManager.inst.EndTurn(this);
         //MapManager.inst.NearTileVisUpdate(this.fieldOfViewRange, HF.V3_to_V2I(this.transform.position)); // experimental
 
+        if (this.GetComponent<PlayerData>()) 
+        { // Siege tracking
+            int siegeTime = PlayerData.inst.timeTilSiege;
+            if (siegeTime < 100)
+            {
+                if((siegeTime <= 5 && siegeTime >= 1) || (siegeTime < 0 && siegeTime >= -5))
+                {
+                    PlayerData.inst.timeTilSiege--;
+                }
+                else if (siegeTime < -5)
+                {
+                    PlayerData.inst.timeTilSiege = 100;
+                }
+            }
+        }
     }
     #endregion
 

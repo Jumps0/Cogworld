@@ -67,7 +67,7 @@ public class InvDisplayItem : MonoBehaviour
 
     private void Update()
     {
-        if (canSiege)
+        if (canSiege && !isSecondaryItem)
         {
             CheckSiegeStatus();
         }
@@ -302,7 +302,14 @@ public class InvDisplayItem : MonoBehaviour
 
             // - Mode - //
             // Figure out if mode needs to be on or not
-            modeMain.gameObject.SetActive(false);
+            if(item.itemData.slot == ItemSlot.Weapons && item.itemData.projectile.damage.x > 0 && item.itemData.projectile.guided.isGuided)
+            {
+                UISetBoxDisplay("GUIDED " + item.itemData.projectile.guided.waypoints, activeGreen);
+            }
+            else
+            {
+                modeMain.gameObject.SetActive(false);
+            }
 
             // - Special Extra Text - //
             // Figure out if it needs to be on or not
@@ -965,7 +972,7 @@ public class InvDisplayItem : MonoBehaviour
         {
             type = 2;
             MapManager.inst.FreezePlayer(true);
-            PlayerData.inst.timeTilSiege = -5;
+            PlayerData.inst.timeTilSiege = -1;
             item.siege = true;
 
             // Play a sound
@@ -1069,10 +1076,12 @@ public class InvDisplayItem : MonoBehaviour
         // Here we need to check and update the player's siege status
 
         // One of these is timeTilSiege, so we need to track turn time.
-
-        if(siegeState == 1 || siegeState == 3) // Transition states
+        if (siegeState == 1 || siegeState == 3) // Transition states
         {
-            UISetBoxDisplay("SIEGE " + PlayerData.inst.timeTilSiege, emptyGray); // Set the time
+            int siegeTime = PlayerData.inst.timeTilSiege;
+            if (siegeTime < 0)
+                siegeTime = SiegeNumAdjust(siegeTime);
+            UISetBoxDisplay("SIEGE " + siegeTime, emptyGray); // Set the time
 
             // Check for time
             if (siegeState == 1) // waiting in (begin) state
@@ -1097,6 +1106,34 @@ public class InvDisplayItem : MonoBehaviour
             }
         }
     }
+
+    // Needed due to the way PlayerData.inst.timeTilSiege is tracked and modified.
+    private int SiegeNumAdjust(int input)
+    {
+        if(input == -1)
+        {
+            return -5;
+        }
+        else if (input == -2)
+        {
+            return -4;
+        }
+        else if (input == -3)
+        {
+            return -3;
+        }
+        else if (input == -4)
+        {
+            return -2;
+        }
+        else if (input == -5)
+        {
+            return -1;
+        }
+
+        return -1;
+    }
+
     #endregion
 
     #endregion
@@ -1478,6 +1515,110 @@ public class InvDisplayItem : MonoBehaviour
         UIManager.inst.UpdatePSUI();
         UIManager.inst.UpdateParts();
         InventoryControl.inst.UpdateInterfaceInventories();
+    }
+
+    #endregion
+
+    #region Sorting
+
+    public void Sort_StaggeredMove(Vector3 end, float chunk_size)
+    {
+        AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[70]); // UI | PART_SORT
+
+        StartCoroutine(StaggeredMove(end, chunk_size));
+        sort_letter = StartCoroutine(Sort_Letter());
+    }
+
+    private IEnumerator StaggeredMove(Vector3 end, float chunk_size)
+    {
+        Vector3 originPosition = this.transform.position;
+
+        int flip = -1;
+        if(originPosition.y < end.y) // We can either move up or down
+        {
+            flip = 1;
+        }
+
+        // Figure out how many chunks we need to move
+        float gap = Mathf.Abs(this.transform.position.y - end.y);
+        int chunks = Mathf.RoundToInt(gap / chunk_size);
+
+        // 1. Slide to the left
+        float distance = 25f;
+        float elapsedTime = 0f;
+        float duration = 0.35f;
+
+        while (elapsedTime < duration)
+        {
+            float adjustment = Mathf.Lerp(originPosition.x, originPosition.x - distance, elapsedTime / duration);
+
+            this.transform.position = new Vector3(adjustment, this.transform.position.y, this.transform.position.z);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // 2. Move up/down to new position
+        float moveTime = 0.5f;
+        for (int i = 1; i < chunks + 1; i++) // Move X amount of chunks every X seconds.
+        {
+            this.transform.position = new Vector3(this.transform.position.x, originPosition.y + (chunk_size * i * flip), this.transform.position.z);
+            yield return new WaitForSeconds(moveTime);
+        }
+        this.transform.position = end; // Snap to end
+
+        // 3. Slide to the right
+        elapsedTime = 0f;
+        duration = 0.35f;
+
+        while (elapsedTime < duration)
+        {
+            float adjustment = Mathf.Lerp(originPosition.x, originPosition.x + distance, elapsedTime / duration);
+
+            this.transform.position = new Vector3(adjustment, this.transform.position.y, this.transform.position.z);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // 4. Stop the random letter shuffle
+        StopCoroutine(sort_letter);
+
+        // 5. Briefly flash the text
+        Color startColor = Color.white;
+        Color end_text = itemNameText.color;
+        Color end_health = healthDisplay.color;
+        Color end_rightside = healthModeTextRep.color;
+
+        elapsedTime = 0f;
+        duration = 0.45f;
+        while (elapsedTime < duration) // White -> OG Colors
+        {
+            itemNameText.color = Color.Lerp(startColor, end_text, elapsedTime / duration);
+            assignedOrderText.color = Color.Lerp(startColor, end_text, elapsedTime / duration);
+
+            healthModeTextRep.color = Color.Lerp(startColor, end_rightside, elapsedTime / duration);
+            healthModeNumber.color = Color.Lerp(startColor, end_rightside, elapsedTime / duration);
+
+            healthDisplay.color = Color.Lerp(startColor, end_health, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        InventoryControl.inst.awaitingSort = false; // Maybe move this somewhere else?
+    }
+
+    private Coroutine sort_letter;
+    private IEnumerator Sort_Letter()
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+        while (true) // Stopped when this coroutine is stopped.
+        {
+            assignedOrderText.text = chars[Random.Range(0, chars.Length - 1)].ToString();
+            yield return null;
+        }
     }
 
     #endregion
