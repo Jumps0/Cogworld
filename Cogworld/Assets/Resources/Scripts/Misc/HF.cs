@@ -4356,6 +4356,16 @@ public static class HF
     #region Misc
 
     /// <summary>
+    /// A simple but effective way to check if the mouse is over the UI.
+    /// </summary>
+    /// <returns>True/False. If the mouse is "over the UI area".</returns>
+    public static bool MouseBoundsCheck()
+    {
+        Vector3 position = UnityEngine.Input.mousePosition;
+        return position.x > 888 || position.y > 555;
+    }
+
+    /// <summary>
     /// Converts a list of items to a simple list of *bool*s where true = item & false = no item.
     /// </summary>
     /// <param name="inventory">The inventory to convert.</param>

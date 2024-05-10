@@ -296,7 +296,7 @@ public class PlayerData : MonoBehaviour
 
         // First we only want to do this if the player actually has weapons and atleast one is active
         ItemObject weaponInUse = HasActiveWeapon();
-        if (weaponInUse)
+        if (weaponInUse && !UIManager.inst.dataMenu.data_parent.activeInHierarchy && UIManager.inst.terminal_targetTerm == null && !HF.MouseBoundsCheck())
         {
             canDoTargeting = true;
 
@@ -316,9 +316,7 @@ public class PlayerData : MonoBehaviour
             {
                 if(targetLine.Count > 0)
                 {
-                    ClearAllHighlights();
-                    LTH_Clear();
-                    UIManager.inst.Evasion_Volley(false); // Close the /VOLLEY/ window
+                    ClearTargeting();
                 }
             }
         }
@@ -326,6 +324,14 @@ public class PlayerData : MonoBehaviour
         {
             canDoTargeting = false;
         }
+    }
+
+    public void ClearTargeting()
+    {
+        ClearAllHighlights();
+        LTH_Clear();
+        UIManager.inst.Evasion_Volley(false); // Close the /VOLLEY/ window
+        canDoTargeting = false;
     }
 
     Vector3 oldMouseTarget = Vector3.zero;
@@ -703,7 +709,7 @@ public class PlayerData : MonoBehaviour
                         LTH_PlaceLine(BL_corner + new Vector2Int(-1, i + 1), 0f);
                     }
                     // Lastly, place the BOTTOM corner. It needs to face right and up.
-                    LTH_PlaceCorner(BL_corner + new Vector2Int(-1, 0), 90f);
+                    LTH_PlaceCorner(BL_corner + new Vector2Int(-1, 0), -90f);
                 }
                 else if (sideA == Vector2.right || sideA == Vector2.zero) // Targeting is to the RIGHT of the place. So we need to face LEFT.
                 {

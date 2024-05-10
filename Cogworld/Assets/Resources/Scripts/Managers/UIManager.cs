@@ -6097,7 +6097,8 @@ public class UIManager : MonoBehaviour
             dataMenu.data_objects.Clear();
 
             // Was the previous selected object an item? (and its not the exact same thing, and its not a unique item)
-            if(dataMenu.selection_item != null && dataMenu.selection_item != item && !item.itemData.instantUnique && item.itemData.knowByPlayer)
+            if(item != null && dataMenu.selection_item != null && dataMenu.selection_item != item && dataMenu.selection_item.itemData.slot == item.itemData.slot
+                && !item.itemData.instantUnique && item.itemData.knowByPlayer && dataMenu.selection_item.itemData.knowByPlayer)
             {
                 dataMenu.selected_comparison_item = item; // Assign the item
 
@@ -6668,7 +6669,7 @@ public class UIManager : MonoBehaviour
                         text += "+";
                     }
                     text += diffV2.y;
-                    Debug.Log(text + " --- " + diffV2.x + "/" + diffV2.y);
+
                     if (diffV2.x > 0 || diffV2.y > 0) // Red (item1 is better)
                     {
                         UIManager.inst.Data_CreateComparison(false, text);
@@ -7195,20 +7196,20 @@ public class UIManager : MonoBehaviour
                     xtra = " x" + item.itemData.slotsRequired;
                 }
                 iSlot.Setup(true, false, false, "Slot", Color.white, "Type of slot the part can be attached to, if applicable. Larger items may occupy multipel slots, both in the inventory and when attached.", "", false, item.itemData.slot.ToString() + xtra);
-                // Mass
-                UIDataGenericDetail iMass = UIManager.inst.Data_CreateGeneric();
-                string extra = "Mass of an attached item contributes to a robot's total mass and affects its movement speed. Items held in inventory do not count towards total mass for movement calculation purposes.";
-                if (item.itemData.mass > 0)
-                {
-                    iMass.Setup(true, false, true, "Mass", highlightGreen, extra, item.itemData.mass.ToString(), false, "", false, "", item.itemData.mass / 100f, true); // Uses the bar for some reason?
-                }
-                else // If the mass is 0, we display "N/A"
-                {
-                    iMass.Setup(true, false, false, "Mass", Color.white, extra, "", false, "N/A", true);
-                }
 
                 if (item.itemData.knowByPlayer)
                 {
+                    // Mass
+                    UIDataGenericDetail iMass = UIManager.inst.Data_CreateGeneric();
+                    string extra = "Mass of an attached item contributes to a robot's total mass and affects its movement speed. Items held in inventory do not count towards total mass for movement calculation purposes.";
+                    if (item.itemData.mass > 0)
+                    {
+                        iMass.Setup(true, false, true, "Mass", highlightGreen, extra, item.itemData.mass.ToString(), false, "", false, "", item.itemData.mass / 100f, true); // Uses the bar for some reason?
+                    }
+                    else // If the mass is 0, we display "N/A"
+                    {
+                        iMass.Setup(true, false, false, "Mass", Color.white, extra, "", false, "N/A", true);
+                    }
 
                     // Rating - this guy actually has some variance
                     UIDataGenericDetail iRating = UIManager.inst.Data_CreateGeneric();
@@ -9073,6 +9074,13 @@ public class UIManager : MonoBehaviour
                         }
                     }
                 }
+                else
+                {
+                    dataMenu.data_superImageNull.GetComponent<TextMeshProUGUI>().text = "No Analysis Data";
+
+                    Data_CreateSpacer();
+                    Data_CreateTextWall("This is an unidentified prototype. Attaching it before proper analysis will identify its functions, but also carries the risk of negative side-effects if it is a faulty version.");
+                }
                 #endregion
             }
         }
@@ -9897,8 +9905,8 @@ public class UIManager : MonoBehaviour
 
             // Disable the big image because we don't use it
             dataMenu.data_superImageParent.gameObject.SetActive(false);
-            // Set title to machine's name
-            dataMenu.data_mainTitle.text = machine.displayName;
+            // Set title to tile's name
+            dataMenu.data_mainTitle.text = tile.tileInfo.tileName;
             // Disable the mini-image
             dataMenu.data_smallImage.transform.parent.gameObject.SetActive(false);
 
@@ -9983,11 +9991,13 @@ public class UIManager : MonoBehaviour
             if(dataMenu.data_superImage.sprite != null)
             {
                 dataMenu.data_superImageNull.gameObject.SetActive(false);
+                dataMenu.data_superNullBrackets.gameObject.SetActive(false);
                 dataMenu.data_SuperImageAnimator.Play("Data_SuperImageAppear");
             }
             else // In some rare cases, some items don't have images. So we display some text indicating so.
             {
                 dataMenu.data_superImageNull.gameObject.SetActive(true);
+                dataMenu.data_superNullBrackets.gameObject.SetActive(true);
             }
         }
 
@@ -10352,6 +10362,7 @@ public class UIDataDisplay
     public GameObject data_superImageParent;
     [Tooltip("In cases where an item has no image, we display this text instead.")]
     public GameObject data_superImageNull;
+    public GameObject data_superNullBrackets;
     public TextMeshProUGUI data_mainTitle;
     [Tooltip("The small little image right next to the item/bot's name inside the [ ]")]
     public Image data_smallImage;

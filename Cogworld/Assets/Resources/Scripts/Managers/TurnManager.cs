@@ -297,7 +297,7 @@ public class TurnManager : MonoBehaviour
             int regionY = Mathf.FloorToInt((float)T.Key.y / MapManager.inst.regionSize);
 
             Vector2Int pos = new Vector2Int(regionX, regionY);
-            Debug.Log(pos);
+
             // Add the object to the corresponding region
             MapManager.inst.regions[pos].objects.Add(T.Value.gameObject);
         }
