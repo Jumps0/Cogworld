@@ -40,8 +40,8 @@ public class UICycleInventory : MonoBehaviour
                     if (item.Key.GetComponent<InvDisplayItem>().item != null)
                     {
                         reference = item.Key.GetComponent<InvDisplayItem>();
-                        if(reference != null && reference.item != null && reference.item.itemData.slot == type && reference.discardAnimationCoroutine == null)
-                        { // Exists, has an item, same slot type, and not animating.
+                        if(reference != null && reference.item != null && reference.item.itemData.slot == type && reference.discardAnimationCoroutine == null && !reference.isSecondaryItem)
+                        { // Exists, has an item, same slot type, not a duplicate, and not animating.
                             elements.Add(reference);
                         }
                     }
