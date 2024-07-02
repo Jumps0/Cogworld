@@ -1078,8 +1078,8 @@ public abstract class UserInterface : MonoBehaviour
         {
             InventoryControl.inst.awaitingSort = true;
 
-            // Now that the inventory is sorted (but the UI still hasn't been updated) we need to find the different between the two, and use that for our animation.
-            Debug.Log("Animating the auto sort");
+            // Now that the inventory is sorted (but the UI still hasn't been updated) we need to find the difference between the two, and use that for our animation.
+
             // Gather up the UI GameObjects
             List<KeyValuePair<GameObject, InventorySlot>> UIslots = new List<KeyValuePair<GameObject, InventorySlot>>();
             if (inventory.Container.Items[0].AllowedItems.Count > 0) // /PARTS/
@@ -1099,20 +1099,25 @@ public abstract class UserInterface : MonoBehaviour
                     UIslots.Add(pair);
                 }
             }
-
+            
             // Save the old positions & Find the new positions
             List<Vector3> oldPositions = new List<Vector3>();
             List<Vector3> newPositions = new List<Vector3>();
+            List<GameObject> toBeSorted = new List<GameObject>();
             foreach (KeyValuePair<GameObject, InventorySlot> kvp in UIslots)
             {
-                oldPositions.Add(kvp.Key.transform.position);
-
-                foreach (InventorySlot slot in inventory.Container.Items) // Find where this slot *SHOULD BE* in the new arrangement
+                if (kvp.Key.GetComponent<InvDisplayItem>().item != null && kvp.Key.GetComponent<InvDisplayItem>().item.Id >= 0) // Don't sort the empty slots
                 {
-                    if(slot == kvp.Value)
+                    oldPositions.Add(kvp.Key.transform.position);
+
+                    foreach (InventorySlot slot in inventory.Container.Items) // Find where this slot *SHOULD BE* in the new arrangement
                     {
-                        newPositions.Add(kvp.Key.transform.position);
-                        break;
+                        if (slot.item == kvp.Key.GetComponent<InvDisplayItem>().item)
+                        {
+                            newPositions.Add(kvp.Key.transform.position);
+                            toBeSorted.Add(kvp.Key);
+                            break;
+                        }
                     }
                 }
             }
@@ -1120,14 +1125,16 @@ public abstract class UserInterface : MonoBehaviour
             // We will use this information to create temporary duplicates that we will move around to the place they need to be.
             // OR we could just use the originals (since we delete them anyways on update) and then stall the interface refresh
             int distance = 21; // The UI elements are around this distance apart from each other. 
-
-            // Now go through and perform the movement, we should only be slots that NEED to be moved.
-            for (int i = 0; i < UIslots.Count; i++)
+            Debug.Log($"SortInfo: UIslots:{UIslots.Count} | op:{oldPositions.Count} | np:{newPositions.Count}");
+            // Now go through and perform the movement, we should only be moving slots that NEED to be moved.
+            for (int i = 0; i < toBeSorted.Count; i++)
             {
+                Debug.Log($"Old: {oldPositions[i]} | New: {newPositions[i]}");
                 if (oldPositions[i] != newPositions[i]) // Only move ones that need to be moved.
                 {
-                    GameObject obj = UIslots[i].Key; // Get the object that needs to be moved
+                    GameObject obj = toBeSorted[i]; // Get the object that needs to be moved
 
+                    Debug.Log($"Sorting: {obj.name}");
                     obj.GetComponent<InvDisplayItem>().Sort_StaggeredMove(newPositions[i], distance);
                 }
             }

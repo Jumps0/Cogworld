@@ -1559,11 +1559,11 @@ public class InvDisplayItem : MonoBehaviour
         }
 
         // 2. Move up/down to new position
-        float moveTime = 0.5f;
+        float moveTime = 0.75f;
         for (int i = 1; i < chunks + 1; i++) // Move X amount of chunks every X seconds.
         {
             this.transform.position = new Vector3(this.transform.position.x, originPosition.y + (chunk_size * i * flip), this.transform.position.z);
-            yield return new WaitForSeconds(moveTime);
+            yield return new WaitForSeconds(moveTime / chunks); // don't want to take all day to do this so cut the speed by the amount of chunks we move
         }
         this.transform.position = end; // Snap to end
 
@@ -1607,6 +1607,7 @@ public class InvDisplayItem : MonoBehaviour
         }
 
         InventoryControl.inst.awaitingSort = false; // Maybe move this somewhere else?
+        Debug.Log($"Finished sort for {this.gameObject.name}");
     }
 
     private Coroutine sort_letter;

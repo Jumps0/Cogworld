@@ -176,9 +176,21 @@ public class InventoryControl : MonoBehaviour
     {
         p_inventory.Sort();
 
+        if(uii_coroutine == null)
+        {
+            uii_coroutine = StartCoroutine(UII_Update());
+        }
+    }
+
+    private Coroutine uii_coroutine;
+    private IEnumerator UII_Update()
+    {
         if (awaitingSort) // Stall until the sort animation is done
         {
-
+            while (awaitingSort)
+            {
+                yield return null;
+            }
         }
 
         foreach (var I in interfaces)
@@ -195,6 +207,8 @@ public class InventoryControl : MonoBehaviour
         }
 
         SetInterfaceInvKeys();
+
+        uii_coroutine = null;
     }
 
     public void SetInterfaceInvKeys()
