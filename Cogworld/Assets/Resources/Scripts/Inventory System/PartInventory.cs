@@ -9,16 +9,16 @@ public class PartInventory : MonoBehaviour
     public bool belongsToAI = true;
 
     [Header("Power")]
-    public InventoryObject _invPower;
+    public InventoryObject inv_power;
     private int maxSize_power;
     [Header("Propulsion")]
-    public InventoryObject _invPropulsion;
+    public InventoryObject inv_propulsion;
     private int maxSize_propulsion;
     [Header("Utility")]
-    public InventoryObject _invUtility;
+    public InventoryObject inv_utility;
     private int maxSize_utility;
     [Header("Weapon")]
-    public InventoryObject _invWeapon;
+    public InventoryObject inv_weapon;
     private int maxSize_weapon;
     [Header("Inventory")]
     public InventoryObject _inventory;

@@ -1409,7 +1409,7 @@ public class PlayerData : MonoBehaviour
 
     public ItemObject HasActiveWeapon()
     {
-        foreach (InventorySlot slot in this.GetComponent<PartInventory>()._invWeapon.Container.Items)
+        foreach (InventorySlot slot in this.GetComponent<PartInventory>().inv_weapon.Container.Items)
         {
             if(slot.item.Id > -1 && slot.item.state) // There is an item here, and its active
             {
@@ -1429,10 +1429,10 @@ public class PlayerData : MonoBehaviour
     public void ClearInventory()
     {
         this.GetComponent<PartInventory>()._inventory.Container.Clear();
-        this.GetComponent<PartInventory>()._invPower.Container.Clear();
-        this.GetComponent<PartInventory>()._invPropulsion.Container.Clear();
-        this.GetComponent<PartInventory>()._invUtility.Container.Clear();
-        this.GetComponent<PartInventory>()._invWeapon.Container.Clear();
+        this.GetComponent<PartInventory>().inv_power.Container.Clear();
+        this.GetComponent<PartInventory>().inv_propulsion.Container.Clear();
+        this.GetComponent<PartInventory>().inv_utility.Container.Clear();
+        this.GetComponent<PartInventory>().inv_weapon.Container.Clear();
         //this.GetComponent<PartInventory>()._inventory.Container.Items = new InventorySlot[24];
     }
 
@@ -1444,19 +1444,19 @@ public class PlayerData : MonoBehaviour
     public void SavePlayerInventory()
     {
         GetComponent<PartInventory>()._inventory.Save();
-        GetComponent<PartInventory>()._invPower.Save();
-        GetComponent<PartInventory>()._invPropulsion.Save();
-        GetComponent<PartInventory>()._invUtility.Save();
-        GetComponent<PartInventory>()._invWeapon.Save();
+        GetComponent<PartInventory>().inv_power.Save();
+        GetComponent<PartInventory>().inv_propulsion.Save();
+        GetComponent<PartInventory>().inv_utility.Save();
+        GetComponent<PartInventory>().inv_weapon.Save();
     }
 
     public void LoadPlayerInventory()
     {
         GetComponent<PartInventory>()._inventory.Load();
-        GetComponent<PartInventory>()._invPower.Load();
-        GetComponent<PartInventory>()._invPropulsion.Load();
-        GetComponent<PartInventory>()._invUtility.Load();
-        GetComponent<PartInventory>()._invWeapon.Load();
+        GetComponent<PartInventory>().inv_power.Load();
+        GetComponent<PartInventory>().inv_propulsion.Load();
+        GetComponent<PartInventory>().inv_utility.Load();
+        GetComponent<PartInventory>().inv_weapon.Load();
     }
 
     /// <summary>

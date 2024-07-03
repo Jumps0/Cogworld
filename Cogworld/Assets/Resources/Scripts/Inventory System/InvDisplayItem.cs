@@ -1526,7 +1526,11 @@ public class InvDisplayItem : MonoBehaviour
         AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[70]); // UI | PART_SORT
 
         StartCoroutine(StaggeredMove(end, chunk_size));
-        sort_letter = StartCoroutine(Sort_Letter());
+
+        if (item != null && item.Id >= 0)
+        {
+            sort_letter = StartCoroutine(Sort_Letter());
+        }
     }
 
     private IEnumerator StaggeredMove(Vector3 end, float chunk_size)
@@ -1542,20 +1546,25 @@ public class InvDisplayItem : MonoBehaviour
         // Figure out how many chunks we need to move
         float gap = Mathf.Abs(this.transform.position.y - end.y);
         int chunks = Mathf.RoundToInt(gap / chunk_size);
-
+        Debug.Log($"Gap info - Gap: {gap} | start.y: {this.transform.position.y} | end.y {end.y} || Chunks: {chunks}");
+        Debug.Break();
         // 1. Slide to the left
-        float distance = 25f;
+        float distance = 7f;
         float elapsedTime = 0f;
         float duration = 0.35f;
 
-        while (elapsedTime < duration)
+        if (item != null && item.Id >= 0)
         {
-            float adjustment = Mathf.Lerp(originPosition.x, originPosition.x - distance, elapsedTime / duration);
+            Debug.Log($"Moving left by {distance}");
+            while (elapsedTime < duration)
+            {
+                float adjustment = Mathf.Lerp(originPosition.x, originPosition.x - distance, elapsedTime / duration);
 
-            this.transform.position = new Vector3(adjustment, this.transform.position.y, this.transform.position.z);
+                this.transform.position = new Vector3(adjustment, this.transform.position.y, this.transform.position.z);
 
-            elapsedTime += Time.deltaTime;
-            yield return null;
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
         }
 
         // 2. Move up/down to new position
@@ -1565,45 +1574,53 @@ public class InvDisplayItem : MonoBehaviour
             this.transform.position = new Vector3(this.transform.position.x, originPosition.y + (chunk_size * i * flip), this.transform.position.z);
             yield return new WaitForSeconds(moveTime / chunks); // don't want to take all day to do this so cut the speed by the amount of chunks we move
         }
+        Debug.Log($"Moving from {this.transform.position} to end -> {end}");
         this.transform.position = end; // Snap to end
 
         // 3. Slide to the right
         elapsedTime = 0f;
         duration = 0.35f;
-
-        while (elapsedTime < duration)
+        if (item != null && item.Id >= 0)
         {
-            float adjustment = Mathf.Lerp(originPosition.x, originPosition.x + distance, elapsedTime / duration);
+            while (elapsedTime < duration)
+            {
+                float adjustment = Mathf.Lerp(originPosition.x, originPosition.x + distance, elapsedTime / duration);
 
-            this.transform.position = new Vector3(adjustment, this.transform.position.y, this.transform.position.z);
+                this.transform.position = new Vector3(adjustment, this.transform.position.y, this.transform.position.z);
 
-            elapsedTime += Time.deltaTime;
-            yield return null;
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
         }
 
         // 4. Stop the random letter shuffle
-        StopCoroutine(sort_letter);
+        if(sort_letter != null)
+            StopCoroutine(sort_letter);
+
 
         // 5. Briefly flash the text
-        Color startColor = Color.white;
-        Color end_text = itemNameText.color;
-        Color end_health = healthDisplay.color;
-        Color end_rightside = healthModeTextRep.color;
-
-        elapsedTime = 0f;
-        duration = 0.45f;
-        while (elapsedTime < duration) // White -> OG Colors
+        if (item != null && item.Id >= 0)
         {
-            itemNameText.color = Color.Lerp(startColor, end_text, elapsedTime / duration);
-            assignedOrderText.color = Color.Lerp(startColor, end_text, elapsedTime / duration);
+            Color startColor = Color.white;
+            Color end_text = itemNameText.color;
+            Color end_health = healthDisplay.color;
+            Color end_rightside = healthModeTextRep.color;
 
-            healthModeTextRep.color = Color.Lerp(startColor, end_rightside, elapsedTime / duration);
-            healthModeNumber.color = Color.Lerp(startColor, end_rightside, elapsedTime / duration);
+            elapsedTime = 0f;
+            duration = 0.45f;
+            while (elapsedTime < duration) // White -> OG Colors
+            {
+                itemNameText.color = Color.Lerp(startColor, end_text, elapsedTime / duration);
+                assignedOrderText.color = Color.Lerp(startColor, end_text, elapsedTime / duration);
 
-            healthDisplay.color = Color.Lerp(startColor, end_health, elapsedTime / duration);
+                healthModeTextRep.color = Color.Lerp(startColor, end_rightside, elapsedTime / duration);
+                healthModeNumber.color = Color.Lerp(startColor, end_rightside, elapsedTime / duration);
 
-            elapsedTime += Time.deltaTime;
-            yield return null;
+                healthDisplay.color = Color.Lerp(startColor, end_health, elapsedTime / duration);
+
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
         }
 
         InventoryControl.inst.awaitingSort = false; // Maybe move this somewhere else?

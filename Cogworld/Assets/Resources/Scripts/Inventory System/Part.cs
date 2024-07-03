@@ -345,25 +345,25 @@ public class Part : MonoBehaviour
             switch (_item.itemData.slot)
             {
                 case ItemSlot.Power:
-                    if (PlayerData.inst.GetComponent<PartInventory>()._invPower.EmptySlotCount >= size)
+                    if (PlayerData.inst.GetComponent<PartInventory>().inv_power.EmptySlotCount >= size)
                     {
                         slotAvailable = true;
                     }
                     break;
                 case ItemSlot.Propulsion:
-                    if (PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.EmptySlotCount >= size)
+                    if (PlayerData.inst.GetComponent<PartInventory>().inv_propulsion.EmptySlotCount >= size)
                     {
                         slotAvailable = true;
                     }
                     break;
                 case ItemSlot.Utilities:
-                    if (PlayerData.inst.GetComponent<PartInventory>()._invUtility.EmptySlotCount >= size)
+                    if (PlayerData.inst.GetComponent<PartInventory>().inv_utility.EmptySlotCount >= size)
                     {
                         slotAvailable = true;
                     }
                     break;
                 case ItemSlot.Weapons:
-                    if (PlayerData.inst.GetComponent<PartInventory>()._invWeapon.EmptySlotCount >= size)
+                    if (PlayerData.inst.GetComponent<PartInventory>().inv_weapon.EmptySlotCount >= size)
                     {
                         slotAvailable = true;
                     }
@@ -423,20 +423,20 @@ public class Part : MonoBehaviour
                 switch (_item.itemData.slot)
                 {
                     case ItemSlot.Power:
-                        InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>()._invPower);
+                        InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>().inv_power);
 
                         break;
                     case ItemSlot.Propulsion:
-                        InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>()._invPropulsion);
+                        InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>().inv_propulsion);
                         PlayerData.inst.maxWeight += _item.itemData.propulsion[0].support;
 
                         break;
                     case ItemSlot.Utilities:
-                        InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>()._invUtility);
+                        InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>().inv_utility);
 
                         break;
                     case ItemSlot.Weapons:
-                        InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>()._invWeapon);
+                        InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>().inv_weapon);
 
                         break;
                     case ItemSlot.Other: // This one goes into inventory instead

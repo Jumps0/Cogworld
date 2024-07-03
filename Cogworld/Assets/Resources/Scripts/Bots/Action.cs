@@ -1370,7 +1370,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in source.GetComponent<PartInventory>()._invUtility.Container.Items)
+            foreach (InventorySlot item in source.GetComponent<PartInventory>().inv_utility.Container.Items)
             {
                 if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && stacks)
                 {
@@ -2502,7 +2502,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invWeapon.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_weapon.Container.Items)
             {
                 if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
@@ -2542,7 +2542,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invWeapon.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_weapon.Container.Items)
             {
                 if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
@@ -2605,7 +2605,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invWeapon.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_weapon.Container.Items)
             {
                 if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
@@ -2659,7 +2659,7 @@ public static class Action
             }
             else // Player
             {
-                foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invWeapon.Container.Items)
+                foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_weapon.Container.Items)
                 {
                     if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                     {
@@ -2702,7 +2702,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invWeapon.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_weapon.Container.Items)
             {
                 if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
@@ -2772,7 +2772,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_propulsion.Container.Items.ToList())
             {
                 if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
@@ -2807,7 +2807,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_propulsion.Container.Items.ToList())
             {
                 if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
@@ -2842,7 +2842,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_propulsion.Container.Items.ToList())
             {
                 if(item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
@@ -2877,7 +2877,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_propulsion.Container.Items.ToList())
             {
                 if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
@@ -2912,7 +2912,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_propulsion.Container.Items.ToList())
             {
                 if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
@@ -2975,7 +2975,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_utility.Container.Items)
             {
                 if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
@@ -3072,7 +3072,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_utility.Container.Items)
             {
                 if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
@@ -3164,7 +3164,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_utility.Container.Items)
             {
                 if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
@@ -3220,7 +3220,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_utility.Container.Items)
             {
                 if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
@@ -3263,7 +3263,7 @@ public static class Action
 
         List<ItemObject> hackware = new List<ItemObject>();
 
-        foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>()._invUtility.Container.Items)
+        foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>().inv_utility.Container.Items)
         {
             if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
             {
@@ -3309,28 +3309,28 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPower.Container.Items.ToList())
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_power.Container.Items.ToList())
             {
                 if (item.item.Id >= 0)
                 {
                     totalMass += item.item.itemData.mass;
                 }
             }
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_propulsion.Container.Items.ToList())
             {
                 if (item.item.Id >= 0)
                 {
                     totalMass += item.item.itemData.mass;
                 }
             }
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items.ToList())
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_utility.Container.Items.ToList())
             {
                 if (item.item.Id >= 0)
                 {
                     totalMass += item.item.itemData.mass;
                 }
             }
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invWeapon.Container.Items.ToList())
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_weapon.Container.Items.ToList())
             {
                 if (item.item.Id >= 0)
                 {
@@ -3390,7 +3390,7 @@ public static class Action
                 heatCost += 0;
             }
 
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_propulsion.Container.Items)
             {
                 if (item.item.Id >= 0 && item.item.state)
                 {
@@ -3455,7 +3455,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_propulsion.Container.Items)
             {
                 if (item.item.Id >= 0 && item.item.state)
                 {
@@ -3589,7 +3589,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in target.GetComponent<PartInventory>()._invPower.Container.Items)
+            foreach (InventorySlot item in target.GetComponent<PartInventory>().inv_power.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
@@ -3597,7 +3597,7 @@ public static class Action
                 }
             }
 
-            foreach (InventorySlot item in target.GetComponent<PartInventory>()._invPropulsion.Container.Items)
+            foreach (InventorySlot item in target.GetComponent<PartInventory>().inv_propulsion.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
@@ -3605,7 +3605,7 @@ public static class Action
                 }
             }
 
-            foreach (InventorySlot item in target.GetComponent<PartInventory>()._invUtility.Container.Items)
+            foreach (InventorySlot item in target.GetComponent<PartInventory>().inv_utility.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
@@ -3613,7 +3613,7 @@ public static class Action
                 }
             }
 
-            foreach (InventorySlot item in target.GetComponent<PartInventory>()._invWeapon.Container.Items)
+            foreach (InventorySlot item in target.GetComponent<PartInventory>().inv_weapon.Container.Items)
             {
                 if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
@@ -5006,49 +5006,49 @@ public static class Action
 
     public static void FindRemoveItemFromPlayer(Item item)
     {
-        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invPower.Container.Items.ToList())
+        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>().inv_power.Container.Items.ToList())
         {
             if (I.item.Id >= 0)
             {
                 if (I.item == item)
                 {
-                    InventoryControl.inst.RemoveItemFromAnInventory(I.item, PlayerData.inst.GetComponent<PartInventory>()._invPower);
+                    InventoryControl.inst.RemoveItemFromAnInventory(I.item, PlayerData.inst.GetComponent<PartInventory>().inv_power);
                     return;
                 }
             }
         }
 
-        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
+        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>().inv_propulsion.Container.Items.ToList())
         {
             if (I.item.Id >= 0)
             {
                 if (I.item == item)
                 {
-                    InventoryControl.inst.RemoveItemFromAnInventory(I.item, PlayerData.inst.GetComponent<PartInventory>()._invPropulsion);
+                    InventoryControl.inst.RemoveItemFromAnInventory(I.item, PlayerData.inst.GetComponent<PartInventory>().inv_propulsion);
                     return;
                 }
             }
         }
 
-        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invUtility.Container.Items.ToList())
+        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>().inv_utility.Container.Items.ToList())
         {
             if (I.item.Id >= 0)
             {
                 if (I.item == item)
                 {
-                    InventoryControl.inst.RemoveItemFromAnInventory(I.item, PlayerData.inst.GetComponent<PartInventory>()._invUtility);
+                    InventoryControl.inst.RemoveItemFromAnInventory(I.item, PlayerData.inst.GetComponent<PartInventory>().inv_utility);
                     return;
                 }
             }
         }
 
-        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invWeapon.Container.Items.ToList())
+        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>().inv_weapon.Container.Items.ToList())
         {
             if (I.item.Id >= 0)
             {
                 if (I.item == item)
                 {
-                    InventoryControl.inst.RemoveItemFromAnInventory(I.item, PlayerData.inst.GetComponent<PartInventory>()._invWeapon);
+                    InventoryControl.inst.RemoveItemFromAnInventory(I.item, PlayerData.inst.GetComponent<PartInventory>().inv_weapon);
                     return;
                 }
             }
@@ -5155,7 +5155,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in attacker.GetComponent<PartInventory>()._invUtility.Container.Items)
+            foreach (InventorySlot item in attacker.GetComponent<PartInventory>().inv_utility.Container.Items)
             {
                 if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
@@ -5424,7 +5424,7 @@ public static class Action
 
             // -- Flight/Hover bonus (1) -- //
 
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_propulsion.Container.Items)
             {
                 if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
@@ -5479,7 +5479,7 @@ public static class Action
             // These effects can be found in 1. Legs 2. Variants of the reaction control system device
             bool rcsStack = true;
             BotMoveType myMoveType = DetermineBotMoveType(actor);
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invPropulsion.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_propulsion.Container.Items)
             {
                 if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
@@ -5508,7 +5508,7 @@ public static class Action
                 }
             }
 
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_utility.Container.Items)
             {
                 if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
@@ -5537,7 +5537,7 @@ public static class Action
 
             // -- Phasing / Cloaking modifiers (5) -- //
             bool phasingStack = true;
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_utility.Container.Items)
             {
                 if(item.item.Id > 0)
                 {
@@ -5627,7 +5627,7 @@ public static class Action
         }
         else // The player
         {
-            foreach (InventorySlot item in actor.GetComponent<PartInventory>()._invUtility.Container.Items)
+            foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_utility.Container.Items)
             {
                 if (item.item.Id > 0 && item.item.state)
                 {
@@ -6089,7 +6089,7 @@ public static class Action
         }
         else // Player
         {
-            foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>()._invPower.Container.Items)
+            foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>().inv_power.Container.Items)
             {
                 if (item.item.Id >= 0 && !item.item.isDuplicate)
                 {
@@ -6097,7 +6097,7 @@ public static class Action
                 }
             }
 
-            foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.Container.Items)
+            foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>().inv_propulsion.Container.Items)
             {
                 if (item.item.Id >= 0 && !item.item.isDuplicate)
                 {
@@ -6105,7 +6105,7 @@ public static class Action
                 }
             }
 
-            foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>()._invUtility.Container.Items)
+            foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>().inv_utility.Container.Items)
             {
                 if (item.item.Id >= 0 && !item.item.isDuplicate)
                 {
@@ -6113,7 +6113,7 @@ public static class Action
                 }
             }
 
-            foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>()._invWeapon.Container.Items)
+            foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>().inv_weapon.Container.Items)
             {
                 if (item.item.Id >= 0 && !item.item.isDuplicate)
                 {

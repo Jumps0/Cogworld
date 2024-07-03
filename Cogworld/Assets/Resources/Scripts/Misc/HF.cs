@@ -3574,46 +3574,46 @@ public static class HF
 
     public static InventoryObject FindPlayerInventoryFromItem(Item item)
     {
-        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invPower.Container.Items.ToList())
+        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>().inv_power.Container.Items.ToList())
         {
             if (I.item.itemData.data.Id >= 0 && !I.item.isDuplicate)
             {
                 if (I.item == item)
                 {
-                    return PlayerData.inst.GetComponent<PartInventory>()._invPower;
+                    return PlayerData.inst.GetComponent<PartInventory>().inv_power;
                 }
             }
         }
 
-        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.Container.Items.ToList())
+        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>().inv_propulsion.Container.Items.ToList())
         {
             if (I.item.itemData.data.Id >= 0 && !I.item.isDuplicate)
             {
                 if (I.item == item)
                 {
-                    return PlayerData.inst.GetComponent<PartInventory>()._invPropulsion;
+                    return PlayerData.inst.GetComponent<PartInventory>().inv_propulsion;
                 }
             }
         }
 
-        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invUtility.Container.Items.ToList())
+        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>().inv_utility.Container.Items.ToList())
         {
             if (I.item.itemData.data.Id >= 0 && !I.item.isDuplicate)
             {
                 if (I.item == item)
                 {
-                    return PlayerData.inst.GetComponent<PartInventory>()._invUtility;
+                    return PlayerData.inst.GetComponent<PartInventory>().inv_utility;
                 }
             }
         }
 
-        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>()._invWeapon.Container.Items.ToList())
+        foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>().inv_weapon.Container.Items.ToList())
         {
             if (I.item.itemData.data.Id >= 0 && !I.item.isDuplicate)
             {
                 if (I.item == item)
                 {
-                    return PlayerData.inst.GetComponent<PartInventory>()._invWeapon;
+                    return PlayerData.inst.GetComponent<PartInventory>().inv_weapon;
                 }
             }
         }
@@ -3818,7 +3818,7 @@ public static class HF
         float detChance = 0.01f;
 
         // Check for structural scanners
-        foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>()._invWeapon.Container.Items)
+        foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>().inv_weapon.Container.Items)
         {
             if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
             {
@@ -4401,23 +4401,13 @@ public static class HF
             return false;
         }
 
-        bool foundTrue = false;
-
-        for (int i = 0; i < list.Count; i++)
+        for (int i = 1; i < list.Count - 1; i++)
         {
-            if (list[i])
+            if (list[i - 1] == true && list[i] == false && list[i + 1] == true)
             {
-                foundTrue = true; // Set flag when encountering a true value
-            }
-            else if (foundTrue)
-            {
-                // If a true value has been encountered before and we find a false value now,
-                // it indicates a gap
                 return true;
             }
         }
-
-        // No gap found
         return false;
     }
 

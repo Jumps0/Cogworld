@@ -290,16 +290,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attachedUser: {fileID: 1489840735499938570}
   belongsToAI: 0
-  _invPower: {fileID: 11400000, guid: 5b66d627d9c4d4f4ca317899c1f935a9, type: 2}
-  maxSize_power: 0
-  _invPropulsion: {fileID: 11400000, guid: af034d3f5bd86e844ae338c2f508665c, type: 2}
-  maxSize_propulsion: 0
-  _invUtility: {fileID: 11400000, guid: c0380eaf0eee54c48b43ace639398c8f, type: 2}
-  maxSize_utility: 0
-  _invWeapon: {fileID: 11400000, guid: 6aa1badc3199c65498015bc6890f9a42, type: 2}
-  maxSize_weapon: 0
+  inv_power: {fileID: 11400000, guid: 5b66d627d9c4d4f4ca317899c1f935a9, type: 2}
+  inv_propulsion: {fileID: 11400000, guid: af034d3f5bd86e844ae338c2f508665c, type: 2}
+  inv_utility: {fileID: 11400000, guid: c0380eaf0eee54c48b43ace639398c8f, type: 2}
+  inv_weapon: {fileID: 11400000, guid: 6aa1badc3199c65498015bc6890f9a42, type: 2}
   _inventory: {fileID: 11400000, guid: da50f0f374a8a1c4b8f1b441e112aa18, type: 2}
-  maxSize_inv: 0
 --- !u!82 &78723924119389563
 AudioSource:
   m_ObjectHideFlags: 0
@@ -409,6 +404,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blocksMovement: 1
+  uniqueName: 
   currentHealth: 0
   maxHealth: 0
   currentHeat: 0

@@ -5392,7 +5392,7 @@ public class UIManager : MonoBehaviour
             volleyTextA.text = "R=" + range + " [";
             List<KeyValuePair<string, Item>> weaponChars = new List<KeyValuePair<string, Item>>(); // List of individual characters that represent weapons.
             // Gather up all active weapons (normally there should at least be one)
-            foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>()._invWeapon.Container.Items)
+            foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>().inv_weapon.Container.Items)
             {
                 if (item.item.Id >= 0)
                 {

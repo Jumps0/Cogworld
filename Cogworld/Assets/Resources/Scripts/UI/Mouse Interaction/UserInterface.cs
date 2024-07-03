@@ -302,16 +302,16 @@ public abstract class UserInterface : MonoBehaviour
             switch (originItem.itemData.slot)
             {
                 case ItemSlot.Power:
-                    free_origin = PlayerData.inst.GetComponent<PartInventory>()._invPower.EmptySlotCount;
+                    free_origin = PlayerData.inst.GetComponent<PartInventory>().inv_power.EmptySlotCount;
                     break;
                 case ItemSlot.Propulsion:
-                    free_origin = PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.EmptySlotCount;
+                    free_origin = PlayerData.inst.GetComponent<PartInventory>().inv_propulsion.EmptySlotCount;
                     break;
                 case ItemSlot.Utilities:
-                    free_origin = PlayerData.inst.GetComponent<PartInventory>()._invUtility.EmptySlotCount;
+                    free_origin = PlayerData.inst.GetComponent<PartInventory>().inv_utility.EmptySlotCount;
                     break;
                 case ItemSlot.Weapons:
-                    free_origin = PlayerData.inst.GetComponent<PartInventory>()._invWeapon.EmptySlotCount;
+                    free_origin = PlayerData.inst.GetComponent<PartInventory>().inv_weapon.EmptySlotCount;
                     break;
                 default: // Inventory
                     free_origin = PlayerData.inst.GetComponent<PartInventory>()._inventory.EmptySlotCount;
@@ -321,16 +321,16 @@ public abstract class UserInterface : MonoBehaviour
             switch (destinationItem.itemData.slot)
             {
                 case ItemSlot.Power:
-                    free_destination = PlayerData.inst.GetComponent<PartInventory>()._invPower.EmptySlotCount;
+                    free_destination = PlayerData.inst.GetComponent<PartInventory>().inv_power.EmptySlotCount;
                     break;
                 case ItemSlot.Propulsion:
-                    free_destination = PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.EmptySlotCount;
+                    free_destination = PlayerData.inst.GetComponent<PartInventory>().inv_propulsion.EmptySlotCount;
                     break;
                 case ItemSlot.Utilities:
-                    free_destination = PlayerData.inst.GetComponent<PartInventory>()._invUtility.EmptySlotCount;
+                    free_destination = PlayerData.inst.GetComponent<PartInventory>().inv_utility.EmptySlotCount;
                     break;
                 case ItemSlot.Weapons:
-                    free_destination = PlayerData.inst.GetComponent<PartInventory>()._invWeapon.EmptySlotCount;
+                    free_destination = PlayerData.inst.GetComponent<PartInventory>().inv_weapon.EmptySlotCount;
                     break;
                 default: // Inventory
                     free_destination = PlayerData.inst.GetComponent<PartInventory>()._inventory.EmptySlotCount;
@@ -421,16 +421,16 @@ public abstract class UserInterface : MonoBehaviour
                     switch (originItem.itemData.slot)
                     {
                         case ItemSlot.Power:
-                            inv = PlayerData.inst.GetComponent<PartInventory>()._invPower;
+                            inv = PlayerData.inst.GetComponent<PartInventory>().inv_power;
                             break;
                         case ItemSlot.Propulsion:
-                            inv = PlayerData.inst.GetComponent<PartInventory>()._invPropulsion;
+                            inv = PlayerData.inst.GetComponent<PartInventory>().inv_propulsion;
                             break;
                         case ItemSlot.Utilities:
-                            inv = PlayerData.inst.GetComponent<PartInventory>()._invUtility;
+                            inv = PlayerData.inst.GetComponent<PartInventory>().inv_utility;
                             break;
                         case ItemSlot.Weapons:
-                            inv = PlayerData.inst.GetComponent<PartInventory>()._invWeapon;
+                            inv = PlayerData.inst.GetComponent<PartInventory>().inv_weapon;
                             break;
                         default:
                             inv = PlayerData.inst.GetComponent<PartInventory>()._inventory;
@@ -448,16 +448,16 @@ public abstract class UserInterface : MonoBehaviour
                     switch (originItem.itemData.slot)
                     {
                         case ItemSlot.Power:
-                            inv = PlayerData.inst.GetComponent<PartInventory>()._invPower;
+                            inv = PlayerData.inst.GetComponent<PartInventory>().inv_power;
                             break;
                         case ItemSlot.Propulsion:
-                            inv = PlayerData.inst.GetComponent<PartInventory>()._invPropulsion;
+                            inv = PlayerData.inst.GetComponent<PartInventory>().inv_propulsion;
                             break;
                         case ItemSlot.Utilities:
-                            inv = PlayerData.inst.GetComponent<PartInventory>()._invUtility;
+                            inv = PlayerData.inst.GetComponent<PartInventory>().inv_utility;
                             break;
                         case ItemSlot.Weapons:
-                            inv = PlayerData.inst.GetComponent<PartInventory>()._invWeapon;
+                            inv = PlayerData.inst.GetComponent<PartInventory>().inv_weapon;
                             break;
                         default:
                             inv = PlayerData.inst.GetComponent<PartInventory>()._inventory;
@@ -688,16 +688,16 @@ public abstract class UserInterface : MonoBehaviour
             switch (originSlot.item.itemData.slot) // Get empty slots of the destination area
             {
                 case ItemSlot.Power:
-                    free_destination = PlayerData.inst.GetComponent<PartInventory>()._invPower.EmptySlotCount;
+                    free_destination = PlayerData.inst.GetComponent<PartInventory>().inv_power.EmptySlotCount;
                     break;
                 case ItemSlot.Propulsion:
-                    free_destination = PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.EmptySlotCount;
+                    free_destination = PlayerData.inst.GetComponent<PartInventory>().inv_propulsion.EmptySlotCount;
                     break;
                 case ItemSlot.Utilities:
-                    free_destination = PlayerData.inst.GetComponent<PartInventory>()._invUtility.EmptySlotCount;
+                    free_destination = PlayerData.inst.GetComponent<PartInventory>().inv_utility.EmptySlotCount;
                     break;
                 case ItemSlot.Weapons:
-                    free_destination = PlayerData.inst.GetComponent<PartInventory>()._invWeapon.EmptySlotCount;
+                    free_destination = PlayerData.inst.GetComponent<PartInventory>().inv_weapon.EmptySlotCount;
                     break;
                 default: // Inventory
                     free_destination = PlayerData.inst.GetComponent<PartInventory>()._inventory.EmptySlotCount;
@@ -735,16 +735,16 @@ public abstract class UserInterface : MonoBehaviour
                     switch (originItem.itemData.slot)
                     {
                         case ItemSlot.Power:
-                            inv = PlayerData.inst.GetComponent<PartInventory>()._invPower;
+                            inv = PlayerData.inst.GetComponent<PartInventory>().inv_power;
                             break;
                         case ItemSlot.Propulsion:
-                            inv = PlayerData.inst.GetComponent<PartInventory>()._invPropulsion;
+                            inv = PlayerData.inst.GetComponent<PartInventory>().inv_propulsion;
                             break;
                         case ItemSlot.Utilities:
-                            inv = PlayerData.inst.GetComponent<PartInventory>()._invUtility;
+                            inv = PlayerData.inst.GetComponent<PartInventory>().inv_utility;
                             break;
                         case ItemSlot.Weapons:
-                            inv = PlayerData.inst.GetComponent<PartInventory>()._invWeapon;
+                            inv = PlayerData.inst.GetComponent<PartInventory>().inv_weapon;
                             break;
                         default:
                             inv = PlayerData.inst.GetComponent<PartInventory>()._inventory;
@@ -966,7 +966,7 @@ public abstract class UserInterface : MonoBehaviour
 
                 if (item.itemData.slot == ItemSlot.Power)
                 {
-                    PlayerData.inst.GetComponent<PartInventory>()._invPower.AddItem(item, 1);
+                    PlayerData.inst.GetComponent<PartInventory>().inv_power.AddItem(item, 1);
                     if (!once)
                     {
                         UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
@@ -975,7 +975,7 @@ public abstract class UserInterface : MonoBehaviour
                 }
                 else if (item.itemData.slot == ItemSlot.Propulsion)
                 {
-                    PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.AddItem(item, 1);
+                    PlayerData.inst.GetComponent<PartInventory>().inv_propulsion.AddItem(item, 1);
                     if (!once)
                     {
                         UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
@@ -984,7 +984,7 @@ public abstract class UserInterface : MonoBehaviour
                 }
                 else if (item.itemData.slot == ItemSlot.Utilities)
                 {
-                    PlayerData.inst.GetComponent<PartInventory>()._invUtility.AddItem(item, 1);
+                    PlayerData.inst.GetComponent<PartInventory>().inv_utility.AddItem(item, 1);
                     if (!once)
                     {
                         UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
@@ -993,7 +993,7 @@ public abstract class UserInterface : MonoBehaviour
                 }
                 else if (item.itemData.slot == ItemSlot.Weapons)
                 {
-                    PlayerData.inst.GetComponent<PartInventory>()._invWeapon.AddItem(item, 1);
+                    PlayerData.inst.GetComponent<PartInventory>().inv_weapon.AddItem(item, 1);
                     if (!once)
                     {
                         UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
@@ -1041,7 +1041,7 @@ public abstract class UserInterface : MonoBehaviour
     public bool AutoSortCheck(InventoryObject inventory)
     {
         // First of all: 1.) Are there even any items in this inventory? 2.) Is this inventory full?
-        if(inventory.ItemCount <= 0 || inventory.EmptySlotCount <= 0)
+        if(inventory.ItemCount <= 0 || inventory.EmptySlotCount <= 0) // NOTE: #2 here should be changed later to reflect the users chosen sort order
         {
             return false;
         }
@@ -1051,11 +1051,13 @@ public abstract class UserInterface : MonoBehaviour
         // 1. There is a free space at the top. (We want all items to be pushed to the top)
         if (inventory.Container.Items[0].item == null || inventory.Container.Items[0].item.Id == -1)
         {
+            Debug.Log("Sort needed: Case 1");
             return true;
         }
         // 2. There is a gap inbetween two items.
         if(HF.FindGapInList(HF.InventoryToSimple(inventory)))
         {
+            Debug.Log("Sort needed: Case 2");
             return true;
         }
 
@@ -1106,8 +1108,8 @@ public abstract class UserInterface : MonoBehaviour
             List<GameObject> toBeSorted = new List<GameObject>();
             foreach (KeyValuePair<GameObject, InventorySlot> kvp in UIslots)
             {
-                if (kvp.Key.GetComponent<InvDisplayItem>().item != null && kvp.Key.GetComponent<InvDisplayItem>().item.Id >= 0) // Don't sort the empty slots
-                {
+                //if (kvp.Key.GetComponent<InvDisplayItem>().item != null && kvp.Key.GetComponent<InvDisplayItem>().item.Id >= 0) // Don't sort the empty slots
+                //{
                     oldPositions.Add(kvp.Key.transform.position);
 
                     foreach (InventorySlot slot in inventory.Container.Items) // Find where this slot *SHOULD BE* in the new arrangement
@@ -1119,22 +1121,20 @@ public abstract class UserInterface : MonoBehaviour
                             break;
                         }
                     }
-                }
+                //}
             }
 
             // We will use this information to create temporary duplicates that we will move around to the place they need to be.
             // OR we could just use the originals (since we delete them anyways on update) and then stall the interface refresh
             int distance = 21; // The UI elements are around this distance apart from each other. 
-            Debug.Log($"SortInfo: UIslots:{UIslots.Count} | op:{oldPositions.Count} | np:{newPositions.Count}");
+
             // Now go through and perform the movement, we should only be moving slots that NEED to be moved.
             for (int i = 0; i < toBeSorted.Count; i++)
             {
-                Debug.Log($"Old: {oldPositions[i]} | New: {newPositions[i]}");
                 if (oldPositions[i] != newPositions[i]) // Only move ones that need to be moved.
                 {
                     GameObject obj = toBeSorted[i]; // Get the object that needs to be moved
-
-                    Debug.Log($"Sorting: {obj.name}");
+                    Debug.Log($"Moving {obj.name} from {oldPositions[i]} to {newPositions[i]} (a distance of {oldPositions[i].y - newPositions[i].y})");
                     obj.GetComponent<InvDisplayItem>().Sort_StaggeredMove(newPositions[i], distance);
                 }
             }

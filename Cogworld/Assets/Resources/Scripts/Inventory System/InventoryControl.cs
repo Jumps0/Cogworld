@@ -150,12 +150,12 @@ public class InventoryControl : MonoBehaviour
         {
             if (I.GetComponentInChildren<DynamicInterface>())
             {
-                I._inventory = PlayerData.inst.GetComponent<PartInventory>()._invPower;
+                I._inventory = PlayerData.inst.GetComponent<PartInventory>().inv_power;
 
-                I.GetComponentInChildren<DynamicInterface>().inventories.Add(PlayerData.inst.GetComponent<PartInventory>()._invPower);
-                I.GetComponentInChildren<DynamicInterface>().inventories.Add(PlayerData.inst.GetComponent<PartInventory>()._invPropulsion);
-                I.GetComponentInChildren<DynamicInterface>().inventories.Add(PlayerData.inst.GetComponent<PartInventory>()._invUtility);
-                I.GetComponentInChildren<DynamicInterface>().inventories.Add(PlayerData.inst.GetComponent<PartInventory>()._invWeapon);
+                I.GetComponentInChildren<DynamicInterface>().inventories.Add(PlayerData.inst.GetComponent<PartInventory>().inv_power);
+                I.GetComponentInChildren<DynamicInterface>().inventories.Add(PlayerData.inst.GetComponent<PartInventory>().inv_propulsion);
+                I.GetComponentInChildren<DynamicInterface>().inventories.Add(PlayerData.inst.GetComponent<PartInventory>().inv_utility);
+                I.GetComponentInChildren<DynamicInterface>().inventories.Add(PlayerData.inst.GetComponent<PartInventory>().inv_weapon);
 
                 I.CreateSlots();
             }
@@ -277,35 +277,35 @@ public class InventoryControl : MonoBehaviour
         bool updateNeeded = false;
 
         // We should only bother if the inventory has atleast 3 slots.
-        if (PlayerData.inst.GetComponent<PartInventory>()._invPower.Container.Items.Length >= 3)
+        if (PlayerData.inst.GetComponent<PartInventory>().inv_power.Container.Items.Length >= 3)
         {
-            if (UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortCheck(PlayerData.inst.GetComponent<PartInventory>()._invPower)) // Check if we need to sort this
+            if (UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortCheck(PlayerData.inst.GetComponent<PartInventory>().inv_power)) // Check if we need to sort this
             {
-                UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortSection(PlayerData.inst.GetComponent<PartInventory>()._invPower); // Perform the sort
+                UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortSection(PlayerData.inst.GetComponent<PartInventory>().inv_power); // Perform the sort
                 updateNeeded = true;
             }
         }
-        if (PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.Container.Items.Length >= 3)
+        if (PlayerData.inst.GetComponent<PartInventory>().inv_propulsion.Container.Items.Length >= 3)
         {
-            if (UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortCheck(PlayerData.inst.GetComponent<PartInventory>()._invPropulsion)) // Check if we need to sort this
+            if (UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortCheck(PlayerData.inst.GetComponent<PartInventory>().inv_propulsion)) // Check if we need to sort this
             {
-                UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortSection(PlayerData.inst.GetComponent<PartInventory>()._invPropulsion); // Perform the sort
+                UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortSection(PlayerData.inst.GetComponent<PartInventory>().inv_propulsion); // Perform the sort
                 updateNeeded = true;
             }
         }
-        if (PlayerData.inst.GetComponent<PartInventory>()._invUtility.Container.Items.Length >= 3)
+        if (PlayerData.inst.GetComponent<PartInventory>().inv_utility.Container.Items.Length >= 3)
         {
-            if (UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortCheck(PlayerData.inst.GetComponent<PartInventory>()._invUtility)) // Check if we need to sort this
+            if (UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortCheck(PlayerData.inst.GetComponent<PartInventory>().inv_utility)) // Check if we need to sort this
             {
-                UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortSection(PlayerData.inst.GetComponent<PartInventory>()._invUtility); // Perform the sort
+                UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortSection(PlayerData.inst.GetComponent<PartInventory>().inv_utility); // Perform the sort
                 updateNeeded = true;
             }
         }
-        if (PlayerData.inst.GetComponent<PartInventory>()._invWeapon.Container.Items.Length >= 3)
+        if (PlayerData.inst.GetComponent<PartInventory>().inv_weapon.Container.Items.Length >= 3)
         {
-            if (UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortCheck(PlayerData.inst.GetComponent<PartInventory>()._invWeapon)) // Check if we need to sort this
+            if (UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortCheck(PlayerData.inst.GetComponent<PartInventory>().inv_weapon)) // Check if we need to sort this
             {
-                UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortSection(PlayerData.inst.GetComponent<PartInventory>()._invWeapon); // Perform the sort
+                UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortSection(PlayerData.inst.GetComponent<PartInventory>().inv_weapon); // Perform the sort
                 updateNeeded = true;
             }
         }
@@ -441,22 +441,22 @@ public class InventoryControl : MonoBehaviour
     {
         Debug.Log("The Player's inventory currently contains: ");
         Debug.Log(" == Power ==");
-        foreach (var item in PlayerData.inst.GetComponent<PartInventory>()._invPower.Container.Items)
+        foreach (var item in PlayerData.inst.GetComponent<PartInventory>().inv_power.Container.Items)
         {
             Debug.Log(item.item);
         }
         Debug.Log(" == Propulsion ==");
-        foreach (var item in PlayerData.inst.GetComponent<PartInventory>()._invPropulsion.Container.Items)
+        foreach (var item in PlayerData.inst.GetComponent<PartInventory>().inv_propulsion.Container.Items)
         {
             Debug.Log(item.item);
         }
         Debug.Log(" == Utility ==");
-        foreach (var item in PlayerData.inst.GetComponent<PartInventory>()._invUtility.Container.Items)
+        foreach (var item in PlayerData.inst.GetComponent<PartInventory>().inv_utility.Container.Items)
         {
             Debug.Log(item.item);
         }
         Debug.Log(" == Weapons ==");
-        foreach (var item in PlayerData.inst.GetComponent<PartInventory>()._invWeapon.Container.Items)
+        foreach (var item in PlayerData.inst.GetComponent<PartInventory>().inv_weapon.Container.Items)
         {
             Debug.Log(item.item);
         }
