@@ -189,20 +189,25 @@ public class InventoryControl : MonoBehaviour
         {
             while (awaitingSort)
             {
+                Debug.Log("Awaiting sort...");
                 yield return null;
             }
+            Debug.Log("Waiting finished, updating interface");
         }
 
         foreach (var I in interfaces)
         {
             if (I.GetComponentInChildren<DynamicInterface>())
             {
+                I.GetComponentInChildren<DynamicInterface>().UpdateSlots();
                 I.slotsOnInterface.UpdateSlotDisplay();
+                I.UpdateObjectNames();
             }
             else if (I.GetComponentInChildren<StaticInterface>())
             {
                 I.GetComponentInChildren<StaticInterface>().UpdateSlots();
                 I.slotsOnInterface.UpdateSlotDisplay();
+                I.UpdateObjectNames();
             }
         }
 

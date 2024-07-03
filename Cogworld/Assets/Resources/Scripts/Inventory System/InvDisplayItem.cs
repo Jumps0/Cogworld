@@ -93,8 +93,8 @@ public class InvDisplayItem : MonoBehaviour
         _assignedChar = "";
         itemNameText.text = "Unused";
         assignedOrderText.text = "#";
-        this.gameObject.name = "IDI: Unused";
         nameUnmodified = "Unused";
+        NameUpdate();
 
         assignedOrderString = "";
         bonusAOS = "";
@@ -120,7 +120,19 @@ public class InvDisplayItem : MonoBehaviour
         specialDescText.gameObject.SetActive(true);
         healthMode.gameObject.SetActive(true);
 
-        this.gameObject.name = $"IDI: {nameUnmodified}";
+        NameUpdate();
+    }
+
+    public void NameUpdate()
+    {
+        if(item != null && item.Id >= 0)
+        {
+            this.gameObject.name = $"IDI: {nameUnmodified}";
+        }
+        else
+        {
+            this.gameObject.name = "IDI: Unused";
+        }
     }
 
     public void ForceIgnoreRaycasts()
@@ -1521,11 +1533,11 @@ public class InvDisplayItem : MonoBehaviour
 
     #region Sorting
 
-    public void Sort_StaggeredMove(Vector3 end, float chunk_size)
+    public void Sort_StaggeredMove(Vector3 end)
     {
         AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[70]); // UI | PART_SORT
 
-        StartCoroutine(StaggeredMove(end, chunk_size));
+        StartCoroutine(StaggeredMove(end));
 
         if (item != null && item.Id >= 0)
         {
@@ -1533,7 +1545,7 @@ public class InvDisplayItem : MonoBehaviour
         }
     }
 
-    private IEnumerator StaggeredMove(Vector3 end, float chunk_size)
+    private IEnumerator StaggeredMove(Vector3 end)
     {
         Vector3 originPosition = this.transform.position;
 
@@ -1545,9 +1557,9 @@ public class InvDisplayItem : MonoBehaviour
 
         // Figure out how many chunks we need to move
         float gap = Mathf.Abs(this.transform.position.y - end.y);
-        int chunks = Mathf.RoundToInt(gap / chunk_size);
+        int chunks = Mathf.RoundToInt(gap / 19.5f);
         Debug.Log($"Gap info - Gap: {gap} | start.y: {this.transform.position.y} | end.y {end.y} || Chunks: {chunks}");
-        Debug.Break();
+
         // 1. Slide to the left
         float distance = 7f;
         float elapsedTime = 0f;
@@ -1568,14 +1580,14 @@ public class InvDisplayItem : MonoBehaviour
         }
 
         // 2. Move up/down to new position
-        float moveTime = 0.75f;
+        float moveTime = 0.5f;
         for (int i = 1; i < chunks + 1; i++) // Move X amount of chunks every X seconds.
         {
-            this.transform.position = new Vector3(this.transform.position.x, originPosition.y + (chunk_size * i * flip), this.transform.position.z);
+            this.transform.position = new Vector3(this.transform.position.x, originPosition.y + (20.5f * i * flip), this.transform.position.z);
             yield return new WaitForSeconds(moveTime / chunks); // don't want to take all day to do this so cut the speed by the amount of chunks we move
         }
         Debug.Log($"Moving from {this.transform.position} to end -> {end}");
-        this.transform.position = end; // Snap to end
+        this.transform.position = end + new Vector3(distance, 0); // Snap to end
 
         // 3. Slide to the right
         elapsedTime = 0f;

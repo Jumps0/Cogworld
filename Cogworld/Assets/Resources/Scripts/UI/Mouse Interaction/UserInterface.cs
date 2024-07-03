@@ -1051,13 +1051,11 @@ public abstract class UserInterface : MonoBehaviour
         // 1. There is a free space at the top. (We want all items to be pushed to the top)
         if (inventory.Container.Items[0].item == null || inventory.Container.Items[0].item.Id == -1)
         {
-            Debug.Log("Sort needed: Case 1");
             return true;
         }
         // 2. There is a gap inbetween two items.
         if(HF.FindGapInList(HF.InventoryToSimple(inventory)))
         {
-            Debug.Log("Sort needed: Case 2");
             return true;
         }
 
@@ -1101,41 +1099,40 @@ public abstract class UserInterface : MonoBehaviour
                     UIslots.Add(pair);
                 }
             }
-            
-            // Save the old positions & Find the new positions
-            List<Vector3> oldPositions = new List<Vector3>();
-            List<Vector3> newPositions = new List<Vector3>();
-            List<GameObject> toBeSorted = new List<GameObject>();
-            foreach (KeyValuePair<GameObject, InventorySlot> kvp in UIslots)
-            {
-                //if (kvp.Key.GetComponent<InvDisplayItem>().item != null && kvp.Key.GetComponent<InvDisplayItem>().item.Id >= 0) // Don't sort the empty slots
-                //{
-                    oldPositions.Add(kvp.Key.transform.position);
 
-                    foreach (InventorySlot slot in inventory.Container.Items) // Find where this slot *SHOULD BE* in the new arrangement
+            // Save the old positions & Find the new positions
+            List<(Vector3, Vector3)> oldNew = new List<(Vector3, Vector3)>();
+            List<GameObject> toBeSorted = new List<GameObject>();
+            foreach (KeyValuePair<GameObject, InventorySlot> kvp in UIslots) // We only sort what needs to be sorted
+            {
+                Vector3 old = kvp.Key.transform.position; // Log the OLD (aka current) position of this object
+
+                // Find where this slot *SHOULD BE* in the new arrangement
+                for (int i = 0; i < inventory.Container.Items.Length; i++) // We do this by going through the inventory we just sorted, which is in the correct order, but not yet represented on the UI.
+                {
+                    InventorySlot slot = inventory.Container.Items[i];
+
+                    if(slot.item == kvp.Key.GetComponent<InvDisplayItem>().item)
                     {
-                        if (slot.item == kvp.Key.GetComponent<InvDisplayItem>().item)
-                        {
-                            newPositions.Add(kvp.Key.transform.position);
-                            toBeSorted.Add(kvp.Key);
-                            break;
-                        }
+                        Vector3 newPos = UIslots[i].Key.transform.position;
+                        oldNew.Add((old, newPos));
+                        toBeSorted.Add(kvp.Key);
+                        break;
                     }
-                //}
+                }
             }
 
             // We will use this information to create temporary duplicates that we will move around to the place they need to be.
             // OR we could just use the originals (since we delete them anyways on update) and then stall the interface refresh
-            int distance = 21; // The UI elements are around this distance apart from each other. 
 
             // Now go through and perform the movement, we should only be moving slots that NEED to be moved.
             for (int i = 0; i < toBeSorted.Count; i++)
             {
-                if (oldPositions[i] != newPositions[i]) // Only move ones that need to be moved.
+                if (oldNew[i].Item1 != oldNew[i].Item2) // Only move ones that need to be moved.
                 {
                     GameObject obj = toBeSorted[i]; // Get the object that needs to be moved
-                    Debug.Log($"Moving {obj.name} from {oldPositions[i]} to {newPositions[i]} (a distance of {oldPositions[i].y - newPositions[i].y})");
-                    obj.GetComponent<InvDisplayItem>().Sort_StaggeredMove(newPositions[i], distance);
+                    Debug.Log($"Moving {obj.name} from {oldNew[i].Item1} to {oldNew[i].Item2} (a distance of {oldNew[i].Item1.y - oldNew[i].Item2.y})");
+                    obj.GetComponent<InvDisplayItem>().Sort_StaggeredMove(oldNew[i].Item2);
                 }
             }
         }
@@ -1144,6 +1141,14 @@ public abstract class UserInterface : MonoBehaviour
         //InventoryControl.inst.UpdateInterfaceInventories();
     }
     #endregion
+
+    public void UpdateObjectNames()
+    {
+        foreach (KeyValuePair<GameObject, InventorySlot> obj in slotsOnInterface)
+        {
+            obj.Key.GetComponent<InvDisplayItem>().NameUpdate();
+        }
+    }
 
     public void CopyInvDisplayItem(InvDisplayItem s, InvDisplayItem t) // Source | Target
     {

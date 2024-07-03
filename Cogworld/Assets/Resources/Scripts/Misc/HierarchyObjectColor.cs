@@ -85,6 +85,14 @@ public class HierarchyObjectColor
                     backgroundColor = new Color(0.5f, 0.48f, 0.05f);
                     textColor = new Color(0.9f, 0.9f, 0.9f);
                     break;
+                case "InventorySystem":
+                    backgroundColor = new Color(0.2f, 0.2f, 0.7f);
+                    textColor = new Color(0.9f, 0.9f, 0.9f);
+                    break;
+                case "TurnManager":
+                    backgroundColor = new Color(0.4f, 0.7f, 0.2f);
+                    textColor = new Color(0.9f, 0.9f, 0.9f);
+                    break;
 
                 // Testing
                 case "MainControl": // PathfindingTest
