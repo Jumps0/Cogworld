@@ -96,7 +96,13 @@ public abstract class UserInterface : MonoBehaviour
 
     public void OnDragStart(GameObject obj)
     {
-        if(obj.GetComponent<InvDisplayItem>().item != null) // Don't drag empty items.
+        // Forbid UI interactions while animating
+        if (InventoryControl.inst.awaitingSort)
+        {
+            return;
+        }
+
+        if (obj.GetComponent<InvDisplayItem>().item != null) // Don't drag empty items.
         {
             if (obj.GetComponent<InvDisplayItem>().isSecondaryItem) // If we start dragging the secondary item, set the obj to be the parent instead.
             {
@@ -896,6 +902,12 @@ public abstract class UserInterface : MonoBehaviour
     /// <param name="item">A reference to the IDO's item.</param>
     public void TryDirectEquip(GameObject obj, Item item)
     {
+        // Forbid UI interactions while animating
+        if (InventoryControl.inst.awaitingSort)
+        {
+            return;
+        }
+
         // If the item is multi-slot we need to gather up its children and their objects
         List<KeyValuePair<GameObject, Item>> children = null;
         if(item.itemData.slotsRequired > 1)
@@ -1103,9 +1115,11 @@ public abstract class UserInterface : MonoBehaviour
             // Save the old positions & Find the new positions
             List<(Vector3, Vector3)> oldNew = new List<(Vector3, Vector3)>();
             List<GameObject> toBeSorted = new List<GameObject>();
+            List<Vector3> positions = new List<Vector3>(); // Used later for the movement animations
             foreach (KeyValuePair<GameObject, InventorySlot> kvp in UIslots) // We only sort what needs to be sorted
             {
                 Vector3 old = kvp.Key.transform.position; // Log the OLD (aka current) position of this object
+                positions.Add(old);
 
                 // Find where this slot *SHOULD BE* in the new arrangement
                 for (int i = 0; i < inventory.Container.Items.Length; i++) // We do this by going through the inventory we just sorted, which is in the correct order, but not yet represented on the UI.
@@ -1132,7 +1146,7 @@ public abstract class UserInterface : MonoBehaviour
                 {
                     GameObject obj = toBeSorted[i]; // Get the object that needs to be moved
                     Debug.Log($"Moving {obj.name} from {oldNew[i].Item1} to {oldNew[i].Item2} (a distance of {oldNew[i].Item1.y - oldNew[i].Item2.y})");
-                    obj.GetComponent<InvDisplayItem>().Sort_StaggeredMove(oldNew[i].Item2);
+                    obj.GetComponent<InvDisplayItem>().Sort_StaggeredMove(oldNew[i].Item2, positions);
                 }
             }
         }

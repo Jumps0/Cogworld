@@ -7,6 +7,7 @@ using TMPro;
 using Unity.VisualScripting;
 using ColorUtility = UnityEngine.ColorUtility;
 using static UnityEditor.Progress;
+using System.Linq;
 
 public class InvDisplayItem : MonoBehaviour
 {
@@ -1533,11 +1534,11 @@ public class InvDisplayItem : MonoBehaviour
 
     #region Sorting
 
-    public void Sort_StaggeredMove(Vector3 end)
+    public void Sort_StaggeredMove(Vector3 end, List<Vector3> positions)
     {
         AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[70]); // UI | PART_SORT
 
-        StartCoroutine(StaggeredMove(end));
+        StartCoroutine(StaggeredMove(end, positions));
 
         if (item != null && item.Id >= 0)
         {
@@ -1545,14 +1546,14 @@ public class InvDisplayItem : MonoBehaviour
         }
     }
 
-    private IEnumerator StaggeredMove(Vector3 end)
+    private IEnumerator StaggeredMove(Vector3 end, List<Vector3> positions)
     {
         Vector3 originPosition = this.transform.position;
 
-        int flip = -1;
+        int flip = -1; // (Move down)
         if(originPosition.y < end.y) // We can either move up or down
         {
-            flip = 1;
+            flip = 1; // (Move up)
         }
 
         // Figure out how many chunks we need to move
@@ -1581,22 +1582,63 @@ public class InvDisplayItem : MonoBehaviour
 
         // 2. Move up/down to new position
         float moveTime = 0.5f;
-        for (int i = 1; i < chunks + 1; i++) // Move X amount of chunks every X seconds.
+
+        // First determine the points we need to snap to while moving (since this isn't a smooth animation).
+        List<Vector3> path = positions; // In this state, it goes from top to bottom.
+        // If we need to move upwards then we need to reverse the list
+        if(flip == 1)
         {
-            this.transform.position = new Vector3(this.transform.position.x, originPosition.y + (20.5f * i * flip), this.transform.position.z);
-            yield return new WaitForSeconds(moveTime / chunks); // don't want to take all day to do this so cut the speed by the amount of chunks we move
+            path.Reverse();
+        }
+        // Now we need to filter out the unneccessary positions and only use the ones we need (start, finish, and those in between)
+        foreach (Vector3 P in path.ToList())
+        {
+            if(P == end || P == originPosition) // Start or end, keep it
+            {
+                // Keep it
+            }
+            else if (flip == 1) // Moving up
+            {
+                if(P.y > end.y) // Above our end point, remove it
+                {
+                    path.Remove(P);
+                }
+                else if (P.y < originPosition.y) // Below our end point, remove it
+                {
+                    path.Remove(P);
+                }
+            }
+            else if(flip == -1) // Moving down
+            {
+                if (P.y > originPosition.y) // Above our end point, remove it
+                {
+                    path.Remove(P);
+                }
+                else if (P.y < end.y) // Below our end point, remove it
+                {
+                    path.Remove(P);
+                }
+            }
+        }
+
+        // Now move along these points over the time period we set
+        for (int i = 0; i < path.Count; i++)
+        {
+            this.transform.position = new Vector3(this.transform.position.x, path[i].y, this.transform.position.z);
+            yield return new WaitForSeconds(moveTime / path.Count); // don't want to take all day to do this so cut the speed by the amount of chunks we move
         }
         Debug.Log($"Moving from {this.transform.position} to end -> {end}");
-        this.transform.position = end + new Vector3(distance, 0); // Snap to end
+        //this.transform.position = end - new Vector3(distance * 2, 0); // Snap to end
 
         // 3. Slide to the right
         elapsedTime = 0f;
         duration = 0.35f;
         if (item != null && item.Id >= 0)
         {
+            Vector2 start = this.transform.position;
             while (elapsedTime < duration)
             {
-                float adjustment = Mathf.Lerp(originPosition.x, originPosition.x + distance, elapsedTime / duration);
+                float adjustment = Mathf.Lerp(start.x, start.x + distance, elapsedTime / duration);
 
                 this.transform.position = new Vector3(adjustment, this.transform.position.y, this.transform.position.z);
 
