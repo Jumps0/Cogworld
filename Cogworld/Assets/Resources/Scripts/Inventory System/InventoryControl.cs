@@ -189,10 +189,8 @@ public class InventoryControl : MonoBehaviour
         {
             while (awaitingSort)
             {
-                Debug.Log("Awaiting sort...");
                 yield return null;
             }
-            Debug.Log("Waiting finished, updating interface");
         }
 
         foreach (var I in interfaces)

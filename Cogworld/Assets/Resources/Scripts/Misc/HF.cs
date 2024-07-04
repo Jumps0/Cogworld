@@ -4401,13 +4401,37 @@ public static class HF
             return false;
         }
 
-        for (int i = 1; i < list.Count - 1; i++)
+        bool foundFirstTrue = false;
+
+        for (int i = 0; i < list.Count; i++)
         {
-            if (list[i - 1] == true && list[i] == false && list[i + 1] == true)
+            if (list[i] == true)
             {
-                return true;
+                if (foundFirstTrue)
+                {
+                    return true;
+                }
+                foundFirstTrue = true;
+            }
+            else if (list[i] == false && foundFirstTrue)
+            {
+                bool isGap = false;
+                for (int j = i + 1; j < list.Count; j++)
+                {
+                    if (list[j] == true)
+                    {
+                        isGap = true;
+                        break;
+                    }
+                }
+                if (isGap)
+                {
+                    return true;
+                }
+                foundFirstTrue = false;
             }
         }
+
         return false;
     }
 

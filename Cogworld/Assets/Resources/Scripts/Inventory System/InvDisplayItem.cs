@@ -1540,10 +1540,7 @@ public class InvDisplayItem : MonoBehaviour
 
         StartCoroutine(StaggeredMove(end, positions));
 
-        if (item != null && item.Id >= 0)
-        {
-            sort_letter = StartCoroutine(Sort_Letter());
-        }
+        sort_letter = StartCoroutine(Sort_Letter());
     }
 
     private IEnumerator StaggeredMove(Vector3 end, List<Vector3> positions)
@@ -1556,40 +1553,27 @@ public class InvDisplayItem : MonoBehaviour
             flip = 1; // (Move up)
         }
 
-        // Figure out how many chunks we need to move
-        float gap = Mathf.Abs(this.transform.position.y - end.y);
-        int chunks = Mathf.RoundToInt(gap / 19.5f);
-        Debug.Log($"Gap info - Gap: {gap} | start.y: {this.transform.position.y} | end.y {end.y} || Chunks: {chunks}");
-
         // 1. Slide to the left
         float distance = 7f;
         float elapsedTime = 0f;
         float duration = 0.35f;
 
-        if (item != null && item.Id >= 0)
+        while (elapsedTime < duration)
         {
-            Debug.Log($"Moving left by {distance}");
-            while (elapsedTime < duration)
-            {
-                float adjustment = Mathf.Lerp(originPosition.x, originPosition.x - distance, elapsedTime / duration);
+            float adjustment = Mathf.Lerp(originPosition.x, originPosition.x - distance, elapsedTime / duration);
 
-                this.transform.position = new Vector3(adjustment, this.transform.position.y, this.transform.position.z);
+            this.transform.position = new Vector3(adjustment, this.transform.position.y, this.transform.position.z);
 
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }
+            elapsedTime += Time.deltaTime;
+            yield return null;
         }
 
-        // 2. Move up/down to new position
+        // 2. Move up/down to new position (filled or not)
         float moveTime = 0.5f;
 
         // First determine the points we need to snap to while moving (since this isn't a smooth animation).
         List<Vector3> path = positions; // In this state, it goes from top to bottom.
-        // If we need to move upwards then we need to reverse the list
-        if(flip == 1)
-        {
-            path.Reverse();
-        }
+        
         // Now we need to filter out the unneccessary positions and only use the ones we need (start, finish, and those in between)
         foreach (Vector3 P in path.ToList())
         {
@@ -1621,64 +1605,67 @@ public class InvDisplayItem : MonoBehaviour
             }
         }
 
+        if (flip == -1) // Reverse dirction if needed
+        {
+            path.Reverse();
+        }
+
+        foreach (Vector3 P in path)
+        {
+            Debug.Log($"{this.gameObject.name} going from {originPosition.y} to {end.y} along path: {P.y}");
+        }
+
+        //Debug.Log($"{this.gameObject.name} moving from {originPosition.y} to {end.y} with a path length of [{path.Count}]");
         // Now move along these points over the time period we set
         for (int i = 0; i < path.Count; i++)
         {
             this.transform.position = new Vector3(this.transform.position.x, path[i].y, this.transform.position.z);
             yield return new WaitForSeconds(moveTime / path.Count); // don't want to take all day to do this so cut the speed by the amount of chunks we move
         }
-        Debug.Log($"Moving from {this.transform.position} to end -> {end}");
-        //this.transform.position = end - new Vector3(distance * 2, 0); // Snap to end
 
         // 3. Slide to the right
         elapsedTime = 0f;
         duration = 0.35f;
-        if (item != null && item.Id >= 0)
+
+        Vector2 start = this.transform.position;
+        while (elapsedTime < duration)
         {
-            Vector2 start = this.transform.position;
-            while (elapsedTime < duration)
-            {
-                float adjustment = Mathf.Lerp(start.x, start.x + distance, elapsedTime / duration);
+            float adjustment = Mathf.Lerp(start.x, start.x + distance, elapsedTime / duration);
 
-                this.transform.position = new Vector3(adjustment, this.transform.position.y, this.transform.position.z);
+            this.transform.position = new Vector3(adjustment, this.transform.position.y, this.transform.position.z);
 
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }
+            elapsedTime += Time.deltaTime;
+            yield return null;
         }
 
         // 4. Stop the random letter shuffle
-        if(sort_letter != null)
+        if (sort_letter != null)
             StopCoroutine(sort_letter);
 
-
         // 5. Briefly flash the text
-        if (item != null && item.Id >= 0)
+        elapsedTime = 0f;
+        duration = 0.45f;
+
+        Color startColor = Color.white;
+        Color end_text = itemNameText.color;
+        Color end_health = healthDisplay.color;
+        Color end_rightside = healthModeTextRep.color;
+
+        while (elapsedTime < duration) // White -> OG Colors
         {
-            Color startColor = Color.white;
-            Color end_text = itemNameText.color;
-            Color end_health = healthDisplay.color;
-            Color end_rightside = healthModeTextRep.color;
+            itemNameText.color = Color.Lerp(startColor, end_text, elapsedTime / duration);
+            assignedOrderText.color = Color.Lerp(startColor, end_text, elapsedTime / duration);
 
-            elapsedTime = 0f;
-            duration = 0.45f;
-            while (elapsedTime < duration) // White -> OG Colors
-            {
-                itemNameText.color = Color.Lerp(startColor, end_text, elapsedTime / duration);
-                assignedOrderText.color = Color.Lerp(startColor, end_text, elapsedTime / duration);
+            healthModeTextRep.color = Color.Lerp(startColor, end_rightside, elapsedTime / duration);
+            healthModeNumber.color = Color.Lerp(startColor, end_rightside, elapsedTime / duration);
 
-                healthModeTextRep.color = Color.Lerp(startColor, end_rightside, elapsedTime / duration);
-                healthModeNumber.color = Color.Lerp(startColor, end_rightside, elapsedTime / duration);
+            healthDisplay.color = Color.Lerp(startColor, end_health, elapsedTime / duration);
 
-                healthDisplay.color = Color.Lerp(startColor, end_health, elapsedTime / duration);
-
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }
+            elapsedTime += Time.deltaTime;
+            yield return null;
         }
 
         InventoryControl.inst.awaitingSort = false; // Maybe move this somewhere else?
-        Debug.Log($"Finished sort for {this.gameObject.name}");
     }
 
     private Coroutine sort_letter;

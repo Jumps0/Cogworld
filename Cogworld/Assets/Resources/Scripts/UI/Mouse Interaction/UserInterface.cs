@@ -1125,8 +1125,9 @@ public abstract class UserInterface : MonoBehaviour
                 for (int i = 0; i < inventory.Container.Items.Length; i++) // We do this by going through the inventory we just sorted, which is in the correct order, but not yet represented on the UI.
                 {
                     InventorySlot slot = inventory.Container.Items[i];
+                    InvDisplayItem idi = kvp.Key.GetComponent<InvDisplayItem>();
 
-                    if(slot.item == kvp.Key.GetComponent<InvDisplayItem>().item)
+                    if (slot.item == idi.item || (slot.item.Id == -1 && idi.item == null && !ASDupeCheck(oldNew, UIslots[i].Key.transform.position)))
                     {
                         Vector3 newPos = UIslots[i].Key.transform.position;
                         oldNew.Add((old, newPos));
@@ -1142,10 +1143,11 @@ public abstract class UserInterface : MonoBehaviour
             // Now go through and perform the movement, we should only be moving slots that NEED to be moved.
             for (int i = 0; i < toBeSorted.Count; i++)
             {
+                //Debug.Log($"TBS: {toBeSorted[i]} goes from {oldNew[i].Item1} to {oldNew[i].Item2}");
                 if (oldNew[i].Item1 != oldNew[i].Item2) // Only move ones that need to be moved.
                 {
                     GameObject obj = toBeSorted[i]; // Get the object that needs to be moved
-                    Debug.Log($"Moving {obj.name} from {oldNew[i].Item1} to {oldNew[i].Item2} (a distance of {oldNew[i].Item1.y - oldNew[i].Item2.y})");
+                    //Debug.Log($"Moving {obj.name} from {oldNew[i].Item1} to {oldNew[i].Item2} (a distance of {oldNew[i].Item1.y - oldNew[i].Item2.y})");
                     obj.GetComponent<InvDisplayItem>().Sort_StaggeredMove(oldNew[i].Item2, positions);
                 }
             }
@@ -1154,6 +1156,19 @@ public abstract class UserInterface : MonoBehaviour
         // Redraw the UI Display
         //InventoryControl.inst.UpdateInterfaceInventories();
     }
+
+    private bool ASDupeCheck(List<(Vector3, Vector3)> list, Vector3 pos) // Ensures no duplicate destinations for empty slots since we can't id them.
+    {
+        foreach (var P in list)
+        {
+            if(P.Item2 == pos)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     #endregion
 
     public void UpdateObjectNames()
