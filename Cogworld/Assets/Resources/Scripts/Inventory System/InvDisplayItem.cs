@@ -91,13 +91,17 @@ public class InvDisplayItem : MonoBehaviour
         specialDescText.gameObject.SetActive(false);
         healthMode.gameObject.SetActive(false);
 
-        _assignedChar = "";
+        if(_assignedChar == "") // Will usually never be true
+        {
+            _assignedChar = "";
+            assignedOrderText.text = "#";
+            assignedOrderString = "";
+        }
+        
         itemNameText.text = "Unused";
-        assignedOrderText.text = "#";
         nameUnmodified = "Unused";
         NameUpdate();
 
-        assignedOrderString = "";
         bonusAOS = "";
     }
 
@@ -168,36 +172,39 @@ public class InvDisplayItem : MonoBehaviour
             assignedOrderText.text = _assignedChar.ToString();
             assignedOrderString = _assignedChar.ToString();
 
-            if (item.state)
+            if(item != null)
             {
-                if (!isSecondaryItem)
+                if (item.state)
                 {
-                    assignedOrderText.color = activeGreen;
+                    if (!isSecondaryItem)
+                    {
+                        assignedOrderText.color = activeGreen;
+                    }
+                    else
+                    {
+                        assignedOrderText.color = wideBlue;
+                    }
                 }
                 else
                 {
-                    assignedOrderText.color = wideBlue;
+                    assignedOrderText.color = emptyGray;
                 }
-            }
-            else
-            {
-                assignedOrderText.color = emptyGray;
-            }
 
-            // Also add an ":" before the indicator if removing it will destroy the item
-            if (item.itemData.destroyOnRemove)
-            {
-                bonusAOS = ":";
-                assignedOrderText.text = bonusAOS + _assignedChar.ToString();
-                assignedOrderString = assignedOrderText.text;
-            }
-
-            // We're gonna shove in the siege check here too since its convienient
-            if(item.itemData.type == ItemType.Treads)
-            {
-                if (item.itemData.propulsion[0].canSiege > 0)
+                // Also add an ":" before the indicator if removing it will destroy the item
+                if (item.itemData.destroyOnRemove)
                 {
-                    canSiege = true;
+                    bonusAOS = ":";
+                    assignedOrderText.text = bonusAOS + _assignedChar.ToString();
+                    assignedOrderString = assignedOrderText.text;
+                }
+
+                // We're gonna shove in the siege check here too since its convienient
+                if (item.itemData.type == ItemType.Treads)
+                {
+                    if (item.itemData.propulsion[0].canSiege > 0)
+                    {
+                        canSiege = true;
+                    }
                 }
             }
         }

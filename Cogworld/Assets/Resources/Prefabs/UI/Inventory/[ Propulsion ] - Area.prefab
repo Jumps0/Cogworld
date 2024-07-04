@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3091107793886286915}
   - component: {fileID: 1315996173158288086}
-  - component: {fileID: 155803292312645141}
+  - component: {fileID: -1899124852699274816}
   m_Layer: 5
   m_Name: '[ Propulsion ] - Area'
   m_TagString: Untagged
@@ -39,7 +39,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0.5, y: 21}
+  m_SizeDelta: {x: 530, y: 21}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1315996173158288086
 CanvasRenderer:
@@ -49,21 +49,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3091107793886286914}
   m_CullTransparentMesh: 1
---- !u!114 &155803292312645141
+--- !u!114 &-1899124852699274816
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3091107793886286914}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -114,8 +114,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 88.97226, y: 0}
-  m_SizeDelta: {x: -177.9444, y: 2.5}
+  m_AnchoredPosition: {x: 82.50012, y: 0}
+  m_SizeDelta: {x: -165.0001, y: 2.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3091107794381012714
 CanvasRenderer:

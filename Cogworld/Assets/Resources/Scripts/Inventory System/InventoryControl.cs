@@ -225,8 +225,8 @@ public class InventoryControl : MonoBehaviour
             {
                 foreach (var item in I.GetComponentInChildren<DynamicInterface>().slotsOnInterface)
                 {
-                    if(item.Key.GetComponent<InvDisplayItem>().item != null)
-                    {
+                    //if(item.Key.GetComponent<InvDisplayItem>().item != null)
+                    //{
                         item.Key.GetComponent<InvDisplayItem>().SetLetter(UIManager.inst.alphabet[alphabet].ToString());
                         alphabet++;
 
@@ -235,7 +235,7 @@ public class InventoryControl : MonoBehaviour
                             Debug.LogError("ERROR: Letter overflow in assigning keys to parts.");
                             Debug.Break();
                         }
-                    }
+                    //}
                 }
             }
             else if (I.GetComponentInChildren<StaticInterface>()) // Includes all items found in /INVENTORY/ menu (USES NUMBERS)
