@@ -3621,6 +3621,10 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI eText;
     public TextMeshProUGUI wText;
     public TextMeshProUGUI qText;
+    public GameObject cewq_main;
+    public TextMeshProUGUI cewq_text;
+    [Tooltip("0 = COVERAGE | 1 = ENERGY | 2 = INTEGRITY | 3 = INFO")]
+    public int cewq_mode = 0;
     //
     // - TMI -
     //
@@ -3656,9 +3660,6 @@ public class UIManager : MonoBehaviour
     public GameObject inventoryArea;
     //
     public List<GameObject> instInv = new List<GameObject>();
-    //
-    [Tooltip("Can be [T(ype)] [M(ass)] [I(ntegrity]")]
-    public string inventoryDisplayMode = "I";
     //
     // -           -
 
@@ -5749,7 +5750,76 @@ public class UIManager : MonoBehaviour
         {
             botTypeGO.SetActive(false);
         }
+
+        // Update the item stats
+        SetCEWQ(GlobalSettings.inst.defaultItemDataMode, false);
     }
+
+    #region Rightside - CEWQ
+    public void SetCEWQ(int value, bool showType = true)
+    {
+        // Set the mode
+        cewq_mode = value;
+
+        // Do the animation
+        if (cewq_coroutine != null)
+        {
+            StopCoroutine(cewq_coroutine); // Stop it if one is already going
+        }
+
+        if (showType)
+        {
+            cewq_coroutine = StartCoroutine(CEWG_Animate());
+        }
+
+        // Update the UI
+        foreach (var I in InventoryControl.inst.interfaces)
+        {
+            foreach (KeyValuePair<GameObject, InventorySlot> kvp in I.slotsOnInterface)
+            {
+                InvDisplayItem idi = kvp.Key.GetComponent<InvDisplayItem>();
+
+                if(idi.item != null)
+                {
+                    idi.SetRightSideDisplay();
+                }
+            }
+        }
+    }
+
+    private Coroutine cewq_coroutine;
+    private IEnumerator CEWG_Animate()
+    {
+        // Enable the main object
+        cewq_main.SetActive(true);
+
+        // Set the text
+        string text = "";
+        switch (cewq_mode)
+        {
+            case 0:
+                text = "COVERAGE";
+                break;
+            case 1:
+                text = "ENERGY";
+                break;
+            case 2:
+                text = "INTEGRITY";
+                break;
+            case 3:
+                text = "INFO";
+                break;
+        }
+        cewq_text.text = text;
+
+        // Wait some time
+        yield return new WaitForSeconds(3f);
+
+        // Disable the main object
+        cewq_main.SetActive(false);
+    }
+
+    #endregion
 
     /// <summary>
     /// Updates the [ Inventory ] area on the UI

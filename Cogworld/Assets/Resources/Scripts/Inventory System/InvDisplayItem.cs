@@ -242,8 +242,6 @@ public class InvDisplayItem : MonoBehaviour
             }
 
             // - Letter Assignment - //
-            // ?
-
             if (inInventory)
             {
                 partDisplay.gameObject.SetActive(true);
@@ -286,39 +284,7 @@ public class InvDisplayItem : MonoBehaviour
             }
 
             // - < Right Side Text > - //
-            #region Right Side Text
-            if (UIManager.inst.inventoryDisplayMode == "I") // Integrity (both are used)
-            {
-                healthModeTextRep.gameObject.SetActive(true);
-                healthModeNumber.gameObject.SetActive(true);
-
-                // There can only be a max of 12 bars
-                string displayText = "";
-                float referenceValue = currentIntegrity * 12;
-                float dummyValue = 12;
-                while (dummyValue > (referenceValue / 12))
-                {
-                    displayText += "|";
-                    dummyValue -= 1;
-                }
-                healthModeTextRep.text = displayText; // Set text (bars)
-                healthModeTextRep.color = healthDisplay.color; // Set color
-                healthModeNumber.text = item.integrityCurrent.ToString(); // Set text (numbers)
-                healthModeNumber.color = healthDisplay.color; // Set color
-            }
-            else if (UIManager.inst.inventoryDisplayMode == "M") // Mass (this is bars AND %)
-            {
-                healthModeTextRep.gameObject.SetActive(true);
-                healthModeNumber.gameObject.SetActive(true);
-            }
-            else // Type (This is data about the part, no bars)
-            {
-                healthModeTextRep.gameObject.SetActive(false);
-                healthModeNumber.gameObject.SetActive(true);
-
-                healthModeNumber.text = HF.HighlightDamageType(item.itemData.mechanicalDescription); // Set mechanical text & color damage type if it exists
-            }
-            #endregion
+            SetRightSideDisplay();
 
             // - Mode - //
             // Figure out if mode needs to be on or not
@@ -364,6 +330,62 @@ public class InvDisplayItem : MonoBehaviour
         }
     }
     #endregion
+
+    public void SetRightSideDisplay(bool doAnimation = false)
+    {
+        int mode = UIManager.inst.cewq_mode;
+
+        switch (mode)
+        {
+            case 0: // COVERAGE
+
+                break;
+            case 1: // ENERGY
+
+                break;
+            case 2: // INTEGRITY
+                healthModeTextRep.gameObject.SetActive(true);
+                healthModeNumber.gameObject.SetActive(true);
+
+                // There can only be a max of 12 bars
+                string displayText = "";
+                float referenceValue = item.integrityCurrent * 12;
+                float dummyValue = 12;
+                while (dummyValue > (referenceValue / 12))
+                {
+                    displayText += "|";
+                    dummyValue -= 1;
+                }
+                healthModeTextRep.text = displayText; // Set text (bars)
+                healthModeTextRep.color = healthDisplay.color; // Set color
+                healthModeNumber.text = item.integrityCurrent.ToString(); // Set text (numbers)
+                healthModeNumber.color = healthDisplay.color; // Set color
+                break;
+            case 3: // INFO
+                // This is data about the part, no bars
+                healthModeTextRep.gameObject.SetActive(false);
+                healthModeNumber.gameObject.SetActive(true);
+
+                healthModeNumber.text = HF.HighlightDamageType(item.itemData.mechanicalDescription); // Set mechanical text & color damage type if it exists
+                break;
+        }
+
+        // We also may need to do an animation
+        if (doAnimation)
+        {
+            if(rd_animation != null)
+            {
+                StopCoroutine(rd_animation);
+            }
+            rd_animation = StartCoroutine(RightDataAnimation());
+        }
+    }
+
+    private Coroutine rd_animation;
+    private IEnumerator RightDataAnimation()
+    {
+        yield return null;
+    }
 
     /// <summary>
     /// Happens when this item is first added to its respective menu. Basically just UIEnable but BLACK -> ENABLED
@@ -1556,12 +1578,6 @@ public class InvDisplayItem : MonoBehaviour
         }
 
         Vector3 originPosition = this.transform.position;
-
-        int flip = -1; // (Move down)
-        if(originPosition.y < end.y) // We can either move up or down
-        {
-            flip = 1; // (Move up)
-        }
 
         // 1. Slide to the left
         float distance = 21f;
