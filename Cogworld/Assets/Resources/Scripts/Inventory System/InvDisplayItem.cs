@@ -1581,6 +1581,8 @@ public class InvDisplayItem : MonoBehaviour
         // 2. Move up/down to new position (filled or not)
         float moveTime = 0.5f;
 
+        #region Old
+        /*
         // First determine the points we need to snap to while moving (since this isn't a smooth animation).
         List<Vector3> path = positions; // In this state, it goes from top to bottom.
         
@@ -1619,8 +1621,32 @@ public class InvDisplayItem : MonoBehaviour
         {
             path.Reverse();
         }
+        */
+        #endregion
 
-        Debug.Log($"> {this.gameObject.name} moving from A:{originPosition.y} to B: {end.y} along path({path.Count})");
+        #region Path Refinement
+        List<Vector2> path = new List<Vector2>();
+
+        // Get indices of current and target positions
+        int currentIndex = positions.IndexOf(originPosition);
+        int targetIndex = positions.IndexOf(end);
+
+        // Determine the direction and add positions to the path
+        if (currentIndex < targetIndex)
+        {
+            for (int i = currentIndex + 1; i <= targetIndex; i++)
+            {
+                path.Add(positions[i]);
+            }
+        }
+        else if (currentIndex > targetIndex)
+        {
+            for (int i = currentIndex - 1; i >= targetIndex; i--)
+            {
+                path.Add(positions[i]);
+            }
+        }
+        #endregion
 
         // Now move along these points over the time period we set
         foreach (Vector3 P in path.ToList()) // WHO is modifying this list? There is an error here for some reason???

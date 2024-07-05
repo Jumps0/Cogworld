@@ -4402,33 +4402,22 @@ public static class HF
         }
 
         bool foundFirstTrue = false;
+        bool inGap = false;
 
         for (int i = 0; i < list.Count; i++)
         {
             if (list[i] == true)
             {
-                if (foundFirstTrue)
+                if (inGap)
                 {
                     return true;
                 }
                 foundFirstTrue = true;
+                inGap = false;
             }
             else if (list[i] == false && foundFirstTrue)
             {
-                bool isGap = false;
-                for (int j = i + 1; j < list.Count; j++)
-                {
-                    if (list[j] == true)
-                    {
-                        isGap = true;
-                        break;
-                    }
-                }
-                if (isGap)
-                {
-                    return true;
-                }
-                foundFirstTrue = false;
+                inGap = true;
             }
         }
 
