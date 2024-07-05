@@ -59,6 +59,8 @@ public class GlobalSettings : MonoBehaviour
     public float globalTextSpeed = 0.35f;
     [Tooltip("0 = COVERAGE | 1 = ENERGY | 2 = INTEGRITY | 3 = INFO")]
     public int defaultItemDataMode = 3;
+    [Tooltip("The maximum amount of characters to use in representing a bar. Ex: ||||||||||||")]
+    public int maxCharBarLength = 12;
     public List<TMP_FontAsset> fonts = new List<TMP_FontAsset>();
     //
     [Tooltip("When not in view, indicators that hug the border will slowly flash (if true).")]

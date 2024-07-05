@@ -5752,11 +5752,16 @@ public class UIManager : MonoBehaviour
         }
 
         // Update the item stats
-        SetCEWQ(GlobalSettings.inst.defaultItemDataMode, false);
+        CEWQ_SetMode(GlobalSettings.inst.defaultItemDataMode, false);
     }
 
     #region Rightside - CEWQ
-    public void SetCEWQ(int value, bool showType = true)
+    public void CEWQ_Click(int value) // Separate function for the buttons because it won't show up in the list for functions with more than 1 input.
+    {
+        CEWQ_SetMode(value, true);
+    }
+
+    public void CEWQ_SetMode(int value, bool showType = true)
     {
         // Set the mode
         cewq_mode = value;
@@ -5765,6 +5770,7 @@ public class UIManager : MonoBehaviour
         if (cewq_coroutine != null)
         {
             StopCoroutine(cewq_coroutine); // Stop it if one is already going
+            cewq_main.SetActive(false);
         }
 
         if (showType)
@@ -5813,7 +5819,7 @@ public class UIManager : MonoBehaviour
         cewq_text.text = text;
 
         // Wait some time
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2f);
 
         // Disable the main object
         cewq_main.SetActive(false);

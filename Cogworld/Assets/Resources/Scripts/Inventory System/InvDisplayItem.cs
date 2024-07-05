@@ -335,39 +335,200 @@ public class InvDisplayItem : MonoBehaviour
     {
         int mode = UIManager.inst.cewq_mode;
 
-        switch (mode)
+        // Duplicates/Secondaries don't show anything at all
+        if (isSecondaryItem)
         {
-            case 0: // COVERAGE
+            healthModeTextRep.gameObject.SetActive(false);
+            healthModeNumber.gameObject.SetActive(false);
+            specialDescText.gameObject.SetActive(false);
+            return;
+        }
 
-                break;
-            case 1: // ENERGY
+        // If its a prototype we just show ???
+        if (!item.itemData.knowByPlayer)
+        {
+            healthModeTextRep.gameObject.SetActive(false);
+            healthModeNumber.gameObject.SetActive(true);
 
-                break;
-            case 2: // INTEGRITY
-                healthModeTextRep.gameObject.SetActive(true);
-                healthModeNumber.gameObject.SetActive(true);
+            healthModeNumber.text = "<color=#008100>???</color>";
+        }
+        else // If its not a prototype we show the info
+        {
+            switch (mode)
+            {
+                case 0: // COVERAGE
+                    // We need to display the bar (though a little shorter) and the amount
 
-                // There can only be a max of 12 bars
-                string displayText = "";
-                float referenceValue = item.integrityCurrent * 12;
-                float dummyValue = 12;
-                while (dummyValue > (referenceValue / 12))
-                {
-                    displayText += "|";
-                    dummyValue -= 1;
-                }
-                healthModeTextRep.text = displayText; // Set text (bars)
-                healthModeTextRep.color = healthDisplay.color; // Set color
-                healthModeNumber.text = item.integrityCurrent.ToString(); // Set text (numbers)
-                healthModeNumber.color = healthDisplay.color; // Set color
-                break;
-            case 3: // INFO
-                // This is data about the part, no bars
-                healthModeTextRep.gameObject.SetActive(false);
-                healthModeNumber.gameObject.SetActive(true);
+                    // First find out the coverage. This is a actually a much more simplified method than what we do in *Action.cs* because this is
+                    // getting called relatively often and not of great importance so its ok if the value isn't exact.
+                    // If you want to change this later feel free to it doesn't really matter that much.
+                    float coverage = item.itemData.coverage;
+                    // Double coverage for heavy treads in siege mode
+                    if (PlayerData.inst.timeTilSiege == 0)
+                    {
+                        if (item.itemData.type == ItemType.Armor || item.itemData.propulsion[0].canSiege != 0)
+                        {
+                            coverage *= 2;
+                        }
+                    }
 
-                healthModeNumber.text = HF.HighlightDamageType(item.itemData.mechanicalDescription); // Set mechanical text & color damage type if it exists
-                break;
+                    // Set %
+                    healthModeNumber.text = Mathf.RoundToInt(coverage * 100) + "%";
+                    // Then set the bar, we will set it to have a max of 12
+                    string c_bars = "";
+                    float c_referenceValue = coverage * GlobalSettings.inst.maxCharBarLength;
+                    float c_dummyValue = GlobalSettings.inst.maxCharBarLength;
+                    while (c_dummyValue > (c_referenceValue / GlobalSettings.inst.maxCharBarLength))
+                    {
+                        c_bars += "|";
+                        c_dummyValue -= 1;
+                    }
+                    // Uniquely, the bar has a nice little gradient, so this becomes 10x more complex
+                    healthModeTextRep.text = HF.StringCoverageGradient(c_bars, activeGreen, inActiveGreen, true);
+
+                    break;
+                case 1: // ENERGY
+                    // This uses both bars & the number
+                    healthModeTextRep.gameObject.SetActive(true);
+                    healthModeNumber.gameObject.SetActive(true);
+
+                    string e_bars = "";
+                    float e_referenceValue;
+                    float e_dummyValue; 
+
+                    // We only display for things that actually USE or EMIT power
+                    if (item.itemData.hasUpkeep && item.itemData.energyUpkeep > 0) // -- USE --
+                    {
+                        float upkeep = item.itemData.energyUpkeep;
+
+                        // If we are using power, the color should be DARK BLUE (#0500FF) to (#2623B5)
+                        // Although if this part is OFF then the color should be GRAY
+                        if (item.state && !my_interface.GetComponent<DynamicInterface>())
+                        {
+                            // Set value
+                            healthModeNumber.text = upkeep.ToString();
+
+                            e_bars = "";
+                            e_referenceValue = upkeep * GlobalSettings.inst.maxCharBarLength;
+                            e_dummyValue = GlobalSettings.inst.maxCharBarLength;
+                            while (e_dummyValue > (e_referenceValue / GlobalSettings.inst.maxCharBarLength))
+                            {
+                                e_bars += "|";
+                                e_dummyValue -= 1;
+                            }
+                            // Apply gradient
+                            Color left, right;
+                            if(ColorUtility.TryParseHtmlString("#0500FF", out left))
+                            {
+
+                            }
+                            if(ColorUtility.TryParseHtmlString("#2623B5", out right))
+                            {
+
+                            }
+
+                            healthModeTextRep.text = HF.StringCoverageGradient(e_bars, left, right, true);
+                        }
+                        else
+                        {
+                            // Set value
+                            healthModeNumber.text = upkeep.ToString();
+
+                            e_bars = "";
+                            e_referenceValue = upkeep * GlobalSettings.inst.maxCharBarLength;
+                            e_dummyValue = GlobalSettings.inst.maxCharBarLength;
+                            while (e_dummyValue > (e_referenceValue / GlobalSettings.inst.maxCharBarLength))
+                            {
+                                e_bars += "|";
+                                e_dummyValue -= 1;
+                            }
+                            // Thankfully no gradient, just gray
+                            healthModeTextRep.text = "<color=#464646>" + e_bars + "</color>";
+                        }
+                    }
+                    else if (item.itemData.supply > 0) // -- EMIT --
+                    {
+                        float supply = item.itemData.supply;
+
+                        // If we are supplying power, the color should be BRIGHT BLUE (#00FFFF) to (#39A9A6)
+                        // Although if this part is OFF then the color should be GRAY
+                        if (item.state && !my_interface.GetComponent<DynamicInterface>())
+                        {
+                            // Set value
+                            healthModeNumber.text = supply.ToString();
+
+                            e_bars = "";
+                            e_referenceValue = supply * GlobalSettings.inst.maxCharBarLength;
+                            e_dummyValue = GlobalSettings.inst.maxCharBarLength;
+                            while (e_dummyValue > (e_referenceValue / GlobalSettings.inst.maxCharBarLength))
+                            {
+                                e_bars += "|";
+                                e_dummyValue -= 1;
+                            }
+                            // Apply gradient
+                            Color left, right;
+                            if (ColorUtility.TryParseHtmlString("#00FFFF", out left))
+                            {
+
+                            }
+                            if (ColorUtility.TryParseHtmlString("#39A9A6", out right))
+                            {
+
+                            }
+
+                            healthModeTextRep.text = HF.StringCoverageGradient(e_bars, left, right, true);
+                        }
+                        else
+                        {
+                            // Set value
+                            healthModeNumber.text = supply.ToString();
+
+                            e_bars = "";
+                            e_referenceValue = supply * GlobalSettings.inst.maxCharBarLength;
+                            e_dummyValue = GlobalSettings.inst.maxCharBarLength;
+                            while (e_dummyValue > (e_referenceValue / GlobalSettings.inst.maxCharBarLength))
+                            {
+                                e_bars += "|";
+                                e_dummyValue -= 1;
+                            }
+                            // Thankfully no gradient, just gray
+                            healthModeTextRep.text = "<color=#464646>" + e_bars + "</color>";
+                        }
+                    }
+                    else // NOTHING
+                    {
+                        healthModeTextRep.gameObject.SetActive(false);
+                        healthModeNumber.gameObject.SetActive(false);
+                        doAnimation = false;
+                    }
+
+                    break;
+                case 2: // INTEGRITY
+                    healthModeTextRep.gameObject.SetActive(true);
+                    healthModeNumber.gameObject.SetActive(true);
+
+                    // There can only be a max of 12 bars
+                    string displayText = "";
+                    float referenceValue = item.integrityCurrent * GlobalSettings.inst.maxCharBarLength;
+                    float dummyValue = GlobalSettings.inst.maxCharBarLength;
+                    while (dummyValue > (referenceValue / GlobalSettings.inst.maxCharBarLength))
+                    {
+                        displayText += "|";
+                        dummyValue -= 1;
+                    }
+                    healthModeTextRep.text = displayText; // Set text (bars)
+                    healthModeTextRep.color = healthDisplay.color; // Set color
+                    healthModeNumber.text = item.integrityCurrent.ToString(); // Set text (numbers)
+                    healthModeNumber.color = healthDisplay.color; // Set color
+                    break;
+                case 3: // INFO
+                        // This is data about the part, no bars
+                    healthModeTextRep.gameObject.SetActive(false);
+                    healthModeNumber.gameObject.SetActive(true);
+
+                    healthModeNumber.text = HF.HighlightDamageType(item.itemData.mechanicalDescription); // Set mechanical text & color damage type if it exists
+                    break;
+            }
         }
 
         // We also may need to do an animation
@@ -384,7 +545,34 @@ public class InvDisplayItem : MonoBehaviour
     private Coroutine rd_animation;
     private IEnumerator RightDataAnimation()
     {
-        yield return null;
+        // We just flash the backer
+        Image image = healthMode.GetComponent<Image>();
+
+        image.enabled = true;
+
+        // Just quickly flash from Black -> Green -> Black
+        float elapsedTime = 0f;
+        float duration = 0.35f;
+        Color start = new Color(0f, 0f, 0f, 0f);
+        Color middle = highlightColor;
+
+        while (elapsedTime < duration) // Black -> Green
+        {
+            image.color = Color.Lerp(start, middle, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        while (elapsedTime < duration) // Green -> Black
+        {
+            image.color = Color.Lerp(middle, start, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        image.enabled = false;
     }
 
     /// <summary>

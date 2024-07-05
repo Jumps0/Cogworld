@@ -17,6 +17,7 @@ using Transform = UnityEngine.Transform;
 using UnityEngine.UIElements;
 using UnityEngine.Windows;
 using UnityEngine.Networking.Types;
+using System.Text;
 
 /// <summary>
 /// Contains helper functions to be used globally.
@@ -4313,6 +4314,35 @@ public static class HF
         }
 
         return cName;
+    }
+
+    public static string StringCoverageGradient(string input, Color left, Color right, bool fixedLength = false)
+    {
+        int fixedLengthValue = GlobalSettings.inst.maxCharBarLength;
+
+        int length = input.Length;
+        int gradientLength = fixedLength ? Mathf.Min(fixedLengthValue, length) : length;
+        int startIndex = fixedLength ? Mathf.Max(0, length - fixedLengthValue) : 0;
+
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < length; i++)
+        {
+            Color color;
+            if (i < startIndex)
+            {
+                color = left;
+            }
+            else
+            {
+                float t = (i - startIndex) / (float)(gradientLength - 1);
+                color = Color.Lerp(left, right, t);
+            }
+
+            sb.Append($"<color=#{ColorUtility.ToHtmlStringRGB(color)}>{input[i]}</color>");
+        }
+
+        return sb.ToString();
     }
 
     #endregion
