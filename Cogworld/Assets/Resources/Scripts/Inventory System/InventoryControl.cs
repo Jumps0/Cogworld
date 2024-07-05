@@ -277,6 +277,11 @@ public class InventoryControl : MonoBehaviour
     /// </summary>
     public void PartsSortingCheck()
     {
+        if (awaitingSort) // Don't attempt to sort while we are already sorting!
+        {
+            return;
+        }
+
         bool updateNeeded = false;
 
         // We should only bother if the inventory has atleast 3 slots.

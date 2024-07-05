@@ -86,7 +86,7 @@ public class InvDisplayItem : MonoBehaviour
 
         // Turn everything else off
         partDisplay.gameObject.SetActive(false);
-        healthDisplay.gameObject.SetActive(false);
+        healthDisplay.enabled = false;
         modeMain.SetActive(false);
         specialDescText.gameObject.SetActive(false);
         healthMode.gameObject.SetActive(false);
@@ -119,7 +119,7 @@ public class InvDisplayItem : MonoBehaviour
         itemNameText.color = textColor;
 
         partDisplay.gameObject.SetActive(true);
-        healthDisplay.gameObject.SetActive(true);
+        healthDisplay.enabled = true;
         modeMain.SetActive(true);
         //_button.gameObject.SetActive(true);
         specialDescText.gameObject.SetActive(true);
@@ -1454,10 +1454,8 @@ public class InvDisplayItem : MonoBehaviour
         // However we will display these (as black) so the text lines up
         if (!my_interface.GetComponent<DynamicInterface>())
         {
-            partDisplay.gameObject.SetActive(true);
             partDisplay.enabled = false;
         }
-        healthDisplay.gameObject.SetActive(true);
         healthDisplay.enabled = false;
     }
 
@@ -1500,7 +1498,6 @@ public class InvDisplayItem : MonoBehaviour
             AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[85]); // UI/PT_LOST
 
         // Disabled the health indicator (but keep the spacing)
-        healthDisplay.gameObject.SetActive(true);
         healthDisplay.enabled = false;
 
         // Disabled the secondary detail & box
@@ -1541,17 +1538,23 @@ public class InvDisplayItem : MonoBehaviour
 
     #region Sorting
 
-    public void Sort_StaggeredMove(Vector3 end, List<Vector3> positions)
+    public void Sort_StaggeredMove(Vector3 end, List<Vector3> positions, float delay = 0f)
     {
         AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[70]); // UI | PART_SORT
 
-        StartCoroutine(StaggeredMove(end, positions));
+        StartCoroutine(StaggeredMove(end, positions, delay));
 
-        sort_letter = StartCoroutine(Sort_Letter());
+        sort_letter = StartCoroutine(Sort_Letter(delay));
     }
 
-    private IEnumerator StaggeredMove(Vector3 end, List<Vector3> positions)
+    private IEnumerator StaggeredMove(Vector3 end, List<Vector3> positions, float delay = 0f)
     {
+        // Delay if needed
+        if(delay > 0f)
+        {
+            yield return new WaitForSeconds(delay);
+        }
+
         Vector3 originPosition = this.transform.position;
 
         int flip = -1; // (Move down)
@@ -1561,7 +1564,7 @@ public class InvDisplayItem : MonoBehaviour
         }
 
         // 1. Slide to the left
-        float distance = 7f;
+        float distance = 21f;
         float elapsedTime = 0f;
         float duration = 0.35f;
 
@@ -1612,21 +1615,19 @@ public class InvDisplayItem : MonoBehaviour
             }
         }
 
-        if (flip == -1) // Reverse dirction if needed
+        if (flip == 1) // Reverse dirction if needed
         {
             path.Reverse();
         }
 
-        foreach (Vector3 P in path)
-        {
-            Debug.Log($"{this.gameObject.name} going from {originPosition.y} to {end.y} along path: {P.y}");
-        }
+        Debug.Log($"> {this.gameObject.name} moving from A:{originPosition.y} to B: {end.y} along path({path.Count})");
 
-        //Debug.Log($"{this.gameObject.name} moving from {originPosition.y} to {end.y} with a path length of [{path.Count}]");
         // Now move along these points over the time period we set
-        for (int i = 0; i < path.Count; i++)
+        foreach (Vector3 P in path.ToList()) // WHO is modifying this list? There is an error here for some reason???
         {
-            this.transform.position = new Vector3(this.transform.position.x, path[i].y, this.transform.position.z);
+            float y = P.y;
+
+            this.transform.position = new Vector3(this.transform.position.x, y, this.transform.position.z);
             yield return new WaitForSeconds(moveTime / path.Count); // don't want to take all day to do this so cut the speed by the amount of chunks we move
         }
 
@@ -1645,11 +1646,7 @@ public class InvDisplayItem : MonoBehaviour
             yield return null;
         }
 
-        // 4. Stop the random letter shuffle
-        if (sort_letter != null)
-            StopCoroutine(sort_letter);
-
-        // 5. Briefly flash the text
+        // 4. Briefly flash the text
         elapsedTime = 0f;
         duration = 0.45f;
 
@@ -1665,6 +1662,7 @@ public class InvDisplayItem : MonoBehaviour
 
             healthModeTextRep.color = Color.Lerp(startColor, end_rightside, elapsedTime / duration);
             healthModeNumber.color = Color.Lerp(startColor, end_rightside, elapsedTime / duration);
+            specialDescText.color = Color.Lerp(startColor, end_rightside, elapsedTime / duration);
 
             healthDisplay.color = Color.Lerp(startColor, end_health, elapsedTime / duration);
 
@@ -1672,12 +1670,19 @@ public class InvDisplayItem : MonoBehaviour
             yield return null;
         }
 
+        // 5. Stop the random letter shuffle
+        if (sort_letter != null)
+            StopCoroutine(sort_letter);
+
+        // Unset the flag
         InventoryControl.inst.awaitingSort = false; // Maybe move this somewhere else?
     }
 
     private Coroutine sort_letter;
-    private IEnumerator Sort_Letter()
+    private IEnumerator Sort_Letter(float delay = 0f)
     {
+        yield return new WaitForSeconds(delay);
+
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
         while (true) // Stopped when this coroutine is stopped.

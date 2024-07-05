@@ -1148,7 +1148,14 @@ public abstract class UserInterface : MonoBehaviour
                 {
                     GameObject obj = toBeSorted[i]; // Get the object that needs to be moved
                     //Debug.Log($"Moving {obj.name} from {oldNew[i].Item1} to {oldNew[i].Item2} (a distance of {oldNew[i].Item1.y - oldNew[i].Item2.y})");
-                    obj.GetComponent<InvDisplayItem>().Sort_StaggeredMove(oldNew[i].Item2, positions);
+
+                    // We want to animate the actual items first, and empty slots last. So we add a bit of delay here
+                    float delay = 0f;
+                    if(obj.GetComponent<InvDisplayItem>().item == null || obj.GetComponent<InvDisplayItem>().item.Id == -1)
+                    {
+                        delay = 0.3f;
+                    }
+                    obj.GetComponent<InvDisplayItem>().Sort_StaggeredMove(oldNew[i].Item2, positions, delay);
                 }
             }
         }
