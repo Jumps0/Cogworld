@@ -93,6 +93,10 @@ public class HierarchyObjectColor
                     backgroundColor = new Color(0.4f, 0.7f, 0.2f);
                     textColor = new Color(0.9f, 0.9f, 0.9f);
                     break;
+                case "QuestManager":
+                    backgroundColor = new Color(0.9f, 0.6f, 0.1f);
+                    textColor = new Color(0.9f, 0.9f, 0.9f);
+                    break;
 
                 // Testing
                 case "MainControl": // PathfindingTest
