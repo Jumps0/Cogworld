@@ -370,35 +370,39 @@ public class InvDisplayItem : MonoBehaviour
                     healthModeTextRep.gameObject.SetActive(true);
                     healthModeNumber.gameObject.SetActive(true);
 
-                    // First find out the coverage. This is a actually a much more simplified method than what we do in *Action.cs* because this is
-                    // getting called relatively often and not of great importance so its ok if the value isn't exact.
-                    // If you want to change this later feel free to it doesn't really matter that much.
-                    float coverage = item.itemData.coverage;
+                    // Get the coverage. 
+                    float coverage = HF.FindPercentCoverageFor(item);
 
                     // Bail out if coverage is 0
-                    if(coverage <= 0)
+                    if (coverage <= 0)
                     {
                         healthModeTextRep.gameObject.SetActive(false);
                         healthModeNumber.gameObject.SetActive(false);
                         return;
                     }
 
-                    // Double coverage for heavy treads in siege mode
-                    if (PlayerData.inst.timeTilSiege == 0)
-                    {
-                        if (item.itemData.type == ItemType.Armor || item.itemData.propulsion[0].canSiege != 0)
-                        {
-                            coverage *= 2;
-                        }
-                    }
-
                     // Set %
-                    healthModeNumber.text = Mathf.RoundToInt(coverage) + "%";
+                    float value = coverage * 100;
+                    // Set to 1% if its too small (but still not 0)
+                    if (value < 1 && value > 0)
+                        value = 1;
+                    healthModeNumber.text = Mathf.RoundToInt(value) + "%";
                     // Then set the bar, we will set it to have a max of 12
-                    string c_bars = HF.ValueToStringBar(coverage / 100, 0.15f);
+                    string c_bars = HF.ValueToStringBar(coverage, 0.15f);
 
-                    // Uniquely, the bar has a nice little gradient, so this becomes 10x more complex
-                    healthModeTextRep.text = HF.StringCoverageGradient(c_bars, activeGreen, inActiveGreen, true);
+                    // If this item is currently in the inventory everything should be grayed out
+                    if(!item.state || !my_interface.GetComponent<DynamicInterface>())
+                    {
+                        healthModeNumber.color = emptyGray;
+
+                        healthModeTextRep.text = c_bars;
+                        healthModeTextRep.color = emptyGray;
+                    }
+                    else
+                    {
+                        // Uniquely, the bar has a nice little gradient, so this becomes 10x more complex
+                        healthModeTextRep.text = HF.StringCoverageGradient(c_bars, activeGreen, inActiveGreen, true);
+                    }
 
                     break;
                 case 1: // ENERGY

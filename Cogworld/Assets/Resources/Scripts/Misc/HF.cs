@@ -14,6 +14,7 @@ using Vector3 = UnityEngine.Vector3;
 using Transform = UnityEngine.Transform;
 using System.Text;
 using Color = UnityEngine.Color;
+using static Unity.VisualScripting.Member;
 
 /// <summary>
 /// Contains helper functions to be used globally.
@@ -1786,6 +1787,60 @@ public static class HF
     #endregion
 
     #region Find & Get
+
+    /// <summary>
+    /// Attempts to find the % coverage value for the specified item belonging to the player.
+    /// </summary>
+    /// <param name="item">The item we want the coverage value for.</param>
+    /// <returns>A % float value representing this items current coverage.</returns>
+    public static float FindPercentCoverageFor(Item item)
+    {
+        // Gather up all player items (not in inventory though)
+        List<Item> items = Action.CollectAllBotItems(PlayerData.inst.GetComponent<Actor>());
+
+        int coreExposure = PlayerData.inst.currentCoreExposure;
+
+        /*
+        Example 1: Cogmind's core has an exposure of 100. Say you equip only one part, a weapon which also has a coverage of 100. 
+        Their total value is 200 (100+100), so if you are hit by a projectile, each one has a 50% (100/200) chance to be hit.
+
+        Example 2: You have the following parts attached:
+          Ion Engine (60)
+          Light Treads (120)
+          Light Treads (120)
+          Medium Laser (60)
+          Assault Rifle (100)
+        With your core (100), the total is 560, so the chance to hit each location is:
+          Ion Engine: 60/560=10.7%
+          Light Treads: 120/560=21.4% (each)
+          Medium Laser: 60/560=10.7%
+          Assault Rifle: 100/560=17.9%
+          Core: 100/560=17.9%
+         */
+
+        int totalExposure = 0;
+
+        foreach (var I in items)
+        {
+            if (I.state)
+            {
+                totalExposure += I.itemData.coverage;
+
+                // All armor and heavy treads have double coverage in *Siege Mode*
+                if (PlayerData.inst.timeTilSiege == 0)
+                {
+                    if (I.itemData.type == ItemType.Armor || I.itemData.propulsion[0].canSiege != 0)
+                    {
+                        totalExposure += I.itemData.coverage;
+                    }
+                }
+            }
+        }
+        totalExposure += coreExposure;
+
+        // Then take the item, and divide its coverage value by the total value to find our result
+        return (float)item.itemData.coverage / (float)totalExposure;
+    }
 
     public static Part TryFindPartAtLocation(Vector2Int pos)
     {
