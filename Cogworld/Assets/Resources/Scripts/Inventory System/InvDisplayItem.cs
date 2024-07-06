@@ -374,6 +374,15 @@ public class InvDisplayItem : MonoBehaviour
                     // getting called relatively often and not of great importance so its ok if the value isn't exact.
                     // If you want to change this later feel free to it doesn't really matter that much.
                     float coverage = item.itemData.coverage;
+
+                    // Bail out if coverage is 0
+                    if(coverage <= 0)
+                    {
+                        healthModeTextRep.gameObject.SetActive(false);
+                        healthModeNumber.gameObject.SetActive(false);
+                        return;
+                    }
+
                     // Double coverage for heavy treads in siege mode
                     if (PlayerData.inst.timeTilSiege == 0)
                     {
@@ -470,8 +479,18 @@ public class InvDisplayItem : MonoBehaviour
                     healthModeTextRep.gameObject.SetActive(true);
                     healthModeNumber.gameObject.SetActive(true);
 
+                    int cur = item.integrityCurrent, max = item.itemData.integrityMax;
+
+                    // Bail out if current HP is 0. Unlikely that this will happen but good to be safe
+                    if(cur <= 0)
+                    {
+                        healthModeTextRep.gameObject.SetActive(false);
+                        healthModeNumber.gameObject.SetActive(false);
+                        return;
+                    }
+
                     // There can only be a max of 12 bars
-                    string displayText = HF.ValueToStringBar(item.integrityCurrent, item.itemData.integrityMax);
+                    string displayText = HF.ValueToStringBar(cur, max);
                     healthModeTextRep.text = displayText; // Set text (bars)
                     healthModeTextRep.color = healthDisplay.color; // Set color
                     healthModeNumber.text = item.integrityCurrent.ToString(); // Set text (numbers)
@@ -508,10 +527,10 @@ public class InvDisplayItem : MonoBehaviour
 
         // Just quickly flash from Black -> Green -> Black
         float elapsedTime = 0f;
-        float duration = 0.35f;
+        float duration = 0.5f;
         Color start = new Color(0f, 0f, 0f, 0f);
         Color middle = highlightColor;
-
+        /*
         while (elapsedTime < duration) // Black -> Green
         {
             image.color = Color.Lerp(start, middle, elapsedTime / duration);
@@ -519,7 +538,7 @@ public class InvDisplayItem : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-
+        */
         while (elapsedTime < duration) // Green -> Black
         {
             image.color = Color.Lerp(middle, start, elapsedTime / duration);

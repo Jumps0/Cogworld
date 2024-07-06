@@ -13430,7 +13430,6 @@ GameObject:
   - component: {fileID: 431393586}
   - component: {fileID: 431393585}
   - component: {fileID: 431393588}
-  - component: {fileID: 431393589}
   - component: {fileID: 431393590}
   m_Layer: 5
   m_Name: E - Energy
@@ -13581,14 +13580,14 @@ MonoBehaviour:
   onHoverStart:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 431393589}
-        m_TargetAssemblyTypeName: SetText, Assembly-CSharp
-        m_MethodName: SetString
-        m_Mode: 5
+      - m_Target: {fileID: 879816732}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: CEWQ_HoverEnter
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: <mark=#003F01aa><color=#00FF00>e</color></mark>
           m_BoolArgument: 0
@@ -13608,14 +13607,14 @@ MonoBehaviour:
   onHoverEnd:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 431393589}
-        m_TargetAssemblyTypeName: SetText, Assembly-CSharp
-        m_MethodName: SetString
-        m_Mode: 5
+      - m_Target: {fileID: 879816732}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: CEWQ_HoverExit
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: <color=#008100>e</color>
           m_BoolArgument: 0
@@ -13627,19 +13626,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   disabled: 0
---- !u!114 &431393589
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 431393583}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 231e89bc23d02e14a85a12cf1d55164e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  text: {fileID: 811680676}
 --- !u!82 &431393590
 AudioSource:
   m_ObjectHideFlags: 0
@@ -31368,7 +31354,6 @@ GameObject:
   - component: {fileID: 735686245}
   - component: {fileID: 735686244}
   - component: {fileID: 735686247}
-  - component: {fileID: 735686248}
   - component: {fileID: 735686249}
   m_Layer: 5
   m_Name: W - Integrity
@@ -31519,14 +31504,14 @@ MonoBehaviour:
   onHoverStart:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 735686248}
-        m_TargetAssemblyTypeName: SetText, Assembly-CSharp
-        m_MethodName: SetString
-        m_Mode: 5
+      - m_Target: {fileID: 879816732}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: CEWQ_HoverEnter
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: <mark=#003F01aa><color=#00FF00>w</color></mark>
           m_BoolArgument: 0
@@ -31546,14 +31531,14 @@ MonoBehaviour:
   onHoverEnd:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 735686248}
-        m_TargetAssemblyTypeName: SetText, Assembly-CSharp
-        m_MethodName: SetString
-        m_Mode: 5
+      - m_Target: {fileID: 879816732}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: CEWQ_HoverExit
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: <color=#008100>w</color>
           m_BoolArgument: 0
@@ -31565,19 +31550,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   disabled: 0
---- !u!114 &735686248
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 735686242}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 231e89bc23d02e14a85a12cf1d55164e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  text: {fileID: 308419451}
 --- !u!82 &735686249
 AudioSource:
   m_ObjectHideFlags: 0
@@ -88948,7 +88920,6 @@ GameObject:
   - component: {fileID: 1950070964}
   - component: {fileID: 1950070963}
   - component: {fileID: 1950070966}
-  - component: {fileID: 1950070967}
   - component: {fileID: 1950070968}
   m_Layer: 5
   m_Name: Q - Info
@@ -89099,14 +89070,14 @@ MonoBehaviour:
   onHoverStart:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1950070967}
-        m_TargetAssemblyTypeName: SetText, Assembly-CSharp
-        m_MethodName: SetString
-        m_Mode: 5
+      - m_Target: {fileID: 879816732}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: CEWQ_HoverEnter
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: <mark=#003F01aa><color=#00FF00>q</color></mark>
           m_BoolArgument: 0
@@ -89126,14 +89097,14 @@ MonoBehaviour:
   onHoverEnd:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1950070967}
-        m_TargetAssemblyTypeName: SetText, Assembly-CSharp
-        m_MethodName: SetString
-        m_Mode: 5
+      - m_Target: {fileID: 879816732}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: CEWQ_HoverExit
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: <color=#008100>q</color>
           m_BoolArgument: 0
@@ -89145,19 +89116,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   disabled: 0
---- !u!114 &1950070967
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1950070961}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 231e89bc23d02e14a85a12cf1d55164e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  text: {fileID: 2113719282}
 --- !u!82 &1950070968
 AudioSource:
   m_ObjectHideFlags: 0
@@ -94287,7 +94245,6 @@ GameObject:
   - component: {fileID: 2101474577}
   - component: {fileID: 2101474576}
   - component: {fileID: 2101474579}
-  - component: {fileID: 2101474580}
   - component: {fileID: 2101474581}
   m_Layer: 5
   m_Name: C - Coverage
@@ -94438,10 +94395,10 @@ MonoBehaviour:
   onHoverStart:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2101474580}
-        m_TargetAssemblyTypeName: SetText, Assembly-CSharp
-        m_MethodName: SetString
-        m_Mode: 5
+      - m_Target: {fileID: 879816732}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: CEWQ_HoverEnter
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -94465,10 +94422,10 @@ MonoBehaviour:
   onHoverEnd:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2101474580}
-        m_TargetAssemblyTypeName: SetText, Assembly-CSharp
-        m_MethodName: SetString
-        m_Mode: 5
+      - m_Target: {fileID: 879816732}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: CEWQ_HoverExit
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -94484,19 +94441,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   disabled: 0
---- !u!114 &2101474580
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2101474574}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 231e89bc23d02e14a85a12cf1d55164e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  text: {fileID: 453894837}
 --- !u!82 &2101474581
 AudioSource:
   m_ObjectHideFlags: 0

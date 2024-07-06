@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using TMPro;
 using System.Linq;
 using System.Text;
+using static System.Net.Mime.MediaTypeNames;
+using Image = UnityEngine.UI.Image;
 //using static UnityEditor.Progress;
 
 public class UIManager : MonoBehaviour
@@ -5758,10 +5760,94 @@ public class UIManager : MonoBehaviour
         CEWQ_SetMode(value, true);
     }
 
+    public void CEWQ_HoverEnter(int id)
+    {
+        switch (id)
+        {
+            case 0:
+                cText.text = "<mark=#003F01aa><color=#00FF00>c</color></mark>";
+                break;
+            case 1:
+                eText.text = "<mark=#003F01aa><color=#00FF00>e</color></mark>";
+                break;
+            case 2:
+                wText.text = "<mark=#003F01aa><color=#00FF00>w</color></mark>";
+                break;
+            case 3:
+                qText.text = "<mark=#003F01aa><color=#00FF00>q</color></mark>";
+                break;
+        }
+    }
+
+    public void CEWQ_HoverExit(int id)
+    {
+        // Only difference here is that if the mode is selected we don't set it back to dark green, we keep it light green.
+        switch (id)
+        {
+            case 0:
+                if(cewq_mode == id)
+                {
+                    cText.text = "<color=#00FF00>c</color>";
+                    // Unmark everything else
+                    eText.text = "<color=#008100>e</color>";
+                    wText.text = "<color=#008100>w</color>";
+                    qText.text = "<color=#008100>q</color>";
+                }
+                else
+                {
+                    cText.text = "<color=#008100>c</color>";
+                }
+                break;
+            case 1:
+                if (cewq_mode == id)
+                {
+                    eText.text = "<color=#00FF00>e</color>";
+                    // Unmark everything else
+                    cText.text = "<color=#008100>c</color>";
+                    wText.text = "<color=#008100>w</color>";
+                    qText.text = "<color=#008100>q</color>";
+                }
+                else
+                {
+                    eText.text = "<color=#008100>e</color>";
+                }
+                break;
+            case 2:
+                if (cewq_mode == id)
+                {
+                    wText.text = "<color=#00FF00>w</color>";
+                    // Unmark everything else
+                    eText.text = "<color=#008100>e</color>";
+                    cText.text = "<color=#008100>c</color>";
+                    qText.text = "<color=#008100>q</color>";
+                }
+                else
+                {
+                    wText.text = "<color=#008100>w</color>";
+                }
+                break;
+            case 3:
+                if (cewq_mode == id)
+                {
+                    qText.text = "<color=#00FF00>q</color>";
+                    // Unmark everything else
+                    eText.text = "<color=#008100>e</color>";
+                    wText.text = "<color=#008100>w</color>";
+                    cText.text = "<color=#008100>c</color>";
+                }
+                else
+                {
+                    qText.text = "<color=#008100>q</color>";
+                }
+                break;
+        }
+    }
+
     public void CEWQ_SetMode(int value, bool showType = true)
     {
         // Set the mode
         cewq_mode = value;
+        CEWQ_HoverExit(cewq_mode); // Change the text
 
         // Do the animation
         if (cewq_coroutine != null)
