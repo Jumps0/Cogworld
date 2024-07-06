@@ -11,13 +11,9 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
-using static UnityEngine.GraphicsBuffer;
-using static UnityEngine.RuleTile.TilingRuleOutput;
 using Transform = UnityEngine.Transform;
-using UnityEngine.UIElements;
-using UnityEngine.Windows;
-using UnityEngine.Networking.Types;
 using System.Text;
+using Color = UnityEngine.Color;
 
 /// <summary>
 /// Contains helper functions to be used globally.
@@ -4326,23 +4322,49 @@ public static class HF
 
         StringBuilder sb = new StringBuilder();
 
-        for (int i = 0; i < length; i++)
+        if(input.Length > 1)
         {
-            Color color;
-            if (i < startIndex)
+            for (int i = 0; i < length; i++)
             {
-                color = left;
-            }
-            else
-            {
-                float t = (i - startIndex) / (float)(gradientLength - 1);
-                color = Color.Lerp(left, right, t);
-            }
+                Color color;
+                if (i < startIndex)
+                {
+                    color = left;
+                }
+                else
+                {
+                    float t = (i - startIndex) / (float)(gradientLength - 1);
+                    color = Color.Lerp(left, right, t);
+                }
 
-            sb.Append($"<color=#{ColorUtility.ToHtmlStringRGB(color)}>{input[i]}</color>");
+                sb.Append($"<color=#{ColorUtility.ToHtmlStringRGB(color)}>{input[i]}</color>");
+            }
         }
+        else // Failsafe
+        {
+            sb.Append($"<color=#{ColorUtility.ToHtmlStringRGB(right)}>{input[0]}</color>");
+        }
+        
 
         return sb.ToString();
+    }
+
+    public static string ValueToStringBar(float value, float max = 100f)
+    {
+        // Clamp the value between 0 and the max
+        value = Mathf.Clamp(value, 0, max);
+
+        // Calculate the number of "|" characters (12 is (usually) the maximum length)
+        int barLength = Mathf.RoundToInt((value / max) * GlobalSettings.inst.maxCharBarLength);
+
+        // Ensure there is at least one "|" if the value is greater than 0
+        if (value > 0 && barLength == 0)
+        {
+            barLength = 1;
+        }
+
+        // Generate the bar string
+        return new string('|', barLength);
     }
 
     #endregion

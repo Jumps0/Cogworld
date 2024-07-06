@@ -5750,9 +5750,6 @@ public class UIManager : MonoBehaviour
         {
             botTypeGO.SetActive(false);
         }
-
-        // Update the item stats
-        CEWQ_SetMode(GlobalSettings.inst.defaultItemDataMode, false);
     }
 
     #region Rightside - CEWQ
@@ -5787,7 +5784,7 @@ public class UIManager : MonoBehaviour
 
                 if(idi.item != null)
                 {
-                    idi.SetRightSideDisplay();
+                    idi.SetRightSideDisplay(true);
                 }
             }
         }

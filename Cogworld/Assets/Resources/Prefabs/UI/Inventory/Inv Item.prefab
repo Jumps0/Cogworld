@@ -1485,6 +1485,11 @@ MonoBehaviour:
   emptyGray: {r: 0.21568629, g: 0.21176472, b: 0.22352943, a: 1}
   letterWhite: {r: 0.6117647, g: 0.6117647, b: 0.6117647, a: 1}
   highlightColor: {r: 0, g: 0.24528301, b: 0.005840049, a: 1}
+  defaultTextColor: {r: 0.1254902, g: 0.6431373, b: 0.14117648, a: 1}
+  gDarkBlueHigh: {r: 0.019607844, g: 0, b: 1, a: 1}
+  gDarkBlueLow: {r: 0.14901961, g: 0.13725491, b: 0.70980394, a: 1}
+  gBlueHigh: {r: 0, g: 1, b: 1, a: 1}
+  gBlueLow: {r: 0.22352941, g: 0.6627451, b: 0.6509804, a: 1}
   item:
     Name: 
     Id: -1

@@ -49,6 +49,12 @@ public class InvDisplayItem : MonoBehaviour
     public Color letterWhite;
     //
     public Color highlightColor;
+    public Color defaultTextColor;
+    [Header("  Gradient Colors")]
+    public Color gDarkBlueHigh;
+    public Color gDarkBlueLow;
+    public Color gBlueHigh;
+    public Color gBlueLow;
     //
     // --        --
 
@@ -336,7 +342,7 @@ public class InvDisplayItem : MonoBehaviour
         int mode = UIManager.inst.cewq_mode;
 
         // Duplicates/Secondaries don't show anything at all
-        if (isSecondaryItem)
+        if (isSecondaryItem || item == null)
         {
             healthModeTextRep.gameObject.SetActive(false);
             healthModeNumber.gameObject.SetActive(false);
@@ -354,10 +360,15 @@ public class InvDisplayItem : MonoBehaviour
         }
         else // If its not a prototype we show the info
         {
+            healthModeNumber.color = defaultTextColor;  // Reset colors to defaults
+            healthModeTextRep.color = defaultTextColor; //
+
             switch (mode)
             {
                 case 0: // COVERAGE
-                    // We need to display the bar (though a little shorter) and the amount
+                    // We need to display the bar and the amount
+                    healthModeTextRep.gameObject.SetActive(true);
+                    healthModeNumber.gameObject.SetActive(true);
 
                     // First find out the coverage. This is a actually a much more simplified method than what we do in *Action.cs* because this is
                     // getting called relatively often and not of great importance so its ok if the value isn't exact.
@@ -373,16 +384,10 @@ public class InvDisplayItem : MonoBehaviour
                     }
 
                     // Set %
-                    healthModeNumber.text = Mathf.RoundToInt(coverage * 100) + "%";
+                    healthModeNumber.text = Mathf.RoundToInt(coverage) + "%";
                     // Then set the bar, we will set it to have a max of 12
-                    string c_bars = "";
-                    float c_referenceValue = coverage * GlobalSettings.inst.maxCharBarLength;
-                    float c_dummyValue = GlobalSettings.inst.maxCharBarLength;
-                    while (c_dummyValue > (c_referenceValue / GlobalSettings.inst.maxCharBarLength))
-                    {
-                        c_bars += "|";
-                        c_dummyValue -= 1;
-                    }
+                    string c_bars = HF.ValueToStringBar(coverage / 100, 0.15f);
+
                     // Uniquely, the bar has a nice little gradient, so this becomes 10x more complex
                     healthModeTextRep.text = HF.StringCoverageGradient(c_bars, activeGreen, inActiveGreen, true);
 
@@ -393,106 +398,64 @@ public class InvDisplayItem : MonoBehaviour
                     healthModeNumber.gameObject.SetActive(true);
 
                     string e_bars = "";
-                    float e_referenceValue;
-                    float e_dummyValue; 
 
                     // We only display for things that actually USE or EMIT power
-                    if (item.itemData.hasUpkeep && item.itemData.energyUpkeep > 0) // -- USE --
+                    if (item.itemData.hasUpkeep && item.itemData.energyUpkeep < 0) // -- USE --
                     {
-                        float upkeep = item.itemData.energyUpkeep;
+                        float upkeep = Mathf.Abs(item.itemData.energyUpkeep);
 
                         // If we are using power, the color should be DARK BLUE (#0500FF) to (#2623B5)
                         // Although if this part is OFF then the color should be GRAY
-                        if (item.state && !my_interface.GetComponent<DynamicInterface>())
+                        if (item.state && my_interface.GetComponent<DynamicInterface>())
                         {
                             // Set value
                             healthModeNumber.text = upkeep.ToString();
 
-                            e_bars = "";
-                            e_referenceValue = upkeep * GlobalSettings.inst.maxCharBarLength;
-                            e_dummyValue = GlobalSettings.inst.maxCharBarLength;
-                            while (e_dummyValue > (e_referenceValue / GlobalSettings.inst.maxCharBarLength))
-                            {
-                                e_bars += "|";
-                                e_dummyValue -= 1;
-                            }
+                            e_bars = HF.ValueToStringBar(upkeep, 50);
                             // Apply gradient
-                            Color left, right;
-                            if(ColorUtility.TryParseHtmlString("#0500FF", out left))
-                            {
-
-                            }
-                            if(ColorUtility.TryParseHtmlString("#2623B5", out right))
-                            {
-
-                            }
+                            Color left = gDarkBlueHigh, right = gDarkBlueLow;
 
                             healthModeTextRep.text = HF.StringCoverageGradient(e_bars, left, right, true);
+                            healthModeNumber.color = right;
                         }
                         else
                         {
                             // Set value
                             healthModeNumber.text = upkeep.ToString();
 
-                            e_bars = "";
-                            e_referenceValue = upkeep * GlobalSettings.inst.maxCharBarLength;
-                            e_dummyValue = GlobalSettings.inst.maxCharBarLength;
-                            while (e_dummyValue > (e_referenceValue / GlobalSettings.inst.maxCharBarLength))
-                            {
-                                e_bars += "|";
-                                e_dummyValue -= 1;
-                            }
+                            e_bars = HF.ValueToStringBar(upkeep, 50);
                             // Thankfully no gradient, just gray
                             healthModeTextRep.text = "<color=#464646>" + e_bars + "</color>";
+                            healthModeNumber.color = emptyGray;
                         }
                     }
                     else if (item.itemData.supply > 0) // -- EMIT --
                     {
-                        float supply = item.itemData.supply;
+                        float supply = Mathf.Abs(item.itemData.supply);
 
                         // If we are supplying power, the color should be BRIGHT BLUE (#00FFFF) to (#39A9A6)
                         // Although if this part is OFF then the color should be GRAY
-                        if (item.state && !my_interface.GetComponent<DynamicInterface>())
+                        if (item.state && my_interface.GetComponent<DynamicInterface>())
                         {
                             // Set value
                             healthModeNumber.text = supply.ToString();
 
-                            e_bars = "";
-                            e_referenceValue = supply * GlobalSettings.inst.maxCharBarLength;
-                            e_dummyValue = GlobalSettings.inst.maxCharBarLength;
-                            while (e_dummyValue > (e_referenceValue / GlobalSettings.inst.maxCharBarLength))
-                            {
-                                e_bars += "|";
-                                e_dummyValue -= 1;
-                            }
+                            e_bars = HF.ValueToStringBar(supply, 50);
                             // Apply gradient
-                            Color left, right;
-                            if (ColorUtility.TryParseHtmlString("#00FFFF", out left))
-                            {
-
-                            }
-                            if (ColorUtility.TryParseHtmlString("#39A9A6", out right))
-                            {
-
-                            }
+                            Color left = gBlueHigh, right = gBlueLow;
 
                             healthModeTextRep.text = HF.StringCoverageGradient(e_bars, left, right, true);
+                            healthModeNumber.color = right;
                         }
                         else
                         {
                             // Set value
                             healthModeNumber.text = supply.ToString();
 
-                            e_bars = "";
-                            e_referenceValue = supply * GlobalSettings.inst.maxCharBarLength;
-                            e_dummyValue = GlobalSettings.inst.maxCharBarLength;
-                            while (e_dummyValue > (e_referenceValue / GlobalSettings.inst.maxCharBarLength))
-                            {
-                                e_bars += "|";
-                                e_dummyValue -= 1;
-                            }
+                            e_bars = HF.ValueToStringBar(supply, 50);
                             // Thankfully no gradient, just gray
                             healthModeTextRep.text = "<color=#464646>" + e_bars + "</color>";
+                            healthModeNumber.color = emptyGray;
                         }
                     }
                     else // NOTHING
@@ -508,14 +471,7 @@ public class InvDisplayItem : MonoBehaviour
                     healthModeNumber.gameObject.SetActive(true);
 
                     // There can only be a max of 12 bars
-                    string displayText = "";
-                    float referenceValue = item.integrityCurrent * GlobalSettings.inst.maxCharBarLength;
-                    float dummyValue = GlobalSettings.inst.maxCharBarLength;
-                    while (dummyValue > (referenceValue / GlobalSettings.inst.maxCharBarLength))
-                    {
-                        displayText += "|";
-                        dummyValue -= 1;
-                    }
+                    string displayText = HF.ValueToStringBar(item.integrityCurrent, item.itemData.integrityMax);
                     healthModeTextRep.text = displayText; // Set text (bars)
                     healthModeTextRep.color = healthDisplay.color; // Set color
                     healthModeNumber.text = item.integrityCurrent.ToString(); // Set text (numbers)

@@ -170,6 +170,9 @@ public class InventoryControl : MonoBehaviour
         }
 
         SetInterfaceInvKeys();
+
+        // Update the item stats
+        UIManager.inst.CEWQ_SetMode(GlobalSettings.inst.defaultItemDataMode, false);
     }
 
     public void UpdateInterfaceInventories()
