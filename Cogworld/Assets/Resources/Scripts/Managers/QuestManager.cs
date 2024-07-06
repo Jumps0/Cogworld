@@ -16,7 +16,7 @@ public class QuestManager : MonoBehaviour
         inst = this;
     }
 
-    public List<PlayerQuest> allQuests = new List<PlayerQuest>();
+    public QuestDatabaseObject questDatabase;
 
     public void CreateQuest()
     {
@@ -50,23 +50,12 @@ public class QuestManager : MonoBehaviour
 
 }
 
-public abstract class PlayerQuest
-{
-    public List<QuestTask> tasks = new List<QuestTask>();
-}
-
-public abstract class QuestTask
-{
-    public QuestState _state;
-    // Todo
-}
-
 public enum QuestState
 {
+    Default,
     Available, // This quest exists, and the player can choose to take it
     Active,    // Player is actively doing this quest & it has been assigned to them
     Complete,  // The player has completed this quest
     Cancelled, // The player cancelled this quest. Log it for now
-    Failed,    // The player failed this quest
-    Default
+    Failed     // The player failed this quest
 }

@@ -388,7 +388,7 @@ public class InvDisplayItem : MonoBehaviour
                         value = 1;
                     healthModeNumber.text = Mathf.RoundToInt(value) + "%";
                     // Then set the bar, we will set it to have a max of 12
-                    string c_bars = HF.ValueToStringBar(coverage, 0.15f);
+                    string c_bars = HF.ValueToStringBar(coverage, 0.2f);
 
                     // If this item is currently in the inventory everything should be grayed out
                     if(!item.state || !my_interface.GetComponent<DynamicInterface>())

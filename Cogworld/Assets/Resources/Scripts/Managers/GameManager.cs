@@ -45,6 +45,8 @@ public class GameManager : MonoBehaviour
         GameManager.inst.GrantSchematicKnowledge(MapManager.inst.itemDatabase.Items[4]);
         GameManager.inst.GrantSchematicKnowledge(MapManager.inst.itemDatabase.Items[5]);
         //GameManager.inst.GrantSchematicKnowledge(null, MapManager.inst.botDatabase.Bots[2]);
+
+        questEvents = new QuestEvents(); // Setup the event listener
     }
 
     #region File I/O (.json)
@@ -180,6 +182,9 @@ public class GameManager : MonoBehaviour
     public int alertLevel = 0;
     [Tooltip("Goes from 0 to 1200+, see GameManager.cs for details")]
     public int alertValue = 0;
+
+    [Header("Event Listening")]
+    public QuestEvents questEvents;
 
     public void AddEntity(Entity entity)
     {
