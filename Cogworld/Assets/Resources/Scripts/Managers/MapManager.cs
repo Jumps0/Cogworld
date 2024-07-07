@@ -255,6 +255,8 @@ public class MapManager : MonoBehaviour
 
         yield return null;
 
+        QuestManager.inst.Init();
+
         // -- Place Machines (Static & Interactable) --
         //
         PlaceMachines();
@@ -444,6 +446,8 @@ public class MapManager : MonoBehaviour
             }
         }
 
+        QuestManager.inst.Init();
+
         AssignMachineNames(); // Assign names to all placed machines
         AssignMachineCommands(); // Assign commands (for terminal interaction) to all placed machines.
         ZoneTerminals(); // Create terminal zones
@@ -588,6 +592,8 @@ public class MapManager : MonoBehaviour
 
         // # - Test bot
         Actor testBot = PlaceBot(new Vector2Int(bl.x + 12, bl.y + 5), 9);
+        // Test QUEST Bot
+        Actor questBot = PlaceBot(new Vector2Int(bl.x + 5, bl.y + 16), 13);
         // test custom terminal
         PlaceIndividualMachine(new Vector2Int(bl.x + 9, bl.y + 11), 7, 0); // Terminal 1x1 Shop
         // test trap

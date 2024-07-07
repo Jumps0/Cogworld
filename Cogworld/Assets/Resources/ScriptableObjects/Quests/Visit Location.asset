@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afbd11b038901dd40824db74d39295a2, type: 3}
+  m_Name: Visit Location
+  m_EditorClassIdentifier: 
+  Id: 1
+  displayName: Visit Location
+  description: 
+  steps:
+  - {fileID: 4471201208271377523, guid: f47c60cf5160b464aad3dab2a2370c3f, type: 3}
+  reward_items: []
+  reward_matter: 0

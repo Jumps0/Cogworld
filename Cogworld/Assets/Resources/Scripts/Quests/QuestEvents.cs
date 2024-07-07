@@ -46,6 +46,15 @@ public class QuestEvents
             onQuestStateChange(quest);
         }
     }
+
+    public event System.Action<string, int, QuestStepState> onQuestStepStateChange;
+    public void QuestStepStateChange(string id, int stepIndex, QuestStepState questStepState)
+    {
+        if (onQuestStepStateChange != null)
+        {
+            onQuestStepStateChange(id, stepIndex, questStepState);
+        }
+    }
     #endregion
 
     #region Individual Quest Events

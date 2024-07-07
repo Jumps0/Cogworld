@@ -27,6 +27,17 @@ public class QS_GoToLocation : QuestStep
 
     private void LocationReached()
     {
+        FinishQuestStep();
+    }
 
+    private void UpdateState()
+    {
+        //string state = itemToCollect.ToString();
+        //ChangeState(state);
+    }
+
+    protected override void SetQuestStepState(string state)
+    {
+        // No state is needed for this quest step
     }
 }

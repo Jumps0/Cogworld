@@ -37,4 +37,17 @@ public class QS_CollectItem : QuestStep
             }
         }
     }
+
+    private void UpdateState()
+    {
+        string state = itemToCollect.ToString();
+        ChangeState(state);
+    }
+
+    protected override void SetQuestStepState(string state)
+    {
+        // Convert *itemToCollect* (string) back to an actual item
+
+        UpdateState();
+    }
 }

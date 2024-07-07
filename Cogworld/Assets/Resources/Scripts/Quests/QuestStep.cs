@@ -7,6 +7,18 @@ using UnityEngine;
 public abstract class QuestStep : MonoBehaviour
 {
     private bool isFinished = false;
+    private string questID;
+    private int stepIndex;
+
+    public void InitQuestStep(string questID, int stepIndex, string questStepState)
+    {
+        this.questID = questID;
+        this.stepIndex = stepIndex;
+        if(questStepState != null && questStepState != "")
+        {
+            SetQuestStepState(questStepState);
+        }
+    }
 
     protected void FinishQuestStep()
     {
@@ -14,9 +26,16 @@ public abstract class QuestStep : MonoBehaviour
         {
             isFinished = true;
 
-            // TODO - Advance the quest forward now that this step is done
+            GameManager.inst.questEvents.AdvanceQuest(questID);
 
             Destroy(this.gameObject);
         }
     }
+
+    protected void ChangeState(string newState)
+    {
+        GameManager.inst.questEvents.QuestStepStateChange(questID, stepIndex, new QuestStepState(newState));
+    }
+
+    protected abstract void SetQuestStepState(string state);
 }
