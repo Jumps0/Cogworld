@@ -5762,19 +5762,21 @@ public class UIManager : MonoBehaviour
 
     public void CEWQ_HoverEnter(int id)
     {
+        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.UI_Clips[48], 0.8f); // Play hover sound
+
         switch (id)
         {
             case 0:
-                cText.text = "<mark=#003F01aa><color=#00FF00>c</color></mark>";
+                cText.text = "<color=#00FF00>c</color>";
                 break;
             case 1:
-                eText.text = "<mark=#003F01aa><color=#00FF00>e</color></mark>";
+                eText.text = "<color=#00FF00>e</color>";
                 break;
             case 2:
-                wText.text = "<mark=#003F01aa><color=#00FF00>w</color></mark>";
+                wText.text = "<color=#00FF00>w</color>";
                 break;
             case 3:
-                qText.text = "<mark=#003F01aa><color=#00FF00>q</color></mark>";
+                qText.text = "<color=#00FF00>q</color>";
                 break;
         }
     }
@@ -5922,18 +5924,6 @@ public class UIManager : MonoBehaviour
 
     }
 
-    private string PlusMinusHelper(float num)
-    {
-        if(num >= 0)
-        {
-            return "+";
-        }
-        else
-        {
-            return ""; // Already negative so "-" is already there
-        }
-    }
-
     private void SetAvoidanceImageColor(float amount, Image image)
     {
         amount = amount / 100f;
@@ -5963,6 +5953,56 @@ public class UIManager : MonoBehaviour
     {
         InventoryControl.inst.SetInterfaceInvKeys();
     }
+
+    #region Rightside - MAP
+    [Header("MAP")]
+    public TextMeshProUGUI map_buttonText;
+
+    public void Map_HoverEnter()
+    {
+        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.UI_Clips[48], 0.8f); // Play hover sound
+    }
+
+    public void Map_HoverExit()
+    {
+
+    }
+
+    public void Map_Open()
+    {
+
+    }
+
+    public void Map_Close()
+    {
+
+    }
+    #endregion
+
+    #region Rightside - ESC
+    [Header("ESC")]
+    public TextMeshProUGUI esc_buttonText;
+
+    public void ESC_HoverEnter()
+    {
+        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.UI_Clips[48], 0.8f); // Play hover sound
+    }
+
+    public void ESC_HoverExit()
+    {
+
+    }
+
+    public void ESC_Open()
+    {
+
+    }
+
+    public void ESC_Close()
+    {
+
+    }
+    #endregion
 
     #endregion
 

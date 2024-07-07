@@ -3,6 +3,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -232,6 +233,44 @@ public class QuestManager : MonoBehaviour
         }
         return quest;
     }
+    #endregion
+
+    #region UI
+    [Header("UI")]
+    public GameObject ui_mainReference;
+    public GameObject ui_buttonMain; // Should only show this if there are actually quests available
+    public TextMeshProUGUI ui_buttonMainText;
+
+    public void ButtonHoverEnter()
+    {
+        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.UI_Clips[48], 0.8f); // Play hover sound
+    }
+
+    public void ButtonHoverExit()
+    {
+
+    }
+
+    private void ShowQuestsButton()
+    {
+
+    }
+    
+    private void HideQuestsButton()
+    {
+
+    }
+
+    public void OpenQuestMenu()
+    {
+
+    }
+
+    public void CloseQuestMenu()
+    {
+
+    }
+
     #endregion
 }
 
