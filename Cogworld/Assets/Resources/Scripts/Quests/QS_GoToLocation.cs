@@ -15,4 +15,18 @@ public class QS_GoToLocation : QuestStep
     private Vector2 center;
     private int radius = 1;
 
+    private void OnEnable()
+    {
+        GameManager.inst.questEvents.onLocationReached += LocationReached;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.inst.questEvents.onLocationReached -= LocationReached;
+    }
+
+    private void LocationReached()
+    {
+
+    }
 }

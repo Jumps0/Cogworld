@@ -10,10 +10,18 @@ using UnityEngine.EventSystems;
 
 public class QuestEvents : MonoBehaviour
 {
-    //public event Action onItemCollected;
+    public event System.Action onItemCollected;
+    public event System.Action onLocationReached;
 
     public void ItemCollected()
     {
+        if(onItemCollected != null)
+            onItemCollected();
+    }
 
+    public void LocationReached()
+    {
+        if (onLocationReached != null)
+            onLocationReached();
     }
 }

@@ -10,6 +10,31 @@ using UnityEngine;
 /// </summary>
 public class QS_CollectItem : QuestStep
 {
-    private ItemObject itemToCollect;
+    private Item itemToCollect;
 
+    private void OnEnable()
+    {
+        GameManager.inst.questEvents.onItemCollected += ItemCollected;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.inst.questEvents.onItemCollected -= ItemCollected;
+    }
+
+    private void ItemCollected()
+    {
+        // Check if the player actually has the item (in their inventory)
+        foreach (var slot in PlayerData.inst.GetComponent<PartInventory>()._inventory.Container.Items)
+        {
+            if(slot.item != null && slot.item.Id >= 0) // An item exists here
+            {
+                if(slot.item == itemToCollect)
+                {
+                    FinishQuestStep(); // They have it! Finish this step
+                    break;
+                }
+            }
+        }
+    }
 }
