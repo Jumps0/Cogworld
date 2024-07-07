@@ -8,8 +8,47 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-public class QuestEvents : MonoBehaviour
+public class QuestEvents
 {
+    #region General Events
+    public event System.Action<string> onStartQuest;
+    public void StartQuest(string id)
+    {
+        if(onStartQuest != null)
+        {
+            onStartQuest(id);
+        }
+    }
+
+    public event System.Action<string> onAdvanceQuest;
+    public void AdvanceQuest(string id)
+    {
+        if (onAdvanceQuest != null)
+        {
+            onAdvanceQuest(id);
+        }
+    }
+
+    public event System.Action<string> onFinishQuest;
+    public void FinishQuest(string id)
+    {
+        if (onFinishQuest != null)
+        {
+            onFinishQuest(id);
+        }
+    }
+
+    public event System.Action<Quest> onQuestStateChange;
+    public void QuestStateChange(Quest quest)
+    {
+        if (onQuestStateChange != null)
+        {
+            onQuestStateChange(quest);
+        }
+    }
+    #endregion
+
+    #region Individual Quest Events
     public event System.Action onItemCollected;
     public event System.Action onLocationReached;
 
@@ -24,4 +63,5 @@ public class QuestEvents : MonoBehaviour
         if (onLocationReached != null)
             onLocationReached();
     }
+    #endregion
 }

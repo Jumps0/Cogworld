@@ -40,6 +40,17 @@ public class QuestManager : MonoBehaviour
         return idToQuestMap;
     }
 
+    public void Init()
+    {
+        Redraw();
+
+        // Broadcast the initial state of all quests on startup
+        foreach (Quest quest in questMap.Values)
+        {
+            GameManager.inst.questEvents.QuestStateChange(quest);
+        }
+    }
+
     public void Redraw()
     {
         questMap = CreateQuestMap();
@@ -55,6 +66,23 @@ public class QuestManager : MonoBehaviour
         return quest;
     }
 
+    #region Event Related
+    private void OnEnable()
+    {
+        GameManager.inst.questEvents.onStartQuest += StartQuest;
+        GameManager.inst.questEvents.onAdvanceQuest += AdvanceQuest;
+        GameManager.inst.questEvents.onFinishQuest += FinishQuest;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.inst.questEvents.onStartQuest -= StartQuest;
+        GameManager.inst.questEvents.onAdvanceQuest -= AdvanceQuest;
+        GameManager.inst.questEvents.onFinishQuest -= FinishQuest;
+    }
+    #endregion
+
+    #region General
     public void CreateQuest(int id)
     {
         // Create the new quest based on requirements
@@ -64,31 +92,24 @@ public class QuestManager : MonoBehaviour
         Redraw();
     }
 
-    public void AssignQuest()
+    public void StartQuest(string id)
     {
-
+        // TODO - start the quest
+        Debug.Log($"Start Quest: {id}");
     }
 
-    public void CompleteQuest()
+    public void AdvanceQuest(string id)
     {
-
+        // TODO - advance the quest
+        Debug.Log($"Advance Quest: {id}");
     }
 
-    public void AbortQuest()
+    public void FinishQuest(string id)
     {
-
+        // TODO - finish the quest
+        Debug.Log($"Finish Quest: {id}");
     }
-
-    public void FailQuest()
-    {
-
-    }
-
-    public void QuestReward()
-    {
-
-    }
-
+    #endregion
 }
 
 public enum QuestState
