@@ -10,15 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: afbd11b038901dd40824db74d39295a2, type: 3}
-  m_Name: Collect Item
+  m_Name: Visit South Hideout TEST
   m_EditorClassIdentifier: 
-  Id: 0
-  displayName: Collect Item
-  description: 
-  type: 2
+  Id: 2
+  displayName: Visit the Southern Hideout
+  shortDescription: TEST quest for visiting a location
+  description: TEST quest for visiting a location
+  sprite: {fileID: 2048525777, guid: 484b699857d60234c908d529dd37a90d, type: 3}
+  type: 3
   rank: 1
   prerequisites: []
   steps:
-  - {fileID: 4471201208271377523, guid: b10bb1fb2d3182d4d9c35e08adacfba4, type: 3}
+  - {fileID: 4471201208271377523, guid: e9376d877e0b6cc4e8651bbf0f465b39, type: 3}
   reward_items: []
   reward_matter: 0

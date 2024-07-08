@@ -15,6 +15,9 @@ MonoBehaviour:
   Id: 1
   displayName: Visit Location
   description: 
+  type: 3
+  rank: 1
+  prerequisites: []
   steps:
   - {fileID: 4471201208271377523, guid: f47c60cf5160b464aad3dab2a2370c3f, type: 3}
   reward_items: []

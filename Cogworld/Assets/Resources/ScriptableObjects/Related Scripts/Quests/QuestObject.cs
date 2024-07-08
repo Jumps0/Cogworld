@@ -9,9 +9,6 @@ using UnityEngine;
 [System.Serializable]
 public class Quest
 {
-    [Tooltip("A unique name that this quest and this quest alone has (each quest in the world should have a unique one.")]
-    public string uniqueID;
-
     public QuestObject info;
 
     public QuestState state;
@@ -24,10 +21,10 @@ public class Quest
         this.state = QuestState.REQUIREMENTS_NOT_MET;
         this.currentQuestStepIndex = 0;
 
-        uniqueID = uid;
+        info.uniqueID = uid;
         if(uid == "")
         {
-            uniqueID = $"{info.name} + {Random.Range(0, 99)}";
+            info.uniqueID = $"{info.name} + {Random.Range(0, 99)}";
         }
 
         this.questStepStates = new QuestStepState[info.steps.Length];
@@ -37,9 +34,9 @@ public class Quest
         }
     }
 
-    public Quest(QuestObject questInfo, QuestState questState, int currentQuestStepIndex, QuestStepState[] questStepStates)
+    public Quest(QuestObject info, QuestState questState, int currentQuestStepIndex, QuestStepState[] questStepStates)
     {
-        this.info = questInfo;
+        this.info = info;
         this.state = questState;
         this.currentQuestStepIndex = currentQuestStepIndex;
         this.questStepStates = questStepStates;
@@ -47,7 +44,7 @@ public class Quest
         if(this.questStepStates.Length != this.info.steps.Length)
         {
             Debug.LogWarning($"WARNING: Quest step prefabs & quest step states are of different lengths. This indicates something changed with" +
-                $"the QuestObject and the saved data is now out of sync. Reset your data - as this may cause issues. QuestID: {this.uniqueID}");
+                $"the QuestObject and the saved data is now out of sync. Reset your data - as this may cause issues. QuestID: {this.info.uniqueID}");
         }
     }
 
@@ -67,7 +64,7 @@ public class Quest
         if (questStepPrefab != null)
         {
             QuestStep questStep = Object.Instantiate(questStepPrefab, parent).GetComponent<QuestStep>();
-            questStep.InitQuestStep(uniqueID, currentQuestStepIndex, questStepStates[currentQuestStepIndex].state);
+            questStep.InitQuestStep(info.uniqueID, currentQuestStepIndex, questStepStates[currentQuestStepIndex].state);
         }
     }
 
@@ -113,7 +110,16 @@ public abstract class QuestObject : ScriptableObject
     [Tooltip("A generic ID for this type of quest.")]
     public int Id;
     public string displayName;
+    public string shortDescription;
     [TextArea(3,5)] public string description;
+    public Sprite sprite;
+
+    [Tooltip("A unique name that this quest and this quest alone has (each quest in the world should have a unique one.")]
+    public string uniqueID;
+
+    [Header("Quest Details")]
+    public QuestType type;
+    public QuestRank rank;
 
     [Header("Requirements")]
     public Quest[] prerequisites;
@@ -124,4 +130,29 @@ public abstract class QuestObject : ScriptableObject
     [Header("Rewards")]
     public List<Item> reward_items;
     public int reward_matter;
+}
+
+[System.Serializable]
+[Tooltip("What kind of thing you will be doing during this quest.")]
+public enum QuestType
+{
+    Default,
+    Kill,    // Some number of a kind of bot
+    Collect, // An item/items
+    Find,    // A location
+    Meet,    // An NPC
+    Destroy  // A structure
+}
+
+[System.Serializable]
+[Tooltip("The *rank* (or difficulty) of this quest.")]
+public enum QuestRank
+{
+    Default,
+    Easy,
+    Medium,
+    Hard,
+    Difficult,
+    Expert,
+    Legendary
 }

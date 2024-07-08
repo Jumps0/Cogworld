@@ -3,6 +3,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -25,19 +26,31 @@ public class QuestManager : MonoBehaviour
     [Header("Data")]
     public QuestDatabaseObject questDatabase;
     private Dictionary<string, Quest> questMap;
-    public List<Quest> allQuests = new List<Quest>();
+
+    [Header("Prefabs")]
+    [SerializeField] private GameObject prefab_questPoint;
+
+    [Header("QuestMap")]
+    [SerializeField] private List<string> qm_names = new List<string>();
+    [SerializeField] private List<Quest> qm_quests = new List<Quest>();
 
     private Dictionary<string, Quest> CreateQuestMap()
     {
         Dictionary<string, Quest> idToQuestMap = new Dictionary<string, Quest>();
+        qm_names.Clear();
+        qm_quests.Clear();
 
-        foreach (var Q in allQuests)
+        foreach (QuestObject Q in questDatabase.Quests)
         {
             if (idToQuestMap.ContainsKey(Q.uniqueID))
             {
                 Debug.LogWarning($"WARNING: Duplicate ID found when creating quest map: {Q.uniqueID}");
             }
             idToQuestMap.Add(Q.uniqueID, LoadQuest(Q));
+
+            // Update the visible in inspector lists
+            qm_names.Add(Q.uniqueID);
+            qm_quests.Add(LoadQuest(Q));
         }
 
         return idToQuestMap;
@@ -50,6 +63,8 @@ public class QuestManager : MonoBehaviour
         GameManager.inst.questEvents.onFinishQuest += FinishQuest;
 
         GameManager.inst.questEvents.onQuestStepStateChange += QuestStepStateChange;
+
+        DEBUG_QuestTesting();
 
         Redraw();
 
@@ -66,6 +81,11 @@ public class QuestManager : MonoBehaviour
         }
     }
 
+    private void DEBUG_QuestTesting()
+    {
+        CreateQuest(2, PlayerData.inst.transform.position + new Vector3(0, 10, 0));
+    }
+
     public void Redraw()
     {
         questMap = CreateQuestMap();
@@ -76,7 +96,7 @@ public class QuestManager : MonoBehaviour
             // If we're now meeting the requirements, switch over to the CAN_START state
             if (quest.state == QuestState.REQUIREMENTS_NOT_MET && CheckRequirementsMet(quest))
             {
-                ChangeQuestState(quest.uniqueID, QuestState.CAN_START);
+                ChangeQuestState(quest.info.uniqueID, QuestState.CAN_START);
             }
         }
     }
@@ -106,7 +126,7 @@ public class QuestManager : MonoBehaviour
         // Check quest prerequisites for completion
         foreach (Quest prereq in quest.info.prerequisites)
         {
-            if (GetQuestById(prereq.uniqueID).state != QuestState.FINISHED)
+            if (GetQuestById(prereq.info. uniqueID).state != QuestState.FINISHED)
             {
                 meetsRequirements = false;
             }
@@ -128,16 +148,14 @@ public class QuestManager : MonoBehaviour
     #endregion
 
     #region General
-    private void Update()
-    {
-        
-    }
 
-    public void CreateQuest(int id)
+    public void CreateQuest(int id, Vector3 location)
     {
         // Create the new quest based on requirements
         Quest newQuest = new Quest(questDatabase.Quests[id]);
-        allQuests.Add(newQuest);
+        GameObject obj = Instantiate(prefab_questPoint, location, Quaternion.identity, this.transform);
+        obj.GetComponent<QuestPoint>().Init(newQuest);
+
         // Redraw the quest map
         Redraw();
     }
@@ -146,14 +164,13 @@ public class QuestManager : MonoBehaviour
     {
         Quest quest = GetQuestById(id);
         quest.InstantiateCurrentQuestStep(this.transform);
-        ChangeQuestState(quest.uniqueID, QuestState.IN_PROGRESS);
+        ChangeQuestState(quest.info.uniqueID, QuestState.IN_PROGRESS);
     }
 
     public void AdvanceQuest(string id)
     {
         Quest quest = GetQuestById(id);
 
-        quest.MoveToNextStep(); // Move on to the next step
 
         if (quest.CurrentStepExists()) // If there are more steps, instantiate the next one
         {
@@ -161,7 +178,7 @@ public class QuestManager : MonoBehaviour
         }
         else // If there are no more steps, then we've finished all of them for this quest
         {
-            ChangeQuestState(quest.uniqueID, QuestState.CAN_FINISH);
+            ChangeQuestState(quest.info.uniqueID, QuestState.CAN_FINISH);
         }
     }
 
@@ -169,7 +186,7 @@ public class QuestManager : MonoBehaviour
     {
         Quest quest = GetQuestById(id);
         QuestReward(quest);
-        ChangeQuestState(quest.uniqueID, QuestState.FINISHED);
+        ChangeQuestState(quest.info.uniqueID, QuestState.FINISHED);
     }
 
     private void QuestReward(Quest quest)
@@ -200,36 +217,35 @@ public class QuestManager : MonoBehaviour
         {
             QuestData questData = quest.GetQuestData();
             string serializedData = JsonUtility.ToJson(questData);
-            PlayerPrefs.SetString(quest.uniqueID, serializedData);
-
-            Debug.Log($"Saved quest to PlayerPrefs: {serializedData}");
+            PlayerPrefs.SetString(quest.info.uniqueID, serializedData);
         }
         catch (System.Exception ex)
         {
-            Debug.LogError($"Failed to save quest with id {quest.uniqueID}: {ex}");
+            Debug.LogError($"Failed to save quest with id {quest.info.uniqueID}: {ex}");
         }
     }
 
-    private Quest LoadQuest(Quest quest)
+    private Quest LoadQuest(QuestObject questInfo)
     {
+        Quest quest = null;
         try
         {
             // Load quest from saved data
-            if (PlayerPrefs.HasKey(quest.uniqueID) && loadQuestState)
+            if (PlayerPrefs.HasKey(questInfo.uniqueID) && loadQuestState)
             {
-                string serializedData = PlayerPrefs.GetString(quest.uniqueID);
+                string serializedData = PlayerPrefs.GetString(questInfo.uniqueID);
                 QuestData questData = JsonUtility.FromJson<QuestData>(serializedData);
-                quest = new Quest(quest.info, questData.state, questData.questStepIndex, questData.questStepStates);
+                quest = new Quest(questInfo, questData.state, questData.questStepIndex, questData.questStepStates);
             }
             // Otherwise, initialize a new quest
             else
             {
-                quest = new Quest(quest.info);
+                quest = new Quest(questInfo, questInfo.uniqueID);
             }
         }
-        catch
-        { 
-        
+        catch (System.Exception e)
+        {
+            Debug.LogError($"ERROR: Failed to load quest with id {quest.info.uniqueID}: with {e}");
         }
         return quest;
     }
@@ -240,6 +256,13 @@ public class QuestManager : MonoBehaviour
     public GameObject ui_mainReference;
     public GameObject ui_buttonMain; // Should only show this if there are actually quests available
     public TextMeshProUGUI ui_buttonMainText;
+    [SerializeField] private GameObject ui_areaLeft;
+    [SerializeField] private GameObject ui_areaRight;
+
+    [Header("UI Prefabs")]
+    public GameObject ui_prefab_smallQuest;
+    public GameObject ui_prefab_questDetail;
+    private List<GameObject> ui_prefab_smallQuests = new List<GameObject>();
 
     public void ButtonHoverEnter()
     {
@@ -269,6 +292,28 @@ public class QuestManager : MonoBehaviour
     public void CloseQuestMenu()
     {
 
+    }
+
+    private void UI_CreateSmallQuest(Quest quest)
+    {
+        // Instantiate Object
+        GameObject obj = Instantiate(ui_prefab_smallQuest, ui_areaLeft.transform);
+
+        // Assign details to object
+        obj.GetComponent<UISmallQuest>().Init(quest);
+
+        // Add to list
+        ui_prefab_smallQuests.Add(obj);
+    }
+
+    private void UI_ClearSmallQuests()
+    {
+        foreach (var GO in ui_prefab_smallQuests.ToList())
+        {
+            Destroy(GO);
+        }
+
+        ui_prefab_smallQuests.Clear();
     }
 
     #endregion

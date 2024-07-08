@@ -446,8 +446,6 @@ public class MapManager : MonoBehaviour
             }
         }
 
-        QuestManager.inst.Init();
-
         AssignMachineNames(); // Assign names to all placed machines
         AssignMachineCommands(); // Assign commands (for terminal interaction) to all placed machines.
         ZoneTerminals(); // Create terminal zones
@@ -460,6 +458,7 @@ public class MapManager : MonoBehaviour
         playerRef = spawnedPlayer; // Set playerRef in CameraController
         spawnedPlayer.GetComponent<Actor>().ClearFieldOfView();
 
+        QuestManager.inst.Init();
 
         // Sync the player's stats
         if (tempPlayer == null)

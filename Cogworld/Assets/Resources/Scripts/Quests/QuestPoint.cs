@@ -24,10 +24,10 @@ public class QuestPoint : MonoBehaviour
     [SerializeField] private Sprite sprite_available;
     [SerializeField] private SpriteRenderer sr;
 
-    private void Init(Quest quest)
+    public void Init(Quest quest)
     {
         questInfo = quest;
-        questID = questInfo.uniqueID;
+        questID = quest.info.uniqueID;
 
         Flash(true);
     }

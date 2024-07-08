@@ -10,10 +10,32 @@ using UnityEngine;
 /// </summary>
 public class QS_GoToLocation : QuestStep
 {
-    [Tooltip("True = Specific 1x1 tile | False = General area around this point")]
-    private bool isSpecificLocation;
-    private Vector2 center;
-    private int radius = 1;
+    [SerializeField] private BoxCollider2D col;
+    public Vector2 center;
+    [SerializeField] private Vector2 size = new Vector2(1, 1);
+
+    [Header("In reference to")]
+    [SerializeField] private bool inReferenceToPlayer = false;
+    public GameObject referenceObject = null;
+
+    private void Start()
+    {
+        // Position the collider where it is needed
+        if (inReferenceToPlayer)
+        {
+            col.offset = new Vector2(PlayerData.inst.transform.position.x, PlayerData.inst.transform.position.y) + center;
+        }
+        else if(referenceObject != null) // If a reference object is given, that becomes the center point, and the *center* variable becomes an offset
+        {
+            col.offset = new Vector2(referenceObject.transform.position.x, referenceObject.transform.position.y) + center;
+        }
+        else
+        {
+            col.offset = center;
+        }
+        // And set its size
+        col.size = size;
+    }
 
     private void OnEnable()
     {
@@ -23,6 +45,16 @@ public class QS_GoToLocation : QuestStep
     private void OnDisable()
     {
         GameManager.inst.questEvents.onLocationReached -= LocationReached;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        // We just need to check to see if the Player has reached the specified destination
+        if (collision.gameObject.GetComponent<PlayerData>())
+        {
+            LocationReached(); // Trigger the location reached function
+            col.enabled = false; // And disable the collider since it is no longer needed
+        }
     }
 
     private void LocationReached()
