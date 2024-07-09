@@ -17,13 +17,13 @@ public class DoorLogic : MonoBehaviour
 
     [Header("Audio")]
     public AudioSource source;
-    public AudioClip openSound;
-    public AudioClip closedSound;
+    public List<AudioClip> openSound;
+    public List<AudioClip> closedSound;
 
     private void Start()
     {
-        openSound = _tile.tileInfo.door_open[Random.Range(0, _tile.tileInfo.door_open.Count - 1)];
-        closedSound = _tile.tileInfo.door_close[Random.Range(0, _tile.tileInfo.door_close.Count - 1)];
+        openSound = _tile.tileInfo.door_open;
+        closedSound = _tile.tileInfo.door_close;
     }
 
     public void LoadActivationTiles()
@@ -85,7 +85,7 @@ public class DoorLogic : MonoBehaviour
         state = true; // open
 
         // Play Sound
-        source.PlayOneShot(openSound);
+        source.PlayOneShot(_tile.tileInfo.door_open[Random.Range(0, _tile.tileInfo.door_open.Count - 1)]);
 
         // Change Vis
         this.GetComponent<TileBlock>().specialNoBlockVis = true;
@@ -103,7 +103,7 @@ public class DoorLogic : MonoBehaviour
         state = false; // closed
 
         // Play Sound
-        source.PlayOneShot(closedSound);
+        source.PlayOneShot(_tile.tileInfo.door_close[Random.Range(0, _tile.tileInfo.door_close.Count - 1)]);
 
         // Change Vis
         this.GetComponent<TileBlock>().specialNoBlockVis = false;

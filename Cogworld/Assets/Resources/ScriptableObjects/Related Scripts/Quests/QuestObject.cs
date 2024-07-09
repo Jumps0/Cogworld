@@ -156,3 +156,51 @@ public enum QuestRank
     Expert,
     Legendary
 }
+
+[System.Serializable]
+[Tooltip("What you actually need to do during this quest.")]
+public class QuestActions
+{
+    [Header("Amount")]
+    public int amount = 1;
+    
+    [Header("Kill")]
+    [Tooltip("Kill any bot of this faction")]
+    public bool kill_faction = false;
+    public BotAlignment kill_factionType;
+    [Tooltip("Kill any bot of this class")]
+    public bool kill_class;
+    public BotClass kill_classType;
+    [Tooltip("Kill any HOSTILE bot.")]
+    public bool killAny;
+
+    [Header("Collect")]
+    [Tooltip("Collect this specific item.")]
+    public bool collect_specific;
+    public ItemObject collect_specificItem;
+    [Tooltip("Collect an item of this specified type.")]
+    public bool collect_byType;
+    public ItemType collect_type;
+    [Tooltip("Collect an item within this range of ranking.")]
+    public bool collect_byRank;
+    public Vector2Int collect_rank;
+    [Tooltip("Collect this specific item.")]
+    public bool collect_bySlot;
+    public ItemSlot collect_slot;
+
+    [Header("Find")]
+    public bool find_specificLevel;
+    //
+    public bool find_specificLocation;
+    //
+
+    [Header("Meet")]
+    public bool meet_specificBot;
+    public BotObject meet_specific;
+    //
+
+    [Header("Destroy")]
+    public bool destroy_specificMachine;
+    public MachinePart destroy_machine;
+    //
+}

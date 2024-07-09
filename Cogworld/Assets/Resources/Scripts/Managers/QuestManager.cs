@@ -180,10 +180,14 @@ public class QuestManager : MonoBehaviour
         // Create the new quest based on requirements
         Quest newQuest = new Quest(questDatabase.Quests[quest.questID]);
 
+        Transform parent = quest.botParent; // Assign parent
+        if (parent == null)
+            parent = this.transform;
+
         // Depending on circumstance, we may need to make two QuestPoints (one for the start location, one for the finish location
         if(quest.startPoint == quest.finishPoint)
         {
-            GameObject obj = Instantiate(prefab_questPoint, quest.startPoint, Quaternion.identity, this.transform);
+            GameObject obj = Instantiate(prefab_questPoint, quest.startPoint, Quaternion.identity, parent);
             obj.GetComponent<QuestPoint>().Init(newQuest, true, true);
             obj.name = newQuest.info.uniqueID;
 
@@ -192,12 +196,12 @@ public class QuestManager : MonoBehaviour
         else
         {
             // Start point
-            GameObject start = Instantiate(prefab_questPoint, quest.startPoint, Quaternion.identity, this.transform);
+            GameObject start = Instantiate(prefab_questPoint, quest.startPoint, Quaternion.identity, parent);
             start.GetComponent<QuestPoint>().Init(newQuest, true, false);
             start.name = newQuest.info.uniqueID;
 
             // Finish point
-            GameObject finish = Instantiate(prefab_questPoint, quest.finishPoint, Quaternion.identity, this.transform);
+            GameObject finish = Instantiate(prefab_questPoint, quest.finishPoint, Quaternion.identity, parent);
             finish.GetComponent<QuestPoint>().Init(newQuest, false, true);
             finish.name = newQuest.info.uniqueID;
 
