@@ -32,3 +32,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 1e23b937bbf71bc499db4d800e23d337, type: 3}
   - {fileID: 8300000, guid: 1cfa603e37179e045b452c8f396abc83, type: 3}
   resistances: []
+  door_open:
+  - {fileID: 8300000, guid: d0821dfa46a58dc4baca110de80fd33c, type: 3}
+  - {fileID: 8300000, guid: 7cc0a0ce80dab3546a438775a49f03b6, type: 3}
+  door_close:
+  - {fileID: 8300000, guid: b75b35f303219aa419d8ad7d801dd57a, type: 3}
+  - {fileID: 8300000, guid: cfb76e962101dc248bcee61c3cedd5f9, type: 3}
+  - {fileID: 8300000, guid: 6655acd1d06e892459dfc0ff0055bef2, type: 3}

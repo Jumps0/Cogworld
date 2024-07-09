@@ -292,7 +292,7 @@ public class TileBlock : MonoBehaviour
 
     public void SetHighlightPerma(bool state)
     {
-        Color halfColor = new Color((MapManager.inst.currentTheme.r / 2) / 255f, (MapManager.inst.currentTheme.g / 2) / 255f, (MapManager.inst.currentTheme.b / 2) / 255f);
+        Color halfColor = new Color((Color.white.r / 2) / 255f, (Color.white.g / 2) / 255f, (Color.white.b / 2) / 255f);
         _highlightPerm.GetComponent<SpriteRenderer>().color = halfColor;
         _highlightPerm.SetActive(state);
     }

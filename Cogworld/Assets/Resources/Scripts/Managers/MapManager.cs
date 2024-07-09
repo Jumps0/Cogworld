@@ -1149,9 +1149,7 @@ public class MapManager : MonoBehaviour
 
         FogOfWar.inst.unseenTiles.Add(spawnedTile); // Add to unseen tiles
 
-        //spawnedTile.GetComponent<SpriteRenderer>().color = debugColor;
-        //spawnedTile.GetComponent<SpriteRenderer>().color = MapManager.inst.currentTheme; // Assign theme colors
-        spawnedTile._highlightPerm.GetComponent<SpriteRenderer>().color = MapManager.inst.currentTheme;
+        spawnedTile._highlightPerm.GetComponent<SpriteRenderer>().color = Color.white;
 
         spawnedTile.locX = (int)pos.x; // Assign X location
         spawnedTile.locY = (int)pos.y; // Assign Y location
@@ -1204,8 +1202,6 @@ public class MapManager : MonoBehaviour
                 spawnedTile.GetComponent<DoorLogic>().source = spawnedTile.GetComponent<AudioSource>();
                 spawnedTile.GetComponent<DoorLogic>().source.spatialBlend = 1f;
                 spawnedTile.GetComponent<DoorLogic>().source.volume = 0.5f;
-                spawnedTile.GetComponent<DoorLogic>().openSound = mapRelatedSounds[0];
-                spawnedTile.GetComponent<DoorLogic>().closedSound = mapRelatedSounds[1];
                 spawnedTile.GetComponent<SpriteRenderer>().sortingOrder = 5;
 
                 GridManager.inst.grid[(int)pos.x, (int)pos.y] = spawnedTile.gameObject; // Fill grid
@@ -1252,19 +1248,6 @@ public class MapManager : MonoBehaviour
     public List<GameObject> triggers = new List<GameObject>();
     public List<GameObject> events = new List<GameObject>();
 
-    [Header("Color Themes")]
-    public Color noTheme = Color.white;
-    public Color materialsTheme;
-    public Color storageTheme;
-    public Color factoryTheme;
-    public Color garrisonTheme;
-    public Color researchTheme;
-    public Color testingTheme;
-    public Color accessTheme;
-    public Color commandTheme;
-    //
-    public Color currentTheme = Color.white; // Default white
-
     public List<AudioClip> mapRelatedSounds = new List<AudioClip>();
 
     public void CreateTileHere(int x, int y, int _tileID)
@@ -1281,9 +1264,7 @@ public class MapManager : MonoBehaviour
         spawnedTile.tileInfo.currentVis = TileVisibility.Unknown; // All tiles start hidden
         //FogOfWar.inst.unseenTiles.Add(spawnedTile); // Add to unseen tiles
 
-        //spawnedTile.GetComponent<SpriteRenderer>().color = debugColor;
-        //spawnedTile.GetComponent<SpriteRenderer>().color = MapManager.inst.currentTheme; // Assign theme colors
-        spawnedTile._highlightPerm.GetComponent<SpriteRenderer>().color = MapManager.inst.currentTheme;
+        spawnedTile._highlightPerm.GetComponent<SpriteRenderer>().color = Color.white;
 
         spawnedTile.locX = x; // Assign X location
         spawnedTile.locY = y; // Assign Y location

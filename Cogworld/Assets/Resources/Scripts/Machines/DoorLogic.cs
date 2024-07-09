@@ -20,6 +20,11 @@ public class DoorLogic : MonoBehaviour
     public AudioClip openSound;
     public AudioClip closedSound;
 
+    private void Start()
+    {
+        openSound = _tile.tileInfo.door_open[Random.Range(0, _tile.tileInfo.door_open.Count - 1)];
+        closedSound = _tile.tileInfo.door_close[Random.Range(0, _tile.tileInfo.door_close.Count - 1)];
+    }
 
     public void LoadActivationTiles()
     {

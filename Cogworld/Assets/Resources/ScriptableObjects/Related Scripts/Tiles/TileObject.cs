@@ -51,6 +51,10 @@ public abstract class TileObject : ScriptableObject
 
     [Header("Resistances")]
     public List<BotResistances> resistances;
+
+    [Header("Door")]
+    public List<AudioClip> door_open;
+    public List<AudioClip> door_close;
 }
 
 [System.Serializable]
