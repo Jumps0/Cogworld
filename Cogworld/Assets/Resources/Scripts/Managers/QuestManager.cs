@@ -27,7 +27,7 @@ public class QuestManager : MonoBehaviour
     public QuestDatabaseObject questDatabase;
     private Dictionary<string, Quest> questMap;
     [Tooltip("A list of all quests that should be currently active.")]
-    public List<(int, Vector2, Vector2)> questQueue = new List<(int, Vector2, Vector2)>();
+    public List<QueuedQuest> questQueue = new List<QueuedQuest>();
     public List<GameObject> questPoints = new List<GameObject>();
 
     [Header("Prefabs")]
@@ -43,9 +43,9 @@ public class QuestManager : MonoBehaviour
         qm_names.Clear();
         qm_quests.Clear();
 
-        foreach (var id in questQueue)
+        foreach (var newQuest in questQueue)
         {
-            QuestObject Q = questDatabase.Quests[id.Item1];
+            QuestObject Q = questDatabase.Quests[newQuest.questID];
 
             if (idToQuestMap.ContainsKey(Q.uniqueID))
             {
@@ -53,9 +53,9 @@ public class QuestManager : MonoBehaviour
             }
 
             
-            if(!QuestAlreadyActive(id.Item1)) // Make sure the physical quest point exists in the world.
+            if(!QuestAlreadyActive(newQuest.questID)) // Make sure the physical quest point exists in the world.
             {
-                CreateQuest(id.Item1, id.Item2, id.Item3);
+                CreateQuest(newQuest);
             }
             idToQuestMap.Add(Q.uniqueID, LoadQuest(Q));
 
@@ -95,8 +95,8 @@ public class QuestManager : MonoBehaviour
     private void DEBUG_QuestTesting()
     {
         // Add the hideout test quest
-        questQueue.Add((2, new Vector2(PlayerData.inst.transform.position.x, 
-            PlayerData.inst.transform.position.y + 10), new Vector2(PlayerData.inst.transform.position.x, PlayerData.inst.transform.position.y + 10)));
+        questQueue.Add(new QueuedQuest(2, new Vector2(PlayerData.inst.transform.position.x,
+            PlayerData.inst.transform.position.y + 10), new Vector2(PlayerData.inst.transform.position.x, PlayerData.inst.transform.position.y + 10), null));
     }
 
     public void Redraw()
@@ -175,15 +175,15 @@ public class QuestManager : MonoBehaviour
     #endregion
 
     #region General
-    public void CreateQuest(int id, Vector2 startPoint, Vector2 finishPoint)
+    public void CreateQuest(QueuedQuest quest)
     {
         // Create the new quest based on requirements
-        Quest newQuest = new Quest(questDatabase.Quests[id]);
+        Quest newQuest = new Quest(questDatabase.Quests[quest.questID]);
 
         // Depending on circumstance, we may need to make two QuestPoints (one for the start location, one for the finish location
-        if(startPoint == finishPoint)
+        if(quest.startPoint == quest.finishPoint)
         {
-            GameObject obj = Instantiate(prefab_questPoint, startPoint, Quaternion.identity, this.transform);
+            GameObject obj = Instantiate(prefab_questPoint, quest.startPoint, Quaternion.identity, this.transform);
             obj.GetComponent<QuestPoint>().Init(newQuest, true, true);
             obj.name = newQuest.info.uniqueID;
 
@@ -192,12 +192,12 @@ public class QuestManager : MonoBehaviour
         else
         {
             // Start point
-            GameObject start = Instantiate(prefab_questPoint, startPoint, Quaternion.identity, this.transform);
+            GameObject start = Instantiate(prefab_questPoint, quest.startPoint, Quaternion.identity, this.transform);
             start.GetComponent<QuestPoint>().Init(newQuest, true, false);
             start.name = newQuest.info.uniqueID;
 
             // Finish point
-            GameObject finish = Instantiate(prefab_questPoint, finishPoint, Quaternion.identity, this.transform);
+            GameObject finish = Instantiate(prefab_questPoint, quest.finishPoint, Quaternion.identity, this.transform);
             finish.GetComponent<QuestPoint>().Init(newQuest, false, true);
             finish.name = newQuest.info.uniqueID;
 
@@ -384,4 +384,22 @@ public enum QuestState
     IN_PROGRESS,
     CAN_FINISH,
     FINISHED
+}
+
+[System.Serializable]
+[Tooltip("Holds info for a quest that needs to be created")]
+public class QueuedQuest
+{
+    public int questID;
+    public Vector2 startPoint;
+    public Vector2 finishPoint;
+    public Transform botParent;
+
+    public QueuedQuest(int questID, Vector2 startPoint, Vector2 finishPoint, Transform botParent)
+    {
+        this.questID = questID;
+        this.startPoint = startPoint;
+        this.finishPoint = finishPoint;
+        this.botParent = botParent;
+    }
 }
