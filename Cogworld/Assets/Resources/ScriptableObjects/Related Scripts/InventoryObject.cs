@@ -201,6 +201,24 @@ public class InventoryObject : ScriptableObject//, ISerializationCallbackReceive
         return null;
     }
 
+    /// <summary>
+    /// Checks to see if this inventory contains any item which inherts from an ItemObject that we are looking for.
+    /// </summary>
+    /// <param name="item">An ItemObject that we are looking for.</param>
+    /// <returns>True/False. If this ItemObject can be found in this inventory.</returns>
+    public bool HasGenericItem(ItemObject item)
+    {
+        for (int i = 0; i < Container.Items.Length; i++)
+        {
+            if (Container.Items[i].item.itemData == item)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /*
     public void OnAfterDeserialize()
     {

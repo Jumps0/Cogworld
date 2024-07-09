@@ -142,6 +142,31 @@ public class QuestManager : MonoBehaviour
             if (GetQuestById(prereq.info. uniqueID).state != QuestState.FINISHED)
             {
                 meetsRequirements = false;
+                break;
+            }
+        }
+
+        // Check for: Item (in inventory) prereqs
+        if (quest.info.prereq_items.Count > 0)
+        {
+            foreach (ItemObject item in quest.info.prereq_items)
+            {
+                InventoryObject inventory = PlayerData.inst.GetComponent<PartInventory>()._inventory;
+
+                if (!inventory.HasGenericItem(item))
+                {
+                    meetsRequirements = false;
+                    break;
+                }
+            }
+        }
+
+        // Check for: Matter amount prereqs
+        if(quest.info.prereq_matter > 0)
+        {
+            if(PlayerData.inst.currentMatter + PlayerData.inst.currentInternalMatter < quest.info.prereq_matter)
+            {
+                meetsRequirements = false;
             }
         }
 

@@ -123,6 +123,8 @@ public abstract class QuestObject : ScriptableObject
 
     [Header("Requirements")]
     public Quest[] prerequisites;
+    public List<ItemObject> prereq_items;
+    public int prereq_matter;
 
     [Header("Steps")]
     public GameObject[] steps;
