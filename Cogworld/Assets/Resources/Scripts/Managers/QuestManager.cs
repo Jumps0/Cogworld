@@ -26,6 +26,9 @@ public class QuestManager : MonoBehaviour
     [Header("Data")]
     public QuestDatabaseObject questDatabase;
     private Dictionary<string, Quest> questMap;
+    [Tooltip("A list of all quests that should be currently active.")]
+    public List<(int, Vector2, Vector2)> questQueue = new List<(int, Vector2, Vector2)>();
+    public List<GameObject> questPoints = new List<GameObject>();
 
     [Header("Prefabs")]
     [SerializeField] private GameObject prefab_questPoint;
@@ -40,11 +43,19 @@ public class QuestManager : MonoBehaviour
         qm_names.Clear();
         qm_quests.Clear();
 
-        foreach (QuestObject Q in questDatabase.Quests)
+        foreach (var id in questQueue)
         {
+            QuestObject Q = questDatabase.Quests[id.Item1];
+
             if (idToQuestMap.ContainsKey(Q.uniqueID))
             {
                 Debug.LogWarning($"WARNING: Duplicate ID found when creating quest map: {Q.uniqueID}");
+            }
+
+            
+            if(!QuestAlreadyActive(id.Item1)) // Make sure the physical quest point exists in the world.
+            {
+                CreateQuest(id.Item1, id.Item2, id.Item3);
             }
             idToQuestMap.Add(Q.uniqueID, LoadQuest(Q));
 
@@ -83,7 +94,9 @@ public class QuestManager : MonoBehaviour
 
     private void DEBUG_QuestTesting()
     {
-        CreateQuest(2, PlayerData.inst.transform.position + new Vector3(0, 10, 0));
+        // Add the hideout test quest
+        questQueue.Add((2, new Vector2(PlayerData.inst.transform.position.x, 
+            PlayerData.inst.transform.position.y + 10), new Vector2(PlayerData.inst.transform.position.x, PlayerData.inst.transform.position.y + 10)));
     }
 
     public void Redraw()
@@ -135,6 +148,20 @@ public class QuestManager : MonoBehaviour
         return meetsRequirements;
     }
 
+    // Checks to see if a questpoint with the matching id is already active
+    private bool QuestAlreadyActive(int id)
+    {
+        foreach (GameObject obj in questPoints)
+        {
+            if(obj.GetComponent<QuestPoint>().questInfo != null && obj.GetComponent<QuestPoint>().questInfo.info.Id == id)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     #region Event Related
 
     private void OnDisable()
@@ -148,13 +175,35 @@ public class QuestManager : MonoBehaviour
     #endregion
 
     #region General
-
-    public void CreateQuest(int id, Vector3 location)
+    public void CreateQuest(int id, Vector2 startPoint, Vector2 finishPoint)
     {
         // Create the new quest based on requirements
         Quest newQuest = new Quest(questDatabase.Quests[id]);
-        GameObject obj = Instantiate(prefab_questPoint, location, Quaternion.identity, this.transform);
-        obj.GetComponent<QuestPoint>().Init(newQuest);
+
+        // Depending on circumstance, we may need to make two QuestPoints (one for the start location, one for the finish location
+        if(startPoint == finishPoint)
+        {
+            GameObject obj = Instantiate(prefab_questPoint, startPoint, Quaternion.identity, this.transform);
+            obj.GetComponent<QuestPoint>().Init(newQuest, true, true);
+            obj.name = newQuest.info.uniqueID;
+
+            questPoints.Add(obj);
+        }
+        else
+        {
+            // Start point
+            GameObject start = Instantiate(prefab_questPoint, startPoint, Quaternion.identity, this.transform);
+            start.GetComponent<QuestPoint>().Init(newQuest, true, false);
+            start.name = newQuest.info.uniqueID;
+
+            // Finish point
+            GameObject finish = Instantiate(prefab_questPoint, finishPoint, Quaternion.identity, this.transform);
+            finish.GetComponent<QuestPoint>().Init(newQuest, false, true);
+            finish.name = newQuest.info.uniqueID;
+
+            questPoints.Add(start);
+            questPoints.Add(finish);
+        }
 
         // Redraw the quest map
         Redraw();
@@ -187,6 +236,15 @@ public class QuestManager : MonoBehaviour
         Quest quest = GetQuestById(id);
         QuestReward(quest);
         ChangeQuestState(quest.info.uniqueID, QuestState.FINISHED);
+
+        // Remove quest point(s) from the quest queue
+        foreach (GameObject qp in questPoints.ToList())
+        {
+            if(qp.name == id || qp.name.Contains(id))
+            {
+                Destroy(qp);
+            }
+        }
     }
 
     private void QuestReward(Quest quest)

@@ -11,7 +11,7 @@ using UnityEngine;
 public class QuestPoint : MonoBehaviour
 {
     [Header("Quest")]
-    [SerializeField] private Quest questInfo;
+    public Quest questInfo;
 
     [Header("Config")]
     [SerializeField] private bool startPoint = true;
@@ -24,12 +24,18 @@ public class QuestPoint : MonoBehaviour
     [SerializeField] private Sprite sprite_available;
     [SerializeField] private SpriteRenderer sr;
 
-    public void Init(Quest quest)
+    public void Init(Quest quest, bool isStart, bool isFinish)
     {
         questInfo = quest;
         questID = quest.info.uniqueID;
 
-        Flash(true);
+        startPoint = isStart;
+        finishPoint = isFinish;
+
+        if(isStart && !finishPoint)
+        {
+            Flash(true);
+        }
     }
 
     private void OnEnable()
