@@ -23,6 +23,8 @@ public class QuestPoint : MonoBehaviour
     [Header("Visuals")]
     [SerializeField] private Sprite sprite_available;
     [SerializeField] private SpriteRenderer sr;
+    public bool isExplored = false;
+    public bool isVisible = false;
 
     public void Init(Quest quest, bool isStart, bool isFinish)
     {
@@ -99,6 +101,27 @@ public class QuestPoint : MonoBehaviour
             sr.enabled = false;
 
             yield return new WaitForSeconds(1);
+        }
+    }
+
+    public void CheckVisibility()
+    {
+
+        if (isVisible)
+        {
+            this.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        else if (isExplored && isVisible)
+        {
+            this.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        else if (isExplored && !isVisible)
+        {
+            this.GetComponent<SpriteRenderer>().color = Color.gray;
+        }
+        else if (!isExplored)
+        {
+            this.GetComponent<SpriteRenderer>().color = Color.black;
         }
     }
 }
