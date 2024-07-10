@@ -11,6 +11,14 @@ public class UISmallQuest : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private Animator animator;
+    /* -- PLAN FOR ANIMATION --
+    * 1. Set the default colors at start based on quest
+    * 2. Use animator animation for all movement related things
+    * 3. If needed, use Color.Lerp for the color fade in animation
+    * 4. For the initial "bar fill" animation, based on the data of the quest
+    *    have the position values Lerp to their proper values from start.
+    */
+
     // Header
     [SerializeField] private TextMeshProUGUI text_header;
     [SerializeField] private Image image_header_backer;
@@ -156,11 +164,11 @@ public class UISmallQuest : MonoBehaviour
 
     public void Select()
     {
-
+        QuestManager.inst.SelectQuest(this);
     }
 
     public void Unselect()
     {
-
+        QuestManager.inst.UnselectQuest(this);
     }
 }

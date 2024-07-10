@@ -5,7 +5,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using UnityEngine.UI;
 using UnityEngine;
+using ColorUtility = UnityEngine.ColorUtility;
 
 /// <summary>
 /// Manages all things quest.
@@ -340,11 +342,18 @@ public class QuestManager : MonoBehaviour
 
     #region UI
     [Header("UI")]
-    public GameObject ui_mainReference;
-    public GameObject ui_buttonMain; // Should only show this if there are actually quests available
-    public TextMeshProUGUI ui_buttonMainText;
+    [SerializeField] private Animator ui_animator;
+    [SerializeField] private GameObject ui_mainReference;
+    [SerializeField] private GameObject ui_buttonMain; // Should only show this if there are actually quests available
+    [SerializeField] private TextMeshProUGUI ui_buttonMainText;
     [SerializeField] private GameObject ui_areaLeft;
     [SerializeField] private GameObject ui_areaRight;
+    [Header("UI - Rightside")]
+    [SerializeField] private TextMeshProUGUI text_questHeader;
+    [SerializeField] private Image image_questType;
+    [SerializeField] private List<Sprite> questTypeImages = new List<Sprite>();
+    [SerializeField] private TextMeshProUGUI text_questType;
+    [SerializeField] private TextMeshProUGUI text_questDifficulty;
 
     [Header("UI Prefabs")]
     public GameObject ui_prefab_smallQuest;
@@ -373,7 +382,40 @@ public class QuestManager : MonoBehaviour
 
     public void OpenQuestMenu()
     {
+        ui_mainReference.SetActive(true);
+        ui_animator.Play("QUEST_WindowOpen");
 
+        // Fill the left side with all our quests (they animate by themselves)
+
+        // Auto select the first quest, and fill the right side up with its data
+        if(questMap.Count > 0)
+        {
+            SelectQuest(ui_prefab_smallQuests[0].GetComponent<UISmallQuest>());
+        }
+    }
+
+    public void SelectQuest(UISmallQuest sq)
+    {
+        Quest quest = sq.quest;
+        QuestObject info = quest.info;
+
+        // Header
+        text_questHeader.text = info.name;
+        // Type
+        text_questType.text = "Type:\n" + info.type;
+        // Type image
+        Sprite typeImage = null;
+
+        image_questType.sprite = typeImage;
+        // Difficulty
+        // - Second part has a unique color based on difficulty
+        text_questDifficulty.text = $"Rank:\n<color=#{ColorUtility.ToHtmlStringRGB(ui_prefab_smallQuests[0].GetComponent<UISmallQuest>().color_main)}>{info.rank}</color>";
+    }
+
+    public void UnselectQuest(UISmallQuest sq)
+    {
+        // Do we need to actually do anything here?
+        // All the stuff will be overriden by SelectQuest anyways.
     }
 
     public void CloseQuestMenu()
