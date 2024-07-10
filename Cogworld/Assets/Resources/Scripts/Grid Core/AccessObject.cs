@@ -256,3 +256,39 @@ public class AccessObject : MonoBehaviour
         }
     }
 }
+
+[System.Serializable]
+public enum LevelName
+{// FLAG - UPDATE NEW LEVELS
+    Default,
+    Materials,
+    Lower_Caves,
+    Storage,
+    DSF,
+    Garrison,
+    Factory,
+    Extension,
+    Upper_Caves,
+    Research,
+    Access,
+    Command,
+    Armory,
+    Archives,
+    Zhirov,
+    Data_Miner,
+    Architect,
+    Exiles,
+    Warlord,
+    Section_7,
+    Testing,
+    Quarantine, 
+    Lab,
+    Hub_04d,
+    Zion,
+    Zion_Deep_Caves,
+    Mines,
+    Recycling,
+    Subcaves,
+    Wastes,
+    Junkyard
+}

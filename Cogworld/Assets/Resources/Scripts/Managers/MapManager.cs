@@ -52,6 +52,7 @@ public class MapManager : MonoBehaviour
     public int currentBranch;// Goes from 0 (no branch) to ~5
     [Tooltip("Is the current level a branch?")]
     public bool currentLevelIsBranch = false;
+    public LevelName levelName;
     public string currentLevelName;
     public int mapSeed = 0;
     //
@@ -2700,128 +2701,160 @@ public class MapManager : MonoBehaviour
             // TODO: In each of these statements (or those relevent) add: DungeonManagerCTR.instance.genData =
             case 0:
                 currentLevelName = "MATERIALS";
+                levelName = LevelName.Materials;
                 mapType = 2;
                 break;
             case 1:
                 currentLevelName = "LOWER CAVES";
+                levelName = LevelName.Lower_Caves;
                 mapType = 1;
                 break;
             case 2:
                 currentLevelName = "STORAGE";
+                levelName = LevelName.Storage;
                 mapType = 2;
                 break;
             case 3:
                 currentLevelName = "DSF";
+                levelName = LevelName.DSF;
                 mapType = 2;
                 break;
             case 4:
                 currentLevelName = "GARRISON";
+                levelName = LevelName.Garrison;
                 mapType = 2;
                 break;
             case 5:
                 currentLevelName = "FACTORY";
+                levelName = LevelName.Factory;
                 mapType = 2;
                 break;
             case 6:
                 currentLevelName = "EXTENSION";
+                levelName = LevelName.Extension;
                 mapType = 2;
                 break;
             case 7:
                 currentLevelName = "UPPER CAVES";
+                levelName = LevelName.Upper_Caves;
                 mapType = 1;
                 break;
             case 8:
                 currentLevelName = "RESEARCH";
+                levelName = LevelName.Research;
                 mapType = 2;
                 break;
             case 9:
                 currentLevelName = "ACCESS";
+                levelName = LevelName.Access;
                 mapType = 2;
                 break;
             case 10:
                 currentLevelName = "COMMAND";
+                levelName = LevelName.Command;
                 mapType = 2;
                 break;
             case 11:
                 currentLevelName = "ARMORY";
+                levelName = LevelName.Armory;
                 mapType = 2;
                 break;
             case 12:
                 currentLevelName = "ARCHIVES";
+                levelName = LevelName.Archives;
                 mapType = 2;
                 break;
             case 13:
                 currentLevelName = "ZHIROV";
+                levelName = LevelName.Zhirov;
                 mapType = 2;
                 break;
             case 14:
                 currentLevelName = "DATA MINER";
+                levelName = LevelName.Data_Miner;
                 mapType = 2;
                 break;
             case 15:
                 currentLevelName = "ARCHITECT";
+                levelName = LevelName.Architect;
                 mapType = 2;
                 break;
             case 16:
                 currentLevelName = "EXILES";
+                levelName = LevelName.Exiles;
                 mapType = 3;
                 DungeonManagerCTR.instance.genData = mapGenSpecifics[1];
                 customMapType = 0;
                 break;
             case 17:
                 currentLevelName = "WARLORD";
+                levelName = LevelName.Warlord;
                 mapType = 2;
                 break;
             case 18:
                 currentLevelName = "SECTION 7";
+                levelName = LevelName.Section_7;
                 mapType = 2;
                 break;
             case 19:
                 currentLevelName = "TESTING";
+                levelName = LevelName.Testing;
                 mapType = 2;
                 break;
             case 20:
                 currentLevelName = "QUARANTINE";
+                levelName = LevelName.Quarantine;
                 mapType = 2;
                 break;
             case 21:
                 currentLevelName = "LAB";
+                levelName = LevelName.Lab;
                 mapType = 2;
                 break;
             case 22:
                 currentLevelName = "HUB_04(d)";
+                levelName = LevelName.Hub_04d;
                 mapType = 2;
                 break;
             case 23:
                 currentLevelName = "ZION";
+                levelName = LevelName.Zion;
                 mapType = 2;
                 break;
             case 24:
                 currentLevelName = "ZDC";
+                levelName = LevelName.Zion_Deep_Caves;
                 mapType = 2;
                 break;
             case 25:
                 currentLevelName = "MINES";
+                levelName = LevelName.Mines;
                 mapType = 2;
                 break;
             case 26:
                 currentLevelName = "RECYCLING";
+                levelName = LevelName.Recycling;
                 mapType = 2;
                 break;
             case 27:
                 currentLevelName = "SUBCAVES";
+                levelName = LevelName.Subcaves;
                 mapType = 2;
                 break;
             case 28:
                 currentLevelName = "WASTES";
+                levelName = LevelName.Wastes;
                 mapType = 2;
                 break;
             case 29: // not actually in the real game yet but will be eventually
                 currentLevelName = "JUNKYARD";
+                levelName = LevelName.Junkyard;
                 mapType = 2;
                 break;
             default: // CUSTOM
                 currentLevelName = "UNKNOWN";
+                levelName = LevelName.Default;
+                //
                 mapType = 3;
                 customMapType = target;
                 break;
