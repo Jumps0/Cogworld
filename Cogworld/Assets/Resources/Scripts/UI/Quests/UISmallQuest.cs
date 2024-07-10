@@ -123,7 +123,8 @@ public class UISmallQuest : MonoBehaviour
 
         QuestObject info = quest.info;
 
-        int max = 1, current = 1;
+        int max = info.actions.amount;
+        float current = quest.value;
 
         switch (info.type)
         {

@@ -15,6 +15,10 @@ public class Quest
     private int currentQuestStepIndex;
     private QuestStepState[] questStepStates;
 
+    [Header("Tracking Value")]
+    [Tooltip("Used to track quest progress in a generic manner.")]
+    public float value;
+
     public Quest(QuestObject info, string uid = "")
     {
         this.info = info;
@@ -120,6 +124,7 @@ public abstract class QuestObject : ScriptableObject
     [Header("Quest Details")]
     public QuestType type;
     public QuestRank rank;
+    public QuestActions actions;
 
     [Header("Requirements")]
     public Quest[] prerequisites;
@@ -172,7 +177,7 @@ public class QuestActions
     public BotAlignment kill_factionType;
     [Tooltip("Kill any bot of this class")]
     public bool kill_class;
-    public BotClass kill_classType;
+    public BotClass kill_classType = BotClass.None;
     [Tooltip("Kill any HOSTILE bot.")]
     public bool killAny;
 
@@ -191,18 +196,28 @@ public class QuestActions
     public ItemSlot collect_slot;
 
     [Header("Find")]
+    [Tooltip("Reach a specific level.")]
     public bool find_specificLevel;
-    //
+    public LevelName find_specific;
+    [Tooltip("Reach a specific location on the map. Uses *find_specific (above) to determine where to spawn.")]
     public bool find_specificLocation;
-    //
+    public Vector2 find_location;
+    public Vector2 find_locationSize;
+    public Transform find_transform;
 
     [Header("Meet")]
+    [Tooltip("Meet a specific bot that has the same BotObject on it.")]
     public bool meet_specificBot;
     public BotObject meet_specific;
-    //
+    [Tooltip("Meet any member of the specified faction.")]
+    public bool meet_faction;
+    public BotAlignment meet_factionBR;
 
     [Header("Destroy")]
+    [Tooltip("Destroy a specific machine in the world (use parent object please).")]
     public bool destroy_specificMachine;
     public MachinePart destroy_machine;
-    //
+    [Tooltip("Destroy a specific object (gameObject) somewhere in the world.")]
+    public bool destroy_specificObject;
+    public GameObject destroy_object;
 }

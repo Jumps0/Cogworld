@@ -98,6 +98,7 @@ public class GlobalSettings : MonoBehaviour
         MapManager.inst.currentBranch = 0;
         MapManager.inst.currentLevel = -11;
         MapManager.inst.currentLevelName = "Unknown"; // (Starting cave)
+        MapManager.inst.levelName = LevelName.Default;
     }
 
     /// <summary>
