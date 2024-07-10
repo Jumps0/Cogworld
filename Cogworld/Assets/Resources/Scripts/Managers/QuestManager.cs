@@ -94,6 +94,18 @@ public class QuestManager : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if(questMap.Count > 0)
+        {
+            ShowQuestsButton();
+        }
+        else
+        {
+            HideQuestsButton();
+        }
+    }
+
     private void DEBUG_QuestTesting()
     {
         // Add the hideout test quest
@@ -357,7 +369,6 @@ public class QuestManager : MonoBehaviour
 
     [Header("UI Prefabs")]
     public GameObject ui_prefab_smallQuest;
-    public GameObject ui_prefab_questDetail;
     private List<GameObject> ui_prefab_smallQuests = new List<GameObject>();
 
     public void ButtonHoverEnter()
@@ -367,17 +378,17 @@ public class QuestManager : MonoBehaviour
 
     public void ButtonHoverExit()
     {
-
+        // UNUSED but here just in case
     }
 
     private void ShowQuestsButton()
     {
-
+        ui_buttonMain.SetActive(true);
     }
     
     private void HideQuestsButton()
     {
-
+        ui_buttonMain.SetActive(false);
     }
 
     public void OpenQuestMenu()
@@ -385,10 +396,17 @@ public class QuestManager : MonoBehaviour
         ui_mainReference.SetActive(true);
         ui_animator.Play("QUEST_WindowOpen");
 
+        // Clear any pre-existing quests
+        UI_ClearSmallQuests();
+
         // Fill the left side with all our quests (they animate by themselves)
+        foreach (var Q in questMap)
+        {
+            UI_CreateSmallQuest(Q.Value);
+        }
 
         // Auto select the first quest, and fill the right side up with its data
-        if(questMap.Count > 0)
+        if (questMap.Count > 0)
         {
             SelectQuest(ui_prefab_smallQuests[0].GetComponent<UISmallQuest>());
         }
@@ -410,6 +428,8 @@ public class QuestManager : MonoBehaviour
         // Difficulty
         // - Second part has a unique color based on difficulty
         text_questDifficulty.text = $"Rank:\n<color=#{ColorUtility.ToHtmlStringRGB(ui_prefab_smallQuests[0].GetComponent<UISmallQuest>().color_main)}>{info.rank}</color>";
+
+        // TODO: vv MORE vv
     }
 
     public void UnselectQuest(UISmallQuest sq)
@@ -420,7 +440,14 @@ public class QuestManager : MonoBehaviour
 
     public void CloseQuestMenu()
     {
+        // Clear out the quests
+        UI_ClearSmallQuests();
 
+        // Disable the UI (no fancy animation, just turn it off)
+        ui_mainReference.SetActive(false);
+
+        // Play the close sound
+        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.UI_Clips[20]);
     }
 
     private void UI_CreateSmallQuest(Quest quest)

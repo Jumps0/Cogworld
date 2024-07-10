@@ -10244,7 +10244,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 89.586105, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 22.777779}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &272249432
@@ -28852,9 +28852,11 @@ MonoBehaviour:
   ui_buttonMainText: {fileID: 402455891}
   ui_areaLeft: {fileID: 1723238475}
   ui_areaRight: {fileID: 1521392212}
+  text_questHeader: {fileID: 1419539775}
+  image_questType: {fileID: 1204395697}
+  questTypeImages: []
   text_questType: {fileID: 2086844438}
   text_questDifficulty: {fileID: 1143295140}
-  text_questHeader: {fileID: 1419539775}
   ui_prefab_smallQuest: {fileID: 354555550751589637, guid: 702f4713efc72e84eb6b4a8f7bcd91fe, type: 3}
   ui_prefab_questDetail: {fileID: 0}
 --- !u!1 &616533076

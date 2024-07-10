@@ -11,13 +11,6 @@ public class UISmallQuest : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private Animator animator;
-    /* -- PLAN FOR ANIMATION --
-    * 1. Set the default colors at start based on quest
-    * 2. Use animator animation for all movement related things
-    * 3. If needed, use Color.Lerp for the color fade in animation
-    * 4. For the initial "bar fill" animation, based on the data of the quest
-    *    have the position values Lerp to their proper values from start.
-    */
 
     // Header
     [SerializeField] private TextMeshProUGUI text_header;
@@ -122,7 +115,7 @@ public class UISmallQuest : MonoBehaviour
         image_bar_background.color = color_dark;
 
         // Do the opening animation
-        animator.Play("");
+        StartCoroutine(OpenAnimation());
     }
 
     public void SetProgressBar()
@@ -170,5 +163,55 @@ public class UISmallQuest : MonoBehaviour
     public void Unselect()
     {
         QuestManager.inst.UnselectQuest(this);
+    }
+
+    private IEnumerator OpenAnimation()
+    {
+        /*
+        * 1. Set the default colors at start based on quest
+        * 2. Use animator animation for all movement related things
+        * 3. If needed, use Color.Lerp for the color fade in animation
+        * 4. For the initial "bar fill" animation, based on the data of the quest
+        *    have the position values Lerp to their proper values from start.
+        */
+
+        // 1. Set default colors (Done beforehand)
+
+        // 2. Start the animator
+        animator.Play("SmallQuest_Open");
+
+        // 3. Color fade in /w Lerp
+        Color start = Color.black;
+        Color end = color_main;
+        Color endDark = color_dark;
+
+        float elapsedTime = 0f;
+        float duration = 0.5f;
+        while (elapsedTime < duration) // Black -> Main Color
+        {
+            // Do lerp
+            Color lerp = Color.Lerp(start, end, elapsedTime / duration);
+            Color darkLerp = Color.Lerp(start, endDark, elapsedTime / duration);
+            Color light2Main = Color.Lerp(color_bright, end, elapsedTime / duration);
+            Color dark2Main = Color.Lerp(endDark, end, elapsedTime / duration);
+
+            // And assign colors
+            foreach (var Image in image_border_bars)
+            {
+                Image.color = lerp;
+            }
+            image_main_borders.color = lerp;
+            text_amount.color = lerp;
+            text_description.color = lerp;
+            // Black -> Dark
+            text_bar.color = darkLerp;
+            image_bar_main.color = dark2Main;
+            image_bar_background.color = light2Main;
+            // Some of the bar uses light -> main
+            image_bar_side.color = light2Main;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
     }
 }
