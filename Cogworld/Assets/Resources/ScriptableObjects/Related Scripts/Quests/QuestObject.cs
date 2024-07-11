@@ -137,6 +137,11 @@ public abstract class QuestObject : ScriptableObject
     [Header("Rewards")]
     public List<Item> reward_items;
     public int reward_matter;
+
+    [Header("Flair")]
+    public Sprite questGiverSprite;
+    public string questGiverName;
+    public string questGiverDescription;
 }
 
 [System.Serializable]

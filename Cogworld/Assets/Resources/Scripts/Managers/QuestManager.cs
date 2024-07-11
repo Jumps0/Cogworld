@@ -366,10 +366,24 @@ public class QuestManager : MonoBehaviour
     [SerializeField] private List<Sprite> questTypeImages = new List<Sprite>();
     [SerializeField] private TextMeshProUGUI text_questType;
     [SerializeField] private TextMeshProUGUI text_questDifficulty;
+    //
+    [SerializeField] private Image image_questGiver;
+    [SerializeField] private TextMeshProUGUI text_questGiverName;
+    [SerializeField] private TextMeshProUGUI text_questGiverDescription;
+    //
+    [SerializeField] private TextMeshProUGUI text_questDescription;
+    //
+    [SerializeField] private Transform ui_QuestStepsArea;
+    //
+    [SerializeField] private Transform ui_QuestRewardsArea;
 
     [Header("UI Prefabs")]
     public GameObject ui_prefab_smallQuest;
     private List<GameObject> ui_smallQuests = new List<GameObject>();
+    [SerializeField] private GameObject ui_prefab_questStep;
+    private List<GameObject> ui_questSteps = new List<GameObject>();
+    [SerializeField] private GameObject ui_prefab_questReward;
+    private List<GameObject> ui_questRewards = new List<GameObject>();
 
     public void ButtonHoverEnter()
     {
@@ -422,6 +436,10 @@ public class QuestManager : MonoBehaviour
         {
             Q.GetComponent<UISmallQuest>().Unselect();
         }
+        // Clear out the quest steps & rewards
+        UI_ClearQuestSteps();
+        UI_ClearQuestRewards();
+
         // Mark quest as selected
         sq.Select();
 
@@ -434,13 +452,61 @@ public class QuestManager : MonoBehaviour
         text_questType.text = "Type:\n" + info.type;
         // Type image
         Sprite typeImage = null;
-
+        switch (info.type)
+        {
+            case QuestType.Kill: // Bot
+                typeImage = questTypeImages[0];
+                break;
+            case QuestType.Collect: // Green Data
+                typeImage = questTypeImages[1];
+                break;
+            case QuestType.Find: // Door
+                typeImage = questTypeImages[2];
+                break;
+            case QuestType.Meet: // NPC
+                typeImage = questTypeImages[3];
+                break;
+            case QuestType.Destroy: // Machine
+                typeImage = questTypeImages[4];
+                break;
+        }
         image_questType.sprite = typeImage;
         // Difficulty
         // - Second part has a unique color based on difficulty
         text_questDifficulty.text = $"Rank:\n<color=#{ColorUtility.ToHtmlStringRGB(ui_smallQuests[0].GetComponent<UISmallQuest>().color_main)}>{info.rank}</color>";
 
-        // TODO: vv MORE vv
+        // Prerequisites <?????> TODO
+
+
+        // Quest Giver Image
+        image_questGiver.sprite = quest.info.questGiverSprite;
+        // Quest Giver Name
+        text_questGiverName.text = quest.info.questGiverName;
+        // Quest Giver Description
+        text_questGiverDescription.text = quest.info.questGiverDescription;
+        
+        // Description
+        text_questDescription.text = quest.info.description;
+
+        // Additional Details
+        // -Fill up with the quest steps the player needs to do
+        foreach (var qs in quest.info.steps)
+        {
+            // These are gameObjects, and we need to give their info to our newly created quest step (UI) objects
+            UI_CreateQuestStep(quest, qs);
+        }
+
+        // Rewards
+        // - Same as above, fill up with rewards
+        foreach (var rw in quest.info.reward_items)
+        {
+            UI_CreateQuestRewards(quest, rw);
+        }
+        // - And one for matter too if it exists
+        if(quest.info.reward_matter > 0)
+        {
+            UI_CreateQuestRewards(quest, null, quest.info.reward_matter);
+        }
     }
 
     public void CloseQuestMenu()
@@ -475,6 +541,50 @@ public class QuestManager : MonoBehaviour
         }
 
         ui_smallQuests.Clear();
+    }
+
+    private void UI_CreateQuestStep(Quest quest, GameObject step)
+    {
+        // Instantiate Object
+        GameObject obj = Instantiate(ui_prefab_questStep, ui_QuestStepsArea.transform);
+
+        // Assign details to object
+        obj.GetComponent<UIQuestStep>().Init(quest, step);
+
+        // Add to list
+        ui_questSteps.Add(obj);
+    }
+
+    private void UI_ClearQuestSteps()
+    {
+        foreach (var GO in ui_questSteps.ToList())
+        {
+            Destroy(GO);
+        }
+
+        ui_questSteps.Clear();
+    }
+
+    private void UI_CreateQuestRewards(Quest quest, Item itemReward = null, int matterReward = 0)
+    {
+        // Instantiate Object
+        GameObject obj = Instantiate(ui_prefab_questReward, ui_QuestRewardsArea.transform);
+
+        // Assign details to object
+        obj.GetComponent<UIQuestReward>().Init(quest, itemReward, matterReward);
+
+        // Add to list
+        ui_questRewards.Add(obj);
+    }
+
+    private void UI_ClearQuestRewards()
+    {
+        foreach (var GO in ui_questRewards.ToList())
+        {
+            Destroy(GO);
+        }
+
+        ui_questRewards.Clear();
     }
 
     #endregion

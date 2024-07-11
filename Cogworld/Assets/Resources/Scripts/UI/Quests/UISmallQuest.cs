@@ -117,6 +117,14 @@ public class UISmallQuest : MonoBehaviour
                 break;
         }
 
+        // If the quest is finished set everything to gray instead
+        if(quest.state == QuestState.FINISHED)
+        {
+            color_main = c_gray1;
+            color_bright = c_gray2;
+            color_dark = c_gray3;
+        }
+
         // Then assign the set colors
         image_bar_side.color = color_main;
         image_bar_main.color = color_main;
