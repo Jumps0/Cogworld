@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
+using ColorUtility = UnityEngine.ColorUtility;
 
 public class UISmallQuest : MonoBehaviour
 {
     [Header("Info")]
     public Quest quest;
+    public bool selected = false;
 
     [Header("References")]
     [SerializeField] private Animator animator;
@@ -18,9 +21,9 @@ public class UISmallQuest : MonoBehaviour
     //
     [SerializeField] private List<Image> image_border_bars;
     // Progress Bar
-    private Image image_bar_side;
-    private Image image_bar_main;
-    private Image image_bar_background;
+    [SerializeField] private Image image_bar_side;
+    [SerializeField] private Image image_bar_main;
+    [SerializeField] private Image image_bar_background;
     [Tooltip("The ##% percent that appears INSIDE the bar, indicating the % progress.")]
     [SerializeField] private TextMeshProUGUI text_bar;
     //
@@ -71,6 +74,7 @@ public class UISmallQuest : MonoBehaviour
     {
         this.quest = quest;
         QuestObject info = quest.info;
+        image_main.sprite = info.sprite;
 
         switch (info.rank) // Set the primary colors based on difficulty
         {
@@ -158,15 +162,19 @@ public class UISmallQuest : MonoBehaviour
     public void Select()
     {
         QuestManager.inst.SelectQuest(this);
+        selected = true;
     }
 
     public void Unselect()
     {
         QuestManager.inst.UnselectQuest(this);
+        selected = false;
     }
 
+    private bool animating = false;
     private IEnumerator OpenAnimation()
     {
+        animating = true;
         /*
         * 1. Set the default colors at start based on quest
         * 2. Use animator animation for all movement related things
@@ -176,6 +184,14 @@ public class UISmallQuest : MonoBehaviour
         */
 
         // 1. Set default colors (Done beforehand)
+        if (selected)
+        {
+            text_header.text = $"<color=#{ColorUtility.ToHtmlStringRGB(color_main)}>{text_header.text}</color>";
+        }
+        else
+        { // Only selected quests get color
+            text_header.text = $"<color=#{ColorUtility.ToHtmlStringRGB(Color.gray)}>{text_header.text}</color>";
+        }
 
         // 2. Start the animator
         animator.Play("SmallQuest_Open");
@@ -184,6 +200,13 @@ public class UISmallQuest : MonoBehaviour
         Color start = Color.black;
         Color end = color_main;
         Color endDark = color_dark;
+
+        // 3.5 The bar fill
+        float barEndAmount = image_bar_main.fillAmount;
+        image_bar_main.fillAmount = 0f; // Start a 0%
+        float barTextStartX = -292f;
+        float barTextMaxEnd = -79.5f;
+        text_bar.rectTransform.anchoredPosition += new Vector2(barTextStartX, 0); // Start on the left side
 
         float elapsedTime = 0f;
         float duration = 0.5f;
@@ -210,8 +233,52 @@ public class UISmallQuest : MonoBehaviour
             // Some of the bar uses light -> main
             image_bar_side.color = light2Main;
 
+            // Header only gets color if its selected
+            if (selected)
+            {
+                image_header_backer.color = Color.Lerp(end, start, elapsedTime / duration);
+            }
+            else
+            {
+                image_header_backer.color = Color.Lerp(Color.gray, start, elapsedTime / duration);
+            }
+
+            // ==== THE BAR ====
+            // We need to:
+            // 1. Lerp the bar from 0% fill to whatever fill it needs to be
+            // 2. Move the fill % text along with the fill
+            image_bar_main.fillAmount = Mathf.Lerp(0f, barEndAmount, elapsedTime / duration);
+            // The max is -79.5f, we need to find out where in between it should be
+            float interpolate = barTextStartX + (barTextMaxEnd - barTextStartX) * Mathf.Clamp01(barEndAmount);
+            float x = Mathf.Lerp(barEndAmount, interpolate, elapsedTime / duration);
+            text_bar.rectTransform.anchoredPosition += new Vector2(x, 0);
+
             elapsedTime += Time.deltaTime;
             yield return null;
+        }
+
+        animating = false;
+    }
+
+    public void HoverEnter()
+    {
+        if (!animating)
+        { // Just highlight the borders
+            foreach (var Image in image_border_bars)
+            {
+                Image.color = color_bright;
+            }
+        }
+    }
+
+    public void HoverExit()
+    {
+        if (!animating)
+        { // Reset the borders
+            foreach (var Image in image_border_bars)
+            {
+                Image.color = color_main;
+            }
         }
     }
 }

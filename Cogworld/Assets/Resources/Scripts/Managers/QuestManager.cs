@@ -96,7 +96,7 @@ public class QuestManager : MonoBehaviour
 
     private void Update()
     {
-        if(questMap.Count > 0)
+        if(questMap != null && questMap.Count > 0)
         {
             ShowQuestsButton();
         }
@@ -369,7 +369,7 @@ public class QuestManager : MonoBehaviour
 
     [Header("UI Prefabs")]
     public GameObject ui_prefab_smallQuest;
-    private List<GameObject> ui_prefab_smallQuests = new List<GameObject>();
+    private List<GameObject> ui_smallQuests = new List<GameObject>();
 
     public void ButtonHoverEnter()
     {
@@ -408,12 +408,20 @@ public class QuestManager : MonoBehaviour
         // Auto select the first quest, and fill the right side up with its data
         if (questMap.Count > 0)
         {
-            SelectQuest(ui_prefab_smallQuests[0].GetComponent<UISmallQuest>());
+            SelectQuest(ui_smallQuests[0].GetComponent<UISmallQuest>());
         }
     }
 
     public void SelectQuest(UISmallQuest sq)
     {
+        // Unselect everything
+        foreach (var Q in ui_smallQuests)
+        {
+            Q.GetComponent<UISmallQuest>().Unselect();
+        }
+        // Mark quest as selected
+        sq.Select();
+
         Quest quest = sq.quest;
         QuestObject info = quest.info;
 
@@ -427,7 +435,7 @@ public class QuestManager : MonoBehaviour
         image_questType.sprite = typeImage;
         // Difficulty
         // - Second part has a unique color based on difficulty
-        text_questDifficulty.text = $"Rank:\n<color=#{ColorUtility.ToHtmlStringRGB(ui_prefab_smallQuests[0].GetComponent<UISmallQuest>().color_main)}>{info.rank}</color>";
+        text_questDifficulty.text = $"Rank:\n<color=#{ColorUtility.ToHtmlStringRGB(ui_smallQuests[0].GetComponent<UISmallQuest>().color_main)}>{info.rank}</color>";
 
         // TODO: vv MORE vv
     }
@@ -436,6 +444,7 @@ public class QuestManager : MonoBehaviour
     {
         // Do we need to actually do anything here?
         // All the stuff will be overriden by SelectQuest anyways.
+        sq.Unselect();
     }
 
     public void CloseQuestMenu()
@@ -459,17 +468,17 @@ public class QuestManager : MonoBehaviour
         obj.GetComponent<UISmallQuest>().Init(quest);
 
         // Add to list
-        ui_prefab_smallQuests.Add(obj);
+        ui_smallQuests.Add(obj);
     }
 
     private void UI_ClearSmallQuests()
     {
-        foreach (var GO in ui_prefab_smallQuests.ToList())
+        foreach (var GO in ui_smallQuests.ToList())
         {
             Destroy(GO);
         }
 
-        ui_prefab_smallQuests.Clear();
+        ui_smallQuests.Clear();
     }
 
     #endregion

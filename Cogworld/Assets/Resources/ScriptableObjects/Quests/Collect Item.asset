@@ -14,10 +14,44 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 0
   displayName: Collect Item
+  shortDescription: 
   description: 
+  sprite: {fileID: 2048525777, guid: 484b699857d60234c908d529dd37a90d, type: 3}
+  uniqueID: 
   type: 2
   rank: 1
+  actions:
+    amount: 1
+    kill_faction: 0
+    kill_factionType: 0
+    kill_class: 0
+    kill_classType: 75
+    killAny: 0
+    collect_specific: 0
+    collect_specificItem: {fileID: 0}
+    collect_byType: 0
+    collect_type: 0
+    collect_byRank: 0
+    collect_rank: {x: 0, y: 0}
+    collect_bySlot: 0
+    collect_slot: 0
+    find_specificLevel: 0
+    find_specific: 0
+    find_specificLocation: 0
+    find_location: {x: 0, y: 0}
+    find_locationSize: {x: 0, y: 0}
+    find_transform: {fileID: 0}
+    meet_specificBot: 0
+    meet_specific: {fileID: 0}
+    meet_faction: 0
+    meet_factionBR: 0
+    destroy_specificMachine: 0
+    destroy_machine: {fileID: 0}
+    destroy_specificObject: 0
+    destroy_object: {fileID: 0}
   prerequisites: []
+  prereq_items: []
+  prereq_matter: 0
   steps:
   - {fileID: 4471201208271377523, guid: b10bb1fb2d3182d4d9c35e08adacfba4, type: 3}
   reward_items: []
