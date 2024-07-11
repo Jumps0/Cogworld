@@ -175,6 +175,7 @@ public class AudioManager : MonoBehaviour
     {
         // Create new temp gameObject
         GameObject newAudio = new GameObject();
+        newAudio.transform.SetParent(this.transform);
         newAudio.transform.position = location;
         newAudio.AddComponent<AudioSource>();
 

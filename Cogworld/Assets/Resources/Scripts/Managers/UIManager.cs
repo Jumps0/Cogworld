@@ -1794,6 +1794,7 @@ public class UIManager : MonoBehaviour
     #region Generic Machine / Terminal
     [HideInInspector] public GameObject terminal_targetTerm;
     [Header("Terminal/Generic Machines")]
+    public bool terminal_isAnimating = false;
     public GameObject terminal_hackingAreaRef;
     public GameObject terminal_targetresultsAreaRef;
     public GameObject terminal_hackinfoArea1;
@@ -1837,6 +1838,8 @@ public class UIManager : MonoBehaviour
 
     public void Terminal_OpenGeneric(GameObject target)
     {
+        terminal_isAnimating = true;
+
         // Freeze player
         PlayerData.inst.GetComponent<PlayerGridMovement>().playerMovementAllowed = false;
 
@@ -2212,6 +2215,7 @@ public class UIManager : MonoBehaviour
         // Stop the typing sound
         AudioManager.inst.StopMiscSpecific();
 
+        terminal_isAnimating = false;
     }
 
     private IEnumerator Terminal_HackBorderAnim()
@@ -2745,6 +2749,11 @@ public class UIManager : MonoBehaviour
 
     public void Terminal_Close()
     {
+        if (terminal_isAnimating) // Safety flag
+        {
+            return;
+        }
+
         AudioManager.inst.CreateTempClip(terminal_targetTerm.transform.position, AudioManager.inst.UI_Clips[20]); // Play CLOSE sound
 
         StartCoroutine(Terminal_CloseAnim());
@@ -2927,9 +2936,12 @@ public class UIManager : MonoBehaviour
     [HideInInspector] public TerminalCustom cTerminal_machine;
     [Header("Custom Terminal")]
     public GameObject cTerminal_gibberishPrefab;
+    public bool cTerminal_animating = false;
 
     public void CTerminal_Open(GameObject target)
     {
+        cTerminal_animating = true;
+
         // Freeze player
         PlayerData.inst.GetComponent<PlayerGridMovement>().playerMovementAllowed = false;
 
@@ -3164,10 +3176,17 @@ public class UIManager : MonoBehaviour
         AudioManager.inst.StopMiscSpecific();
 
         yield return null;
+
+        cTerminal_animating = false;
     }
 
     public void CTerminal_Close()
     {
+        if (cTerminal_animating)
+        {
+            return;
+        }
+
         // Shut down all the lines
         foreach (var i in terminal_hackinfoList.ToList())
         {

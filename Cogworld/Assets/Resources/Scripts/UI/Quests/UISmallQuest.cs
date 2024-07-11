@@ -18,6 +18,7 @@ public class UISmallQuest : MonoBehaviour
     // Header
     [SerializeField] private TextMeshProUGUI text_header;
     [SerializeField] private Image image_header_backer;
+    private string header_name;
     //
     [SerializeField] private List<Image> image_border_bars;
     // Progress Bar
@@ -75,6 +76,9 @@ public class UISmallQuest : MonoBehaviour
         this.quest = quest;
         QuestObject info = quest.info;
         image_main.sprite = info.sprite;
+        text_description.text = info.shortDescription;
+        header_name = $"[{info.displayName}]";
+        text_header.text = header_name;
 
         switch (info.rank) // Set the primary colors based on difficulty
         {
@@ -118,6 +122,9 @@ public class UISmallQuest : MonoBehaviour
         image_bar_main.color = color_main;
         image_bar_background.color = color_dark;
 
+        // Set the progress bar
+        SetProgressBar();
+
         // Do the opening animation
         StartCoroutine(OpenAnimation());
     }
@@ -131,21 +138,29 @@ public class UISmallQuest : MonoBehaviour
         int max = info.actions.amount;
         float current = quest.value;
 
+        /*
         switch (info.type)
         {
             case QuestType.Default:
+                Debug.LogWarning($"{info.name} has no set actions to do. It will not display properly!");
                 break;
             case QuestType.Kill: // This will usually provide a straight number
+
                 break;
             case QuestType.Collect: // May just be one, usually a list of something
+
                 break;
             case QuestType.Find: // Variable
+
                 break;
             case QuestType.Meet: // Usually just 1
+
                 break;
             case QuestType.Destroy: // Variable
+
                 break;
         }
+        */
 
         // Set the text
         text_amount.text = $"{current}/{max}";
@@ -155,20 +170,27 @@ public class UISmallQuest : MonoBehaviour
         image_bar_main.fillAmount = percent;
         text_bar.text = $"{Mathf.RoundToInt(percent*100)}%";
         // We also need to make sure the % text is lined up next to the end of the progress bar.
-
+        // (This is done in the opening animation)
 
     }
 
     public void Select()
     {
-        QuestManager.inst.SelectQuest(this);
         selected = true;
+        if(!animating)
+        {
+            Debug.Log("Select");
+            text_header.text = $"<color=#{ColorUtility.ToHtmlStringRGB(color_main)}>{header_name}</color>";
+        }
     }
 
     public void Unselect()
     {
-        QuestManager.inst.UnselectQuest(this);
         selected = false;
+        if (!animating)
+        {
+            text_header.text = $"<color=#{ColorUtility.ToHtmlStringRGB(Color.gray)}>{header_name}</color>";
+        }
     }
 
     private bool animating = false;
@@ -186,11 +208,11 @@ public class UISmallQuest : MonoBehaviour
         // 1. Set default colors (Done beforehand)
         if (selected)
         {
-            text_header.text = $"<color=#{ColorUtility.ToHtmlStringRGB(color_main)}>{text_header.text}</color>";
+            text_header.text = $"<color=#{ColorUtility.ToHtmlStringRGB(color_main)}>{header_name}</color>";
         }
         else
         { // Only selected quests get color
-            text_header.text = $"<color=#{ColorUtility.ToHtmlStringRGB(Color.gray)}>{text_header.text}</color>";
+            text_header.text = $"<color=#{ColorUtility.ToHtmlStringRGB(Color.gray)}>{header_name}</color>";
         }
 
         // 2. Start the animator
@@ -228,10 +250,11 @@ public class UISmallQuest : MonoBehaviour
             text_description.color = lerp;
             // Black -> Dark
             text_bar.color = darkLerp;
-            image_bar_main.color = dark2Main;
-            image_bar_background.color = light2Main;
+            image_bar_background.color = darkLerp;
             // Some of the bar uses light -> main
             image_bar_side.color = light2Main;
+            image_bar_main.color = light2Main;
+            text_description.color = light2Main;
 
             // Header only gets color if its selected
             if (selected)

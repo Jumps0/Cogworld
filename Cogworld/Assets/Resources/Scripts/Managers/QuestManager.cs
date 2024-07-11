@@ -393,6 +393,9 @@ public class QuestManager : MonoBehaviour
 
     public void OpenQuestMenu()
     {
+        // Play the OPEN sound
+        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.UI_Clips[64]);
+
         ui_mainReference.SetActive(true);
         ui_animator.Play("QUEST_WindowOpen");
 
@@ -440,23 +443,16 @@ public class QuestManager : MonoBehaviour
         // TODO: vv MORE vv
     }
 
-    public void UnselectQuest(UISmallQuest sq)
-    {
-        // Do we need to actually do anything here?
-        // All the stuff will be overriden by SelectQuest anyways.
-        sq.Unselect();
-    }
-
     public void CloseQuestMenu()
     {
+        // Play the close sound
+        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.UI_Clips[20]);
+
         // Clear out the quests
         UI_ClearSmallQuests();
 
         // Disable the UI (no fancy animation, just turn it off)
         ui_mainReference.SetActive(false);
-
-        // Play the close sound
-        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.UI_Clips[20]);
     }
 
     private void UI_CreateSmallQuest(Quest quest)
