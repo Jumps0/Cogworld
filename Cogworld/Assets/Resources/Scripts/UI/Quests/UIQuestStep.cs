@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Image = UnityEngine.UI.Image;
 
 public class UIQuestStep : MonoBehaviour
 {
     [Header("Details")]
     private Quest info;
     private GameObject stepReference;
+    private int stepInSequence;
     [SerializeField] private List<Color> colors = new List<Color>();
 
     [Header("UI")]
@@ -17,8 +19,9 @@ public class UIQuestStep : MonoBehaviour
     [SerializeField] private Image ui_backer;
     [SerializeField] private Image check_backer;
 
-    public void Init(Quest q, GameObject step, List<Color> colors)
+    public void Init(int stepInSequence, Quest q, GameObject step, List<Color> colors)
     {
+        this.stepInSequence = stepInSequence;
         info = q;
         stepReference = step;
         this.colors = colors;
@@ -38,5 +41,42 @@ public class UIQuestStep : MonoBehaviour
         text_main.text = stepDescription;
         // Enable or Disable the checkmark
         ui_check.SetActive(stepComplete);
+
+        // Then do the opening animation
+        StartCoroutine(OpeningAnimation());
+        TypeOutAnimation();
+    }
+
+    private IEnumerator OpeningAnimation()
+    {
+        // 1. Stretch the entire object on the x axis from 0 -> 1
+        float elapsedTime = 0f;
+        float duration = 0.5f;
+        while (elapsedTime < duration)
+        {
+            this.transform.GetComponent<RectTransform>().sizeDelta = new Vector2(1, Mathf.Lerp(0, 1, elapsedTime / duration));
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    private void TypeOutAnimation()
+    {
+        Color start = colors[2]; // Dark
+        Color end = colors[1]; // Bright
+        Color highlight = colors[0]; // Main
+        string text = text_main.text;
+
+        List<string> strings = HF.SteppedStringHighlightAnimation(text, highlight, start, end);
+
+        // Animate the strings via our delay trick
+        float delay = 0f;
+        float perDelay = 0.35f / text.Length;
+
+        foreach (string s in strings)
+        {
+            StartCoroutine(HF.DelayedSetText(text_main, s, delay += perDelay));
+        }
     }
 }

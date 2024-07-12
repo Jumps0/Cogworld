@@ -37,39 +37,9 @@ public class UISmallQuest : MonoBehaviour
     [SerializeField] private Image image_main_borders;
 
     [Header("Colors")]
-    #region Colors
     public Color color_main = Color.white;
     public Color color_bright = Color.white;
     public Color color_dark = Color.white;
-    //
-    public Color c_orange1;
-    public Color c_orange2;
-    public Color c_orange3;
-    //
-    public Color c_blue1;
-    public Color c_blue2;
-    public Color c_blue3;
-    //
-    public Color c_yellow1;
-    public Color c_yellow2;
-    public Color c_yellow3;
-    //
-    public Color c_red1;
-    public Color c_red2;
-    public Color c_red3;
-    //
-    public Color c_purple1;
-    public Color c_purple2;
-    public Color c_purple3;
-    //
-    public Color c_green1;
-    public Color c_green2;
-    public Color c_green3;
-    //
-    public Color c_gray1;
-    public Color c_gray2;
-    public Color c_gray3;
-    #endregion
 
     public void Init(Quest quest, List<Color> colors)
     {

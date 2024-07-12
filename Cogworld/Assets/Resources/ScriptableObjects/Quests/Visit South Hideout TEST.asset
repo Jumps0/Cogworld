@@ -15,12 +15,48 @@ MonoBehaviour:
   Id: 2
   displayName: Visit the Southern Hideout
   shortDescription: TEST quest for visiting a location
-  description: TEST quest for visiting a location
+  description: TEST quest for visiting a location. For this quest you need to go
+    to the bottom of the hideout
   sprite: {fileID: 2048525777, guid: 484b699857d60234c908d529dd37a90d, type: 3}
+  uniqueID: Visit South Hideout TEST + 48
   type: 3
   rank: 1
+  actions:
+    amount: 1
+    kill_faction: 0
+    kill_factionType: 0
+    kill_class: 0
+    kill_classType: 75
+    killAny: 0
+    collect_specific: 0
+    collect_specificItem: {fileID: 0}
+    collect_byType: 0
+    collect_type: 0
+    collect_byRank: 0
+    collect_rank: {x: 0, y: 0}
+    collect_bySlot: 0
+    collect_slot: 0
+    find_specificLevel: 0
+    find_specific: 0
+    find_specificLocation: 0
+    find_location: {x: 0, y: 0}
+    find_locationSize: {x: 0, y: 0}
+    find_transform: {fileID: 0}
+    meet_specificBot: 0
+    meet_specific: {fileID: 0}
+    meet_faction: 0
+    meet_factionBR: 0
+    destroy_specificMachine: 0
+    destroy_machine: {fileID: 0}
+    destroy_specificObject: 0
+    destroy_object: {fileID: 0}
   prerequisites: []
+  prereq_items: []
+  prereq_matter: 0
   steps:
   - {fileID: 4471201208271377523, guid: e9376d877e0b6cc4e8651bbf0f465b39, type: 3}
   reward_items: []
   reward_matter: 0
+  questGiverSprite: {fileID: 21300000, guid: c2f79deb7a4925141b093fdcf078edff, type: 3}
+  questGiverName: C8O
+  questGiverDescription: Test description. You need to go below the hideout.

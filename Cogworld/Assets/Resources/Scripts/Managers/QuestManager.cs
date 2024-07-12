@@ -537,6 +537,7 @@ public class QuestManager : MonoBehaviour
 
         Quest quest = sq.quest;
         QuestObject info = quest.info;
+        List<Color> questColors = UIGetColors(quest); // Get the colors
 
         // Header
         text_questHeader.text = info.name;
@@ -582,10 +583,10 @@ public class QuestManager : MonoBehaviour
 
         // Additional Details
         // -Fill up with the quest steps the player needs to do
-        foreach (var qs in quest.info.steps)
+        for (int i = 0; i < quest.info.steps.Length; i++)
         {
             // These are gameObjects, and we need to give their info to our newly created quest step (UI) objects
-            UI_CreateQuestStep(quest, qs);
+            UI_CreateQuestStep(i, quest, quest.info.steps[i]);
         }
 
         // Rewards
@@ -599,6 +600,26 @@ public class QuestManager : MonoBehaviour
         {
             UI_CreateQuestRewards(quest, null, quest.info.reward_matter);
         }
+
+        if(uiRightSideAnimation != null)
+        {
+            StopCoroutine(uiRightSideAnimation);
+            uiRightSideAnimation = null;
+        }
+        uiRightSideAnimation = StartCoroutine(UI_RightSideAnimate(questColors));
+    }
+
+    private Coroutine uiRightSideAnimation;
+    private IEnumerator UI_RightSideAnimate(List<Color> colors)
+    {
+        // (?) Flash the text based on the colors we have
+        Color start = colors[2]; // Dark
+        Color end = colors[0]; // Main
+
+        float elapsedTime = 0f;
+        float duration = 0.5f;
+
+        yield return null;
     }
 
     public void CloseQuestMenu()
@@ -635,13 +656,13 @@ public class QuestManager : MonoBehaviour
         ui_smallQuests.Clear();
     }
 
-    private void UI_CreateQuestStep(Quest quest, GameObject step)
+    private void UI_CreateQuestStep(int sis, Quest quest, GameObject step)
     {
         // Instantiate Object
         GameObject obj = Instantiate(ui_prefab_questStep, ui_QuestStepsArea.transform);
 
         // Assign details to object
-        obj.GetComponent<UIQuestStep>().Init(quest, step, UIGetColors(quest));
+        obj.GetComponent<UIQuestStep>().Init(sis, quest, step, UIGetColors(quest));
 
         // Add to list
         ui_questSteps.Add(obj);
