@@ -35,6 +35,8 @@ public class QS_GoToLocation : QuestStep
         }
         // And set its size
         col.size = size;
+
+        //stepDescription = // TODO: Set description 
     }
 
     private void OnEnable()

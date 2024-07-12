@@ -385,6 +385,98 @@ public class QuestManager : MonoBehaviour
     [SerializeField] private GameObject ui_prefab_questReward;
     private List<GameObject> ui_questRewards = new List<GameObject>();
 
+    [Header("Colors")]
+    #region Colors
+    public Color color_main = Color.white;
+    public Color color_bright = Color.white;
+    public Color color_dark = Color.white;
+    //
+    public Color c_orange1;
+    public Color c_orange2;
+    public Color c_orange3;
+    //
+    public Color c_blue1;
+    public Color c_blue2;
+    public Color c_blue3;
+    //
+    public Color c_yellow1;
+    public Color c_yellow2;
+    public Color c_yellow3;
+    //
+    public Color c_red1;
+    public Color c_red2;
+    public Color c_red3;
+    //
+    public Color c_purple1;
+    public Color c_purple2;
+    public Color c_purple3;
+    //
+    public Color c_green1;
+    public Color c_green2;
+    public Color c_green3;
+    //
+    public Color c_gray1;
+    public Color c_gray2;
+    public Color c_gray3;
+    #endregion
+
+    private List<Color> UIGetColors(Quest quest)
+    {
+        List<Color> colors = new List<Color>();
+        QuestObject info = quest.info;
+
+        switch (info.rank) // Set the primary colors based on difficulty
+        {
+            case QuestRank.Default:
+                Debug.LogWarning($"{quest} ({info} - {info.Id}) did not get a set rank! Visuals will not be properly set.");
+                break;
+            case QuestRank.Easy: // Green
+                color_main = c_green1;
+                color_bright = c_green2;
+                color_dark = c_green3;
+                break;
+            case QuestRank.Medium: // Blue
+                color_main = c_blue1;
+                color_bright = c_blue2;
+                color_dark = c_blue3;
+                break;
+            case QuestRank.Hard: // Orange
+                color_main = c_orange1;
+                color_bright = c_orange2;
+                color_dark = c_orange3;
+                break;
+            case QuestRank.Difficult: // Red
+                color_main = c_red1;
+                color_bright = c_red2;
+                color_dark = c_red3;
+                break;
+            case QuestRank.Expert: // Purple
+                color_main = c_purple1;
+                color_bright = c_purple2;
+                color_dark = c_purple3;
+                break;
+            case QuestRank.Legendary: // Yellow
+                color_main = c_yellow1;
+                color_bright = c_yellow2;
+                color_dark = c_yellow3;
+                break;
+        }
+
+        // If the quest is finished set everything to gray instead
+        if (quest.state == QuestState.FINISHED)
+        {
+            color_main = c_gray1;
+            color_bright = c_gray2;
+            color_dark = c_gray3;
+        }
+
+        colors.Add(color_main);
+        colors.Add(color_bright);
+        colors.Add(color_dark);
+
+        return colors;
+    }
+
     public void ButtonHoverEnter()
     {
         AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.UI_Clips[48], 0.8f); // Play hover sound
@@ -527,7 +619,7 @@ public class QuestManager : MonoBehaviour
         GameObject obj = Instantiate(ui_prefab_smallQuest, ui_areaLeft.transform);
 
         // Assign details to object
-        obj.GetComponent<UISmallQuest>().Init(quest);
+        obj.GetComponent<UISmallQuest>().Init(quest, UIGetColors(quest));
 
         // Add to list
         ui_smallQuests.Add(obj);
@@ -549,7 +641,7 @@ public class QuestManager : MonoBehaviour
         GameObject obj = Instantiate(ui_prefab_questStep, ui_QuestStepsArea.transform);
 
         // Assign details to object
-        obj.GetComponent<UIQuestStep>().Init(quest, step);
+        obj.GetComponent<UIQuestStep>().Init(quest, step, UIGetColors(quest));
 
         // Add to list
         ui_questSteps.Add(obj);
@@ -571,7 +663,7 @@ public class QuestManager : MonoBehaviour
         GameObject obj = Instantiate(ui_prefab_questReward, ui_QuestRewardsArea.transform);
 
         // Assign details to object
-        obj.GetComponent<UIQuestReward>().Init(quest, itemReward, matterReward);
+        obj.GetComponent<UIQuestReward>().Init(quest, UIGetColors(quest), itemReward, matterReward);
 
         // Add to list
         ui_questRewards.Add(obj);

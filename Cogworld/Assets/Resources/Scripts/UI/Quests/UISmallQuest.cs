@@ -71,7 +71,7 @@ public class UISmallQuest : MonoBehaviour
     public Color c_gray3;
     #endregion
 
-    public void Init(Quest quest)
+    public void Init(Quest quest, List<Color> colors)
     {
         this.quest = quest;
         QuestObject info = quest.info;
@@ -80,50 +80,9 @@ public class UISmallQuest : MonoBehaviour
         header_name = $"[{info.displayName}]";
         text_header.text = header_name;
 
-        switch (info.rank) // Set the primary colors based on difficulty
-        {
-            case QuestRank.Default:
-                Debug.LogWarning($"{quest} ({info} - {info.Id}) did not get a set rank! Visuals will not be properly set.");
-                break;
-            case QuestRank.Easy: // Green
-                color_main = c_green1;
-                color_bright = c_green2;
-                color_dark = c_green3;
-                break;
-            case QuestRank.Medium: // Blue
-                color_main = c_blue1;
-                color_bright = c_blue2;
-                color_dark = c_blue3;
-                break;
-            case QuestRank.Hard: // Orange
-                color_main = c_orange1;
-                color_bright = c_orange2;
-                color_dark = c_orange3;
-                break;
-            case QuestRank.Difficult: // Red
-                color_main = c_red1;
-                color_bright = c_red2;
-                color_dark = c_red3;
-                break;
-            case QuestRank.Expert: // Purple
-                color_main = c_purple1;
-                color_bright = c_purple2;
-                color_dark = c_purple3;
-                break;
-            case QuestRank.Legendary: // Yellow
-                color_main = c_yellow1;
-                color_bright = c_yellow2;
-                color_dark = c_yellow3;
-                break;
-        }
-
-        // If the quest is finished set everything to gray instead
-        if(quest.state == QuestState.FINISHED)
-        {
-            color_main = c_gray1;
-            color_bright = c_gray2;
-            color_dark = c_gray3;
-        }
+        color_main = colors[0];
+        color_bright = colors[1];
+        color_dark = colors[2];
 
         // Then assign the set colors
         image_bar_side.color = color_main;

@@ -6,9 +6,10 @@ using UnityEngine;
 
 public abstract class QuestStep : MonoBehaviour
 {
-    private bool isFinished = false;
-    private string questID;
-    private int stepIndex;
+    [SerializeField] private bool isFinished = false;
+    [SerializeField] private string questID;
+    [SerializeField] private int stepIndex;
+    public string stepDescription;
 
     public void InitQuestStep(string questID, int stepIndex, string questStepState)
     {
