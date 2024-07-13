@@ -27,7 +27,7 @@ public class QS_CollectItem : QuestStep
         stepDescription = $"Find and collect: {itemToCollect.Name}";
     }
 
-    private void ItemCollected()
+    private void ItemCollected() // [EXPL]: THIS "EVENT" STEP WILL KEEP CHECKING TO SEE IF THIS QUEST SHOULD BE COMPLETED
     {
         // Check if the player actually has the item (in their inventory)
         foreach (var slot in PlayerData.inst.GetComponent<PartInventory>()._inventory.Container.Items)
@@ -43,14 +43,16 @@ public class QS_CollectItem : QuestStep
         }
     }
 
-    private void UpdateState()
+    private void UpdateState() // [EXPL]: THIS FUNCTION SAVES THE CURRENT *PROGRESS* THE PLAYER HAS MADE ON THIS QUEST. NEEDS TO BE CALLED ANY TIME THE "STATE" (aka Progress) CHANGES.
     {
-        string state = itemToCollect.ToString();
-        ChangeState(state);
+        // No progress save needed(?) since its true/false if the player has this.
+        //string state = itemToCollect.ToString();
+        //ChangeState(state);
     }
 
-    protected override void SetQuestStepState(string state)
+    protected override void SetQuestStepState(string state) // [EXPL]: USED TO TAKE PREVIOUSLY SAVED QUEST PROGRESS AND BRING IT IN TO A NEW INSTANCE OF A QUEST STEP. PARSE STRING TO <???>.
     {
+        /* // Not needed since its just true false (?)
         // Convert *itemToCollect* (string) back to an actual item
         ItemObject parsed = null;
         foreach(var I in InventoryControl.inst._itemDatabase.Items)
@@ -63,5 +65,6 @@ public class QS_CollectItem : QuestStep
         }
         // Do something?
         UpdateState();
+        */
     }
 }

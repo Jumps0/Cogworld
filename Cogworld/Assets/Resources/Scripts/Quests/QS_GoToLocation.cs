@@ -8,6 +8,7 @@ using UnityEngine;
 /// <summary>
 /// A quest step that requires the player to go to a specific location.
 /// </summary>
+[RequireComponent(typeof(BoxCollider2D))]
 public class QS_GoToLocation : QuestStep
 {
     [SerializeField] private BoxCollider2D col;
@@ -52,38 +53,17 @@ public class QS_GoToLocation : QuestStep
         stepDescription = baseObj.shortDescription;
     }
 
-    private void OnEnable()
-    {
-        GameManager.inst.questEvents.onLocationReached += LocationReached;
-    }
-
-    private void OnDisable()
-    {
-        GameManager.inst.questEvents.onLocationReached -= LocationReached;
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         // We just need to check to see if the Player has reached the specified destination
         if (collision.gameObject.GetComponent<PlayerData>())
         {
-            LocationReached(); // Trigger the location reached function
+            FinishQuestStep();
             col.enabled = false; // And disable the collider since it is no longer needed
         }
     }
 
-    private void LocationReached()
-    {
-        FinishQuestStep();
-    }
-
-    private void UpdateState()
-    {
-        //string state = itemToCollect.ToString();
-        //ChangeState(state);
-    }
-
-    protected override void SetQuestStepState(string state)
+    protected override void SetQuestStepState(string state) // [EXPL]: USED TO TAKE PREVIOUSLY SAVED QUEST PROGRESS AND BRING IT IN TO A NEW INSTANCE OF A QUEST STEP. PARSE STRING TO <???>.
     {
         // No state is needed for this quest step
     }

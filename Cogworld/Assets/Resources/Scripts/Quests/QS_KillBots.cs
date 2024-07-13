@@ -22,6 +22,7 @@ public class QS_KillBots : QuestStep
     public bool killAny;
 
     private int startingStat = 0;
+    private int progress = 0;
 
     private void Start()
     {
@@ -122,16 +123,15 @@ public class QS_KillBots : QuestStep
         GameManager.inst.questEvents.onBotsKilled -= BotsKilled;
     }
 
-    private void BotsKilled()
+    private void BotsKilled() // [EXPL]: THIS "EVENT" STEP WILL KEEP CHECKING TO SEE IF THIS QUEST SHOULD BE COMPLETED
     {
-        int amount = 0;
         if (kill_faction)
         {
             foreach (var bot in PlayerData.inst.robotsKilledAlignment)
             {
                 if (bot == kill_factionType)
                 {
-                    amount++;
+                    progress++;
                 }
             }
         }
@@ -141,29 +141,32 @@ public class QS_KillBots : QuestStep
             {
                 if (bot._class == kill_classType)
                 {
-                    amount++;
+                    progress++;
                 }
             }
         }
         else if (killAny)
         {
-            amount = PlayerData.inst.robotsKilled;
+            progress = PlayerData.inst.robotsKilled;
         }
-        
-        if(amount - startingStat >= kill_amount)
+
+        UpdateState(progress);
+
+        if (progress - startingStat >= kill_amount)
         {
             FinishQuestStep();
         }
     }
 
-    private void UpdateState()
+    private void UpdateState(int progress) // [EXPL]: THIS FUNCTION SAVES THE CURRENT *PROGRESS* THE PLAYER HAS MADE ON THIS QUEST. NEEDS TO BE CALLED ANY TIME THE "STATE" (aka Progress) CHANGES.
     {
-        //string state = itemToCollect.ToString();
-        //ChangeState(state);
+        string state = progress.ToString();
+        ChangeState(state);
     }
 
-    protected override void SetQuestStepState(string state)
+    protected override void SetQuestStepState(string state) // [EXPL]: USED TO TAKE PREVIOUSLY SAVED QUEST PROGRESS AND BRING IT IN TO A NEW INSTANCE OF A QUEST STEP. PARSE STRING TO <???>.
     {
-        // ???
+        progress = System.Int32.Parse(state);
+        UpdateState(progress);
     }
 }
