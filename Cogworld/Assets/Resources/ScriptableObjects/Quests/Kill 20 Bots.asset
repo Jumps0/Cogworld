@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afbd11b038901dd40824db74d39295a2, type: 3}
+  m_Name: Kill 20 Bots
+  m_EditorClassIdentifier: 
+  Id: 3
+  displayName: Kill 20 Bots
+  shortDescription: Destroy 20 of Any bot
+  description: Destroy 20 bots of any type.
+  sprite: {fileID: -1290603932, guid: cfe29cc92c53cd74084a23e305ed3d47, type: 3}
+  uniqueID: 
+  type: 1
+  rank: 2
+  actions:
+    amount: 20
+    kill_faction: 0
+    kill_factionType: 0
+    kill_class: 0
+    kill_classType: 75
+    killAny: 1
+    collect_specific: 0
+    collect_specificItem: {fileID: 0}
+    collect_byType: 0
+    collect_type: 0
+    collect_byRank: 0
+    collect_rank: {x: 0, y: 0}
+    collect_bySlot: 0
+    collect_slot: 0
+    find_specificLevel: 0
+    find_specific: 0
+    find_specificLocation: 0
+    find_location: {x: 0, y: 0}
+    find_locationSize: {x: 0, y: 0}
+    find_transform: {fileID: 0}
+    meet_specificBot: 0
+    meet_specific: {fileID: 0}
+    meet_faction: 0
+    meet_factionBR: 0
+    destroy_specificMachine: 0
+    destroy_machine: {fileID: 0}
+    destroy_specificObject: 0
+    destroy_object: {fileID: 0}
+  prerequisites: []
+  prereq_items: []
+  prereq_matter: 0
+  steps:
+  - {fileID: 4471201208271377523, guid: 3caeea9a2746ad648b2ac1b788e9a5a7, type: 3}
+  reward_items: []
+  reward_matter: 200
+  questGiverSprite: {fileID: 0}
+  questGiverName: 
+  questGiverDescription: 

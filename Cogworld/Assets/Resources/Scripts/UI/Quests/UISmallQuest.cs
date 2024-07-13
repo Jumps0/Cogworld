@@ -41,7 +41,7 @@ public class UISmallQuest : MonoBehaviour
     public Color color_bright = Color.white;
     public Color color_dark = Color.white;
 
-    public void Init(Quest quest, List<Color> colors)
+    public void Init(Quest quest, List<Color> colors, bool startAsSelected = false)
     {
         this.quest = quest;
         QuestObject info = quest.info;
@@ -61,6 +61,11 @@ public class UISmallQuest : MonoBehaviour
 
         // Set the progress bar
         SetProgressBar();
+
+        if(startAsSelected )
+        {
+            selected = true;
+        }
 
         // Do the opening animation
         StartCoroutine(OpenAnimation());
@@ -113,20 +118,20 @@ public class UISmallQuest : MonoBehaviour
 
     public void Select()
     {
-        selected = true;
         if(!animating)
         {
-            Debug.Log("Select");
+            selected = true;
             text_header.text = $"<color=#{ColorUtility.ToHtmlStringRGB(color_main)}>{header_name}</color>";
+            QuestManager.inst.SelectQuest(this);
         }
     }
 
     public void Unselect()
     {
-        selected = false;
         if (!animating)
         {
             text_header.text = $"<color=#{ColorUtility.ToHtmlStringRGB(Color.gray)}>{header_name}</color>";
+            selected = false;
         }
     }
 

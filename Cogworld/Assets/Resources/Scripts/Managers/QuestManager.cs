@@ -111,6 +111,9 @@ public class QuestManager : MonoBehaviour
         // Add the hideout test quest
         questQueue.Add(new QueuedQuest(2, new Vector2(PlayerData.inst.transform.position.x,
             PlayerData.inst.transform.position.y + 10), new Vector2(PlayerData.inst.transform.position.x, PlayerData.inst.transform.position.y + 10), null));
+        // Add the 20 kills quest
+        questQueue.Add(new QueuedQuest(3, new Vector2(PlayerData.inst.transform.position.x + 5,
+            PlayerData.inst.transform.position.y + 10), new Vector2(PlayerData.inst.transform.position.x + 10, PlayerData.inst.transform.position.y + 10), null));
     }
 
     public void Redraw()
@@ -367,6 +370,8 @@ public class QuestManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI text_questType;
     [SerializeField] private TextMeshProUGUI text_questDifficulty;
     //
+    [SerializeField] private Transform ui_QuestPrereqsArea;
+    //
     [SerializeField] private Image image_questGiver;
     [SerializeField] private TextMeshProUGUI text_questGiverName;
     [SerializeField] private TextMeshProUGUI text_questGiverDescription;
@@ -381,6 +386,8 @@ public class QuestManager : MonoBehaviour
     public GameObject ui_prefab_smallQuest;
     private List<GameObject> ui_smallQuests = new List<GameObject>();
     [SerializeField] private GameObject ui_prefab_questStep;
+    [SerializeField] private GameObject ui_prefab_questPrereq;
+    private List<GameObject> ui_questPrereqs = new List<GameObject>();
     private List<GameObject> ui_questSteps = new List<GameObject>();
     [SerializeField] private GameObject ui_prefab_questReward;
     private List<GameObject> ui_questRewards = new List<GameObject>();
@@ -509,9 +516,13 @@ public class QuestManager : MonoBehaviour
         UI_ClearSmallQuests();
 
         // Fill the left side with all our quests (they animate by themselves)
-        foreach (var Q in questMap)
+        for (int i = 0; i < questMap.Count; i++)
         {
-            UI_CreateSmallQuest(Q.Value);
+            bool selected = false;
+            if(i == 0)
+                selected = true;
+
+            UI_CreateSmallQuest(questMap.ToList()[i].Value, selected);
         }
 
         // Auto select the first quest, and fill the right side up with its data
@@ -526,14 +537,15 @@ public class QuestManager : MonoBehaviour
         // Unselect everything
         foreach (var Q in ui_smallQuests)
         {
-            Q.GetComponent<UISmallQuest>().Unselect();
+            if(Q.GetComponent<UISmallQuest>() != sq)
+            {
+                Q.GetComponent<UISmallQuest>().Unselect();
+            }
         }
-        // Clear out the quest steps & rewards
+        // Clear out the quest prereqs, steps & rewards
+        UI_ClearQuestPreReqs();
         UI_ClearQuestSteps();
         UI_ClearQuestRewards();
-
-        // Mark quest as selected
-        sq.Select();
 
         Quest quest = sq.quest;
         QuestObject info = quest.info;
@@ -568,8 +580,11 @@ public class QuestManager : MonoBehaviour
         // - Second part has a unique color based on difficulty
         text_questDifficulty.text = $"Rank:\n<color=#{ColorUtility.ToHtmlStringRGB(ui_smallQuests[0].GetComponent<UISmallQuest>().color_main)}>{info.rank}</color>";
 
-        // Prerequisites <?????> TODO
-
+        // Prerequisites
+        foreach (var PR in quest.info.prerequisites)
+        {
+            UI_CreateQuestPreReq(PR);
+        }
 
         // Quest Giver Image
         image_questGiver.sprite = quest.info.questGiverSprite;
@@ -634,13 +649,35 @@ public class QuestManager : MonoBehaviour
         ui_mainReference.SetActive(false);
     }
 
-    private void UI_CreateSmallQuest(Quest quest)
+    private void UI_CreateQuestPreReq(Quest quest)
+    {
+        // Instantiate Object
+        GameObject obj = Instantiate(ui_prefab_questPrereq, ui_QuestPrereqsArea.transform);
+
+        // Assign details to object
+        obj.GetComponent<UIQuestPreReq>().Init(quest, UIGetColors(quest));
+
+        // Add to list
+        ui_questPrereqs.Add(obj);
+    }
+
+    private void UI_ClearQuestPreReqs()
+    {
+        foreach (var GO in ui_questPrereqs.ToList())
+        {
+            Destroy(GO);
+        }
+
+        ui_questPrereqs.Clear();
+    }
+
+    private void UI_CreateSmallQuest(Quest quest, bool startAsSelected = false)
     {
         // Instantiate Object
         GameObject obj = Instantiate(ui_prefab_smallQuest, ui_areaLeft.transform);
 
         // Assign details to object
-        obj.GetComponent<UISmallQuest>().Init(quest, UIGetColors(quest));
+        obj.GetComponent<UISmallQuest>().Init(quest, UIGetColors(quest), startAsSelected);
 
         // Add to list
         ui_smallQuests.Add(obj);

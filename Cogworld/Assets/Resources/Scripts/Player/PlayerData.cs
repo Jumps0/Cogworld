@@ -122,10 +122,8 @@ public class PlayerData : MonoBehaviour
 
     [Header("*STATS THIS RUN*")]
     public int robotsKilled = 0;
-    public int kills_0b10 = 0;
-    public int kills_derelict = 0;
-    public int kills_zion = 0;
-    public int kills_warlord = 0;
+    public List<BotObject> robotsKilledData = new List<BotObject>();
+    public List<BotAlignment> robotsKilledAlignment = new List<BotAlignment>();
     [Header("Unique Kills")]
     public bool uk_imprinter = false;
     public bool uk_warlord = false;

@@ -31,11 +31,9 @@ public class UIQuestStep : MonoBehaviour
         ui_backer.color = colors[0];
         check_backer.color = colors[0];
 
-        // And then set the UI based on the step, will need to do some parsing because there are multiple things the player may need to do
-        bool stepComplete = false;
-        string stepDescription = "";
-
-        // TODO: MEGA PARSE
+        // And then set the UI based on the step
+        bool stepComplete = stepReference.GetComponent<QuestStep>().isFinished;
+        string stepDescription = stepReference.GetComponent<QuestStep>().stepDescription;
 
         // Set the text
         text_main.text = stepDescription;

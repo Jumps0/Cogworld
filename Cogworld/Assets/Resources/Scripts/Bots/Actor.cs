@@ -507,6 +507,8 @@ public class Actor : Entity
     public void Die(string deathMessage = "")
     {
         PlayerData.inst.robotsKilled += 1; // TODO: CHANGE THIS LATER TO TELL IF THE PLAYER ACTUALLY GOT THE KILL (not killsteal)
+        PlayerData.inst.robotsKilledData.Add(this.botInfo);
+        PlayerData.inst.robotsKilledAlignment.Add(this.myFaction);
 
         if (corruption >= 1f) // This is a corruption death, its kinda different!
         {

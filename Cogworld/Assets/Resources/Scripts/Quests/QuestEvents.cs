@@ -60,6 +60,7 @@ public class QuestEvents
     #region Individual Quest Events
     public event System.Action onItemCollected;
     public event System.Action onLocationReached;
+    public event System.Action onBotsKilled;
 
     public void ItemCollected()
     {
@@ -71,6 +72,12 @@ public class QuestEvents
     {
         if (onLocationReached != null)
             onLocationReached();
+    }
+
+    public void BotsKilled()
+    {
+        if (onBotsKilled != null)
+            onBotsKilled();
     }
     #endregion
 }

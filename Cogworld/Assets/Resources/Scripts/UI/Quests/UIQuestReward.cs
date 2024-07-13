@@ -27,18 +27,23 @@ public class UIQuestReward : MonoBehaviour
         this.colors = colors;
 
         // And set display based on rewards
+        int id = 0;
         if(mr > 0 ) // Matter reward
         {
             text_name.text = $"{mr} Matter";
+            id = 17;
         }
         else if(ir != null) // Item reward
         {
             text_name.text = ir.itemData.name;
+            id = ir.Id;
         }
         else
         {
             Debug.LogWarning($"No reward set!");
         }
+        image_icon.sprite = InventoryControl.inst._itemDatabase.Items[id].inventoryDisplay;
+        image_icon.color = InventoryControl.inst._itemDatabase.Items[id].itemColor;
 
         // Then modify colors based on what we are given
         image_border.color = colors[0];

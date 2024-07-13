@@ -20,6 +20,19 @@ public class QS_GoToLocation : QuestStep
 
     private void Start()
     {
+        // Assign information based on the serialized object
+        QuestObject baseObj = null;
+        foreach (var Q in QuestManager.inst.questDatabase.Quests)
+        {
+            if (questID.Contains(Q.uniqueID) || questID == Q.uniqueID)
+            {
+                size = Q.actions.find_locationSize;
+                center = Q.actions.find_location;
+                baseObj = Q;
+                break;
+            }
+        }
+
         // Position the collider where it is needed
         if (inReferenceToPlayer)
         {
@@ -36,7 +49,7 @@ public class QS_GoToLocation : QuestStep
         // And set its size
         col.size = size;
 
-        //stepDescription = // TODO: Set description 
+        stepDescription = baseObj.shortDescription;
     }
 
     private void OnEnable()

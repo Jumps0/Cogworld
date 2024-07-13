@@ -22,6 +22,11 @@ public class QS_CollectItem : QuestStep
         GameManager.inst.questEvents.onItemCollected -= ItemCollected;
     }
 
+    private void Start()
+    {
+        stepDescription = $"Find and collect: {itemToCollect.Name}";
+    }
+
     private void ItemCollected()
     {
         // Check if the player actually has the item (in their inventory)
@@ -47,7 +52,16 @@ public class QS_CollectItem : QuestStep
     protected override void SetQuestStepState(string state)
     {
         // Convert *itemToCollect* (string) back to an actual item
-
+        ItemObject parsed = null;
+        foreach(var I in InventoryControl.inst._itemDatabase.Items)
+        {
+            if (I.name == state || I.name.Contains(state))
+            {
+                parsed = I;
+                break;
+            }
+        }
+        // Do something?
         UpdateState();
     }
 }
