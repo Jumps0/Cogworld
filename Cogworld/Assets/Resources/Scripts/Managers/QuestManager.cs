@@ -8,6 +8,8 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine;
 using ColorUtility = UnityEngine.ColorUtility;
+using static System.Net.Mime.MediaTypeNames;
+using Image = UnityEngine.UI.Image;
 
 /// <summary>
 /// Manages all things quest.
@@ -260,6 +262,10 @@ public class QuestManager : MonoBehaviour
         Quest quest = GetQuestById(id);
         quest.InstantiateCurrentQuestStep(this.transform);
         ChangeQuestState(quest.info.uniqueID, QuestState.IN_PROGRESS);
+
+        // Leave a log message
+        string logMessage = $"Started: {quest.info.displayName}";
+        UIManager.inst.CreateNewLogMessage(logMessage, QuestManager.inst.c_yellow2, QuestManager.inst.c_yellow1, true);
     }
 
     public void AdvanceQuest(string id)
@@ -273,6 +279,10 @@ public class QuestManager : MonoBehaviour
         }
         else // If there are no more steps, then we've finished all of them for this quest
         {
+            // Leave a log message
+            string logMessage = $"Finished: {quest.info.displayName}";
+            UIManager.inst.CreateNewLogMessage(logMessage, QuestManager.inst.c_yellow2, QuestManager.inst.c_yellow1, true);
+            // Change the state
             ChangeQuestState(quest.info.uniqueID, QuestState.CAN_FINISH);
         }
     }
@@ -368,7 +378,9 @@ public class QuestManager : MonoBehaviour
     [SerializeField] private Image image_questType;
     [SerializeField] private List<Sprite> questTypeImages = new List<Sprite>();
     [SerializeField] private TextMeshProUGUI text_questType;
+    [SerializeField] private TextMeshProUGUI text_questTypeNP; // The static "Type:" text
     [SerializeField] private TextMeshProUGUI text_questDifficulty;
+    [SerializeField] private TextMeshProUGUI text_questDifficultyNP; // The static "Difficulty:" text
     //
     [SerializeField] private Transform ui_QuestPrereqsArea;
     //
@@ -554,7 +566,7 @@ public class QuestManager : MonoBehaviour
         // Header
         text_questHeader.text = info.name;
         // Type
-        text_questType.text = "Type:\n" + info.type;
+        text_questType.text = info.type.ToString();
         // Type image
         Sprite typeImage = null;
         switch (info.type)
@@ -578,7 +590,8 @@ public class QuestManager : MonoBehaviour
         image_questType.sprite = typeImage;
         // Difficulty
         // - Second part has a unique color based on difficulty
-        text_questDifficulty.text = $"Rank:\n<color=#{ColorUtility.ToHtmlStringRGB(ui_smallQuests[0].GetComponent<UISmallQuest>().color_main)}>{info.rank}</color>";
+        text_questDifficulty.text = info.rank.ToString();
+        text_questDifficulty.color = sq.color_main;
 
         // Prerequisites
         foreach (var PR in quest.info.prerequisites)
@@ -616,25 +629,47 @@ public class QuestManager : MonoBehaviour
             UI_CreateQuestRewards(quest, null, quest.info.reward_matter);
         }
 
-        if(uiRightSideAnimation != null)
-        {
-            StopCoroutine(uiRightSideAnimation);
-            uiRightSideAnimation = null;
-        }
-        uiRightSideAnimation = StartCoroutine(UI_RightSideAnimate(questColors));
+        UI_RightSideAnimate(questColors);
     }
 
     private Coroutine uiRightSideAnimation;
-    private IEnumerator UI_RightSideAnimate(List<Color> colors)
+    private void UI_RightSideAnimate(List<Color> colors)
     {
-        // (?) Flash the text based on the colors we have
-        Color start = colors[2]; // Dark
-        Color end = colors[0]; // Main
+        // Using the highlight animation helper, we will use that for most of the display text
+        List<string> header = HF.RandomHighlightStringAnimation(text_questHeader.text, text_questHeader.color);
+        List<string> type = HF.RandomHighlightStringAnimation(text_questType.text, text_questType.color);
+        List<string> typeNP = HF.RandomHighlightStringAnimation(text_questTypeNP.text, text_questTypeNP.color);
+        List<string> rank = HF.RandomHighlightStringAnimation(text_questDifficulty.text, text_questDifficulty.color);
+        List<string> rankNP = HF.RandomHighlightStringAnimation(text_questDifficultyNP.text, text_questDifficultyNP.color);
+        List<string> giverName = HF.RandomHighlightStringAnimation(text_questGiverName.text, text_questGiverName.color);
+        List<string> giverText = HF.RandomHighlightStringAnimation(text_questGiverDescription.text, text_questGiverDescription.color);
+        List<string> descrption = HF.RandomHighlightStringAnimation(text_questDescription.text, text_questDescription.color);
 
-        float elapsedTime = 0f;
-        float duration = 0.5f;
+        // Combine lists
+        List<KeyValuePair<TextMeshProUGUI, List<string>>> lists = new List<KeyValuePair<TextMeshProUGUI, List<string>>>();
+        lists.Add(new KeyValuePair<TextMeshProUGUI, List<string>>(text_questHeader, header));
+        lists.Add(new KeyValuePair<TextMeshProUGUI, List<string>>(text_questType, type));
+        lists.Add(new KeyValuePair<TextMeshProUGUI, List<string>>(text_questTypeNP, typeNP));
+        lists.Add(new KeyValuePair<TextMeshProUGUI, List<string>>(text_questDifficulty, rank));
+        lists.Add(new KeyValuePair<TextMeshProUGUI, List<string>>(text_questDifficultyNP, rankNP));
+        lists.Add(new KeyValuePair<TextMeshProUGUI, List<string>>(text_questGiverName, giverName));
+        lists.Add(new KeyValuePair<TextMeshProUGUI, List<string>>(text_questGiverDescription, giverText));
+        lists.Add(new KeyValuePair<TextMeshProUGUI, List<string>>(text_questDescription, descrption));
 
-        yield return null;
+        // Go through each list and begin delayed set text
+        foreach (var LIST in lists)
+        {
+            // Animate the strings via our delay trick
+            float delay = 0f;
+            float perDelay = 0.5f / LIST.Key.text.Length;
+
+            foreach (string s in LIST.Value)
+            {
+                StartCoroutine(HF.DelayedSetText(LIST.Key, s, delay));
+
+                delay += perDelay;
+            }
+        }
     }
 
     public void CloseQuestMenu()

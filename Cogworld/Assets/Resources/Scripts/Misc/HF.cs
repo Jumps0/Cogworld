@@ -3969,6 +3969,72 @@ public static class HF
     }
 
     /// <summary>
+    /// Helper function for a text highlight "animation". Given an input string, will start out fully highlighted then will randomly "split" into sections until,
+    /// there is no highlights left.
+    /// </summary>
+    /// <param name="text">The text string to be highlighted.</param>
+    /// <param name="highlightColor">The highlight color.</param>
+    /// <returns>A list of strings which represents each step in the highlight process.</returns>
+    public static List<string> RandomHighlightStringAnimation(string text, Color highlightColor)
+    {
+        List<string> animationSteps = new List<string>();
+        StringBuilder sb = new StringBuilder();
+        string colorHex = ColorUtility.ToHtmlStringRGB(highlightColor);
+
+        // Start with the entire string highlighted
+        string highlightedText = $"<mark=#{colorHex}aa>{text}</mark>";
+        animationSteps.Add(highlightedText);
+
+        int length = text.Length;
+        HashSet<int> highlightedIndices = new HashSet<int>();
+        for (int i = 0; i < length; i++)
+        {
+            highlightedIndices.Add(i);
+        }
+
+        // Randomly remove highlights from the center
+        System.Random random = new System.Random();
+        while (highlightedIndices.Count > 0)
+        {
+            int randomIndex = random.Next(highlightedIndices.Count);
+            int removeIndex = -1;
+            int count = 0;
+
+            foreach (int index in highlightedIndices)
+            {
+                if (count == randomIndex)
+                {
+                    removeIndex = index;
+                    break;
+                }
+                count++;
+            }
+
+            if (removeIndex != -1)
+            {
+                highlightedIndices.Remove(removeIndex);
+                sb.Clear();
+
+                for (int i = 0; i < length; i++)
+                {
+                    if (highlightedIndices.Contains(i))
+                    {
+                        sb.Append($"<mark=#{colorHex}aa>{text[i]}</mark>");
+                    }
+                    else
+                    {
+                        sb.Append(text[i]);
+                    }
+                }
+
+                animationSteps.Add(sb.ToString());
+            }
+        }
+
+        return animationSteps;
+    }
+
+    /// <summary>
     /// Given a single input string, will split it up given a position value within the string. Ex: (apple, 1) -> (a, p, ple)
     /// </summary>
     /// <param name="input">The input string to split.</param>

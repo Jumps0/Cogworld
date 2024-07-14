@@ -28,6 +28,9 @@ public abstract class QuestStep : MonoBehaviour
             isFinished = true;
 
             GameManager.inst.questEvents.AdvanceQuest(questID);
+            // Make a message in the log
+            string logMessage = $"Completed: {stepDescription}";
+            UIManager.inst.CreateNewLogMessage(logMessage, QuestManager.inst.c_yellow2, QuestManager.inst.c_yellow1, true);
 
             Destroy(this.gameObject);
         }
