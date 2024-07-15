@@ -611,10 +611,10 @@ public class QuestManager : MonoBehaviour
 
         // Additional Details
         // -Fill up with the quest steps the player needs to do
-        for (int i = 0; i < quest.info.steps.Length; i++)
+        for (int i = 0; i < quest.info.steps.Count; i++)
         {
             // These are gameObjects, and we need to give their info to our newly created quest step (UI) objects
-            UI_CreateQuestStep(i, quest, quest.info.steps[i]);
+            UI_CreateQuestStep(i, quest, quest.info.initiatedSteps[i]);
         }
 
         // Rewards
@@ -629,11 +629,10 @@ public class QuestManager : MonoBehaviour
             UI_CreateQuestRewards(quest, null, quest.info.reward_matter);
         }
 
-        UI_RightSideAnimate(questColors);
+        UI_RightSideAnimate();
     }
 
-    private Coroutine uiRightSideAnimation;
-    private void UI_RightSideAnimate(List<Color> colors)
+    private void UI_RightSideAnimate()
     {
         // Using the highlight animation helper, we will use that for most of the display text
         List<string> header = HF.RandomHighlightStringAnimation(text_questHeader.text, text_questHeader.color);
@@ -665,9 +664,7 @@ public class QuestManager : MonoBehaviour
 
             foreach (string s in LIST.Value)
             {
-                StartCoroutine(HF.DelayedSetText(LIST.Key, s, delay));
-
-                delay += perDelay;
+                StartCoroutine(HF.DelayedSetText(LIST.Key, s, delay += perDelay));
             }
         }
     }

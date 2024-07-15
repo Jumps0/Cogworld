@@ -26,21 +26,6 @@ public class QS_KillBots : QuestStep
 
     private void Start()
     {
-        // Assign information based on the serialized object
-        foreach (var Q in QuestManager.inst.questDatabase.Quests)
-        {
-            if (questID.Contains(Q.uniqueID) || questID == Q.uniqueID)
-            {
-                kill_amount = Q.actions.amount;
-                kill_faction = Q.actions.kill_faction;
-                kill_factionType = Q.actions.kill_factionType;
-                kill_class = Q.actions.kill_class;
-                kill_classType = Q.actions.kill_classType;
-                killAny = Q.actions.killAny;
-                break;
-            }
-        }
-
         int startCount = 0;
 
         // Start tracking the amount we need to keep an eye on based on the player's stats

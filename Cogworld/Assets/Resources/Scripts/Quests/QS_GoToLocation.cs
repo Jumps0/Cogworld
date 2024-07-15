@@ -12,45 +12,41 @@ using UnityEngine;
 public class QS_GoToLocation : QuestStep
 {
     [SerializeField] private BoxCollider2D col;
-    public Vector2 center;
-    [SerializeField] private Vector2 size = new Vector2(1, 1);
 
-    [Header("In reference to")]
-    [SerializeField] private bool inReferenceToPlayer = false;
-    public GameObject referenceObject = null;
+    [Header("Find")]
+    [Tooltip("Reach a specific level.")]
+    public bool find_specificLevel;
+    public LevelName find_specific;
+    [Tooltip("Reach a specific location on the map. Uses *find_specific (above) to determine where to spawn.")]
+    public bool find_specificLocation;
+    public Vector2 find_location;
+    public Vector2 find_locationSize = new Vector2(1, 1);
+    public Transform find_transform;
 
     private void Start()
     {
-        // Assign information based on the serialized object
-        QuestObject baseObj = null;
-        foreach (var Q in QuestManager.inst.questDatabase.Quests)
-        {
-            if (questID.Contains(Q.uniqueID) || questID == Q.uniqueID)
-            {
-                size = Q.actions.find_locationSize;
-                center = Q.actions.find_location;
-                baseObj = Q;
-                break;
-            }
-        }
-
         // Position the collider where it is needed
-        if (inReferenceToPlayer)
+        if(find_transform != null) // If a reference object is given, that becomes the center point, and the *center* variable becomes an offset
         {
-            col.offset = new Vector2(PlayerData.inst.transform.position.x, PlayerData.inst.transform.position.y) + center;
-        }
-        else if(referenceObject != null) // If a reference object is given, that becomes the center point, and the *center* variable becomes an offset
-        {
-            col.offset = new Vector2(referenceObject.transform.position.x, referenceObject.transform.position.y) + center;
+            col.offset = new Vector2(find_transform.position.x, find_transform.position.y) + find_location;
         }
         else
         {
-            col.offset = center;
+            col.offset = find_location;
         }
         // And set its size
-        col.size = size;
+        col.size = find_locationSize;
+    }
 
-        stepDescription = baseObj.shortDescription;
+    private void Update()
+    {
+        if (find_specificLevel)
+        {
+            if(MapManager.inst.levelName == find_specific)
+            {
+                FinishQuestStep();
+            }
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

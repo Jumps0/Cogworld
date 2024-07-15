@@ -77,7 +77,7 @@ public class UISmallQuest : MonoBehaviour
 
         QuestObject info = quest.info;
 
-        int max = info.actions.amount;
+        int max = info.steps[quest.currentQuestStepIndex].amount;
         float current = quest.value;
 
         /*

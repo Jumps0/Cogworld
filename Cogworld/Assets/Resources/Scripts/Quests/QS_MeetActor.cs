@@ -6,25 +6,23 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// A quest step that requires the player to collect an item.
+/// A quest step that requires the player to meet a specific bot.
 /// </summary>
-public class QS_CollectItem : QuestStep
+public class QS_MeetActor : QuestStep
 {
-    public int amount; // TODO - FIGURE THIS OUT
+    [Header("Meet")]
+    public int amount = 0;
+    [Tooltip("Meet a specific bot that has the same BotObject on it.")]
+    public bool meet_specificBot;
+    public BotObject meet_specific;
+    [Tooltip("Meet any member of the specified faction.")]
+    public bool meet_faction;
+    public BotAlignment meet_factionBR;
 
-    [Header("Collect")]
-    [Tooltip("Collect this specific item.")]
-    public bool collect_specific;
-    public ItemObject collect_specificItem;
-    [Tooltip("Collect an item of this specified type.")]
-    public bool collect_byType;
-    public ItemType collect_type;
-    [Tooltip("Collect an item within this range of ranking.")]
-    public bool collect_byRank;
-    public Vector2Int collect_rank;
-    [Tooltip("Collect this specific item.")]
-    public bool collect_bySlot;
-    public ItemSlot collect_slot;
+    // TOOD: LOGIC HERE
+
+    /*
+    private Item itemToCollect;
 
     private void OnEnable()
     {
@@ -38,7 +36,7 @@ public class QS_CollectItem : QuestStep
 
     private void Start()
     {
-        stepDescription = $"Find and collect: {collect_specificItem.data.Name}";
+        stepDescription = $"Find and collect: {itemToCollect.Name}";
     }
 
     private void ItemCollected() // [EXPL]: THIS "EVENT" STEP WILL KEEP CHECKING TO SEE IF THIS QUEST SHOULD BE COMPLETED
@@ -48,7 +46,7 @@ public class QS_CollectItem : QuestStep
         {
             if(slot.item != null && slot.item.Id >= 0) // An item exists here
             {
-                if(slot.item == collect_specificItem.data)
+                if(slot.item == itemToCollect)
                 {
                     FinishQuestStep(); // They have it! Finish this step
                     break;
@@ -63,22 +61,10 @@ public class QS_CollectItem : QuestStep
         //string state = itemToCollect.ToString();
         //ChangeState(state);
     }
+    */
 
     protected override void SetQuestStepState(string state) // [EXPL]: USED TO TAKE PREVIOUSLY SAVED QUEST PROGRESS AND BRING IT IN TO A NEW INSTANCE OF A QUEST STEP. PARSE STRING TO <???>.
     {
-        /* // Not needed since its just true false (?)
-        // Convert *itemToCollect* (string) back to an actual item
-        ItemObject parsed = null;
-        foreach(var I in InventoryControl.inst._itemDatabase.Items)
-        {
-            if (I.name == state || I.name.Contains(state))
-            {
-                parsed = I;
-                break;
-            }
-        }
-        // Do something?
-        UpdateState();
-        */
+
     }
 }
