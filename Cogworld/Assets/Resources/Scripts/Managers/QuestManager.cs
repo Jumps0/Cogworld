@@ -613,10 +613,10 @@ public class QuestManager : MonoBehaviour
 
         // Additional Details
         // -Fill up with the quest steps the player needs to do
-        for (int i = 0; i < quest.info.steps.Count; i++)
+        for (int i = 0; i < quest.info.steps.Length; i++)
         {
             // These are gameObjects, and we need to give their info to our newly created quest step (UI) objects
-            UI_CreateQuestStep(i, quest, quest.info.initiatedSteps[i]);
+            UI_CreateQuestStep(i, quest, quest.info.steps[i]);
         }
 
         // Rewards

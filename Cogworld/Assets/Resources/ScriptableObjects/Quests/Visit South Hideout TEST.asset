@@ -24,15 +24,15 @@ MonoBehaviour:
   prerequisites: []
   prereq_items: []
   prereq_matter: 0
-  initiatedSteps:
-  - {fileID: 0}
   steps:
-  - stepDescription: Visit the south of the hideout.
+  - {fileID: 4471201208271377523, guid: f47c60cf5160b464aad3dab2a2370c3f, type: 3}
+  stepsInfo:
+  - stepDescription: Visit the southern side of the Hideout.
     amount: 1
     kill_faction: 0
     kill_factionType: 0
     kill_class: 0
-    kill_classType: 75
+    kill_classType: 0
     killAny: 0
     collect_specific: 0
     collect_specificItem: {fileID: 0}
@@ -44,9 +44,9 @@ MonoBehaviour:
     collect_slot: 0
     find_specificLevel: 0
     find_specific: 0
-    find_specificLocation: 1
-    find_location: {x: 0, y: 0}
-    find_locationSize: {x: 0, y: 0}
+    find_specificLocation: 0
+    find_location: {x: -5, y: -10}
+    find_locationSize: {x: 1, y: 1}
     find_transform: {fileID: 0}
     find_InReferenceToPlayer: 1
     meet_specificBot: 0

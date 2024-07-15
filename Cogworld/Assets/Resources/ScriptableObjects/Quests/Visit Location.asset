@@ -20,12 +20,18 @@ MonoBehaviour:
   uniqueID: 
   type: 3
   rank: 1
-  actions:
+  prerequisites: []
+  prereq_items: []
+  prereq_matter: 0
+  steps:
+  - {fileID: 4471201208271377523, guid: f47c60cf5160b464aad3dab2a2370c3f, type: 3}
+  stepsInfo:
+  - stepDescription: Generic visit
     amount: 1
     kill_faction: 0
     kill_factionType: 0
     kill_class: 0
-    kill_classType: 75
+    kill_classType: 0
     killAny: 0
     collect_specific: 0
     collect_specificItem: {fileID: 0}
@@ -35,12 +41,13 @@ MonoBehaviour:
     collect_rank: {x: 0, y: 0}
     collect_bySlot: 0
     collect_slot: 0
-    find_specificLevel: 0
-    find_specific: 0
+    find_specificLevel: 1
+    find_specific: 1
     find_specificLocation: 0
     find_location: {x: 0, y: 0}
     find_locationSize: {x: 0, y: 0}
     find_transform: {fileID: 0}
+    find_InReferenceToPlayer: 0
     meet_specificBot: 0
     meet_specific: {fileID: 0}
     meet_faction: 0
@@ -49,10 +56,8 @@ MonoBehaviour:
     destroy_machine: {fileID: 0}
     destroy_specificObject: 0
     destroy_object: {fileID: 0}
-  prerequisites: []
-  prereq_items: []
-  prereq_matter: 0
-  steps:
-  - {fileID: 4471201208271377523, guid: f47c60cf5160b464aad3dab2a2370c3f, type: 3}
   reward_items: []
   reward_matter: 0
+  questGiverSprite: {fileID: 0}
+  questGiverName: 
+  questGiverDescription: 

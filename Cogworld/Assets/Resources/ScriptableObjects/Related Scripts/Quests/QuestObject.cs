@@ -31,10 +31,10 @@ public class Quest
             info.uniqueID = $"{info.name} + {Random.Range(0, 99)}";
         }
 
-        InitiateQuestSteps();
+        SetupQuestPrefabs(); // Setup the step prefabs
 
-        this.questStepStates = new QuestStepState[info.steps.Count];
-        for(int i = 0; i < info.steps.Count; i++)
+        this.questStepStates = new QuestStepState[info.steps.Length];
+        for(int i = 0; i < info.steps.Length; i++)
         {
             questStepStates[i] = new QuestStepState();
         }
@@ -47,7 +47,7 @@ public class Quest
         this.currentQuestStepIndex = currentQuestStepIndex;
         this.questStepStates = questStepStates;
 
-        if(this.questStepStates.Length != this.info.steps.Count)
+        if(this.questStepStates.Length != this.info.steps.Length)
         {
             Debug.LogWarning($"WARNING: Quest step prefabs & quest step states are of different lengths. This indicates something changed with" +
                 $"the QuestObject and the saved data is now out of sync. Reset your data - as this may cause issues. QuestID: {this.info.uniqueID}");
@@ -61,7 +61,7 @@ public class Quest
 
     public bool CurrentStepExists()
     {
-        return (currentQuestStepIndex < info.steps.Count);
+        return (currentQuestStepIndex < info.steps.Length);
     }
 
     public void InstantiateCurrentQuestStep(Transform parent)
@@ -79,7 +79,7 @@ public class Quest
         GameObject questStepPrefab = null;
         if(CurrentStepExists())
         {
-            questStepPrefab = info.initiatedSteps[currentQuestStepIndex];
+            questStepPrefab = info.steps[currentQuestStepIndex];
         }
         else
         {
@@ -89,18 +89,11 @@ public class Quest
         return questStepPrefab;
     }
 
-    private void InitiateQuestSteps()
+    private void SetupQuestPrefabs()
     {
-        info.initiatedSteps = new List<GameObject>();
-        Debug.Log($"Making new quest steps ({info.steps.Count}) for quest: {info}/{info.name}");
-        foreach (var step in info.steps)
+        for (int i = 0; i < info.steps.Length; i++)
         {
-            GameObject newStep = new GameObject(); // Create new object
-            AssignStepDetails(newStep, step); // Assign details to the object
-            newStep.name = $"STEP: {info.displayName}";
-            newStep.transform.SetParent(GameManager.inst.transform); // NOTE: Not setting it to the QuestManager's transform because the active steps are assigned there and I don't want to risk messing anything up.
-
-            info.initiatedSteps.Add(newStep); // Add to list
+            AssignStepDetails(info.steps[i], info.stepsInfo[i]);
         }
     }
 
@@ -118,7 +111,6 @@ public class Quest
                 break;
             case QuestType.Kill:
                 // Add the componenet
-                obj.AddComponent<QS_KillBots>();
                 QS_KillBots kb = obj.GetComponent<QS_KillBots>();
                 // Set the values
                 kb.stepDescription = action.stepDescription;
@@ -132,7 +124,6 @@ public class Quest
                 break;
             case QuestType.Collect:
                 // Add the componenet
-                obj.AddComponent<QS_CollectItem>();
                 QS_CollectItem ci = obj.GetComponent<QS_CollectItem>();
                 // Set the values
                 ci.stepDescription = action.stepDescription;
@@ -149,7 +140,6 @@ public class Quest
                 break;
             case QuestType.Find:
                 // Add the componenet
-                obj.AddComponent<QS_GoToLocation>();
                 QS_GoToLocation gt = obj.GetComponent<QS_GoToLocation>();
                 // Set the values
                 gt.stepDescription = action.stepDescription;
@@ -164,7 +154,6 @@ public class Quest
                 break;
             case QuestType.Meet:
                 // Add the componenet
-                obj.AddComponent<QS_MeetActor>();
                 QS_MeetActor ma = obj.GetComponent<QS_MeetActor>();
                 // Set the values
                 ma.stepDescription = action.stepDescription;
@@ -176,7 +165,6 @@ public class Quest
                 break;
             case QuestType.Destroy:
                 // Add the componenet
-                obj.AddComponent<QS_DestroyThing>();
                 QS_DestroyThing dt = obj.GetComponent<QS_DestroyThing>();
                 // Set the values
                 dt.stepDescription = action.stepDescription;
@@ -234,8 +222,10 @@ public abstract class QuestObject : ScriptableObject
     public int prereq_matter;
 
     [Header("Steps")]
-    [HideInInspector] public List<GameObject> initiatedSteps;
-    public List<QuestActions> steps;
+    [Tooltip("Prefabs of requried steps for this quest, each one is dynamically used when needed.")]
+    public GameObject[] steps;
+    [Tooltip("A ledger of detailed info for each step, will be assigned to the prefabs when needed.")]
+    public List<QuestActions> stepsInfo;
 
     [Header("Rewards")]
     public List<Item> reward_items;

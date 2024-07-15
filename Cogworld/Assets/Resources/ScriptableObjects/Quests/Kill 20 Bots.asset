@@ -23,15 +23,15 @@ MonoBehaviour:
   prerequisites: []
   prereq_items: []
   prereq_matter: 0
-  initiatedSteps:
-  - {fileID: 0}
   steps:
-  - stepDescription: Kill 20 bots of any type.
+  - {fileID: 4471201208271377523, guid: 3caeea9a2746ad648b2ac1b788e9a5a7, type: 3}
+  stepsInfo:
+  - stepDescription: Kill 20 of any of bot.
     amount: 20
     kill_faction: 0
     kill_factionType: 0
     kill_class: 0
-    kill_classType: 75
+    kill_classType: 0
     killAny: 1
     collect_specific: 0
     collect_specificItem: {fileID: 0}
@@ -47,6 +47,7 @@ MonoBehaviour:
     find_location: {x: 0, y: 0}
     find_locationSize: {x: 0, y: 0}
     find_transform: {fileID: 0}
+    find_InReferenceToPlayer: 0
     meet_specificBot: 0
     meet_specific: {fileID: 0}
     meet_faction: 0
