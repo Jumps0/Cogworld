@@ -395,6 +395,9 @@ public class QuestManager : MonoBehaviour
     [SerializeField] private Transform ui_QuestStepsArea;
     //
     [SerializeField] private Transform ui_QuestRewardsArea;
+    //
+    [SerializeField] private GameObject ui_PrereqsNone;
+    [SerializeField] private GameObject ui_RewardsNone;
 
     [Header("UI Prefabs")]
     public GameObject ui_prefab_smallQuest;
@@ -600,6 +603,7 @@ public class QuestManager : MonoBehaviour
         {
             UI_CreateQuestPreReq(PR);
         }
+        ui_PrereqsNone.SetActive(quest.info.prerequisites.Length <= 0); // Enable or Disable the (None) text
 
         // Quest Giver Image
         image_questGiver.sprite = quest.info.questGiverSprite;
@@ -626,10 +630,11 @@ public class QuestManager : MonoBehaviour
             UI_CreateQuestRewards(quest, rw);
         }
         // - And one for matter too if it exists
-        if(quest.info.reward_matter > 0)
+        if (quest.info.reward_matter > 0)
         {
             UI_CreateQuestRewards(quest, null, quest.info.reward_matter);
         }
+        ui_RewardsNone.SetActive((quest.info.reward_items == null || quest.info.reward_items.Count <= 0) && quest.info.reward_matter < 0); // Enable or Disable the (None) text
 
         UI_RightSideAnimate();
     }
