@@ -17,10 +17,16 @@ MonoBehaviour:
   shortDescription: Destroy 20 of Any bot
   description: Destroy 20 bots of any type.
   sprite: {fileID: -1290603932, guid: cfe29cc92c53cd74084a23e305ed3d47, type: 3}
-  uniqueID: 
+  uniqueID: Kill 20 Bots + 11
   type: 1
   rank: 2
-  actions:
+  prerequisites: []
+  prereq_items: []
+  prereq_matter: 0
+  initiatedSteps:
+  - {fileID: 0}
+  steps:
+  - stepDescription: Kill 20 bots of any type.
     amount: 20
     kill_faction: 0
     kill_factionType: 0
@@ -49,11 +55,6 @@ MonoBehaviour:
     destroy_machine: {fileID: 0}
     destroy_specificObject: 0
     destroy_object: {fileID: 0}
-  prerequisites: []
-  prereq_items: []
-  prereq_matter: 0
-  steps:
-  - {fileID: 4471201208271377523, guid: 3caeea9a2746ad648b2ac1b788e9a5a7, type: 3}
   reward_items: []
   reward_matter: 200
   questGiverSprite: {fileID: 0}

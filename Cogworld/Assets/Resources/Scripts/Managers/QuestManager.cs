@@ -47,25 +47,25 @@ public class QuestManager : MonoBehaviour
         qm_names.Clear();
         qm_quests.Clear();
 
-        foreach (var newQuest in questQueue)
+        foreach (var queuedQuest in questQueue)
         {
-            QuestObject Q = questDatabase.Quests[newQuest.questID];
+            QuestObject Q = questDatabase.Quests[queuedQuest.questID];
 
             if (idToQuestMap.ContainsKey(Q.uniqueID))
             {
                 Debug.LogWarning($"WARNING: Duplicate ID found when creating quest map: {Q.uniqueID}");
             }
 
-            
-            if(!QuestAlreadyActive(newQuest.questID)) // Make sure the physical quest point exists in the world.
+            if(!QuestAlreadyActive(queuedQuest.questID)) // Make sure the physical quest point exists in the world.
             {
-                CreateQuest(newQuest);
+                CreateQuest(queuedQuest);
             }
-            idToQuestMap.Add(Q.uniqueID, LoadQuest(Q));
+            Quest newQuest = LoadQuest(Q);
+            idToQuestMap.Add(Q.uniqueID, newQuest);
 
             // Update the visible in inspector lists
             qm_names.Add(Q.uniqueID);
-            qm_quests.Add(LoadQuest(Q));
+            qm_quests.Add(newQuest);
         }
 
         return idToQuestMap;
@@ -219,7 +219,7 @@ public class QuestManager : MonoBehaviour
     #endregion
 
     #region General
-    public void CreateQuest(QueuedQuest quest)
+    public Quest CreateQuest(QueuedQuest quest)
     {
         // Create the new quest based on requirements
         Quest newQuest = new Quest(questDatabase.Quests[quest.questID]);
@@ -255,6 +255,8 @@ public class QuestManager : MonoBehaviour
 
         // Redraw the quest map
         Redraw();
+
+        return newQuest;
     }
 
     public void StartQuest(string id)

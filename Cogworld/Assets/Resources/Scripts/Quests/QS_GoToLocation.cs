@@ -3,6 +3,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -22,9 +23,22 @@ public class QS_GoToLocation : QuestStep
     public Vector2 find_location;
     public Vector2 find_locationSize = new Vector2(1, 1);
     public Transform find_transform;
+    public bool find_InReferenceToPlayer;
 
     private void Start()
     {
+        if(find_InReferenceToPlayer)
+        {
+            find_transform = PlayerData.inst.transform;
+        }
+
+        if(col == null)  // Add a collider if there isn't one already
+        {
+            this.AddComponent<BoxCollider2D>();
+            col = this.GetComponent<BoxCollider2D>();
+            col.isTrigger = true;
+        }
+
         // Position the collider where it is needed
         if(find_transform != null) // If a reference object is given, that becomes the center point, and the *center* variable becomes an offset
         {

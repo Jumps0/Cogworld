@@ -92,11 +92,12 @@ public class Quest
     private void InitiateQuestSteps()
     {
         info.initiatedSteps = new List<GameObject>();
-
+        Debug.Log($"Making new quest steps ({info.steps.Count}) for quest: {info}/{info.name}");
         foreach (var step in info.steps)
         {
             GameObject newStep = new GameObject(); // Create new object
             AssignStepDetails(newStep, step); // Assign details to the object
+            newStep.name = $"STEP: {info.displayName}";
             newStep.transform.SetParent(GameManager.inst.transform); // NOTE: Not setting it to the QuestManager's transform because the active steps are assigned there and I don't want to risk messing anything up.
 
             info.initiatedSteps.Add(newStep); // Add to list
@@ -159,6 +160,7 @@ public class Quest
                 gt.find_location = action.find_location;
                 gt.find_locationSize = action.find_locationSize;
                 gt.find_transform = action.find_transform;
+                gt.find_InReferenceToPlayer = action.find_InReferenceToPlayer;
                 break;
             case QuestType.Meet:
                 // Add the componenet
@@ -311,8 +313,10 @@ public class QuestActions
     [Tooltip("Reach a specific location on the map. Uses *find_specific (above) to determine where to spawn.")]
     public bool find_specificLocation;
     public Vector2 find_location;
-    public Vector2 find_locationSize;
+    public Vector2 find_locationSize = new Vector2(1, 1);
     public Transform find_transform;
+    [Tooltip("If true, the *find_transform* (seen above) automatically gets set to the player's transform.")]
+    public bool find_InReferenceToPlayer;
 
     [Header("Meet")]
     [Tooltip("Meet a specific bot that has the same BotObject on it.")]
