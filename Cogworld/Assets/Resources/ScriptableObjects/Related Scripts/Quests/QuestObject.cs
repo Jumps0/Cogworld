@@ -215,6 +215,7 @@ public abstract class QuestObject : ScriptableObject
     [Header("Quest Details")]
     public QuestType type;
     public QuestRank rank;
+    // TODO - ADD START & FINISH INFO (WHERE THE QUESTPOINTS GO)
 
     [Header("Requirements")]
     public Quest[] prerequisites;

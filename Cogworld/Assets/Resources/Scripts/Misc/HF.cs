@@ -4528,6 +4528,21 @@ public static class HF
 
     #region Misc
 
+    public static QuestPoint ActorHasQuestPoint(Actor actor)
+    {
+        Transform actorTransform = actor.transform;
+
+        foreach (Transform child in actorTransform)
+        {
+            if (child.gameObject.GetComponent<QuestPoint>())
+            {
+                return child.gameObject.GetComponent<QuestPoint>();
+            }
+        }
+
+        return null;
+    }
+
     /// <summary>
     /// A simple but effective way to check if the mouse is over the UI.
     /// </summary>

@@ -26,7 +26,7 @@ public class QuestPoint : MonoBehaviour
     public bool isExplored = false;
     public bool isVisible = false;
 
-    public void Init(Quest quest, bool isStart, bool isFinish)
+    public void Init(Quest quest, bool isStart, bool isFinish, Transform parent = null)
     {
         questInfo = quest;
         questID = quest.info.uniqueID;
@@ -37,6 +37,11 @@ public class QuestPoint : MonoBehaviour
         if(isStart && !finishPoint)
         {
             Flash(true);
+        }
+
+        if(parent != null)
+        {
+            this.transform.parent = parent;
         }
     }
 
@@ -50,16 +55,23 @@ public class QuestPoint : MonoBehaviour
         GameManager.inst.questEvents.onQuestStateChange -= QuestStateChange;
     }
 
+    public bool CanInteract()
+    {
+        return ((currentQuestState.Equals(QuestState.CAN_START) && startPoint) || (currentQuestState.Equals(QuestState.CAN_FINISH) && finishPoint));
+    }
+
     public void Interact()
     {
         // Attempt to start or finish this quest
         if(currentQuestState.Equals(QuestState.CAN_START) && startPoint)
         {
             GameManager.inst.questEvents.StartQuest(questID);
+            AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.ROBOTHACK_Clips[0], 0.6f); // Play a sound
         }
         else if (currentQuestState.Equals(QuestState.CAN_FINISH) && finishPoint)
         {
             GameManager.inst.questEvents.FinishQuest(questID);
+            AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.UI_Clips[1], 0.6f); // Play a sound
         }
     }
 

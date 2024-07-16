@@ -93,12 +93,27 @@ public static class Action
 
     #endregion
 
+    /// <summary>
+    /// Attempts to move an actor in a specified direction, if there is a bot in the way, it will attempt to ram them instead.
+    /// </summary>
+    /// <param name="actor">The actor that needs to move.</param>
+    /// <param name="direction">The direction the actor is moving in.</param>
+    /// <returns>Returns true if the bot can (and will) move there. False if it can't (and won't).</returns>
     public static bool BumpAction(Actor actor, Vector2 direction)
     {
         Actor target = GameManager.inst.GetBlockingActorAtLocation(actor.transform.position + (Vector3)direction);
 
         if (target)
         {
+            // Check for quest interaction
+            QuestPoint quest = HF.ActorHasQuestPoint(actor);
+            if (quest != null && quest.CanInteract())
+            {
+                // Interact with the quest and bail out early
+                quest.Interact();
+                return false;
+            }
+
             actor.ConfirmCollision(target);
             if (actor.confirmCollision)
             {

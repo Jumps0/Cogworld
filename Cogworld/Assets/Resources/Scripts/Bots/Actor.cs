@@ -1027,6 +1027,17 @@ public class Actor : Entity
         {
             UIManager.inst.Data_OpenMenu(null, this.gameObject, this);
         }
+        else if (Input.GetKeyDown(KeyCode.Mouse0)) // Left Click to do quest START/END
+        {
+            QuestPoint quest = HF.ActorHasQuestPoint(this);
+            if(quest != null && quest.CanInteract()) // Has a quest that can be interacted with
+            {
+                if(Vector2.Distance(this.transform.position, PlayerData.inst.transform.position) < 1.2f) // Adjacency check (Expensive so we do it last)
+                {
+                    quest.Interact();
+                }
+            }
+        }
     }
 
     #endregion

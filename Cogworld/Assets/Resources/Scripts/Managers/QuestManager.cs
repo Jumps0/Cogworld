@@ -634,7 +634,7 @@ public class QuestManager : MonoBehaviour
         {
             UI_CreateQuestRewards(quest, null, quest.info.reward_matter);
         }
-        ui_RewardsNone.SetActive((quest.info.reward_items == null || quest.info.reward_items.Count <= 0) && quest.info.reward_matter < 0); // Enable or Disable the (None) text
+        ui_RewardsNone.SetActive((quest.info.reward_items == null || quest.info.reward_items.Count <= 0) && quest.info.reward_matter <= 0); // Enable or Disable the (None) text
 
         UI_RightSideAnimate();
     }
