@@ -12,6 +12,9 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class QS_GoToLocation : QuestStep
 {
+    public int a_progress = 0;
+    public int a_max = 1;
+
     [SerializeField] private BoxCollider2D col;
 
     [Header("Find")]
@@ -58,6 +61,7 @@ public class QS_GoToLocation : QuestStep
         {
             if(MapManager.inst.levelName == find_specific)
             {
+                a_progress = a_max;
                 FinishQuestStep();
             }
         }

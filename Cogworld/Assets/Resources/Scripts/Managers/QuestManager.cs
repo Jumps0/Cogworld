@@ -373,6 +373,7 @@ public class QuestManager : MonoBehaviour
     {
         Quest quest = GetQuestById(id);
         quest.InstantiateCurrentQuestStep(this.transform);
+        quest.UpdateOverallQuestProgress();
         ChangeQuestState(quest.info.uniqueID, QuestState.IN_PROGRESS);
 
         // Leave a log message
@@ -383,7 +384,8 @@ public class QuestManager : MonoBehaviour
     public void AdvanceQuest(string id)
     {
         Quest quest = GetQuestById(id);
-
+        quest.MoveToNextStep();
+        quest.UpdateOverallQuestProgress();
 
         if (quest.CurrentStepExists()) // If there are more steps, instantiate the next one
         {
@@ -391,9 +393,6 @@ public class QuestManager : MonoBehaviour
         }
         else // If there are no more steps, then we've finished all of them for this quest
         {
-            // Leave a log message
-            string logMessage = $"Finished: {quest.info.displayName}";
-            UIManager.inst.CreateNewLogMessage(logMessage, QuestManager.inst.c_yellow2, QuestManager.inst.c_yellow1, true);
             // Change the state
             ChangeQuestState(quest.info.uniqueID, QuestState.CAN_FINISH);
         }
@@ -404,7 +403,7 @@ public class QuestManager : MonoBehaviour
         Quest quest = GetQuestById(id);
         QuestReward(quest);
         ChangeQuestState(quest.info.uniqueID, QuestState.FINISHED);
-
+        Debug.Log($"Quest Finished! {quest.info.displayName}");
         // Remove quest point(s) from the quest queue
         foreach (GameObject qp in questPoints.ToList())
         {
@@ -417,7 +416,13 @@ public class QuestManager : MonoBehaviour
 
     private void QuestReward(Quest quest)
     {
+        List<Item> rewards_item = quest.info.reward_items;
+        int rewards_matter = quest.info.reward_matter;
 
+        // How do we handle this?
+        // -We put them somewhere in the player's hideout? <-- Lets do this so the player won't lose their reward when they die during a run
+        // -Where do we put these items? Do we just drop them on the floor somewhere? Do we create a container for this items in the world?
+        //       -Do we drop these items around the player when they interact with the UI somewhere?
     }
 
     private void QuestStepStateChange(string id, int stepIndex, QuestStepState questStepState)

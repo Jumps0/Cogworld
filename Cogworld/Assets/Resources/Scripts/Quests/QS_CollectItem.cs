@@ -10,7 +10,8 @@ using UnityEngine;
 /// </summary>
 public class QS_CollectItem : QuestStep
 {
-    public int amount; // TODO - FIGURE THIS OUT
+    public int a_progress = 0;
+    public int a_max = 1;
 
     [Header("Collect")]
     [Tooltip("Collect this specific item.")]
@@ -50,6 +51,7 @@ public class QS_CollectItem : QuestStep
             {
                 if(slot.item == collect_specificItem.data)
                 {
+                    a_progress = a_max;
                     FinishQuestStep(); // They have it! Finish this step
                     break;
                 }

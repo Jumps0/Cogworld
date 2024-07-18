@@ -11,7 +11,8 @@ using UnityEngine;
 public class QS_DestroyThing : QuestStep
 {
     [Header("Destroy")]
-    public int amount = 0;
+    public int a_progress = 0;
+    public int a_max = 1;
     [Tooltip("Destroy a specific machine in the world (use parent object please).")]
     public bool destroy_specificMachine;
     public MachinePart destroy_machine;

@@ -11,7 +11,8 @@ using UnityEngine;
 public class QS_KillBots : QuestStep
 {
     [Header("Details")]
-    public int kill_amount;
+    public int a_progress = 0;
+    public int a_max = 1;
     [Tooltip("Kill any bot of this faction")]
     public bool kill_faction = false;
     public BotAlignment kill_factionType;
@@ -22,7 +23,6 @@ public class QS_KillBots : QuestStep
     public bool killAny;
 
     private int startingStat = 0;
-    private int progress = 0;
 
     private void Start()
     {
@@ -77,7 +77,7 @@ public class QS_KillBots : QuestStep
                 default:
                     break;
             }
-            stepDescription = $"Kill {kill_amount} {factionDesc}.";
+            stepDescription = $"Kill {a_max} {factionDesc}.";
         }
         else if(kill_class)
         {
@@ -88,12 +88,12 @@ public class QS_KillBots : QuestStep
                     startCount++;
                 }
             }
-            stepDescription = $"Kill {kill_amount}-type bots.";
+            stepDescription = $"Kill {a_max}-type bots.";
         }
         else if(killAny)
         {
             startCount = PlayerData.inst.robotsKilled;
-            stepDescription = $"Kill {kill_amount} bots of any type.";
+            stepDescription = $"Kill {a_max} bots of any type.";
         }
         startingStat = startCount;
     }
@@ -116,7 +116,7 @@ public class QS_KillBots : QuestStep
             {
                 if (bot == kill_factionType)
                 {
-                    progress++;
+                    a_progress++;
                 }
             }
         }
@@ -126,18 +126,18 @@ public class QS_KillBots : QuestStep
             {
                 if (bot._class == kill_classType)
                 {
-                    progress++;
+                    a_progress++;
                 }
             }
         }
         else if (killAny)
         {
-            progress = PlayerData.inst.robotsKilled;
+            a_progress = PlayerData.inst.robotsKilled;
         }
 
-        UpdateState(progress);
+        UpdateState(a_progress);
 
-        if (progress - startingStat >= kill_amount)
+        if (a_progress - startingStat >= a_max)
         {
             FinishQuestStep();
         }
@@ -151,7 +151,7 @@ public class QS_KillBots : QuestStep
 
     protected override void SetQuestStepState(string state) // [EXPL]: USED TO TAKE PREVIOUSLY SAVED QUEST PROGRESS AND BRING IT IN TO A NEW INSTANCE OF A QUEST STEP. PARSE STRING TO <???>.
     {
-        progress = System.Int32.Parse(state);
-        UpdateState(progress);
+        a_progress = System.Int32.Parse(state);
+        UpdateState(a_progress);
     }
 }

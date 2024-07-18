@@ -28,8 +28,9 @@ public abstract class QuestStep : MonoBehaviour
             isFinished = true;
 
             GameManager.inst.questEvents.AdvanceQuest(questID);
+            AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[24], 0.8f); // Play a sound
             // Make a message in the log
-            string logMessage = $"Completed: {stepDescription}";
+            string logMessage = $"Subtask completed: {stepDescription}";
             UIManager.inst.CreateNewLogMessage(logMessage, QuestManager.inst.c_yellow2, QuestManager.inst.c_yellow1, true);
 
             Destroy(this.gameObject);

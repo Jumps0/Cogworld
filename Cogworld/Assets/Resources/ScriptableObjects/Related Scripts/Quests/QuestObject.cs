@@ -15,9 +15,9 @@ public class Quest
     public int currentQuestStepIndex;
     private QuestStepState[] questStepStates;
 
-    [Header("Tracking Value")]
-    [Tooltip("Used to track quest progress in a generic manner.")]
-    public float value;
+    [Header("Progress")]
+    public int a_max;
+    public int a_progress;
 
     public Quest(QuestObject info, string uid = "")
     {
@@ -97,6 +97,120 @@ public class Quest
         }
     }
 
+    public void UpdateOverallQuestProgress()
+    {
+        // We need to parse the quest steps into a number.
+        // -Sometimes a quest just boils down to doing one thing, so its 1/1
+        // -Sometimes a quest requires doing a number of one thing, so we add all those up
+        // -Sometimes a quest actually gives a number, so we use that.
+
+        int max = 1;
+        int current = 0;
+
+        // First, go through each step and categorize them
+        List<GameObject> steps_progressive = new List<GameObject>(); // Steps where you need to do some amount of something
+        List<GameObject> steps_static = new List<GameObject>(); // Steps that are just 0/1 where you ONLY DO ONE THING
+
+        // Go through each step and work out the max and current from there
+        foreach (var step in info.steps)
+        {
+            if (step.GetComponent<QS_MeetActor>()) // static
+            {
+                steps_static.Add(step);
+            }
+            else if (step.GetComponent<QS_GoToLocation>()) // static
+            {
+                steps_static.Add(step);
+            }
+            else if (step.GetComponent<QS_DestroyThing>()) // usually static  (but may be progressive)
+            {
+                if (step.GetComponent<QS_DestroyThing>().a_max > 1)
+                {
+                    steps_progressive.Add(step);
+                }
+                else
+                {
+                    steps_static.Add(step);
+                }
+            }
+            else if (step.GetComponent<QS_CollectItem>()) // usually static  (but may be progressive)
+            {
+                if (step.GetComponent<QS_CollectItem>().a_max > 1)
+                {
+                    steps_progressive.Add(step);
+                }
+                else
+                {
+                    steps_static.Add(step);
+                }
+            }
+            else if (step.GetComponent<QS_KillBots>()) // progressive
+            {
+                steps_progressive.Add(step);
+            }
+        }
+
+        // Then based on that, define an actual number we can use for our bar
+        if (steps_static.Count > 0 && steps_progressive.Count == 0) // Do we only have static steps? Add them all up and use that
+        {
+            max = steps_static.Count;
+        }
+        else if (steps_static.Count == 0 && steps_progressive.Count > 0) // Do we only have progressive steps? Add them all up and use those
+        {
+            foreach (var step in info.steps)
+            {
+                if (step.GetComponent<QS_DestroyThing>()) // usually static (but may be progressive)
+                {
+                    if (step.GetComponent<QS_DestroyThing>().a_max > 1)
+                    {
+                        max += step.GetComponent<QS_DestroyThing>().a_max;
+                    }
+                }
+                else if (step.GetComponent<QS_CollectItem>()) // usually static  (but may be progressive)
+                {
+                    if (step.GetComponent<QS_CollectItem>().a_max > 1)
+                    {
+                        max += step.GetComponent<QS_CollectItem>().a_max;
+                    }
+                }
+                else if (step.GetComponent<QS_KillBots>()) // progressive
+                {
+                    max += step.GetComponent<QS_KillBots>().a_max;
+                }
+            }
+        }
+        else if (steps_static.Count > 0 && steps_progressive.Count > 0) // Do we have a mix of both? Use only the progressive steps (and add them all up to use)
+        {
+            foreach (var step in info.steps)
+            {
+                if (step.GetComponent<QS_DestroyThing>()) // usually static (but may be progressive)
+                {
+                    if (step.GetComponent<QS_DestroyThing>().a_max > 1)
+                    {
+                        max += step.GetComponent<QS_DestroyThing>().a_max;
+                    }
+                }
+                else if (step.GetComponent<QS_CollectItem>()) // usually static  (but may be progressive)
+                {
+                    if (step.GetComponent<QS_CollectItem>().a_max > 1)
+                    {
+                        max += step.GetComponent<QS_CollectItem>().a_max;
+                    }
+                }
+                else if (step.GetComponent<QS_KillBots>()) // progressive
+                {
+                    max += step.GetComponent<QS_KillBots>().a_max;
+                }
+            }
+        }
+
+        Debug.Log($"Progress update: max: {max} | current: {current}");
+
+        // Update progress
+        a_max = max;
+        a_progress = current;
+    }
+
     /// <summary>
     /// Assigns proper details to a STEP gameObject based on information from an action.
     /// </summary>
@@ -114,19 +228,20 @@ public class Quest
                 QS_KillBots kb = obj.GetComponent<QS_KillBots>();
                 // Set the values
                 kb.stepDescription = action.stepDescription;
+                kb.a_max = action.amount_max;
 
                 kb.kill_faction = action.kill_faction;
                 kb.kill_factionType = action.kill_factionType;
                 kb.kill_class = action.kill_class;
                 kb.kill_classType = action.kill_classType;
                 kb.killAny = action.killAny;
-                kb.kill_amount = action.amount;
                 break;
             case QuestType.Collect:
                 // Add the componenet
                 QS_CollectItem ci = obj.GetComponent<QS_CollectItem>();
                 // Set the values
                 ci.stepDescription = action.stepDescription;
+                ci.a_max = action.amount_max;
 
                 ci.collect_specific = action.collect_specific;
                 ci.collect_specificItem = action.collect_specificItem;
@@ -136,13 +251,13 @@ public class Quest
                 ci.collect_rank = action.collect_rank;
                 ci.collect_bySlot = action.collect_bySlot;
                 ci.collect_slot = action.collect_slot;
-                ci.amount = action.amount;
                 break;
             case QuestType.Find:
                 // Add the componenet
                 QS_GoToLocation gt = obj.GetComponent<QS_GoToLocation>();
                 // Set the values
                 gt.stepDescription = action.stepDescription;
+                gt.a_max = action.amount_max;
 
                 gt.find_specificLevel = action.find_specificLevel;
                 gt.find_specific = action.find_specific;
@@ -157,6 +272,7 @@ public class Quest
                 QS_MeetActor ma = obj.GetComponent<QS_MeetActor>();
                 // Set the values
                 ma.stepDescription = action.stepDescription;
+                ma.a_max = action.amount_max;
 
                 ma.meet_specificBot = action.meet_specificBot;
                 ma.meet_specific = action.meet_specific;
@@ -168,6 +284,7 @@ public class Quest
                 QS_DestroyThing dt = obj.GetComponent<QS_DestroyThing>();
                 // Set the values
                 dt.stepDescription = action.stepDescription;
+                dt.a_max = action.amount_max;
 
                 dt.destroy_specificMachine = action.destroy_specificMachine;
                 dt.destroy_machine = action.destroy_machine;
@@ -273,7 +390,7 @@ public class QuestActions
     public string stepDescription;
 
     [Header("Amount")]
-    public int amount = 1;
+    public int amount_max = 1;
     
     [Header("Kill")]
     [Tooltip("Kill any bot of this faction")]
@@ -343,5 +460,6 @@ public class QuestPointInfo
     public Transform refpoint;
     public Vector2 refpoint_offset = new Vector2(0, 0);
 
+    [Tooltip("Location will be placed in reference to where the player is CURRENTLY located. Be careful with this.")]
     public bool inReferenceToPlayer = false;
 }

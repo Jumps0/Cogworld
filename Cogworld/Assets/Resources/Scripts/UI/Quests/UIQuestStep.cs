@@ -37,6 +37,32 @@ public class UIQuestStep : MonoBehaviour
 
         // Set the text
         text_main.text = stepDescription;
+        // And add the progress amount if needed
+        string progress_text = "";
+        if (stepReference.GetComponent<QS_MeetActor>()) // Don't care since tis only 1 location
+        {
+            //
+        }
+        else if (stepReference.GetComponent<QS_GoToLocation>()) // Don't care since its only 1 location
+        {
+            //
+        }
+        else if (stepReference.GetComponent<QS_DestroyThing>()) // Usually 0/1 but could be more so make sure to check
+        {
+            if (stepReference.GetComponent<QS_DestroyThing>().a_max > 1)
+            {
+                progress_text = $"({stepReference.GetComponent<QS_DestroyThing>().a_progress}/{stepReference.GetComponent<QS_DestroyThing>().a_max})";
+            }
+        }
+        else if (stepReference.GetComponent<QS_CollectItem>()) // Usually just 0/1 so we dont care
+        {
+            //
+        }
+        else if (stepReference.GetComponent<QS_KillBots>()) // This is actually has a number we want to show
+        {
+            progress_text = $"({stepReference.GetComponent<QS_KillBots>().a_progress}/{stepReference.GetComponent<QS_KillBots>().a_max})";
+        }
+        text_main.text += progress_text;
         // Enable or Disable the checkmark
         ui_check.SetActive(stepComplete);
 

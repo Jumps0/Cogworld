@@ -11,7 +11,8 @@ using UnityEngine;
 public class QS_MeetActor : QuestStep
 {
     [Header("Meet")]
-    public int amount = 0;
+    public int a_progress = 0;
+    public int a_max = 1;
     [Tooltip("Meet a specific bot that has the same BotObject on it.")]
     public bool meet_specificBot;
     public BotObject meet_specific;

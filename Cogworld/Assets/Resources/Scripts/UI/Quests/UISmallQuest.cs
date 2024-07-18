@@ -73,42 +73,14 @@ public class UISmallQuest : MonoBehaviour
 
     public void SetProgressBar()
     {
-        // We need to parse the quest steps into a number. Sometimes this may just be one, but sometimes its an actual number.
-
-        QuestObject info = quest.info;
-
-        int max = info.stepsInfo[quest.currentQuestStepIndex].amount;
-        float current = quest.value;
-
-        /*
-        switch (info.type)
-        {
-            case QuestType.Default:
-                Debug.LogWarning($"{info.name} has no set actions to do. It will not display properly!");
-                break;
-            case QuestType.Kill: // This will usually provide a straight number
-
-                break;
-            case QuestType.Collect: // May just be one, usually a list of something
-
-                break;
-            case QuestType.Find: // Variable
-
-                break;
-            case QuestType.Meet: // Usually just 1
-
-                break;
-            case QuestType.Destroy: // Variable
-
-                break;
-        }
-        */
+        int max = quest.a_max;
+        int current = quest.a_progress;
 
         // Set the text
         text_amount.text = $"{current}/{max}";
 
         // Set the percent
-        float percent = (current / max);
+        float percent = (float)current / (float)max;
         image_bar_main.fillAmount = percent;
         text_bar.text = $"{Mathf.RoundToInt(percent*100)}%";
         // We also need to make sure the % text is lined up next to the end of the progress bar.

@@ -106,7 +106,7 @@ public static class Action
         if (target)
         {
             // Check for quest interaction
-            QuestPoint quest = HF.ActorHasQuestPoint(actor);
+            QuestPoint quest = HF.ActorHasQuestPoint(target);
             if (quest != null && quest.CanInteract())
             {
                 // Interact with the quest and bail out early
