@@ -20,6 +20,16 @@ MonoBehaviour:
   uniqueID: Kill 20 Bots + 11
   type: 1
   rank: 2
+  startLocation:
+    assignedBot: {fileID: 0}
+    refpoint: {fileID: 0}
+    refpoint_offset: {x: 5, y: 9}
+    inReferenceToPlayer: 1
+  finishLocation:
+    assignedBot: {fileID: 0}
+    refpoint: {fileID: 0}
+    refpoint_offset: {x: 4, y: 9}
+    inReferenceToPlayer: 1
   prerequisites: []
   prereq_items: []
   prereq_matter: 0

@@ -65,7 +65,7 @@ public class Actor : Entity
     }
 
 
-    private void Start()
+    private void Awake()
     {
         baseColor = _sprite.color;
 
@@ -111,19 +111,25 @@ public class Actor : Entity
 
             algorithm = new AdamMilVisibility(this); // Set visual algo
             allegances = GlobalSettings.inst.GenerateDefaultAllengances(botInfo); // Set allegances
-
-            if (GetComponent<PlayerData>())
-            {
-                UpdateFieldOfView();
-            }
-            else
-            {
-                this.GetComponent<BotAI>().relationToPlayer = HF.DetermineRelation(this, PlayerData.inst.GetComponent<Actor>()); // Set relation to player
-            }
         }
         else
         {
             Debug.LogWarning("GameManager does not exist! Actor will not be initialized!");
+        }
+    }
+
+    private void Start()
+    {
+        if (GameManager.inst)
+        {
+            if (GetComponent<PlayerData>())
+            {
+                UpdateFieldOfView();
+            }
+            else // Here because PlayerData.inst hasn't been created yet (in Awake)
+            {
+                this.GetComponent<BotAI>().relationToPlayer = HF.DetermineRelation(this, PlayerData.inst.GetComponent<Actor>()); // Set relation to player
+            }
         }
     }
 

@@ -41,6 +41,7 @@ public class QuestEvents
     public event System.Action<Quest> onQuestStateChange;
     public void QuestStateChange(Quest quest)
     {
+        Debug.Log($"Changing quest state ({quest.info.uniqueID}) to: {quest.state} | {onQuestStateChange}");
         if (onQuestStateChange != null)
         {
             onQuestStateChange(quest);

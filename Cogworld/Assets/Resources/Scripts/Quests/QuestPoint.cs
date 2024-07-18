@@ -3,6 +3,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -11,7 +12,8 @@ using UnityEngine;
 public class QuestPoint : MonoBehaviour
 {
     [Header("Quest")]
-    public Quest questInfo;
+    public Quest quest;
+    private QuestPointInfo info;
 
     [Header("Config")]
     [SerializeField] private bool startPoint = true;
@@ -26,23 +28,17 @@ public class QuestPoint : MonoBehaviour
     public bool isExplored = false;
     public bool isVisible = false;
 
-    public void Init(Quest quest, bool isStart, bool isFinish, Transform parent = null)
+    public void Init(Quest quest, bool isStart, bool isFinish, QuestPointInfo info)
     {
-        questInfo = quest;
+        this.quest = quest;
         questID = quest.info.uniqueID;
 
         startPoint = isStart;
         finishPoint = isFinish;
 
-        if(isStart && !finishPoint)
-        {
-            Flash(true);
-        }
+        this.info = info;
 
-        if(parent != null)
-        {
-            this.transform.parent = parent;
-        }
+        Visibility();
     }
 
     private void OnEnable()
@@ -53,11 +49,6 @@ public class QuestPoint : MonoBehaviour
     private void OnDisable()
     {
         GameManager.inst.questEvents.onQuestStateChange -= QuestStateChange;
-    }
-
-    public bool CanInteract()
-    {
-        return ((currentQuestState.Equals(QuestState.CAN_START) && startPoint) || (currentQuestState.Equals(QuestState.CAN_FINISH) && finishPoint));
     }
 
     public void Interact()
@@ -78,41 +69,41 @@ public class QuestPoint : MonoBehaviour
     private void QuestStateChange(Quest quest)
     {
         // Only update the quest state if this point has the corresponding quest
-        if(quest.info.Id.Equals(questID))
+        if(quest.info.uniqueID.Equals(questID))
         {
             currentQuestState = quest.state;
         }
     }
 
-    public void Flash(bool state)
+    public void Visibility()
     {
-        if (state) // Flash
-        {
-            if(flashAnim != null)
-            {
-                StopCoroutine(flashAnim);
-            }
-            flashAnim = StartCoroutine(FlashAnim());
-        }
-        else // Don't flash
-        {
-            StopCoroutine(flashAnim);
-            flashAnim = null;
-        }
+        StartCoroutine(FlashAnim());
     }
 
-    private Coroutine flashAnim;
+    public bool CanInteract()
+    {
+        return ((currentQuestState.Equals(QuestState.CAN_START) && startPoint) || (currentQuestState.Equals(QuestState.CAN_FINISH) && finishPoint));
+    }
+
     private IEnumerator FlashAnim()
     {
         while (true)
         {
-            sr.enabled = true;
+            if (CanInteract())
+            {
+                sr.enabled = true;
 
-            yield return new WaitForSeconds(1);
+                yield return new WaitForSeconds(1);
 
-            sr.enabled = false;
+                sr.enabled = false;
 
-            yield return new WaitForSeconds(1);
+                yield return new WaitForSeconds(1);
+            }
+            else
+            {
+                sr.enabled = false;
+                yield return null;
+            }
         }
     }
 
@@ -121,19 +112,19 @@ public class QuestPoint : MonoBehaviour
 
         if (isVisible)
         {
-            this.GetComponent<SpriteRenderer>().color = Color.white;
+            sr.color = Color.white;
         }
         else if (isExplored && isVisible)
         {
-            this.GetComponent<SpriteRenderer>().color = Color.white;
+            sr.color = Color.white;
         }
         else if (isExplored && !isVisible)
         {
-            this.GetComponent<SpriteRenderer>().color = Color.gray;
+            sr.color = Color.gray;
         }
         else if (!isExplored)
         {
-            this.GetComponent<SpriteRenderer>().color = Color.black;
+            sr.color = Color.black;
         }
     }
 }

@@ -28962,7 +28962,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loadQuestState: 0
   questDatabase: {fileID: 11400000, guid: 8d30fcfbb8471ee4b9dc06b072132577, type: 2}
-  questQueue: []
+  questQueue: 
   questPoints: []
   prefab_questPoint: {fileID: 8591964580293775250, guid: a0e6df7afad46df4382e3aaccacb468e, type: 3}
   qm_names: []

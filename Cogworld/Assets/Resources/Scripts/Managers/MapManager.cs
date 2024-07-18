@@ -219,11 +219,7 @@ public class MapManager : MonoBehaviour
         TurnManager.inst.SetAllUnknown(); // Also fills the regions
 
         // Spawn the player
-        var spawnedPlayer = Instantiate(_playerPrefab, new Vector3(playerSpawnLocation.x * GridManager.inst.globalScale, playerSpawnLocation.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
-        spawnedPlayer.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
-        spawnedPlayer.GetComponent<PlayerGridMovement>().playerMovementAllowed = false; // Disable movement for the time being
-        playerRef = spawnedPlayer; // Set playerRef in CameraController
-        spawnedPlayer.GetComponent<Actor>().ClearFieldOfView();
+        var spawnedPlayer = PlacePlayer();
 
         // Sync the player's stats
         if (tempPlayer == null)
@@ -453,11 +449,7 @@ public class MapManager : MonoBehaviour
         UIManager.inst.GetComponent<BorderIndicators>().CreateIndicators(); // Create indicators for all (interactable) machines
 
         // Spawn the player
-        var spawnedPlayer = Instantiate(_playerPrefab, new Vector3(playerSpawnLocation.x * GridManager.inst.globalScale, playerSpawnLocation.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
-        spawnedPlayer.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
-        spawnedPlayer.GetComponent<PlayerGridMovement>().playerMovementAllowed = false; // Disable movement for the time being
-        playerRef = spawnedPlayer; // Set playerRef in CameraController
-        spawnedPlayer.GetComponent<Actor>().ClearFieldOfView();
+        var spawnedPlayer = PlacePlayer();
 
         QuestManager.inst.Init();
 
@@ -2293,6 +2285,16 @@ public class MapManager : MonoBehaviour
     #endregion
 
     #region Bot Spawning
+    private GameObject PlacePlayer()
+    {
+        var spawnedPlayer = Instantiate(_playerPrefab, new Vector3(playerSpawnLocation.x * GridManager.inst.globalScale, playerSpawnLocation.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
+        spawnedPlayer.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
+        spawnedPlayer.GetComponent<PlayerGridMovement>().playerMovementAllowed = false; // Disable movement for the time being
+        playerRef = spawnedPlayer; // Set playerRef in CameraController
+        spawnedPlayer.GetComponent<Actor>().ClearFieldOfView();
+
+        return spawnedPlayer;
+    }
 
     private void PlacePassiveBots(Vector2Int mapSize)
     {
@@ -2546,41 +2548,6 @@ public class MapManager : MonoBehaviour
         spawnedBot.transform.SetParent(botParent, true);
 
         return spawnedBot;
-    }
-
-    /// <summary>
-    /// DEPRECIATED | Duplicates an already existing bot to a newly spawned bot. DEPRECIATED
-    /// </summary>
-    /// <param name="_reference">The bot to duplicate and copy over data from.</param>
-    /// <returns>Optional return. The bot that was just created.</returns>
-    private Actor PlaceBotSpecific(GameObject _reference)
-    {
-        var spawnedBot = Instantiate(bots[_reference.GetComponent<Actor>().botInfo.Id], new Vector3((_reference.transform.position.x) * GridManager.inst.globalScale, (_reference.transform.position.y) * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
-        spawnedBot.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
-        spawnedBot.name = ($"{bots[_reference.GetComponent<Actor>().botInfo.Id].name} @ ({_reference.transform.position.x},{_reference.transform.position.y})"); // Give grid based name
-        spawnedBot.GetComponent<Actor>().isVisible = false;
-        spawnedBot.GetComponent<Actor>().isExplored = false;
-
-        spawnedBot.GetComponent<Actor>().maxHealth = spawnedBot.GetComponent<Actor>().botInfo.coreIntegrity;
-        spawnedBot.GetComponent<Actor>().currentHealth = spawnedBot.GetComponent<Actor>().maxHealth;
-
-        spawnedBot.transform.SetParent(botParent, true);
-        if (_reference)
-            CopyComponentData<BotAI>(_reference, spawnedBot.gameObject);
-
-        _reference.GetComponent<Actor>().TransferStates(spawnedBot.GetComponent<Actor>()); // Transfer any states
-
-        /*
-        CopyComponentData<Actor>(_reference, spawnedBot.gameObject);
-
-        // Janky workaround, may need to be expanded later
-        Transform[] sprites = spawnedBot.GetComponentsInChildren<Transform>();
-        spawnedBot.GetComponent<Actor>().fow_sprite = sprites[0].GetComponent<SpriteRenderer>();
-        spawnedBot.GetComponent<Actor>().sensorSprite = sprites[1].gameObject;
-        spawnedBot.GetComponent<Actor>().flashAlertSprite = sprites[2].gameObject;
-        */
-
-        return spawnedBot.GetComponent<Actor>();
     }
 
     #endregion

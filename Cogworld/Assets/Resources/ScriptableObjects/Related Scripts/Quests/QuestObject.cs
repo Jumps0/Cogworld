@@ -215,7 +215,9 @@ public abstract class QuestObject : ScriptableObject
     [Header("Quest Details")]
     public QuestType type;
     public QuestRank rank;
-    // TODO - ADD START & FINISH INFO (WHERE THE QUESTPOINTS GO)
+    public QuestPointInfo startLocation;
+    [Tooltip("If this is set to null, then the quest will start AND end at the same location.")]
+    public QuestPointInfo finishLocation;
 
     [Header("Requirements")]
     public Quest[] prerequisites;
@@ -324,4 +326,22 @@ public class QuestActions
     [Tooltip("Destroy a specific object (gameObject) somewhere in the world.")]
     public bool destroy_specificObject;
     public GameObject destroy_object;
+}
+
+[System.Serializable]
+[Tooltip("Contains information about where questpoints should be placed.")]
+public class QuestPointInfo
+{
+    [Header("Start & Finish")]
+    [Tooltip("If true, this point acts as both the START & FINISH point.")]
+    public bool isStartAndFinish = false;
+
+    [Header("Bot")]
+    public BotObject assignedBot;
+
+    [Header("Reference Point")]
+    public Transform refpoint;
+    public Vector2 refpoint_offset = new Vector2(0, 0);
+
+    public bool inReferenceToPlayer = false;
 }

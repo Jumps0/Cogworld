@@ -31,7 +31,7 @@ public class QuestManager : MonoBehaviour
     public QuestDatabaseObject questDatabase;
     private Dictionary<string, Quest> questMap;
     [Tooltip("A list of all quests that should be currently active.")]
-    public List<QueuedQuest> questQueue = new List<QueuedQuest>();
+    public List<int> questQueue = new List<int>();
     public List<GameObject> questPoints = new List<GameObject>();
 
     [Header("Prefabs")]
@@ -49,14 +49,14 @@ public class QuestManager : MonoBehaviour
 
         foreach (var queuedQuest in questQueue)
         {
-            QuestObject Q = questDatabase.Quests[queuedQuest.questID];
+            QuestObject Q = questDatabase.Quests[queuedQuest];
 
             if (idToQuestMap.ContainsKey(Q.uniqueID))
             {
                 Debug.LogWarning($"WARNING: Duplicate ID found when creating quest map: {Q.uniqueID}");
             }
 
-            if(!QuestAlreadyActive(queuedQuest.questID)) // Make sure the physical quest point exists in the world.
+            if(!QuestAlreadyActive(queuedQuest)) // Make sure the physical quest point exists in the world.
             {
                 CreateQuest(queuedQuest);
             }
@@ -111,11 +111,9 @@ public class QuestManager : MonoBehaviour
     private void DEBUG_QuestTesting()
     {
         // Add the hideout test quest
-        questQueue.Add(new QueuedQuest(2, new Vector2(PlayerData.inst.transform.position.x,
-            PlayerData.inst.transform.position.y + 10), new Vector2(PlayerData.inst.transform.position.x, PlayerData.inst.transform.position.y + 10), null));
+        questQueue.Add(2);
         // Add the 20 kills quest
-        questQueue.Add(new QueuedQuest(3, new Vector2(PlayerData.inst.transform.position.x + 5,
-            PlayerData.inst.transform.position.y + 10), new Vector2(PlayerData.inst.transform.position.x + 10, PlayerData.inst.transform.position.y + 10), null));
+        questQueue.Add(3);
     }
 
     public void Redraw()
@@ -197,7 +195,7 @@ public class QuestManager : MonoBehaviour
     {
         foreach (GameObject obj in questPoints)
         {
-            if(obj.GetComponent<QuestPoint>().questInfo != null && obj.GetComponent<QuestPoint>().questInfo.info.Id == id)
+            if(obj.GetComponent<QuestPoint>().quest != null && obj.GetComponent<QuestPoint>().quest.info.Id == id)
             {
                 return true;
             }
@@ -219,38 +217,150 @@ public class QuestManager : MonoBehaviour
     #endregion
 
     #region General
-    public Quest CreateQuest(QueuedQuest quest)
+    public Quest CreateQuest(int questID)
     {
         // Create the new quest based on requirements
-        Quest newQuest = new Quest(questDatabase.Quests[quest.questID]);
+        Quest newQuest = new Quest(questDatabase.Quests[questID]);
 
-        Transform parent = quest.botParent; // Assign parent
-        if (parent == null)
-            parent = this.transform;
+        // Gather info from this quests QuestPointInfo
+        QuestPointInfo start = newQuest.info.startLocation;
+        QuestPointInfo finish = newQuest.info.finishLocation;
 
-        // Depending on circumstance, we may need to make two QuestPoints (one for the start location, one for the finish location
-        if(quest.startPoint == quest.finishPoint)
+        // Check to see if this quest should have the same start and finish point, then act on that
+        if (start.isStartAndFinish) // Same start & end location (1 Object Needed)
         {
-            GameObject obj = Instantiate(prefab_questPoint, quest.startPoint, Quaternion.identity, parent);
-            obj.GetComponent<QuestPoint>().Init(newQuest, true, true);
-            obj.name = newQuest.info.uniqueID;
+            // Determine where this quest should be placed (and parented to)
+            Transform parent = null;
+            Vector2 spawnPos = Vector2.zero;
+
+            #region Position & Parent determination
+            if (start.inReferenceToPlayer)
+            {
+                parent = this.transform; // Transform set to this manager
+                spawnPos = PlayerData.inst.transform.position; // Spawnpoint based on player's pos
+            }
+            else if(start.assignedBot != null)
+            {
+                // We need to try and find this bot in the world
+                foreach (var bot in GameManager.inst.entities)
+                {
+                    if(bot.GetComponent<Actor>().botInfo == start.assignedBot) // ---------------- not finding the bot? is it even in this list yet?
+                    {
+                        parent = bot.transform; // Transform set to the bot
+                        spawnPos = bot.transform.position; // Spawnpoint based on this bot's pos
+                        break;
+                    }
+                }
+                // Fallback incase the bot wasn't found
+                if(parent == null)
+                {
+                    parent = this.transform; // Transform set to this manager
+                    spawnPos = PlayerData.inst.transform.position; // Spawnpoint based on player's pos
+                    Debug.LogWarning($"No bot reference ({start.assignedBot}) found in world to assign {newQuest} to.");
+                }
+            }
+            else if(start.refpoint != null)
+            {
+                parent = this.transform; // Transform set to this manager
+                spawnPos = start.refpoint.position; // Position based on this reference point
+            }
+            spawnPos += start.refpoint_offset; // Add offset
+            #endregion
+
+            GameObject obj = Instantiate(prefab_questPoint, spawnPos, Quaternion.identity, parent);
+            obj.GetComponent<QuestPoint>().Init(newQuest, true, true, start);
+            obj.name = $"START+FINISH: {newQuest.info.uniqueID}";
 
             questPoints.Add(obj);
         }
-        else
+        else // Different start & end locations (2 Objects Needed)
         {
+            // Determine where this quest should be placed (and parented to)
+            Transform parent_s = null, parent_f = null;
+            Vector2 spawnPos_s = Vector2.zero, spawnPos_f = Vector2.zero;
+
+            #region Position & Parent determination (Start)
+            if (start.inReferenceToPlayer)
+            {
+                parent_s = this.transform; // Transform set to this manager
+                spawnPos_s = PlayerData.inst.transform.position; // Spawnpoint based on player's pos
+            }
+            else if (start.assignedBot != null)
+            {
+                // We need to try and find this bot in the world
+                foreach (var bot in GameManager.inst.entities)
+                {
+                    if (bot.GetComponent<Actor>().botInfo == start.assignedBot)
+                    {
+                        parent_s = bot.transform; // Transform set to the bot
+                        spawnPos_s = bot.transform.position; // Spawnpoint based on this bot's pos
+                        break;
+                    }
+                }
+
+                // Fallback incase the bot wasn't found
+                if (parent_s == null)
+                {
+                    parent_s = this.transform; // Transform set to this manager
+                    spawnPos_s = PlayerData.inst.transform.position; // Spawnpoint based on player's pos
+                    Debug.LogWarning($"No bot reference ({start.assignedBot}) found in world to assign {newQuest} to.");
+                }
+            }
+            else if (start.refpoint != null)
+            {
+                parent_s = this.transform; // Transform set to this manager
+                spawnPos_s = start.refpoint.position; // Position based on this reference point
+            }
+            spawnPos_s += start.refpoint_offset; // Add offset
+            #endregion
+
+            #region Position & Parent determination (Finish)
+            if (start.inReferenceToPlayer)
+            {
+                parent_f = this.transform; // Transform set to this manager
+                spawnPos_f = PlayerData.inst.transform.position; // Spawnpoint based on player's pos
+            }
+            else if (start.assignedBot != null)
+            {
+                // We need to try and find this bot in the world
+                foreach (var bot in GameManager.inst.entities)
+                {
+                    if (bot.GetComponent<Actor>().botInfo == start.assignedBot)
+                    {
+                        parent_f = bot.transform; // Transform set to the bot
+                        spawnPos_f = bot.transform.position; // Spawnpoint based on this bot's pos
+                        break;
+                    }
+                }
+
+                // Fallback incase the bot wasn't found
+                if (parent_f == null)
+                {
+                    parent_f = this.transform; // Transform set to this manager
+                    spawnPos_f = PlayerData.inst.transform.position; // Spawnpoint based on player's pos
+                    Debug.LogWarning($"No bot reference ({start.assignedBot}) found in world to assign {newQuest} to.");
+                }
+            }
+            else if (start.refpoint != null)
+            {
+                parent_f = this.transform; // Transform set to this manager
+                spawnPos_f = start.refpoint.position; // Position based on this reference point
+            }
+            spawnPos_f += start.refpoint_offset; // Add offset
+            #endregion
+
             // Start point
-            GameObject start = Instantiate(prefab_questPoint, quest.startPoint, Quaternion.identity, parent);
-            start.GetComponent<QuestPoint>().Init(newQuest, true, false);
-            start.name = newQuest.info.uniqueID;
+            GameObject obj_start = Instantiate(prefab_questPoint, spawnPos_s, Quaternion.identity, parent_s);
+            obj_start.GetComponent<QuestPoint>().Init(newQuest, true, false, start);
+            obj_start.name = $"START: {newQuest.info.uniqueID}";
 
             // Finish point
-            GameObject finish = Instantiate(prefab_questPoint, quest.finishPoint, Quaternion.identity, parent);
-            finish.GetComponent<QuestPoint>().Init(newQuest, false, true);
-            finish.name = newQuest.info.uniqueID;
+            GameObject obj_finish = Instantiate(prefab_questPoint, spawnPos_f, Quaternion.identity, parent_f);
+            obj_finish.GetComponent<QuestPoint>().Init(newQuest, false, true, finish);
+            obj_finish.name = $"FINISH: {newQuest.info.uniqueID}";
 
-            questPoints.Add(start);
-            questPoints.Add(finish);
+            questPoints.Add(obj_start);
+            questPoints.Add(obj_finish);
         }
 
         // Redraw the quest map
@@ -786,22 +896,4 @@ public enum QuestState
     IN_PROGRESS,
     CAN_FINISH,
     FINISHED
-}
-
-[System.Serializable]
-[Tooltip("Holds info for a quest that needs to be created")]
-public class QueuedQuest
-{
-    public int questID;
-    public Vector2 startPoint;
-    public Vector2 finishPoint;
-    public Transform botParent;
-
-    public QueuedQuest(int questID, Vector2 startPoint, Vector2 finishPoint, Transform botParent)
-    {
-        this.questID = questID;
-        this.startPoint = startPoint;
-        this.finishPoint = finishPoint;
-        this.botParent = botParent;
-    }
 }

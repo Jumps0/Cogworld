@@ -18,9 +18,21 @@ MonoBehaviour:
   description: TEST quest for visiting a location. For this quest you need to go
     to the bottom of the hideout
   sprite: {fileID: 2048525777, guid: 484b699857d60234c908d529dd37a90d, type: 3}
-  uniqueID: Visit South Hideout TEST + 24
+  uniqueID: Visit South Hideout TEST + 61
   type: 3
   rank: 1
+  startLocation:
+    isStartAndFinish: 1
+    assignedBot: {fileID: 11400000, guid: 1c3e89cb69ac6184fa8146daa510eea7, type: 2}
+    refpoint: {fileID: 0}
+    refpoint_offset: {x: 0, y: 0}
+    inReferenceToPlayer: 0
+  finishLocation:
+    isStartAndFinish: 0
+    assignedBot: {fileID: 0}
+    refpoint: {fileID: 0}
+    refpoint_offset: {x: 0, y: 0}
+    inReferenceToPlayer: 0
   prerequisites: []
   prereq_items: []
   prereq_matter: 0
