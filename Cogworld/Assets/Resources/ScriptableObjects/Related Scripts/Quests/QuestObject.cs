@@ -32,6 +32,7 @@ public class Quest
         }
 
         SetupQuestPrefabs(); // Setup the step prefabs
+        SetQuestProgressMax(); // Set "max" value
 
         this.questStepStates = new QuestStepState[info.steps.Length];
         for(int i = 0; i < info.steps.Length; i++)
@@ -97,7 +98,7 @@ public class Quest
         }
     }
 
-    public void UpdateOverallQuestProgress()
+    public void SetQuestProgressMax()
     {
         // We need to parse the quest steps into a number.
         // -Sometimes a quest just boils down to doing one thing, so its 1/1
@@ -105,13 +106,13 @@ public class Quest
         // -Sometimes a quest actually gives a number, so we use that.
 
         int max = 1;
-        int current = 0;
 
         // First, go through each step and categorize them
         List<GameObject> steps_progressive = new List<GameObject>(); // Steps where you need to do some amount of something
         List<GameObject> steps_static = new List<GameObject>(); // Steps that are just 0/1 where you ONLY DO ONE THING
 
         // Go through each step and work out the max and current from there
+        #region Sort Steps
         foreach (var step in info.steps)
         {
             if (step.GetComponent<QS_MeetActor>()) // static
@@ -149,8 +150,10 @@ public class Quest
                 steps_progressive.Add(step);
             }
         }
+        #endregion
 
         // Then based on that, define an actual number we can use for our bar
+        #region Determine Max
         if (steps_static.Count > 0 && steps_progressive.Count == 0) // Do we only have static steps? Add them all up and use that
         {
             max = steps_static.Count;
@@ -203,12 +206,126 @@ public class Quest
                 }
             }
         }
+        #endregion
 
-        Debug.Log($"Progress update: max: {max} | current: {current}");
+        // Debug.Log($"Progress update: max: {max} | current: {current} \n Steps: {info.steps.Length} | Prog: {steps_progressive.Count} | Static: {steps_static.Count}");
 
-        // Update progress
+        // Set max
         a_max = max;
-        a_progress = current;
+    }
+
+    public void UpdateQuestProgress()
+    {
+        int progress = 0;
+
+        // (Used later)
+        List<KeyValuePair<bool, int>> current_progress = new List<KeyValuePair<bool, int>>(); // True = Progressive | False = Static
+
+        // We can use the *questStepStates* list (which gets updated dynamically by our scripts whenever progress is made) to determine our overall progress.
+        for (int i = 0; i < questStepStates.Length; i++)
+        {
+            string state = questStepStates[i].state;
+            if (state == "") // Failsafe
+                state = "0";
+            int current = System.Int32.Parse(state); // Get the value (and convert it to int)
+
+            // However, should we consider this value as true progress? We don't actually know what kind of quest this belongs to.
+            // But thankfully since the order doesn't change, and the list length is identical, we can go through our list of
+            // quest step "objects", and do the same thing we do about to determine the max.
+
+            #region Sort Steps
+            GameObject step = info.steps[i];
+            if (step.GetComponent<QS_MeetActor>()) // static
+            {
+                current_progress.Add(new KeyValuePair<bool, int>(false, current));
+            }
+            else if (step.GetComponent<QS_GoToLocation>()) // static
+            {
+                current_progress.Add(new KeyValuePair<bool, int>(false, current));
+            }
+            else if (step.GetComponent<QS_DestroyThing>()) // usually static  (but may be progressive)
+            {
+                if (step.GetComponent<QS_DestroyThing>().a_max > 1)
+                {
+                    current_progress.Add(new KeyValuePair<bool, int>(true, current));
+                }
+                else
+                {
+                    current_progress.Add(new KeyValuePair<bool, int>(false, current));
+                }
+            }
+            else if (step.GetComponent<QS_CollectItem>()) // usually static  (but may be progressive)
+            {
+                if (step.GetComponent<QS_CollectItem>().a_max > 1)
+                {
+                    current_progress.Add(new KeyValuePair<bool, int>(true, current));
+                }
+                else
+                {
+                    current_progress.Add(new KeyValuePair<bool, int>(false, current));
+                }
+            }
+            else if (step.GetComponent<QS_KillBots>()) // progressive
+            {
+                current_progress.Add(new KeyValuePair<bool, int>(true, current));
+            }
+            #endregion
+
+        }
+
+        // Now based on our list with added detail, we can determine the current progress using the rules we established when calculating the max value.
+        int count_static = 0;
+        int count_prog = 0;
+        foreach (var kvp in current_progress) // First determine how much of each we have
+        {
+            bool isProgressive = kvp.Key;
+
+            if(isProgressive)
+            {
+                count_prog++;
+            }
+            else
+            {
+                count_static++;
+            }
+        }
+
+        #region Determine Current Progress
+        // Then act on that
+        if (count_static > 0 && count_prog == 0) // Do we only have static steps? Add them all up and use that
+        {
+            foreach (var kvp in current_progress)
+            {
+                if(kvp.Key == false)
+                {
+                    progress += kvp.Value;
+                }
+            }
+        }
+        else if (count_static == 0 && count_prog > 0) // Do we only have progressive steps? Add them all up and use those
+        {
+            foreach (var kvp in current_progress)
+            {
+                if (kvp.Key == true)
+                {
+                    progress += kvp.Value;
+                }
+            }
+        }
+        else if (count_static > 0 && count_prog > 0) // Do we have a mix of both? Use only the progressive steps (and add them all up to use)
+        {
+            foreach (var kvp in current_progress)
+            {
+                if (kvp.Key == true)
+                {
+                    progress += kvp.Value;
+                }
+            }
+        }
+        #endregion
+
+        // Set progress
+        a_progress = progress;
     }
 
     /// <summary>
@@ -306,6 +423,8 @@ public class Quest
             Debug.LogWarning("WARNING: Tried to access quest step data, but stepIndex was out of range:\n" +
                 $"QuestId={info.Id} | stepIndex={currentQuestStepIndex}");
         }
+
+        UpdateQuestProgress();
     }
 
     public QuestData GetQuestData()

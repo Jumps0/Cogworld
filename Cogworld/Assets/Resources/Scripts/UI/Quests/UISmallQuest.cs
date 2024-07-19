@@ -5,6 +5,9 @@ using UnityEngine.UI;
 using TMPro;
 using Unity.VisualScripting;
 using ColorUtility = UnityEngine.ColorUtility;
+using UnityEngine.UIElements;
+using Image = UnityEngine.UI.Image;
+using Slider = UnityEngine.UI.Slider;
 
 public class UISmallQuest : MonoBehaviour
 {
@@ -25,6 +28,7 @@ public class UISmallQuest : MonoBehaviour
     [SerializeField] private Image image_bar_side;
     [SerializeField] private Image image_bar_main;
     [SerializeField] private Image image_bar_background;
+    [SerializeField] private Slider slider;
     [Tooltip("The ##% percent that appears INSIDE the bar, indicating the % progress.")]
     [SerializeField] private TextMeshProUGUI text_bar;
     //
@@ -75,17 +79,17 @@ public class UISmallQuest : MonoBehaviour
     {
         int max = quest.a_max;
         int current = quest.a_progress;
+        slider.maxValue = max;
 
         // Set the text
         text_amount.text = $"{current}/{max}";
 
         // Set the percent
         float percent = (float)current / (float)max;
-        image_bar_main.fillAmount = percent;
+        slider.value = current;
         text_bar.text = $"{Mathf.RoundToInt(percent*100)}%";
         // We also need to make sure the % text is lined up next to the end of the progress bar.
         // (This is done in the opening animation)
-
     }
 
     public void Select()
@@ -138,8 +142,8 @@ public class UISmallQuest : MonoBehaviour
         Color endDark = color_dark;
 
         // 3.5 The bar fill
-        float barEndAmount = image_bar_main.fillAmount;
-        image_bar_main.fillAmount = 0f; // Start a 0%
+        float barEndAmount = slider.value;
+        slider.value = 0f; // Start a 0%
         float barTextStartX = -292f;
         float barTextMaxEnd = -79.5f;
         text_bar.rectTransform.anchoredPosition += new Vector2(barTextStartX, 0); // Start on the left side
@@ -184,7 +188,7 @@ public class UISmallQuest : MonoBehaviour
             // We need to:
             // 1. Lerp the bar from 0% fill to whatever fill it needs to be
             // 2. Move the fill % text along with the fill
-            image_bar_main.fillAmount = Mathf.Lerp(0f, barEndAmount, elapsedTime / duration);
+            slider.value = Mathf.Lerp(0f, barEndAmount, elapsedTime / duration);
             // The max is -79.5f, we need to find out where in between it should be
             float interpolate = barTextStartX + (barTextMaxEnd - barTextStartX) * Mathf.Clamp01(barEndAmount);
             float x = Mathf.Lerp(barEndAmount, interpolate, elapsedTime / duration);

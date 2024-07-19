@@ -3,6 +3,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -53,6 +54,8 @@ public class QS_GoToLocation : QuestStep
         }
         // And set its size
         col.size = find_locationSize;
+
+        UpdateState(0);
     }
 
     private void Update()
@@ -62,6 +65,7 @@ public class QS_GoToLocation : QuestStep
             if(MapManager.inst.levelName == find_specific)
             {
                 a_progress = a_max;
+                UpdateState(1);
                 FinishQuestStep();
             }
         }
@@ -72,13 +76,22 @@ public class QS_GoToLocation : QuestStep
         // We just need to check to see if the Player has reached the specified destination
         if (collision.gameObject.GetComponent<PlayerData>())
         {
+            UpdateState(1);
             FinishQuestStep();
             col.enabled = false; // And disable the collider since it is no longer needed
         }
     }
 
+    private void UpdateState(int progress) // [EXPL]: THIS FUNCTION SAVES THE CURRENT *PROGRESS* THE PLAYER HAS MADE ON THIS QUEST. NEEDS TO BE CALLED ANY TIME THE "STATE" (aka Progress) CHANGES.
+    {
+        // No progress save needed since its true/false if the player has this. We will set it to 0 or 1.
+        string state = progress.ToString();
+        ChangeState(state);
+    }
+
     protected override void SetQuestStepState(string state) // [EXPL]: USED TO TAKE PREVIOUSLY SAVED QUEST PROGRESS AND BRING IT IN TO A NEW INSTANCE OF A QUEST STEP. PARSE STRING TO <???>.
     {
-        // No state is needed for this quest step
+        a_progress = System.Int32.Parse(state);
+        UpdateState(a_progress);
     }
 }

@@ -3,6 +3,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using UnityEngine;
 
 /// <summary>
@@ -52,6 +53,7 @@ public class QS_CollectItem : QuestStep
                 if(slot.item == collect_specificItem.data)
                 {
                     a_progress = a_max;
+                    UpdateState(a_progress);
                     FinishQuestStep(); // They have it! Finish this step
                     break;
                 }
@@ -59,28 +61,16 @@ public class QS_CollectItem : QuestStep
         }
     }
 
-    private void UpdateState() // [EXPL]: THIS FUNCTION SAVES THE CURRENT *PROGRESS* THE PLAYER HAS MADE ON THIS QUEST. NEEDS TO BE CALLED ANY TIME THE "STATE" (aka Progress) CHANGES.
+    private void UpdateState(int progress) // [EXPL]: THIS FUNCTION SAVES THE CURRENT *PROGRESS* THE PLAYER HAS MADE ON THIS QUEST. NEEDS TO BE CALLED ANY TIME THE "STATE" (aka Progress) CHANGES.
     {
-        // No progress save needed(?) since its true/false if the player has this.
-        //string state = itemToCollect.ToString();
-        //ChangeState(state);
+        // No progress save needed since its true/false if the player has this. We will set it to 0 or 1.
+        string state = progress.ToString();
+        ChangeState(state);
     }
 
     protected override void SetQuestStepState(string state) // [EXPL]: USED TO TAKE PREVIOUSLY SAVED QUEST PROGRESS AND BRING IT IN TO A NEW INSTANCE OF A QUEST STEP. PARSE STRING TO <???>.
     {
-        /* // Not needed since its just true false (?)
-        // Convert *itemToCollect* (string) back to an actual item
-        ItemObject parsed = null;
-        foreach(var I in InventoryControl.inst._itemDatabase.Items)
-        {
-            if (I.name == state || I.name.Contains(state))
-            {
-                parsed = I;
-                break;
-            }
-        }
-        // Do something?
-        UpdateState();
-        */
+        a_progress = System.Int32.Parse(state);
+        UpdateState(a_progress);
     }
 }

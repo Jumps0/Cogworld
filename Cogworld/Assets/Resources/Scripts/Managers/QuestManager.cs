@@ -373,7 +373,6 @@ public class QuestManager : MonoBehaviour
     {
         Quest quest = GetQuestById(id);
         quest.InstantiateCurrentQuestStep(this.transform);
-        quest.UpdateOverallQuestProgress();
         ChangeQuestState(quest.info.uniqueID, QuestState.IN_PROGRESS);
 
         // Leave a log message
@@ -385,7 +384,6 @@ public class QuestManager : MonoBehaviour
     {
         Quest quest = GetQuestById(id);
         quest.MoveToNextStep();
-        quest.UpdateOverallQuestProgress();
 
         if (quest.CurrentStepExists()) // If there are more steps, instantiate the next one
         {

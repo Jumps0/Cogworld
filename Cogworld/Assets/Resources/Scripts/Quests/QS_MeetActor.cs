@@ -55,17 +55,18 @@ public class QS_MeetActor : QuestStep
             }
         }
     }
-
-    private void UpdateState() // [EXPL]: THIS FUNCTION SAVES THE CURRENT *PROGRESS* THE PLAYER HAS MADE ON THIS QUEST. NEEDS TO BE CALLED ANY TIME THE "STATE" (aka Progress) CHANGES.
-    {
-        // No progress save needed(?) since its true/false if the player has this.
-        //string state = itemToCollect.ToString();
-        //ChangeState(state);
-    }
     */
+    private void UpdateState(int progress) // [EXPL]: THIS FUNCTION SAVES THE CURRENT *PROGRESS* THE PLAYER HAS MADE ON THIS QUEST. NEEDS TO BE CALLED ANY TIME THE "STATE" (aka Progress) CHANGES.
+    {
+        // No progress save needed since its true/false if the player has this. We will set it to 0 or 1.
+        string state = progress.ToString();
+        ChangeState(state);
+    }
+    
 
     protected override void SetQuestStepState(string state) // [EXPL]: USED TO TAKE PREVIOUSLY SAVED QUEST PROGRESS AND BRING IT IN TO A NEW INSTANCE OF A QUEST STEP. PARSE STRING TO <???>.
     {
-
+        a_progress = System.Int32.Parse(state);
+        UpdateState(a_progress);
     }
 }

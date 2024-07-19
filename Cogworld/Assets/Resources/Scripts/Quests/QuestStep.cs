@@ -37,7 +37,7 @@ public abstract class QuestStep : MonoBehaviour
         }
     }
 
-    protected void ChangeState(string newState)
+    protected void ChangeState(string newState) // This will (eventually) lead into *StoreQuestStepState* inside QuestObject.cs to save the quest step states in an Array.
     {
         GameManager.inst.questEvents.QuestStepStateChange(questID, stepIndex, new QuestStepState(newState));
     }
