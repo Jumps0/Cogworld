@@ -144,8 +144,8 @@ public class UISmallQuest : MonoBehaviour
         // 3.5 The bar fill
         float barEndAmount = slider.value;
         slider.value = 0f; // Start a 0%
-        float barTextStartX = -292f;
-        float barTextMaxEnd = -79.5f;
+        float barTextStartX = text_bar.rectTransform.anchoredPosition.x; // -292f
+        float barTextMaxEnd = barTextStartX - Mathf.Abs(292f - 79.5f); // -79.5f
         text_bar.rectTransform.anchoredPosition += new Vector2(barTextStartX, 0); // Start on the left side
 
         float elapsedTime = 0f;
