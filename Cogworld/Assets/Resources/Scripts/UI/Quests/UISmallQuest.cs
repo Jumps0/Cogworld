@@ -142,11 +142,12 @@ public class UISmallQuest : MonoBehaviour
         Color endDark = color_dark;
 
         // 3.5 The bar fill
-        float barEndAmount = slider.value;
-        slider.value = 0f; // Start a 0%
-        float barTextStartX = text_bar.rectTransform.anchoredPosition.x; // -292f
-        float barTextMaxEnd = barTextStartX - Mathf.Abs(292f - 79.5f); // -79.5f
-        text_bar.rectTransform.anchoredPosition += new Vector2(barTextStartX, 0); // Start on the left side
+        int barEndAmount = (int)slider.value;
+        slider.value = 0; // Start a 0%
+        // - The max and min values for what the text can be is [-292f] to the left side and [-79.5f] to the right.
+        float barTextStartX = text_bar.rectTransform.anchoredPosition.x; // -292f (left)
+        float barTextMaxEnd = barTextStartX + Mathf.Abs(292f - 79.5f); // -79.5f (right)
+        text_bar.rectTransform.anchoredPosition = new Vector2(barTextStartX, 0); // Start on the left side
 
         float elapsedTime = 0f;
         float duration = 0.5f;
@@ -156,7 +157,7 @@ public class UISmallQuest : MonoBehaviour
             Color lerp = Color.Lerp(start, end, elapsedTime / duration);
             Color darkLerp = Color.Lerp(start, endDark, elapsedTime / duration);
             Color light2Main = Color.Lerp(color_bright, end, elapsedTime / duration);
-            Color dark2Main = Color.Lerp(endDark, end, elapsedTime / duration);
+            Color dark2Light = Color.Lerp(endDark, color_bright, elapsedTime / duration);
 
             // And assign colors
             foreach (var Image in image_border_bars)
@@ -167,12 +168,21 @@ public class UISmallQuest : MonoBehaviour
             text_amount.color = lerp;
             text_description.color = lerp;
             // Black -> Dark
-            text_bar.color = darkLerp;
             image_bar_background.color = darkLerp;
             // Some of the bar uses light -> main
             image_bar_side.color = light2Main;
             image_bar_main.color = light2Main;
             text_description.color = light2Main;
+
+            // In some instances the bar text may be over an empty section of the bar or a filled section so we need to account for that
+            if(slider.value > 0.75f) // NOTE: Some adjustment of this percentage may be needed
+            {
+                text_bar.color = darkLerp;
+            }
+            else
+            {
+                text_bar.color = lerp;
+            }
 
             // Header only gets color if its selected
             if (selected)
@@ -188,16 +198,17 @@ public class UISmallQuest : MonoBehaviour
             // We need to:
             // 1. Lerp the bar from 0% fill to whatever fill it needs to be
             // 2. Move the fill % text along with the fill
-            slider.value = Mathf.Lerp(0f, barEndAmount, elapsedTime / duration);
+            slider.value = Mathf.Lerp(0, barEndAmount, elapsedTime / duration);
             // The max is -79.5f, we need to find out where in between it should be
             float interpolate = barTextStartX + (barTextMaxEnd - barTextStartX) * Mathf.Clamp01(barEndAmount);
-            float x = Mathf.Lerp(barEndAmount, interpolate, elapsedTime / duration);
-            text_bar.rectTransform.anchoredPosition += new Vector2(x, 0);
+            float x = Mathf.Lerp(barTextStartX, interpolate, elapsedTime / duration);
+            text_bar.rectTransform.anchoredPosition = new Vector2(x, 0);
 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
+        slider.value = barEndAmount;
         animating = false;
     }
 
