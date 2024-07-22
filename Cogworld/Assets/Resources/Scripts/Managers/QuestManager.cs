@@ -10,6 +10,7 @@ using UnityEngine;
 using ColorUtility = UnityEngine.ColorUtility;
 using static System.Net.Mime.MediaTypeNames;
 using Image = UnityEngine.UI.Image;
+using static Unity.VisualScripting.Member;
 
 /// <summary>
 /// Manages all things quest.
@@ -399,9 +400,18 @@ public class QuestManager : MonoBehaviour
     public void FinishQuest(string id)
     {
         Quest quest = GetQuestById(id);
+
+        AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.ENDINGS_Clips[5], 0.8f); // Play a sound
+        
+        // Make a message in the log
+        string logMessage = $"Quest Completed: {quest.info.displayName}";
+        UIManager.inst.CreateNewLogMessage(logMessage, QuestManager.inst.c_yellow2, QuestManager.inst.c_yellow1, true, true);
+        UIManager.inst.CreateNewLogMessage($"Quest reward available in Hideout.", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false); // And tell the player about their reward
+
+        // Do reward logic
         QuestReward(quest);
         ChangeQuestState(quest.info.uniqueID, QuestState.FINISHED);
-        Debug.Log($"Quest Finished! {quest.info.displayName}");
+
         // Remove quest point(s) from the quest queue
         foreach (GameObject qp in questPoints.ToList())
         {
