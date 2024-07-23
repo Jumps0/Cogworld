@@ -24,6 +24,8 @@ public class InventoryControl : MonoBehaviour
     public InventoryObject p_inventoryWeapons;
     public InventoryObject p_inventory;
 
+    [Header("Hideout Inventory")]
+    public InventoryObject hideout_inventory;
 
     [Header("Data Related")]
     // - Data -

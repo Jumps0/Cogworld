@@ -10154,7 +10154,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 89.586105, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 22.777779}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &272249432
@@ -61964,6 +61964,7 @@ MonoBehaviour:
   p_inventoryUtilities: {fileID: 11400000, guid: c0380eaf0eee54c48b43ace639398c8f, type: 2}
   p_inventoryWeapons: {fileID: 11400000, guid: 6aa1badc3199c65498015bc6890f9a42, type: 2}
   p_inventory: {fileID: 11400000, guid: da50f0f374a8a1c4b8f1b441e112aa18, type: 2}
+  hideout_inventory: {fileID: 11400000, guid: f2b5c42fdb6aa6e4a8a35bf5f2cac185, type: 2}
   _itemHeldPrefab: {fileID: 8519707058798226528, guid: f20b2e787ce9a814ca9d1e6b4f3484b6, type: 3}
   _hoverMovingItemPrefab: {fileID: 0}
   _itemGroundPrefab: {fileID: 5707403940916725959, guid: 9fded638afd59384bafbca643201372b, type: 3}

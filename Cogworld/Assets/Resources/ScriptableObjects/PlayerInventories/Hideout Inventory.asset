@@ -1,0 +1,2130 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a81ef4195151b74d8e1d39efe0fe510, type: 3}
+  m_Name: Hideout Inventory
+  m_EditorClassIdentifier: 
+  savePath: 
+  database: {fileID: 11400000, guid: de7b8b5ccd57e8f4bab9ca053bc6cdcc, type: 2}
+  Container:
+    Items:
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        stackable: 0
+        amount: 1
+        itemData: {fileID: 0}
+        state: 1
+        integrityCurrent: 0
+        uniqueDetail:
+          isScrap: 0
+          scrapReward: {fileID: 0}
+          isDataLog: 0
+          logMessage: 
+          logAction:
+            type: 0
+            connectedMachine: {fileID: 0}
+          isDataCore: 0
+          coreTerminal: {fileID: 0}
+        storageAmount: 0
+        isOverloaded: 0
+        isDeteriorating: 0
+        isRigged: 0
+        isBroken: 0
+        corrupted: 0
+        disabledTimer: 0
+        unstable: -1
+        disposable: -1
+        siege: 0
+        isDuplicate: 0
+        duplicate_uuid: -1
+        duplicates: 
+      amount: 0

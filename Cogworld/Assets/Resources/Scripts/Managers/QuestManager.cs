@@ -11,6 +11,7 @@ using ColorUtility = UnityEngine.ColorUtility;
 using static System.Net.Mime.MediaTypeNames;
 using Image = UnityEngine.UI.Image;
 using static Unity.VisualScripting.Member;
+using static UnityEditor.Progress;
 
 /// <summary>
 /// Manages all things quest.
@@ -428,9 +429,24 @@ public class QuestManager : MonoBehaviour
         int rewards_matter = quest.info.reward_matter;
 
         // How do we handle this?
-        // -We put them somewhere in the player's hideout? <-- Lets do this so the player won't lose their reward when they die during a run
-        // -Where do we put these items? Do we just drop them on the floor somewhere? Do we create a container for this items in the world?
-        //       -Do we drop these items around the player when they interact with the UI somewhere?
+        // - The player has a storage object in their hideout, we will simply put the items / matter in there.
+        // - The player can interact with it when they are there.
+        // - We do this instead of instantly rewarding it to the player (during their run) because they will probably lose it when they die, and they wouldn't like that.
+
+        if(rewards_item.Count > 0) // -- Items --
+        {
+            // Add items to the Hideout Inventory Object
+            foreach (var item in rewards_item)
+            {
+                InventoryControl.inst.hideout_inventory.AddItem(item);
+            }
+        }
+
+        if(rewards_matter > 0) // -- Matter --
+        {
+            // Add a stack of matter (the item) with the specific amount to the Hideout Inventory Object
+            InventoryControl.inst.hideout_inventory.AddItem(new Item(InventoryControl.inst._itemDatabase.Items[17]), rewards_matter);
+        }
     }
 
     private void QuestStepStateChange(string id, int stepIndex, QuestStepState questStepState)
