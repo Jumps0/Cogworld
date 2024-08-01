@@ -24,6 +24,8 @@ public class TerminalCustom : MonoBehaviour
     public float traceProgress;
     public bool detected;
     public bool locked = false; // No longer accessable
+    [Tooltip("(Optional) Where completed components get spawned.")]
+    public Transform ejectionSpot;
 
     [Header("Trojans")]
     public List<TrojanType> trojans = new List<TrojanType>();
@@ -51,6 +53,14 @@ public class TerminalCustom : MonoBehaviour
         {
             // TODO
         }
+    }
+
+    #endregion
+
+    #region Hideout Cache
+    public void SetupAsCache()
+    {
+        // TODO
     }
 
     #endregion

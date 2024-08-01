@@ -10154,7 +10154,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 89.586105, y: 0}
   m_SizeDelta: {x: 0, y: 22.777779}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &272249432
@@ -57240,6 +57240,7 @@ MonoBehaviour:
   imp_scanalyzers:
   - {fileID: 7456691822352536937, guid: d699bbd9c4aaea54988cad73cfc19a9c, type: 3}
   imp_customTerminals:
+  - {fileID: 7456691822352536937, guid: b910fcb2f9690a94eb503c76c9b3b70b, type: 3}
   - {fileID: 7456691822352536937, guid: c9f96c855a65d23418e719382171b830, type: 3}
   staticMachinePrefabs:
   - {fileID: 7456691822352536937, guid: 72abdd4e92d9d2a48b5cca736dca4c1d, type: 3}

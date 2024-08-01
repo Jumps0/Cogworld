@@ -582,6 +582,9 @@ public class MapManager : MonoBehaviour
 
         PlaceIndividualMachine(new Vector2Int(bl.x + 3, bl.y + 13), 2, 2); // Fabricator 4x2 "Alice"
 
+        // 6 - Place Cache
+        PlaceHideoutCache(new Vector2Int(bl.x + 2, bl.y + 3));
+
         // # - Test bot
         Actor testBot = PlaceBot(new Vector2Int(bl.x + 12, bl.y + 5), 9);
         // Test QUEST Bot
@@ -590,6 +593,40 @@ public class MapManager : MonoBehaviour
         PlaceIndividualMachine(new Vector2Int(bl.x + 9, bl.y + 11), 7, 0); // Terminal 1x1 Shop
         // test trap
         PlaceTrap(MapManager.inst.itemDatabase.Items[103], new Vector2Int(bl.x + 5, bl.y + 11));
+    }
+
+    /// <summary>
+    /// Places the object/machine prefab which the player can use to access their hideout's inventory storage.
+    /// </summary>
+    private void PlaceHideoutCache(Vector2 pos)
+    {
+        // Set prefab
+        GameObject prefab = imp_customTerminals[0];
+
+        // Adjust position since its 2x2 (We use the bottom left tile as the center)
+        Vector2 offset = new Vector2(-0.5f, -0.5f);
+        pos += offset;
+
+        // Instantiate it at the correct position
+        GameObject cache = Instantiate(prefab, pos, Quaternion.identity, mapParent);
+
+        // Add to layers
+        MachinePart[] machines = cache.GetComponentsInChildren<MachinePart>();
+        foreach (MachinePart M in machines)
+        {
+            M.GetComponent<SpriteRenderer>().sortingOrder = 7;
+            Vector2Int loc = new Vector2Int((int)(M.gameObject.transform.position.x + offset.x), (int)(M.gameObject.transform.position.y + offset.y));
+            _allTilesRealized[loc].occupied = true;
+            _layeredObjsRealized[loc] = M.gameObject;
+        }
+        /*
+         * NOTE:
+         * In the machine prefabs, all components my be perfectly aligned on exact numbers. If there are any decimals in the numbers (eg. -1.9999) there
+         * is a high chance that the spawning will break and the machine part will be spawned in the incorrect space due to rounding.
+         */
+
+        // Setup the machine's script
+        cache.GetComponentInChildren<TerminalCustom>().SetupAsCache();
     }
 
     #endregion
