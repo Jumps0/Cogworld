@@ -45,8 +45,8 @@ MonoBehaviour:
     duplicate_uuid: -1
     duplicates: 
   knowByPlayer: 1
-  floorDisplay: {fileID: 21300000, guid: 875699312b282524dbbaea378b7e46ff, type: 3}
-  inventoryDisplay: {fileID: 21300000, guid: 875699312b282524dbbaea378b7e46ff, type: 3}
+  floorDisplay: {fileID: 21300000, guid: 5fb49238d90863547b967f3831c8da5d, type: 3}
+  inventoryDisplay: {fileID: 21300000, guid: 5fb49238d90863547b967f3831c8da5d, type: 3}
   asciiRep: {fileID: -1932154928, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
   bigDisplay: {fileID: 0}
   itemColor: {r: 0, g: 1, b: 0.6862745, a: 1}
@@ -109,6 +109,9 @@ MonoBehaviour:
     projectileTrail: 2
     penetrationCapability: 0
     penetrationChances: []
+    guided:
+      isGuided: 0
+      waypoints: 0
   meleeAttack:
     isMelee: 1
     energy: -5

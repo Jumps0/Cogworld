@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
   m_Name: Imp. Ion Engine
   m_EditorClassIdentifier: 
-  instantUnique: 0
   amount: 1
   data:
     Name: Imp. Ion Engine
@@ -22,13 +21,32 @@ MonoBehaviour:
     itemData: {fileID: 11400000}
     state: 1
     integrityCurrent: 0
+    uniqueDetail:
+      isScrap: 0
+      scrapReward: {fileID: 0}
+      isDataLog: 0
+      logMessage: 
+      logAction:
+        type: 0
+        connectedMachine: {fileID: 0}
+      isDataCore: 0
+      coreTerminal: {fileID: 0}
+    storageAmount: 0
     isOverloaded: 0
+    isDeteriorating: 0
+    isRigged: 0
+    isBroken: 0
     corrupted: 0
     disabledTimer: 0
+    unstable: -1
+    disposable: -1
     siege: 0
+    isDuplicate: 0
+    duplicate_uuid: -1
+    duplicates: 
   knowByPlayer: 1
-  floorDisplay: {fileID: 1896401937, guid: fab67cf9e23fdbf4e9bad070f3896ba8, type: 3}
-  inventoryDisplay: {fileID: 1896401937, guid: fab67cf9e23fdbf4e9bad070f3896ba8, type: 3}
+  floorDisplay: {fileID: 21300000, guid: 45c3bce292cba8f49bc6b217d0a8188d, type: 3}
+  inventoryDisplay: {fileID: 21300000, guid: 45c3bce292cba8f49bc6b217d0a8188d, type: 3}
   asciiRep: {fileID: -164177848, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
   bigDisplay: {fileID: 21300000, guid: 2f0338982795ad74c83868812ee1bb30, type: 3}
   itemColor: {r: 0, g: 1, b: 0.6862745, a: 1}
@@ -40,6 +58,7 @@ MonoBehaviour:
   star: 0
   ratingType: 0
   integrityMax: 70
+  repairable: 1
   coverage: 60
   schematicDetails:
     hackable: 1
@@ -76,9 +95,7 @@ MonoBehaviour:
     damageType: 0
     critChance: 0
     critType: 0
-    penChance: {x: 0, y: 0, z: 0}
     heatTrasfer: 0
-    heatTransferDegree: 0
     spectrum: 0
     hasSpectrum: 0
     disruption: 0
@@ -89,6 +106,9 @@ MonoBehaviour:
     projectileTrail: 2
     penetrationCapability: 0
     penetrationChances: []
+    guided:
+      isGuided: 0
+      waypoints: 0
   meleeAttack:
     isMelee: 0
     energy: 0
@@ -123,6 +143,8 @@ MonoBehaviour:
     directional: 0
     d_arc: 0
     d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
   deployableItem:
     deployable: 0
     type: 0
@@ -145,11 +167,17 @@ MonoBehaviour:
     stasis_strength: 0
   isSpecialAttack: 0
   specialAttack:
+    specialMelee: 0
     datajack: 0
     stasisBeam: 0
     tearClaw: 0
   itemEffects: []
   canOverload: 0
+  consumable: 0
+  disposable: -1
+  unstable: -1
+  destroyOnRemove: 0
+  canBeDisabled: 1
   quality: 1
   itemName: Imp. Ion Engine
   description: An improved variant of the reliable ion engine.
@@ -160,3 +188,14 @@ MonoBehaviour:
     fabTime: {x: 62, y: 31, z: 20}
     matterCost: 50
     componenetsRequired: []
+  instantUnique: 0
+  uniqueDetail:
+    isScrap: 0
+    scrapReward: {fileID: 0}
+    isDataLog: 0
+    logMessage: 
+    logAction:
+      type: 0
+      connectedMachine: {fileID: 0}
+    isDataCore: 0
+    coreTerminal: {fileID: 0}

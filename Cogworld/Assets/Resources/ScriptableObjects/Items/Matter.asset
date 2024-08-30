@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
   m_Name: Matter
   m_EditorClassIdentifier: 
-  instantUnique: 1
   amount: 118
   data:
     Name: 
@@ -22,17 +21,32 @@ MonoBehaviour:
     itemData: {fileID: 0}
     state: 1
     integrityCurrent: 0
+    uniqueDetail:
+      isScrap: 0
+      scrapReward: {fileID: 0}
+      isDataLog: 0
+      logMessage: 
+      logAction:
+        type: 0
+        connectedMachine: {fileID: 0}
+      isDataCore: 0
+      coreTerminal: {fileID: 0}
+    storageAmount: 0
     isOverloaded: 0
     isDeteriorating: 0
     isRigged: 0
+    isBroken: 0
     corrupted: 0
     disabledTimer: 0
     unstable: -1
     disposable: -1
     siege: 0
+    isDuplicate: 0
+    duplicate_uuid: -1
+    duplicates: 
   knowByPlayer: 1
-  floorDisplay: {fileID: -266110497, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
-  inventoryDisplay: {fileID: -266110497, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+  floorDisplay: {fileID: 21300000, guid: 845a8ea4022781e4ebafc3a59c516287, type: 3}
+  inventoryDisplay: {fileID: 21300000, guid: 845a8ea4022781e4ebafc3a59c516287, type: 3}
   asciiRep: {fileID: 1013814416, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
   bigDisplay: {fileID: 21300000, guid: 3506380e5bdc6f34eb8c25f22e619234, type: 3}
   itemColor: {r: 0.5254902, g: 0, b: 0.69803923, a: 1}
@@ -89,6 +103,9 @@ MonoBehaviour:
     projectileTrail: 2
     penetrationCapability: 0
     penetrationChances: []
+    guided:
+      isGuided: 0
+      waypoints: 0
   meleeAttack:
     isMelee: 0
     energy: 0
@@ -155,6 +172,9 @@ MonoBehaviour:
   canOverload: 0
   consumable: 0
   disposable: -1
+  unstable: -1
+  destroyOnRemove: 0
+  canBeDisabled: 1
   quality: 2
   itemName: Matter
   description: Used to fuse components, and is consumed by ballistic weapons, which
@@ -166,3 +186,14 @@ MonoBehaviour:
     fabTime: {x: 51, y: 25, z: 17}
     matterCost: 25
     componenetsRequired: []
+  instantUnique: 1
+  uniqueDetail:
+    isScrap: 0
+    scrapReward: {fileID: 0}
+    isDataLog: 0
+    logMessage: 
+    logAction:
+      type: 0
+      connectedMachine: {fileID: 0}
+    isDataCore: 0
+    coreTerminal: {fileID: 0}

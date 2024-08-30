@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
   m_Name: Asb. Hover Unit
   m_EditorClassIdentifier: 
-  instantUnique: 0
   amount: 1
   data:
     Name: 
@@ -22,10 +21,34 @@ MonoBehaviour:
     itemData: {fileID: 11400000}
     state: 1
     integrityCurrent: 0
+    uniqueDetail:
+      isScrap: 0
+      scrapReward: {fileID: 0}
+      isDataLog: 0
+      logMessage: 
+      logAction:
+        type: 0
+        connectedMachine: {fileID: 0}
+      isDataCore: 0
+      coreTerminal: {fileID: 0}
+    storageAmount: 0
+    isOverloaded: 0
+    isDeteriorating: 0
+    isRigged: 0
+    isBroken: 0
+    corrupted: 0
+    disabledTimer: 0
+    unstable: -1
+    disposable: -1
+    siege: 0
+    isDuplicate: 0
+    duplicate_uuid: -1
+    duplicates: 
   knowByPlayer: 0
-  floorDisplay: {fileID: -24734676, guid: 9e5fd32a0821a894a9c4ce41b9aec735, type: 3}
-  inventoryDisplay: {fileID: -24734676, guid: 9e5fd32a0821a894a9c4ce41b9aec735, type: 3}
+  floorDisplay: {fileID: 21300000, guid: 49c21982db73d064bbb688ca3cbe3279, type: 3}
+  inventoryDisplay: {fileID: 21300000, guid: 49c21982db73d064bbb688ca3cbe3279, type: 3}
   asciiRep: {fileID: -1087548489, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  bigDisplay: {fileID: 0}
   itemColor: {r: 0, g: 1, b: 0.6864865, a: 1}
   type: 7
   slot: 1
@@ -33,7 +56,9 @@ MonoBehaviour:
   mass: 0
   rating: 3
   star: 1
+  ratingType: 0
   integrityMax: 40
+  repairable: 1
   coverage: 55
   schematicDetails:
     hackable: 0
@@ -41,6 +66,7 @@ MonoBehaviour:
     - {x: 1, y: -10}
     - {x: 2, y: -10}
     - {x: 3, y: -10}
+    hasSchematic: 0
   hasUpkeep: 1
   energyUpkeep: -1
   matterUpkeep: 0
@@ -59,6 +85,7 @@ MonoBehaviour:
     penalty: 60
     burnout: 0
     hasBurnout: 0
+    canSiege: 0
   shot:
     shotRange: 0
     shotEnergy: 0
@@ -78,13 +105,20 @@ MonoBehaviour:
     damageType: 0
     critChance: 0
     critType: 0
-    penChance: {x: 0, y: 0, z: 0}
     heatTrasfer: 0
-    heatTransferDegree: 0
     spectrum: 0
     hasSpectrum: 0
     disruption: 0
     salvage: 0
+    projectileColor: {r: 1, g: 0, b: 0, a: 1}
+    projectileSprite: {fileID: 0}
+    projectileRotates: 1
+    projectileTrail: 2
+    penetrationCapability: 0
+    penetrationChances: []
+    guided:
+      isGuided: 0
+      waypoints: 0
   meleeAttack:
     isMelee: 0
     energy: 0
@@ -98,17 +132,81 @@ MonoBehaviour:
     critType: 0
     disruption: 0
     salvage: 0
-  itemEffect: []
+    visualAttackTime: 0.5
+    missSound: []
+  explosion:
+    explosionSounds: []
+    explosionGFX: 0
+  explosionDetails:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
+    damageType: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
+    salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  deployableItem:
+    deployable: 0
+    type: 0
+    trapType: 0
+    canSever: 0
+    sever_amount: {x: 0, y: 0}
+    sever_damage: {x: 0, y: 0}
+    canShock: 0
+    shock_amount: {x: 0, y: 0}
+    canBurn: 0
+    burn_amount: {x: 0, y: 0}
+    burn_damage: {x: 0, y: 0}
+    burn_heat: {x: 0, y: 0}
+    burn_affectsNeighbors: 0
+    canPierce: 0
+    pierce_amount: 0
+    pierce_damage: {x: 0, y: 0}
+    pierce_impaleChance: 0
+    canStasis: 0
+    stasis_strength: 0
+  isSpecialAttack: 0
+  specialAttack:
+    specialMelee: 0
+    datajack: 0
+    stasisBeam: 0
+    tearClaw: 0
+  itemEffects: []
+  canOverload: 0
+  consumable: 0
+  disposable: -1
+  unstable: -1
+  destroyOnRemove: 0
+  canBeDisabled: 1
   quality: 21
   itemName: Asb. Hover Unit
   description: A lightweight though poorly made hover unit to provide lightweight
     bots quick and agile movement. Used by the Assembled.
   mechanicalDescription: 
-  details:
-    temp: 
   fabricationInfo:
     canBeFabricated: 1
     amountMadePer: 2
     fabTime: {x: 51, y: 25, z: 17}
     matterCost: 35
     componenetsRequired: []
+  instantUnique: 0
+  uniqueDetail:
+    isScrap: 0
+    scrapReward: {fileID: 0}
+    isDataLog: 0
+    logMessage: 
+    logAction:
+      type: 0
+      connectedMachine: {fileID: 0}
+    isDataCore: 0
+    coreTerminal: {fileID: 0}

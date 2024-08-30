@@ -35,14 +35,18 @@ MonoBehaviour:
     isOverloaded: 0
     isDeteriorating: 0
     isRigged: 0
+    isBroken: 0
     corrupted: 0
     disabledTimer: 0
     unstable: -1
     disposable: -1
     siege: 0
+    isDuplicate: 0
+    duplicate_uuid: -1
+    duplicates: 
   knowByPlayer: 0
-  floorDisplay: {fileID: 21300000, guid: 011fe9552d317cf43ac2f4cfbd3cf39a, type: 3}
-  inventoryDisplay: {fileID: 21300000, guid: 011fe9552d317cf43ac2f4cfbd3cf39a, type: 3}
+  floorDisplay: {fileID: 21300000, guid: 62b7b66cb228c994db3f691d1f0f17f0, type: 3}
+  inventoryDisplay: {fileID: 21300000, guid: 62b7b66cb228c994db3f691d1f0f17f0, type: 3}
   asciiRep: {fileID: -1087548489, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
   bigDisplay: {fileID: 21300000, guid: f5aa2298d0d291447be520f8d1f68615, type: 3}
   itemColor: {r: 1, g: 0, b: 0, a: 1}
@@ -112,6 +116,9 @@ MonoBehaviour:
     projectileTrail: 2
     penetrationCapability: 0
     penetrationChances: []
+    guided:
+      isGuided: 0
+      waypoints: 0
   meleeAttack:
     isMelee: 0
     energy: 0
@@ -385,6 +392,12 @@ MonoBehaviour:
       allDamageToCore: 0
       stacks: 0
       half_stacks: 0
+    viewRangeBonus:
+      hasEffect: 0
+      amount: 0
+      stacks: 0
+    authchipDetails:
+      isAuthchip: 0
   canOverload: 0
   consumable: 0
   disposable: -1

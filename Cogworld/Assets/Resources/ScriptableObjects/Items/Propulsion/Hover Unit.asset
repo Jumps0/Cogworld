@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b7ebedde7fd6f44b08e9bb9522e238, type: 3}
   m_Name: Hover Unit
   m_EditorClassIdentifier: 
-  instantUnique: 0
   amount: 1
   data:
     Name: 
@@ -22,13 +21,32 @@ MonoBehaviour:
     itemData: {fileID: 11400000}
     state: 1
     integrityCurrent: 0
+    uniqueDetail:
+      isScrap: 0
+      scrapReward: {fileID: 0}
+      isDataLog: 0
+      logMessage: 
+      logAction:
+        type: 0
+        connectedMachine: {fileID: 0}
+      isDataCore: 0
+      coreTerminal: {fileID: 0}
+    storageAmount: 0
     isOverloaded: 0
+    isDeteriorating: 0
+    isRigged: 0
+    isBroken: 0
     corrupted: 0
     disabledTimer: 0
+    unstable: -1
+    disposable: -1
     siege: 0
+    isDuplicate: 0
+    duplicate_uuid: -1
+    duplicates: 
   knowByPlayer: 1
-  floorDisplay: {fileID: -24734676, guid: 9e5fd32a0821a894a9c4ce41b9aec735, type: 3}
-  inventoryDisplay: {fileID: -24734676, guid: 9e5fd32a0821a894a9c4ce41b9aec735, type: 3}
+  floorDisplay: {fileID: 21300000, guid: 49c21982db73d064bbb688ca3cbe3279, type: 3}
+  inventoryDisplay: {fileID: 21300000, guid: 49c21982db73d064bbb688ca3cbe3279, type: 3}
   asciiRep: {fileID: -1087548489, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
   bigDisplay: {fileID: 21300000, guid: f15b9c5dd575e8144a9328cb41322125, type: 3}
   itemColor: {r: 0, g: 1, b: 0.6864865, a: 1}
@@ -40,6 +58,7 @@ MonoBehaviour:
   star: 0
   ratingType: 0
   integrityMax: 30
+  repairable: 1
   coverage: 55
   schematicDetails:
     hackable: 1
@@ -86,9 +105,7 @@ MonoBehaviour:
     damageType: 0
     critChance: 0
     critType: 0
-    penChance: {x: 0, y: 0, z: 0}
     heatTrasfer: 0
-    heatTransferDegree: 0
     spectrum: 0
     hasSpectrum: 0
     disruption: 0
@@ -99,6 +116,9 @@ MonoBehaviour:
     projectileTrail: 2
     penetrationCapability: 0
     penetrationChances: []
+    guided:
+      isGuided: 0
+      waypoints: 0
   meleeAttack:
     isMelee: 0
     energy: 0
@@ -133,6 +153,8 @@ MonoBehaviour:
     directional: 0
     d_arc: 0
     d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
   deployableItem:
     deployable: 0
     type: 0
@@ -155,11 +177,17 @@ MonoBehaviour:
     stasis_strength: 0
   isSpecialAttack: 0
   specialAttack:
+    specialMelee: 0
     datajack: 0
     stasisBeam: 0
     tearClaw: 0
   itemEffects: []
   canOverload: 0
+  consumable: 0
+  disposable: -1
+  unstable: -1
+  destroyOnRemove: 0
+  canBeDisabled: 1
   quality: 2
   itemName: Hover Unit
   description: A lightweight hover unit to provide lightweight bots quick and agile
@@ -171,3 +199,14 @@ MonoBehaviour:
     fabTime: {x: 51, y: 25, z: 17}
     matterCost: 35
     componenetsRequired: []
+  instantUnique: 0
+  uniqueDetail:
+    isScrap: 0
+    scrapReward: {fileID: 0}
+    isDataLog: 0
+    logMessage: 
+    logAction:
+      type: 0
+      connectedMachine: {fileID: 0}
+    isDataCore: 0
+    coreTerminal: {fileID: 0}
