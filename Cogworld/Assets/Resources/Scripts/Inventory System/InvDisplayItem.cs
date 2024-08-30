@@ -1175,7 +1175,7 @@ public class InvDisplayItem : MonoBehaviour
             item.siege = true;
 
             // Play a sound
-            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.ITEMS_Clips[66]); // ITEMS/SIEGE_TREADS_ACTIVE
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.ITEMS_Clips[72]); // ITEMS/SIEGE_TREADS_ACTIVE
         }
         else if (startState == 2 && endState == 3) // SIEGE -> (end)
         {
@@ -1195,7 +1195,7 @@ public class InvDisplayItem : MonoBehaviour
             item.siege = false;
 
             // Play a sound
-            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.ITEMS_Clips[67]); // ITEMS/SIEGE_TREADS_END
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.ITEMS_Clips[73]); // ITEMS/SIEGE_TREADS_END
         }
 
         StartCoroutine(SecondaryDataFlash()); // Flash the secondary

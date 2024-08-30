@@ -247,7 +247,7 @@ public class UIHackInputfield : MonoBehaviour
 
                 UIManager.inst.Terminal_CreateResult("Central database compromised, local access revoked.", highDetColor, (">>" + HF.ParseHackName(hack)), true);
                 UIManager.inst.CreateNewLogMessage("Central database lockdown, local access denied.", UIManager.inst.complexWhite, UIManager.inst.inactiveGray, true, true);
-                UIManager.inst.CreateLeftMessage("ALERT: Central database lockdown, local access denied.", 10f, AudioManager.inst.GAME_Clips[27]); // DISPATCH_ALERT
+                UIManager.inst.CreateLeftMessage("ALERT: Central database lockdown, local access denied.", 10f, AudioManager.inst.GAME_Clips[28]); // DISPATCH_ALERT
                 return;
             }
 
