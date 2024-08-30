@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: DAS Turret
   m_EditorClassIdentifier: 
   Id: 13
-  displaySprite: {fileID: -1568931993, guid: 79f85e31eb99f3e43af37b613c295404, type: 3}
+  displaySprite: {fileID: 21300000, guid: f815f8aca30a2244a9f151e4b0e064ae, type: 3}
   asciiRep: {fileID: 0}
-  _class: 62
+  _class: 72
   _size: 1
   _profile:
     forward: SQ
@@ -58,10 +58,29 @@ MonoBehaviour:
       itemData: {fileID: 0}
       state: 1
       integrityCurrent: 0
+      uniqueDetail:
+        isScrap: 0
+        scrapReward: {fileID: 0}
+        isDataLog: 0
+        logMessage: 
+        logAction:
+          type: 0
+          connectedMachine: {fileID: 0}
+        isDataCore: 0
+        coreTerminal: {fileID: 0}
+      storageAmount: 0
       isOverloaded: 0
+      isDeteriorating: 0
+      isRigged: 0
+      isBroken: 0
       corrupted: 0
       disabledTimer: 0
+      unstable: -1
+      disposable: -1
       siege: 0
+      isDuplicate: 0
+      duplicate_uuid: -1
+      duplicates: 
     dropChance: 0.7
     _altChoices: []
     altChoicesDropChance: []

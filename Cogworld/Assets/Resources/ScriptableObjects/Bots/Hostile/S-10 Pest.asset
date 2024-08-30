@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: S-10 Pest
   m_EditorClassIdentifier: 
   Id: 2
-  displaySprite: {fileID: -96095785, guid: c8c99b609fca1884eaa26184fcaefe75, type: 3}
+  displaySprite: {fileID: 21300000, guid: 00737218d3a0d2149a1f19144229e5c6, type: 3}
   asciiRep: {fileID: 0}
-  _class: 56
+  _class: 66
   _size: 1
   _profile:
     forward: SQ
@@ -58,10 +58,29 @@ MonoBehaviour:
       itemData: {fileID: 0}
       state: 1
       integrityCurrent: 0
+      uniqueDetail:
+        isScrap: 0
+        scrapReward: {fileID: 0}
+        isDataLog: 0
+        logMessage: 
+        logAction:
+          type: 0
+          connectedMachine: {fileID: 0}
+        isDataCore: 0
+        coreTerminal: {fileID: 0}
+      storageAmount: 0
       isOverloaded: 0
+      isDeteriorating: 0
+      isRigged: 0
+      isBroken: 0
       corrupted: 0
       disabledTimer: 0
+      unstable: -1
+      disposable: -1
       siege: 0
+      isDuplicate: 0
+      duplicate_uuid: -1
+      duplicates: 
     dropChance: 0.16
     _altChoices: []
     altChoicesDropChance: []
@@ -74,10 +93,29 @@ MonoBehaviour:
       itemData: {fileID: 0}
       state: 1
       integrityCurrent: 0
+      uniqueDetail:
+        isScrap: 0
+        scrapReward: {fileID: 0}
+        isDataLog: 0
+        logMessage: 
+        logAction:
+          type: 0
+          connectedMachine: {fileID: 0}
+        isDataCore: 0
+        coreTerminal: {fileID: 0}
+      storageAmount: 0
       isOverloaded: 0
+      isDeteriorating: 0
+      isRigged: 0
+      isBroken: 0
       corrupted: 0
       disabledTimer: 0
+      unstable: -1
+      disposable: -1
       siege: 0
+      isDuplicate: 0
+      duplicate_uuid: -1
+      duplicates: 
     dropChance: 0.16
     _altChoices: []
     altChoicesDropChance: []
@@ -89,10 +127,29 @@ MonoBehaviour:
       itemData: {fileID: 0}
       state: 1
       integrityCurrent: 0
+      uniqueDetail:
+        isScrap: 0
+        scrapReward: {fileID: 0}
+        isDataLog: 0
+        logMessage: 
+        logAction:
+          type: 0
+          connectedMachine: {fileID: 0}
+        isDataCore: 0
+        coreTerminal: {fileID: 0}
+      storageAmount: 0
       isOverloaded: 0
+      isDeteriorating: 0
+      isRigged: 0
+      isBroken: 0
       corrupted: 0
       disabledTimer: 0
+      unstable: -1
+      disposable: -1
       siege: 0
+      isDuplicate: 0
+      duplicate_uuid: -1
+      duplicates: 
     dropChance: 0.17
     _altChoices: []
     altChoicesDropChance: []
@@ -104,10 +161,29 @@ MonoBehaviour:
       itemData: {fileID: 0}
       state: 1
       integrityCurrent: 0
+      uniqueDetail:
+        isScrap: 0
+        scrapReward: {fileID: 0}
+        isDataLog: 0
+        logMessage: 
+        logAction:
+          type: 0
+          connectedMachine: {fileID: 0}
+        isDataCore: 0
+        coreTerminal: {fileID: 0}
+      storageAmount: 0
       isOverloaded: 0
+      isDeteriorating: 0
+      isRigged: 0
+      isBroken: 0
       corrupted: 0
       disabledTimer: 0
+      unstable: -1
+      disposable: -1
       siege: 0
+      isDuplicate: 0
+      duplicate_uuid: -1
+      duplicates: 
     dropChance: 0.17
     _altChoices: []
     altChoicesDropChance: []

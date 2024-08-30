@@ -7,14 +7,17 @@ public enum BotClass
 {
     // Source: https://noemica.github.io/cog-minder/bots.html
     Alpha7,   // Alpha 7
+    Artisan,  // Derelict
     Assembled,
     Behemoth,
+    Bolteater,// Derelict
     Borebot,  // Derelict /w Warlord
     Bouncer,  // Derelict
     Brawler,
     Builder,
     Butcher,  // Derelict
     Carrier,  // aka ARC
+    Cobbler,  // Derelict
     Cogmind,  // That's me!
     Commander,// Derelict
     Compactor,// as seen in Wastes
@@ -24,13 +27,18 @@ public enum BotClass
     Demented,  // Derelict
     Dragon,    // Derelict
     Drone,
+    DRS_Ranger,// Derelict
     Deulist,
-    Executioner,
+    Elite,
+    Executioner, // Prototype
+    Explorer, // Derelict
+    Federalist, // Derelict
     Fireman,  // Derelict
     Fortress, // as seen in Section 7
     Furnace,  // Derelict
     Golem,    // "Derelict"
     Guerrilla,// Derelict
+    Guru,     // Derelict
     Grunt,
     Hauler,
     Heavy,
@@ -38,10 +46,10 @@ public enum BotClass
     Hydra,    // Derelict
     Infiltrator, // Derelict
     Knight,   // Derelict
-    LRC,      // What was what now is
+    LRC,      // Your family
     Marauder, // Derelict
     Martyr,   // Derelict
-    MasterTheif, // Derelict
+    Master_Theif, // Derelict
     Mechanic,
     Minesweeper,
     Mutant,   // Derelict
@@ -57,8 +65,10 @@ public enum BotClass
     Samaritan,// Derelict
     Sapper,   // Derelict
     Savage,   // Derelict
+    Scientist,// Derelict
+    Scrapoid, // Derelict
     Sentry,   // Cetus Guard & other permanent unique guards
-    Special,  // Architect, Data miner, Godmode, etc.
+    Special,  // Architect, Data miner, Godmode, etc. (Major NPCs)
     Specialist, // Dudes that are mostly gun
     Striker,
     Surgeon,  // Derelict
@@ -69,7 +79,7 @@ public enum BotClass
     Troll,    // Derelict
     Tunneler,
     Turret,
-    Unique,   // Mostly for NPCs
+    Unique,   // Mostly for (Minor) NPCs
     Wasp,     // Derelict
     Watcher,
     Wizard,   // Derelict
