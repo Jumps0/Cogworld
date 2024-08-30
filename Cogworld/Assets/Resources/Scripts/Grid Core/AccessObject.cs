@@ -74,6 +74,8 @@ public class AccessObject : MonoBehaviour
     }
 
     // FLAG - UPDATE NEW LEVELS
+    //
+    // 
 
     // - Destination ID Guide -
     //
@@ -106,7 +108,7 @@ public class AccessObject : MonoBehaviour
     // 26 - Recycling
     // 27 - Subcaves
     // 28 - Wastes
-    // 29 - Junkyard
+    // 29 - Scraptown
     //
     // Things that you also need to update when you change this:
     // MapManager: PlayAmbientMusic()
@@ -290,5 +292,5 @@ public enum LevelName
     Recycling,
     Subcaves,
     Wastes,
-    Junkyard
+    Scraptown
 }

@@ -165,7 +165,7 @@ public static class HF
                     return 2;
                 case "WASTES":
                     return 10;
-                case "JUNKYARD": // not in the game yet, change when it comes out
+                case "SCRAPTOWN":
                     return 2;
                 default:
                     return 1;
@@ -240,7 +240,7 @@ public static class HF
                     return 22;
                 case "WASTES":
                     return 4;
-                case "JUNKYARD": // not in the game yet, change when it comes out
+                case "SCRAPTOWN":
                     return 22;
                 default:
                     return 4;
@@ -315,7 +315,7 @@ public static class HF
                     return 5;
                 case "WASTES":
                     return 5;
-                case "JUNKYARD": // not in the game yet, change when it comes out
+                case "SCRAPTOWN":
                     return 5;
                 default:
                     return 5;

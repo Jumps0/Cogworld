@@ -2850,9 +2850,9 @@ public class MapManager : MonoBehaviour
                 levelName = LevelName.Wastes;
                 mapType = 2;
                 break;
-            case 29: // not actually in the real game yet but will be eventually
-                currentLevelName = "JUNKYARD";
-                levelName = LevelName.Junkyard;
+            case 29:
+                currentLevelName = "SCRAPTOWN";
+                levelName = LevelName.Scraptown;
                 mapType = 2;
                 break;
             default: // CUSTOM
@@ -3198,7 +3198,7 @@ public class MapManager : MonoBehaviour
             case "WASTES":
                 ambID = 25;
                 break;
-            case "JUNKYARD": // not in the game yet, change when it comes out
+            case "SCRAPTOWN":
                 ambID = 4; 
                 break;
             default:
