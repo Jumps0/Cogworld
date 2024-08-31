@@ -74,5 +74,6 @@ public enum CustomTerminalType
     LoreEntry,
     DoorLock,
     PrototypeData,
+    HideoutCache,
     Misc
 }

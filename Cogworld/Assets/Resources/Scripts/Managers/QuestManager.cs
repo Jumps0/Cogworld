@@ -407,11 +407,12 @@ public class QuestManager : MonoBehaviour
         // Make a message in the log
         string logMessage = $"Quest Completed: {quest.info.displayName}";
         UIManager.inst.CreateNewLogMessage(logMessage, QuestManager.inst.c_yellow2, QuestManager.inst.c_yellow1, true, true);
-        UIManager.inst.CreateNewLogMessage($"Quest reward available in Hideout.", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false); // And tell the player about their reward
+
+        if(QuestHasRewards(quest))
+            UIManager.inst.CreateNewLogMessage($"Quest reward available to claim.", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false); // And tell the player about their reward
 
         // Do reward logic
-        QuestReward(quest);
-        ChangeQuestState(quest.info.uniqueID, QuestState.FINISHED);
+        ChangeQuestState(quest.info.uniqueID, QuestState.FINISHED); // Set quest as finished
 
         // Remove quest point(s) from the quest queue
         foreach (GameObject qp in questPoints.ToList())
@@ -425,9 +426,14 @@ public class QuestManager : MonoBehaviour
 
     private void QuestReward(Quest quest)
     {
+        quest.info.reward_claimed = true; // Set claimed flag
+
+        ui_ClaimRewardsButton.SetActive(false); // Disable the Claim button
+        AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[14], 0.5f); // Play a claim sound [UI - CASH_REGISTER]
+
         List<Item> rewards_item = quest.info.reward_items;
         int rewards_matter = quest.info.reward_matter;
-
+        Debug.Log("Reward claimed!");
         // How do we handle this?
         // - The player has a storage object in their hideout, we will simply put the items / matter in there.
         // - The player can interact with it when they are there.
@@ -447,6 +453,29 @@ public class QuestManager : MonoBehaviour
             // Add a stack of matter (the item) with the specific amount to the Hideout Inventory Object
             InventoryControl.inst.hideout_inventory.AddItem(new Item(InventoryControl.inst._itemDatabase.Items[17]), rewards_matter);
         }
+    }
+
+    /// <summary>
+    /// Determines if this quest actually has any rewards.
+    /// </summary>
+    /// <param name="quest">The quest to check.</param>
+    /// <returns>True/False if a reward for this quest exists.</returns>
+    private bool QuestHasRewards(Quest quest)
+    {
+        List<Item> rewards_item = quest.info.reward_items;
+        int rewards_matter = quest.info.reward_matter;
+
+        if (rewards_item.Count > 0) // -- Items --
+        {
+            return true;
+        }
+
+        if (rewards_matter > 0) // -- Matter --
+        {
+            return true;
+        }
+
+        return false;
     }
 
     private void QuestStepStateChange(string id, int stepIndex, QuestStepState questStepState)
@@ -537,6 +566,8 @@ public class QuestManager : MonoBehaviour
     //
     [SerializeField] private GameObject ui_PrereqsNone;
     [SerializeField] private GameObject ui_RewardsNone;
+    //
+    [SerializeField] private GameObject ui_ClaimRewardsButton;
 
     [Header("UI Prefabs")]
     public GameObject ui_prefab_smallQuest;
@@ -581,7 +612,6 @@ public class QuestManager : MonoBehaviour
     public Color c_gray1;
     public Color c_gray2;
     public Color c_gray3;
-    #endregion
 
     private List<Color> UIGetColors(Quest quest)
     {
@@ -639,6 +669,7 @@ public class QuestManager : MonoBehaviour
 
         return colors;
     }
+    #endregion
 
     public void ButtonHoverEnter()
     {
@@ -703,9 +734,13 @@ public class QuestManager : MonoBehaviour
         UI_ClearQuestSteps();
         UI_ClearQuestRewards();
 
+        // Get values
         Quest quest = sq.quest;
         QuestObject info = quest.info;
         List<Color> questColors = UIGetColors(quest); // Get the colors
+
+        // Set this for later use
+        currentActivateQuest = sq;
 
         // Header
         text_questHeader.text = info.name;
@@ -775,7 +810,33 @@ public class QuestManager : MonoBehaviour
         }
         ui_RewardsNone.SetActive((quest.info.reward_items == null || quest.info.reward_items.Count <= 0) && quest.info.reward_matter <= 0); // Enable or Disable the (None) text
 
+        // > Rewards Claim <
+        ui_ClaimRewardsButton.SetActive(false);
+        if (QuestHasRewards(quest)) // - Does this quest even have a reward?
+        {
+            if (quest.state == QuestState.FINISHED) // - Is the quest done?
+            {
+                if (!info.reward_claimed) // - Is the reward still unclaimed?
+                {
+                    // Show the claim rewards button
+                    ui_ClaimRewardsButton.SetActive(true);
+                }
+            }
+        }
+
         UI_RightSideAnimate();
+    }
+
+    private UISmallQuest currentActivateQuest;
+    public void TryClaimQuestReward()
+    {
+        if(currentActivateQuest != null)
+        {
+            Quest quest = currentActivateQuest.quest;
+            QuestObject info = quest.info;
+
+            QuestReward(quest);
+        }
     }
 
     private void UI_RightSideAnimate()

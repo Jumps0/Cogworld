@@ -583,14 +583,13 @@ public class MapManager : MonoBehaviour
         PlaceIndividualMachine(new Vector2Int(bl.x + 3, bl.y + 13), 2, 2); // Fabricator 4x2 "Alice"
 
         // 6 - Place Cache
-        PlaceHideoutCache(new Vector2Int(bl.x + 2, bl.y + 3));
+        PlaceHideoutCache(new Vector2Int(bl.x + 8, bl.y + 10));
 
         // # - Test bot
         Actor testBot = PlaceBot(new Vector2Int(bl.x + 12, bl.y + 5), 9);
         // Test QUEST Bot
         Actor questBot = PlaceBot(new Vector2Int(bl.x + 5, bl.y + 16), 13);
-        // test custom terminal
-        PlaceIndividualMachine(new Vector2Int(bl.x + 9, bl.y + 11), 7, 0); // Terminal 1x1 Shop
+
         // test trap
         PlaceTrap(MapManager.inst.itemDatabase.Items[103], new Vector2Int(bl.x + 5, bl.y + 11));
     }
@@ -603,8 +602,8 @@ public class MapManager : MonoBehaviour
         // Set prefab
         GameObject prefab = imp_customTerminals[0];
 
-        // Adjust position since its 2x2 (We use the bottom left tile as the center)
-        Vector2 offset = new Vector2(-0.5f, -0.5f);
+        // ~~Adjust position since its 2x2 (We use the bottom left tile as the center)~~
+        Vector2 offset = Vector2.zero; //new Vector2(-0.5f, -0.5f);
         pos += offset;
 
         // Instantiate it at the correct position
