@@ -418,6 +418,6 @@ public class UIHackTarget : MonoBehaviour
     public void PlayHoverSound()
     {
         // Play the hover UI sound
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[48]); // HOVER
+        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.UI_Clips[48]); // HOVER
     }
 }

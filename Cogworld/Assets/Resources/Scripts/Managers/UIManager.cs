@@ -2461,7 +2461,7 @@ public class UIManager : MonoBehaviour
             secLvl = terminal_targetTerm.GetComponent<TerminalCustom>().secLvl;
         }
 
-
+        // Create & Setup the pre-set options the player can choose (Targets)
         int i = 0;
         foreach (TerminalCommand command in commands)
         {
@@ -3004,6 +3004,22 @@ public class UIManager : MonoBehaviour
     {
         float delay = 0.05f;
 
+        // In-case this menu is being re-opened, we need to make all the images un-transparent again
+        #region Image Transparency Reset
+        Image[] i1 = terminal_hackingAreaRef.GetComponentsInChildren<Image>();
+        Image[] i2 = terminal_targetresultsAreaRef.GetComponentsInChildren<Image>();
+        Image[] i3 = terminal_hackinfoArea1.GetComponentsInChildren<Image>();
+
+        var i12 = i1.Concat(i2).ToArray();
+        var iFinal = i12.Concat(i3).ToArray();
+
+        foreach (Image I in iFinal)
+        {
+            Color setColor = I.color;
+            I.color = new Color(setColor.r, setColor.g, setColor.b, 1f);
+        }
+        #endregion
+
         // First, the hacking window opens
         terminal_hackingAreaRef.SetActive(true);
         StartCoroutine(Terminal_HackBorderAnim());
@@ -3182,84 +3198,15 @@ public class UIManager : MonoBehaviour
 
     public void CTerminal_Close()
     {
-        if (cTerminal_animating)
+        if (cTerminal_animating) // Safety flag
         {
             return;
         }
 
-        // Shut down all the lines
-        foreach (var i in terminal_hackinfoList.ToList())
-        {
-            if (i.GetComponent<UIHackinfoV1>())
-            {
-                i.GetComponent<UIHackinfoV1>().ShutDown();
-            }
-            else if (i.GetComponent<UIHackinfoV2>())
-            {
-                i.GetComponent<UIHackinfoV2>().ShutDown();
-            }
-            else if (i.GetComponent<UIHackinfoV3>())
-            {
-                i.GetComponent<UIHackinfoV3>().ShutDown();
-            }
-            else if (i.GetComponent<UITraceBar>())
-            {
-                i.GetComponent<UITraceBar>().ShutDown();
-            }
-            else if (i.GetComponent<UIHackLocked>())
-            {
-                i.GetComponent<UIHackLocked>().ShutDown();
-            }
-            else if (i.GetComponent<UIHackGibb>())
-            {
-                i.GetComponent<UIHackGibb>().ShutDown();
-            }
-        }
+        AudioManager.inst.CreateTempClip(terminal_targetTerm.transform.position, AudioManager.inst.UI_Clips[20]); // Play CLOSE sound
 
-        foreach (var i in terminal_hackTargetsList.ToList())
-        {
-            if (i.GetComponent<UIHackTarget>())
-            {
-                i.GetComponent<UIHackTarget>().ShutDown();
-            }
-        }
-
-        foreach (var i in terminal_hackResultsList.ToList())
-        {
-            if (i.GetComponent<UIHackResults>())
-            {
-                i.GetComponent<UIHackResults>().ShutDown();
-            }
-        }
-
-        foreach (var i in terminal_hackCodesList.ToList())
-        {
-            if (i.GetComponent<UIHackCustomCode>())
-            {
-                i.GetComponent<UIHackCustomCode>().ShutDown();
-            }
-        }
-
-        codes_window.GetComponent<UIHackCodes>().ShutDown();
-
-        terminal_hackinfoList.Clear(); // Clear the list
-        terminal_hackTargetsList.Clear();
-        terminal_hackResultsList.Clear();
-        terminal_hackCodesList.Clear();
-        // We won't go through and delete them because they will delete themselves
-
-        // Close window
-        terminal_hackingAreaRef.SetActive(false);
-        terminal_targetresultsAreaRef.SetActive(false);
-        codes_window.SetActive(false);
-
-        // Un-assign target
-        cTerminal_machine = null;
-
-        // Un-Freeze the player
-        PlayerData.inst.GetComponent<PlayerGridMovement>().playerMovementAllowed = true;
+        StartCoroutine(Terminal_CloseAnim()); // - Both use the same resources so its safe to do this
     }
-
 
     #endregion
 
