@@ -120,6 +120,9 @@ public class PlayerData : MonoBehaviour
     public bool hasImprinted = false;
     public bool hasFARCOM = false;
 
+    [Header("RIF Values")] // TODO: Expand on this later when RIF is worked on. It's got its own sub menu now to show stats (BETA 14)
+    public bool rif_immuneToCorruption = false;
+
     [Header("*STATS THIS RUN*")]
     public int robotsKilled = 0;
     public List<BotObject> robotsKilledData = new List<BotObject>();

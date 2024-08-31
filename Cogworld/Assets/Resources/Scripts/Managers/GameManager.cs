@@ -182,6 +182,8 @@ public class GameManager : MonoBehaviour
     public int alertLevel = 0;
     [Tooltip("Goes from 0 to 1200+, see GameManager.cs for details")]
     public int alertValue = 0;
+    [Tooltip("Major map condition if you go all out violence mode. Gradual increasing temperature until everything melts.")]
+    public bool alert_steralization = false; // TODO: Steralization
 
     [Header("Event Listening")]
     public QuestEvents questEvents;

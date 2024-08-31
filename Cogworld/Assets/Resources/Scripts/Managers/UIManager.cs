@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using static System.Net.Mime.MediaTypeNames;
 using Image = UnityEngine.UI.Image;
+using System.Drawing;
+using Color = UnityEngine.Color;
 //using static UnityEditor.Progress;
 
 public class UIManager : MonoBehaviour
@@ -3524,6 +3526,9 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI run_text; //: ##:##
     //
     public TextMeshProUGUI locationText; //: -#/???
+    [SerializeField] private GameObject locationBoxWarning;
+    [SerializeField] private TextMeshProUGUI locationBoxWarning_text;
+    [SerializeField] private Image locationBoxWarning_backer;
     //
     public GameObject influenceGO;
     public TextMeshProUGUI influence_text; //: ### #-#
@@ -3731,7 +3736,10 @@ public class UIManager : MonoBehaviour
         // ---------- CORRUPTION ------------
 
         corruptionAmountText.text = PlayerData.inst.currentCorruption + "%";
-
+        if (PlayerData.inst.rif_immuneToCorruption) // Player may be immune to the effects of corruption
+        {
+            corruptionAmountText.text += " (Immune)";
+        }
 
         // ---------- HEAT ------------
         if (PlayerData.inst.currentHeat < 100) // Cool
@@ -4081,7 +4089,24 @@ public class UIManager : MonoBehaviour
 
         locationString = (MapManager.inst.currentLevel.ToString() + "/" + MapManager.inst.currentLevelName);
         locationText.text = locationString;
-        
+
+        // Also enable the box warning if needed (high sec & steralization)
+        if (GameManager.inst.alert_steralization) // - STERALIZATION
+        {
+            locationBoxWarning.SetActive(true);
+            locationBoxWarning_backer.color = specialPurple;
+            locationBoxWarning_text.text = "Strlztn"; // idk how to concat this better. What do you think?
+        }
+        else if(GameManager.inst.alertLevel >= 6) // - HIGH SEC
+        {
+            locationBoxWarning.SetActive(true);
+            locationBoxWarning_backer.color = highSecRed;
+            locationBoxWarning_text.text = "HiSec";
+        }
+        else
+        {
+            locationBoxWarning.SetActive(false);
+        }
 
         // Evasion
         if (evasionHeader_text.gameObject.activeInHierarchy)
@@ -7430,6 +7455,17 @@ public class UIManager : MonoBehaviour
                         iSchematic.Setup(true, false, false, "Schematic", Color.white, extra, "", false, "Known", true);
                     }
                     // State - there is some variance in this
+                    /*
+                     *  NON-FUNCTIONAL : 
+                     *  UNSTABLE       :
+                     *  DISPOSABLE     :
+                     *  OVERLOADED     :
+                     *  DETERIORATING  :
+                     *  RIGGED         :
+                     *  FRAGILE        :
+                     *  ACTIVE         :
+                     *  INACTIVE       :
+                     */
                     UIDataGenericDetail iState = UIManager.inst.Data_CreateGeneric();
                     if (item.isBroken) // NON-FUNCTIONAL (Red)
                     {
@@ -7461,6 +7497,18 @@ public class UIManager : MonoBehaviour
                         extra = "A rigged power source has been converted into a proximity mine set to detonate when anyone hostile to the creator moves adjacent to it. These power sources " +
                             "can no longer be attached or used for their normal purpose, but can be safely picked up and relocated by anyone not deemed a threat. ";
                         iState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "RIGGED");
+                    }
+                    else if (item.itemData.destroyOnRemove) // Fragile (pear green)
+                    {
+                        string hex = "86B200";
+                        Color pearGreen = Color.white;
+                        if (ColorUtility.TryParseHtmlString(hex, out pearGreen))
+                        {
+                            // Convert hex to a usable color
+                        }
+
+                        extra = "Fragile parts are destroyed if removed after attaching them for use. While attached, these are also marked with a colon next to their letter in the parts list, as a reminder.";
+                        iState.Setup(true, true, false, "State", pearGreen, extra, "", false, "", false, "FRAGILE");
                     }
                     else if (item.state) // Active (green)
                     {

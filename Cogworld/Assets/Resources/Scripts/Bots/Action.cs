@@ -6326,7 +6326,11 @@ public static class Action
         }
         else if (amount > 0)
         {
-            UIManager.inst.Corruption_AnimateIncrease(amount);
+            // Player may be immune to corruption
+            if (!PlayerData.inst.rif_immuneToCorruption)
+            {
+                UIManager.inst.Corruption_AnimateIncrease(amount);
+            }
         }
         else if (amount < 0)
         {
