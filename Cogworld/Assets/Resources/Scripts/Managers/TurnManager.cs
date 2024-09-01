@@ -14,6 +14,7 @@ public class TurnManager : MonoBehaviour
     public void Awake()
     {
         inst = this;
+        turnEvents = new GenericEvent(); // Setup the event listener
     }
 
     // -        -
@@ -29,6 +30,7 @@ public class TurnManager : MonoBehaviour
     [SerializeField] private bool doTimer = true;
     private int turnCounter = 0;
     //
+    [Tooltip("External timer for when specific events happen.")]
     public int absoluteTurnTime = 100; // When global things happen
 
     [Header("Variables")]
@@ -36,6 +38,9 @@ public class TurnManager : MonoBehaviour
 
     [Header("Entities")]
     public int actorNum = 0;
+
+    [Header("Events")]
+    public GenericEvent turnEvents;
 
     public List<Actor> actors = new List<Actor>();
 
@@ -159,12 +164,12 @@ public class TurnManager : MonoBehaviour
         // -- TODO: Iron this out
         actor.EndTurn();
         actors.Remove(actor);
-        //Debug.Log(actors.Count + " left to act.");
+        Debug.Log(actors.Count + " left to act.");
         if (actors.Count == 0)
         {
             turnCounter++;
             AdvanceTime();
-
+            Debug.Log($"Advancing time: T: {turnCounter} | G: {globalTime}");
 
             // add new actors to the turn queue (e.g. reinforcements)
             LoadActors();
@@ -197,6 +202,9 @@ public class TurnManager : MonoBehaviour
         globalTime += 1;
         UIManager.inst.UpdateTimer(globalTime);
         GameManager.inst.MachineTimerUpdate();
+
+        // Send out an event (used by various things)
+        turnEvents.TurnTick();
     }
 
     /*

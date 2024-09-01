@@ -109,6 +109,8 @@ public class TileBlock : MonoBehaviour
         //this.tileInfo.currentVis = TileVisibility.Visible;
         //isDirty = tileInfo.isDirty; // Set dirt flag
         SetHighlightPerma(this.tileInfo.impassable); // Set perma highlight
+
+        TurnManager.inst.turnEvents.onTurnTick += TurnTick; // Begin listening to this event
     }
 
     public TileVisibility vis;
@@ -453,5 +455,18 @@ public class TileBlock : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Events
+    private void OnDisable()
+    {
+        TurnManager.inst.turnEvents.onTurnTick -= TurnTick; // Stop listening to this event
+    }
+
+    private void TurnTick()
+    {
+        // There are a couple instances where we need to do something or check something
+
+    }
     #endregion
 }
