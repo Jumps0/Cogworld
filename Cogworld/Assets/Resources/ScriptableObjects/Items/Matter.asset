@@ -179,7 +179,7 @@ MonoBehaviour:
   itemName: Matter
   description: Used to fuse components, and is consumed by ballistic weapons, which
     convert it to the appropriate type of ammunition.
-  mechanicalDescription: 
+  mechanicalDescription: 0
   fabricationInfo:
     canBeFabricated: 0
     amountMadePer: 1

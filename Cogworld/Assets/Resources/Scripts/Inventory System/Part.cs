@@ -83,28 +83,28 @@ public class Part : MonoBehaviour
     public void SetMatterColors()
     {
         // - Now we want to set what shade of purple we will use. This depends on the amount of matter in the stack.
-        // - Pink-ish purple = (>100)
-        // - Purple          = (100-25)
-        // - Dark Purple     = (<25)
+        // - Pink-ish purple = (>100)   | 194 0 255
+        // - Purple          = (100-25) | 134 0 178
+        // - Dark Purple     = (<25)    | 109 0 145
         int matter = this._item.amount;
         if (matter > 100)
         {
-            realColor = Color.white; // Full color, pinkish-purple
+            realColor = new Color(194f / 255f, 0f, 255f / 255f);
 
-            halfColor = Color.gray;
+            halfColor = new Color(154f / 255f, 0f, 205f / 255f);
         }
         else if (matter < 100 && matter > 25)
         {
-            realColor = new Color(0.5f, 0.5f, 0.5f); // Purple
+            realColor = new Color(134f / 255f, 0f, 178f / 255f);
 
-            halfColor = new Color(0.35f, 0.35f, 0.35f);
+            halfColor = new Color(118f / 255f, 0f, 159f / 255f);
         }
         else
         {
-            realColor = new Color(0.29f, 0.29f, 0.29f); // Dark Purple
+            realColor = new Color(109f / 255f, 0f, 145f / 255f);
 
             // (We need to be careful with this one so that it doesn't go completely black when unseen)
-            halfColor = new Color(0.235f, 0.235f, 0.235f);
+            halfColor = new Color(95f / 255f, 0f, 125f / 255f);
         }
     }
 
