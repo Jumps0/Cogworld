@@ -1173,7 +1173,52 @@ public static class HF
 
                     return "Scanning " + HF.ExtractText(parsedName) + "...\nReady to Repair:\n    " + HF.ExtractText(parsedName) + "\n    Rating: "
                         + item.rating + p2 + "\n    Time: " + buildTime3.ToString();
-                case TerminalCommandType.Retrieve:
+                case TerminalCommandType.Retrieve: // TODO - UNFINISHED
+                    // This command actually has three uses
+                    if (MapManager.inst.playerIsInHideout) // - Player is in the hideout, attempting to retrieve (by default 100) matter from their cache
+                    {
+                        // Get the machine
+                        TerminalCustom cache = null;
+                        foreach (GameObject machine in MapManager.inst.machines_customTerminals)
+                        {
+                            if (machine.GetComponentInChildren<TerminalCustom>() && machine.GetComponentInChildren<TerminalCustom>().type == CustomTerminalType.HideoutCache)
+                            {
+                                cache = machine.GetComponentInChildren<TerminalCustom>();
+                            }
+                        }
+
+                        // How much is actualled stored at the moment?
+                        int stored = cache.storedMatter;
+                        // A couple things can happen here
+                        if(stored == 0) // Nothing stored (leave message and quit)
+                        {
+                            return $"Failed to eject matter. Storage is currently empty.";
+                        }
+                        else if(stored < 100) // Less than 100 stored (eject all)
+                        {
+
+                        }
+                        else if (stored > 100) // More than 100, eject 100
+                        {
+
+                        }
+                    }
+                    else
+                    {
+                        // Get the machine
+                        RecyclingUnit recycler = UIManager.inst.terminal_targetTerm.GetComponentInChildren<RecyclingUnit>();
+
+                        if (parsedName.Contains("Matter")) // - Player is in the world, attempting to steal some amount of stored matter from a recycling machine
+                        {
+                            // - "Eject all local matter reserves"
+
+                        }
+                        else if (parsedName.Contains("Components")) // - Player is in the world, attempting to steal some random stored items
+                        {
+                            // - "Eject up to 10 parts contained within"
+
+                        }
+                    }
                     break;
                 case TerminalCommandType.Recycle:
                     break;
@@ -1372,6 +1417,100 @@ public static class HF
                         return "";
                     }
                     break;  // ---------- NOT DONE: TODO
+                case TerminalCommandType.Submit: // - Used to store matter in the player's hideout Cache
+                    // We will try to submit 100 at a time
+                    int toRemove = 100;
+
+                    // - First get the machine we are using
+                    TerminalCustom terminal = null;
+                    foreach (GameObject machine in MapManager.inst.machines_customTerminals)
+                    {
+                        if(machine.GetComponentInChildren<TerminalCustom>() && machine.GetComponentInChildren<TerminalCustom>().type == CustomTerminalType.HideoutCache)
+                        {
+                            terminal = machine.GetComponentInChildren<TerminalCustom>();
+                        }
+                    }
+
+                    // Add up all the matter the player currently has, including internal storage since we will take out of that first
+                    int matter = PlayerData.inst.currentMatter;
+                    int internalMatter = 0;
+
+                    // - Collect up all items
+                    List<Item> items = Action.CollectAllBotItems(PlayerData.inst.GetComponent<Actor>());
+
+                    // - Collect up all *matter* storage items.
+                    List<Item> storage = new List<Item>();
+                    foreach (var I in items)
+                    {
+                        foreach (var E in I.itemData.itemEffects)
+                        {
+                            if (E.internalStorage && E.internalStorageType == 0)
+                            {
+                                storage.Add(I);
+                            }
+                        }
+                    }
+                    // - Now find out how much is actually in these (if any)
+                    foreach (var I in storage)
+                    {
+                        foreach (var E in I.itemData.itemEffects)
+                        {
+                            if (E.internalStorage && E.internalStorageType == 0)
+                            {
+                                if(I.storageAmount > 0)
+                                {
+                                    internalMatter += I.storageAmount;
+                                }
+                            }
+                        }
+                    }
+
+                    // - So does the player even have any internal matter?
+                    if(internalMatter > 0) // Yes!
+                    {
+                        foreach(var I in storage) // Go through each storage item and start taking
+                        {
+                            foreach (var E in I.itemData.itemEffects)
+                            {
+                                if (E.internalStorage && E.internalStorageType == 0 && I.storageAmount > 0)
+                                {
+                                    if (I.storageAmount < toRemove) // Not enough here to fulfill all
+                                    {
+                                        toRemove -= I.storageAmount; // Decrease value
+                                        I.storageAmount = 0; // Set empty
+                                    }
+                                    else // Enough here, we can finish early
+                                    {
+                                        I.storageAmount -= toRemove;
+                                        toRemove = 0;
+                                        break; // Done!
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    // - Any left to remove?
+                    if(toRemove > 0) // Yes, keep going, this time using the basic storage
+                    {
+                        if(matter >= toRemove) // Enough to clear it all up
+                        {
+                            PlayerData.inst.currentMatter -= toRemove; // Update player value
+                            toRemove = 0; // Finish up
+                        }
+                        else // Can't do it all
+                        {
+                            toRemove -= PlayerData.inst.currentMatter;
+                            PlayerData.inst.currentMatter = 0;
+                        }
+                    }
+
+                    // So how much did we actually add?
+                    int added = 100 - toRemove;
+
+                    // Change the value in the cache, and leave a message
+                    terminal.storedMatter += added;
+
+                    return $"Submitted {added} matter to be stored in local cache.";
             }
         }
 

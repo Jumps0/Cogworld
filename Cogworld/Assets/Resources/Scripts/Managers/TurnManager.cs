@@ -164,12 +164,12 @@ public class TurnManager : MonoBehaviour
         // -- TODO: Iron this out
         actor.EndTurn();
         actors.Remove(actor);
-        Debug.Log(actors.Count + " left to act.");
+        //Debug.Log(actors.Count + " left to act.");
         if (actors.Count == 0)
         {
             turnCounter++;
             AdvanceTime();
-            Debug.Log($"Advancing time: T: {turnCounter} | G: {globalTime}");
+            //Debug.Log($"Advancing time: T: {turnCounter} | G: {globalTime}");
 
             // add new actors to the turn queue (e.g. reinforcements)
             LoadActors();

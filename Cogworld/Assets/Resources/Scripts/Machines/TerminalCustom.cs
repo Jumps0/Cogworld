@@ -88,7 +88,7 @@ public class TerminalCustom : MonoBehaviour
 
         hack = MapManager.inst.hackDatabase.Hack[186];
 
-        newCommand = new TerminalCommand(letter, "Store(Matter)", TerminalCommandType.Inventory, "", hack);
+        newCommand = new TerminalCommand(letter, "Store(Matter)", TerminalCommandType.Submit, "", hack);
 
         avaiableCommands.Add(newCommand);
         #endregion

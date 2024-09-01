@@ -53,6 +53,8 @@ public class MapManager : MonoBehaviour
     public int currentBranch;// Goes from 0 (no branch) to ~5
     [Tooltip("Is the current level a branch?")]
     public bool currentLevelIsBranch = false;
+    [Tooltip("Is the player currently in the hideout?")]
+    public bool playerIsInHideout = false;
     public LevelName levelName;
     public string currentLevelName;
     public int mapSeed = 0;
@@ -85,6 +87,8 @@ public class MapManager : MonoBehaviour
     {
         levelLoadCover.SetActive(true); // Enable the Level Load cover
         Vector2Int mapSize = Vector2Int.zero;
+
+        playerIsInHideout = false;
 
         //Debug.Log($"Creating a map of type [{mapType}].");
 
@@ -378,6 +382,8 @@ public class MapManager : MonoBehaviour
 
         GlobalSettings.inst.SetStartingValues();
         currentLevelName = BaseManager.inst.data.layerName.ToUpper();
+
+        playerIsInHideout = true;
 
         // Change this later !!!
         DungeonGenerator.instance.GenerateCaveDungeon(121, 121);

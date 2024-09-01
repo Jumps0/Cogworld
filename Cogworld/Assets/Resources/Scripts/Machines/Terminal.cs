@@ -145,6 +145,8 @@ public enum TerminalCommandType
     // - Hacking https://gridsagegames.com/wiki/Unauthorized_Hacking
     Trojan,
     Force,
+    // - Hideout Storage
+    Submit,
     NONE
 }
 
