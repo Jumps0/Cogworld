@@ -130,9 +130,9 @@ public class GameManager : MonoBehaviour
     }
 
     // Save the player's current status from PlayerData to the .json file. Called externally.
-    public void SavePlayerStatus(int layer, string layerName, int newSeed, int turn, Vector2Int core1, Vector2Int core2, int killCount)
+    public void SavePlayerStatus(int layer, string layerName, int newSeed, int branchValue, int storedMatter, int turn, Vector2Int core1, Vector2Int core2, int killCount)
     {
-        data = new SaveData(layer, layerName, newSeed, gameDifficulty, hardDiff, turn, core1, core2, killCount);
+        data = new SaveData(layer, layerName, newSeed, branchValue, storedMatter, gameDifficulty, hardDiff, turn, core1, core2, killCount);
 
         if (CanSerializeSavaDataJson())
         {
@@ -606,7 +606,7 @@ public class GameManager : MonoBehaviour
         // Update player's save
         if (CanDeserializeSavaDataJson())
         {
-            SavePlayerStatus(data.layer, data.layerName, data.mapSeed, data.turn, new Vector2Int(PlayerData.inst.powerSlots, PlayerData.inst.propulsionSlots),
+            SavePlayerStatus(data.layer, data.layerName, data.mapSeed, data.branchValue, data.storedMatter, data.turn, new Vector2Int(PlayerData.inst.powerSlots, PlayerData.inst.propulsionSlots),
                 new Vector2Int(PlayerData.inst.utilitySlots, PlayerData.inst.weaponSlots), data.killCount);
         }
 

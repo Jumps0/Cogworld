@@ -60,6 +60,11 @@ public class BaseManager : MonoBehaviour
 
         MapManager.inst.ChangeMap(-1, true, false); // Change maps to the starting map & reset stats
 
+        // Attempt to save data
+        if (CanSerializeHideoutJson())
+        {
+            SerializeHideoutJson();
+        }
     }
 
     #region File I/O (.json)
@@ -85,6 +90,16 @@ public class BaseManager : MonoBehaviour
     // Writes and saves hideout data to the JSON file
     public void SerializeHideoutJson()
     {
+        // -- Save data from current world info --
+        // - Location
+        data.layer = MapManager.inst.currentLevel;
+        data.layerName = MapManager.inst.currentLevelName;
+        data.mapSeed = MapManager.inst.mapSeed;
+        data.branchValue = MapManager.inst.currentBranch;
+        // - Hideout Info
+        data.storedMatter = HF.TryFindCachedMatter();
+        // <<< EXPAND THIS AS NEEDED >>>
+
         if (DataService.SaveData("/hideout-data.json", data))
         {
             Debug.Log("Hideout Data Saved");
@@ -107,6 +122,18 @@ public class BaseManager : MonoBehaviour
         try
         {
             data = DataService.LoadData<HideoutData>("/hideout-data.json");
+
+            // -- And using that data, assign values --
+            // - Location
+            MapManager.inst.currentLevel = data.layer;
+            MapManager.inst.currentLevelName = data.layerName;
+            MapManager.inst.mapSeed = data.mapSeed;
+            MapManager.inst.currentBranch = data.branchValue;
+            // TODO: ??? Force map to (re)load with this info ???
+
+            // - Hideout Info
+            HF.TrySetCachedMatter(data.storedMatter);
+            // <<< EXPAND THIS AS NEEDED >>>
 
             return true;
         }

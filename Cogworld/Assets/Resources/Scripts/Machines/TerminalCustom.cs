@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class TerminalCustom : MonoBehaviour
@@ -58,9 +59,41 @@ public class TerminalCustom : MonoBehaviour
     #endregion
 
     #region Hideout Cache
+    public int storedMatter = 0;
     public void SetupAsCache()
     {
-        // TODO
+        type = CustomTerminalType.HideoutCache;
+
+        #region Add Commands
+        char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+        List<char> alphabet = alpha.ToList(); // Fill alphabet list
+
+        // We need to populate this machine with the following commands:
+        // -Retrieve (Matter)
+        // -Submit (Matter)
+
+        // [Retrieve (Matter)]
+        string letter = alphabet[0].ToString().ToLower();
+        alphabet.Remove(alphabet[0]);
+
+        HackObject hack = MapManager.inst.hackDatabase.Hack[35];
+
+        TerminalCommand newCommand = new TerminalCommand(letter, "Retrieve(Matter)", TerminalCommandType.Retrieve, "", hack);
+
+        avaiableCommands.Add(newCommand);
+
+        // [Submit (Matter)]
+        letter = alphabet[0].ToString().ToLower();
+        alphabet.Remove(alphabet[0]);
+
+        hack = MapManager.inst.hackDatabase.Hack[186];
+
+        newCommand = new TerminalCommand(letter, "Store(Matter)", TerminalCommandType.Inventory, "", hack);
+
+        avaiableCommands.Add(newCommand);
+        #endregion
+
+
     }
 
     #endregion

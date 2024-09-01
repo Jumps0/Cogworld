@@ -1789,6 +1789,41 @@ public static class HF
     #region Find & Get
 
     /// <summary>
+    /// Attempts to find and return the current amount of stored matter in the player's hideout cache. If unsuccessful, returns -1.
+    /// </summary>
+    /// <returns>If successful, returns the true amount of stored matter. If failed, returns -1.</returns>
+    public static int TryFindCachedMatter()
+    {
+        int value = -1;
+
+        // We first need to find the physical cache machine, which is a Custom Terminal
+        foreach (var machines in MapManager.inst.machines_customTerminals)
+        {
+            if(machines.GetComponentInChildren<TerminalCustom>() && machines.GetComponentInChildren<TerminalCustom>().type == CustomTerminalType.HideoutCache)
+            {
+                value = machines.GetComponentInChildren<TerminalCustom>().storedMatter; // Get the value
+            }
+        }
+
+        return value;
+    }
+
+    /// <summary>
+    /// Attempts to find and set the current amount of stored matter in the player's hideout cache from save data.
+    /// </summary>
+    public static void TrySetCachedMatter(int value)
+    {
+        // We first need to find the physical cache machine, which is a Custom Terminal
+        foreach (var machines in MapManager.inst.machines_customTerminals)
+        {
+            if (machines.GetComponentInChildren<TerminalCustom>() && machines.GetComponentInChildren<TerminalCustom>().type == CustomTerminalType.HideoutCache)
+            {
+                machines.GetComponentInChildren<TerminalCustom>().storedMatter = value; // Set the value
+            }
+        }
+    }
+
+    /// <summary>
     /// Attempts to find the % coverage value for the specified item belonging to the player.
     /// </summary>
     /// <param name="item">The item we want the coverage value for.</param>

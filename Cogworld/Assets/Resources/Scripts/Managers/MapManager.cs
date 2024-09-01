@@ -48,6 +48,7 @@ public class MapManager : MonoBehaviour
 
     // - Level Data -
     [Header("Level Data")]
+    [Tooltip("The current level or 'Layer' the player is on. Goes from -10 to -1. -11 is starting zone.")]
     public int currentLevel; // Goes from -10 to -1
     public int currentBranch;// Goes from 0 (no branch) to ~5
     [Tooltip("Is the current level a branch?")]
@@ -351,6 +352,12 @@ public class MapManager : MonoBehaviour
         if (!currentLevelIsBranch)
             GameManager.inst.RevealStoredIntel();
 
+        // Save Game
+        GameManager.inst.SavePlayerStatus(currentLevel, currentLevelName, mapSeed, currentBranch, GameManager.inst.data.storedMatter, TurnManager.inst.globalTime, 
+            new Vector2Int(PlayerData.inst.powerSlots, PlayerData.inst.propulsionSlots),
+            new Vector2Int(PlayerData.inst.utilitySlots, PlayerData.inst.weaponSlots), 
+            PlayerData.inst.robotsKilled);
+
         loaded = true;
     }
 
@@ -495,6 +502,12 @@ public class MapManager : MonoBehaviour
 
         UIManager.inst.CreateNewLogMessage("Arrived at Hideout...", UIManager.inst.deepInfoBlue, UIManager.inst.coolBlue, true);
         UIManager.inst.CreateNewLogMessage("LOCATION=" + BaseManager.inst.data.layerName.ToUpper(), UIManager.inst.deepInfoBlue, UIManager.inst.coolBlue, true);
+
+        // Save Game
+        GameManager.inst.SavePlayerStatus(currentLevel, currentLevelName, mapSeed, currentBranch, GameManager.inst.data.storedMatter, TurnManager.inst.globalTime,
+            new Vector2Int(PlayerData.inst.powerSlots, PlayerData.inst.propulsionSlots),
+            new Vector2Int(PlayerData.inst.utilitySlots, PlayerData.inst.weaponSlots),
+            PlayerData.inst.robotsKilled);
 
         loaded = true;
     }
@@ -2930,11 +2943,6 @@ public class MapManager : MonoBehaviour
         {
             tempPlayer = null;
         }
-
-        // - Save the player's data - (expand this later, .json sucks)
-        //Debug.Log(">> Saving player data...");
-        GameManager.inst.SavePlayerStatus(currentLevel, currentLevelName, mapSeed, TurnManager.inst.globalTime, new Vector2Int(PlayerData.inst.powerSlots, PlayerData.inst.propulsionSlots),
-            new Vector2Int(PlayerData.inst.utilitySlots, PlayerData.inst.weaponSlots), PlayerData.inst.robotsKilled);
 
         playerRef.GetComponentInChildren<CameraController>().SetCamFree(); // Free the camera so it isn't deleted
         Destroy(playerRef); // Destroy the player

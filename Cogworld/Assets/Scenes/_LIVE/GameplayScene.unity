@@ -10265,7 +10265,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 89.586105, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 22.777779}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &272249432
@@ -62009,6 +62009,8 @@ MonoBehaviour:
     layer: -11
     layerName: Lower Caves
     mapSeed: 0
+    branchValue: 0
+    storedMatter: 0
 --- !u!1 &1488031370
 GameObject:
   m_ObjectHideFlags: 0
@@ -84950,6 +84952,8 @@ MonoBehaviour:
     layer: -11
     layerName: Lower Caves
     mapSeed: 0
+    branchValue: 0
+    storedMatter: 0
     mode: 0
     difficulty: 0
     turn: 0
