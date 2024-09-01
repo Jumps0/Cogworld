@@ -38,8 +38,38 @@ public class PlayerGridMovement : MonoBehaviour
 
         if(Input.GetAxis("Mouse ScrollWheel") != 0f)
         {
-            Action.SkipAction(this.GetComponent<Actor>());
+            TrySkipTurn();
         }
+    }
+
+    private bool skipTurnCooldown = false;
+    private float skipTurnCooldownAmount = 0.1f;
+    private Coroutine skipTurnCooldownRoutine = null;
+
+    private void TrySkipTurn()
+    {
+        if (skipTurnCooldown)
+        {
+            // Cooldown done, go for it.
+            Action.SkipAction(this.GetComponent<Actor>());
+            skipTurnCooldown = false;
+        }
+        else // First time confirm
+        {
+            // Start the cooldown
+            if(skipTurnCooldownRoutine != null)
+            {
+                StopCoroutine(skipTurnCooldownRoutine);
+            }
+            skipTurnCooldownRoutine = StartCoroutine(SkipTurnCooldown());
+        }
+    }
+
+    private IEnumerator SkipTurnCooldown()
+    {
+        yield return new WaitForSeconds(skipTurnCooldownAmount);
+
+        skipTurnCooldown = true;
     }
 
     #region Movement
