@@ -569,11 +569,11 @@ public class Actor : Entity
                                     { // This should really be "1 to (10*[corruption]/100)" but I have no idea how that math works out
                                       // Corrupted!
                                         item.corrupted = true;
-                                        InventoryControl.inst.DropItemOnFloor(item, this, null);
+                                        InventoryControl.inst.DropItemOnFloor(item, this, null, Vector2Int.zero);
                                     }
 
                                     // Drop the item
-                                    InventoryControl.inst.DropItemOnFloor(item, this, null);
+                                    InventoryControl.inst.DropItemOnFloor(item, this, null, Vector2Int.zero);
                                 }
                             }
                         }
@@ -640,7 +640,7 @@ public class Actor : Entity
 
                             if (Random.Range(0f, 1f) < chance) // Success! Drop the item.
                             {
-                                InventoryControl.inst.DropItemOnFloor(item, this, null);
+                                InventoryControl.inst.DropItemOnFloor(item, this, null, Vector2Int.zero);
                             }
                         }
                     }
@@ -665,7 +665,7 @@ public class Actor : Entity
         // Drop all items in inventory
         foreach (var I in inventory.Container.Items)
         {
-            InventoryControl.inst.DropItemOnFloor(I.item, this, inventory);
+            InventoryControl.inst.DropItemOnFloor(I.item, this, inventory, Vector2Int.zero);
         }
         armament.Clear();
         Destroy(armament);

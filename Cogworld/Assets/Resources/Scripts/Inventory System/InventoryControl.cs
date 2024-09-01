@@ -356,20 +356,32 @@ public class InventoryControl : MonoBehaviour
         }
     }
 
-    public void DropItemOnFloor(Item _item, Actor source, InventoryObject sourceInventory)
+    /// <summary>
+    /// Drop a specific item from a specific inventory / actor around a specific position. Attempts to find the nearest free floor space.
+    /// </summary>
+    /// <param name="_item">The item to drop.</param>
+    /// <param name="source">The source actor, can be null.</param>
+    /// <param name="sourceInventory">The source inventory, can be null.</param>
+    /// <param name="starting_pos">The center position to drop nearest to. Can be set to Vector2Int.zero as long as *source* is set.</param>
+    public void DropItemOnFloor(Item _item, Actor source, InventoryObject sourceInventory, Vector2Int starting_pos)
     {
         if (_item.isDuplicate) // Don't drop duplicate items!
         {
             return;
         }
 
+        if(source != null && starting_pos == Vector2Int.zero)
+        {
+            starting_pos = HF.V3_to_V2I(source.transform.position);
+        }
+
         // Drop is as close to the source as possible
-        TileBlock dropTile = MapManager.inst._allTilesRealized[HF.V3_to_V2I(source.transform.position)];
+        TileBlock dropTile = MapManager.inst._allTilesRealized[starting_pos];
 
         Vector2Int dropLocation = HF.LocateFreeSpace(HF.V3_to_V2I(dropTile.transform.position)); // Find nearest free space
         dropTile = MapManager.inst._allTilesRealized[dropLocation];
 
-        if (source.gameObject.GetComponent<PlayerData>()) // Is player?
+        if (source != null && source.gameObject.GetComponent<PlayerData>()) // Is player?
         {
             PlayDropSound(_item.itemData.itemName); // Play the drop sound
             UIManager.inst.CreateNewLogMessage("Dropped " + _item.itemData.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false); // Do a UI message

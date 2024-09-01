@@ -231,14 +231,14 @@ public abstract class UserInterface : MonoBehaviour
             else
             {
                 // Drop the item on the floor
-                InventoryControl.inst.DropItemOnFloor(obj.GetComponent<InvDisplayItem>().item, PlayerData.inst.GetComponent<Actor>(), _inventory);
+                InventoryControl.inst.DropItemOnFloor(obj.GetComponent<InvDisplayItem>().item, PlayerData.inst.GetComponent<Actor>(), _inventory, Vector2Int.zero);
 
                 #region Multi-Slot items
                 if (obj.GetComponent<InvDisplayItem>().item.itemData.slotsRequired > 1)
                 {
                     foreach (var C in obj.GetComponent<InvDisplayItem>().secondaryChildren.ToList())
                     {
-                        InventoryControl.inst.DropItemOnFloor(C.GetComponent<InvDisplayItem>().item, PlayerData.inst.GetComponent<Actor>(), _inventory);
+                        InventoryControl.inst.DropItemOnFloor(C.GetComponent<InvDisplayItem>().item, PlayerData.inst.GetComponent<Actor>(), _inventory, Vector2Int.zero);
                         InventoryControl.inst.animatedItems.Remove(slotsOnInterface[C]); // Remove from animation tracking HashSet
                         slotsOnInterface[C].RemoveItem(); // Remove from slots
                     }

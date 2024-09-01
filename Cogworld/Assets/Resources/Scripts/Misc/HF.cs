@@ -474,7 +474,7 @@ public static class HF
             }
             else if (machine.GetComponent<RecyclingUnit>()) // Open Recycling Unit
             {
-                return machine.GetComponent<RecyclingUnit>().systemType;
+                return machine.GetComponent<RecyclingUnit>().systemName;
             }
             else if (machine.GetComponent<Garrison>()) // Open Garrison
             {
@@ -1173,7 +1173,7 @@ public static class HF
 
                     return "Scanning " + HF.ExtractText(parsedName) + "...\nReady to Repair:\n    " + HF.ExtractText(parsedName) + "\n    Rating: "
                         + item.rating + p2 + "\n    Time: " + buildTime3.ToString();
-                case TerminalCommandType.Retrieve: // TODO - UNFINISHED
+                case TerminalCommandType.Retrieve:
                     // This command actually has three uses
                     if (MapManager.inst.playerIsInHideout) // - Player is in the hideout, attempting to retrieve (by default 100) matter from their cache
                     {
@@ -1196,11 +1196,31 @@ public static class HF
                         }
                         else if(stored < 100) // Less than 100 stored (eject all)
                         {
+                            cache.storedMatter = 0; // Set value to 0
+                            Vector2Int pos = HF.V3_to_V2I(PlayerData.inst.transform.position);
 
+                            // The easiest way to do this is to just drop it under the player and force the pick up check because the logic there is already complete.
+                            InventoryControl.inst.CreateItemInWorld(17, pos, false, stored); // Spawn some matter
+                            PlayerData.inst.GetComponent<Actor>().SpecialPickupCheck(pos); // Do the check
+
+                            // Play a sound
+                            AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.GAME_Clips[31], 0.5f); // GAME - FABRICATION (is there a better sound for this?)
+
+                            return $"Ejecting {stored} matter...";
                         }
                         else if (stored > 100) // More than 100, eject 100
                         {
+                            cache.storedMatter -= 100;
+                            Vector2Int pos = HF.V3_to_V2I(PlayerData.inst.transform.position);
 
+                            // The easiest way to do this is to just drop it under the player and force the pick up check because the logic there is already complete.
+                            InventoryControl.inst.CreateItemInWorld(17, HF.LocateFreeSpace(pos), false, 100); // Spawn some matter
+                            PlayerData.inst.GetComponent<Actor>().SpecialPickupCheck(pos); // Do the check
+
+                            // Play a sound
+                            AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.GAME_Clips[31], 0.5f); // GAME - FABRICATION (is there a better sound for this?)
+
+                            return $"Ejecting 100 matter...";
                         }
                     }
                     else
@@ -1211,12 +1231,51 @@ public static class HF
                         if (parsedName.Contains("Matter")) // - Player is in the world, attempting to steal some amount of stored matter from a recycling machine
                         {
                             // - "Eject all local matter reserves"
+                            int toDrop = recycler.storedMatter;
 
+                            if(toDrop > 0)
+                            {
+                                Vector2Int pos = HF.V3_to_V2I(recycler.ejectionSpot.transform.position);
+
+                                // The easiest way to do this is to just drop it under the player and force the pick up check because the logic there is already complete.
+                                InventoryControl.inst.CreateItemInWorld(17, HF.LocateFreeSpace(pos), false, toDrop); // Spawn some matter
+                                PlayerData.inst.GetComponent<Actor>().SpecialPickupCheck(pos); // Do the check
+
+                                recycler.storedMatter = 0; // Set storage to 0
+
+                                // Play a sound
+                                AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.GAME_Clips[31], 0.5f); // GAME - FABRICATION (is there a better sound for this?)
+
+                                return "Ejecting local matter reserves...";
+                            }
+                            else // No matter stored, unlucky.
+                            {
+                                return "Local matter reserves are emtpy.";
+                            }
                         }
                         else if (parsedName.Contains("Components")) // - Player is in the world, attempting to steal some random stored items
                         {
                             // - "Eject up to 10 parts contained within"
 
+                            if(recycler.storedComponents.Container.Items.Length > 0) // Eject all the stored items
+                            {
+                                foreach (var I in recycler.storedComponents.Container.Items)
+                                {
+                                    InventoryControl.inst.DropItemOnFloor(I.item, null, recycler.storedComponents, HF.V3_to_V2I(recycler.ejectionSpot.transform.position));
+                                }
+
+                                // Just to be sure, clear the component inventory (unneccessary but just to be safe)
+                                recycler.storedComponents.Container.Clear();
+
+                                // Play a sound
+                                AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.GAME_Clips[31], 0.5f); // GAME - FABRICATION (is there a better sound for this?)
+
+                                return $"Ejecting stored components...";
+                            }
+                            else // No stored items, unlucky.
+                            {
+                                return "No components in local storage.";
+                            }
                         }
                     }
                     break;

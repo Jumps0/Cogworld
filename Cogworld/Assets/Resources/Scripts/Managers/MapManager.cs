@@ -1893,7 +1893,7 @@ public class MapManager : MonoBehaviour
                 string letter2 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
                 string letter3 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
 
-                recy.GetComponentInChildren<RecyclingUnit>().systemType = "Recycling v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
+                recy.GetComponentInChildren<RecyclingUnit>().systemName = "Recycling v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
 
                 recy.GetComponentInChildren<RecyclingUnit>().fullName = "Recycling Unit " + currentLevelName[0] + fill + amount.ToString();
                 amount++;

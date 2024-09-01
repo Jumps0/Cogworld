@@ -4511,12 +4511,12 @@ public static class Action
                         if (target.botInfo)
                         {
                             Action.RemovePartFromBotInventory(target, part);
-                            InventoryControl.inst.DropItemOnFloor(part, target, null);
+                            InventoryControl.inst.DropItemOnFloor(part, target, null, Vector2Int.zero);
                             
                         }
                         else
                         {
-                            InventoryControl.inst.DropItemOnFloor(part, target, HF.FindPlayerInventoryFromItem(part));
+                            InventoryControl.inst.DropItemOnFloor(part, target, HF.FindPlayerInventoryFromItem(part), Vector2Int.zero);
                         }
                         UIManager.inst.CreateNewCalcMessage(part.Name + " was blasted off.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
                     }
@@ -4542,11 +4542,11 @@ public static class Action
                         if (target.botInfo)
                         {
                             Action.RemovePartFromBotInventory(target, part2);
-                            InventoryControl.inst.DropItemOnFloor(part2, target, null);
+                            InventoryControl.inst.DropItemOnFloor(part2, target, null, Vector2Int.zero);
                         }
                         else
                         {
-                            InventoryControl.inst.DropItemOnFloor(part2, target, HF.FindPlayerInventoryFromItem(part2));
+                            InventoryControl.inst.DropItemOnFloor(part2, target, HF.FindPlayerInventoryFromItem(part2), Vector2Int.zero);
                         }
 
                         UIManager.inst.CreateNewCalcMessage(part2.Name + " was smashed off.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
@@ -4570,11 +4570,11 @@ public static class Action
                         if (target.botInfo)
                         {
                             Action.RemovePartFromBotInventory(target, dropItem);
-                            InventoryControl.inst.DropItemOnFloor(dropItem, target, null);
+                            InventoryControl.inst.DropItemOnFloor(dropItem, target, null, Vector2Int.zero);
                         }
                         else
                         {
-                            InventoryControl.inst.DropItemOnFloor(dropItem, target, HF.FindPlayerInventoryFromItem(dropItem));
+                            InventoryControl.inst.DropItemOnFloor(dropItem, target, HF.FindPlayerInventoryFromItem(dropItem), Vector2Int.zero);
                         }
 
                         UIManager.inst.CreateNewCalcMessage(dropItem.Name + " was severed.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
@@ -4588,11 +4588,11 @@ public static class Action
                             if (target.botInfo)
                             {
                                 Action.RemovePartFromBotInventory(target, hitItem);
-                                InventoryControl.inst.DropItemOnFloor(hitItem, target, null);
+                                InventoryControl.inst.DropItemOnFloor(hitItem, target, null, Vector2Int.zero);
                             }
                             else
                             {
-                                InventoryControl.inst.DropItemOnFloor(hitItem, target, HF.FindPlayerInventoryFromItem(hitItem));
+                                InventoryControl.inst.DropItemOnFloor(hitItem, target, HF.FindPlayerInventoryFromItem(hitItem), Vector2Int.zero);
                             }
                         }
                     }
@@ -4641,11 +4641,11 @@ public static class Action
                         if (target.botInfo)
                         {
                             Action.RemovePartFromBotInventory(target, item4);
-                            InventoryControl.inst.DropItemOnFloor(item4, target, null);
+                            InventoryControl.inst.DropItemOnFloor(item4, target, null, Vector2Int.zero);
                         }
                         else
                         {
-                            InventoryControl.inst.DropItemOnFloor(item4, target, HF.FindPlayerInventoryFromItem(item4));
+                            InventoryControl.inst.DropItemOnFloor(item4, target, HF.FindPlayerInventoryFromItem(item4), Vector2Int.zero);
                         }
 
                         UIManager.inst.CreateNewCalcMessage(item4.Name + " was ripped off.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);

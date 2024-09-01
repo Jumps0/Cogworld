@@ -89,7 +89,7 @@ public class Entity : MonoBehaviour
     /// Checks if the player has moved ontop of a special unique item, such-as: Matter, Data Logs, Scrap, etc.
     /// </summary>
     /// <param name="pos">The position to check.</param>
-    private void SpecialPickupCheck(Vector2Int pos)
+    public void SpecialPickupCheck(Vector2Int pos)
     {
         // 1. Is there an item at this position?
         Part P = HF.TryFindPartAtLocation(pos);
