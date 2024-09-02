@@ -1178,9 +1178,19 @@ public class ItemAlienBonuses
     [Tooltip("##% of damage to parts is instead transferred directly to the core.")]
     public bool allDamageToCore = false;
 
-    // Core Physics Calibrator
+    [Header("Core Physics Calibrator")]
     [Tooltip("Enables greater freedom during assignment of evolution parameters. No effect after reaching maximum slot count (26).")]
     public bool cpc_evolutionFreedom = false;
+
+    [Header("(Supercharged) Integrated Dissipator")]
+    public bool id_effect = false;
+    public int id_heatDissipationValue = 0;
+
+    [Header("Integrated Thermoelectric Network")]
+    [Tooltip("Converts all heat above 250 to energy every turn at a 3:1 ratio. <consumed> Example: At 300 heat precisely 50 heat would be used to generate 150 energy ((300-250)*3=150).")]
+    public bool itn_effect = false;
+    public int itn_value = 250;
+    public Vector2Int itn_ratio = new Vector2Int(3, 1);
 
     // TODO: Expand this with more effects when needed
 

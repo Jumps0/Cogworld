@@ -17,7 +17,7 @@ public class MapManager : MonoBehaviour
         inst = this;
     }
 
-    [Header("Prefas")]
+    [Header("Prefabs")]
     public GameObject _playerPrefab;
     [SerializeField] private TileBlock _tilePrefab;
     [SerializeField] private GameObject _accessPrefab;
@@ -58,10 +58,11 @@ public class MapManager : MonoBehaviour
     public LevelName levelName;
     public string currentLevelName;
     public int mapSeed = 0;
-    //
+    [Header("Map specific effects")]
     [Tooltip("Successful indirect hacking of central *database-related* targets (queries, schematics, analysis, prototypes) " +
         "incurs a 25% chance to trigger a database lockout, preventing indirect access to those types of targets at every terminal on the same map.")]
     public bool centerDatabaseLockout = false;
+    public int ambientHeat = 0;
     //
     [Tooltip("Used by AI to patrol to.")]
     public List<Vector2Int> pointsOfInterest = new List<Vector2Int>();
@@ -2941,6 +2942,8 @@ public class MapManager : MonoBehaviour
         }
 
         GameManager.inst.Entities.Clear();
+
+        ambientHeat = 0; // Reset ambient heat (do specific maps have unique ambient heat?)
 
         // --- Player Related --- //
         if (keepStats)

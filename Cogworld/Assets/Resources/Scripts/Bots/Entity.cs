@@ -15,15 +15,19 @@ public class Entity : MonoBehaviour
 
     [Header("Bot Values")]
     public string uniqueName;
-    //
+    // - Health
     public int currentHealth;
     public int maxHealth;
-    //
+    // - Heat
     public int currentHeat = 0;
     public int heatDissipation;
+    [Tooltip("In some instances (like a volley), heat creation is spread a cross multiple turns, that is stored here, and updated at the end of every bot's turn.")]
+    public List<float> residualHeat = new List<float>();
+    // - Energy
     public int energyGeneration;
-    public int currentMatter = 0; // Probably won't matter?
     public int currentEnergy = 100; // ?
+    // - Matter (do bots even have private matter reserves?)
+    public int currentMatter = 0;
     [Tooltip("Goes from 1f to 0f.")]
     public float corruption = 0.0f;
     //

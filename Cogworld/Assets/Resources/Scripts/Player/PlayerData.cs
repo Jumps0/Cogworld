@@ -57,7 +57,7 @@ public class PlayerData : MonoBehaviour
     public int currentHeat;
     public float heatRate1;
     public float heatRate2;
-    public float naturalHeatDissipation = 25;
+    public int naturalHeatDissipation = 25;
     //
     public int moveSpeed1;
     public int moveSpeed2;
@@ -87,6 +87,9 @@ public class PlayerData : MonoBehaviour
     [Header("  Inventory")]
     public int maxInvSize;
     public int currentInvCount;
+
+    [Header("Used Artifacts")]
+    public List<Item> artifacts_used = new List<Item>(); // TODO - When functionality for consumable items is added later, make sure to add used artifacts to this list.
 
     //
     [Header("Movement")]
