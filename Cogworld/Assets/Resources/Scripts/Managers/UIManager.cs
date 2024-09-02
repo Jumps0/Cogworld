@@ -2951,6 +2951,17 @@ public class UIManager : MonoBehaviour
         cTerminal_machine = target.GetComponent<TerminalCustom>();
         terminal_targetTerm = target.gameObject;
 
+        // If this is the Hideout Cache, we need to change the / PARTS / header to / CACHE /
+        if(cTerminal_machine.type == CustomTerminalType.HideoutCache)
+        {
+            partsHeaderText.text = "/CACHE/";
+
+            // Force a UI update so the inventory is displayed on the right side
+            UIManager.inst.UpdatePSUI();
+            UIManager.inst.UpdateParts();
+            InventoryControl.inst.UpdateInterfaceInventories();
+        }
+
         // Binary (Background)
         InvokeRepeating("Terminal_Binary", 0f, 1f);
 
@@ -3206,6 +3217,12 @@ public class UIManager : MonoBehaviour
         }
 
         AudioManager.inst.CreateTempClip(terminal_targetTerm.transform.position, AudioManager.inst.UI_Clips[20]); // Play CLOSE sound
+
+        // Change back the header
+        if (cTerminal_machine.type == CustomTerminalType.HideoutCache)
+        {
+            partsHeaderText.text = "/PARTS/";
+        }
 
         StartCoroutine(Terminal_CloseAnim()); // - Both use the same resources so its safe to do this
     }
@@ -3573,6 +3590,8 @@ public class UIManager : MonoBehaviour
     public Image borderB;
     public Image borderL;
     public Image borderR;
+    //
+    public TextMeshProUGUI partsHeaderText;
     //
     public TextMeshProUGUI weightText;
     //

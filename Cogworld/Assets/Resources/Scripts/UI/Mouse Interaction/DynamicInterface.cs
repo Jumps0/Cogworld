@@ -129,68 +129,94 @@ public class DynamicInterface : UserInterface
             Destroy(child.gameObject);
         }
 
-        // -- POWER -- //
-
-        var newPower = Instantiate(UIManager.inst.powerPrefab, new Vector3(), Quaternion.identity, inventoryArea.transform); // Instantiate Power Header
-        UIManager.inst.instPower = newPower;
-
-        for (int i = 0; i < InventoryControl.inst.p_inventoryPower.Container.Items.Length; i++)
+        // In a rare case, we may want to be displaying the Hideout Cache's Inventory instead
+        if(UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.type == CustomTerminalType.HideoutCache)
         {
-            // Create a new *InvDisplayItem* object
-            var obj = CreateNewEmptySlot();
+            #region Cache Inventory
+            // No sub headers needed
 
-            // Set parent and store it
-            InventoryControl.inst.p_inventoryPower.Container.Items[i].parent = this;
-            InventoryControl.inst.p_inventoryPower.Container.Items[i].AllowedItems[0] = ItemSlot.Power; // Restrict the slot to only *Power* items
-            slotsOnInterface.Add(obj, InventoryControl.inst.p_inventoryPower.Container.Items[i]);
+            // Create the slots
+            TerminalCustom machine = UIManager.inst.cTerminal_machine;
+
+            for (int i = 0; i < machine.storedComponents.Container.Items.Length; i++)
+            {
+                // Create a new *InvDisplayItem* object
+                var obj = CreateNewEmptySlot();
+
+                // Set parent and store it
+                machine.storedComponents.Container.Items[i].parent = this;
+                slotsOnInterface.Add(obj, machine.storedComponents.Container.Items[i]);
+            }
+
+            #endregion
         }
-
-        // -- PROPULSION -- //
-
-        var newProp = Instantiate(UIManager.inst.propulsionPrefab, new Vector3(), Quaternion.identity, inventoryArea.transform); // Instantiate Propulsion Header
-        UIManager.inst.instPropulsion = newProp;
-
-        for (int i = 0; i < InventoryControl.inst.p_inventoryPropulsion.Container.Items.Length; i++)
+        else
         {
-            // Create a new *InvDisplayItem* object
-            var obj = CreateNewEmptySlot();
+            #region Normal Layout
+            // -- POWER -- //
 
-            // Set parent and store it
-            InventoryControl.inst.p_inventoryPropulsion.Container.Items[i].parent = this;
-            InventoryControl.inst.p_inventoryPropulsion.Container.Items[i].AllowedItems[0] = ItemSlot.Propulsion; // Restrict the slot to only *Propulsion* items
-            slotsOnInterface.Add(obj, InventoryControl.inst.p_inventoryPropulsion.Container.Items[i]);
-        }
+            var newPower = Instantiate(UIManager.inst.powerPrefab, new Vector3(), Quaternion.identity, inventoryArea.transform); // Instantiate Power Header
+            UIManager.inst.instPower = newPower;
 
-        // -- UTILITY -- //
+            for (int i = 0; i < InventoryControl.inst.p_inventoryPower.Container.Items.Length; i++)
+            {
+                // Create a new *InvDisplayItem* object
+                var obj = CreateNewEmptySlot();
 
-        var newUtility = Instantiate(UIManager.inst.utilitiesPrefab, new Vector3(), Quaternion.identity, inventoryArea.transform); // Instantiate Utility Header
-        UIManager.inst.instUtilities = newUtility;
+                // Set parent and store it
+                InventoryControl.inst.p_inventoryPower.Container.Items[i].parent = this;
+                InventoryControl.inst.p_inventoryPower.Container.Items[i].AllowedItems[0] = ItemSlot.Power; // Restrict the slot to only *Power* items
+                slotsOnInterface.Add(obj, InventoryControl.inst.p_inventoryPower.Container.Items[i]);
+            }
 
-        for (int i = 0; i < InventoryControl.inst.p_inventoryUtilities.Container.Items.Length; i++)
-        {
-            // Create a new *InvDisplayItem* object
-            var obj = CreateNewEmptySlot();
+            // -- PROPULSION -- //
 
-            // Set parent and store it
-            InventoryControl.inst.p_inventoryUtilities.Container.Items[i].parent = this;
-            InventoryControl.inst.p_inventoryUtilities.Container.Items[i].AllowedItems[0] = ItemSlot.Utilities; // Restrict the slot to only *Utilities* items
-            slotsOnInterface.Add(obj, InventoryControl.inst.p_inventoryUtilities.Container.Items[i]);
-        }
+            var newProp = Instantiate(UIManager.inst.propulsionPrefab, new Vector3(), Quaternion.identity, inventoryArea.transform); // Instantiate Propulsion Header
+            UIManager.inst.instPropulsion = newProp;
 
-        // -- WEAPON -- //
+            for (int i = 0; i < InventoryControl.inst.p_inventoryPropulsion.Container.Items.Length; i++)
+            {
+                // Create a new *InvDisplayItem* object
+                var obj = CreateNewEmptySlot();
 
-        var newWeapon = Instantiate(UIManager.inst.weaponPrefab, new Vector3(), Quaternion.identity, inventoryArea.transform); // Instantiate Weapon Header
-        UIManager.inst.instWeapons = newWeapon;
+                // Set parent and store it
+                InventoryControl.inst.p_inventoryPropulsion.Container.Items[i].parent = this;
+                InventoryControl.inst.p_inventoryPropulsion.Container.Items[i].AllowedItems[0] = ItemSlot.Propulsion; // Restrict the slot to only *Propulsion* items
+                slotsOnInterface.Add(obj, InventoryControl.inst.p_inventoryPropulsion.Container.Items[i]);
+            }
 
-        for (int i = 0; i < InventoryControl.inst.p_inventoryWeapons.Container.Items.Length; i++)
-        {
-            // Create a new *InvDisplayItem* object
-            var obj = CreateNewEmptySlot();
+            // -- UTILITY -- //
 
-            // Set parent and store it
-            InventoryControl.inst.p_inventoryWeapons.Container.Items[i].parent = this;
-            InventoryControl.inst.p_inventoryWeapons.Container.Items[i].AllowedItems[0] = ItemSlot.Weapons; // Restrict the slot to only *Weapon* items
-            slotsOnInterface.Add(obj, InventoryControl.inst.p_inventoryWeapons.Container.Items[i]);
+            var newUtility = Instantiate(UIManager.inst.utilitiesPrefab, new Vector3(), Quaternion.identity, inventoryArea.transform); // Instantiate Utility Header
+            UIManager.inst.instUtilities = newUtility;
+
+            for (int i = 0; i < InventoryControl.inst.p_inventoryUtilities.Container.Items.Length; i++)
+            {
+                // Create a new *InvDisplayItem* object
+                var obj = CreateNewEmptySlot();
+
+                // Set parent and store it
+                InventoryControl.inst.p_inventoryUtilities.Container.Items[i].parent = this;
+                InventoryControl.inst.p_inventoryUtilities.Container.Items[i].AllowedItems[0] = ItemSlot.Utilities; // Restrict the slot to only *Utilities* items
+                slotsOnInterface.Add(obj, InventoryControl.inst.p_inventoryUtilities.Container.Items[i]);
+            }
+
+            // -- WEAPON -- //
+
+            var newWeapon = Instantiate(UIManager.inst.weaponPrefab, new Vector3(), Quaternion.identity, inventoryArea.transform); // Instantiate Weapon Header
+            UIManager.inst.instWeapons = newWeapon;
+
+            for (int i = 0; i < InventoryControl.inst.p_inventoryWeapons.Container.Items.Length; i++)
+            {
+                // Create a new *InvDisplayItem* object
+                var obj = CreateNewEmptySlot();
+
+                // Set parent and store it
+                InventoryControl.inst.p_inventoryWeapons.Container.Items[i].parent = this;
+                InventoryControl.inst.p_inventoryWeapons.Container.Items[i].AllowedItems[0] = ItemSlot.Weapons; // Restrict the slot to only *Weapon* items
+                slotsOnInterface.Add(obj, InventoryControl.inst.p_inventoryWeapons.Container.Items[i]);
+            }
+            #endregion
         }
     }
 

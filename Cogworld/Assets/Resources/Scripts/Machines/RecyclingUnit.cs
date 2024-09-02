@@ -42,7 +42,7 @@ public class RecyclingUnit : MonoBehaviour
     [Tooltip("Where completed components get spawned.")]
     public Transform ejectionSpot;
     public int storedMatter;
-    public InventoryObject storedComponents; // New a unique inventory to track this
+    public InventoryObject storedComponents; // Need a unique inventory to track this
 
     public void Init()
     {

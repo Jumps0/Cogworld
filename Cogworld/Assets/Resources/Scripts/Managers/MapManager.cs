@@ -627,6 +627,7 @@ public class MapManager : MonoBehaviour
 
         // Instantiate it at the correct position
         GameObject cache = Instantiate(prefab, pos, Quaternion.identity, mapParent);
+        machines_customTerminals.Add(cache); // Add to list for further use
 
         // Add to layers
         MachinePart[] machines = cache.GetComponentsInChildren<MachinePart>();
@@ -644,7 +645,7 @@ public class MapManager : MonoBehaviour
          */
 
         // Setup the machine's script
-        cache.GetComponentInChildren<TerminalCustom>().SetupAsCache();
+        cache.GetComponentInChildren<TerminalCustom>().Init(CustomTerminalType.HideoutCache);
     }
 
     #endregion
@@ -2292,6 +2293,11 @@ public class MapManager : MonoBehaviour
         foreach (GameObject obj in machines_scanalyzers)
         {
             obj.GetComponentInChildren<Scanalyzer>().Init();
+        }
+
+        foreach (GameObject obj in machines_customTerminals)
+        {
+            obj.GetComponentInChildren<TerminalCustom>().Init();
         }
     }
 

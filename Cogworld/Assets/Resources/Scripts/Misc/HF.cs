@@ -482,7 +482,7 @@ public static class HF
             }
             else if (machine.GetComponent<TerminalCustom>()) // Open Custom Terminal
             {
-                return machine.GetComponent<TerminalCustom>().systemType;
+                return machine.GetComponent<TerminalCustom>().systemName;
             }
         }
 

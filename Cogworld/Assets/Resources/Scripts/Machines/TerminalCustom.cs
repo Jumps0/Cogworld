@@ -12,7 +12,7 @@ public class TerminalCustom : MonoBehaviour
     /// <summary>
     /// EX: Outpost Terminal (Limited) | Zhirov's Terminal (Local) | DSF Access (Limited) | WAR.Sys (Local) | SHOP.Sys
     /// </summary>
-    public string systemType;
+    public string systemName;
 
     [Header("Commands")]
     public List<TerminalCommand> avaiableCommands;
@@ -44,6 +44,30 @@ public class TerminalCustom : MonoBehaviour
     public AudioSource _doorSource;
     [SerializeField] private TileObject replaceTile;
 
+    public void Init(CustomTerminalType type = CustomTerminalType.Misc)
+    {
+        switch (type)
+        {
+            case CustomTerminalType.Shop:
+                break;
+            case CustomTerminalType.WarlordCamp:
+                break;
+            case CustomTerminalType.LoreEntry:
+                break;
+            case CustomTerminalType.DoorLock:
+                break;
+            case CustomTerminalType.PrototypeData:
+                break;
+            case CustomTerminalType.HideoutCache:
+                SetupAsCache();
+                break;
+            case CustomTerminalType.Misc:
+                break;
+            default:
+                break;
+        }
+    }
+
     public void OpenDoor()
     {
         // Essentially we want to:
@@ -60,9 +84,14 @@ public class TerminalCustom : MonoBehaviour
 
     #region Hideout Cache
     public int storedMatter = 0;
+    public InventoryObject storedComponents; // Need a unique inventory to track this
     public void SetupAsCache()
     {
         type = CustomTerminalType.HideoutCache;
+        systemName = "Hideout Cache (Local)";
+
+        // Setup component inventory
+        storedComponents = new InventoryObject(10, systemName + "'s component Inventory");
 
         #region Add Commands
         char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();

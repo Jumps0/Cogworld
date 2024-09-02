@@ -39039,6 +39039,7 @@ MonoBehaviour:
   borderB: {fileID: 2095949228}
   borderL: {fileID: 1897583458}
   borderR: {fileID: 446562187}
+  partsHeaderText: {fileID: 1999866875}
   weightText: {fileID: 519625146}
   botTypeGO: {fileID: 1203131683}
   botTypeImage: {fileID: 859055112}
@@ -57837,6 +57838,7 @@ MonoBehaviour:
   currentLevel: -11
   currentBranch: 0
   currentLevelIsBranch: 0
+  playerIsInHideout: 0
   levelName: 0
   currentLevelName: Unknown
   mapSeed: 0
@@ -98070,7 +98072,7 @@ GameObject:
   - component: {fileID: 1999866876}
   - component: {fileID: 1999866875}
   m_Layer: 5
-  m_Name: Text
+  m_Name: PARTS - Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
