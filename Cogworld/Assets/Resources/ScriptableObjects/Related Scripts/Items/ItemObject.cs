@@ -1069,7 +1069,7 @@ public class ItemAntiCorruption
 public class ItemRCS
 {
     public bool hasEffect = false;
-    [Header("0.## | Effect doubled while hovering or flying")]
+    [Header("0.## | Equal effect while walking, flying, or hovering.")]
     public float percentage;
     public bool stacks = false;
     public int momentumBonus = 1;
@@ -1178,6 +1178,10 @@ public class ItemAlienBonuses
     [Tooltip("##% of damage to parts is instead transferred directly to the core.")]
     public bool allDamageToCore = false;
 
+    // Core Physics Calibrator
+    [Tooltip("Enables greater freedom during assignment of evolution parameters. No effect after reaching maximum slot count (26).")]
+    public bool cpc_evolutionFreedom = false;
+
     // TODO: Expand this with more effects when needed
 
     public bool stacks = false;
@@ -1196,9 +1200,11 @@ public class ItemDetectionEffect
     public bool botDetection = false;
     // extra stuff (sensor suite)
     /* Enables robot scanning up to a distance of 20, once per turn, in addition to all effects of a maximum-strength Signal Interpreter. 
+     * Immune to all scrambling and cloaking effects.
      * Also detects long-term residual evidence of prior robot activity within field of view. 
      * 0b10 combat robots scanned by this device will report the event, once per bot.
      */
+    public bool bd_immuneToScramblingCloaking = false;
     public bool bd_maxInterpreterEffect = false;
     public bool bd_previousActivity = false;
     public bool bd_botReporting = false;

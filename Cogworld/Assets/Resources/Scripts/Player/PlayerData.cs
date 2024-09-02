@@ -50,7 +50,7 @@ public class PlayerData : MonoBehaviour
     public int currentInternalMatter = 0;
     //
     public int maxCorruption = 100;
-    [Tooltip("Affects many things:" +
+    [Tooltip("Goes from 0 to 100. Affects many things:" +
         "-Hacking: Every 3 points of corruption reduces the success rate by 1.")]
     public int currentCorruption;
     //

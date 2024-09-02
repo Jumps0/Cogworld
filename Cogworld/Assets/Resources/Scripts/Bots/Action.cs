@@ -2055,6 +2055,7 @@ public static class Action
          *  -10%/-5% if target is flying/hovering (and not overweight or in stasis)
          *  -20% for each robot obstructing line of fire
          *  -5% against Cogmind by robots for which have analysis data
+         *  -Attacker accuracy reduced by [system corruption]/X% (X = 4 for Cogmind, 8 for others)
          *  -defender utility bonuses
          */
 
@@ -2280,6 +2281,15 @@ public static class Action
             }
         }
 
+        // - Corruption Debuff -
+        if (source.GetComponent<PlayerData>())
+        {
+            toHitChance -= (PlayerData.inst.currentCorruption / 100) / 0.04f;
+        }
+        else
+        {
+            toHitChance -= source.corruption / 0.08f;
+        }
 
         // - Defender utility bonuses - // (also important later)
         (List<float> bonuses, bool noCrit, List<ArmorType> types) = DefenceBonus(target);
@@ -2408,6 +2418,7 @@ public static class Action
          *  -10%/-30% for small/tiny targets
          *  -10%/-5% if target is flying/hovering (and not overweight or in stasis)
          *  -5% against Cogmind by robots for which have analysis data
+         *  -Attacker accuracy reduced by [system corruption]/X% (X = 4 for Cogmind, 8 for others)
          *  -defender utility bonuses
          */
 
@@ -2482,6 +2493,15 @@ public static class Action
             }
         }
 
+        // - Corruption Debuff -
+        if (source.GetComponent<PlayerData>())
+        {
+            toHitChance -= (PlayerData.inst.currentCorruption / 100) / 0.04f;
+        }
+        else
+        {
+            toHitChance -= source.corruption / 0.08f;
+        }
 
         // - Defender utility bonuses - // (also important later)
         (List<float> bonuses, bool noCrit, List<ArmorType> types) = DefenceBonus(target);

@@ -8452,12 +8452,13 @@ public class UIManager : MonoBehaviour
                                         }
                                         textWall += ".";
                                     }
-                                    else if (E.heatDissipation.lowerBaseTemp > 0)
+                                    else if (E.heatDissipation.lowerBaseTemp > 0) // Mostly just cryofiber webs
                                     {
                                         textWall += "Lowers base temperature to " + E.heatDissipation.lowerBaseTemp + ".";
+                                        textWall += " Also doubles the cooling effect of all active heats sinks (includes Regular/Imp/Adv/Exp). ";
                                         if (E.heatDissipation.preventPowerShutdown)
                                         {
-                                            textWall += "Also protects power sources from forced shutdown while overheating";
+                                            textWall += "Protects power sources from forced shutdown while overheating";
                                             if (E.heatDissipation.preventOverheatSideEffects > 0)
                                             {
                                                 textWall += ", and has a " + E.heatDissipation.preventOverheatSideEffects * 100 + "% chance to prevent other types of overheating side effects";
@@ -8679,6 +8680,12 @@ public class UIManager : MonoBehaviour
                                         if (d.bd_maxInterpreterEffect)
                                         {
                                             textWall += ", in addition to all effects of a maximum-strength signal interpreter.";
+
+                                            if (d.bd_immuneToScramblingCloaking)
+                                            {
+                                                textWall += " Immune to all scrambling and cloaking effects.";
+                                            }
+
                                             if (d.bd_previousActivity)
                                             {
                                                 textWall += " Also detects long-term residual evidence of prior robot activity within field of view.";
@@ -8899,6 +8906,8 @@ public class UIManager : MonoBehaviour
                                         }
                                         textWall += ".";
                                     }
+
+                                    textWall += " Visibility for jamming purposes includes indirect knowledge via drones, Watcher Feeds, and so on, but must still be within the indicated range from you personally.";
                                 }
 
                                 if (E.effectiveCorruptionEffect.hasEffect)
@@ -9052,7 +9061,7 @@ public class UIManager : MonoBehaviour
                                 {
                                     ItemRCS f = E.rcsEffect;
 
-                                    textWall += "Enables responsive movement to avoid direct attacks, " + f.percentage * 100 + "% to dodge while on legs, or " + f.percentage * 200 + "% while hovering or flying (no effect on tracked or wheeled movement). Same chance to evade triggered traps";
+                                    textWall += "Enables responsive movement to avoid direct attacks, " + f.percentage * 100 + "% to dodge while on legs, hovering or flying (no effect on tracked or wheeled movement). Same chance to evade triggered traps";
                                     if (f.momentumBonus > 0)
                                     {
                                         textWall += ", and a +" + f.momentumBonus + " to effective momentum for melee attacks and ramming. No effects while overweight";
@@ -9244,8 +9253,7 @@ public class UIManager : MonoBehaviour
                                     {
                                         textWall += "While active, " + f.amount * 100 + "% of damage to this part is intead passed along to core.";
                                     }
-
-                                    if (f.allDamageToCore)
+                                    else if (f.allDamageToCore)
                                     {
                                         textWall += f.amount * 100 + "% of damage to parts is instead transferred directly to the core.";
 
@@ -9258,8 +9266,12 @@ public class UIManager : MonoBehaviour
                                             textWall += "\n <no_stack>";
                                         }
                                     }
+                                    else if (f.cpc_evolutionFreedom)
+                                    {
+                                        textWall += "Enables greater freedom during assignment of evolution parameters. No effect after reaching maximum slot count (26).";
+                                    }
 
-                                    // Expand this later
+                                    // TODO - Expand this later
                                 }
 
                                 #endregion

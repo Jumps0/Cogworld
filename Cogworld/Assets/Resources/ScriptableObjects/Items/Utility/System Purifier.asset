@@ -176,7 +176,7 @@ MonoBehaviour:
   consumable: 0
   disposable: -1
   unstable: -1
-  destroyOnRemove: 0
+  destroyOnRemove: 1
   canBeDisabled: 1
   quality: 2
   itemName: System Purifier

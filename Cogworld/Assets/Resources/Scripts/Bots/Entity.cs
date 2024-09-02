@@ -24,6 +24,7 @@ public class Entity : MonoBehaviour
     public int energyGeneration;
     public int currentMatter = 0; // Probably won't matter?
     public int currentEnergy = 100; // ?
+    [Tooltip("Goes from 1f to 0f.")]
     public float corruption = 0.0f;
     //
     public bool siegeMode = false;
