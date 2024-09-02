@@ -903,6 +903,8 @@ public class ItemBonusSlots
 public class ItemHeatDissipation
 {
     public bool hasEffect = false;
+    public HeatDissipationType type = HeatDissipationType.Direct;
+
     [Header("Per Turn")]
     public int dissipationPerTurn = 0;
 
@@ -925,10 +927,27 @@ public class ItemHeatDissipation
         "applied after all standard heat dissipation and any injectors, " +
         "and only when heat levels rise above ###. If multiple similar parts attached, " +
         "heat is distributed among them equally where possible.")]
-    public bool abalativeArmorEffect = false;
+    public bool ablativeArmorEffect = false;
+    public int ablativeDamage = 1;
+    public int ablativeChunks = 5;
 
     public bool parallel = false;
     public bool stacks = true;
+}
+
+[System.Serializable]
+public enum HeatDissipationType
+{
+    [Tooltip("The simple type (ex. Heat Sinks & Cooling Systems). Has a flat effect.")]
+    Direct,
+    [Tooltip("Like above but more powerful and loses Integrity over time (ex. Coolant Injectors).")]
+    Disposable,
+    [Tooltip("Also loses Integrity over time, but somehow better than Disposable cooling (ex. Mak. Ablative Armor) Only 1 target at a time.")]
+    AblativeIndividual,
+    [Tooltip("Same as above but is broad instead of 1 at a time (ex. Mak. Microdissapator Network).")]
+    AblativeBroad,
+    [Tooltip("Generates energy from heat")]
+    EnergyGeneration
 }
 
 [System.Serializable]

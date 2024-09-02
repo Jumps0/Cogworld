@@ -5932,7 +5932,19 @@ public static class Action
             }
         }
 
-        if(level <= 0) // No heat transfer? Exit
+        // The item "Mak. Microdissipator Network" (and possibly a few other items) reduce heat transfer by 1.
+        foreach (var I in Action.CollectAllBotItems(victim)) // I don't like having to do this. 99% of the time this is a waste of CPU 
+        {
+            foreach (var E in I.itemData.itemEffects)
+            {
+                if(E.heatDissipation.hasEffect && E.heatDissipation.type == HeatDissipationType.AblativeBroad)
+                {
+                    level--;
+                }
+            }
+        }
+
+        if (level <= 0) // No heat transfer? Exit
         {
             return;
         }
@@ -6344,7 +6356,7 @@ public static class Action
     /// </summary>
     /// <param name="actor">The bot we are trying to calculate the heat of.</param>
     /// <returns>Returns surplus energy created from some specific heat items if that occurs.</returns>
-    public static int CalculateBotHeat(Actor actor) // TODO - THIS NEXT
+    public static int CalculateBotHeat(Actor actor)
     {
         // Get the heat the bot already has
         int startingHeat = 0; // The heat the bot is starting with this turn
@@ -6456,6 +6468,29 @@ public static class Action
         // Then begin to add it all up
         float totalHeat = startingHeat + heat_parts + heat_gradual + heat_ambient;
 
+        // 1.5 Consider energy generation from Heat
+        bool once = true;
+        foreach (var I in items_cold)
+        {
+            foreach (var E in I.itemData.itemEffects)
+            {
+                if(E.heatDissipation.hasEffect && E.heatDissipation.type == HeatDissipationType.EnergyGeneration)
+                {
+                    ItemHeatDissipation d = E.heatDissipation;
+                    
+                    if(once || d.parallel)
+                    {
+                        once = false;
+
+                        int gen = d.energyGeneration;
+                        int ratio = d.heatToEnergyAmount;
+
+                        surplusEnergy += (int) (totalHeat / ratio) * gen;
+                    }
+                }
+            }
+        }
+
         // 2. If used the unique "ITN" artifact, automatically drop heat to 250 if above that value.
         int artifact_heat_dissipation = 0; // Also get this here while we're at it
         if (actor.GetComponent<PlayerData>() && PlayerData.inst.artifacts_used.Count > 0)
@@ -6494,19 +6529,114 @@ public static class Action
         }
 
         // 4. Subtract heat dissipation from direct cooling utilities such as Heat Sinks and Cooling Systems.
+        bool stackable = true;
+        foreach (var I in items_cold.ToList())
+        {
+            foreach (var E in I.itemData.itemEffects)
+            {
+                if(E.heatDissipation.hasEffect && E.heatDissipation.type == HeatDissipationType.Direct) // Only want direct cooling
+                {
+                    ItemHeatDissipation d = E.heatDissipation;
 
+                    if (d.stacks || stackable)
+                    {
+                        stackable = false;
+                        totalHeat -= d.dissipationPerTurn;
+                    }
+                }
+            }
+        }
 
-        // 5. If heat exceeds 200, apply dissipation effects of disposable cooling systems such as Coolant Injectors, 
+        // 5. If heat exceeds X, apply dissipation effects of disposable cooling systems such as Coolant Injectors, 
         //    up to that threshold. If more disposable systems than necessary, apply them in random order.
+        stackable = true;
+        foreach (var I in items_cold.ToList())
+        {
+            foreach (var E in I.itemData.itemEffects)
+            {
+                if (E.heatDissipation.hasEffect && E.heatDissipation.type == HeatDissipationType.Disposable && totalHeat > E.heatDissipation.minTempToActivate)
+                {
+                    ItemHeatDissipation d = E.heatDissipation;
+
+                    if (d.stacks || stackable)
+                    {
+                        stackable = false;
+                        totalHeat -= d.dissipationPerTurn;
+                        // Damage the part
+                        int damage = d.integrityLossPerTurn;
+                        DamageItem(actor, I, damage);
+                    }
+                }
+            }
+        }
 
 
-        // 6. If heat exceeds 200, apply self-damaging ablative cooling systems such as Mak. Ablative Armor. 
+        // 6. If heat exceeds X, apply self-damaging ablative cooling systems such as Mak. Ablative Armor. 
         //    If using multiple ablative systems at once, dissipation is split into equal - sized chunks for each,
         //    where if one system fails, the entire chunk it is responsible for is still successfully dissipated.
+        stackable = true;
+        // - First off, collect up all VALID ablative items (that also meet the temp threshold)
+        List<KeyValuePair<Item, ItemHeatDissipation>> abla_wide = new List<KeyValuePair<Item, ItemHeatDissipation>>();
+        foreach (var I in items_cold.ToList())
+        {
+            foreach (var E in I.itemData.itemEffects)
+            {
+                if (E.heatDissipation.hasEffect && E.heatDissipation.type == HeatDissipationType.AblativeIndividual && totalHeat > E.heatDissipation.minTempToActivate)
+                {
+                    ItemHeatDissipation d = E.heatDissipation;
 
+                    abla_wide.Add(new KeyValuePair<Item, ItemHeatDissipation>(I, d));
+                }
+            }
+        }
+        // - Then consider the multi item scenario (99% of the time this won't happen but we gotta be thorough)
+        if(abla_wide.Count > 1) // Multi scenario, spread equally
+        {
+            foreach (var I in abla_wide)
+            {
+                if (I.Value.stacks || stackable)
+                {
+                    stackable = false;
+                    totalHeat -= I.Value.dissipationPerTurn;
+                    // Damage the part
+                    int damage = I.Value.integrityLossPerTurn / abla_wide.Count; // Spread it out equally
+                    DamageItem(actor, I.Key, damage);
+                }
+            }
+        }
+        else if(abla_wide.Count > 0) // Only 1 simple stuff
+        {
+            // Should this try and dissipate all at once? Or only in 1 amount of what it can do per turn? Lets go with the 2nd option.
+            totalHeat -= abla_wide[0].Value.dissipationPerTurn; // Dissipate heat
+            DamageItem(actor, abla_wide[0].Key, abla_wide[0].Value.integrityLossPerTurn); // Damage the item
+        }
 
-        // 7. If heat exceeds 200, apply broad-effect ablative cooling systems such as Mak. Microdissipator Network.
+        // 7. If heat exceeds X, apply broad-effect ablative cooling systems such as Mak. Microdissipator Network.
+        stackable = true;
+        foreach (var I in items_cold.ToList())
+        {
+            foreach (var E in I.itemData.itemEffects)
+            {
+                if (E.heatDissipation.hasEffect && E.heatDissipation.type == HeatDissipationType.AblativeBroad && totalHeat > E.heatDissipation.minTempToActivate)
+                {
+                    ItemHeatDissipation d = E.heatDissipation;
 
+                    if (d.stacks || stackable)
+                    {
+                        stackable = false;
+                        totalHeat -= d.dissipationPerTurn;
+                        int damage = d.ablativeDamage;
+                        int chunks = d.ablativeChunks;
+
+                        // Say goodbye to your parts blockhead
+                        for (int i = 0; i < chunks; i++)
+                        {
+                            DamageItem(actor, allItems[Random.Range(0, allItems.Count)], damage);
+                        }
+                    }
+                }
+            }
+        }
 
         // Lastly, consider overheating consequences
         Action.ConsiderOverheatingConsequences(actor);
@@ -6518,7 +6648,7 @@ public static class Action
     /// Called immedietly after heat calculations. Getting too hot can have consequences. This function determines if something happens for a single bot.
     /// </summary>
     /// <param name="actor">The bot to examine overheating for.</param>
-    public static void ConsiderOverheatingConsequences(Actor actor)
+    public static void ConsiderOverheatingConsequences(Actor actor) // TODO - THIS NEXT
     {
         #region Explanation
         /*

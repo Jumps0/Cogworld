@@ -8438,7 +8438,20 @@ public class UIManager : MonoBehaviour
 
                                 if (E.heatDissipation.hasEffect)
                                 {
-                                    if (E.heatDissipation.dissipationPerTurn > 0)
+                                    ItemHeatDissipation h = E.heatDissipation;
+                                    if (h.ablativeArmorEffect)
+                                    {
+                                        // Can be two types
+                                        if(h.type == HeatDissipationType.AblativeIndividual)
+                                        {
+                                            textWall += $"Dissipates heat each turn, losing {h.integrityLossPerTurn} integrity per {h.dissipationPerTurn} heat dissipated, applied after all standard heat dissipation and any injectors, and only when heat levels rise above {h.minTempToActivate}. If multiple similar parts attached, heat is distributed among them equally where possible.";
+                                        }
+                                        else if (h.type == HeatDissipationType.AblativeBroad)
+                                        {
+                                            textWall += $"Dissipates heat each turn, causing {h.ablativeDamage} damage per {h.dissipationPerTurn} heat dissipated, applied after all standard heat dissipation and any injectors, and only when heat levels rise above {h.minTempToActivate}. The damage is applied to other attached parts, selected randomly, in chunks of {h.ablativeChunks}. Also reduces effect of incoming heat transfer by one level.";
+                                        }
+                                    }
+                                    else if (E.heatDissipation.dissipationPerTurn > 0)
                                     {
                                         textWall += "Dissipates " + E.heatDissipation.dissipationPerTurn + " heat per turn";
                                         if (E.heatDissipation.integrityLossPerTurn > 0)
