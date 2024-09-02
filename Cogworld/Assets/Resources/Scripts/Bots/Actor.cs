@@ -227,6 +227,8 @@ public class Actor : Entity
 
     public void EndTurn()
     {
+        Action.DoEndOfTurn_EMH(this); // Do end of turn [ENERGY | MATTER | HEAT] calculations
+
         noMovementFor += 1; // should this be here?
         if (this.GetComponent<BotAI>() != null)
             this.GetComponent<BotAI>().isTurn = false;
