@@ -360,7 +360,9 @@ public abstract class ItemObject : ScriptableObject
 
     // Power
     [Header("Power")]
+    [Tooltip("Power this item creates naturually. Reserved for engines.")]
     public int supply;
+    [Tooltip("The amount of energy this item can store, contributes to overall energy storage. Reserved for engines.")]
     public int storage;
     public bool power_HasStability = false; // Seems like only Cld. power sources have this so it'l be rare that it will show up
     [Tooltip("Rarely used. 0.##%")]

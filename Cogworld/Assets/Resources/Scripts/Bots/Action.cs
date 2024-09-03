@@ -94,6 +94,8 @@ public static class Action
 
     #endregion
 
+    #region General Actions
+
     /// <summary>
     /// Attempts to move an actor in a specified direction, if there is a bot in the way, it will attempt to ram them instead.
     /// </summary>
@@ -1740,6 +1742,8 @@ public static class Action
 
         TurnManager.inst.AllEntityVisUpdate();
     }
+
+    #endregion
 
     #region HelperFunctions
 
@@ -6330,6 +6334,85 @@ public static class Action
         return drag;
     }
 
+    /// <summary>
+    /// Temporarily disable a specific item for a specific time. Comes with indications on the UI and whatnot.
+    /// </summary>
+    /// <param name="source">The actor who holds this item.</param>
+    /// <param name="item">The item to disable.</param>
+    /// <param name="duration">The time this item should be disabled.</param>
+    public static void TemporarilyDisableItem(Actor source, Item item, int duration)
+    {
+        if (item == null || item.Id <= 0 || item.disabledTimer > 0) { return; } // Failsafe
+
+        // If the player owns it we need to update the UI, if not its a bit simpler
+        if (source.GetComponent<PlayerData>())
+        {
+            // Log a message
+            string message = "";
+            switch (item.itemData.slot)
+            {
+                case ItemSlot.Power:
+                    message = $"Power failure, {item.itemData.itemName} shutdown.";
+                    UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
+                    break;
+                case ItemSlot.Propulsion:
+                    message = $"Propulsion failure, {item.itemData.itemName} shutdown.";
+                    UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
+                    break;
+                case ItemSlot.Utilities:
+                    message = $"Device failure, {item.itemData.itemName} shutdown.";
+                    UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
+                    break;
+                case ItemSlot.Weapons:
+                    message = $"Weapon failure, {item.itemData.itemName} shutdown.";
+                    UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
+                    break;
+                case ItemSlot.Inventory:
+                    message = $"Item failure, {item.itemData.itemName} shutdown.";
+                    UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
+                    break;
+                case ItemSlot.Other:
+                    message = $"Item failure, {item.itemData.itemName} shutdown.";
+                    UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
+                    break;
+                default:
+                    break;
+            }
+
+            // Update the item's timer internally
+            item.disabledTimer = duration;
+
+            // We need to find the specific InvDisplayItem which holds the item and tell it to animate
+            InvDisplayItem element = null;
+            foreach (var I in InventoryControl.inst.interfaces)
+            {
+                if (I.GetComponentInChildren<DynamicInterface>())
+                {
+                    foreach (var S in I.GetComponentInChildren<DynamicInterface>().slotsOnInterface)
+                    {
+                        InvDisplayItem reference = null;
+
+                        if (S.Key.GetComponent<InvDisplayItem>().item != null)
+                        {
+                            reference = S.Key.GetComponent<InvDisplayItem>();
+                            if (reference.item == item)
+                            {
+                                element = reference;
+                            }
+                        }
+                    }
+                }
+            }
+            // Tell it to animate
+            element.UIForceDisabled(duration);
+        }
+        else // Bot owner
+        {
+            // Update the item's timer internally
+            item.disabledTimer = duration;
+        }
+    }
+
     #endregion
 
     #region END OF TURN (ENERGY / MATTER / HEAT)
@@ -6339,12 +6422,15 @@ public static class Action
     /// <param name="actor">The actor being focused on.</param>
     public static void DoEndOfTurn_EMH(Actor actor)
     {
+        // Gather up all items so we can use them in each function
+        List<Item> allItems = Action.CollectAllBotItems(actor);
+
         // Matter first
-        Action.DoMatterUpkeep(actor);
+        Action.DoMatterUpkeep(actor, allItems);
         // Then heat since it could create some surplus energy
-        int surplusEnergy = Action.CalculateBotHeat(actor);
+        int surplusEnergy = Action.CalculateBotHeat(actor, allItems);
         // Finally do energy
-        Action.DoEnergyUpkeep(actor, surplusEnergy);
+        Action.DoEnergyUpkeep(actor, allItems, surplusEnergy);
     }
 
     /// <summary>
@@ -6352,18 +6438,79 @@ public static class Action
     /// </summary>
     /// <param name="actor">The actor being focused on.</param>
     /// <param name="surplus">Any surplus energy that was just created by some heat related item.</param>
-    public static void DoEnergyUpkeep(Actor actor, int surplus)
+    public static void DoEnergyUpkeep(Actor actor, List<Item> allItems, int surplus)
     {
+        float energy_consumed = 0; // From items that have something listed on their "upkeep" section (will be negative)
+        float energy_created = 0; // From engines
 
+        foreach (var I in allItems)
+        {
+            if (I.state && I.disabledTimer <= 0)
+            {
+                energy_consumed += I.itemData.energyUpkeep;
+                energy_created += I.itemData.supply;
+            }
+        }
+
+        // Then get natural power generation
+        float energy_innate = 0f;
+        if (actor.GetComponent<PlayerData>())
+        {
+            energy_innate = PlayerData.inst.innateEnergyProduction;
+        }
+        else // Bots
+        {
+            energy_innate = actor.energyGeneration;
+        }
+
+        // Add up the totals, including any surplus power generated from heat
+        float total = energy_consumed + energy_created + energy_innate + surplus;
+
+        // Then modify the current energy based on what we got
+        if (actor.GetComponent<PlayerData>())
+        {
+            PlayerData.inst.currentHeat += (int)total;
+        }
+        else
+        {
+            actor.currentHeat += (int)total;
+        }
     }
 
     /// <summary>
     /// Calculates the end of turn matter usage from unique (non weapon) sources.
     /// </summary>
     /// <param name="actor">The actor being focused on.</param>
-    public static void DoMatterUpkeep(Actor actor)
+    public static void DoMatterUpkeep(Actor actor, List<Item> allItems)
     {
+        // Not that many things passively consume matter
+        // -Some Utility Devices
+        // -One or Two power cores
 
+        float total = 0;
+        foreach (var I in allItems)
+        {
+            if(I.state && I.disabledTimer <= 0)
+            {
+                if(I.itemData.slot == ItemSlot.Power || I.itemData.slot == ItemSlot.Utilities)
+                {
+                    if(I.itemData.matterUpkeep != 0)
+                    {
+                        total += I.itemData.matterUpkeep;
+                    }
+                }
+            }
+        }
+
+        // Change the value
+        if (actor.GetComponent<PlayerData>())
+        {
+            ModifyPlayerMatter((int)total);
+        }
+        else
+        {
+            actor.currentMatter += (int)total;
+        }
     }
 
     #region Heat
@@ -6373,7 +6520,7 @@ public static class Action
     /// </summary>
     /// <param name="actor">The bot we are trying to calculate the heat of.</param>
     /// <returns>Returns surplus energy created from some specific heat items if that occurs.</returns>
-    public static int CalculateBotHeat(Actor actor)
+    public static int CalculateBotHeat(Actor actor, List<Item> allItems)
     {
         // Get the heat the bot already has
         int startingHeat = 0; // The heat the bot is starting with this turn
@@ -6448,8 +6595,6 @@ public static class Action
         float moveCost = 0f;
 
         // - Firstly, gather up all items that produce cooling, and all items that naturally eminate heat.
-        List<Item> allItems = Action.CollectAllBotItems(actor);
-
         List<Item> items_cold = new List<Item>();
         List<Item> items_hot = new List<Item>();
 
@@ -6888,85 +7033,6 @@ public static class Action
     #endregion
     #endregion
 
-    /// <summary>
-    /// Temporarily disable a specific item for a specific time. Comes with indications on the UI and whatnot.
-    /// </summary>
-    /// <param name="source">The actor who holds this item.</param>
-    /// <param name="item">The item to disable.</param>
-    /// <param name="duration">The time this item should be disabled.</param>
-    public static void TemporarilyDisableItem(Actor source, Item item, int duration)
-    {
-        if(item == null || item.Id <= 0 || item.disabledTimer > 0) {  return; } // Failsafe
-
-        // If the player owns it we need to update the UI, if not its a bit simpler
-        if (source.GetComponent<PlayerData>())
-        {
-            // Log a message
-            string message = "";
-            switch (item.itemData.slot)
-            {
-                case ItemSlot.Power:
-                    message = $"Power failure, {item.itemData.itemName} shutdown.";
-                    UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
-                    break;
-                case ItemSlot.Propulsion:
-                    message = $"Propulsion failure, {item.itemData.itemName} shutdown.";
-                    UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
-                    break;
-                case ItemSlot.Utilities:
-                    message = $"Device failure, {item.itemData.itemName} shutdown.";
-                    UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
-                    break;
-                case ItemSlot.Weapons:
-                    message = $"Weapon failure, {item.itemData.itemName} shutdown.";
-                    UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
-                    break;
-                case ItemSlot.Inventory:
-                    message = $"Item failure, {item.itemData.itemName} shutdown.";
-                    UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
-                    break;
-                case ItemSlot.Other:
-                    message = $"Item failure, {item.itemData.itemName} shutdown.";
-                    UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
-                    break;
-                default:
-                    break;
-            }
-
-            // Update the item's timer internally
-            item.disabledTimer = duration;
-
-            // We need to find the specific InvDisplayItem which holds the item and tell it to animate
-            InvDisplayItem element = null;
-            foreach (var I in InventoryControl.inst.interfaces)
-            {
-                if (I.GetComponentInChildren<DynamicInterface>())
-                {
-                    foreach (var S in I.GetComponentInChildren<DynamicInterface>().slotsOnInterface)
-                    {
-                        InvDisplayItem reference = null;
-
-                        if (S.Key.GetComponent<InvDisplayItem>().item != null)
-                        {
-                            reference = S.Key.GetComponent<InvDisplayItem>();
-                            if (reference.item == item)
-                            {
-                                element = reference;
-                            }
-                        }
-                    }
-                }
-            }
-            // Tell it to animate
-            element.UIForceDisabled(duration);
-        }
-        else // Bot owner
-        {
-            // Update the item's timer internally
-            item.disabledTimer = duration;
-        }
-    }
-
     #region Basic Player Stat Changes
     // Storing them all here to simplify things, especially since we need to animate the bar.
 
@@ -7004,6 +7070,10 @@ public static class Action
         }
 
         PlayerData.inst.currentMatter += amount;
+
+        // Clamp it for safety
+        if (PlayerData.inst.currentMatter < 0)
+            PlayerData.inst.currentMatter = 0;
     }
 
     public static void ModifyPlayerEnergy(int amount)
@@ -7022,6 +7092,10 @@ public static class Action
         }
 
         PlayerData.inst.currentEnergy += amount;
+
+        // Clamp it for safety
+        if (PlayerData.inst.currentEnergy < 0)
+            PlayerData.inst.currentEnergy = 0;
     }
 
     /// <summary>

@@ -37,6 +37,7 @@ public class GlobalSettings : MonoBehaviour
     public int startingMatter = 100;
     public int startingEnergy = 100;
     public int startingCorruption = 0;
+    public int innateEnergy = 5;
     public float cogCoreOutput1 = 5.0f;
     public float cogCoreOutput2 = 1.5f;
     public int defaultExposure = 100;

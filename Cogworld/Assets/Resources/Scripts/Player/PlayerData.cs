@@ -40,6 +40,7 @@ public class PlayerData : MonoBehaviour
     //
     public int maxEnergy;
     public int currentEnergy;
+    public int innateEnergyProduction;
     public float energyOutput1;
     public float energyOutput2;
     public int maxInternalEnergy = 0;
@@ -174,6 +175,7 @@ public class PlayerData : MonoBehaviour
         currentHealth = maxHealth;
         currentCoreExposure = 100;
         currentEnergy = GlobalSettings.inst.startingEnergy;
+        innateEnergyProduction = GlobalSettings.inst.innateEnergy;
         energyOutput1 = GlobalSettings.inst.cogCoreOutput1;
         energyOutput2 = GlobalSettings.inst.cogCoreOutput2;
         currentMatter = GlobalSettings.inst.startingMatter;
