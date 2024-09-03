@@ -1546,4 +1546,30 @@ public class PlayerData : MonoBehaviour
         }
     }
     #endregion
+
+    private Coroutine overheatwarning;
+    private bool overheatcooldown = false;
+    public void OverheatWarning()
+    {
+        if(!overheatcooldown)
+        {
+            // Play the sound
+            AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.UI_Clips[9]); // UI | ALARM_RESOURCES
+            // Start the cooldown
+            if(overheatwarning != null)
+            {
+                StopCoroutine(overheatwarning);
+            }
+            overheatwarning = StartCoroutine(OverheatCooldown());
+        }
+    }
+
+    private IEnumerator OverheatCooldown()
+    {
+        overheatcooldown = true;
+
+        yield return new WaitForSeconds(10f);
+
+        overheatcooldown = false;
+    }
 }

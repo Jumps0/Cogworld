@@ -6631,7 +6631,7 @@ public static class Action
                         // Say goodbye to your parts blockhead
                         for (int i = 0; i < chunks; i++)
                         {
-                            DamageItem(actor, allItems[Random.Range(0, allItems.Count)], damage);
+                            DamageItem(actor, allItems[Random.Range(0, allItems.Count - 1)], damage);
                         }
                     }
                 }
@@ -6648,7 +6648,7 @@ public static class Action
     /// Called immedietly after heat calculations. Getting too hot can have consequences. This function determines if something happens for a single bot.
     /// </summary>
     /// <param name="actor">The bot to examine overheating for.</param>
-    public static void ConsiderOverheatingConsequences(Actor actor) // TODO - THIS NEXT
+    public static void ConsiderOverheatingConsequences(Actor actor)
     {
         #region Explanation
         /*
@@ -6681,16 +6681,188 @@ public static class Action
         // Consequences
         if(heat >= 200 && heat < 300) // "Hot"
         {
+            // We are going to gather up all ACTIVE utilities & weapons.
+            List<Item> items = Action.CollectAllBotItems(actor);
+            List<Item> sorted = new List<Item>();
 
+            foreach (var I in items)
+            {
+                if (I.state && (I.itemData.slot == ItemSlot.Utilities || I.itemData.slot == ItemSlot.Weapons))
+                {
+                    sorted.Add(I);
+                }
+            }
+
+            // Since the way this functions in the game are not written down in the manual, i'm just going to wing it here.
+            foreach (var I in sorted) // We're just going to go through every item, and roll randomly (low) if to disable it or not
+            {
+                int rand = Random.Range(0, 100);
+                if(rand <= 10)
+                {
+                    Action.TemporarilyDisableItem(actor, I, Random.Range(5,9));
+                }
+            }
         }
         else if (heat >= 300) // "Warning"
         {
+            // We should actually warn the player here
+            // - Play a sound (with a cooldown so we don't spam it)
+            PlayerData.inst.OverheatWarning();
+            // - Flash the heat backer bar
+            // (This is handled in UIManager)
 
+            // We are going to gather up all ACTIVE utilities & weapons. Along with power sources (separately).
+            List<Item> items = Action.CollectAllBotItems(actor);
+            List<Item> power = new List<Item>();
+            List<Item> util_wep = new List<Item>();
+
+            foreach (var I in items)
+            {
+                if (I.state)
+                {
+                    if (I.itemData.slot == ItemSlot.Utilities || I.itemData.slot == ItemSlot.Weapons)
+                    {
+                        util_wep.Add(I);
+                    }
+                    else if (I.itemData.slot == ItemSlot.Power)
+                    {
+                        power.Add(I);
+                    }
+                }
+            }
+
+            // First go for the power sources
+            foreach (var P in power)
+            {
+                int rand = Random.Range(0, 100);
+                if (rand <= Action.COC_MathHelper(heat)) // Random % based on a curve. For power sources its higher
+                {
+                    Action.TemporarilyDisableItem(actor, P, Random.Range(5, 9));
+                }
+            }
+
+            // Then go through utility & weapon items but lower the percentage, with the consequence of doing damage too.
+            foreach (var I in util_wep)
+            {
+                int rand = Random.Range(0, 100);
+                if (rand <= Action.COC_MathHelper(heat) + 50) // Random % based on a curve. Lower than power sources
+                {
+                    Action.DamageItem(actor, I, Action.COC_MathHelper2(heat)); // Since its less likely to happen, we will deal damage too (this is gonna hurt)
+                    Action.TemporarilyDisableItem(actor, I, Random.Range(5, 9));
+                }
+            }
+
+            // Bonus consequences for higher heat level
+            if(heat >= 400)
+            {
+                // Corruption!
+                if(Random.Range(0, 100) <= 15) // 15% for corruption
+                {
+                    ModifyPlayerCorruption(1);
+                    // Play a message
+                    string message = "Core corrupted due to overheating.";
+                    UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                }
+
+                // Damage a (random) power source
+                if(Random.Range(0, 100) <= 25) // 25% chance
+                {
+                    Action.DamageItem(actor, power[Random.Range(0, power.Count - 1)], Action.COC_MathHelper2(heat));
+                }
+
+                // Possible to add more in the future when needed
+            }
+        }
+    }
+
+    private static float COC_MathHelper(int heat)
+    {
+        // Cap the percentage between 0 and 100
+        if (heat < 300)
+            return 0;
+        if (heat >= 500)
+            return 100;
+
+        // Use a piecewise linear approximation
+        if (heat >= 300 && heat < 350)
+            return 50 + (20.0f / 50.0f) * (heat - 300);  // Linear interpolation between 50% and 70%
+        else if (heat >= 350 && heat < 400)
+            return 70 + (15.0f / 50.0f) * (heat - 350);  // Linear interpolation between 70% and 85%
+        else
+            return 85 + (15.0f / 100.0f) * (heat - 400); // Linear interpolation between 85% and 100%
+    }
+
+    private static int COC_MathHelper2(int heat)
+    {
+        if (heat < 300)
+            return Random.Range(1, 4); // Default to the range 1 to 3 if less than 300
+
+        if (heat >= 500)
+            return Random.Range(10, 21); // Cap the range at 10 to 20 if 500 or more
+
+        if (heat >= 300 && heat < 350)
+            return Random.Range(1, 4 + (heat - 300) * 2 / 50); // Linear interpolation from 1-3 to 3-7
+
+        if (heat >= 350 && heat < 400)
+            return Random.Range(3, 5 + (heat - 350) * 6 / 50); // Linear interpolation from 3-7 to 5-11
+
+        if (heat >= 400 && heat < 450)
+            return Random.Range(5, 7 + (heat - 400) * 8 / 50); // Linear interpolation from 5-11 to 7-15
+
+        if (heat >= 450 && heat < 500)
+            return Random.Range(7, 10 + (heat - 450) * 10 / 50); // Linear interpolation from 7-15 to 10-20
+
+        // This shouldn't be reached, but just in case
+        return Random.Range(10, 21);
+    }
+
+    #endregion
+    #endregion
+
+    /// <summary>
+    /// Temporarily disable a specific item for a specific time. Comes with indications on the UI and whatnot.
+    /// </summary>
+    /// <param name="source">The actor who holds this item.</param>
+    /// <param name="item">The item to disable.</param>
+    /// <param name="duration">The time this item should be disabled.</param>
+    public static void TemporarilyDisableItem(Actor source, Item item, int duration)
+    {
+        if(item == null || item.Id <= 0) {  return; } // Failsafe
+
+        // Log a message
+        string message = "";
+        switch (item.itemData.slot)
+        {
+            case ItemSlot.Power:
+                message = $"Power failure, {item.itemData.itemName} shutdown.";
+                UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
+                break;
+            case ItemSlot.Propulsion:
+                message = $"Propulsion failure, {item.itemData.itemName} shutdown.";
+                UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
+                break;
+            case ItemSlot.Utilities:
+                message = $"Device failure, {item.itemData.itemName} shutdown.";
+                UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
+                break;
+            case ItemSlot.Weapons:
+                message = $"Weapon failure, {item.itemData.itemName} shutdown.";
+                UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
+                break;
+            case ItemSlot.Inventory:
+                message = $"Item failure, {item.itemData.itemName} shutdown.";
+                UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
+                break;
+            case ItemSlot.Other:
+                message = $"Item failure, {item.itemData.itemName} shutdown.";
+                UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
+                break;
+            default:
+                break;
         }
 
+        // TODO - THIS NEXT
     }
-    #endregion
-    #endregion
 
     #region Basic Player Stat Changes
     // Storing them all here to simplify things, especially since we need to animate the bar.
@@ -6749,6 +6921,10 @@ public static class Action
         PlayerData.inst.currentEnergy += amount;
     }
 
+    /// <summary>
+    /// Atempt to modify the player's corruption value by the specified amount.
+    /// </summary>
+    /// <param name="amount">The amount to change the player's corruption by.</param>
     public static void ModifyPlayerCorruption(int amount)
     {
         if(amount == 0)
@@ -6765,7 +6941,7 @@ public static class Action
         }
         else if (amount < 0)
         {
-            // there ain't one
+            // No animation for corruption decrease
         }
 
         PlayerData.inst.currentCorruption += amount;

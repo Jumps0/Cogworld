@@ -3507,6 +3507,7 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI heaDiffText;
     //
     public TextMeshProUGUI currentHeatText;
+    public Image heaWarningBacker;
     //
     public Color coolBlue;
     public Color warmYellow;
@@ -3783,7 +3784,8 @@ public class UIManager : MonoBehaviour
         }
 
         // Just the heat number
-        currentHeatText.text = PlayerData.inst.currentHeat.ToString() + " ";
+        int playerHeat = PlayerData.inst.currentHeat;
+        currentHeatText.text = playerHeat.ToString() + " ";
 
         // The two secondary numbers
         currentHeatText.text += "(";
@@ -3807,6 +3809,42 @@ public class UIManager : MonoBehaviour
             currentHeatText.text += "<color=#B20000>" + "+" + heat2.ToString() + "</color>";
         }
         currentHeatText.text += ")";
+
+        // - Turn on the warning flash backer if needed (>300 & >400)
+        if(playerHeat >= 400) // Red warning flash
+        {
+            heaWarningBacker.enabled = true;
+            heaWarningBacker.gameObject.GetComponent<Animator>().enabled = true;
+            heaWarningBacker.gameObject.GetComponent<Animator>().Play("HeatWarningFlash");
+            heaWarningBacker.color = alertRed;
+        }
+        else if (playerHeat < 400 && playerHeat >= 300) // Orange warning flash
+        {
+            heaWarningBacker.enabled = true;
+            heaWarningBacker.gameObject.GetComponent<Animator>().enabled = true;
+            heaWarningBacker.gameObject.GetComponent<Animator>().Play("HeatWarningFlash");
+            heaWarningBacker.color = warningOrange;
+        }
+        else // No flasher
+        {
+            heaWarningBacker.enabled = false;
+            heaWarningBacker.gameObject.GetComponent<Animator>().enabled = false;
+        }
+
+        // Add "ITN" (Integrated Thermoelectric Network) if needed
+        if(PlayerData.inst.artifacts_used.Count > 0)
+        {
+            foreach (var A in PlayerData.inst.artifacts_used) // Should be relatively quick
+            {
+                foreach (var E in A.itemData.itemEffects)
+                {
+                    if(E.alienBonus.hasEffect && E.alienBonus.itn_effect)
+                    {
+                        currentHeatText.text += " ITN";
+                    }
+                }
+            }
+        }
 
         // ---------- MOVEMENT ------------
 
