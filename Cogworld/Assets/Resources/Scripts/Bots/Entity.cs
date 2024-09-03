@@ -26,8 +26,6 @@ public class Entity : MonoBehaviour
     // - Energy
     public int energyGeneration;
     public int currentEnergy = 100; // ?
-    // - Matter (do bots even have private matter reserves?)
-    public int currentMatter = 0;
     [Tooltip("Goes from 1f to 0f.")]
     public float corruption = 0.0f;
     //

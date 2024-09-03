@@ -5882,8 +5882,8 @@ public static class Action
             else
             {
                 source.currentHeat += weapon.itemData.meleeAttack.heat;
-                source.currentMatter += weapon.itemData.meleeAttack.matter;
                 source.currentEnergy += weapon.itemData.meleeAttack.energy;
+                // Bots dont have matter
             }
         }
         else
@@ -5914,8 +5914,8 @@ public static class Action
             else
             {
                 source.currentHeat += weapon.itemData.shot.shotHeat;
-                source.currentMatter += weapon.itemData.shot.shotMatter;
                 source.currentEnergy += weapon.itemData.shot.shotEnergy;
+                // Bots dont have matter
 
                 if (weapon.isOverloaded) // Overloading
                 {
@@ -6096,7 +6096,7 @@ public static class Action
 
         if (attacker.botInfo) // Bot
         {
-            matter = attacker.currentMatter;
+            matter = 999; // Bots dont have matter
             energy = attacker.currentEnergy;
 
             if (Action.IsMeleeWeapon(weapon))
@@ -6509,7 +6509,7 @@ public static class Action
         }
         else
         {
-            actor.currentMatter += (int)total;
+            // Bots dont have matter
         }
     }
 
