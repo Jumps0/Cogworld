@@ -8,6 +8,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.Tilemaps;
+using static UnityEditor.Progress;
 
 /// <summary>
 /// Stores all data related to the player.
@@ -54,9 +55,13 @@ public class PlayerData : MonoBehaviour
         "-Hacking: Every 3 points of corruption reduces the success rate by 1.")]
     public int currentCorruption;
     //
-    public int currentHeat;
+    public int currentHeat; // HUD shows full heat breakdown including stationary upkeep, when mobile, and injector/ablative cooling
+    [Tooltip("Heat rate while not moving")]
     public float heatRate1;
+    [Tooltip("Heat rate while moving")]
     public float heatRate2;
+    [Tooltip("Heat rate soley from cooling that loses HP")]
+    public float heatRate3;
     public int naturalHeatDissipation = 25;
     //
     public int moveSpeed1;
@@ -176,6 +181,7 @@ public class PlayerData : MonoBehaviour
         currentHeat = 0;
         heatRate1 = GlobalSettings.inst.cogCoreHeat1;
         heatRate2 = GlobalSettings.inst.cogCoreHeat2;
+        heatRate3 = GlobalSettings.inst.cogCoreHeat3;
         moveSpeed1 = GlobalSettings.inst.cogCoreDefaultMovement;
         moveSpeed2 = GlobalSettings.inst.cogCoreDefMovement2;
         // Evasion
@@ -1415,7 +1421,7 @@ public class PlayerData : MonoBehaviour
     {
         foreach (InventorySlot slot in this.GetComponent<PartInventory>().inv_weapon.Container.Items)
         {
-            if(slot.item.Id > -1 && slot.item.state) // There is an item here, and its active
+            if(slot.item.Id > -1 && slot.item.state && slot.item.disabledTimer <= 0) // There is an item here, and its active
             {
                 return slot.item.itemData;
             }

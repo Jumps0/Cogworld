@@ -71,6 +71,8 @@ public class Actor : Entity
 
         if (GameManager.inst)
         {
+            TurnManager.inst.turnEvents.onTurnTick += TurnTick; // Begin listening to the turn tick event
+
             AddToGameManager();
             if (GetComponent<PlayerData>())
             {
@@ -251,6 +253,12 @@ public class Actor : Entity
             }
         }
     }
+
+    private void TurnTick()
+    {
+
+    }
+
     #endregion
 
     #region Navigation
@@ -716,6 +724,8 @@ public class Actor : Entity
 
     private void OnDestroy()
     {
+        TurnManager.inst.turnEvents.onTurnTick -= TurnTick; // Stop listening to the turn tick event
+
         fieldOfView.Clear();
 
         // Remove from lists

@@ -74,10 +74,11 @@ public class InvDisplayItem : MonoBehaviour
 
     private void Update()
     {
-        if (canSiege && !isSecondaryItem)
+        if (canSiege && !isSecondaryItem) // Siege check
         {
             CheckSiegeStatus();
         }
+        ForceDisabledCheck();
     }
 
     #region Setup
@@ -730,8 +731,12 @@ public class InvDisplayItem : MonoBehaviour
 
     public void Click()
     {
-        if ((my_interface != null && my_interface.GetComponent<StaticInterface>()) || discardAnimationCoroutine != null || isSecondaryItem || (item != null && item.isBroken))
-        { // We shouldn't toggle items in the inventory. We should forbid toggling while in the middle of animating. Only lead items should be able to be toggled. 
+        if ((my_interface != null && my_interface.GetComponent<StaticInterface>()) 
+            || discardAnimationCoroutine != null 
+            || isSecondaryItem 
+            || (item != null && item.isBroken)
+            || (item != null && item.disabledTimer > 0))
+        { // We shouldn't toggle items in the inventory. We should forbid toggling while in the middle of animating. Only lead items should be able to be toggled. Forbid force disabled items from being toggled.
             return;
         }
 
@@ -1017,6 +1022,38 @@ public class InvDisplayItem : MonoBehaviour
     }
 
     /// <summary>
+    /// Cycle from being Enabled to being Force Disabled. Also start the timer
+    /// </summary>
+    public void UIForceDisabled(int timer)
+    {
+        // Set this item's timer
+        item.disabledTimer = timer;
+
+        // Enable the box
+        UISetBoxDisplay($"DISABLED {timer}", UIManager.inst.warningOrange);
+
+        // Do a little animation
+        StartCoroutine(SecondaryDataFlash()); // Flash the secondary
+        OverheatDisabledTransitionAnimation();
+
+        // Update the UI
+        UIManager.inst.UpdateInventory();
+        UIManager.inst.UpdateParts();
+    }
+
+    private void ForceDisabledCheck()
+    {
+        if(item.disabledTimer > 0 && modeMain.activeInHierarchy) // Need to update the number
+        {
+            UISetBoxDisplay($"DISABLED {item.disabledTimer}", UIManager.inst.warningOrange);
+        }
+        else if(item.disabledTimer <= 0 && modeMain.activeInHierarchy) // Need to get out of being disabled
+        {
+            UIEnable();
+        }
+    }
+
+    /// <summary>
     /// Melee weapons are unique in that, only one can be active at the same time. We need to do some checks here.
     /// </summary>
     public void MeleeCheck()
@@ -1112,6 +1149,33 @@ public class InvDisplayItem : MonoBehaviour
         start = activeGreen;
         end = UIManager.inst.siegeYellow;
         highlight = inActiveGreen;
+
+        // Set the assigned letter to a color while we're at it
+        assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(end)}>{assignedOrderString}</color>";
+
+        // Get the string list
+        List<string> strings = HF.SteppedStringHighlightAnimation(text, highlight, start, end);
+
+        // Animate the strings via our delay trick
+        float delay = 0f;
+        float perDelay = 0.35f / text.Length;
+
+        foreach (string s in strings)
+        {
+            StartCoroutine(HF.DelayedSetText(itemNameText, s, delay += perDelay));
+        }
+    }
+
+    private void OverheatDisabledTransitionAnimation()
+    {
+        // Go from active Green -> Orange
+        Color start = Color.white, end = Color.white, highlight = Color.white;
+        string text = item.itemData.itemName; // (this also resets old mark & color tags)
+
+        // GREEN -> ORANGE
+        start = activeGreen;
+        end = UIManager.inst.warningOrange;
+        highlight = UIManager.inst.corruptOrange;
 
         // Set the assigned letter to a color while we're at it
         assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(end)}>{assignedOrderString}</color>";

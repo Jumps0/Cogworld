@@ -67,6 +67,8 @@ public class BotAI : MonoBehaviour
         StartCoroutine(DecideTurnAction());
     }
 
+    // FUTURE NOTE TO SELF, MAKE SURE THE AI CHECKS IF THEY CAN AFFORD TO MOVE WITH `HF.HasResourcesToMove(this.GetComponent<Actor>)` BEFORE THEM DECIDING TO MOVE
+
     /// <summary>
     /// Actually decide what to do during this bots turn.
     /// </summary>

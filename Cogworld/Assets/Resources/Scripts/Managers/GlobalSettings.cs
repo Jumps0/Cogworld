@@ -42,6 +42,7 @@ public class GlobalSettings : MonoBehaviour
     public int defaultExposure = 100;
     public float cogCoreHeat1 = -25.0f;
     public float cogCoreHeat2 = -12.5f;
+    public float cogCoreHeat3 = 0f;
     public int cogCoreDefaultMovement = 50;
     public int cogCoreDefMovement2 = 0;
     public int cogCoreAvoidance = 50;

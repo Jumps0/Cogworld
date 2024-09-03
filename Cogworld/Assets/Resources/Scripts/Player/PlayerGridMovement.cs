@@ -214,6 +214,12 @@ public class PlayerGridMovement : MonoBehaviour
     [SerializeField] private bool moveKeyHeld;
     public void AttemptMovement(int X, int Y)
     {
+        // Before we try anything, we need to make sure the player can *afford* to move since there is usually always a movement cost.
+        if (!HF.HasResourcesToMove(this.GetComponent<Actor>()))
+        {
+            return;
+        }
+
         // Attempt to move in the *direction* described by X & Y
         // So we need to add that to our current position to obtain where we want to end up
 

@@ -2439,7 +2439,7 @@ public static class HF
             {
                 foreach (var E in item.itemData.itemEffects)
                 {
-                    if (E.hackBonuses.hasSystemShieldBonus && item.state)
+                    if (E.hackBonuses.hasSystemShieldBonus && item.state && item.disabledTimer <= 0)
                     {
                         hackDetectRateBonus += E.hackBonuses.hackDetectRateBonus;
                         hackDetectChanceBonus += E.hackBonuses.hackDetectChanceBonus;
@@ -4105,7 +4105,7 @@ public static class HF
         // Check for structural scanners
         foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>().inv_weapon.Container.Items)
         {
-            if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
+            if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
             {
                 if (item.item.itemData.itemEffects.Count > 0)
                 {
@@ -4761,6 +4761,41 @@ public static class HF
 
     #region Misc
 
+    /// <summary>
+    /// Checks to see if the specified bot has the required resources to try and move to a new location.
+    /// </summary>
+    /// <param name="actor">The bot trying to move.</param>
+    /// <returns>True/false if the bot can make the move.</returns>
+    public static bool HasResourcesToMove(Actor actor)
+    {
+        float movecost_energy = 0;
+
+        List<Item> propulsion = new List<Item>();
+        if (actor.GetComponent<PlayerData>())
+        {
+            foreach (var I in PlayerData.inst.GetComponent<PartInventory>().inv_propulsion.Container.Items)
+            {
+                if(I.item.Id >= 0 && I.item.state && I.item.disabledTimer <= 0)
+                {
+                    movecost_energy += I.item.itemData.propulsion[0].propEnergy;
+                }
+            }
+
+            return PlayerData.inst.currentEnergy >= movecost_energy;
+        }
+        else // Bot
+        {
+            foreach (var I in actor.components.Container.Items)
+            {
+                if (I.item.Id >= 0 && I.item.state && I.item.disabledTimer <= 0)
+                {
+                    movecost_energy += I.item.itemData.propulsion[0].propEnergy;
+                }
+            }
+
+            return actor.currentEnergy >= movecost_energy;
+        }
+    }
     public static QuestPoint ActorHasQuestPoint(Actor actor)
     {
         Transform actorTransform = actor.transform;

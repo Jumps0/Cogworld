@@ -3808,6 +3808,19 @@ public class UIManager : MonoBehaviour
         {
             currentHeatText.text += "<color=#B20000>" + "+" + heat2.ToString() + "</color>";
         }
+        if(PlayerData.inst.heatRate3 != 0) // This is not usually shown unless the player has the neccessary items
+        {
+            float heat3 = Mathf.Round(PlayerData.inst.heatRate3 * 10.0f) * 0.1f; // sneaky method of rounding to 1 decimal point "##.#"
+            if (PlayerData.inst.heatRate3 < 0) // Negative (Green)
+            {
+                currentHeatText.text += "<color=#009700>" + heat3.ToString() + "</color>";
+            }
+            else // Positive (Red)
+            {
+                currentHeatText.text += "<color=#B20000>" + "+" + heat3.ToString() + "</color>";
+            }
+        }
+                                                                   
         currentHeatText.text += ")";
 
         // - Turn on the warning flash backer if needed (>300 & >400)
@@ -5447,7 +5460,7 @@ public class UIManager : MonoBehaviour
             {
                 if (item.item.Id >= 0)
                 {
-                    if (item.item.state) // Only active weapons
+                    if (item.item.state && item.item.disabledTimer <= 0) // Only active weapons
                     {
                         string letter = HF.FindItemUILetter(item.item);
                         if(letter != null)
@@ -7566,6 +7579,11 @@ public class UIManager : MonoBehaviour
 
                         extra = "Fragile parts are destroyed if removed after attaching them for use. While attached, these are also marked with a colon next to their letter in the parts list, as a reminder.";
                         iState.Setup(true, true, false, "State", pearGreen, extra, "", false, "", false, "FRAGILE");
+                    }
+                    else if (item.disabledTimer > 0)
+                    {
+                        extra = "Current state of this item. This item is currently disabled, likely from overheating. This item will soon finish rebooting.";
+                        iState.Setup(true, true, false, "State", warningOrange, extra, "", false, "", false, "DISABLED");
                     }
                     else if (item.state) // Active (green)
                     {

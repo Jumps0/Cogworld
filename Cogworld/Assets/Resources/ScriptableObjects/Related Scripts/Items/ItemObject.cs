@@ -80,7 +80,7 @@ public class Item
     public bool isBroken = false;
     [Tooltip("Is this item corrupted?")]
     public bool corrupted = false;
-    [Tooltip("If > 0, this item is disabled for the specified turns.")]
+    [Tooltip("If > 0, this item is disabled for the specified turns. (Usually due to overheating)")]
     public int disabledTimer = 0;
     [Tooltip("Unstable weapons implode after the indicated remaining number of shots. -1 = not unstable.")]
     public int unstable = -1; // -1 = not unstable | https://www.gridsagegames.com/forums/index.php?topic=1577.0
@@ -110,6 +110,7 @@ public class Item
 
         unstable = item.unstable;
         disposable = item.disposable;
+        disabledTimer = item.disabledTimer;
         uniqueDetail = item.uniqueDetail;
 
         isDuplicate = item.isDuplicate;
@@ -135,6 +136,7 @@ public class Item
 
         unstable = item.unstable;
         disposable = item.disposable;
+        disabledTimer = 0;
         uniqueDetail = item.uniqueDetail;
 
         duplicates = new List<int>();

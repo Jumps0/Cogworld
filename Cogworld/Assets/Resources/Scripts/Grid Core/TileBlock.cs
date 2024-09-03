@@ -463,6 +463,11 @@ public class TileBlock : MonoBehaviour
         TurnManager.inst.turnEvents.onTurnTick -= TurnTick; // Stop listening to this event
     }
 
+    private void OnDestroy()
+    {
+        TurnManager.inst.turnEvents.onTurnTick -= TurnTick; // Stop listening to this event
+    }
+
     private void TurnTick()
     {
         // There are a couple instances where we need to do something or check something

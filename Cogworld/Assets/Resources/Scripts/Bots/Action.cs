@@ -5,11 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
-using UnityEngine.Rendering.VirtualTexturing;
-using UnityEngine.XR;
 using Color = UnityEngine.Color;
 using Transform = UnityEngine.Transform;
 using Vector2 = UnityEngine.Vector2;
@@ -1080,6 +1076,27 @@ public static class Action
         actor.Move(direction); // Actually move the actor
         actor.UpdateFieldOfView(); // Update their FOV
 
+        // Incurr costs for moving
+        float tomove_energy = 0, tomove_heat = 0;
+        foreach (var I in Action.CollectAllBotItems(actor))
+        {
+            if (I.state && I.disabledTimer <= 0 && I.itemData.slot == ItemSlot.Propulsion)
+            {
+                tomove_energy = I.itemData.propulsion[0].propEnergy;
+                tomove_heat = I.itemData.propulsion[0].propHeat;
+            }
+        }
+        if (actor.GetComponent<PlayerData>())
+        {
+            PlayerData.inst.currentHeat += (int)tomove_heat;
+            ModifyPlayerEnergy((int)tomove_energy);
+        }
+        else
+        {
+            actor.currentHeat += (int)tomove_heat;
+            actor.currentEnergy += (int)tomove_energy;
+        }
+
         // -- Misc stuff --
         if (actor == PlayerData.inst.GetComponent<Actor>() && UIManager.inst.volleyMode)
         {
@@ -1365,7 +1382,7 @@ public static class Action
         {
             foreach (var item in source.components.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate && stacks)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate && stacks && item.item.disabledTimer <= 0)
                 {
                     foreach(var E in item.item.itemData.itemEffects)
                     {
@@ -1392,7 +1409,7 @@ public static class Action
         {
             foreach (InventorySlot item in source.GetComponent<PartInventory>().inv_utility.Container.Items)
             {
-                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && stacks)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && stacks && item.item.disabledTimer <= 0)
                 {
                     foreach (var E in item.item.itemData.itemEffects)
                     {
@@ -2094,7 +2111,7 @@ public static class Action
         {
             foreach (var item in items)
             {
-                if (item.Id > 0 && item.state && item.itemData.slot == ItemSlot.Weapons && item != weapon)
+                if (item.Id > 0 && item.state && item.itemData.slot == ItemSlot.Weapons && item != weapon && item.disabledTimer <= 0)
                 {
                     int recoil = item.itemData.shot.shotRecoil;
                     if (recoil > 0)
@@ -2109,7 +2126,7 @@ public static class Action
         int weaponCount = 0;
         foreach (var item in items)
         {
-            if (item.Id > 0 && item.state && item.itemData.type == ItemType.Treads)
+            if (item.Id > 0 && item.state && item.itemData.type == ItemType.Treads && item.disabledTimer <= 0)
             {
                 foreach(var E in item.itemData.itemEffects)
                 {
@@ -2119,7 +2136,7 @@ public static class Action
                     }
                 }
             }
-            else if (item.Id > 0 && item.state && item.itemData.slot == ItemSlot.Weapons)
+            else if (item.Id > 0 && item.state && item.itemData.slot == ItemSlot.Weapons && item.disabledTimer <= 0)
             {
                 weaponCount++;
             }
@@ -2544,7 +2561,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_weapon.Container.Items)
             {
-                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     if (item.item.itemData.meleeAttack.isMelee)
                     {
@@ -2584,7 +2601,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_weapon.Container.Items)
             {
-                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     if (item.item.itemData.shot.shotRange > 3 && item.item.state)
                     {
@@ -2634,7 +2651,7 @@ public static class Action
         {
             foreach (var item in actor.armament.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     if (item.item.itemData.data.state)
                     {
@@ -2647,7 +2664,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_weapon.Container.Items)
             {
-                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     if (item.item.state)
                     {
@@ -2686,7 +2703,7 @@ public static class Action
             {
                 foreach (var item in actor.armament.Container.Items)
                 {
-                    if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                    if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                     {
                         if (item.item.itemData.meleeAttack.isMelee && item.item.itemData.data != mainWeapon && !item.item.itemData.isSpecialAttack) // Is a melee weapon, isn't the main weapon, and isn't a datajack
                         {
@@ -2701,7 +2718,7 @@ public static class Action
             {
                 foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_weapon.Container.Items)
                 {
-                    if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                    if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                     {
                         if (item.item.itemData.meleeAttack.isMelee && item.item != mainWeapon && !item.item.itemData.isSpecialAttack) // Is a melee weapon, isn't the main weapon, and isn't a datajack
                         {
@@ -2744,7 +2761,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_weapon.Container.Items)
             {
-                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     if (item.item.itemData.type == ItemType.Launcher && item.item.state)
                     {
@@ -2799,7 +2816,7 @@ public static class Action
         {
             foreach (var item in actor.components.Container.Items.ToList())
             {
-                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     if (item.item.itemData.type == ItemType.Treads)
                     {
@@ -2814,7 +2831,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_propulsion.Container.Items.ToList())
             {
-                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     if (item.item.itemData.type == ItemType.Treads && item.item.state)
                     {
@@ -2834,7 +2851,7 @@ public static class Action
         {
             foreach (var item in actor.components.Container.Items.ToList())
             {
-                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     if (item.item.itemData.type == ItemType.Legs)
                     {
@@ -2849,7 +2866,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_propulsion.Container.Items.ToList())
             {
-                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     if (item.item.itemData.type == ItemType.Legs && item.item.state)
                     {
@@ -2869,7 +2886,7 @@ public static class Action
         {
             foreach (var item in actor.components.Container.Items.ToList())
             {
-                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     if (item.item.itemData.type == ItemType.Wheels)
                     {
@@ -2884,7 +2901,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_propulsion.Container.Items.ToList())
             {
-                if(item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if(item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     if (item.item.itemData.type == ItemType.Wheels && item.item.state)
                     {
@@ -2919,7 +2936,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_propulsion.Container.Items.ToList())
             {
-                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     if (item.item.itemData.type == ItemType.Hover && item.item.state)
                     {
@@ -2939,7 +2956,7 @@ public static class Action
         {
             foreach (var item in actor.components.Container.Items.ToList())
             {
-                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     if (item.item.itemData.type == ItemType.Flight)
                     {
@@ -2954,7 +2971,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_propulsion.Container.Items.ToList())
             {
-                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     if (item.item.itemData.type == ItemType.Flight && item.item.state)
                     {
@@ -2983,7 +3000,7 @@ public static class Action
         {
             foreach (var item in actor.components.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     foreach (var E in item.item.itemData.itemEffects)
                     {
@@ -3017,7 +3034,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_utility.Container.Items)
             {
-                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     foreach (var E in item.item.itemData.itemEffects)
                     {
@@ -3114,7 +3131,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_utility.Container.Items)
             {
-                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     foreach (var E in item.item.itemData.itemEffects)
                     {
@@ -3174,7 +3191,7 @@ public static class Action
         {
             foreach (var item in actor.components.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     foreach(var E in item.item.itemData.itemEffects)
                     {
@@ -3206,7 +3223,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_utility.Container.Items)
             {
-                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     foreach (var E in item.item.itemData.itemEffects)
                     {
@@ -3247,7 +3264,7 @@ public static class Action
         {
             foreach (var item in actor.components.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     if (item.item.itemData.type == ItemType.Armor)
                     {
@@ -3262,7 +3279,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_utility.Container.Items)
             {
-                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     if (item.item.itemData.type == ItemType.Armor)
                     {
@@ -3305,7 +3322,7 @@ public static class Action
 
         foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>().inv_utility.Container.Items)
         {
-            if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
+            if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
             {
                 if (item.item.itemData.type == ItemType.Hackware)
                 {
@@ -3410,7 +3427,7 @@ public static class Action
         {
             foreach (var item in actor.components.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0 && item.item.state) // There's something there
+                if (item.item.itemData.data.Id >= 0 && item.item.state && item.item.disabledTimer <= 0) // There's something there
                 {
                     if (item.item.itemData.propulsion.Count > 0) // And its got propulsion data
                     {
@@ -3432,7 +3449,7 @@ public static class Action
 
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_propulsion.Container.Items)
             {
-                if (item.item.Id >= 0 && item.item.state)
+                if (item.item.Id >= 0 && item.item.state && item.item.disabledTimer <= 0)
                 {
                     if (item.item.itemData.propulsion.Count > 0) // And its got propulsion data
                     {
@@ -3468,7 +3485,7 @@ public static class Action
         {
             foreach (var item in actor.components.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0 && item.item.state) // There's something there
+                if (item.item.Id >= 0 && item.item.state && item.item.disabledTimer <= 0) // There's something there
                 {
                     foreach(var E in item.item.itemData.itemEffects)
                     {
@@ -3497,7 +3514,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_propulsion.Container.Items)
             {
-                if (item.item.Id >= 0 && item.item.state)
+                if (item.item.Id >= 0 && item.item.state && item.item.disabledTimer <= 0)
                 {
                     foreach (var E in item.item.itemData.itemEffects)
                     {
@@ -3613,7 +3630,7 @@ public static class Action
         {
             foreach (var item in target.armament.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
                 {
                     items.Add(item.item);
                 }
@@ -5164,7 +5181,7 @@ public static class Action
         {
             foreach (var item in attacker.components.Container.Items)
             {
-                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     foreach(var E in item.item.itemData.itemEffects)
                     {
@@ -5197,7 +5214,7 @@ public static class Action
         {
             foreach (InventorySlot item in attacker.GetComponent<PartInventory>().inv_utility.Container.Items)
             {
-                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     foreach (var E in item.item.itemData.itemEffects)
                     {
@@ -5323,7 +5340,7 @@ public static class Action
             {
                 foreach (var item in actor.components.Container.Items)
                 {
-                    if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                    if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                     {
                         // I still have no idea how this is actually calculated, this is just a guess
                         if (item.item.itemData.type == ItemType.Flight)
@@ -5377,7 +5394,7 @@ public static class Action
             BotMoveType myMoveType = DetermineBotMoveType(actor);
             foreach (var item in actor.components.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     if(actor.momentum > 0)
                     {
@@ -5466,7 +5483,7 @@ public static class Action
 
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_propulsion.Container.Items)
             {
-                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     if (item.item.itemData.type == ItemType.Flight && item.item.state)
                     {
@@ -5521,7 +5538,7 @@ public static class Action
             BotMoveType myMoveType = DetermineBotMoveType(actor);
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_propulsion.Container.Items)
             {
-                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     if (actor.momentum > 0)
                     {
@@ -5550,7 +5567,7 @@ public static class Action
 
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_utility.Container.Items)
             {
-                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate)
+                if (item.item.Id >= 0 && item.item.state && !item.item.isDuplicate && item.item.disabledTimer <= 0)
                 {
                     if (item.item.itemData.type == ItemType.Device && actor.weightCurrent <= actor.weightMax && rcsStack)
                     {
@@ -5642,7 +5659,7 @@ public static class Action
         {
             foreach (var item in actor.components.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0 && item.item.itemData.data.state)
+                if (item.item.Id >= 0 && item.item.state && item.item.disabledTimer <= 0)
                 {
                     foreach (ItemEffect effect in item.item.itemData.data.itemData.itemEffects)
                     {
@@ -5669,7 +5686,7 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_utility.Container.Items)
             {
-                if (item.item.Id > 0 && item.item.state)
+                if (item.item.Id > 0 && item.item.state && item.item.disabledTimer <= 0)
                 {
                     if (item.item.itemData.type == ItemType.Device)
                     {
@@ -6421,6 +6438,15 @@ public static class Action
          */
         #endregion
 
+        // * HUD shows full heat breakdown including stationary upkeep, when mobile, and injector/ablative cooling *
+        // As we go, we want to calculate the following things for the end
+        // 1) The total heat the player ends up with
+        // 2) Heat reduction when not moving
+        // 3) Heat reduction when moving
+        // 4) Heat reduction from items that lose HP as their function
+        float reduction1 = 0, reduction2 = 0, reduction3 = 0;
+        float moveCost = 0f;
+
         // - Firstly, gather up all items that produce cooling, and all items that naturally eminate heat.
         List<Item> allItems = Action.CollectAllBotItems(actor);
 
@@ -6429,7 +6455,7 @@ public static class Action
 
         foreach (var I in allItems)
         {
-            if (I.state) // Active items only
+            if (I.state && I.disabledTimer <= 0) // Active items only
             {
                 foreach (var E in I.itemData.itemEffects)
                 {
@@ -6438,10 +6464,22 @@ public static class Action
                         items_cold.Add(I);
                     }
                     else if (I.itemData.heatUpkeep > 0 && I.itemData.slot != ItemSlot.Weapons) // Heat making (it seems that anything that makes heat is put under the "heat upkeep" section and doesn't have a separate effect)
-                    {
+                    { // We don't include weapons because their upkeep is part of their usage cost not a per turn thing
                         items_hot.Add(I);
                     }
                 }
+
+                // While we're here, calculate the movement cost
+                if(I.itemData.slot == ItemSlot.Propulsion)
+                {
+                    moveCost += I.itemData.heatUpkeep;
+                }
+            }
+
+            // IMPORTANT NOTE: For efficiencies sake, we are going to handle the disabled item countdown here so we don't have to add another item search loop in
+            if(I.disabledTimer > 0)
+            {
+                I.disabledTimer--;
             }
         }
 
@@ -6519,17 +6557,20 @@ public static class Action
         }
 
         // 3. Subtract innate heat dissipation.
+        int innateDissipation = 0;
         if (actor.GetComponent<PlayerData>())
         {
-            totalHeat -= actor.GetComponent<PlayerData>().naturalHeatDissipation;
+            innateDissipation = actor.GetComponent<PlayerData>().naturalHeatDissipation;
         }
         else
         {
-            totalHeat -= actor.heatDissipation;
+            innateDissipation = actor.heatDissipation;
         }
+        totalHeat -= innateDissipation;
 
         // 4. Subtract heat dissipation from direct cooling utilities such as Heat Sinks and Cooling Systems.
         bool stackable = true;
+        int directDissipation = 0;
         foreach (var I in items_cold.ToList())
         {
             foreach (var E in I.itemData.itemEffects)
@@ -6541,11 +6582,19 @@ public static class Action
                     if (d.stacks || stackable)
                     {
                         stackable = false;
-                        totalHeat -= d.dissipationPerTurn;
+                        directDissipation += d.dissipationPerTurn;
                     }
                 }
             }
         }
+        totalHeat -= directDissipation;
+
+        // Calculate first heat reduction mark here
+        reduction1 = heat_ambient + artifact_heat_dissipation + innateDissipation + directDissipation;
+        // Then calculate the 2nd based on movement
+        reduction2 += moveCost;
+
+        float dissipationByDamage = 0f;
 
         // 5. If heat exceeds X, apply dissipation effects of disposable cooling systems such as Coolant Injectors, 
         //    up to that threshold. If more disposable systems than necessary, apply them in random order.
@@ -6562,6 +6611,7 @@ public static class Action
                     {
                         stackable = false;
                         totalHeat -= d.dissipationPerTurn;
+                        dissipationByDamage -= d.dissipationPerTurn;
                         // Damage the part
                         int damage = d.integrityLossPerTurn;
                         DamageItem(actor, I, damage);
@@ -6598,6 +6648,7 @@ public static class Action
                 {
                     stackable = false;
                     totalHeat -= I.Value.dissipationPerTurn;
+                    dissipationByDamage -= I.Value.dissipationPerTurn;
                     // Damage the part
                     int damage = I.Value.integrityLossPerTurn / abla_wide.Count; // Spread it out equally
                     DamageItem(actor, I.Key, damage);
@@ -6608,6 +6659,7 @@ public static class Action
         {
             // Should this try and dissipate all at once? Or only in 1 amount of what it can do per turn? Lets go with the 2nd option.
             totalHeat -= abla_wide[0].Value.dissipationPerTurn; // Dissipate heat
+            dissipationByDamage -= abla_wide[0].Value.dissipationPerTurn;
             DamageItem(actor, abla_wide[0].Key, abla_wide[0].Value.integrityLossPerTurn); // Damage the item
         }
 
@@ -6625,6 +6677,7 @@ public static class Action
                     {
                         stackable = false;
                         totalHeat -= d.dissipationPerTurn;
+                        dissipationByDamage -= d.dissipationPerTurn;
                         int damage = d.ablativeDamage;
                         int chunks = d.ablativeChunks;
 
@@ -6638,8 +6691,24 @@ public static class Action
             }
         }
 
-        // Lastly, consider overheating consequences
+        // Calculate the last reduction here
+        reduction3 = dissipationByDamage;
+
+        // 8. Consider overheating consequences
         Action.ConsiderOverheatingConsequences(actor);
+
+        // 9. Update the bots values
+        if (actor.GetComponent<PlayerData>())
+        {
+            PlayerData.inst.currentHeat = (int)totalHeat;
+            PlayerData.inst.heatRate1 = reduction1;
+            PlayerData.inst.heatRate2 = reduction2;
+            PlayerData.inst.heatRate3 = reduction3;
+        }
+        else
+        {
+            actor.currentHeat = (int)totalHeat;
+        }
 
         return surplusEnergy; // Return any surplus energy created
     }
@@ -6687,7 +6756,7 @@ public static class Action
 
             foreach (var I in items)
             {
-                if (I.state && (I.itemData.slot == ItemSlot.Utilities || I.itemData.slot == ItemSlot.Weapons))
+                if (I.state && (I.itemData.slot == ItemSlot.Utilities || I.itemData.slot == ItemSlot.Weapons) && I.disabledTimer <= 0)
                 {
                     sorted.Add(I);
                 }
@@ -6718,7 +6787,7 @@ public static class Action
 
             foreach (var I in items)
             {
-                if (I.state)
+                if (I.state && I.disabledTimer <= 0) // Active and not disabled already
                 {
                     if (I.itemData.slot == ItemSlot.Utilities || I.itemData.slot == ItemSlot.Weapons)
                     {
@@ -6827,41 +6896,75 @@ public static class Action
     /// <param name="duration">The time this item should be disabled.</param>
     public static void TemporarilyDisableItem(Actor source, Item item, int duration)
     {
-        if(item == null || item.Id <= 0) {  return; } // Failsafe
+        if(item == null || item.Id <= 0 || item.disabledTimer > 0) {  return; } // Failsafe
 
-        // Log a message
-        string message = "";
-        switch (item.itemData.slot)
+        // If the player owns it we need to update the UI, if not its a bit simpler
+        if (source.GetComponent<PlayerData>())
         {
-            case ItemSlot.Power:
-                message = $"Power failure, {item.itemData.itemName} shutdown.";
-                UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
-                break;
-            case ItemSlot.Propulsion:
-                message = $"Propulsion failure, {item.itemData.itemName} shutdown.";
-                UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
-                break;
-            case ItemSlot.Utilities:
-                message = $"Device failure, {item.itemData.itemName} shutdown.";
-                UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
-                break;
-            case ItemSlot.Weapons:
-                message = $"Weapon failure, {item.itemData.itemName} shutdown.";
-                UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
-                break;
-            case ItemSlot.Inventory:
-                message = $"Item failure, {item.itemData.itemName} shutdown.";
-                UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
-                break;
-            case ItemSlot.Other:
-                message = $"Item failure, {item.itemData.itemName} shutdown.";
-                UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
-                break;
-            default:
-                break;
-        }
+            // Log a message
+            string message = "";
+            switch (item.itemData.slot)
+            {
+                case ItemSlot.Power:
+                    message = $"Power failure, {item.itemData.itemName} shutdown.";
+                    UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
+                    break;
+                case ItemSlot.Propulsion:
+                    message = $"Propulsion failure, {item.itemData.itemName} shutdown.";
+                    UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
+                    break;
+                case ItemSlot.Utilities:
+                    message = $"Device failure, {item.itemData.itemName} shutdown.";
+                    UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
+                    break;
+                case ItemSlot.Weapons:
+                    message = $"Weapon failure, {item.itemData.itemName} shutdown.";
+                    UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
+                    break;
+                case ItemSlot.Inventory:
+                    message = $"Item failure, {item.itemData.itemName} shutdown.";
+                    UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
+                    break;
+                case ItemSlot.Other:
+                    message = $"Item failure, {item.itemData.itemName} shutdown.";
+                    UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
+                    break;
+                default:
+                    break;
+            }
 
-        // TODO - THIS NEXT
+            // Update the item's timer internally
+            item.disabledTimer = duration;
+
+            // We need to find the specific InvDisplayItem which holds the item and tell it to animate
+            InvDisplayItem element = null;
+            foreach (var I in InventoryControl.inst.interfaces)
+            {
+                if (I.GetComponentInChildren<DynamicInterface>())
+                {
+                    foreach (var S in I.GetComponentInChildren<DynamicInterface>().slotsOnInterface)
+                    {
+                        InvDisplayItem reference = null;
+
+                        if (S.Key.GetComponent<InvDisplayItem>().item != null)
+                        {
+                            reference = S.Key.GetComponent<InvDisplayItem>();
+                            if (reference.item == item)
+                            {
+                                element = reference;
+                            }
+                        }
+                    }
+                }
+            }
+            // Tell it to animate
+            element.UIForceDisabled(duration);
+        }
+        else // Bot owner
+        {
+            // Update the item's timer internally
+            item.disabledTimer = duration;
+        }
     }
 
     #region Basic Player Stat Changes

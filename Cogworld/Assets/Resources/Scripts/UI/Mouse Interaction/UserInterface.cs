@@ -152,7 +152,7 @@ public abstract class UserInterface : MonoBehaviour
     /// <param name="obj">The InventorySlot which holds the item we are currently dragging (aka Origin). Most data is inside the [InvDisplayItem] attached to it.</param>
     public void OnDragEnd(GameObject obj)
     {
-        if (obj.GetComponent<InvDisplayItem>().item == null || obj.GetComponent<InvDisplayItem>().isSecondaryItem) // Don't drag empty or secondary items.
+        if (obj.GetComponent<InvDisplayItem>().item == null || obj.GetComponent<InvDisplayItem>().isSecondaryItem || obj.GetComponent<InvDisplayItem>().item.disabledTimer > 0) // Don't drag empty, secondary items, or disabled items.
             return;
 
         Destroy(MouseData.tempItemBeingDragged);
