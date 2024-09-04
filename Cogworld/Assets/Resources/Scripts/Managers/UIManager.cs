@@ -9469,6 +9469,7 @@ public class UIManager : MonoBehaviour
             Color tempColor = Color.white;
             string tempText = "";
             extra = "Current temperature. At the danger threshold and above, this robot is susceptible to meltdowns from additional thermal damage.";
+            // [0 to 100 -> Cool] [100 to 200 -> Warm] [200 to 300 -> Hot] [300 to 400 -> Warning] [400+ -> Critical]
             if (bot.currentHeat < 100) // Cool
             {
                 tempText = "Cool";
@@ -9479,9 +9480,14 @@ public class UIManager : MonoBehaviour
                 tempText = "Warm";
                 tempColor = warmYellow;
             }
-            else if (bot.currentHeat >= 200 && bot.currentHeat < 300) // HOT
+            else if (bot.currentHeat >= 200 && bot.currentHeat < 300) // Hot
             {
                 tempText = "Hot";
+                tempColor = hotOrange;
+            }
+            else if (bot.currentHeat >= 300 && bot.currentHeat < 400) // Warning
+            {
+                tempText = "Warning";
                 tempColor = warningOrange;
             }
             else // Critical
