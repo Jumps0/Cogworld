@@ -3508,9 +3508,10 @@ public class UIManager : MonoBehaviour
     //
     public TextMeshProUGUI currentHeatText;
     public Image heaWarningBacker;
-    //
+    // [0 to 100 -> Cool] [100 to 200 -> Warm] [200 to 300 -> Hot] [300 to 400 -> Warning] [400+ -> Critical]
     public Color coolBlue;
     public Color warmYellow;
+    public Color hotOrange;
     public Color warningOrange;
     //
     // -      -
@@ -3531,7 +3532,6 @@ public class UIManager : MonoBehaviour
     //
     public Color slowOrange;
     public Color superSlowOrange;
-    public Color siegeYellow;
     //
     // -          -
     [Header("Time/Location")]
@@ -3762,6 +3762,7 @@ public class UIManager : MonoBehaviour
         }
 
         // ---------- HEAT ------------
+        // [0 to 100 -> Cool] [100 to 200 -> Warm] [200 to 300 -> Hot] [300 to 400 -> Warning] [400+ -> Critical]
         if (PlayerData.inst.currentHeat < 100) // Cool
         {
             heaDiffText.text = "Cool";
@@ -3772,9 +3773,14 @@ public class UIManager : MonoBehaviour
             heaDiffText.text = "Warm";
             heaDiffImage.color = warmYellow;
         }
-        else if(PlayerData.inst.currentHeat >= 200 && PlayerData.inst.currentHeat < 300) // HOT
+        else if(PlayerData.inst.currentHeat >= 200 && PlayerData.inst.currentHeat < 300) // Hot
         {
             heaDiffText.text = "Hot";
+            heaDiffImage.color = hotOrange;
+        }
+        else if (PlayerData.inst.currentHeat >= 300 && PlayerData.inst.currentHeat < 400) // Warning
+        {
+            heaDiffText.text = "Warning";
             heaDiffImage.color = warningOrange;
         }
         else // Critical
@@ -3927,7 +3933,7 @@ public class UIManager : MonoBehaviour
                 else if (speed >= 150 && speed < 200) // SLOW
                 {
                     modeText.text = "SLOW";
-                    modeImage.color = siegeYellow;
+                    modeImage.color = slowOrange;
                 }
                 else // Nothing
                 {
@@ -3966,7 +3972,7 @@ public class UIManager : MonoBehaviour
                 else if (speed >= 150 && speed < 200) // SLOW
                 {
                     modeText.text = "SLOW";
-                    modeImage.color = siegeYellow;
+                    modeImage.color = slowOrange;
                 }
                 else // Nothing
                 {
@@ -4005,7 +4011,7 @@ public class UIManager : MonoBehaviour
                 else if (speed >= 150 && speed < 200) // SLOW
                 {
                     modeText.text = "SLOW";
-                    modeImage.color = siegeYellow;
+                    modeImage.color = slowOrange;
                 }
                 else // Nothing
                 {
@@ -4044,7 +4050,7 @@ public class UIManager : MonoBehaviour
                 else if (speed >= 150 && speed < 200) // SLOW
                 {
                     modeText.text = "SLOW";
-                    modeImage.color = siegeYellow;
+                    modeImage.color = slowOrange;
                 }
                 else // Nothing
                 {
@@ -4083,7 +4089,7 @@ public class UIManager : MonoBehaviour
                 else if (speed >= 150 && speed < 200) // SLOW
                 {
                     modeText.text = "SLOW";
-                    modeImage.color = siegeYellow;
+                    modeImage.color = slowOrange;
                 }
                 else // Nothing
                 {
@@ -4122,7 +4128,7 @@ public class UIManager : MonoBehaviour
                 else if (speed >= 150 && speed < 200) // SLOW
                 {
                     modeText.text = "SLOW";
-                    modeImage.color = siegeYellow;
+                    modeImage.color = slowOrange;
                 }
                 else // Nothing
                 {
@@ -4154,7 +4160,7 @@ public class UIManager : MonoBehaviour
                     moveTypeText.text = "Immobile";
                     modeText.text = "SIEGE";
                     modeGO.SetActive(true);
-                    modeImage.color = siegeYellow;
+                    modeImage.color = slowOrange;
                 }
 
                 break;

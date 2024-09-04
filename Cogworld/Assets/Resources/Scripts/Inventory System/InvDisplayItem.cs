@@ -1129,7 +1129,7 @@ public class InvDisplayItem : MonoBehaviour
         item.isOverloaded = true;
 
         // Enable the box
-        UISetBoxDisplay("OVERLOADED", UIManager.inst.siegeYellow);
+        UISetBoxDisplay("OVERLOADED", UIManager.inst.slowOrange);
 
         // Do a little animation
         StartCoroutine(SecondaryDataFlash()); // Flash the secondary
@@ -1151,7 +1151,7 @@ public class InvDisplayItem : MonoBehaviour
 
         // GREEN -> YELLOW
         start = activeGreen;
-        end = UIManager.inst.siegeYellow;
+        end = UIManager.inst.slowOrange;
         highlight = inActiveGreen;
 
         // Set the assigned letter to a color while we're at it
@@ -1291,7 +1291,7 @@ public class InvDisplayItem : MonoBehaviour
 
                 // GRAY -> YELLOW
                 start = emptyGray;
-                end = UIManager.inst.siegeYellow;
+                end = UIManager.inst.slowOrange;
                 highlight = inActiveGreen;
 
                 // Set the assigned letter to a color while we're at it
@@ -1310,7 +1310,7 @@ public class InvDisplayItem : MonoBehaviour
                 }
                 break;
             case 1: // (begin) -> SIEGE
-                UISetBoxDisplay("SIEGE", UIManager.inst.siegeYellow); // Alter the box
+                UISetBoxDisplay("SIEGE", UIManager.inst.slowOrange); // Alter the box
                 // No actual animation here
 
                 break;
@@ -1324,7 +1324,7 @@ public class InvDisplayItem : MonoBehaviour
                 // Change the text color from yellow to green using our animation
 
                 // YELLOW -> GREEN
-                start = UIManager.inst.siegeYellow;
+                start = UIManager.inst.slowOrange;
                 end = activeGreen;
                 highlight = inActiveGreen;
 

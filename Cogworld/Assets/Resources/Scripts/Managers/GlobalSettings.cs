@@ -329,6 +329,7 @@ public class GlobalSettings : MonoBehaviour
             debugUI_parent.SetActive(!debugUI_parent.activeInHierarchy);
         }
 
+        /*
         if (Input.GetKeyDown(KeyCode.RightBracket))
         {
             UIManager.inst.NewFloor_BeginAnimate();
@@ -366,8 +367,9 @@ public class GlobalSettings : MonoBehaviour
             doOnce5 = true;
             debugLogMessageTest = false;
         }
+        */
 
-        if (Input.GetKeyDown(KeyCode.Tilde))
+        if (Input.GetKeyDown(KeyCode.RightBracket))
         {
             ToggleDebugBar();
         }
@@ -378,13 +380,25 @@ public class GlobalSettings : MonoBehaviour
         }
     }
 
+    #region Debug Bar
     [Header("Debug Bar")]
     [SerializeField] private GameObject db_main;
-    [SerializeField] private InputField db_input;
+    [SerializeField] private TMP_InputField db_input;
     [SerializeField] private TextMeshProUGUI db_textaid;
+    [SerializeField] private bool db_helper_override = false;
+    private Coroutine db_helperCooldown;
     private void ToggleDebugBar()
     {
         db_main.SetActive(!db_main.activeInHierarchy);
+        db_textaid.gameObject.SetActive(false);
+
+        // Play a sound
+        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.UI_Clips[42], 0.5f); // UI - HACK_BUTTON
+
+        if (db_main.activeInHierarchy)
+        {
+            db_input.Select();
+        }
     }
 
     private void DebugBarListenForInput()
@@ -394,10 +408,255 @@ public class GlobalSettings : MonoBehaviour
             // Read the input
             string command = db_input.text;
 
-            // Parse the input
+            // Parse the input and try to do something with that
+            if(command.Length >= 2)
+            {
+                DebugBarDoCommand(command);
+            }
+        }
 
+        if(db_input.text.Length > 2) // We want to assist the user and tell them what each thing does
+        {
+            DebugBarHelper();
         }
     }
+
+    private void DebugBarHelper(string override_message = "")
+    {
+        // Is there a more important message to display?
+        if (db_helper_override)
+        {
+            db_textaid.gameObject.SetActive(true);
+
+            // Yes, change the text and color
+            db_textaid.text = override_message;
+            db_textaid.color = UIManager.inst.warningOrange;
+            return; // Bail out early
+        }
+
+        // Normally this should give info about the command the user may be typing, but if an override message is recieved then for X seconds we need to display that message instead.
+        if (override_message != "") // Override
+        {
+            // Start the cooldown, and try again recursively
+            if(db_helperCooldown != null)
+            {
+                StopCoroutine(db_helperCooldown);
+            }
+            db_helperCooldown = StartCoroutine(DebugBarHelperCooldown());
+
+            DebugBarHelper(override_message);
+        }
+        else // Normal operations
+        {
+            db_textaid.gameObject.SetActive(false);
+            db_textaid.color = Color.white;
+
+            // Now we need to parse the partial input
+            string command = db_input.text.ToLower();
+            if (command.Length > 2)
+            {
+                // Check to see if the input contains a command type, if it does, give more detail on that
+                if (command.Contains("set"))
+                {
+                    db_textaid.gameObject.SetActive(true);
+                    db_textaid.text = "> set \"target\" \"var\" \"amount\" [Reassign a variable value]";
+                }
+                else if (command.Contains("spawn"))
+                {
+                    db_textaid.gameObject.SetActive(true);
+                    db_textaid.text = "> spawn \"type\" \"name\" [Spawn something next to the player]";
+                }
+                // Expand this as needed
+            }
+        }
+    }
+
+    private IEnumerator DebugBarHelperCooldown()
+    {
+        db_helper_override = true;
+
+        yield return new WaitForSeconds(5f);
+
+        db_helper_override = false;
+        db_textaid.text = "";
+    }
+
+    private void DebugBarDoCommand(string input)
+    {
+        #region Possible Commands
+        /* ===== [ POSSIBLE COMMANDS ] =====
+         *  > set "target" "var" "amount"
+         *    -Used to set a certain value to an individual target.
+         *    Target: The entity we want to target. Can be "player", if not, we need to search for it in the world.
+         *    Value: The variable we want to alter (health, energy, matter, corruption, heat)
+         *    Amount: The new value the variable should have
+         *  > spawn "type" "name"
+         *    -Used to spawn something in the world adjacent to the player. Can be an item or an entity
+         *    Type: If this is an item or a bot
+         *    Name: The direct name of this thing, better spell it correctly!
+         * ================================
+         */
+
+        // Split the command into parts
+        string[] bits = input.ToLower().Split(" ");
+
+        switch (bits[0])
+        {
+            case "set":
+                // This is everything we need
+                Actor c_target = null;
+                string value = "";
+                float amount = 0f;
+
+                // Next go to the second word
+                if(bits.Length == 1) // There is no second word
+                {
+                    DebugBarHelper("[set] Must specify target (ex. player)");
+                    return;
+                }
+                else
+                {
+                    // Try to parse the target
+                    string target = bits[1];
+                    if (target.Contains("player")) // Player is target
+                    {
+                        c_target = PlayerData.inst.GetComponent<Actor>();
+                    }
+                    else // This isn't the player, and we will need to search for this bot in the world
+                    {
+                        foreach (Entity E in GameManager.inst.entities)
+                        {
+                            if(E.uniqueName == target)
+                            {
+                                c_target = E.GetComponent<Actor>();
+                            }
+                        }
+                    }
+
+                    // Do we have a valid target?
+                    if(c_target == null)
+                    {
+                        DebugBarHelper("[set] Target not found");
+                        return;
+                    }
+                    else // Continue
+                    {
+                        // Do we have a 3rd word?
+                        if(bits.Length <= 2)
+                        {
+                            DebugBarHelper("[set] Must specify a variable to change (ex. energy)");
+                            return;
+                        }
+                        else
+                        {
+                            // Is the 3rd word valid?
+                            value = bits[2];
+
+                            if(value == "health" || value == "energy" || value == "matter" || value == "corruption" || value == "heat")
+                            {
+                                // Yes, continue to the 4th and final word.
+                                if(bits.Length <= 3)
+                                {
+                                    DebugBarHelper("[set] Please specify an amount to change the value by");
+                                    return;
+                                }
+                                else
+                                {
+                                    // Don't need to parse this, but we will clamp if
+                                    amount = Mathf.Clamp(float.Parse(bits[3]), -5000f, 5000f);
+                                }
+                            }
+                            else // Bail out here
+                            {
+                                DebugBarHelper("[set] Unknown variable");
+                                return;
+                            }
+                        }
+                    }
+                }
+
+                // Now that we have collected all our info, we can actually do the command
+                switch (value)
+                {
+                    case "health":
+                        if (c_target.GetComponent<PlayerData>())
+                        {
+                            PlayerData.inst.currentHealth = (int)amount;
+                            DebugBarHelper($"Player {value} set to {(int)amount}.");
+                        }
+                        else
+                        {
+                            c_target.currentHealth += (int)amount;
+                            DebugBarHelper($"{c_target.uniqueName}'s {value} set to {(int)amount}.");
+                        }
+                        break;
+                    case "energy":
+                        if (c_target.GetComponent<PlayerData>())
+                        {
+                            PlayerData.inst.currentEnergy = (int)amount;
+                            DebugBarHelper($"Player {value} set to {(int)amount}.");
+                        }
+                        else
+                        {
+                            c_target.currentEnergy += (int)amount;
+                            DebugBarHelper($"{c_target.uniqueName}'s {value} set to {(int)amount}.");
+                        }
+                        break;
+                    case "matter":
+                        if (c_target.GetComponent<PlayerData>())
+                        {
+                            PlayerData.inst.currentMatter = (int)amount;
+                            DebugBarHelper($"Player {value} set to {(int)amount}.");
+                        }
+                        else
+                        {
+                            // Bots don't have matter
+                        }
+                        break;
+                    case "corruption":
+                        if (c_target.GetComponent<PlayerData>())
+                        {
+                            PlayerData.inst.currentCorruption = (int)amount;
+                            DebugBarHelper($"Player {value} set to {(int)amount}.");
+                        }
+                        else
+                        {
+                            c_target.corruption += (int)amount;
+                            DebugBarHelper($"{c_target.uniqueName}'s {value} set to {(int)amount}.");
+                        }
+                        break;
+                    case "heat":
+                        if (c_target.GetComponent<PlayerData>())
+                        {
+                            PlayerData.inst.currentHeat = (int)amount;
+                            DebugBarHelper($"Player {value} set to {(int)amount}.");
+                        }
+                        else
+                        {
+                            c_target.currentHeat += (int)amount;
+                            DebugBarHelper($"{c_target.uniqueName}'s {value} set to {(int)amount}.");
+                        }
+                        break;
+                    default:
+                        // Do nothing? This shouldn't happen?
+                        break;
+                }
+                // Clear the input box
+                db_input.text = "";
+
+                break;
+            case "spawn":
+                // TODO
+                break;
+
+            default: // Unknown command
+                DebugBarHelper("Unknown command...");
+                return;
+        }
+
+        #endregion
+    }
+    #endregion
 
     private void CheckForCheats()
     {
