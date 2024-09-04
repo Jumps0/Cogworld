@@ -42,5 +42,10 @@ public abstract class QuestStep : MonoBehaviour
         GameManager.inst.questEvents.QuestStepStateChange(questID, stepIndex, new QuestStepState(newState));
     }
 
+    private void Update()
+    {
+        Debug.Log($"{questID}'s step is finished? {isFinished}");
+    }
+
     protected abstract void SetQuestStepState(string state);
 }

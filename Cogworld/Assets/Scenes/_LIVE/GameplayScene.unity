@@ -2413,7 +2413,7 @@ GameObject:
   m_Component:
   - component: {fileID: 42996450}
   - component: {fileID: 42996453}
-  - component: {fileID: 42996451}
+  - component: {fileID: 42996454}
   - component: {fileID: 42996452}
   m_Layer: 5
   m_Name: '*Claim Rewards Button*'
@@ -2443,24 +2443,6 @@ RectTransform:
   m_AnchoredPosition: {x: -0.0000009536743, y: 0}
   m_SizeDelta: {x: 57.2418, y: 15.2645}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &42996451
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 42996449}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e590340a356ddb641a129d81cf3ae08c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  image_backer: {fileID: 42996452}
-  text_main: {fileID: 766250160}
-  type: 1
-  darkGreen: {r: 0.08235294, g: 0.2509804, b: 0.078431375, a: 1}
-  normalGreen: {r: 0, g: 0.84705883, b: 0, a: 1}
-  headerWhite: {r: 0.6117647, g: 0.6117647, b: 0.6117647, a: 1}
 --- !u!114 &42996452
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2499,6 +2481,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 42996449}
   m_CullTransparentMesh: 1
+--- !u!114 &42996454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 42996449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 699b00bdec67e8a4aadb27ee98e596a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  replace_text: '"CLAIM"'
+  image_backer: {fileID: 42996452}
+  text_main: {fileID: 766250160}
+  darkGreen: {r: 0.08235294, g: 0.2509804, b: 0.078431375, a: 1}
+  normalGreen: {r: 0, g: 0.8470589, b: 0, a: 1}
+  headerWhite: {r: 0.6117647, g: 0.6117647, b: 0.6117647, a: 1}
 --- !u!1 &44276606
 GameObject:
   m_ObjectHideFlags: 0
@@ -10265,7 +10265,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 89.586105, y: 0}
   m_SizeDelta: {x: 0, y: 22.777779}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &272249432
@@ -39012,7 +39012,6 @@ MonoBehaviour:
   usingSpecialMovement: 0
   slowOrange: {r: 0.7019608, g: 0.7019608, b: 0.003921569, a: 1}
   superSlowOrange: {r: 0.6509804, g: 0.34509805, b: 0.023529414, a: 1}
-  siegeYellow: {r: 0.7058824, g: 0.70980394, b: 0, a: 1}
   timeText: {fileID: 484724369}
   clock_text: {fileID: 1460823366}
   run_text: {fileID: 1973409608}
@@ -43853,8 +43852,8 @@ MonoBehaviour:
   onHoverStart:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 42996451}
-        m_TargetAssemblyTypeName: UICycleInventory, Assembly-CSharp
+      - m_Target: {fileID: 42996454}
+        m_TargetAssemblyTypeName: UISimpleCycle, Assembly-CSharp
         m_MethodName: HoverBegin
         m_Mode: 1
         m_Arguments:
@@ -43868,8 +43867,8 @@ MonoBehaviour:
   onHoverEnd:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 42996451}
-        m_TargetAssemblyTypeName: UICycleInventory, Assembly-CSharp
+      - m_Target: {fileID: 42996454}
+        m_TargetAssemblyTypeName: UISimpleCycle, Assembly-CSharp
         m_MethodName: HoverEnd
         m_Mode: 1
         m_Arguments:

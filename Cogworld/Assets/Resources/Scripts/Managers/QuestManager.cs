@@ -431,7 +431,7 @@ public class QuestManager : MonoBehaviour
         ui_ClaimRewardsButton.SetActive(false); // Disable the Claim button
         AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[14], 0.5f); // Play a claim sound [UI - CASH_REGISTER]
 
-        List<Item> rewards_item = quest.info.reward_items;
+        List<ItemObject> rewards_item = quest.info.reward_items;
         int rewards_matter = quest.info.reward_matter;
         Debug.Log("Reward claimed!");
         // How do we handle this?
@@ -444,7 +444,7 @@ public class QuestManager : MonoBehaviour
             // Add items to the Hideout Inventory Object
             foreach (var item in rewards_item)
             {
-                InventoryControl.inst.hideout_inventory.AddItem(item);
+                InventoryControl.inst.hideout_inventory.AddItem(new Item(item));
             }
         }
 
@@ -462,7 +462,7 @@ public class QuestManager : MonoBehaviour
     /// <returns>True/False if a reward for this quest exists.</returns>
     private bool QuestHasRewards(Quest quest)
     {
-        List<Item> rewards_item = quest.info.reward_items;
+        List<ItemObject> rewards_item = quest.info.reward_items;
         int rewards_matter = quest.info.reward_matter;
 
         if (rewards_item.Count > 0) // -- Items --
@@ -954,7 +954,7 @@ public class QuestManager : MonoBehaviour
         ui_questSteps.Clear();
     }
 
-    private void UI_CreateQuestRewards(Quest quest, Item itemReward = null, int matterReward = 0)
+    private void UI_CreateQuestRewards(Quest quest, ItemObject itemReward = null, int matterReward = 0)
     {
         // Instantiate Object
         GameObject obj = Instantiate(ui_prefab_questReward, ui_QuestRewardsArea.transform);

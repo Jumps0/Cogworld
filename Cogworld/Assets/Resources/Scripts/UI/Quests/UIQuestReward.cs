@@ -8,7 +8,7 @@ public class UIQuestReward : MonoBehaviour
 {
     [Header("Details")]
     private Quest info;
-    private Item itemReward;
+    private ItemObject itemReward;
     private int matterRewards;
     [SerializeField] private List<Color> colors = new List<Color>();
 
@@ -19,7 +19,7 @@ public class UIQuestReward : MonoBehaviour
     [SerializeField] private Image image_border;
     [SerializeField] private Image image_icon_border;
 
-    public void Init(Quest q, List<Color> colors, Item ir, int mr)
+    public void Init(Quest q, List<Color> colors, ItemObject ir, int mr)
     {
         info = q;
         itemReward = ir;
@@ -35,8 +35,8 @@ public class UIQuestReward : MonoBehaviour
         }
         else if(ir != null) // Item reward
         {
-            text_name.text = ir.itemData.name;
-            id = ir.Id;
+            text_name.text = ir.data.itemData.itemName;
+            id = ir.data.Id;
         }
         else
         {

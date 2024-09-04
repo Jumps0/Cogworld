@@ -467,7 +467,7 @@ public abstract class QuestObject : ScriptableObject
     public List<QuestActions> stepsInfo;
 
     [Header("Rewards")]
-    public List<Item> reward_items;
+    public List<ItemObject> reward_items;
     public int reward_matter;
     public bool reward_claimed = false;
 

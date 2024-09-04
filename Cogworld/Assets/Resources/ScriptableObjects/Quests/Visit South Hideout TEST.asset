@@ -40,7 +40,7 @@ MonoBehaviour:
   - {fileID: 4471201208271377523, guid: f47c60cf5160b464aad3dab2a2370c3f, type: 3}
   stepsInfo:
   - stepDescription: Visit the southern side of the Hideout.
-    amount: 1
+    amount_max: 1
     kill_faction: 0
     kill_factionType: 0
     kill_class: 0
@@ -69,8 +69,10 @@ MonoBehaviour:
     destroy_machine: {fileID: 0}
     destroy_specificObject: 0
     destroy_object: {fileID: 0}
-  reward_items: []
+  reward_items:
+  - {fileID: 11400000, guid: 1d1290a5f1b43b647bdd6f34aa3b382b, type: 2}
   reward_matter: 0
+  reward_claimed: 0
   questGiverSprite: {fileID: 21300000, guid: c2f79deb7a4925141b093fdcf078edff, type: 3}
   questGiverName: C8O
   questGiverDescription: Test description. You need to go below the hideout.
