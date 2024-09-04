@@ -1166,7 +1166,7 @@ public static class Action
             }
         }
 
-        GameObject moveLocation = target.GetComponent<Actor>().GetBestFleeLocation(source.gameObject, target.gameObject, validMoveLocations);
+        GameObject moveLocation = target.GetComponent<Actor>().FindBestFleeLocation(source.gameObject, target.gameObject, validMoveLocations);
 
         if(moveLocation != null)
         {
@@ -5017,12 +5017,19 @@ public static class Action
 
     public static void DestoyItem(Actor owner, Item item, bool crit = false)
     {
+        // There is a chance the player doesn't know what the item is that got destroyed
+        string item_name = item.itemData.itemName;
+        if (!item.itemData.knowByPlayer)
+        {
+            item_name = HF.ItemPrototypeName(item);
+        }
+
         if (owner.botInfo) // Bot
         {
             Action.RemovePartFromBotInventory(owner, item);
 
             // Display a (Short) Combat popup targeting on the bot to show what was lost
-            UIManager.inst.CreateShortCombatPopup(owner.gameObject, $"-{item.itemData.itemName}", UIManager.inst.highSecRed, UIManager.inst.dangerRed);
+            UIManager.inst.CreateShortCombatPopup(owner.gameObject, $"-{item_name}", UIManager.inst.highSecRed, UIManager.inst.dangerRed);
         }
         else // Player
         {
@@ -5041,15 +5048,15 @@ public static class Action
                 }
             }
             // Display a (Short) Combat popup targeting on the bot to show what was lost
-            UIManager.inst.CreateShortCombatPopup(PlayerData.inst.gameObject, $"-{item.itemData.itemName}", UIManager.inst.highSecRed, UIManager.inst.dangerRed);
+            UIManager.inst.CreateShortCombatPopup(PlayerData.inst.gameObject, $"-{item_name}", UIManager.inst.highSecRed, UIManager.inst.dangerRed);
 
             if (crit)
             {
-                UIManager.inst.CreateNewLogMessage(item.itemData.itemName + " has been completely destroyed.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                UIManager.inst.CreateNewLogMessage(item_name + " has been completely destroyed.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
             }
             else
             {
-                UIManager.inst.CreateNewLogMessage(item.itemData.itemName + " destroyed.", UIManager.inst.highSecRed, UIManager.inst.dangerRed, false, true);
+                UIManager.inst.CreateNewLogMessage(item_name + " destroyed.", UIManager.inst.highSecRed, UIManager.inst.dangerRed, false, true);
             }
 
             // "Cogmind automatically recycles 5 matter from each attached part that is destroyed."

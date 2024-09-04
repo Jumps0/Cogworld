@@ -409,7 +409,7 @@ public class Actor : Entity
         }
     }
 
-    public GameObject GetBestFleeLocation(GameObject target, GameObject entity, List<GameObject> validMoveLocations)
+    public GameObject FindBestFleeLocation(GameObject target, GameObject entity, List<GameObject> validMoveLocations)
     {
         GameObject bestLocation = null;
         float furthestDistance = 0f;

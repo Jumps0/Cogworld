@@ -518,7 +518,7 @@ public class BotAI : MonoBehaviour
                     }
                 }
 
-                GameObject fleeLocation = this.GetComponent<Actor>().GetBestFleeLocation(fleeSource.gameObject, this.gameObject, validMoveLocations);
+                GameObject fleeLocation = this.GetComponent<Actor>().FindBestFleeLocation(fleeSource.gameObject, this.gameObject, validMoveLocations);
 
                 if (fleeLocation != null)
                 {
