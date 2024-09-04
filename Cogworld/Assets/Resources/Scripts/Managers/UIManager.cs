@@ -3806,7 +3806,7 @@ public class UIManager : MonoBehaviour
         currentHeatText.text += "(";
 
         float heat1 = Mathf.Round(PlayerData.inst.heatRate1 * 10.0f) * 0.1f; // sneaky method of rounding to 1 decimal point "##.#"
-        if (PlayerData.inst.heatRate1 < 0) // Negative (Green)
+        if (PlayerData.inst.heatRate1 <= 0) // Negative (Green)
         {
             currentHeatText.text += "<color=#009700>" + heat1.ToString() + "</color>" + " ";
         }
@@ -3815,7 +3815,7 @@ public class UIManager : MonoBehaviour
             currentHeatText.text += "<color=#B20000>" + "+" + heat1.ToString() + "</color>" + " ";
         }
         float heat2 = Mathf.Round(PlayerData.inst.heatRate2 * 10.0f) * 0.1f; // sneaky method of rounding to 1 decimal point "##.#"
-        if (PlayerData.inst.heatRate2 < 0) // Negative (Green)
+        if (PlayerData.inst.heatRate2 <= 0) // Negative (Green)
         {
             currentHeatText.text += "<color=#009700>" + heat2.ToString() + "</color>";
         }
@@ -3826,7 +3826,7 @@ public class UIManager : MonoBehaviour
         if(PlayerData.inst.heatRate3 != 0) // This is not usually shown unless the player has the neccessary items
         {
             float heat3 = Mathf.Round(PlayerData.inst.heatRate3 * 10.0f) * 0.1f; // sneaky method of rounding to 1 decimal point "##.#"
-            if (PlayerData.inst.heatRate3 < 0) // Negative (Green)
+            if (PlayerData.inst.heatRate3 <= 0) // Negative (Green)
             {
                 currentHeatText.text += "<color=#009700>" + heat3.ToString() + "</color>";
             }
@@ -8872,21 +8872,21 @@ public class UIManager : MonoBehaviour
                                     textWall += "Automatically collects matter within a range of " + E.matterCollectionRange + ".";
                                 }
 
-                                if (E.internalStorage)
+                                if (E.internalStorageEffect.hasEffect)
                                 {
                                     textWall += "Increases ";
-                                    if (E.internalStorageType == 0) // Matter
+                                    if (E.internalStorageEffect.internalStorageType == 0) // Matter
                                     {
-                                        textWall += "matter storage capcity by " + E.internalStorageCapacity + ".";
+                                        textWall += "matter storage capcity by " + E.internalStorageEffect.capacity + ".";
                                         textWall += " Also stores surplus collected matter while in inventory, but cannot be accessed for use until attached. Stored matter can also be extracted directly if on the ground at current position.";
                                     }
-                                    else if (E.internalStorageType == 1) // Power
+                                    else if (E.internalStorageEffect.internalStorageType == 1) // Power
                                     {
-                                        textWall += "energy storage capcity by " + E.internalStorageCapacity + ".";
+                                        textWall += "energy storage capcity by " + E.internalStorageEffect.capacity + ".";
                                         textWall += " Also stores surplus collected energy while in inventory, but cannot be accessed for use until attached. Stored energy can also be extracted directly if on the ground at current position.";
                                     }
 
-                                    if (E.internalStorageType_stacks)
+                                    if (E.internalStorageEffect.internalStorageType_stacks)
                                     {
                                         textWall += "\n <stacks>";
                                     }

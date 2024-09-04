@@ -26,6 +26,7 @@ public class Entity : MonoBehaviour
     // - Energy
     public int energyGeneration;
     public int currentEnergy = 100; // ?
+    public int maxEnergy = 250;
     [Tooltip("Goes from 1f to 0f.")]
     public float corruption = 0.0f;
     //
@@ -149,7 +150,7 @@ public class Entity : MonoBehaviour
                         {
                             foreach (var E in I.itemData.itemEffects)
                             {
-                                if(E.internalStorage && E.internalStorageType == 0)
+                                if(E.internalStorageEffect.hasEffect && E.internalStorageEffect.internalStorageType == 0)
                                 {
                                     storage.Add(I);
                                 }
@@ -162,9 +163,9 @@ public class Entity : MonoBehaviour
                             int storageSize = 0;
                             foreach (var E in S.itemData.itemEffects)
                             {
-                                if (E.internalStorage)
+                                if (E.internalStorageEffect.hasEffect)
                                 {
-                                    storageSize = E.internalStorageCapacity; // Get the storage size
+                                    storageSize = E.internalStorageEffect.capacity; // Get the storage size
                                 }
                             }
 

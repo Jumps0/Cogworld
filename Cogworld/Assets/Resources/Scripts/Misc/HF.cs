@@ -1503,7 +1503,7 @@ public static class HF
                     {
                         foreach (var E in I.itemData.itemEffects)
                         {
-                            if (E.internalStorage && E.internalStorageType == 0)
+                            if (E.internalStorageEffect.hasEffect && E.internalStorageEffect.internalStorageType == 0)
                             {
                                 storage.Add(I);
                             }
@@ -1514,7 +1514,7 @@ public static class HF
                     {
                         foreach (var E in I.itemData.itemEffects)
                         {
-                            if (E.internalStorage && E.internalStorageType == 0)
+                            if (E.internalStorageEffect.hasEffect && E.internalStorageEffect.internalStorageType == 0)
                             {
                                 if(I.storageAmount > 0)
                                 {
@@ -1531,7 +1531,7 @@ public static class HF
                         {
                             foreach (var E in I.itemData.itemEffects)
                             {
-                                if (E.internalStorage && E.internalStorageType == 0 && I.storageAmount > 0)
+                                if (E.internalStorageEffect.hasEffect && E.internalStorageEffect.internalStorageType == 0 && I.storageAmount > 0)
                                 {
                                     if (I.storageAmount < toRemove) // Not enough here to fulfill all
                                     {

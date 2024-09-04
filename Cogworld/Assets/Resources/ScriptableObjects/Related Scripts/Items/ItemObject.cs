@@ -497,13 +497,8 @@ public class ItemEffect
     public int matterCollectionRange;
 
     [Header("Internal Storage")]
-    public bool internalStorage = false;
-    [Tooltip("0 = Matter, 1 = Power")]
-    public int internalStorageType;
-    [Tooltip("Internal Storage Capacity")]
-    public int internalStorageCapacity;
-    public bool internalStorageType_stacks = false;
-
+    public ItemInternalStorageEffect internalStorageEffect;
+    
     [Header("Hacking Related")]
     public HackBonus hackBonuses;
 
@@ -835,6 +830,20 @@ public class ItemProjectileGuided
 }
 
 #region Misc Effects
+[System.Serializable]
+[Tooltip("This item stores some amount of internal matter or energy.")]
+public class ItemInternalStorageEffect
+{
+    public bool hasEffect = false;
+    [Tooltip("0 = Matter, 1 = Power")]
+    public int internalStorageType;
+    [Tooltip("Internal Storage Capacity")]
+    public int capacity;
+    public bool internalStorageType_stacks = false;
+}
+
+
+
 [System.Serializable]
 [Tooltip("Various protection effects for armor pieces and similar items.")]
 public class ItemProtectionEffect

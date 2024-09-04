@@ -1088,6 +1088,7 @@ public static class Action
                 tomove_heat = I.itemData.propulsion[0].propHeat;
             }
         }
+
         if (actor.GetComponent<PlayerData>())
         {
             PlayerData.inst.currentHeat += (int)tomove_heat;
@@ -6438,6 +6439,117 @@ public static class Action
         int surplusEnergy = Action.CalculateBotHeat(actor, allItems);
         // Finally do energy
         Action.DoEnergyUpkeep(actor, allItems, surplusEnergy);
+
+        // Ensure to clamp matter & energy
+        if (actor.GetComponent<PlayerData>())
+        {
+            int e = PlayerData.inst.currentEnergy;
+            int m = PlayerData.inst.currentMatter;
+
+            int diff_e = PlayerData.inst.currentEnergy - PlayerData.inst.maxEnergy;
+            int diff_m = PlayerData.inst.currentMatter - PlayerData.inst.maxMatter;
+
+            if(diff_e > 0 || diff_m > 0) // Too much
+            {
+                // But what if the player has internal storage?
+                if(PlayerData.inst.GetComponent<PartInventory>().inv_utility.Container.Items.Length > 0)
+                {
+                    foreach (var I in allItems)
+                    {
+                        if(I.state && I.disabledTimer <= 0 && I.itemData.slot == ItemSlot.Utilities && (diff_e > 0 || diff_m > 0))
+                        {
+                            foreach (var E in I.itemData.itemEffects)
+                            {
+                                if (E.internalStorageEffect.hasEffect && I.storageAmount < E.internalStorageEffect.capacity)
+                                {
+                                    if(diff_e > 0 && E.internalStorageEffect.internalStorageType == 1) // Energy
+                                    {
+                                        // Try to add surplus
+                                        if(diff_e + I.storageAmount > E.internalStorageEffect.capacity)
+                                        { // There will be extra, add all we can
+                                            diff_e -= (E.internalStorageEffect.capacity - I.storageAmount);
+                                            I.storageAmount = E.internalStorageEffect.capacity;
+                                        }
+                                        else
+                                        { // No extra, add it all!
+                                            I.storageAmount += diff_e;
+                                            diff_e = 0;
+                                            break;
+                                        }
+                                    }
+                                    else if (diff_m > 0 && E.internalStorageEffect.internalStorageType == 0) // Matter
+                                    {
+                                        // Try to add surplus
+                                        if (diff_m + I.storageAmount > E.internalStorageEffect.capacity)
+                                        { // There will be extra, add all we can
+                                            diff_m -= (E.internalStorageEffect.capacity - I.storageAmount);
+                                            I.storageAmount = E.internalStorageEffect.capacity;
+                                        }
+                                        else
+                                        { // No extra, add it all!
+                                            I.storageAmount += diff_m;
+                                            diff_m = 0;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // To cap it off, clamp to the normal values
+            PlayerData.inst.currentEnergy = Mathf.Clamp(PlayerData.inst.currentEnergy, 0, PlayerData.inst.maxEnergy);
+            PlayerData.inst.currentMatter = Mathf.Clamp(PlayerData.inst.currentMatter, 0, PlayerData.inst.maxMatter);
+        }
+        else
+        {
+            int e = actor.currentEnergy;
+            int diff_e = actor.currentEnergy - actor.maxEnergy;
+            // Bots don't have matter
+
+            if(diff_e > 0)
+            {
+                // Although highly unlikely, we need to check to see if the bot has internal energy storage
+                if (actor.components.Container.Items.Length > 0)
+                {
+                    foreach (var I in actor.components.Container.Items)
+                    {
+                        if (I.item.state && I.item.disabledTimer <= 0 && I.item.itemData.slot == ItemSlot.Utilities && diff_e > 0)
+                        {
+                            foreach (var E in I.item.itemData.itemEffects)
+                            {
+                                if (E.internalStorageEffect.hasEffect && I.item.storageAmount < E.internalStorageEffect.capacity)
+                                {
+                                    if (diff_e > 0 && E.internalStorageEffect.internalStorageType == 1) // Energy
+                                    {
+                                        // Try to add surplus
+                                        if (diff_e + I.item.storageAmount > E.internalStorageEffect.capacity)
+                                        { // There will be extra, add all we can
+                                            diff_e -= (E.internalStorageEffect.capacity - I.item.storageAmount);
+                                            I.item.storageAmount = E.internalStorageEffect.capacity;
+                                        }
+                                        else
+                                        { // No extra, add it all!
+                                            I.item.storageAmount += diff_e;
+                                            diff_e = 0;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // To cap it off, clamp to the normal values
+            actor.currentEnergy = Mathf.Clamp(actor.currentEnergy, 0, actor.maxEnergy);
+        }
+
+        // Update the UI
+        UIManager.inst.UpdatePSUI();
     }
 
     /// <summary>
@@ -6476,11 +6588,11 @@ public static class Action
         // Then modify the current energy based on what we got
         if (actor.GetComponent<PlayerData>())
         {
-            PlayerData.inst.currentHeat += (int)total;
+            PlayerData.inst.currentEnergy += (int)total;
         }
         else
         {
-            actor.currentHeat += (int)total;
+            actor.currentEnergy += (int)total;
         }
     }
 
@@ -6664,7 +6776,7 @@ public static class Action
         float heat_ambient = MapManager.inst.ambientHeat;
 
         // Then begin to add it all up
-        totalHeat = heat_parts + heat_gradual + heat_ambient;
+        totalHeat += heat_parts + heat_gradual + heat_ambient;
 
         // 1.5 Consider energy generation from Heat
         bool once = true;
@@ -6877,9 +6989,9 @@ public static class Action
         if (actor.GetComponent<PlayerData>())
         {
             PlayerData.inst.currentHeat = (int)totalHeat;
-            PlayerData.inst.heatRate1 = reduction1;
-            PlayerData.inst.heatRate2 = reduction2;
-            PlayerData.inst.heatRate3 = reduction3;
+            PlayerData.inst.heatRate1 = -reduction1;
+            PlayerData.inst.heatRate2 = -reduction2;
+            PlayerData.inst.heatRate3 = -reduction3;
         }
         else
         {
