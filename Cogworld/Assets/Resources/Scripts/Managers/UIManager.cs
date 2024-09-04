@@ -3785,7 +3785,16 @@ public class UIManager : MonoBehaviour
 
         // Just the heat number
         int playerHeat = PlayerData.inst.currentHeat;
-        currentHeatText.text = playerHeat.ToString() + " ";
+        // If the heat is negative, than it is from some item doing it (reducing the base), so we want to show the text in a different color to let the player know
+        currentHeatText.text = "";
+        if(playerHeat < 0)
+        {
+            currentHeatText.text = "<color=#A9B628>" + playerHeat.ToString() + "</color>" + " ";
+        }
+        else
+        {
+            currentHeatText.text = playerHeat.ToString() + " ";
+        }
 
         // The two secondary numbers
         currentHeatText.text += "(";

@@ -913,6 +913,7 @@ public class ItemHeatDissipation
     public int dissipationPerTurn = 0;
 
     [Header("Lower Base")]
+    [Tooltip("Lowers the base heat by a specified amount. MUST be negative.")]
     public int lowerBaseTemp = 0;
     public bool preventPowerShutdown = false;
     [Tooltip("has a 0.##% chance to prevent other types of overheating side effects.")]

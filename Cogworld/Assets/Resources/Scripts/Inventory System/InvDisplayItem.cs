@@ -78,7 +78,11 @@ public class InvDisplayItem : MonoBehaviour
         {
             CheckSiegeStatus();
         }
-        ForceDisabledCheck();
+
+        if(item != null)
+        {
+            ForceDisabledCheck();
+        }
     }
 
     #region Setup
