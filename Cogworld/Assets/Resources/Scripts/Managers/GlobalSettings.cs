@@ -73,6 +73,8 @@ public class GlobalSettings : MonoBehaviour
     public bool showNewLevelAnimation = true;
     [Tooltip("Normal = ###% Advanced = (###) ##")]
     public bool useAdvMoveDisNumbers = true;
+    [Tooltip("When a sound and alert should be played if the player exceeds a certain heat level.")]
+    public int heatWarningLevel = 300;
 
     #region DebugUI
     [Header("DebugUI")]
@@ -363,6 +365,37 @@ public class GlobalSettings : MonoBehaviour
             UIManager.inst.CreateNewLogMessage("You are now entering the battlezone! Nuking is now legal, worldwide.", UIManager.inst.activeGreen, UIManager.inst.dullGreen);
             doOnce5 = true;
             debugLogMessageTest = false;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Tilde))
+        {
+            ToggleDebugBar();
+        }
+
+        if (db_main.activeInHierarchy)
+        {
+            DebugBarListenForInput();
+        }
+    }
+
+    [Header("Debug Bar")]
+    [SerializeField] private GameObject db_main;
+    [SerializeField] private InputField db_input;
+    [SerializeField] private TextMeshProUGUI db_textaid;
+    private void ToggleDebugBar()
+    {
+        db_main.SetActive(!db_main.activeInHierarchy);
+    }
+
+    private void DebugBarListenForInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Return)) // Submit
+        {
+            // Read the input
+            string command = db_input.text;
+
+            // Parse the input
+
         }
     }
 

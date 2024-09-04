@@ -6919,12 +6919,6 @@ public static class Action
         }
         else if (heat >= 300) // "Warning"
         {
-            // We should actually warn the player here
-            // - Play a sound (with a cooldown so we don't spam it)
-            PlayerData.inst.OverheatWarning();
-            // - Flash the heat backer bar
-            // (This is handled in UIManager)
-
             // We are going to gather up all ACTIVE utilities & weapons. Along with power sources (separately).
             List<Item> items = Action.CollectAllBotItems(actor);
             List<Item> power = new List<Item>();
@@ -6986,6 +6980,15 @@ public static class Action
 
                 // Possible to add more in the future when needed
             }
+        }
+
+        // Do the warning logic here, since this is variable through the player's settings
+        if(heat >= GlobalSettings.inst.heatWarningLevel)
+        {
+            // - Play a sound (with a cooldown so we don't spam it)
+            PlayerData.inst.OverheatWarning();
+            // - Flash the heat backer bar
+            // (This is handled in UIManager)
         }
     }
 
