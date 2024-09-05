@@ -382,7 +382,7 @@ public class GlobalSettings : MonoBehaviour
 
     #region Debug Bar
     [Header("Debug Bar")]
-    [SerializeField] private GameObject db_main;
+    public GameObject db_main;
     [SerializeField] private TMP_InputField db_input;
     [SerializeField] private TextMeshProUGUI db_textaid;
     [SerializeField] private bool db_helper_override = false;
