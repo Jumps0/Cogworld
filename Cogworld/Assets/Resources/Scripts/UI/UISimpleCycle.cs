@@ -23,7 +23,7 @@ public class UISimpleCycle : MonoBehaviour
         {
             StopCoroutine(buttonAnim);
         }
-        text_main.text = $"<color=#{ColorUtility.ToHtmlStringRGB(normalGreen)}>{"["}</color><color=#{ColorUtility.ToHtmlStringRGB(darkGreen)}>\"{replace_text}\"</color><color=#{ColorUtility.ToHtmlStringRGB(normalGreen)}>{"]"}</color>";
+        text_main.text = $"<color=#{ColorUtility.ToHtmlStringRGB(normalGreen)}>{"["}</color><color=#{ColorUtility.ToHtmlStringRGB(darkGreen)}>{replace_text}</color><color=#{ColorUtility.ToHtmlStringRGB(normalGreen)}>{"]"}</color>";
         buttonAnim = StartCoroutine(ButtonHoverAnim(true));
 
         // Play the hover UI sound
@@ -36,7 +36,7 @@ public class UISimpleCycle : MonoBehaviour
         {
             StopCoroutine(buttonAnim);
         }
-        text_main.text = $"<color=#{ColorUtility.ToHtmlStringRGB(normalGreen)}>{"["}</color><color=#{ColorUtility.ToHtmlStringRGB(headerWhite)}>\" {replace_text} \"</color><color=#{ColorUtility.ToHtmlStringRGB(normalGreen)}>{"]"}</color>";
+        text_main.text = $"<color=#{ColorUtility.ToHtmlStringRGB(normalGreen)}>{"["}</color><color=#{ColorUtility.ToHtmlStringRGB(headerWhite)}>{replace_text}</color><color=#{ColorUtility.ToHtmlStringRGB(normalGreen)}>{"]"}</color>";
         buttonAnim = StartCoroutine(ButtonHoverAnim(false));
     }
 
@@ -56,7 +56,7 @@ public class UISimpleCycle : MonoBehaviour
             {
                 lerp = Color.Lerp(darkGreen, headerWhite, elapsedTime / duration);
 
-                text_main.text = $"<color=#{ColorUtility.ToHtmlStringRGB(normalGreen)}>{"["}</color><color=#{ColorUtility.ToHtmlStringRGB(lerp)}>\" {replace_text} \"</color><color=#{ColorUtility.ToHtmlStringRGB(normalGreen)}>{"]"}</color>";
+                text_main.text = $"<color=#{ColorUtility.ToHtmlStringRGB(normalGreen)}>{"["}</color><color=#{ColorUtility.ToHtmlStringRGB(lerp)}>{replace_text}</color><color=#{ColorUtility.ToHtmlStringRGB(normalGreen)}>{"]"}</color>";
 
                 elapsedTime += Time.deltaTime;
                 yield return null;
@@ -68,7 +68,7 @@ public class UISimpleCycle : MonoBehaviour
             {
                 lerp = Color.Lerp(headerWhite, darkGreen, elapsedTime / duration);
 
-                text_main.text = $"<color=#{ColorUtility.ToHtmlStringRGB(normalGreen)}>{"["}</color><color=#{ColorUtility.ToHtmlStringRGB(lerp)}>\"  {replace_text}  \"</color><color=#{ColorUtility.ToHtmlStringRGB(normalGreen)}>{"]"}</color>";
+                text_main.text = $"<color=#{ColorUtility.ToHtmlStringRGB(normalGreen)}>{"["}</color><color=#{ColorUtility.ToHtmlStringRGB(lerp)}>{replace_text}</color><color=#{ColorUtility.ToHtmlStringRGB(normalGreen)}>{"]"}</color>";
 
                 elapsedTime += Time.deltaTime;
                 yield return null;

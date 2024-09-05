@@ -433,7 +433,7 @@ public class QuestManager : MonoBehaviour
 
         List<ItemObject> rewards_item = quest.info.reward_items;
         int rewards_matter = quest.info.reward_matter;
-        Debug.Log("Reward claimed!");
+
         // How do we handle this?
         // - The player has a storage object in their hideout, we will simply put the items / matter in there.
         // - The player can interact with it when they are there.
@@ -613,7 +613,7 @@ public class QuestManager : MonoBehaviour
     public Color c_gray2;
     public Color c_gray3;
 
-    private List<Color> UIGetColors(Quest quest)
+    private List<Color> UIGetColors(Quest quest, bool nogray = false)
     {
         List<Color> colors = new List<Color>();
         QuestObject info = quest.info;
@@ -656,7 +656,7 @@ public class QuestManager : MonoBehaviour
         }
 
         // If the quest is finished set everything to gray instead
-        if (quest.state == QuestState.FINISHED)
+        if (quest.state == QuestState.FINISHED && !nogray)
         {
             color_main = c_gray1;
             color_bright = c_gray2;
@@ -836,6 +836,12 @@ public class QuestManager : MonoBehaviour
             QuestObject info = quest.info;
 
             QuestReward(quest);
+
+            // Now that we have claimed the reward, we need to set the UIQuestReward to be grayed out
+            foreach (var R in ui_questRewards)
+            {
+                R.GetComponent<UIQuestReward>().ClaimedAnimation(UIGetColors(quest));
+            }
         }
     }
 
@@ -968,7 +974,17 @@ public class QuestManager : MonoBehaviour
         GameObject obj = Instantiate(ui_prefab_questReward, ui_QuestRewardsArea.transform);
 
         // Assign details to object
-        obj.GetComponent<UIQuestReward>().Init(quest, UIGetColors(quest), itemReward, matterReward);
+        // We only set it as grey if its been claimed
+        List<Color> colors = new List<Color>();
+        if (quest.info.reward_claimed)
+        {
+            colors = UIGetColors(quest);
+        }
+        else
+        {
+            colors = UIGetColors(quest, true);
+        }
+        obj.GetComponent<UIQuestReward>().Init(quest, colors, itemReward, matterReward);
 
         // Add to list
         ui_questRewards.Add(obj);

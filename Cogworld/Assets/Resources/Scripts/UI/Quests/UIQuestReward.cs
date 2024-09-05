@@ -89,8 +89,45 @@ public class UIQuestReward : MonoBehaviour
         }
     }
 
+    private Coroutine cr_claimed = null;
+    /// <summary>
+    /// Go from full colors to grayed out
+    /// </summary>
+    public void ClaimedAnimation(List<Color> grayed)
+    {
+        cr_claimed = StartCoroutine(IEClaimedAnimation(grayed));
+    }
+
+    private IEnumerator IEClaimedAnimation(List<Color> grayed)
+    {
+        Color dark = colors[2], dark_end = grayed[2]; // Dark
+        Color bright = colors[1], bright_end = grayed[1]; // Bright
+        Color main = colors[0], main_end = grayed[0]; // Main
+
+        // We are just gonna lerp from the current colors to the grayed out colors
+        float elapsedTime = 0f;
+        float duration = 0.25f;
+        while (elapsedTime < duration)
+        {
+            image_icon_border.color = Color.Lerp(main, main_end, elapsedTime / duration);
+            image_border.color = Color.Lerp(main, main_end, elapsedTime / duration);
+            Debug.Log($"A: {text_name.color}");
+            text_name.color = Color.Lerp(bright, bright_end, elapsedTime / duration);
+            image_icon.color = Color.Lerp(bright, bright_end, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        Debug.Log($"F: {text_name.color}");
+    }
+
     private void OnDestroy()
     {
+        if (cr_claimed != null)
+        {
+            StopCoroutine(cr_claimed);
+        }
+
         foreach (Coroutine e in typeout)
         {
             StopCoroutine(e);

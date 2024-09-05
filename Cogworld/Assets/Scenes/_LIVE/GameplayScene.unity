@@ -2493,7 +2493,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 699b00bdec67e8a4aadb27ee98e596a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  replace_text: '"CLAIM"'
+  replace_text: CLAIM
   image_backer: {fileID: 42996452}
   text_main: {fileID: 766250160}
   darkGreen: {r: 0.08235294, g: 0.2509804, b: 0.078431375, a: 1}

@@ -26,6 +26,7 @@ public class Quest
         this.state = QuestState.REQUIREMENTS_NOT_MET;
         this.currentQuestStepIndex = 0;
 
+        info.reward_claimed = false;
         info.uniqueID = uid;
         if(uid == "")
         {
