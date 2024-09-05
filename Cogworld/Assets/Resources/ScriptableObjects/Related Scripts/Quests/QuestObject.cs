@@ -14,6 +14,7 @@ public class Quest
     public QuestState state;
     public int currentQuestStepIndex;
     private QuestStepState[] questStepStates;
+    public List<bool> completedSteps = new List<bool>();
 
     [Header("Progress")]
     public int a_max;
@@ -38,17 +39,19 @@ public class Quest
         for(int i = 0; i < info.steps.Length; i++)
         {
             questStepStates[i] = new QuestStepState();
+            completedSteps.Add(false);
         }
     }
 
-    public Quest(QuestObject info, QuestState questState, int currentQuestStepIndex, QuestStepState[] questStepStates)
+    public Quest(QuestObject info, QuestState questState, int currentQuestStepIndex, QuestStepState[] questStepStates, List<bool> completedSteps)
     {
         this.info = info;
         this.state = questState;
         this.currentQuestStepIndex = currentQuestStepIndex;
         this.questStepStates = questStepStates;
+        this.completedSteps = completedSteps;
 
-        if(this.questStepStates.Length != this.info.steps.Length)
+        if (this.questStepStates.Length != this.info.steps.Length)
         {
             Debug.LogWarning($"WARNING: Quest step prefabs & quest step states are of different lengths. This indicates something changed with" +
                 $"the QuestObject and the saved data is now out of sync. Reset your data - as this may cause issues. QuestID: {this.info.uniqueID}");
@@ -429,7 +432,7 @@ public class Quest
 
     public QuestData GetQuestData()
     {
-        return new QuestData(state, currentQuestStepIndex, questStepStates);
+        return new QuestData(state, currentQuestStepIndex, questStepStates, completedSteps);
     }
 }
 

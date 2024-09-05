@@ -26,6 +26,9 @@ public abstract class QuestStep : MonoBehaviour
         if(!isFinished)
         {
             isFinished = true;
+            // And mark it as complete in the internal quest step list
+            Quest quest = QuestManager.inst.GetQuestById(questID);
+            quest.completedSteps[stepIndex] = true;
 
             GameManager.inst.questEvents.AdvanceQuest(questID);
             AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[24], 0.8f); // Play a sound
@@ -40,11 +43,6 @@ public abstract class QuestStep : MonoBehaviour
     protected void ChangeState(string newState) // This will (eventually) lead into *StoreQuestStepState* inside QuestObject.cs to save the quest step states in an Array.
     {
         GameManager.inst.questEvents.QuestStepStateChange(questID, stepIndex, new QuestStepState(newState));
-    }
-
-    private void Update()
-    {
-        Debug.Log($"{questID}'s step is finished? {isFinished}");
     }
 
     protected abstract void SetQuestStepState(string state);

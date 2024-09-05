@@ -133,7 +133,7 @@ public class QuestManager : MonoBehaviour
         }
     }
 
-    private Quest GetQuestById(string id)
+    public Quest GetQuestById(string id)
     {
         Quest quest = questMap[id];
         if(quest == null)
@@ -519,7 +519,7 @@ public class QuestManager : MonoBehaviour
             {
                 string serializedData = PlayerPrefs.GetString(questInfo.uniqueID);
                 QuestData questData = JsonUtility.FromJson<QuestData>(serializedData);
-                quest = new Quest(questInfo, questData.state, questData.questStepIndex, questData.questStepStates);
+                quest = new Quest(questInfo, questData.state, questData.questStepIndex, questData.questStepStates, questData.completedSteps);
             }
             // Otherwise, initialize a new quest
             else

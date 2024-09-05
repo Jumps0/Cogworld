@@ -14,11 +14,13 @@ public class QuestData
     public QuestState state;
     public int questStepIndex;
     public QuestStepState[] questStepStates;
+    public List<bool> completedSteps;
 
-    public QuestData(QuestState state, int questStepIndex, QuestStepState[] questStepStates)
+    public QuestData(QuestState state, int questStepIndex, QuestStepState[] questStepStates, List<bool> completedSteps)
     {
         this.state = state;
         this.questStepIndex = questStepIndex;
         this.questStepStates = questStepStates;
+        this.completedSteps = completedSteps;
     }
 }

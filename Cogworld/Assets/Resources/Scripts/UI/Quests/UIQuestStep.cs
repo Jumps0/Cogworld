@@ -32,14 +32,14 @@ public class UIQuestStep : MonoBehaviour
         check_backer.color = colors[0];
 
         // And then set the UI based on the step
-        bool stepComplete = stepReference.GetComponent<QuestStep>().isFinished;
+        bool stepComplete = info.completedSteps[stepInSequence];
         string stepDescription = stepReference.GetComponent<QuestStep>().stepDescription;
 
         // Set the text
         text_main.text = stepDescription;
         // And add the progress amount if needed
         string progress_text = "";
-        if (stepReference.GetComponent<QS_MeetActor>()) // Don't care since tis only 1 location
+        if (stepReference.GetComponent<QS_MeetActor>()) // Don't care since its only 1 location
         {
             //
         }
