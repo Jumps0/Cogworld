@@ -69,6 +69,7 @@ public class UIQuestReward : MonoBehaviour
         }
     }
 
+    private List<Coroutine> typeout = new List<Coroutine>();
     private void TypeOutAnimation()
     {
         Color start = colors[2]; // Dark
@@ -84,7 +85,15 @@ public class UIQuestReward : MonoBehaviour
 
         foreach (string s in strings)
         {
-            StartCoroutine(HF.DelayedSetText(text_name, s, delay += perDelay));
+            typeout.Add(StartCoroutine(HF.DelayedSetText(text_name, s, delay += perDelay)));
+        }
+    }
+
+    private void OnDestroy()
+    {
+        foreach (Coroutine e in typeout)
+        {
+            StopCoroutine(e);
         }
     }
 }

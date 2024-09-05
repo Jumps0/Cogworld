@@ -839,14 +839,22 @@ public class QuestManager : MonoBehaviour
         }
     }
 
+    private List<Coroutine> typeout_coroutines = new List<Coroutine>();
     private void UI_RightSideAnimate()
     {
+        // Stop all previous type-out coroutines
+        foreach (var c in typeout_coroutines)
+        {
+            StopCoroutine(c);
+        }
+        typeout_coroutines.Clear();
+
         // Using the highlight animation helper, we will use that for most of the display text
         List<string> header = HF.RandomHighlightStringAnimation(text_questHeader.text, text_questHeader.color);
         List<string> type = HF.RandomHighlightStringAnimation(text_questType.text, text_questType.color);
-        List<string> typeNP = HF.RandomHighlightStringAnimation(text_questTypeNP.text, text_questTypeNP.color);
+        List<string> typeNP = HF.RandomHighlightStringAnimation("Type:", text_questTypeNP.color);
         List<string> rank = HF.RandomHighlightStringAnimation(text_questDifficulty.text, text_questDifficulty.color);
-        List<string> rankNP = HF.RandomHighlightStringAnimation(text_questDifficultyNP.text, text_questDifficultyNP.color);
+        List<string> rankNP = HF.RandomHighlightStringAnimation("Difficulty:", text_questDifficultyNP.color);
         List<string> giverName = HF.RandomHighlightStringAnimation(text_questGiverName.text, text_questGiverName.color);
         List<string> giverText = HF.RandomHighlightStringAnimation(text_questGiverDescription.text, text_questGiverDescription.color);
         List<string> descrption = HF.RandomHighlightStringAnimation(text_questDescription.text, text_questDescription.color);
@@ -871,7 +879,7 @@ public class QuestManager : MonoBehaviour
 
             foreach (string s in LIST.Value)
             {
-                StartCoroutine(HF.DelayedSetText(LIST.Key, s, delay += perDelay));
+                typeout_coroutines.Add(StartCoroutine(HF.DelayedSetText(LIST.Key, s, delay += perDelay)));
             }
         }
     }

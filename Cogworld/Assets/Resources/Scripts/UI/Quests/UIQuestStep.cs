@@ -85,6 +85,8 @@ public class UIQuestStep : MonoBehaviour
         }
     }
 
+    private List<Coroutine> coroutines = new List<Coroutine>();
+
     private void TypeOutAnimation()
     {
         Color start = colors[2]; // Dark
@@ -100,7 +102,15 @@ public class UIQuestStep : MonoBehaviour
 
         foreach (string s in strings)
         {
-            StartCoroutine(HF.DelayedSetText(text_main, s, delay += perDelay));
+            coroutines.Add(StartCoroutine(HF.DelayedSetText(text_main, s, delay += perDelay)));
+        }
+    }
+
+    private void OnDestroy()
+    {
+        foreach (var s in coroutines)
+        {
+            StopCoroutine(s);
         }
     }
 }
