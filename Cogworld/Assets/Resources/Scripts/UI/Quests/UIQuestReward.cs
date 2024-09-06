@@ -100,6 +100,16 @@ public class UIQuestReward : MonoBehaviour
 
     private IEnumerator IEClaimedAnimation(List<Color> grayed)
     {
+        // Reset name
+        if (matterRewards > 0) // Matter reward
+        {
+            text_name.text = $"{matterRewards} Matter";
+        }
+        else if (itemReward != null) // Item reward
+        {
+            text_name.text = itemReward.data.itemData.itemName;
+        }
+
         Color dark = colors[2], dark_end = grayed[2]; // Dark
         Color bright = colors[1], bright_end = grayed[1]; // Bright
         Color main = colors[0], main_end = grayed[0]; // Main
@@ -111,14 +121,13 @@ public class UIQuestReward : MonoBehaviour
         {
             image_icon_border.color = Color.Lerp(main, main_end, elapsedTime / duration);
             image_border.color = Color.Lerp(main, main_end, elapsedTime / duration);
-            Debug.Log($"A: {text_name.color}");
+
             text_name.color = Color.Lerp(bright, bright_end, elapsedTime / duration);
             image_icon.color = Color.Lerp(bright, bright_end, elapsedTime / duration);
 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        Debug.Log($"F: {text_name.color}");
     }
 
     private void OnDestroy()
