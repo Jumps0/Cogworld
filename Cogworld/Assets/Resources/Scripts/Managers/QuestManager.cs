@@ -81,7 +81,8 @@ public class QuestManager : MonoBehaviour
 
         GameManager.inst.questEvents.onQuestStepStateChange += QuestStepStateChange;
 
-        DEBUG_QuestTesting();
+        if(MapManager.inst.playerIsInHideout)
+            DEBUG_QuestTesting();
 
         Redraw();
 

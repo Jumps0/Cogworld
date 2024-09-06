@@ -95,7 +95,7 @@ public class UIManager : MonoBehaviour
             {
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
-                    Terminal_Close();
+                    Terminal_CloseAny();
                 }
             }
         }
@@ -2749,6 +2749,22 @@ public class UIManager : MonoBehaviour
         terminal_backingBinary.text = new string(randomBinaryChars);
     }
 
+    /// <summary>
+    /// A generic way of closing terminals, will try to close either the normal OR custom terminal window.
+    /// </summary>
+    public void Terminal_CloseAny()
+    {
+        Debug.Log($"Closing... {cTerminal_machine}");
+        if (terminal_targetTerm.GetComponent<TerminalCustom>())
+        {
+            CTerminal_Close(); // Custom Terminal
+        }
+        else
+        {
+            Terminal_Close(); // Normal Machine
+        }
+    }
+
     public void Terminal_Close()
     {
         if (terminal_isAnimating) // Safety flag
@@ -2763,6 +2779,9 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator Terminal_CloseAnim()
     {
+        // Null out main reference
+        terminal_targetTerm = null;
+
         // Do a fade out animation
         #region Image Fade-out
         Image[] i1 = terminal_hackingAreaRef.GetComponentsInChildren<Image>();
@@ -2884,9 +2903,6 @@ public class UIManager : MonoBehaviour
         terminal_hackingAreaRef.SetActive(false);
         terminal_targetresultsAreaRef.SetActive(false);
         codes_window.SetActive(false);
-
-        // Un-assign target
-        terminal_targetTerm = null;
 
         // Un-Freeze the player
         PlayerData.inst.GetComponent<PlayerGridMovement>().playerMovementAllowed = true;
@@ -3218,10 +3234,22 @@ public class UIManager : MonoBehaviour
 
         AudioManager.inst.CreateTempClip(terminal_targetTerm.transform.position, AudioManager.inst.UI_Clips[20]); // Play CLOSE sound
 
+        // Did we just close the cache window?
+        bool wasCache = (cTerminal_machine.type == CustomTerminalType.HideoutCache);
+
+        // Un-assign target
+        terminal_targetTerm = null;
+        cTerminal_machine = null;
+
         // Change back the header
-        if (cTerminal_machine.type == CustomTerminalType.HideoutCache)
+        if (wasCache)
         {
             partsHeaderText.text = "/PARTS/";
+
+            // Force a UI update so the inventory is set to normal again
+            UIManager.inst.UpdatePSUI();
+            UIManager.inst.UpdateParts();
+            InventoryControl.inst.UpdateInterfaceInventories();
         }
 
         StartCoroutine(Terminal_CloseAnim()); // - Both use the same resources so its safe to do this
