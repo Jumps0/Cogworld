@@ -563,7 +563,16 @@ public class GlobalSettings : MonoBehaviour
                                 else
                                 {
                                     // Don't need to parse this, but we will clamp if
-                                    amount = Mathf.Clamp(float.Parse(bits[3]), -5000f, 5000f);
+                                    try
+                                    {
+                                        amount = Mathf.Clamp(float.Parse(bits[3]), -5000f, 5000f);
+                                    }
+                                    catch (System.Exception ex)
+                                    {
+                                        amount = 0;
+                                        DebugBarHelper("[set] Must specify a valid number");
+                                        return;
+                                    }
                                 }
                             }
                             else // Bail out here
