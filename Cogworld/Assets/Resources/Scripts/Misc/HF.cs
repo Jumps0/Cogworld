@@ -4761,6 +4761,15 @@ public static class HF
 
     #region Misc
 
+    public static Color HexToRGB(string hex)
+    {
+        Color output = Color.white;
+
+        if (ColorUtility.TryParseHtmlString("#" + hex, out output)) {}
+
+        return output;
+    }
+
     /// <summary>
     /// Checks to see if the specified bot has the required resources to try and move to a new location.
     /// </summary>

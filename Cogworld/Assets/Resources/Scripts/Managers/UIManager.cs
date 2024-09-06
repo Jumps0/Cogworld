@@ -2754,7 +2754,6 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void Terminal_CloseAny()
     {
-        Debug.Log($"Closing... {cTerminal_machine}");
         if (terminal_targetTerm.GetComponent<TerminalCustom>())
         {
             CTerminal_Close(); // Custom Terminal
@@ -2971,6 +2970,7 @@ public class UIManager : MonoBehaviour
         if(cTerminal_machine.type == CustomTerminalType.HideoutCache)
         {
             partsHeaderText.text = "/CACHE/";
+            PartsFlashHeader(); // Flash it too so the player can recognize the change
 
             // Force a UI update so the inventory is displayed on the right side
             UIManager.inst.UpdatePSUI();
@@ -3245,6 +3245,7 @@ public class UIManager : MonoBehaviour
         if (wasCache)
         {
             partsHeaderText.text = "/PARTS/";
+            PartsFlashHeader(); // Flash it too so the player can recognize the change
 
             // Force a UI update so the inventory is set to normal again
             UIManager.inst.UpdatePSUI();
@@ -5855,6 +5856,63 @@ public class UIManager : MonoBehaviour
         else
         {
             botTypeGO.SetActive(false);
+        }
+    }
+
+    private Coroutine partsHeaderFlash = null;
+    /// <summary>
+    /// Briefly flash the /PARTS/ header text
+    /// </summary>
+    private void PartsFlashHeader()
+    {
+        if(partsHeaderFlash != null)
+        {
+            StopCoroutine(partsHeaderFlash);
+        }
+        partsHeaderFlash = StartCoroutine(PartsFlashHeaderAnim());
+    }
+
+    private IEnumerator PartsFlashHeaderAnim()
+    {
+        // We want to do the following
+        // 1. Set the text to DARK green
+        // 2. Set the text to BRIGHT green
+        // 3. Set the text to BLACK
+        // 4. Set the text to its normal color
+        Color normal = HF.HexToRGB("15AC13");
+
+        // 1
+        partsHeaderText.color = dullGreen;
+
+        // 2
+        float elapsedTime = 0f;
+        float duration = 0.2f;
+        while (elapsedTime < duration) // Dark Green -> Bright Green
+        {
+            partsHeaderText.color = Color.Lerp(dullGreen, highGreen, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        elapsedTime = 0f;
+        duration = 0.2f;
+        while (elapsedTime < duration) // Bright Green -> Black
+        {
+            partsHeaderText.color = Color.Lerp(highGreen, Color.black, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        elapsedTime = 0f;
+        duration = 0.2f;
+        while (elapsedTime < duration) // Black -> Normal
+        {
+            partsHeaderText.color = Color.Lerp(Color.black, normal, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
         }
     }
 
