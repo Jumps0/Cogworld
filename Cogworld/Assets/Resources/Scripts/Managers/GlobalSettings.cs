@@ -93,7 +93,6 @@ public class GlobalSettings : MonoBehaviour
     void Update()
     {
         CheckForDebug();
-        CheckForCheats();
     }
     
     public void SetStartingValues()
@@ -319,7 +318,7 @@ public class GlobalSettings : MonoBehaviour
     public bool debugBottomMessageTest = false;
     public bool debugLogMessageTest = false;
     public ItemObject testitem;
-    bool doOnce, doOnce2, doOnce3, doOnce4, doOnce5 = false;
+    //bool doOnce, doOnce2, doOnce3, doOnce4, doOnce5 = false;
 
     private void CheckForDebug()
     {
@@ -466,6 +465,11 @@ public class GlobalSettings : MonoBehaviour
                     db_textaid.gameObject.SetActive(true);
                     db_textaid.text = "> spawn \"type\" \"name\" [Spawn something next to the player]";
                 }
+                else if (command.Contains("fow"))
+                {
+                    db_textaid.gameObject.SetActive(true);
+                    db_textaid.text = "> fow [Toggles the Fog of War]";
+                }
                 // Expand this as needed
             }
         }
@@ -494,6 +498,8 @@ public class GlobalSettings : MonoBehaviour
          *    -Used to spawn something in the world adjacent to the player. Can be an item or an entity
          *    Type: If this is an item or a bot
          *    Name: The direct name of this thing, better spell it correctly!
+         *  > fow
+         *    -Toggles the fog of war
          * ================================
          */
 
@@ -562,6 +568,7 @@ public class GlobalSettings : MonoBehaviour
                                 }
                                 else
                                 {
+#pragma warning disable CS0168
                                     // Don't need to parse this, but we will clamp if
                                     try
                                     {
@@ -658,6 +665,10 @@ public class GlobalSettings : MonoBehaviour
                 // TODO
                 break;
 
+            case "fow":
+                FogOfWar.inst.DEBUG_RevealAll();
+                break;
+
             default: // Unknown command
                 DebugBarHelper("Unknown command...");
                 return;
@@ -666,15 +677,6 @@ public class GlobalSettings : MonoBehaviour
         #endregion
     }
     #endregion
-
-    private void CheckForCheats()
-    {
-        if (cheat_fullVision && !doOnce4)
-        {
-            FogOfWar.inst.DEBUG_RevealAll();
-            doOnce4 = false;
-        }
-    }
 
     public void DEBUG_CheckDict()
     {

@@ -1496,6 +1496,7 @@ public class PlayerData : MonoBehaviour
                             detect = reference._assignedChar;
 
                             KeyCode parse = KeyCode.None;
+#pragma warning disable CS0168
                             try
                             {
                                 parse = (KeyCode)System.Enum.Parse(typeof(KeyCode), detect); // Make sure this is an actual key we can press
