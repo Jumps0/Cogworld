@@ -22,19 +22,20 @@ public class QS_DestroyThing : QuestStep
 
     // TODO: LOGIC HERE
 
-    /*
+    
     private Item itemToCollect;
 
     private void OnEnable()
     {
-        GameManager.inst.questEvents.onItemCollected += ItemCollected;
+        //GameManager.inst.questEvents.onItemCollected += ItemCollected;
     }
 
     private void OnDisable()
     {
-        GameManager.inst.questEvents.onItemCollected -= ItemCollected;
+        //if (GameManager.inst)
+            //GameManager.inst.questEvents.onItemCollected -= ItemCollected;
     }
-
+    /*
     private void Start()
     {
         stepDescription = $"Find and collect: {itemToCollect.Name}";

@@ -211,11 +211,14 @@ public class QuestManager : MonoBehaviour
 
     private void OnDisable()
     {
-        GameManager.inst.questEvents.onStartQuest -= StartQuest;
-        GameManager.inst.questEvents.onAdvanceQuest -= AdvanceQuest;
-        GameManager.inst.questEvents.onFinishQuest -= FinishQuest;
+        if (GameManager.inst)
+        {
+            GameManager.inst.questEvents.onStartQuest -= StartQuest;
+            GameManager.inst.questEvents.onAdvanceQuest -= AdvanceQuest;
+            GameManager.inst.questEvents.onFinishQuest -= FinishQuest;
 
-        GameManager.inst.questEvents.onQuestStepStateChange -= QuestStepStateChange;
+            GameManager.inst.questEvents.onQuestStepStateChange -= QuestStepStateChange;
+        }
     }
     #endregion
 
@@ -439,7 +442,7 @@ public class QuestManager : MonoBehaviour
         // - The player has a storage object in their hideout, we will simply put the items / matter in there.
         // - The player can interact with it when they are there.
         // - We do this instead of instantly rewarding it to the player (during their run) because they will probably lose it when they die, and they wouldn't like that.
-
+        Debug.Log("Performing reward logic");
         if(rewards_item.Count > 0) // -- Items --
         {
             // Add items to the Hideout Inventory Object

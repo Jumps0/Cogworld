@@ -460,7 +460,10 @@ public class TileBlock : MonoBehaviour
     #region Events
     private void OnDisable()
     {
-        TurnManager.inst.turnEvents.onTurnTick -= TurnTick; // Stop listening to this event
+        if (GameManager.inst)
+        {
+            TurnManager.inst.turnEvents.onTurnTick -= TurnTick; // Stop listening to this event
+        }
     }
 
     private void OnDestroy()

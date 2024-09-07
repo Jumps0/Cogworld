@@ -204,18 +204,21 @@ public class FogOfWar : MonoBehaviour
 
         foreach (var qp in QuestManager.inst.questPoints)
         {
-            Vector3Int pos = new Vector3Int((int)qp.transform.position.x, (int)qp.transform.position.y, (int)qp.transform.position.z);
+            if(qp != null)
+            {
+                Vector3Int pos = new Vector3Int((int)qp.transform.position.x, (int)qp.transform.position.y, (int)qp.transform.position.z);
 
-            if (visibleTiles.Contains(pos))
-            {
-                qp.GetComponent<QuestPoint>().CheckVisibility();
-                qp.GetComponent<QuestPoint>().isVisible = true;
-                qp.GetComponent<QuestPoint>().isExplored = true;
-            }
-            else
-            {
-                qp.GetComponent<QuestPoint>().CheckVisibility();
-                qp.GetComponent<QuestPoint>().isVisible = false;
+                if (visibleTiles.Contains(pos))
+                {
+                    qp.GetComponent<QuestPoint>().CheckVisibility();
+                    qp.GetComponent<QuestPoint>().isVisible = true;
+                    qp.GetComponent<QuestPoint>().isExplored = true;
+                }
+                else
+                {
+                    qp.GetComponent<QuestPoint>().CheckVisibility();
+                    qp.GetComponent<QuestPoint>().isVisible = false;
+                }
             }
         }
     }
@@ -269,6 +272,18 @@ public class FogOfWar : MonoBehaviour
             {
                 item.Value.GetComponent<Part>().isVisible = true;
                 item.Value.GetComponent<Part>().isExplored = true;
+            }
+        }
+
+        // Quest points
+        foreach (var qp in QuestManager.inst.questPoints)
+        {
+            if (qp != null)
+            {
+                Vector3Int pos = new Vector3Int((int)qp.transform.position.x, (int)qp.transform.position.y, (int)qp.transform.position.z);
+
+                qp.GetComponent<QuestPoint>().isVisible = true;
+                qp.GetComponent<QuestPoint>().isExplored = true;
             }
         }
     }

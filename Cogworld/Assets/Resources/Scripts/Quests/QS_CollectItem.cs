@@ -35,7 +35,10 @@ public class QS_CollectItem : QuestStep
 
     private void OnDisable()
     {
-        GameManager.inst.questEvents.onItemCollected -= ItemCollected;
+        if (GameManager.inst)
+        {
+            GameManager.inst.questEvents.onItemCollected -= ItemCollected;
+        }
     }
 
     private void Start()

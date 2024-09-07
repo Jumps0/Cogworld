@@ -48,7 +48,8 @@ public class QuestPoint : MonoBehaviour
 
     private void OnDisable()
     {
-        GameManager.inst.questEvents.onQuestStateChange -= QuestStateChange;
+        if(GameManager.inst)
+            GameManager.inst.questEvents.onQuestStateChange -= QuestStateChange;
     }
 
     public void Interact()

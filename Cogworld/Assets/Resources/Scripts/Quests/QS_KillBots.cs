@@ -105,7 +105,8 @@ public class QS_KillBots : QuestStep
 
     private void OnDisable()
     {
-        GameManager.inst.questEvents.onBotsKilled -= BotsKilled;
+        if (GameManager.inst)
+            GameManager.inst.questEvents.onBotsKilled -= BotsKilled;
     }
 
     private void BotsKilled() // [EXPL]: THIS "EVENT" STEP WILL KEEP CHECKING TO SEE IF THIS QUEST SHOULD BE COMPLETED
