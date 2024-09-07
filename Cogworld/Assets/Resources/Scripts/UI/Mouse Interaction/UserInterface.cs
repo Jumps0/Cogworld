@@ -2,9 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
-using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -685,7 +682,41 @@ public abstract class UserInterface : MonoBehaviour
             Item originItem = obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].item;
 
             InventorySlot originSlot = obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj]; // Get data from the slot we are swapping with
-            InventorySlot destinationSlot = MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver]; // Get data from slot hovered over
+
+            // Before we get the destination slot, we need to consider that we may be trying to transfer something into the inventory,
+            // in which case there probably isn't a slot for us to retrieve. If that happens we need to do a little trick
+            InventorySlot destinationSlot = null;
+
+#pragma warning disable CS0168
+            try // Is there a slot there?
+            { // Yes? Continue as planned.
+                destinationSlot = MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver]; // Get data from slot hovered over
+            }
+            catch (System.Exception ex) // There isn't, uh oh. Time to try and do a sneaky trick to get around this
+            {
+                if (MouseData.interfaceMouseIsOver.GetComponent<StaticInterface>()) // We should only be doing this on a static interface (the inventory), if we do it on a dynamic interface (the parts menu), bad things may happen.
+                {
+                    StaticInterface itf = MouseData.interfaceMouseIsOver.GetComponent<StaticInterface>();
+
+                    // What we are going to do is:
+                    // -Create a new (empty) InventorySlot and an InvDisplayItem to represent it.
+                    // -Set that as our swap point.
+
+                    GameObject newSlot = itf.CreateNewEmptySlot(); // Create a new slot using its own function
+                    // Since there are currently no slots here, we can safely remake the array with this lone slot
+                    itf.slots = new GameObject[InventoryControl.inst.p_inventory.Container.Items.Length]; // Reset array
+                    itf.slots[0] = obj; // Assign the slot in the array
+
+                    // Set parent and store it
+                    InventoryControl.inst.p_inventory.Container.Items[0].parent = itf;
+                    itf.slotsOnInterface.Add(obj, InventoryControl.inst.p_inventory.Container.Items[0]);
+
+                    // Now we can use this as our swap point
+                    MouseData.slotHoveredOver = obj;
+                    obj_destination = obj;
+                    destinationSlot = MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver];
+                }
+            } // IMPORTANT TODO NOTE: THIS PROBABLY DOESNT WORK WITH MULTI-SLOT ITEMS, AND MAY MESS UP OTHER THINGS. IMPROVE IT LATER
 
             int size_origin = originItem.itemData.slotsRequired;
 
@@ -805,10 +836,16 @@ public abstract class UserInterface : MonoBehaviour
                 }
 
                 // - Figure out what to print out
+                // If we are in the Hideout Cache menu the text needs to be slightly different
+                string word = "";
                 if (destinationSlot.parent.GetComponent<StaticInterface>()) // Moving TO the /INVENTORY/
                 {
-                    UIManager.inst.ShowCenterMessageTop("Detached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                    UIManager.inst.CreateNewLogMessage("Detached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    word = "Detached ";
+                    if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.type == CustomTerminalType.HideoutCache)
+                        word = "Retrieved ";
+
+                    UIManager.inst.ShowCenterMessageTop(word + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    UIManager.inst.CreateNewLogMessage(word + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
                 }
                 else if (destinationSlot.parent.GetComponent<DynamicInterface>())// Moving TO a /PARTS/ slot
                 {
@@ -819,25 +856,29 @@ public abstract class UserInterface : MonoBehaviour
                         UIManager.inst.CreateNewLogMessage("Identified " + originItem.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
                     }
 
+                    word = "Attached ";
+                    if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.type == CustomTerminalType.HideoutCache)
+                        word = "Stored ";
+
                     if (originSlot.item.itemData.slot == ItemSlot.Power)
                     {
-                        UIManager.inst.ShowCenterMessageTop("Attached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                        UIManager.inst.CreateNewLogMessage("Attached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.ShowCenterMessageTop(word + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.CreateNewLogMessage(word + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
                     }
                     else if (originSlot.item.itemData.slot == ItemSlot.Propulsion)
                     {
-                        UIManager.inst.ShowCenterMessageTop("Attached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                        UIManager.inst.CreateNewLogMessage("Attached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.ShowCenterMessageTop(word + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.CreateNewLogMessage(word + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
                     }
                     else if (originSlot.item.itemData.slot == ItemSlot.Utilities)
                     {
-                        UIManager.inst.ShowCenterMessageTop("Attached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                        UIManager.inst.CreateNewLogMessage("Attached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.ShowCenterMessageTop(word + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.CreateNewLogMessage(word + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
                     }
                     else if (originSlot.item.itemData.slot == ItemSlot.Weapons)
                     {
-                        UIManager.inst.ShowCenterMessageTop("Attached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                        UIManager.inst.CreateNewLogMessage("Attached " + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.ShowCenterMessageTop(word + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.CreateNewLogMessage(word + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
                     }
                     else
                     {
@@ -945,6 +986,17 @@ public abstract class UserInterface : MonoBehaviour
                                 break; // We have space!
                             }
                         }
+                        else if(UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.type == CustomTerminalType.HideoutCache)
+                        { // UNLESS we have the CACHE inventory open and are trying to add something to it, then there are no limits.
+                            // We've found our slot
+                            destinationObjects.Add(S.Key);
+                            freeSlotsFound++;
+                            if (freeSlotsFound == itemSize)
+                            {
+                                break; // We have space!
+                            }
+                            // (^ this is the same code as above but i'm not merging it for visibility purposes)
+                        }
                     }
                 }
             }
@@ -976,7 +1028,16 @@ public abstract class UserInterface : MonoBehaviour
                     UIManager.inst.CreateNewLogMessage("Identified " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
                 }
 
-                if (item.itemData.slot == ItemSlot.Power)
+                if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.type == CustomTerminalType.HideoutCache) // Special case if we are instead submitting it to the cache
+                {
+                    InventoryControl.inst.hideout_inventory.AddItem(item, 1);
+                    if (!once)
+                    {
+                        UIManager.inst.ShowCenterMessageTop("Submitted " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.CreateNewLogMessage("Submitted " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    }
+                }
+                else if (item.itemData.slot == ItemSlot.Power)
                 {
                     PlayerData.inst.GetComponent<PartInventory>().inv_power.AddItem(item, 1);
                     if (!once)
