@@ -130,7 +130,14 @@ public abstract class UserInterface : MonoBehaviour
                 destroyOnRemove = true;
             }
 
-            rt.GetComponent<InvMovingDisplayItem>().Setup(obj.GetComponent<InvDisplayItem>().item.itemData.itemName, destroyOnRemove);
+            string itemName = obj.GetComponent<InvDisplayItem>().item.itemData.itemName;
+            // Make sure not to unintentionally reveal the name if its a prototype!
+            if (!obj.GetComponent<InvDisplayItem>().item.itemData.knowByPlayer)
+            {
+                itemName = HF.ItemPrototypeName(obj.GetComponent<InvDisplayItem>().item);
+            }
+
+            rt.GetComponent<InvMovingDisplayItem>().Setup(itemName, destroyOnRemove);
             tempItem.transform.SetParent(inventoryArea.transform.parent.transform.parent); // Set parent to *[RightCore] - Area* so that it isn't layered under any of the menus.
 
             // Is there an actual item there?
