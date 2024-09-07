@@ -1448,9 +1448,18 @@ public class PlayerData : MonoBehaviour
         //this.GetComponent<PartInventory>()._inventory.Container.Items = new InventorySlot[24];
     }
 
+    public void ClearHideoutCache()
+    {
+        if(InventoryControl.inst.hideout_inventory != null)
+        {
+            InventoryControl.inst.hideout_inventory.Container.Clear();
+        }
+    }
+
     private void OnApplicationQuit()
     {
         ClearInventory();
+        ClearHideoutCache();
     }
 
     public void SavePlayerInventory()

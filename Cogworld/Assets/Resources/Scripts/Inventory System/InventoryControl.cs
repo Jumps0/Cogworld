@@ -58,6 +58,7 @@ public class InventoryControl : MonoBehaviour
     // --            --
 
     [Header("Inventory UI")]
+    [Tooltip("By far, the worst thing about this project. For the love of god, find a better way to do this.")]
     public int uuids = 0;
     public Dictionary<GameObject, InventorySlot> itemsDisplayed = new Dictionary<GameObject, InventorySlot>();
 

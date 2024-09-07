@@ -12,6 +12,7 @@ using static System.Net.Mime.MediaTypeNames;
 using Image = UnityEngine.UI.Image;
 using static Unity.VisualScripting.Member;
 using static UnityEditor.Progress;
+using UnityEditor.Experimental.GraphView;
 
 /// <summary>
 /// Manages all things quest.
@@ -448,7 +449,23 @@ public class QuestManager : MonoBehaviour
             // Add items to the Hideout Inventory Object
             foreach (var item in rewards_item)
             {
-                InventoryControl.inst.hideout_inventory.AddItem(new Item(item));
+                Item reward = new Item(item);
+                InventoryControl.inst.hideout_inventory.AddItem(reward);
+
+                // If an item takes up more than 1 slot, we add duplicate items (and track using a hashset)
+                for (int i = 0; i < reward.itemData.slotsRequired - 1; i++)
+                {
+                    Item duplicate = new Item(reward);
+                    int uuid = InventoryControl.inst.uuids;
+
+                    duplicate.isDuplicate = true;
+                    duplicate.duplicate_uuid = uuid;
+
+                    InventoryControl.inst.hideout_inventory.AddItem(duplicate, 1);
+
+                    reward.duplicates.Add(InventoryControl.inst.uuids);
+                    InventoryControl.inst.uuids++;
+                }
             }
         }
 
