@@ -5809,16 +5809,39 @@ public class UIManager : MonoBehaviour
     public void UpdateParts()
     {
         // - Weight -
-        string weight = PlayerData.inst.currentWeight.ToString() + "/" + PlayerData.inst.maxWeight.ToString();
+        string weight = "";
 
-        weightText.text = weight;
-        if (PlayerData.inst.currentWeight > PlayerData.inst.maxWeight)
+        // Do different weight display if using the Hideout Cache
+        if(cTerminal_machine != null)
         {
-            weightText.color = dangerRed;
+            InventoryObject inv = InventoryControl.inst.hideout_inventory;
+            int current = inv.ItemCount, max = inv.Container.Items.Length;
+
+            weight = current + "/" + max;
+            weightText.text = weight;
+
+            if (current >= max)
+            {
+                weightText.color = dangerRed;
+            }
+            else
+            {
+                weightText.color = normalGreen;
+            }
         }
-        else
+        else // Normal text
         {
-            weightText.color = normalGreen;
+            weight = PlayerData.inst.currentWeight.ToString() + "/" + PlayerData.inst.maxWeight.ToString();
+
+            weightText.text = weight;
+            if (PlayerData.inst.currentWeight > PlayerData.inst.maxWeight)
+            {
+                weightText.color = dangerRed;
+            }
+            else
+            {
+                weightText.color = normalGreen;
+            }
         }
 
         // - # x # -   ~ Overencumberance (Balance) ~

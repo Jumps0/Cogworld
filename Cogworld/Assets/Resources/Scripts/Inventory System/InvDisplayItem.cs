@@ -730,17 +730,19 @@ public class InvDisplayItem : MonoBehaviour
 
     public void RightClick()
     {
-        UIManager.inst.Data_OpenMenu(item, null, PlayerData.inst.GetComponent<Actor>());
+        if(UIManager.inst.cTerminal_machine == null && UIManager.inst.terminal_targetTerm)
+            UIManager.inst.Data_OpenMenu(item, null, PlayerData.inst.GetComponent<Actor>());
     }
 
     public void Click()
     {
-        if ((my_interface != null && my_interface.GetComponent<StaticInterface>()) 
-            || discardAnimationCoroutine != null 
-            || isSecondaryItem 
-            || (item != null && item.isBroken)
-            || (item != null && item.disabledTimer > 0))
-        { // We shouldn't toggle items in the inventory. We should forbid toggling while in the middle of animating. Only lead items should be able to be toggled. Forbid force disabled items from being toggled.
+        if ((my_interface != null && my_interface.GetComponent<StaticInterface>()) // We shouldn't toggle items in the inventory.
+            || discardAnimationCoroutine != null // We should forbid toggling while in the middle of animating.
+            || isSecondaryItem // Only lead items should be able to be toggled.
+            || (item != null && item.isBroken) // Forbid broken items from being toggled
+            || (item != null && item.disabledTimer > 0) // Forbid force disabled items from being toggled.
+            || (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.type == CustomTerminalType.HideoutCache)) // Don't toggle items while in the cache inventory mode
+        {
             return;
         }
 
