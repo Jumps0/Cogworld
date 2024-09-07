@@ -71,6 +71,7 @@ MonoBehaviour:
     destroy_object: {fileID: 0}
   reward_items:
   - {fileID: 11400000, guid: 1d1290a5f1b43b647bdd6f34aa3b382b, type: 2}
+  - {fileID: 11400000, guid: 53cc6100bb1f2bc4791763d2fa6c0928, type: 2}
   reward_matter: 0
   reward_claimed: 0
   questGiverSprite: {fileID: 21300000, guid: c2f79deb7a4925141b093fdcf078edff, type: 3}
