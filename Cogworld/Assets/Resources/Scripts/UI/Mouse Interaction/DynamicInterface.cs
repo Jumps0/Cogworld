@@ -136,16 +136,15 @@ public class DynamicInterface : UserInterface
             // No sub headers needed
 
             // Create the slots
-            TerminalCustom machine = UIManager.inst.cTerminal_machine;
 
-            for (int i = 0; i < machine.storedComponents.Container.Items.Length; i++)
+            for (int i = 0; i < InventoryControl.inst.hideout_inventory.Container.Items.Length; i++)
             {
                 // Create a new *InvDisplayItem* object
                 var obj = CreateNewEmptySlot();
 
                 // Set parent and store it
-                machine.storedComponents.Container.Items[i].parent = this;
-                slotsOnInterface.Add(obj, machine.storedComponents.Container.Items[i]);
+                InventoryControl.inst.hideout_inventory.Container.Items[i].parent = this;
+                slotsOnInterface.Add(obj, InventoryControl.inst.hideout_inventory.Container.Items[i]);
             }
 
             #endregion

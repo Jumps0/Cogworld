@@ -84,14 +84,16 @@ public class TerminalCustom : MonoBehaviour
 
     #region Hideout Cache
     public int storedMatter = 0;
-    public InventoryObject storedComponents; // Need a unique inventory to track this
     public void SetupAsCache()
     {
         type = CustomTerminalType.HideoutCache;
         systemName = "Hideout Cache (Local)";
 
         // Setup component inventory
-        storedComponents = new InventoryObject(10, systemName + "'s component Inventory");
+        if(InventoryControl.inst.hideout_inventory == null)
+        {
+            InventoryControl.inst.hideout_inventory = new InventoryObject(25, systemName + "'s component Inventory");
+        }
 
         #region Add Commands
         char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();

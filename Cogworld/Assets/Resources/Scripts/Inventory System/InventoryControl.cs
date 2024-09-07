@@ -230,17 +230,14 @@ public class InventoryControl : MonoBehaviour
             {
                 foreach (var item in I.GetComponentInChildren<DynamicInterface>().slotsOnInterface)
                 {
-                    //if(item.Key.GetComponent<InvDisplayItem>().item != null)
-                    //{
-                        item.Key.GetComponent<InvDisplayItem>().SetLetter(UIManager.inst.alphabet[alphabet].ToString());
-                        alphabet++;
+                    item.Key.GetComponent<InvDisplayItem>().SetLetter(UIManager.inst.alphabet[alphabet].ToString());
+                    alphabet++;
 
-                        if (alphabet >= 26) // Impossible to have more than 26 parts so should be good here.
-                        {
-                            Debug.LogError("ERROR: Letter overflow in assigning keys to parts.");
-                            Debug.Break();
-                        }
-                    //}
+                    if (alphabet >= 26) // Impossible to have more than 26 parts so should be good here.
+                    {
+                        Debug.LogError("ERROR: Letter overflow in assigning keys to parts.");
+                        Debug.Break();
+                    }
                 }
             }
             else if (I.GetComponentInChildren<StaticInterface>()) // Includes all items found in /INVENTORY/ menu (USES NUMBERS)
