@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public abstract class UserInterface : MonoBehaviour
 {
@@ -47,7 +48,7 @@ public abstract class UserInterface : MonoBehaviour
 
         if (obj.GetComponent<InvDisplayItem>())
         {
-            Button _b = obj.GetComponent<InvDisplayItem>()._button; // Convoluted workaround due to null errors
+            UnityEngine.UI.Button _b = obj.GetComponent<InvDisplayItem>()._button; // Convoluted workaround due to null errors
             trigger = _b.GetComponent<EventTrigger>();
         }
         else
@@ -272,7 +273,7 @@ public abstract class UserInterface : MonoBehaviour
             return;
             #endregion
         }
-
+        
         if (MouseData.slotHoveredOver && obj.GetComponent<InvDisplayItem>().item != null 
             && MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver].item.Id >= 0) // Are we hovering over a slot with an item? Lets attempt to swap the two parts.
         {
@@ -706,24 +707,31 @@ public abstract class UserInterface : MonoBehaviour
                     StaticInterface itf = MouseData.interfaceMouseIsOver.GetComponent<StaticInterface>();
 
                     // What we are going to do is:
-                    // -Create a new (empty) InventorySlot and an InvDisplayItem to represent it.
-                    // -Set that as our swap point.
+                    // -Fill the space with a bunch of new (empty) InventorySlot and an InvDisplayItem to represent it. We will create only as many as we have free spaces in the inventory.
+                    // -Set the first free one as our swap point
 
-                    GameObject newSlot = itf.CreateNewEmptySlot(); // Create a new slot using its own function
-                    // Since there are currently no slots here, we can safely remake the array with this lone slot
-                    itf.slots = new GameObject[InventoryControl.inst.p_inventory.Container.Items.Length]; // Reset array
-                    itf.slots[0] = obj; // Assign the slot in the array
+                    // First find out how many we need to make
+                    int free = InventoryControl.inst.p_inventory.EmptySlotCount;
+                    int stored = InventoryControl.inst.p_inventory.ItemCount;
+                    int total = free + stored;
 
-                    // Set parent and store it
-                    InventoryControl.inst.p_inventory.Container.Items[0].parent = itf;
-                    itf.slotsOnInterface.Add(obj, InventoryControl.inst.p_inventory.Container.Items[0]);
+                    // Then make as many as we can
+                    for (int i = 0; i < free; i++)
+                    {
+                        GameObject newSlot = itf.CreateNewEmptySlot(); // Create a new slot using its own function
+                        itf.slots[i + stored] = newSlot; // Assign the slot in the array
 
-                    // Now we can use this as our swap point
-                    MouseData.slotHoveredOver = obj;
-                    obj_destination = obj;
+                        // Set parent and store it
+                        InventoryControl.inst.p_inventory.Container.Items[i + stored].parent = itf;
+                        itf.slotsOnInterface.Add(newSlot, InventoryControl.inst.p_inventory.Container.Items[i + stored]);
+                    }
+
+                    // Now we can use the first empty slot we made as our swap point
+                    MouseData.slotHoveredOver = itf.slots[stored];
+                    obj_destination = MouseData.slotHoveredOver;
                     destinationSlot = MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver];
                 }
-            } // IMPORTANT TODO NOTE: THIS PROBABLY DOESNT WORK WITH MULTI-SLOT ITEMS, AND MAY MESS UP OTHER THINGS. IMPROVE IT LATER
+            } 
 
             int size_origin = originItem.itemData.slotsRequired;
 
