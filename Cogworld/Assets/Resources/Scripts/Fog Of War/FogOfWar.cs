@@ -11,26 +11,10 @@ public class FogOfWar : MonoBehaviour
         inst = this;
     }
 
-    //public bool doSearching = false;
-    //public GameObject player;
-
-    //[SerializeField] private LayerMask layermask;
-
-    /*
-    private Mesh mesh;
-    public Vector3 origin;
-    private float startingAngle;
-    [SerializeField] private float fov = 360;
-    public float viewDistance;
-    [SerializeField] private int rayCount = 70;
-    */
-
     public List<Vector3Int> visibleTiles;
     public List<TileBlock> unseenTiles = new List<TileBlock>();
     public List<TileBlock> knownTiles = new List<TileBlock>();
 
-    //private float angle;
-    //private float angleIncrease;
 
     public void UpdateFogMap(List<Vector3Int> playerFOV)
     {

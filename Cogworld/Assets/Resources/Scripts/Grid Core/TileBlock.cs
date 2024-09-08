@@ -16,7 +16,7 @@ public class TileBlock : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Color _baseColor, _offsetColor;
-    [SerializeField] private SpriteRenderer _renderer;
+    public SpriteRenderer _renderer;
     [SerializeField] public GameObject _highlight;
     public GameObject _highlightPerm; // Used for map border mostly
     public GameObject _debrisSprite;
@@ -88,18 +88,6 @@ public class TileBlock : MonoBehaviour
         {
             occupied = true;
             this.gameObject.layer = LayerMask.NameToLayer("BlockVision");
-
-            /*
-            if (tileInfo.Id == 1)
-            {
-                this.AddComponent<PotentialField>();
-                this.AddComponent<EntValues>();
-                this.GetComponent<PotentialField>().repulsive = true;
-                this.GetComponent<PotentialField>().Rconstant = 125;
-                this.GetComponent<PotentialField>().ent = this.GetComponent<EntValues>();
-            }
-            */
-
         }
         else if (tileInfo.type == TileType.Floor)
         {
@@ -141,29 +129,12 @@ public class TileBlock : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        if (_renderer == null)
-        {
-            return;
-        }
-
-        vis = tileInfo.currentVis;
-        CheckVisibility(); // This too this is also pretty bad. Finding a good solution for this may be difficult.
-        // See https://www.youtube.com/watch?v=XNcEZHqtC0g for the many ways to finding problems when optimizing in Unity
-
-        /*
-        if (this.GetComponent<PotentialField>() && isExplored)
-        {
-            this.GetComponent<PotentialField>().active = true;
-        }
-        */
-    }
-
     #region Vision/Display
 
-    public void CheckVisibility()
+    public void UpdateVis()
     {
+        vis = tileInfo.currentVis;
+
         if (recentlyRevealedViaIntel)
         {
             if (!isVisible)
@@ -478,6 +449,15 @@ public class TileBlock : MonoBehaviour
     {
         // There are a couple instances where we need to do something or check something
 
+    }
+
+    private void VisionUpdate() // this function is temporary
+    {
+        // a new solution is developing
+        
+        UpdateVis(); // This too this is also pretty bad. Finding a good solution for this may be difficult.
+        // See https://www.youtube.com/watch?v=XNcEZHqtC0g for the many ways to finding problems when optimizing in Unity
+        // this too https://www.youtube.com/watch?v=CJ94gOzKqsM (step 1 is to move vis out of blocks)
     }
     #endregion
 }
