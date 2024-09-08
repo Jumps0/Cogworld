@@ -3655,38 +3655,38 @@ public static class HF
         // We want to include diagonals into this.
         if (X < MapManager.inst._mapSizeX - 1) // [ RIGHT ]
         {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X + 1, Y)].gameObject);
+            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X + 1, Y)].bottom.gameObject);
         }
         if (X > 0) // [ LEFT ]
         {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X - 1, Y)].gameObject);
+            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X - 1, Y)].bottom.gameObject);
         }
         if (Y < MapManager.inst._mapSizeY - 1) // [ UP ]
         {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X, Y + 1)].gameObject);
+            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X, Y + 1)].bottom.gameObject);
         }
         if (Y > 0) // [ DOWN ]
         {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X, Y - 1)].gameObject);
+            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X, Y - 1)].bottom.gameObject);
         }
         // -- 
         // Diagonals
         // --
         if (X < MapManager.inst._mapSizeX - 1 && Y < MapManager.inst._mapSizeY - 1) // [ UP-RIGHT ]
         {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X + 1, Y + 1)].gameObject);
+            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X + 1, Y + 1)].bottom.gameObject);
         }
         if (Y < MapManager.inst._mapSizeY - 1 && X > 0) // [ UP-LEFT ]
         {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X - 1, Y + 1)].gameObject);
+            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X - 1, Y + 1)].bottom.gameObject);
         }
         if (Y > 0 && X > 0) // [ DOWN-LEFT ]
         {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X - 1, Y - 1)].gameObject);
+            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X - 1, Y - 1)].bottom.gameObject);
         }
         if (Y > 0 && X < MapManager.inst._mapSizeX - 1) // [ DOWN-RIGHT ]
         {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X + 1, Y - 1)].gameObject);
+            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X + 1, Y - 1)].bottom.gameObject);
         }
 
         return neighbors;
@@ -3839,9 +3839,9 @@ public static class HF
 
     public static bool IsOpenSpace(Vector2Int position)
     {
-        if (MapManager.inst._allTilesRealized.TryGetValue(position, out TileBlock tileBlock))
+        if (MapManager.inst._allTilesRealized.TryGetValue(position, out TData T))
         {
-            return tileBlock._partOnTop == null && !tileBlock.occupied;
+            return T.bottom._partOnTop == null && !T.bottom.occupied;
         }
 
         return false;
@@ -4128,13 +4128,13 @@ public static class HF
         {
             Vector2Int loc = new Vector2Int(spot.x, spot.y);
 
-            if (MapManager.inst._layeredObjsRealized.ContainsKey(loc) && MapManager.inst._layeredObjsRealized[loc].GetComponent<FloorTrap>())
+            if (MapManager.inst._allTilesRealized.ContainsKey(loc) && MapManager.inst._allTilesRealized[loc].top != null && MapManager.inst._allTilesRealized[loc].top.GetComponent<FloorTrap>())
             {
-                if (!MapManager.inst._layeredObjsRealized[loc].GetComponent<FloorTrap>().knowByPlayer
-                    && !MapManager.inst._layeredObjsRealized[loc].GetComponent<FloorTrap>().tripped
-                    && MapManager.inst._layeredObjsRealized[loc].GetComponent<FloorTrap>().active)
+                if (!MapManager.inst._allTilesRealized[loc].top.GetComponent<FloorTrap>().knowByPlayer
+                    && !MapManager.inst._allTilesRealized[loc].top.GetComponent<FloorTrap>().tripped
+                    && MapManager.inst._allTilesRealized[loc].top.GetComponent<FloorTrap>().active)
                 {
-                    trapsInView.Add(MapManager.inst._layeredObjsRealized[loc].GetComponent<FloorTrap>());
+                    trapsInView.Add(MapManager.inst._allTilesRealized[loc].top.GetComponent<FloorTrap>());
                 }
             }
         }

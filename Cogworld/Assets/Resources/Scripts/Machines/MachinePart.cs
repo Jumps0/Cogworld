@@ -236,7 +236,7 @@ public class MachinePart : MonoBehaviour
         {
             if (MapManager.inst.loaded)
             {
-                MapManager.inst._allTilesRealized[new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y)].SetToDirty();
+                MapManager.inst._allTilesRealized[new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y)].bottom.SetToDirty();
             }
             // Play a sound
             AudioClip clip = AudioManager.inst.nonBotDestruction_Clips[Random.Range(18, 22)]; // METAL_DEBRIS_1/2/3/4/5
@@ -264,10 +264,10 @@ public class MachinePart : MonoBehaviour
 
         // Remove from MapManager data
         Vector2Int pos = HF.V3_to_V2I(this.transform.position);
-        MapManager.inst._layeredObjsRealized.Remove(pos);
+        MapManager.inst._allTilesRealized.Remove(pos);
         HF.RemoveMachineFromList(this);
-        MapManager.inst._allTilesRealized[pos].occupied = false;
-        MapManager.inst._allTilesRealized[pos].walkable = true; // should be fine?
+        MapManager.inst._allTilesRealized[pos].bottom.occupied = false;
+        MapManager.inst._allTilesRealized[pos].bottom.walkable = true; // should be fine?
 
         Destroy(this.transform);
     }
@@ -336,8 +336,12 @@ public class MachinePart : MonoBehaviour
         {
             if (MapManager.inst.loaded) // This odd workaround is necessary for machines loaded from prefabs. Since two will exist and the first gets deleted, without this check it will remove the 2nd from the dictionary.
             {
-                MapManager.inst._allTilesRealized[new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y)].occupied = false;
-                MapManager.inst._layeredObjsRealized.Remove(new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y));
+                Vector2Int pos = HF.V3_to_V2I(this.transform.position);
+
+                TData T = MapManager.inst._allTilesRealized[pos];
+                T.bottom.occupied = false;
+                T.top = null;
+                MapManager.inst._allTilesRealized[pos] = T;
             }
             destroyed = true;
             if(parentPart)

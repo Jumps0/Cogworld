@@ -131,8 +131,27 @@ public class TileBlock : MonoBehaviour
 
     #region Vision/Display
 
-    public void UpdateVis()
+    public void UpdateVis(byte update)
     {
+        // See https://www.youtube.com/watch?v=XNcEZHqtC0g for the many ways to finding problems when optimizing in Unity
+        // this too https://www.youtube.com/watch?v=CJ94gOzKqsM (step 1 is to move vis out of blocks)
+
+        if (update == 0) // UNSEEN/UNKNOWN
+        {
+            isExplored = false;
+            isVisible = false;
+        }
+        else if(update == 1) // UNSEEN/EXPLORED
+        {
+            isExplored = true;
+            isVisible = false;
+        }
+        else if(update == 2) // SEEN/EXPLORED
+        {
+            isExplored = true;
+            isVisible = true;
+        }
+
         vis = tileInfo.currentVis;
 
         if (recentlyRevealedViaIntel)
@@ -449,15 +468,6 @@ public class TileBlock : MonoBehaviour
     {
         // There are a couple instances where we need to do something or check something
 
-    }
-
-    private void VisionUpdate() // this function is temporary
-    {
-        // a new solution is developing
-        
-        UpdateVis(); // This too this is also pretty bad. Finding a good solution for this may be difficult.
-        // See https://www.youtube.com/watch?v=XNcEZHqtC0g for the many ways to finding problems when optimizing in Unity
-        // this too https://www.youtube.com/watch?v=CJ94gOzKqsM (step 1 is to move vis out of blocks)
     }
     #endregion
 }

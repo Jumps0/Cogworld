@@ -169,7 +169,7 @@ public class TerminalZone
         {
             if (MapManager.inst._allTilesRealized.ContainsKey(T))
             {
-                TileBlock tile = MapManager.inst._allTilesRealized[T];
+                TileBlock tile = MapManager.inst._allTilesRealized[T].bottom;
                 // Set all the tiles as explored and if not in direct LOS make them green
                 // - Don't do cave walls
                 if(!(tile.tileInfo.Id == 0 || tile.tileInfo.Id == 2 || tile.tileInfo.Id == 18))
@@ -180,7 +180,7 @@ public class TerminalZone
 
             }
 
-            if (MapManager.inst._layeredObjsRealized.ContainsKey(T))
+            if (MapManager.inst._allTilesRealized.ContainsKey(T)) // TODO
             {
                 // Set all the tiles as explored and if not in direct LOS make them green
 

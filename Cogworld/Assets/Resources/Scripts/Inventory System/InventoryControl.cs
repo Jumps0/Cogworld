@@ -96,13 +96,13 @@ public class InventoryControl : MonoBehaviour
 
         spawnedItem.GetComponent<Part>().location.x = (int)location.x; // Assign X location
         spawnedItem.GetComponent<Part>().location.x = (int)location.y; // Assign Y location
-        spawnedItem.GetComponent<Part>()._tile = MapManager.inst._allTilesRealized[new Vector2Int((int)location.x, (int)location.y)]; // Assign tile
+        spawnedItem.GetComponent<Part>()._tile = MapManager.inst._allTilesRealized[new Vector2Int((int)location.x, (int)location.y)].bottom; // Assign tile
 
         spawnedItem.GetComponent<Part>().isExplored = false;
         spawnedItem.GetComponent<Part>().isVisible = false;
 
         worldItems[new Vector2Int((int)location.x, (int)location.y)] = spawnedItem; // Add to Dictionary
-        MapManager.inst._allTilesRealized[new Vector2Int((int)location.x, (int)location.y)]._partOnTop = spawnedItem.GetComponent<Part>();
+        MapManager.inst._allTilesRealized[new Vector2Int((int)location.x, (int)location.y)].bottom._partOnTop = spawnedItem.GetComponent<Part>();
 
         spawnedItem.GetComponentInChildren<SpriteRenderer>().sortingOrder = 6;
         spawnedItem.transform.parent = allFloorItems.transform;
@@ -128,10 +128,10 @@ public class InventoryControl : MonoBehaviour
 
         placedItem.GetComponent<Part>().location.x = (int)location.x; // Assign X location
         placedItem.GetComponent<Part>().location.x = (int)location.y; // Assign Y location
-        placedItem.GetComponent<Part>()._tile = MapManager.inst._allTilesRealized[new Vector2Int((int)location.x, (int)location.y)]; // Assign tile
+        placedItem.GetComponent<Part>()._tile = MapManager.inst._allTilesRealized[new Vector2Int((int)location.x, (int)location.y)].bottom; // Assign tile
 
         worldItems[new Vector2Int((int)location.x, (int)location.y)] = placedItem; // Add to Dictionary
-        MapManager.inst._allTilesRealized[new Vector2Int((int)location.x, (int)location.y)]._partOnTop = placedItem.GetComponent<Part>();
+        MapManager.inst._allTilesRealized[new Vector2Int((int)location.x, (int)location.y)].bottom._partOnTop = placedItem.GetComponent<Part>();
 
         placedItem.GetComponentInChildren<SpriteRenderer>().sortingOrder = 6;
         placedItem.transform.parent = allFloorItems.transform;
@@ -398,10 +398,10 @@ public class InventoryControl : MonoBehaviour
         }
 
         // Drop is as close to the source as possible
-        TileBlock dropTile = MapManager.inst._allTilesRealized[starting_pos];
+        TileBlock dropTile = MapManager.inst._allTilesRealized[starting_pos].bottom;
 
         Vector2Int dropLocation = HF.LocateFreeSpace(HF.V3_to_V2I(dropTile.transform.position)); // Find nearest free space
-        dropTile = MapManager.inst._allTilesRealized[dropLocation];
+        dropTile = MapManager.inst._allTilesRealized[dropLocation].bottom;
 
         if (source != null && source.gameObject.GetComponent<PlayerData>()) // Is player?
         {

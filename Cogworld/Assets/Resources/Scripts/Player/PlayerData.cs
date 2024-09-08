@@ -631,7 +631,7 @@ public class PlayerData : MonoBehaviour
                     {
                         if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(x, y)))
                         {
-                            tiles.Add(MapManager.inst._allTilesRealized[new Vector2Int(x, y)].gameObject);
+                            tiles.Add(MapManager.inst._allTilesRealized[new Vector2Int(x, y)].bottom.gameObject);
                         }
                     }
                 }
@@ -885,7 +885,7 @@ public class PlayerData : MonoBehaviour
             {
                 UIManager.inst.Scan_FlipSubmode(true, machine);
             }
-            else if (trap && trap.GetComponent<FloorTrap>().knowByPlayer && MapManager.inst._allTilesRealized[HF.V3_to_V2I(trap.transform.position)].isExplored)
+            else if (trap && trap.GetComponent<FloorTrap>().knowByPlayer && MapManager.inst._allTilesRealized[HF.V3_to_V2I(trap.transform.position)].vis > 0)
             {
                 UIManager.inst.Scan_FlipSubmode(true, trap);
             }

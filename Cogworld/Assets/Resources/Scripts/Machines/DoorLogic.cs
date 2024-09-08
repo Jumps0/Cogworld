@@ -35,11 +35,11 @@ public class DoorLogic : MonoBehaviour
         //    *
         //
 
-        activationTiles.Add(MapManager.inst._allTilesRealized[_location]); // Center
-        activationTiles.Add(MapManager.inst._allTilesRealized[_location + new Vector2Int(0, 1)]);  // Up
-        activationTiles.Add(MapManager.inst._allTilesRealized[_location + new Vector2Int(0, -1)]); // Down
-        activationTiles.Add(MapManager.inst._allTilesRealized[_location + new Vector2Int(-1, 0)]); // Left
-        activationTiles.Add(MapManager.inst._allTilesRealized[_location + new Vector2Int(1, 0)]);  // Right
+        activationTiles.Add(MapManager.inst._allTilesRealized[_location].bottom); // Center
+        activationTiles.Add(MapManager.inst._allTilesRealized[_location + new Vector2Int(0, 1)].bottom);  // Up
+        activationTiles.Add(MapManager.inst._allTilesRealized[_location + new Vector2Int(0, -1)].bottom); // Down
+        activationTiles.Add(MapManager.inst._allTilesRealized[_location + new Vector2Int(-1, 0)].bottom); // Left
+        activationTiles.Add(MapManager.inst._allTilesRealized[_location + new Vector2Int(1, 0)].bottom);  // Right
 
         this.GetComponent<SpriteRenderer>().sprite = _closed;
         source.spatialBlend = 1;

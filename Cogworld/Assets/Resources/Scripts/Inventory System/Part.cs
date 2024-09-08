@@ -108,8 +108,24 @@ public class Part : MonoBehaviour
         }
     }
 
-    public void UpdateVisibility()
+    public void UpdateVis(byte update)
     {
+        if (update == 0) // UNSEEN/UNKNOWN
+        {
+            isExplored = false;
+            isVisible = false;
+        }
+        else if (update == 1) // UNSEEN/EXPLORED
+        {
+            isExplored = true;
+            isVisible = false;
+        }
+        else if (update == 2) // SEEN/EXPLORED
+        {
+            isExplored = true;
+            isVisible = true;
+        }
+
         bool known = _item.itemData.knowByPlayer;
         Color full, half;
         if (known)

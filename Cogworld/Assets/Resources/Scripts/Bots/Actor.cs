@@ -234,8 +234,6 @@ public class Actor : Entity
         noMovementFor += 1; // should this be here?
         if (this.GetComponent<BotAI>() != null)
             this.GetComponent<BotAI>().isTurn = false;
-        //TurnManager.inst.EndTurn(this);
-        //MapManager.inst.NearTileVisUpdate(this.fieldOfViewRange, HF.V3_to_V2I(this.transform.position)); // experimental
 
         if (this.GetComponent<PlayerData>()) 
         { // Siege tracking
@@ -329,7 +327,7 @@ public class Actor : Entity
         Vector2Int moveToLocation = Action.NormalizeMovement(this.gameObject.transform, this.GetComponent<OrientedPhysics>().desiredPostion);
         Vector2Int realPos = Action.V3_to_V2I(this.GetComponent<OrientedPhysics>().desiredPostion);
 
-        if (MapManager.inst._allTilesRealized.ContainsKey(realPos) && this.GetComponent<Actor>().IsUnoccupiedTile(MapManager.inst._allTilesRealized[realPos]))
+        if (MapManager.inst._allTilesRealized.ContainsKey(realPos) && this.GetComponent<Actor>().IsUnoccupiedTile(MapManager.inst._allTilesRealized[realPos].bottom))
         {
             Debug.Log("Move successful");
             Action.MovementAction(this, moveToLocation);
@@ -365,7 +363,7 @@ public class Actor : Entity
         Vector2Int moveToLocation = Action.NormalizeMovement(this.gameObject.transform, this.GetComponent<OrientedPhysics>().desiredPostion);
         Vector2Int realPos = Action.V3_to_V2I(this.GetComponent<OrientedPhysics>().desiredPostion); 
 
-        if (MapManager.inst._allTilesRealized.ContainsKey(realPos) && this.GetComponent<Actor>().IsUnoccupiedTile(MapManager.inst._allTilesRealized[realPos]))
+        if (MapManager.inst._allTilesRealized.ContainsKey(realPos) && this.GetComponent<Actor>().IsUnoccupiedTile(MapManager.inst._allTilesRealized[realPos].bottom))
         {
             Action.MovementAction(this.GetComponent<Actor>(), moveToLocation);
         }
@@ -387,9 +385,10 @@ public class Actor : Entity
             return false;
         }
 
-        if (MapManager.inst._layeredObjsRealized.ContainsKey(new Vector2Int(tile.locX, tile.locY)))
+        if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(tile.locX, tile.locY)))
         {
-            if (MapManager.inst._layeredObjsRealized[new Vector2Int(tile.locX, tile.locY)].GetComponent<DoorLogic>()) // This is a door
+            TData T = MapManager.inst._allTilesRealized[new Vector2Int(tile.locX, tile.locY)];
+            if (T.bottom.GetComponent<DoorLogic>()) // This is a door
             {
                 return true;
             }
@@ -708,7 +707,7 @@ public class Actor : Entity
         #endregion
 
         // Set tile underneath as dirty
-        MapManager.inst._allTilesRealized[Action.V3_to_V2I(this.transform.position)].SetToDirty();
+        MapManager.inst._allTilesRealized[Action.V3_to_V2I(this.transform.position)].bottom.SetToDirty();
         
         StartCoroutine(DestroySelf());
     }

@@ -289,11 +289,11 @@ public class GameManager : MonoBehaviour
 
         foreach (var L in neighbors)
         {
-            if (MapManager.inst._layeredObjsRealized.ContainsKey(L))
+            if (MapManager.inst._allTilesRealized.ContainsKey(L))
             {
-                GameObject go = MapManager.inst._layeredObjsRealized[L];
+                GameObject go = MapManager.inst._allTilesRealized[L].top;
 
-                if(go.GetComponent<DoorLogic>() != null)
+                if(go && go.GetComponent<DoorLogic>() != null)
                 {
                     go.GetComponent<DoorLogic>().StateCheck();
                 }

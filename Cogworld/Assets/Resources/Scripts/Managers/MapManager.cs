@@ -9,6 +9,21 @@ using UnityEngine.Networking.Types;
 using static StructureCTR;
 using Random = UnityEngine.Random;
 
+/// <summary>
+/// Contains all data for a specific position in the world. Includes objects for both layers, and vision status.
+/// </summary>
+public struct TData
+{
+    /// <summary>
+    /// There are 3 visibility states. 0 = UNSEEN/UNEXPLORED | 1 = UNSEEN/EXPLORED | 2 = SEEN/EXPLORED 
+    /// </summary>
+    public byte vis;
+    [Tooltip("Usually a floor or wall.")]
+    public TileBlock bottom;
+    [Tooltip("Any non-permanent entity. Machines, doors, etc.")]
+    public GameObject top;
+}
+
 public class MapManager : MonoBehaviour
 {
     public static MapManager inst;
@@ -30,7 +45,18 @@ public class MapManager : MonoBehaviour
     public GameObject playerRef;
     [SerializeField] private GameObject levelLoadCover;
 
+    [Header("Auto Mapgen Settings")]
+    public List<MapGen_DataCTR> mapGenSpecifics = new List<MapGen_DataCTR>();
+    // Global Size
+    public int _mapSizeX;
+    public int _mapSizeY;
+    [Header("Collected Map Data")]
+    public Dictionary<Vector2Int, TData> _allTilesRealized = new Dictionary<Vector2Int, TData>();         // ~ This stuff is VERY important
+    //
+    public List<GameObject> triggers = new List<GameObject>();
+    public List<GameObject> events = new List<GameObject>();
 
+    public List<AudioClip> mapRelatedSounds = new List<AudioClip>();
 
     [Header("Databases")]
     public TileDatabaseObject tileDatabase;
@@ -165,12 +191,12 @@ public class MapManager : MonoBehaviour
         if (mapType == 1) // Cave
         {
             // Then dirty up the tiles a bit
-            foreach (KeyValuePair<Vector2Int, TileBlock> floor in _allTilesRealized)
+            foreach (var floor in _allTilesRealized)
             {
                 float rand = Random.Range(0f, 1f);
-                if (rand > 0.4 && floor.Value.tileInfo.type == TileType.Floor) // 60% chance
+                if (rand > 0.4 && floor.Value.bottom.tileInfo.type == TileType.Floor) // 60% chance
                 {
-                    floor.Value.SetToDirty();
+                    floor.Value.bottom.SetToDirty();
                 }
             }
         }
@@ -209,11 +235,11 @@ public class MapManager : MonoBehaviour
 
         DrawBorder(mapSize.x, mapSize.y); // Draw the border
 
-        foreach (KeyValuePair<Vector2Int, GameObject> door in _layeredObjsRealized) // Setup all the doors
+        foreach (var door in _allTilesRealized) // Setup all the doors
         {
-            if (door.Value.GetComponent<DoorLogic>())
+            if (door.Value.top && door.Value.top.GetComponent<DoorLogic>())
             {
-                door.Value.GetComponent<DoorLogic>().LoadActivationTiles();
+                door.Value.top.GetComponent<DoorLogic>().LoadActivationTiles();
             }
         }
 
@@ -435,12 +461,12 @@ public class MapManager : MonoBehaviour
         FillWithRock(mapSize);
 
         // Then dirty up the tiles a bit
-        foreach (KeyValuePair<Vector2Int, TileBlock> floor in _allTilesRealized)
+        foreach (var floor in _allTilesRealized)
         {
             float rand = Random.Range(0f, 1f);
-            if (rand > 0.6 && floor.Value.tileInfo.type == TileType.Floor) // 40% chance
+            if (rand > 0.6 && floor.Value.bottom.tileInfo.type == TileType.Floor) // 40% chance
             {
-                floor.Value.SetToDirty();
+                floor.Value.bottom.SetToDirty();
             }
         }
 
@@ -449,11 +475,11 @@ public class MapManager : MonoBehaviour
         CreateRegions();
         TurnManager.inst.SetAllUnknown(); // Also fills the regions
 
-        foreach (KeyValuePair<Vector2Int, GameObject> door in _layeredObjsRealized) // Setup all the doors
+        foreach (var door in _allTilesRealized) // Setup all the doors
         {
-            if (door.Value.GetComponent<DoorLogic>())
+            if (door.Value.top && door.Value.top.GetComponent<DoorLogic>())
             {
-                door.Value.GetComponent<DoorLogic>().LoadActivationTiles();
+                door.Value.top.GetComponent<DoorLogic>().LoadActivationTiles();
             }
         }
 
@@ -636,8 +662,11 @@ public class MapManager : MonoBehaviour
         {
             M.GetComponent<SpriteRenderer>().sortingOrder = 7;
             Vector2Int loc = new Vector2Int((int)(M.gameObject.transform.position.x + offset.x), (int)(M.gameObject.transform.position.y + offset.y));
-            _allTilesRealized[loc].occupied = true;
-            _layeredObjsRealized[loc] = M.gameObject;
+
+            TData T = _allTilesRealized[loc];
+            T.bottom.occupied = true;
+            T.top = M.gameObject;
+            _allTilesRealized[loc] = T;
         }
         /*
          * NOTE:
@@ -940,7 +969,9 @@ public class MapManager : MonoBehaviour
                 if (!obj.GetComponent<Actor>()) // Sometimes there are bots in here
                 {
                     // This is an awkward bypass instead of using .Add because for some reason neighboring machines get assigned the same key???
-                    _layeredObjsRealized[HF.V3_to_V2I(obj.transform.position + new Vector3(xOff, yOff, 0f))] = obj;
+                    TData T = _allTilesRealized[HF.V3_to_V2I(obj.transform.position + new Vector3(xOff, yOff, 0f))];
+                    T.top = obj;
+                    _allTilesRealized[HF.V3_to_V2I(obj.transform.position + new Vector3(xOff, yOff, 0f))] = T;
                 }
             }
         }
@@ -1126,8 +1157,11 @@ public class MapManager : MonoBehaviour
                 M.GetComponent<SpriteRenderer>().sortingOrder = 7;
                 Vector2Int loc = HF.V3_to_V2I(M.transform.position);
                 M.gameObject.transform.parent = mapParent;
-                _allTilesRealized[loc].occupied = true;
-                _layeredObjsRealized[loc] = M.gameObject;
+
+                TData T = _allTilesRealized[loc];
+                T.bottom.occupied = true;
+                T.top = M.gameObject;
+                _allTilesRealized[loc] = T;
             }
         }
 
@@ -1207,21 +1241,31 @@ public class MapManager : MonoBehaviour
 
         if (_tileID != 0)
         {  // Don't add impassible tiles
+            Vector2Int posi = new Vector2Int((int)pos.x, (int)pos.y);
 
             // VVV Expand this later, it sucks! VVV
             if (MapManager.inst.tileDatabase.Tiles[_tileID].type != TileType.Door) // Things that arent doors
             {
-                if (_allTilesRealized.ContainsKey(new Vector2Int((int)pos.x, (int)pos.y)))
+                if (_allTilesRealized.ContainsKey(posi))
                 {
                     // Something already exists here, overwrite it and destroy newest instantiation
-                    _allTilesRealized[new Vector2Int((int)pos.x, (int)pos.y)].tileInfo = MapManager.inst.tileDatabase.Tiles[_tileID];
-                    _allTilesRealized[new Vector2Int((int)pos.x, (int)pos.y)].name = $"Tile {pos.x} {pos.y} - " + spawnedTile.tileInfo.type.ToString();
-                    _allTilesRealized[new Vector2Int((int)pos.x, (int)pos.y)].tileInfo.currentVis = TileVisibility.Unknown;
-                    _allTilesRealized[new Vector2Int((int)pos.x, (int)pos.y)].StartCheck();
+                    TData T = _allTilesRealized[posi];
+
+                    T.bottom.tileInfo = MapManager.inst.tileDatabase.Tiles[_tileID];
+                    T.bottom.gameObject.name = $"Tile {pos.x} {pos.y} - " + spawnedTile.tileInfo.type.ToString();
+                    T.bottom.tileInfo.currentVis = TileVisibility.Unknown;
+                    T.bottom.StartCheck();
+
+                    _allTilesRealized[posi] = T;
                 }
                 else
                 {
-                    _allTilesRealized[new Vector2Int((int)pos.x, (int)pos.y)] = spawnedTile; // Add to Dictionary
+                    _allTilesRealized.Add(posi, new TData());
+                    TData T = _allTilesRealized[posi];
+                    T.bottom = spawnedTile;
+                    T.vis = 0;
+
+                    _allTilesRealized[posi] = T;
                 }
 
                 // In some scenarios, when we are placing a tile at a position, there may be another one there, so we want to overwrite it.
@@ -1240,7 +1284,8 @@ public class MapManager : MonoBehaviour
             }
             else if (MapManager.inst.tileDatabase.Tiles[_tileID].type == TileType.Door) // Doors
             {
-                _layeredObjsRealized[new Vector2Int((int)pos.x, (int)pos.y)] = spawnedTile.gameObject;
+                TData T = _allTilesRealized[posi];
+
                 spawnedTile.AddComponent<DoorLogic>();
                 spawnedTile.GetComponent<DoorLogic>()._tile = spawnedTile.GetComponent<TileBlock>();
                 spawnedTile.GetComponent<DoorLogic>()._location = new Vector2Int((int)pos.x, (int)pos.y);
@@ -1254,26 +1299,35 @@ public class MapManager : MonoBehaviour
                 spawnedTile.GetComponent<DoorLogic>().source.volume = 0.5f;
                 spawnedTile.GetComponent<SpriteRenderer>().sortingOrder = 5;
 
+                T.top = spawnedTile.gameObject;
+                T.bottom = spawnedTile;
+
+                _allTilesRealized[posi] = T;
+
                 GridManager.inst.grid[(int)pos.x, (int)pos.y] = spawnedTile.gameObject; // Fill grid
 
                 // As a failsafe, if this door is being placed on top of a wall, we need to turn that wall into a floor tile.
-                if (_allTilesRealized.ContainsKey(new Vector2Int((int)pos.x, (int)pos.y)))
+                if (_allTilesRealized.ContainsKey(posi))
                 {
-                    TileBlock T = _allTilesRealized[new Vector2Int((int)pos.x, (int)pos.y)];
-                    if(T.tileInfo.type == TileType.Wall) // Is it a wall? We need to change that
+                    TileBlock tile = _allTilesRealized[posi].bottom;
+                    if(tile.tileInfo.type == TileType.Wall) // Is it a wall? We need to change that
                     {
                         // First get what type of floor tile we need to place
                         int id = HF.IDbyTheme(TileType.Floor);
 
-                        _allTilesRealized[new Vector2Int((int)pos.x, (int)pos.y)].gameObject.name = $"Tile {pos.x} {pos.y} - "; // Give grid based name
-                        _allTilesRealized[new Vector2Int((int)pos.x, (int)pos.y)].tileInfo = MapManager.inst.tileDatabase.Tiles[id]; // Assign tile data from database by ID
-                        _allTilesRealized[new Vector2Int((int)pos.x, (int)pos.y)].gameObject.name += _allTilesRealized[new Vector2Int((int)pos.x, (int)pos.y)].tileInfo.type.ToString(); // Modify name with type
-                        _allTilesRealized[new Vector2Int((int)pos.x, (int)pos.y)].StartCheck();
+                        TData TT = _allTilesRealized[posi];
+
+                        TT.bottom.gameObject.name = $"Tile {pos.x} {pos.y} - "; // Give grid based name
+                        TT.bottom.tileInfo = MapManager.inst.tileDatabase.Tiles[id]; // Assign tile data from database by ID
+                        TT.bottom.gameObject.name += _allTilesRealized[posi].bottom.tileInfo.type.ToString(); // Modify name with type
+                        TT.bottom.StartCheck();
+
+                        _allTilesRealized[posi] = TT;
 
                         // And update the grid too
                         if (GridManager.inst.grid[(int)pos.x, (int)pos.y] != null)
                         {
-                            GridManager.inst.grid[(int)pos.x, (int)pos.y] = _allTilesRealized[new Vector2Int((int)pos.x, (int)pos.y)].gameObject;
+                            GridManager.inst.grid[(int)pos.x, (int)pos.y] = _allTilesRealized[posi].bottom.gameObject;
                         }
                     }
 
@@ -1285,20 +1339,6 @@ public class MapManager : MonoBehaviour
         //spawnedTile.gameObject.transform.SetParent(GridManager.inst.floorParent.transform); // Set parent
         spawnedTile.transform.parent = mapParent;
     }
-
-    [Header("Auto Mapgen Settings")]
-    public List<MapGen_DataCTR> mapGenSpecifics = new List<MapGen_DataCTR>();
-    // Global Size
-    public int _mapSizeX;
-    public int _mapSizeY;
-    [Header("Collected Map Data")]
-    public Dictionary<Vector2Int, TileBlock> _allTilesRealized = new Dictionary<Vector2Int, TileBlock>();         // ~ This stuff 
-    public Dictionary<Vector2Int, GameObject> _layeredObjsRealized = new Dictionary<Vector2Int, GameObject>();    // ~ is important
-    //
-    public List<GameObject> triggers = new List<GameObject>();
-    public List<GameObject> events = new List<GameObject>();
-
-    public List<AudioClip> mapRelatedSounds = new List<AudioClip>();
 
     public void CreateTileHere(int x, int y, int _tileID)
     {
@@ -1319,9 +1359,13 @@ public class MapManager : MonoBehaviour
         spawnedTile.locX = x; // Assign X location
         spawnedTile.locY = y; // Assign Y location
 
-        _allTilesRealized[new Vector2Int(x, y)] = spawnedTile; // Add to Dictionary
-
+        TData T = _allTilesRealized[new Vector2Int(x, y)];
+        
         spawnedTile.gameObject.transform.SetParent(mapParent.transform); // Set parent
+        T.bottom = spawnedTile; // Add to Dictionary
+
+
+        _allTilesRealized[new Vector2Int(x, y)] = T;
     }
 
     public void FillWithRock(Vector2Int size)
@@ -1338,7 +1382,7 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    public bool CheckDictionaryEntry(Dictionary<Vector2Int, TileBlock> dict, Vector2Int key)
+    public bool CheckDictionaryEntry(Dictionary<Vector2Int, TData> dict, Vector2Int key)
     {
         return dict.ContainsKey(key);
     }
@@ -1419,9 +1463,7 @@ public class MapManager : MonoBehaviour
         spawnedAccess.GetComponent<AccessObject>().locX = (int)loc.x; // Assign X location
         spawnedAccess.GetComponent<AccessObject>().locY = (int)loc.y; // Assign Y location
 
-
-
-        _layeredObjsRealized[new Vector2Int((int)loc.x, (int)loc.y)] = spawnedAccess;
+        TData T = _allTilesRealized[loc];
 
         spawnedAccess.GetComponent<SpriteRenderer>().sortingOrder = 5; // +4 layer so not hidden in floor
 
@@ -1437,6 +1479,9 @@ public class MapManager : MonoBehaviour
         {
             placedExits.Add(spawnedAccess);
         }
+
+        T.top = spawnedAccess;
+        _allTilesRealized[loc] = T;
     }
 
     #endregion
@@ -1526,8 +1571,10 @@ public class MapManager : MonoBehaviour
                     {
                         M.GetComponent<SpriteRenderer>().sortingOrder = 7;
                         Vector2Int loc = new Vector2Int((int)M.gameObject.transform.position.x, (int)M.gameObject.transform.position.y);
-                        _allTilesRealized[loc].occupied = true;
-                        _layeredObjsRealized[loc] = M.gameObject;
+                        TData T = _allTilesRealized[loc];
+                        T.bottom.occupied = true;
+                        T.top = M.gameObject;
+                        _allTilesRealized[loc] = T;
                     }
 
                     room.machineCount += 1;
@@ -1547,8 +1594,10 @@ public class MapManager : MonoBehaviour
                     {
                         M.GetComponent<SpriteRenderer>().sortingOrder = 7;
                         Vector2Int loc = new Vector2Int((int)M.gameObject.transform.position.x, (int)M.gameObject.transform.position.y);
-                        _allTilesRealized[loc].occupied = true;
-                        _layeredObjsRealized[loc] = M.gameObject;
+                        TData T = _allTilesRealized[loc];
+                        T.bottom.occupied = true;
+                        T.top = M.gameObject;
+                        _allTilesRealized[loc] = T;
                     }
 
                     room.machineCount += 1;
@@ -1596,8 +1645,10 @@ public class MapManager : MonoBehaviour
                     {
                         M.GetComponent<SpriteRenderer>().sortingOrder = 7;
                         Vector2Int loc = new Vector2Int((int)M.gameObject.transform.position.x, (int)M.gameObject.transform.position.y);
-                        _allTilesRealized[loc].occupied = true;
-                        _layeredObjsRealized[loc] = M.gameObject;
+                        TData T = _allTilesRealized[loc];
+                        T.bottom.occupied = true;
+                        T.top = M.gameObject;
+                        _allTilesRealized[loc] = T;
                     }
 
                     room.machineCount += 1;
@@ -1617,8 +1668,10 @@ public class MapManager : MonoBehaviour
                     {
                         M.GetComponent<SpriteRenderer>().sortingOrder = 7;
                         Vector2Int loc = new Vector2Int((int)M.gameObject.transform.position.x, (int)M.gameObject.transform.position.y);
-                        _allTilesRealized[loc].occupied = true;
-                        _layeredObjsRealized[loc] = M.gameObject;
+                        TData T = _allTilesRealized[loc];
+                        T.bottom.occupied = true;
+                        T.top = M.gameObject;
+                        _allTilesRealized[loc] = T;
                     }
 
                     room.machineCount += 1;
@@ -1667,8 +1720,10 @@ public class MapManager : MonoBehaviour
                                 {
                                     M.GetComponent<SpriteRenderer>().sortingOrder = 7;
                                     Vector2Int loc = new Vector2Int((int)M.gameObject.transform.position.x, (int)M.gameObject.transform.position.y);
-                                    _allTilesRealized[loc].occupied = true;
-                                    _layeredObjsRealized[loc] = M.gameObject;
+                                    TData T = _allTilesRealized[loc];
+                                    T.bottom.occupied = true;
+                                    T.top = M.gameObject;
+                                    _allTilesRealized[loc] = T;
                                 }
 
                                 roomCtr.machineCount += 1;
@@ -1797,12 +1852,10 @@ public class MapManager : MonoBehaviour
         {
             M.GetComponent<SpriteRenderer>().sortingOrder = 7;
             Vector2Int loc = new Vector2Int((int)(M.gameObject.transform.position.x + offset.x), (int)(M.gameObject.transform.position.y + offset.y));
-            _allTilesRealized[loc].occupied = true;
-            _layeredObjsRealized[loc] = M.gameObject;
-            /*
-            GameObject debug = Instantiate(debugPrefab, new Vector3(loc.x, loc.y, 0), Quaternion.identity); // Debug vis check
-            debug.GetComponent<SpriteRenderer>().sortingOrder = 8;
-            */
+            TData T = _allTilesRealized[loc];
+            T.bottom.occupied = true;
+            T.top = M.gameObject;
+            _allTilesRealized[loc] = T;
         }
         /*
          * NOTE:
@@ -2265,7 +2318,7 @@ public class MapManager : MonoBehaviour
                 {
                     if (MapManager.inst._allTilesRealized.ContainsKey(loc))
                     {
-                        obj.GetComponentInChildren<TerminalCustom>().wallRevealObjs.Add(MapManager.inst._allTilesRealized[loc]);
+                        obj.GetComponentInChildren<TerminalCustom>().wallRevealObjs.Add(MapManager.inst._allTilesRealized[loc].bottom);
                     }
                 }
             }
@@ -2308,7 +2361,7 @@ public class MapManager : MonoBehaviour
     private void ZoneTerminals()
     {
         // And now (ouch), go through every placed tile, and assign its position to the nearest terminal.
-        foreach (KeyValuePair<Vector2Int, TileBlock> tile in MapManager.inst._allTilesRealized)
+        foreach (var tile in MapManager.inst._allTilesRealized)
         {
             Vector2Int tilePos = tile.Key;
             Terminal nearestTerminal = FindNearestTerminal(tilePos);
@@ -2317,9 +2370,9 @@ public class MapManager : MonoBehaviour
                 nearestTerminal.zone.assignedArea.Add(tilePos);
 
                 // and add mines too
-                if(_layeredObjsRealized.ContainsKey(tilePos) && _layeredObjsRealized[tilePos].GetComponent<FloorTrap>())
+                if(_allTilesRealized[tilePos].top != null && _allTilesRealized[tilePos].top.GetComponent<FloorTrap>())
                 {
-                    _layeredObjsRealized[tilePos].GetComponent<FloorTrap>().zone = nearestTerminal.zone;
+                    _allTilesRealized[tilePos].top.GetComponent<FloorTrap>().zone = nearestTerminal.zone;
                 }
             }
         }
@@ -2673,12 +2726,12 @@ public class MapManager : MonoBehaviour
         PlaceLevelExit(exitLoc, false, 0);
 
         // Then dirty up the tiles a bit
-        foreach (KeyValuePair<Vector2Int, TileBlock> floor in _allTilesRealized)
+        foreach (var floor in _allTilesRealized)
         {
             float rand = Random.Range(0f, 1f);
             if (rand > 0.4) // 60% chance
             {
-                floor.Value.SetToDirty();
+                floor.Value.bottom.SetToDirty();
             }
         }
 
@@ -2901,18 +2954,14 @@ public class MapManager : MonoBehaviour
         }
         TurnManager.inst.actors.Clear();
 
-        // Remove all things on layer 1
-        foreach (var L in _layeredObjsRealized.ToList())
+        // Remove everything in the main dictionary
+        foreach (var data in _allTilesRealized.ToList())
         {
-            Destroy(L.Value);
+            TData T = data.Value;
+            Destroy(T.bottom);
+            Destroy(T.top);
         }
-        _layeredObjsRealized.Clear();
 
-        // Remove all things on layer 0
-        foreach (var L in _allTilesRealized.ToList())
-        {
-            Destroy(L.Value.gameObject);
-        }
         _allTilesRealized.Clear();
         regions.Clear();
 
@@ -3054,13 +3103,16 @@ public class MapManager : MonoBehaviour
         spawnedMine.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
         spawnedMine.name = $"Floor Trap {location.x} {location.y} - {trapData.deployableItem.trapType}"; // Give grid based name
 
-        spawnedMine.GetComponent<FloorTrap>().Setup(trapData, location, _allTilesRealized[location], alignment);
+        spawnedMine.GetComponent<FloorTrap>().Setup(trapData, location, _allTilesRealized[location].bottom, alignment);
 
-        _layeredObjsRealized[location] = spawnedMine.gameObject;
+        TData T = _allTilesRealized[location];
 
         spawnedMine.GetComponentInChildren<SpriteRenderer>().sortingOrder = 12;
 
         spawnedMine.transform.parent = mapParent;
+
+        T.top = spawnedMine.gameObject;
+        _allTilesRealized[location] = T;
     }
 
     public void LocationLog(string location, string goal = "GOAL=ESCAPE")
@@ -3232,44 +3284,6 @@ public class MapManager : MonoBehaviour
         AudioManager.inst.PlayAmbient(ambID, 0.4f);
     }
 
-    /// <summary>
-    /// Updates the visuals of all Tiles
-    /// </summary>
-    public void AllTileVisUpdate()
-    {
-        foreach (KeyValuePair<Vector2Int, TileBlock> T in _allTilesRealized)
-        {
-            if (T.Value)
-            {
-                T.Value.CheckVisibility();
-            }
-        }
-    }
-
-    /// <summary>
-    /// Updates the visuals of all Tiles within the specified *radius* variable (in a square) around a specified location.
-    /// </summary>
-    /// <param name="radius">The radius (in a square) to update the nearby squares specified by the center variable.</param>
-    /// <param name="center">The location in the world where the square of tiles to check is.</param>
-    public void NearTileVisUpdate(int radius, Vector2Int center)
-    {
-        Vector2Int corner = new Vector2Int(center.x - radius, center.y - radius); // Bottom right corner
-
-        for (int x = corner.x; x < corner.x + (radius * 2); x++)
-        {
-            for (int y = corner.y; y < corner.y + (radius * 2); y++)
-            {
-                if(_allTilesRealized.ContainsKey(new Vector2Int(x, y)))
-                {
-                    if (_allTilesRealized[new Vector2Int(x, y)])
-                    {
-                        _allTilesRealized[new Vector2Int(x, y)].CheckVisibility();
-                    }
-                }
-            }
-        }
-    }
-
     #endregion
 }
 
@@ -3289,10 +3303,12 @@ public class Region
     {
         foreach (var obj in objects)
         {
+            /*
             if (obj.GetComponent<TileBlock>())
             {
-                obj.GetComponent<TileBlock>().CheckVisibility();
+                obj.GetComponent<TileBlock>().UpdateVis();
             }
+            */
         }
     }
 }
