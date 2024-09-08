@@ -3251,6 +3251,8 @@ public class UIManager : MonoBehaviour
             UIManager.inst.UpdatePSUI();
             UIManager.inst.UpdateParts();
             InventoryControl.inst.UpdateInterfaceInventories();
+
+            InventoryControl.inst.HideoutSortingCheck();
         }
 
         StartCoroutine(Terminal_CloseAnim()); // - Both use the same resources so its safe to do this

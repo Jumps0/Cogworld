@@ -328,6 +328,30 @@ public class InventoryControl : MonoBehaviour
     }
 
     /// <summary>
+    /// Identical to *PartsSortingCheck* (see above) but for the hideout cache. Called during separate cases.
+    /// </summary>
+    public void HideoutSortingCheck()
+    {
+        if (awaitingSort) // Don't attempt to sort while we are already sorting!
+        {
+            return;
+        }
+
+        bool updateNeeded = false;
+
+        if (UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortCheck(hideout_inventory)) // Check if we need to sort this
+        {
+            UIManager.inst.partContentArea.GetComponent<UserInterface>().AutoSortSection(hideout_inventory); // Perform the sort
+            updateNeeded = true;
+        }
+
+        if (updateNeeded) // If we performed a sort, we now need to update the UI
+        {
+            UpdateInterfaceInventories();
+        }
+    }
+
+    /// <summary>
     /// Adds an item to either the player's inventory or one of their part slots
     /// </summary>
     /// <param name="part">The part to add.</param>
