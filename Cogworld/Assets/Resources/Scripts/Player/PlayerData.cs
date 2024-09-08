@@ -1450,7 +1450,7 @@ public class PlayerData : MonoBehaviour
 
     public void ClearHideoutCache()
     {
-        if(InventoryControl.inst.hideout_inventory != null)
+        if(InventoryControl.inst && InventoryControl.inst.hideout_inventory != null)
         {
             InventoryControl.inst.hideout_inventory.Container.Clear();
         }

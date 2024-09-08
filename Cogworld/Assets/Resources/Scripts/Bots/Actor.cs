@@ -724,7 +724,8 @@ public class Actor : Entity
 
     private void OnDestroy()
     {
-        TurnManager.inst.turnEvents.onTurnTick -= TurnTick; // Stop listening to the turn tick event
+        if(TurnManager.inst)
+            TurnManager.inst.turnEvents.onTurnTick -= TurnTick; // Stop listening to the turn tick event
 
         fieldOfView.Clear();
 

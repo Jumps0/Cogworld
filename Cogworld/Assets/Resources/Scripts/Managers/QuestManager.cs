@@ -510,9 +510,12 @@ public class QuestManager : MonoBehaviour
     #region Data Save/Load
     private void OnApplicationQuit()
     {
-        foreach (Quest quest in questMap.Values) 
+        if (QuestManager.inst && questMap != null)
         {
-            SaveQuest(quest);
+            foreach (Quest quest in questMap.Values)
+            {
+                SaveQuest(quest);
+            }
         }
     }
 
