@@ -109,8 +109,23 @@ public class QuestPoint : MonoBehaviour
         }
     }
 
-    public void CheckVisibility()
+    public void UpdateVis(byte update)
     {
+        if (update == 0) // UNSEEN/UNKNOWN
+        {
+            isExplored = false;
+            isVisible = false;
+        }
+        else if (update == 1) // UNSEEN/EXPLORED
+        {
+            isExplored = true;
+            isVisible = false;
+        }
+        else if (update == 2) // SEEN/EXPLORED
+        {
+            isExplored = true;
+            isVisible = true;
+        }
 
         if (isVisible)
         {

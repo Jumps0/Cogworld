@@ -33,8 +33,8 @@ public class FogOfWar : MonoBehaviour
                 }
                 else
                 {
-                    // -- isExplored Check, make sure we haven't actually seen this tile before --
-                    if (T.vis == 0) // We have now seen this tile (for the first time)
+                    // -- isExplored Check
+                    if (T.vis == 0 || T.vis == 2)
                     {
                         T.vis = 1; // Make it explored, but not visible
 
@@ -81,7 +81,7 @@ public class FogOfWar : MonoBehaviour
         visibleTiles.Sort((a, b) => a.x.CompareTo(b.x));
     }
 
-    public void SetEntitiesVisibilities()
+    public void SetEntityVisibility()
     {
         foreach (Actor actor in GameManager.inst.Entities)
         {
@@ -93,15 +93,20 @@ public class FogOfWar : MonoBehaviour
             Vector3 location = actor.transform.position;
             Vector3Int entityPosition = new Vector3Int((int)location.x, (int)location.y, (int)location.z);
 
-            if (visibleTiles.Contains(entityPosition))
+            if (visibleTiles.Contains(entityPosition)) // We can actively see this bot
             {
                 actor.UpdateVis(2);
-                actor.isVisible = true;
-                actor.isExplored = true;
             }
-            else
+            else // We can't see this bot
             {
-                actor.UpdateVis(1);
+                if (actor.isExplored) // Do we even know of this bots existence?
+                { // We've seen it previously so we need to show it.
+                    actor.UpdateVis(1);
+                }
+                else // We don't, so we shouldn't show it.
+                {
+                    actor.UpdateVis(0);
+                }
             }
         }
 
@@ -111,16 +116,20 @@ public class FogOfWar : MonoBehaviour
             {
                 Vector3Int pos = new Vector3Int((int)qp.transform.position.x, (int)qp.transform.position.y, (int)qp.transform.position.z);
 
-                if (visibleTiles.Contains(pos))
+                if (visibleTiles.Contains(pos)) // We can actively see this quest point
                 {
-                    qp.GetComponent<QuestPoint>().CheckVisibility();
-                    qp.GetComponent<QuestPoint>().isVisible = true;
-                    qp.GetComponent<QuestPoint>().isExplored = true;
+                    qp.GetComponent<QuestPoint>().UpdateVis(2);
                 }
-                else
+                else // We can't see this bot
                 {
-                    qp.GetComponent<QuestPoint>().CheckVisibility();
-                    qp.GetComponent<QuestPoint>().isVisible = false;
+                    if (qp.GetComponent<QuestPoint>().isExplored) // Do we even know of this quest point's existence?
+                    { // We've seen it previously so we need to show it.
+                        qp.GetComponent<QuestPoint>().UpdateVis(1);
+                    }
+                    else // We don't, so we shouldn't show it.
+                    {
+                        qp.GetComponent<QuestPoint>().UpdateVis(0);
+                    }
                 }
             }
         }

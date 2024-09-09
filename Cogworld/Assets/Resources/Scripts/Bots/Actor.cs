@@ -769,7 +769,7 @@ public class Actor : Entity
         if (GetComponent<PlayerData>())
         {
             FogOfWar.inst.UpdateFogMap(fieldOfView);
-            FogOfWar.inst.SetEntitiesVisibilities();
+            FogOfWar.inst.SetEntityVisibility();
             HF.AttemptLocateTrap(fieldOfView);
         }
         else

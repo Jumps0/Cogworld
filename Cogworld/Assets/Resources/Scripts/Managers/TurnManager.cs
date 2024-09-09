@@ -293,7 +293,7 @@ public class TurnManager : MonoBehaviour
 
     public void SetAllUnknown()
     {
-        foreach (var T in MapManager.inst._allTilesRealized)
+        foreach (var T in MapManager.inst._allTilesRealized.ToList())
         {
             TData TD = T.Value;
 
