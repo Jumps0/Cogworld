@@ -15,6 +15,7 @@ using Transform = UnityEngine.Transform;
 using System.Text;
 using Color = UnityEngine.Color;
 using static Unity.VisualScripting.Member;
+using static UnityEngine.GraphicsBuffer;
 
 /// <summary>
 /// Contains helper functions to be used globally.
@@ -3634,6 +3635,62 @@ public static class HF
 
         return (_e, _v);
 
+    }
+
+    /// <summary>
+    /// A generic method of setting a gameObject's visibility
+    /// </summary>
+    public static void SetGenericTileVis(GameObject target, byte vis)
+    {
+        // Identify what we need to change then change it
+
+        if (target.GetComponent<TileBlock>()) // Walls, Floors, & Door tiles
+        {
+            target.GetComponent<TileBlock>().UpdateVis(vis);
+        }
+        else if (target.GetComponentInChildren<TileBlock>())
+        {
+            target.GetComponentInChildren<TileBlock>().UpdateVis(vis);
+        }
+
+        if (target.GetComponent<MachinePart>()) // Machines
+        {
+            target.GetComponent<MachinePart>().UpdateVis(vis);
+        }
+        else if (target.GetComponentInChildren<MachinePart>())
+        {
+            target.GetComponentInChildren<MachinePart>().UpdateVis(vis);
+        }
+
+        // Bots
+        if (target.GetComponent<Actor>() && target != PlayerData.inst.gameObject)
+        {
+            target.GetComponent<Actor>().UpdateVis(vis);
+        }
+        else if (target.GetComponentInChildren<Actor>() && target != PlayerData.inst.gameObject)
+        {
+            target.GetComponentInChildren<Actor>().UpdateVis(vis);
+        }
+
+        // Access
+        if (target.GetComponent<AccessObject>())
+        {
+            target.GetComponent<AccessObject>().UpdateVis(vis);
+        }
+        else if (target.GetComponentInChildren<AccessObject>())
+        {
+            target.GetComponentInChildren<AccessObject>().UpdateVis(vis);
+        }
+
+        // Items
+        if (target.GetComponent<Part>())
+        {
+            target.GetComponent<Part>().UpdateVis(vis);
+        }
+        else if (target.GetComponentInChildren<Part>())
+        {
+            target.GetComponentInChildren<Part>().UpdateVis(vis);
+        }
     }
 
     /// <summary>

@@ -678,7 +678,7 @@ public class GlobalSettings : MonoBehaviour
             case "notiles":
                 foreach (var T in MapManager.inst._allTilesRealized)
                 {
-                    T.Value._renderer.enabled = !T.Value._renderer.enabled;
+                    T.Value.bottom._renderer.enabled = !T.Value.bottom._renderer.enabled;
                 }
                 break;
 
@@ -704,20 +704,20 @@ public class GlobalSettings : MonoBehaviour
 
             Vector2Int key = new Vector2Int(int.Parse(split[0]), int.Parse(split[1]));
 
-            if (MapManager.inst._allTilesRealized.ContainsKey(key))
+            if (MapManager.inst._allTilesRealized.ContainsKey(key)) // Bottom layer
             {
                 dImage1.gameObject.SetActive(true);
-                dText1.text = MapManager.inst._allTilesRealized[key].gameObject.name;
-                if (MapManager.inst._allTilesRealized[key].occupied)
+                dText1.text = MapManager.inst._allTilesRealized[key].bottom.gameObject.name;
+                if (MapManager.inst._allTilesRealized[key].bottom.occupied)
                 {
                     dText1.text += " (O)";
                 }
             }
-
-            if (MapManager.inst._layeredObjsRealized.ContainsKey(key))
+            // Top layer
+            if (MapManager.inst._allTilesRealized.ContainsKey(key) && MapManager.inst._allTilesRealized[key].top != null)
             {
                 dImage2.gameObject.SetActive(true);
-                dText2.text = MapManager.inst._layeredObjsRealized[key].gameObject.name;
+                dText2.text = MapManager.inst._allTilesRealized[key].top.gameObject.name;
             }
         }
     }

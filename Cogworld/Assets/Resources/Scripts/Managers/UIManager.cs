@@ -419,7 +419,7 @@ public class UIManager : MonoBehaviour
                 if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(x, y)))
                 {
                     bool _e, _v = false;
-                    (_e, _v) = HF.GetGenericTileVis(MapManager.inst._allTilesRealized[new Vector2Int(x, y)].gameObject);
+                    (_e, _v) = HF.GetGenericTileVis(MapManager.inst._allTilesRealized[new Vector2Int(x, y)].bottom.gameObject);
 
                     if (_e && !_v)
                     {

@@ -383,7 +383,7 @@ public class BotAI : MonoBehaviour
                 if (MapManager.inst._allTilesRealized.ContainsKey(currentTile))
                 {
                     // Check if the tile exists and is unoccupied.
-                    if (this.GetComponent<Actor>().IsUnoccupiedTile(MapManager.inst._allTilesRealized[new Vector2Int(x, y)]))
+                    if (this.GetComponent<Actor>().IsUnoccupiedTile(MapManager.inst._allTilesRealized[new Vector2Int(x, y)].bottom))
                     {
                         validPositions.Add(currentTile); // Add to valid positions
                     }
@@ -456,7 +456,7 @@ public class BotAI : MonoBehaviour
             }
             // Only move to valid tiles!
             if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int((int)destination.x, (int)destination.y))
-                && this.GetComponent<Actor>().IsUnoccupiedTile(MapManager.inst._allTilesRealized[new Vector2Int((int)destination.x, (int)destination.y)]))
+                && this.GetComponent<Actor>().IsUnoccupiedTile(MapManager.inst._allTilesRealized[new Vector2Int((int)destination.x, (int)destination.y)].bottom))
             {
                 Action.MovementAction(this.GetComponent<Actor>(), moveDir); // Move
             }
@@ -610,9 +610,9 @@ public class BotAI : MonoBehaviour
     {
         foreach (var T in MapManager.inst._allTilesRealized)
         {
-            if (T.Value.isDirty)
+            if (T.Value.bottom.isDirty)
             {
-                return T.Value.gameObject;
+                return T.Value.bottom.gameObject;
             }
         }
 
@@ -636,9 +636,9 @@ public class BotAI : MonoBehaviour
             {
                 if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(x, y)))
                 {
-                    if (MapManager.inst._allTilesRealized[new Vector2Int(x, y)].isDirty)
+                    if (MapManager.inst._allTilesRealized[new Vector2Int(x, y)].bottom.isDirty)
                     {
-                        local.Add(MapManager.inst._allTilesRealized[new Vector2Int(x, y)].gameObject);
+                        local.Add(MapManager.inst._allTilesRealized[new Vector2Int(x, y)].bottom.gameObject);
                     }
                 }
             }

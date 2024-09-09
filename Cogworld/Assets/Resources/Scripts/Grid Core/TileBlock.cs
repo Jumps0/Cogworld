@@ -130,7 +130,6 @@ public class TileBlock : MonoBehaviour
     }
 
     #region Vision/Display
-
     public void UpdateVis(byte update)
     {
         // See https://www.youtube.com/watch?v=XNcEZHqtC0g for the many ways to finding problems when optimizing in Unity
@@ -204,6 +203,12 @@ public class TileBlock : MonoBehaviour
             {
                 this.GetComponent<Animator>().enabled = false;
             }
+        }
+
+        // Part on top check
+        if(_partOnTop != null)
+        {
+            HF.SetGenericTileVis(_partOnTop.gameObject, update);
         }
     }
 

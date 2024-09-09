@@ -127,16 +127,25 @@ public class MachinePart : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    private void Update()
-    {
-        if(MapManager.inst && MapManager.inst.loaded)
-            CheckVisibility();
-    }
-
     #region Visibility
-    private void CheckVisibility()
+    public void UpdateVis(byte update)
     {
+        if (update == 0) // UNSEEN/UNKNOWN
+        {
+            isExplored = false;
+            isVisible = false;
+        }
+        else if (update == 1) // UNSEEN/EXPLORED
+        {
+            isExplored = true;
+            isVisible = false;
+        }
+        else if (update == 2) // SEEN/EXPLORED
+        {
+            isExplored = true;
+            isVisible = true;
+        }
+
         Color actiColor = activeColor;
         if(parentPart == null || parentPart == this)
         {

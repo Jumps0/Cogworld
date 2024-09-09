@@ -275,7 +275,7 @@ public class TurnManager : MonoBehaviour
             foreach (Actor A in actors)
             {
                 A.UpdateFieldOfView();
-                A.CheckVisibility();
+                A.UpdateVis(MapManager.inst._allTilesRealized[HF.V3_to_V2I(A.transform.position)].vis);
             }
         }
     }
@@ -287,16 +287,25 @@ public class TurnManager : MonoBehaviour
         foreach (Actor A in actors)
         {
             A.UpdateFieldOfView();
-            A.CheckVisibility();
+            A.UpdateVis(MapManager.inst._allTilesRealized[HF.V3_to_V2I(A.transform.position)].vis);
         }
     }
 
     public void SetAllUnknown()
     {
-        foreach (KeyValuePair<Vector2Int,TileBlock> T in MapManager.inst._allTilesRealized)
+        foreach (var T in MapManager.inst._allTilesRealized)
         {
-            T.Value.isExplored = false;
-            T.Value.isVisible = false;
+            TData TD = T.Value;
+
+            TD.vis = 0;
+
+            // Update the vis since all changes has been made
+            MapManager.inst._allTilesRealized[T.Key] = TD;
+
+            // Now that the vis has been decided, we will actually update the objects
+            MapManager.inst._allTilesRealized[T.Key].bottom.UpdateVis(0); // Update the vis for the bottom
+            if (MapManager.inst._allTilesRealized[T.Key].top != null) // And if it exists, update the vis for the top
+                HF.SetGenericTileVis(MapManager.inst._allTilesRealized[T.Key].top, 0);
 
             // While we're here, we will assign tiles to their respective regions.
 
@@ -307,26 +316,7 @@ public class TurnManager : MonoBehaviour
             Vector2Int pos = new Vector2Int(regionX, regionY);
 
             // Add the object to the corresponding region
-            MapManager.inst.regions[pos].objects.Add(T.Value.gameObject);
-        }
-
-        foreach (KeyValuePair<Vector2Int, GameObject> T in MapManager.inst._layeredObjsRealized)
-        {
-            if (T.Value.GetComponent<AccessObject>()) // Access
-            {
-                T.Value.GetComponent<AccessObject>().isExplored = false;
-                T.Value.GetComponent<AccessObject>().isVisible = false;
-            }
-            else if (T.Value.GetComponent<TileBlock>()) // Door
-            {
-                T.Value.GetComponent<TileBlock>().isExplored = false;
-                T.Value.GetComponent<TileBlock>().isVisible = false;
-            }
-            else if (T.Value.GetComponent<MachinePart>()) // Machine
-            {
-                T.Value.GetComponent<MachinePart>().isExplored = false;
-                T.Value.GetComponent<MachinePart>().isVisible = false;
-            }
+            MapManager.inst.regions[pos].objects.Add(T.Value.bottom.gameObject);
         }
     }
 }

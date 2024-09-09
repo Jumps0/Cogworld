@@ -520,7 +520,6 @@ public class Part : MonoBehaviour
 
     private void Update()
     {
-        UpdateVisibility();
         CheckShowFloatingText();
         HighlightCheck();
     }

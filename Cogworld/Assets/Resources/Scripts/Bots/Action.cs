@@ -1235,7 +1235,7 @@ public static class Action
         }
 
         Vector2Int pos = HF.V3_to_V2I(target.transform.position) + direction;
-        TileBlock firstAttemptTile = MapManager.inst._allTilesRealized[pos].GetComponent<TileBlock>();
+        TileBlock firstAttemptTile = MapManager.inst._allTilesRealized[pos].bottom.GetComponent<TileBlock>();
 
         // Is the tile where we want to send the target unoccupied?
         if (target.GetComponent<Actor>().IsUnoccupiedTile(firstAttemptTile))
@@ -1332,17 +1332,17 @@ public static class Action
                     }
 
                     // If not, just destroy that part of the machine.
-                    if (MapManager.inst._layeredObjsRealized[pos].GetComponent<MachinePart>())
+                    if (MapManager.inst._allTilesRealized[pos].top.GetComponent<MachinePart>())
                     {
-                        MapManager.inst._layeredObjsRealized[pos].GetComponent<MachinePart>().DestroyMe();
+                        MapManager.inst._allTilesRealized[pos].top.GetComponent<MachinePart>().DestroyMe();
                         // Do a message
                         if (target.botInfo)
                         {
-                            UIManager.inst.CreateNewLogMessage(target.botInfo + " was knocked back into " + MapManager.inst._layeredObjsRealized[pos].GetComponent<MachinePart>().displayName + ", heavily damaging it.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                            UIManager.inst.CreateNewLogMessage(target.botInfo + " was knocked back into " + MapManager.inst._allTilesRealized[pos].top.GetComponent<MachinePart>().displayName + ", heavily damaging it.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                         }
                         else
                         {
-                            UIManager.inst.CreateNewLogMessage("Knocked back into " + MapManager.inst._layeredObjsRealized[pos].GetComponent<MachinePart>().displayName + ", heavily damaging it.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                            UIManager.inst.CreateNewLogMessage("Knocked back into " + MapManager.inst._allTilesRealized[pos].top.GetComponent<MachinePart>().displayName + ", heavily damaging it.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                         }
                     }
                 }

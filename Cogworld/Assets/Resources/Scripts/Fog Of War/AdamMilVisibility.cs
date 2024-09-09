@@ -251,11 +251,11 @@ sealed class AdamMilVisibility : Visibility
 
         // - First off, we want to find our target to check.
         //   - Lets first check on layer 1 (doors, machines, access, etc)
-        if (!MapManager.inst._layeredObjsRealized.ContainsKey(loc)) // There isn't anything here on layer 1, lets check layer 0 now
+        if (MapManager.inst._allTilesRealized.ContainsKey(loc) && MapManager.inst._allTilesRealized[loc].top == null) // There isn't anything here on layer 1, lets check layer 0 now
         {
             if (MapManager.inst._allTilesRealized.ContainsKey(loc)) // We good!
             {
-                _tile = MapManager.inst._allTilesRealized[loc];
+                _tile = MapManager.inst._allTilesRealized[loc].bottom;
                 // This tile does exist
             }
             else
@@ -275,27 +275,27 @@ sealed class AdamMilVisibility : Visibility
             // - A mine
 
             // Null check
-            if (MapManager.inst._layeredObjsRealized.ContainsKey(loc) && MapManager.inst._layeredObjsRealized[loc] == null)
+            if (MapManager.inst._allTilesRealized.ContainsKey(loc) && MapManager.inst._allTilesRealized[loc].top == null)
             {
                 return false;
             }
 
-            if (MapManager.inst._layeredObjsRealized[loc].GetComponent<TileBlock>()) // Door
+            if (MapManager.inst._allTilesRealized[loc].top.GetComponent<TileBlock>()) // Door
             {
-                _tile = MapManager.inst._layeredObjsRealized[loc].GetComponent<TileBlock>();
+                _tile = MapManager.inst._allTilesRealized[loc].top.GetComponent<TileBlock>();
                 toCheck = 1;
             }
-            else if (MapManager.inst._layeredObjsRealized[loc].GetComponent<AccessObject>()) // Access
+            else if (MapManager.inst._allTilesRealized[loc].top.GetComponent<AccessObject>()) // Access
             {
-                _access = MapManager.inst._layeredObjsRealized[loc].GetComponent<AccessObject>();
+                _access = MapManager.inst._allTilesRealized[loc].top.GetComponent<AccessObject>();
                 toCheck = 2;
             }
-            else if (MapManager.inst._layeredObjsRealized[loc].GetComponent<MachinePart>()) // Machine
+            else if (MapManager.inst._allTilesRealized[loc].top.GetComponent<MachinePart>()) // Machine
             {
-                _machine = MapManager.inst._layeredObjsRealized[loc].GetComponent<MachinePart>();
+                _machine = MapManager.inst._allTilesRealized[loc].top.GetComponent<MachinePart>();
                 toCheck = 3;
             }
-            else if (MapManager.inst._layeredObjsRealized[loc].GetComponent<FloorTrap>())
+            else if (MapManager.inst._allTilesRealized[loc].top.GetComponent<FloorTrap>())
             {
                 toCheck = 4;
             }

@@ -234,11 +234,11 @@ public class PlayerGridMovement : MonoBehaviour
         // -- Machine interaction detection --
         GameObject machineInteraction = null;
 
-        if (MapManager.inst._layeredObjsRealized.ContainsKey(moveTarget)) // Is there a layered object here?
+        if (MapManager.inst._allTilesRealized.ContainsKey(moveTarget) && MapManager.inst._allTilesRealized[moveTarget].top != null) // Is there a layered object here?
         {
-            if (MapManager.inst._layeredObjsRealized[moveTarget].GetComponent<MachinePart>()) // Is there a machine here?
+            if (MapManager.inst._allTilesRealized[moveTarget].top.GetComponent<MachinePart>()) // Is there a machine here?
             {
-                machineInteraction = MapManager.inst._layeredObjsRealized[moveTarget];
+                machineInteraction = MapManager.inst._allTilesRealized[moveTarget].top;
             }
         }
 
@@ -250,11 +250,11 @@ public class PlayerGridMovement : MonoBehaviour
 
         foreach (GameObject t in neighbors) // Find which of the neighbors we want to try and move to.
         {
-
+            Vector2Int pos = HF.V3_to_V2I(t.transform.position);
             // Exits take priority
-            if (MapManager.inst._layeredObjsRealized.ContainsKey(HF.V3_to_V2I(t.transform.position)) && MapManager.inst._layeredObjsRealized[(HF.V3_to_V2I(t.transform.position))].GetComponent<AccessObject>())
+            if (MapManager.inst._allTilesRealized.ContainsKey(pos) && MapManager.inst._allTilesRealized[pos].top != null && MapManager.inst._allTilesRealized[pos].top.GetComponent<AccessObject>())
             {
-                desiredDestinationTile = MapManager.inst._layeredObjsRealized[(HF.V3_to_V2I(t.transform.position))]; // This is the one
+                desiredDestinationTile = MapManager.inst._allTilesRealized[pos].top; // This is the one
                 break;
             }
             else if (t.GetComponent<TileBlock>())
@@ -281,10 +281,10 @@ public class PlayerGridMovement : MonoBehaviour
             {
                 moveKeyHeld = Action.BumpAction(GetComponent<Actor>(), new Vector2(X, Y));
 
-                if (MapManager.inst._layeredObjsRealized.ContainsKey(moveTarget) && MapManager.inst._layeredObjsRealized[moveTarget].GetComponent<FloorTrap>())
+                if (MapManager.inst._allTilesRealized.ContainsKey(moveTarget) && MapManager.inst._allTilesRealized[moveTarget].top != null && MapManager.inst._allTilesRealized[moveTarget].top.GetComponent<FloorTrap>())
                 {
                     // There is a trap here!
-                    FloorTrap trap = MapManager.inst._layeredObjsRealized[moveTarget].GetComponent<FloorTrap>();
+                    FloorTrap trap = MapManager.inst._allTilesRealized[moveTarget].top.GetComponent<FloorTrap>();
                     if(HF.RelationToTrap(this.GetComponent<Actor>(), trap) != BotRelation.Friendly && trap.active && !trap.tripped)
                     {
                         HF.AttemptTriggerTrap(trap, PlayerData.inst.gameObject);
@@ -383,9 +383,9 @@ public class PlayerGridMovement : MonoBehaviour
 
         // - So we do this instead
         Vector2Int pLoc = HF.V3_to_V2I(PlayerData.inst.transform.position); // Get player's location (to V2I)
-        if (MapManager.inst._allTilesRealized.ContainsKey(pLoc) && MapManager.inst._allTilesRealized[pLoc].GetComponent<TileBlock>())
+        if (MapManager.inst._allTilesRealized.ContainsKey(pLoc) && MapManager.inst._allTilesRealized[pLoc].bottom.GetComponent<TileBlock>())
         {
-            return MapManager.inst._allTilesRealized[pLoc].GetComponent<TileBlock>();
+            return MapManager.inst._allTilesRealized[pLoc].bottom.GetComponent<TileBlock>();
         }
 
         return null; // Failure
