@@ -61,6 +61,9 @@ public class QuestEvents
     public event System.Action onItemCollected;
     public event System.Action onLocationReached;
     public event System.Action onBotsKilled;
+    public event System.Action onThingDestroyed;
+    public event System.Action onActorMet;
+
 
     public void ItemCollected()
     {
@@ -78,6 +81,18 @@ public class QuestEvents
     {
         if (onBotsKilled != null)
             onBotsKilled();
+    }
+
+    public void CheckForDestruction()
+    {
+        if (onThingDestroyed != null)
+            onThingDestroyed();
+    }
+
+    public void ActorMet()
+    {
+        if (onActorMet != null)
+            onActorMet();
     }
     #endregion
 }

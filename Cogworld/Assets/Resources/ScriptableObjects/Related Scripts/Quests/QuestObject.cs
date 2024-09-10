@@ -396,6 +396,7 @@ public class Quest
                 ma.a_max = action.amount_max;
 
                 ma.meet_specificBot = action.meet_specificBot;
+                ma.meet_specificName = action.meet_specificName;
                 ma.meet_specific = action.meet_specific;
                 ma.meet_faction = action.meet_faction;
                 ma.meet_factionBR = action.meet_factionBR;
@@ -411,6 +412,9 @@ public class Quest
                 dt.destroy_machine = action.destroy_machine;
                 dt.destroy_specificObject = action.destroy_specificObject;
                 dt.destroy_object = action.destroy_object;
+
+                dt.destroy_isGeneric = action.destroy_isGeneric;
+                dt.destroy_machtype = action.destroy_machtype;
                 break;
         }
 
@@ -555,6 +559,7 @@ public class QuestActions
     [Header("Meet")]
     [Tooltip("Meet a specific bot that has the same BotObject on it.")]
     public bool meet_specificBot;
+    public string meet_specificName = "";
     public BotObject meet_specific;
     [Tooltip("Meet any member of the specified faction.")]
     public bool meet_faction;
@@ -567,6 +572,10 @@ public class QuestActions
     [Tooltip("Destroy a specific object (gameObject) somewhere in the world.")]
     public bool destroy_specificObject;
     public GameObject destroy_object;
+    [Header("-- Destroy Generic")]
+    [Tooltip("If true, will attempt to find a machine in world of the specified type to destroy.")]
+    public bool destroy_isGeneric;
+    public MachineType destroy_machtype;
 }
 
 [System.Serializable]

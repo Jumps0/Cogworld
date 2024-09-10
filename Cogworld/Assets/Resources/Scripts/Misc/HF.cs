@@ -527,6 +527,43 @@ public static class HF
         return 0;
     }
 
+    public static string GetGenericMachineName(GameObject machine)
+    {
+        if (machine != null)
+        {
+            if (machine.GetComponent<Terminal>()) // Open Terminal
+            {
+                return machine.GetComponent<Terminal>().fullName;
+            }
+            else if (machine.GetComponent<Fabricator>()) // Open Fabricator
+            {
+                return machine.GetComponent<Fabricator>().fullName;
+            }
+            else if (machine.GetComponent<Scanalyzer>()) // Open Scanalyzer
+            {
+                return machine.GetComponent<Scanalyzer>().fullName;
+            }
+            else if (machine.GetComponent<RepairStation>()) // Open Repair Station
+            {
+                return machine.GetComponent<RepairStation>().fullName;
+            }
+            else if (machine.GetComponent<RecyclingUnit>()) // Open Recycling Unit
+            {
+                return machine.GetComponent<RecyclingUnit>().fullName;
+            }
+            else if (machine.GetComponent<Garrison>()) // Open Garrison
+            {
+                return machine.GetComponent<Garrison>().fullName;
+            }
+            else if (machine.GetComponent<TerminalCustom>()) // Open Custom Terminal
+            {
+                return machine.GetComponent<TerminalCustom>().fullName;
+            }
+        }
+
+        return "Unknown";
+    }
+
     public static string GetMachineType(GameObject machine)
     {
         if (machine != null)
@@ -562,6 +599,65 @@ public static class HF
         }
 
         return "Unknown";
+    }
+
+    public static GameObject GetRandomMachineOfType(MachineType type)
+    {
+        GameObject ret = null;
+
+        switch (type)
+        {
+            case MachineType.Fabricator:
+                if(MapManager.inst.machines_fabricators.Count > 0)
+                {
+                    return MapManager.inst.machines_fabricators[Random.Range(0, MapManager.inst.machines_fabricators.Count - 1)];
+                }
+                break;
+            case MachineType.Garrison:
+                if (MapManager.inst.machines_garrisons.Count > 0)
+                {
+                    return MapManager.inst.machines_garrisons[Random.Range(0, MapManager.inst.machines_garrisons.Count - 1)];
+                }
+                break;
+            case MachineType.Recycling:
+                if (MapManager.inst.machines_recyclingUnits.Count > 0)
+                {
+                    return MapManager.inst.machines_recyclingUnits[Random.Range(0, MapManager.inst.machines_recyclingUnits.Count - 1)];
+                }
+                break;
+            case MachineType.RepairStation:
+                if (MapManager.inst.machines_repairStation.Count > 0)
+                {
+                    return MapManager.inst.machines_repairStation[Random.Range(0, MapManager.inst.machines_repairStation.Count - 1)];
+                }
+                break;
+            case MachineType.Scanalyzer:
+                if (MapManager.inst.machines_scanalyzers.Count > 0)
+                {
+                    return MapManager.inst.machines_scanalyzers[Random.Range(0, MapManager.inst.machines_scanalyzers.Count - 1)];
+                }
+                break;
+            case MachineType.Terminal:
+                if (MapManager.inst.machines_terminals.Count > 0)
+                {
+                    return MapManager.inst.machines_terminals[Random.Range(0, MapManager.inst.machines_terminals.Count - 1)];
+                }
+                break;
+            case MachineType.CustomTerminal:
+                if (MapManager.inst.machines_customTerminals.Count > 0)
+                {
+                    return MapManager.inst.machines_customTerminals[Random.Range(0, MapManager.inst.machines_customTerminals.Count - 1)];
+                }
+                break;
+            case MachineType.DoorTerminal:
+                break;
+            case MachineType.Misc:
+                break;
+            default:
+                break;
+        }
+
+        return ret;
     }
 
     public static float CalculateHackSuccessChance(float baseChance)

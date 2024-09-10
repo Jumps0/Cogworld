@@ -19,45 +19,69 @@ public class QS_DestroyThing : QuestStep
     [Tooltip("Destroy a specific object (gameObject) somewhere in the world.")]
     public bool destroy_specificObject;
     public GameObject destroy_object;
+    [Header("-- Destroy Generic")]
+    [Tooltip("If true, will attempt to find a machine in world of the specified type to destroy.")]
+    public bool destroy_isGeneric;
+    public MachineType destroy_machtype;
 
-    // TODO: LOGIC HERE
-
-    
-    private Item itemToCollect;
 
     private void OnEnable()
     {
-        //GameManager.inst.questEvents.onItemCollected += ItemCollected;
+        GameManager.inst.questEvents.onItemCollected += CheckForDestruction;
     }
 
     private void OnDisable()
     {
-        //if (GameManager.inst)
-            //GameManager.inst.questEvents.onItemCollected -= ItemCollected;
+        if (GameManager.inst)
+            GameManager.inst.questEvents.onItemCollected -= CheckForDestruction;
     }
-    /*
+    
     private void Start()
     {
-        stepDescription = $"Find and collect: {itemToCollect.Name}";
-    }
-
-    private void ItemCollected() // [EXPL]: THIS "EVENT" STEP WILL KEEP CHECKING TO SEE IF THIS QUEST SHOULD BE COMPLETED
-    {
-        // Check if the player actually has the item (in their inventory)
-        foreach (var slot in PlayerData.inst.GetComponent<PartInventory>()._inventory.Container.Items)
+        if (destroy_isGeneric)
         {
-            if(slot.item != null && slot.item.Id >= 0) // An item exists here
-            {
-                if(slot.item == itemToCollect)
-                {
-                    FinishQuestStep(); // They have it! Finish this step
-                    break;
-                }
-            }
+            // Just find a machine in world to destroy
+            destroy_machine = HF.GetRandomMachineOfType(destroy_machtype).GetComponent<MachinePart>();
+        }
+
+        if (destroy_specificMachine)
+        {
+            string name = HF.GetGenericMachineName(destroy_machine.gameObject);
+            stepDescription = $"Locate and destroy {name}.";
+        }
+        else if (destroy_specificObject)
+        {
+            stepDescription = $"Locate and destroy {destroy_object.name}.";
         }
     }
 
-    */
+    private void CheckForDestruction() // [EXPL]: THIS "EVENT" STEP WILL KEEP CHECKING TO SEE IF THIS QUEST SHOULD BE COMPLETED
+    {
+        bool complete = false;
+
+        if (destroy_specificMachine)
+        {
+            if(destroy_machine == null || destroy_machine.destroyed)
+            {
+                complete = true;
+            }
+        }
+        else if (destroy_specificObject)
+        {
+            if(destroy_object == null)
+            {
+                complete = true;
+            }
+        }
+
+        if (complete)
+        {
+            UpdateState(1);
+            FinishQuestStep();
+        }
+    }
+
+    
     private void UpdateState(int progress) // [EXPL]: THIS FUNCTION SAVES THE CURRENT *PROGRESS* THE PLAYER HAS MADE ON THIS QUEST. NEEDS TO BE CALLED ANY TIME THE "STATE" (aka Progress) CHANGES.
     {
         // Usually just 0/1 but may be more

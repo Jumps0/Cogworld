@@ -1505,7 +1505,7 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    [Header("All Machines")]
+    [Header("All Machines (in world)")]
     public List<GameObject> machines_static = new List<GameObject>();
     public List<GameObject> machines_terminals = new List<GameObject>();
     public List<GameObject> machines_fabricators = new List<GameObject>();
