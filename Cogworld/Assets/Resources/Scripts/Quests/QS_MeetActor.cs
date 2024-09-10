@@ -55,7 +55,7 @@ public class QS_MeetActor : QuestStep
             // First try and find the actor in world
             foreach (Entity E in GameManager.inst.Entities)
             {
-                if (E.GetComponent<Actor>().uniqueName == meet_specificName)
+                if (E.GetComponent<Actor>().uniqueName == meet_specificName || E.GetComponent<Actor>().uniqueName.Contains(meet_specificName))
                 {
                     target_actor = E.GetComponent<Actor>();
                     targetsPresent = true;

@@ -155,6 +155,7 @@ public class Fabricator : MonoBehaviour
 
     }
 
+    #region Operation
     public void AddBuildCommand(ItemObject item = null, BotObject bot = null)
     {
         char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
@@ -305,6 +306,7 @@ public class Fabricator : MonoBehaviour
         buildTime = 0;
         begunBuildTime = 0;
     }
+    #endregion
 
     /// <summary>
     /// Called in GameManager every turn.

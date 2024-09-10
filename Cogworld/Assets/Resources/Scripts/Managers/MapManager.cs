@@ -626,7 +626,8 @@ public class MapManager : MonoBehaviour
         PlaceIndividualMachine(new Vector2Int(bl.x + 4, bl.y + 7), 0, 11); // Static Machine (Outpost Generator)
         PlaceIndividualMachine(new Vector2Int(bl.x + 8, bl.y + 4), 0, 0); // Static Machine (Recharging Bay)
 
-        PlaceIndividualMachine(new Vector2Int(bl.x + 3, bl.y + 13), 2, 2); // Fabricator 4x2 "Alice"
+        //PlaceIndividualMachine(new Vector2Int(bl.x + 3, bl.y + 13), 2, 2); // Fabricator 4x2 "Alice"
+        PlaceIndividualMachine(new Vector2Int(bl.x + 2, bl.y + 13), 6, 0); // Garrison 3x3 "Angel"
 
         // 6 - Place Cache
         PlaceHideoutCache(new Vector2Int(bl.x + 8, bl.y + 10));

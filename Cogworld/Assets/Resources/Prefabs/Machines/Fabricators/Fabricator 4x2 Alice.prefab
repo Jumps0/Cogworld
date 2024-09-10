@@ -159,7 +159,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 1, g: 1, b: 1, a: 1}
+  activeColor: {r: 0, g: 0.5019608, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts:
   - {fileID: 457395203926888844}
@@ -334,7 +334,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 1, g: 1, b: 1, a: 1}
+  activeColor: {r: 0, g: 0.5019608, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts:
   - {fileID: 457395203926888844}
@@ -509,7 +509,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 1, g: 1, b: 1, a: 1}
+  activeColor: {r: 0, g: 0.5019608, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts:
   - {fileID: 457395203926888844}
@@ -684,7 +684,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 1, g: 1, b: 1, a: 1}
+  activeColor: {r: 0, g: 0.5019608, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts:
   - {fileID: 457395203926888844}
@@ -859,7 +859,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 1, g: 1, b: 1, a: 1}
+  activeColor: {r: 0, g: 0.5019608, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts:
   - {fileID: 457395203926888844}
@@ -1034,7 +1034,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 1, g: 1, b: 1, a: 1}
+  activeColor: {r: 0, g: 0.5019608, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts:
   - {fileID: 457395203926888844}
@@ -1240,7 +1240,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 1, g: 1, b: 1, a: 1}
+  activeColor: {r: 0, g: 0.5019608, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts:
   - {fileID: 457395203926888844}

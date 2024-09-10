@@ -10265,7 +10265,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 89.586105, y: 0}
   m_SizeDelta: {x: 0, y: 22.777779}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &272249432
@@ -58434,6 +58434,16 @@ MonoBehaviour:
   cameraRef: {fileID: 1521834753}
   playerRef: {fileID: 0}
   levelLoadCover: {fileID: 1642838541}
+  mapGenSpecifics:
+  - {fileID: 11400000, guid: eb379394ad6a9054a860b16d444ed8cf, type: 2}
+  - {fileID: 11400000, guid: 8c22a523bd4ae484b9d390b46f966e17, type: 2}
+  _mapSizeX: 0
+  _mapSizeY: 0
+  triggers: []
+  events: []
+  mapRelatedSounds:
+  - {fileID: 8300000, guid: c150e695a78c33448a9288d550149def, type: 3}
+  - {fileID: 8300000, guid: 5a0d9add8c4291b4c94ead12996c7c99, type: 3}
   tileDatabase: {fileID: 11400000, guid: 815a5b772405adb468c6af22aad08f44, type: 2}
   botDatabase: {fileID: 11400000, guid: 2251835abf9330c468579ac04a343743, type: 2}
   itemDatabase: {fileID: 11400000, guid: de7b8b5ccd57e8f4bab9ca053bc6cdcc, type: 2}
@@ -58464,16 +58474,6 @@ MonoBehaviour:
   mapParent: {fileID: 901294680}
   botParent: {fileID: 671847213}
   regionSize: 15
-  mapGenSpecifics:
-  - {fileID: 11400000, guid: eb379394ad6a9054a860b16d444ed8cf, type: 2}
-  - {fileID: 11400000, guid: 8c22a523bd4ae484b9d390b46f966e17, type: 2}
-  _mapSizeX: 0
-  _mapSizeY: 0
-  triggers: []
-  events: []
-  mapRelatedSounds:
-  - {fileID: 8300000, guid: c150e695a78c33448a9288d550149def, type: 3}
-  - {fileID: 8300000, guid: 5a0d9add8c4291b4c94ead12996c7c99, type: 3}
   firstExitFound: 0
   placedExits: []
   placedBranches: []
@@ -58504,6 +58504,7 @@ MonoBehaviour:
   - {fileID: 7456691822352536937, guid: 201e810c107504141847b2c6fc2c524d, type: 3}
   imp_garrisons:
   - {fileID: 7456691822352536937, guid: 02939376884b00d4f96702ed8e3b3dec, type: 3}
+  - {fileID: 7456691822352536937, guid: 0555564afa34b934f8419990a610d62d, type: 3}
   imp_repairstations:
   - {fileID: 7456691822352536937, guid: 21c32ace1e3874e46b2199fe23f40eb0, type: 3}
   - {fileID: 7456691822352536937, guid: 423ecc60fd33a8348aaa10a241d031c0, type: 3}

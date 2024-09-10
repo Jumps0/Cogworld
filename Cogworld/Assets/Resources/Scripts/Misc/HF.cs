@@ -1079,6 +1079,8 @@ public static class HF
                 case TerminalCommandType.Manifests:
                     break;
                 case TerminalCommandType.Open:
+                    // Open the entrance to this garrison
+
                     break;
                 case TerminalCommandType.Prototypes:
                     break;
@@ -1123,8 +1125,12 @@ public static class HF
                 case TerminalCommandType.Download:
                     break;
                 case TerminalCommandType.Couplers:
+                    // Query systems for current list of installed relay couplers.
+
                     break;
                 case TerminalCommandType.Seal:
+                    // Seal this garrison's access door, preventing squad dispatches from this location and slowing extermination squad response times across the entire floor.
+
                     // TODO
                     // We want to:
                     // -print the statement (see below)
@@ -1439,22 +1445,26 @@ public static class HF
                     }
                     else if (parsedName.Contains("Broadcast"))
                     {
-                        // hack
+                        // Reports the position and composition of squads emerging from any garrison.
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
                     }
                     else if (parsedName.Contains("Decoy"))
                     {
-                        // hack
+                        // Redirects the next squad emerging from this garrison away from its intended target.
+                        // No effect on prototypes, though if dispatched from here they do not affect the installed trojan.
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
                     }
                     else if (parsedName.Contains("Redirect"))
                     {
-                        // hack
+                        // Redirects all squads emerging from this garrison away from their intended targets,
+                        // though the chance for its presence to be detected increases by 25% each time it takes effect.
+                        // No effect on prototypes, though if dispatched from there they do not affect the installed trojan.
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
                     }
                     else if (parsedName.Contains("Reprogram"))
                     {
-                        // hack
+                        // Reprograms the next squad emerging from this garrison.
+                        // No effect on prototypes, though if dispatched from there they do not affect the installed trojan.
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
                     }
                     else if (parsedName.Contains("Disrupt"))
@@ -1529,12 +1539,12 @@ public static class HF
                     }
                     else if (parsedName.Contains("Restock"))
                     {
-                        // hack
+                        // Manipulates coupler status records, prompting a Programmer to come replace them.
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
                     }
                     else if (parsedName.Contains("Watchers"))
                     {
-                        // hack
+                        // Reports in real time the position of all watchers across the entire floor.
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
                     }
 
@@ -1546,6 +1556,8 @@ public static class HF
                     }
                     else if (parsedName.Contains("Jam"))
                     {
+                        // Seal this garrison's access door, preventing squad dispatches from this location and slowing extermination squad response times across the entire floor.
+                        // Also, locks the machine and summons an investigation squad like all force hacks.
                         return "";
                     }
                     else if (parsedName.Contains("Overload"))
@@ -1558,6 +1570,8 @@ public static class HF
                     }
                     else if (parsedName.Contains("Eject"))
                     {
+                        // Eject all relay couplers installed in this garrison to the floor.
+                        // Also, locks the machine and summons an investigation squad like all force hacks.
                         return "";
                     }
                     else if (parsedName.Contains("Sabotage"))

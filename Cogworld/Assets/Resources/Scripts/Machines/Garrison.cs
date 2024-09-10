@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Garrison : MonoBehaviour
@@ -41,8 +42,43 @@ public class Garrison : MonoBehaviour
 
     public void Init()
     {
-        // We need to load this machine with the following commands:
+        char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+        List<char> alphabet = alpha.ToList(); // Fill alphabet list
 
+        // We need to load this machine with the following commands:
+        // - Couplers
+        // - Seal
+        // - Unlock
+
+        // [Couplers]
+        string letter = alphabet[0].ToString().ToLower();
+        alphabet.Remove(alphabet[0]);
+
+        HackObject hack = MapManager.inst.hackDatabase.Hack[28];
+
+        TerminalCommand newCommand = new TerminalCommand(letter, "Couplers", TerminalCommandType.Couplers, "", hack);
+
+        avaiableCommands.Add(newCommand);
+
+        // [Seal]
+        letter = alphabet[0].ToString().ToLower();
+        alphabet.Remove(alphabet[0]);
+
+        hack = MapManager.inst.hackDatabase.Hack[29];
+
+        newCommand = new TerminalCommand(letter, "Seal", TerminalCommandType.Seal, "", hack);
+
+        avaiableCommands.Add(newCommand);
+
+        // [Unlock]
+        letter = alphabet[0].ToString().ToLower();
+        alphabet.Remove(alphabet[0]);
+
+        hack = MapManager.inst.hackDatabase.Hack[30];
+
+        newCommand = new TerminalCommand(letter, "Unlock", TerminalCommandType.Unlock, "", hack);
+
+        avaiableCommands.Add(newCommand);
     }
 
     public void UnlockAccess()
@@ -65,4 +101,51 @@ public class Garrison : MonoBehaviour
     {
 
     }
+
+    #region Hacks
+    public void ForceEject()
+    {
+
+    }
+
+    public void ForceJam()
+    {
+
+    }
+
+    public void TrojanBroadcast()
+    {
+
+    }
+
+    public void TrojanDecay()
+    {
+
+    }
+
+    public void TrojanIntercept()
+    {
+
+    }
+
+    public void TrojanRedirect()
+    {
+
+    }
+
+    public void TrojanReprogram()
+    {
+
+    }
+
+    public void TrojanRestock()
+    {
+
+    }
+
+    public void TrojanWatcher()
+    {
+
+    }
+    #endregion
 }
