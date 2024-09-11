@@ -81,12 +81,10 @@ public class Garrison : MonoBehaviour
         avaiableCommands.Add(newCommand);
     }
 
-    public void UnlockAccess()
+    public void Open()
     {
         doorRevealed = true;
-        this.GetComponentInChildren<AudioSource>().loop = false;
-        this.GetComponentInChildren<AudioSource>().playOnAwake = false;
-        this.GetComponentInChildren<AudioSource>().PlayOneShot(AudioManager.inst.DOOR_Clips[4]); // GARRISON_UNLOCK
+
     }
 
     public void SealAccess()

@@ -1081,7 +1081,15 @@ public static class HF
                 case TerminalCommandType.Open:
                     // Open the entrance to this garrison
 
-                    break;
+                    // 1. Play the sound
+                    AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.DOOR_Clips[4]); // DOORS - GARRISON_UNLOCK
+                    // 2. Print out in info blue (time) "EXIT=UNLOCKED: GARRISON"
+                    UIManager.inst.CreateNewLogMessage("EXIT=UNLOCKED: GARRISON", UIManager.inst.infoBlue, UIManager.inst.dullGreen, true);
+                    // 3. Spawn an exit to garrison underneath the player, and ensure that the exit notification appears
+                    MapManager.inst.PlaceLevelExit(HF.V3_to_V2I(UIManager.inst.terminal_targetTerm.GetComponent<Garrison>().ejectionSpot.transform.position), true, 4);
+                    UIManager.inst.terminal_targetTerm.GetComponent<Garrison>().Open(); // Also let the garrison know
+                    // 4. Print out in deep info blue (no time) "Access door unlocked."
+                    return "Access door unlocked.";
                 case TerminalCommandType.Prototypes:
                     break;
                 case TerminalCommandType.Query: // This already happens in "lore"
@@ -1126,6 +1134,8 @@ public static class HF
                     break;
                 case TerminalCommandType.Couplers:
                     // Query systems for current list of installed relay couplers.
+
+                    UIManager.inst.terminal_targetTerm.GetComponent<Garrison>().CouplerStatus();
 
                     break;
                 case TerminalCommandType.Seal:
