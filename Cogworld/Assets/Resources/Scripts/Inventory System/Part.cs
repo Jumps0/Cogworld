@@ -51,7 +51,7 @@ public class Part : MonoBehaviour
         if (_item.itemData.knowByPlayer) // We know what this item is
         {
             knownByPlayer = true;
-            displayText = _item.itemData.itemName;
+            displayText = HF.GetFullItemName(_item);
             _sprite.color = realColor;
             halfColor = new Color((realColor.r / 2), (realColor.g / 2), (realColor.b / 2));
         }
@@ -283,7 +283,7 @@ public class Part : MonoBehaviour
                     // Is this item a prototype? If so we don't show the true name & rating
                     if (_item.itemData.knowByPlayer)
                     {
-                        _message = _item.itemData.itemName + " [" + _item.itemData.rating.ToString() + "]"; // Name [Rating]
+                        _message = HF.GetFullItemName(_item) + " [" + _item.itemData.rating.ToString() + "]"; // Name [Rating]
                     }
                     else
                     {
@@ -408,7 +408,7 @@ public class Part : MonoBehaviour
                 InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>()._inventory);
                 InventoryControl.inst.UpdateInterfaceInventories();
                 PlayerData.inst.currentInvCount = PlayerData.inst.GetComponent<PartInventory>()._inventory.ItemCount;
-                UIManager.inst.CreateNewLogMessage("Aquired " + this._item.itemData.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+                UIManager.inst.CreateNewLogMessage("Aquired " + HF.GetFullItemName(_item) + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
 
                 // Play a sound
                 PlayEquipSound();
@@ -473,7 +473,7 @@ public class Part : MonoBehaviour
                     _item.itemData.knowByPlayer = true;
 
                 InventoryControl.inst.UpdateInterfaceInventories();
-                UIManager.inst.CreateNewLogMessage("Aquired " + this._item.itemData.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+                UIManager.inst.CreateNewLogMessage("Aquired " + HF.GetFullItemName(_item) + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
 
                 // Play a sound
                 PlayEquipSound();

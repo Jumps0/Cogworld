@@ -4744,6 +4744,34 @@ public static class HF
         return output;
     }
 
+    /// <summary>
+    /// Returns the true (full) name of an item based on its internal conditions like "Broken", "Corrupted", etc. Works for prototypes too.
+    /// </summary>
+    /// <param name="item">The item we want the full name of</param>
+    /// <returns>The full name with all conditions appended.</returns>
+    public static string GetFullItemName(Item item) //  TODO: This will need to change with things like trap storage which update based on internal values
+    {
+        // First consider if its a prototype we don't know
+        if (!item.itemData.knowByPlayer)
+        {
+            return HF.ItemPrototypeName(item);
+        }
+
+        // If not we do the normal routine
+        string fullName = item.itemData.itemName;
+        if (item.corrupted)
+        {
+            fullName = "Corrupted " + fullName;
+        }
+
+        if (item.isBroken)
+        {
+            fullName = "Broken " + fullName;
+        }
+
+        return fullName;
+    }
+
     public static string ItemPrototypeName(Item item)
     {
         string cName = "Prototype ";

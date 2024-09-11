@@ -235,21 +235,13 @@ public class InvDisplayItem : MonoBehaviour
             //if(_assignedItem != null)
             //    _part = InventoryControl.inst._itemDatabase.Items[_assignedItem.Id].data;
 
-            // - Name - // TODO: This will need to change with things like trap storage which update based on internal values
-            nameUnmodified = item.itemData.itemName;
-            if (item.isBroken)
-            {
-                nameUnmodified = "Broken " + nameUnmodified;
-            }
-            else if (!known)
-            {
-                nameUnmodified = HF.ItemPrototypeName(item);
-            }
+            // - Name - //
+            nameUnmodified = HF.GetFullItemName(item);
             itemNameText.text = nameUnmodified;
             if (startEmpty)
             {
                 // For the one time initial animation we have the start text set to black
-                itemNameText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(Color.black)}>" + item.itemData.itemName + "</color>";
+                itemNameText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(Color.black)}>" + itemNameText.text + "</color>";
             }
 
             // - Letter Assignment - //
@@ -773,7 +765,7 @@ public class InvDisplayItem : MonoBehaviour
             {
                 if (!item.state)
                 {
-                    UIManager.inst.ShowCenterMessageTop($"{item.itemData.itemName} cannot be disabled", UIManager.inst.dangerRed, Color.black);
+                    UIManager.inst.ShowCenterMessageTop($"{nameUnmodified} cannot be disabled", UIManager.inst.dangerRed, Color.black);
                 }
             }
         }
@@ -855,7 +847,7 @@ public class InvDisplayItem : MonoBehaviour
     private void TextTypeOutAnimation(bool disable)
     {
         Color start = Color.white, end = Color.white, highlight = Color.white;
-        string text = item.itemData.itemName; // (this also resets old mark & color tags)
+        string text = nameUnmodified; // (this also resets old mark & color tags)
 
         // Assign values based on what we want to do
         if (disable)
@@ -1149,7 +1141,7 @@ public class InvDisplayItem : MonoBehaviour
     {
         // Go from active Green -> Yellow
         Color start = Color.white, end = Color.white, highlight = Color.white;
-        string text = item.itemData.itemName; // (this also resets old mark & color tags)
+        string text = nameUnmodified; // (this also resets old mark & color tags)
 
         // GREEN -> YELLOW
         start = activeGreen;
@@ -1176,7 +1168,7 @@ public class InvDisplayItem : MonoBehaviour
     {
         // Go from active Green -> Orange
         Color start = Color.white, end = Color.white, highlight = Color.white;
-        string text = item.itemData.itemName; // (this also resets old mark & color tags)
+        string text = nameUnmodified; // (this also resets old mark & color tags)
 
         // GREEN -> ORANGE
         start = activeGreen;
@@ -1280,7 +1272,7 @@ public class InvDisplayItem : MonoBehaviour
     private IEnumerator SiegeTransitionAnimation(int type)
     {
         Color start = Color.white, end = Color.white, highlight = Color.white;
-        string text = item.itemData.itemName; // (this also resets old mark & color tags)
+        string text = nameUnmodified; // (this also resets old mark & color tags)
         List<string> strings = new List<string>();
         float delay = 0;
         float perDelay = 0;
@@ -1721,13 +1713,10 @@ public class InvDisplayItem : MonoBehaviour
     public void SecondaryCompleteSetup() // Called after the above function when being updated in UserInterface. Now it actually has its item assignment
     {
         // Set name
-        nameUnmodified = item.itemData.itemName;
-        if (!item.itemData.knowByPlayer)
-        {
-            nameUnmodified = HF.ItemPrototypeName(item);
-        }
+        nameUnmodified = HF.GetFullItemName(item);
+
         itemNameText.text = nameUnmodified;
-        this.gameObject.name = $"IDI: <DUPE> {item.itemData.itemName}";
+        this.gameObject.name = $"IDI: <DUPE> {nameUnmodified}";
 
         // Set color
         itemNameText.color = wideBlue;
