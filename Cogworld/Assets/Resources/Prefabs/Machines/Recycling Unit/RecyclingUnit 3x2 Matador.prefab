@@ -155,9 +155,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 0, y: 0}
+  info: {fileID: 11400000, guid: 6206ee235830de5489fc4ee237dc22df, type: 2}
+  displayName: Recycling Unit
+  type: 2
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -182,7 +183,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -190,7 +212,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 0.54901963, b: 0, a: 1}
+  activeColor: {r: 1, g: 0.9830508, b: 0, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts: []
   parentPart: {fileID: 457395203926888844}
@@ -321,9 +343,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 0, y: 0}
+  info: {fileID: 11400000, guid: 6206ee235830de5489fc4ee237dc22df, type: 2}
+  displayName: Recycling Unit
+  type: 2
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -348,7 +371,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -356,7 +400,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 0.54901963, b: 0, a: 1}
+  activeColor: {r: 1, g: 0.9830508, b: 0, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts: []
   parentPart: {fileID: 457395203926888844}
@@ -487,9 +531,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 0, y: 0}
+  info: {fileID: 11400000, guid: 0cf902f22a516b1429f6d5b215c6cffa, type: 2}
+  displayName: Recycling Unit
+  type: 2
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -514,7 +559,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -522,7 +588,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 0.54901963, b: 0, a: 1}
+  activeColor: {r: 1, g: 0.9830508, b: 0, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts: []
   parentPart: {fileID: 457395203926888844}
@@ -653,9 +719,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 0, y: 0}
+  info: {fileID: 11400000, guid: 0cf902f22a516b1429f6d5b215c6cffa, type: 2}
+  displayName: Recycling Unit
+  type: 2
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -680,7 +747,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -688,7 +776,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 0.54901963, b: 0, a: 1}
+  activeColor: {r: 1, g: 0.9830508, b: 0, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts: []
   parentPart: {fileID: 457395203926888844}
@@ -819,9 +907,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 0, y: 0}
+  info: {fileID: 11400000, guid: 601f94ebdc15bb04d9992ced02fe4762, type: 2}
+  displayName: Recycling Unit
+  type: 2
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -846,7 +935,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -854,7 +964,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 0.54901963, b: 0, a: 1}
+  activeColor: {r: 1, g: 0.9830508, b: 0, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts: []
   parentPart: {fileID: 457395203926888844}
@@ -1026,7 +1136,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _size: {x: 0, y: 0}
   fullName: 
-  systemType: 
+  systemName: 
   avaiableCommands: []
   restrictedAccess: 1
   secLvl: 1
@@ -1038,6 +1148,8 @@ MonoBehaviour:
   targetPart: {fileID: 0}
   working: 0
   ejectionSpot: {fileID: 5785130252550928781}
+  storedMatter: 0
+  storedComponents: {fileID: 0}
 --- !u!114 &457395203926888844
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1050,9 +1162,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 32, y: 32}
+  info: {fileID: 11400000, guid: 10e158a7fcab889428d8eea3768ca7bb, type: 2}
+  displayName: Recycling Unit
+  type: 2
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -1077,7 +1190,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -1085,7 +1219,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0.69411767, g: 0.68235296, b: 0, a: 1}
+  activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts:
   - {fileID: 4406303226917338365}
