@@ -18,7 +18,7 @@ MonoBehaviour:
   type: 3
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}
-  asciiRep: {fileID: 1568299622, guid: 11c48a8f38663be4997fdfa1689cb530, type: 3}
+  asciiRep: {fileID: 443667707, guid: bbf1a054510493147ace67589225c41a, type: 3}
   asciiColor: {r: 0.45098042, g: 0.45098042, b: 0.45098042, a: 1}
   isDirty: 0
   impassable: 0

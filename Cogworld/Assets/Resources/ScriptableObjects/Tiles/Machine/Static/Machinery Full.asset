@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: caf3c7381c065f640ad97b10eeab224e, type: 3}
-  m_Name: Pipe Single Corner
+  m_Name: Machinery Full
   m_EditorClassIdentifier: 
   Id: 41
-  displaySprite: {fileID: 363161855, guid: 07bbe80aaa550af4d83c0915e0f9a2b7, type: 3}
-  tileName: Pipes
+  displaySprite: {fileID: 774970279, guid: 0baaa671f5673164fbd9cbd465c9e16b, type: 3}
+  tileName: Machinery
   type: 3
-  altSprite: {fileID: 0}
+  altSprite: {fileID: 686718923, guid: bbf1a054510493147ace67589225c41a, type: 3}
   destroyedSprite: {fileID: 0}
-  asciiRep: {fileID: -415832651, guid: 0f98ae4f61612184ab250349db1b02ec, type: 3}
+  asciiRep: {fileID: -1094581656, guid: 11c48a8f38663be4997fdfa1689cb530, type: 3}
   asciiColor: {r: 0.45098042, g: 0.45098042, b: 0.45098042, a: 1}
   isDirty: 0
   impassable: 0

@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caf3c7381c065f640ad97b10eeab224e, type: 3}
   m_Name: Pipes Double Corner
   m_EditorClassIdentifier: 
-  Id: 41
+  Id: 37
   displaySprite: {fileID: 2050841685, guid: e99f78a2ae096f84fa128ef39f15d8d0, type: 3}
   tileName: Pipes
   type: 3
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}
-  asciiRep: {fileID: 1568299622, guid: 11c48a8f38663be4997fdfa1689cb530, type: 3}
+  asciiRep: {fileID: 1486219835, guid: 0f98ae4f61612184ab250349db1b02ec, type: 3}
   asciiColor: {r: 0.45098042, g: 0.45098042, b: 0.45098042, a: 1}
   isDirty: 0
   impassable: 0

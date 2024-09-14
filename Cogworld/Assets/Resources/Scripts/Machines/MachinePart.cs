@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteInEditMode] // For sprite auto-assigning
 public class MachinePart : MonoBehaviour
 {
     [Header("Core Info")]
+    public TileObject info;
     [Header("----Overview----")]
     public string displayName;
     public MachineType type;
@@ -42,6 +44,31 @@ public class MachinePart : MonoBehaviour
     public bool isExplored = false;
     public bool isVisible = false;
     public GameObject indicator = null;
+    private SpriteRenderer sr;
+
+    #region Pre-setup
+    private void OnValidate()
+    {
+        if(info != null)
+        {
+            // Get sprite renderer
+            if(sr == null)
+            {
+                sr = this.GetComponent<SpriteRenderer>();
+            }
+
+            if(sr != null && info.displaySprite != null)
+            {
+                // Auto-assign sprite
+                sr.sprite = info.displaySprite;
+            }
+
+            // Set up the other values while we're here
+            armor = info.health;
+            resistances = info.resistances;
+        }   
+    }
+    #endregion
 
     private void Start()
     {

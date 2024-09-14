@@ -13,6 +13,7 @@ public enum TileType
     Default
 }
 
+[System.Serializable]
 public abstract class TileObject : ScriptableObject
 {
     [Header("Primary")]
