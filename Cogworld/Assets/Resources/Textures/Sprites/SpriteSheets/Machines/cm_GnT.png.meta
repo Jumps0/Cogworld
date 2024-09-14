@@ -128,7 +128,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: machine_garrison
+      name: interactable_garrison
       rect:
         serializedVersion: 2
         x: 492
@@ -149,7 +149,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: machine_terminal
+      name: interactable_terminal
       rect:
         serializedVersion: 2
         x: 636
@@ -178,7 +178,7 @@ TextureImporter:
         width: 18
         height: 18
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -202,8 +202,8 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       bot_minesweeper: 189628877
-      machine_garrison: 422613513
-      machine_terminal: 932017115
+      interactable_terminal: 932017115
+      interactable_garrison: 422613513
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

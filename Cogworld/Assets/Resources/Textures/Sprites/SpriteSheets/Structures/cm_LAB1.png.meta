@@ -116,7 +116,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: terminal_Arch
+      name: interactable_Arch
       rect:
         serializedVersion: 2
         x: 654
@@ -168,8 +168,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      interactable_Arch: -409347224
       wall_Arch: -2089275899
-      terminal_Arch: -409347224
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

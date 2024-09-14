@@ -1129,7 +1129,6 @@ public static class HF
                     }
                     Debug.LogError("ERROR: No <Item> or <Bot> has been set for this command!");
                     return null;
-
                 case TerminalCommandType.Download:
                     break;
                 case TerminalCommandType.Couplers:
@@ -2135,6 +2134,8 @@ public static class HF
 
     public static void TerminalFailConsequence(string machineName) // TODO
     {
+        // "Getting traced may result in receiving Corruption, your Hackware breaking, but most commonly an Investigation Squad."
+
         // Random chance to do the following:
         // -Give corruption
         // -Corrupt an equipped part
