@@ -45,7 +45,7 @@ public class UIHackTarget : MonoBehaviour
     public Image buttonBacker;
 
 
-    public void Setup(TerminalCommand commandToUse, bool drawLine, float successChance)
+    public void Setup(TerminalCommand commandToUse, bool drawLine, float successChance, bool startAsUsed = false)
     {
         lineText.enabled = drawLine;
         chanceOfSuccess = successChance;
@@ -76,6 +76,10 @@ public class UIHackTarget : MonoBehaviour
         percentChanceText.text = (int)(chanceOfSuccess * 100) + "%";
         letterText.text = assignedLetter + "-";
 
+        if (startAsUsed)
+        {
+            available = false;
+        }
         AppearAnim();
     }
 
@@ -306,7 +310,8 @@ public class UIHackTarget : MonoBehaviour
     public void SetAsUsed()
     {
         available = false;
-        command.available = false;
+        if(!command.repeatable) 
+            command.available = false; // Set command as being used
 
         letterText.gameObject.SetActive(false); // Disable: # -
         LB.gameObject.SetActive(false);         // Disable: [
@@ -392,7 +397,7 @@ public class UIHackTarget : MonoBehaviour
         {
             if (command.bot)
             {
-                return !command.item.schematicDetails.hasSchematic;
+                return !command.bot.schematicDetails.hasSchematic;
             }
             else if (command.item)
             {

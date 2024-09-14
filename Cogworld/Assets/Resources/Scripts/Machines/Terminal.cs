@@ -67,7 +67,10 @@ public class TerminalCommand
     public TerminalCommandType subType; //
     [Tooltip("Record, Analysis, etc (The stuff in darker text)")]
     public string secondaryText;
-    public bool available = true; // Has this been used yet? True = no, False = yes
+    [Tooltip("Has this been used yet? True = no, False = yes")]
+    public bool available = true;
+    [Tooltip("Can this command be used multiple times? (Re-open terminal to see it again) Normally false, a few commands can be done again.")]
+    public bool repeatable = false;
 
     [Header("Related Hack")]
     public HackObject hack;

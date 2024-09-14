@@ -42,7 +42,6 @@ GameObject:
   - component: {fileID: 8784278516635140740}
   - component: {fileID: 1151030350657891803}
   - component: {fileID: 5859130498931609258}
-  - component: {fileID: 1478655965714320506}
   - component: {fileID: 1336228829971656047}
   m_Layer: 0
   m_Name: BL
@@ -144,43 +143,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &1478655965714320506
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2044744791478106855}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8795d0be115cca4fb6970dc25a5624c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  centerLoc: {x: 0, y: 0}
-  _size: {x: 0, y: 0}
-  securityLevel: 0
-  accessLevel: 0
-  limited: 0
-  locked: 0
-  zone:
-    assignedTerminal: {fileID: 0}
-    assignedArea: []
-    trapList: []
-    emergencyAccessDoors: []
-  avaiableCommands: []
-  customCodes: []
-  storedObjects: []
-  fullName: 
-  systemType: 
-  restrictedAccess: 1
-  secLvl: 1
-  detectionChance: 0
-  traceProgress: 0
-  detected: 0
-  databaseLockout: 0
-  trojans: 
-  _source: {fileID: 0}
-  _ambient: {fileID: 0}
 --- !u!114 &1336228829971656047
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -255,7 +217,6 @@ GameObject:
   - component: {fileID: 7904215601630999290}
   - component: {fileID: 5017468335638602900}
   - component: {fileID: 9188571705237284704}
-  - component: {fileID: 3148117937254837171}
   - component: {fileID: 8984484194425307287}
   m_Layer: 0
   m_Name: Top
@@ -357,43 +318,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &3148117937254837171
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3017128286030515165}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8795d0be115cca4fb6970dc25a5624c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  centerLoc: {x: 0, y: 0}
-  _size: {x: 0, y: 0}
-  securityLevel: 0
-  accessLevel: 0
-  limited: 0
-  locked: 0
-  zone:
-    assignedTerminal: {fileID: 0}
-    assignedArea: []
-    trapList: []
-    emergencyAccessDoors: []
-  avaiableCommands: []
-  customCodes: []
-  storedObjects: []
-  fullName: 
-  systemType: 
-  restrictedAccess: 1
-  secLvl: 1
-  detectionChance: 0
-  traceProgress: 0
-  detected: 0
-  databaseLockout: 0
-  trojans: 
-  _source: {fileID: 0}
-  _ambient: {fileID: 0}
 --- !u!114 &8984484194425307287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -468,7 +392,6 @@ GameObject:
   - component: {fileID: 1585861324237809666}
   - component: {fileID: 1792942492581851853}
   - component: {fileID: 1399596697780657695}
-  - component: {fileID: 1624776863175923956}
   - component: {fileID: 2966847661357848934}
   m_Layer: 0
   m_Name: BR
@@ -570,43 +493,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &1624776863175923956
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3480941757257615802}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8795d0be115cca4fb6970dc25a5624c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  centerLoc: {x: 0, y: 0}
-  _size: {x: 0, y: 0}
-  securityLevel: 0
-  accessLevel: 0
-  limited: 0
-  locked: 0
-  zone:
-    assignedTerminal: {fileID: 0}
-    assignedArea: []
-    trapList: []
-    emergencyAccessDoors: []
-  avaiableCommands: []
-  customCodes: []
-  storedObjects: []
-  fullName: 
-  systemType: 
-  restrictedAccess: 1
-  secLvl: 1
-  detectionChance: 0
-  traceProgress: 0
-  detected: 0
-  databaseLockout: 0
-  trojans: 
-  _source: {fileID: 0}
-  _ambient: {fileID: 0}
 --- !u!114 &2966847661357848934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -681,7 +567,6 @@ GameObject:
   - component: {fileID: 142788699972410494}
   - component: {fileID: 1247213914179346333}
   - component: {fileID: 3637198717630983851}
-  - component: {fileID: 7187020477151412118}
   - component: {fileID: 6625404176670214109}
   m_Layer: 0
   m_Name: TL
@@ -783,43 +668,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &7187020477151412118
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4303234480025886870}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8795d0be115cca4fb6970dc25a5624c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  centerLoc: {x: 0, y: 0}
-  _size: {x: 0, y: 0}
-  securityLevel: 0
-  accessLevel: 0
-  limited: 0
-  locked: 0
-  zone:
-    assignedTerminal: {fileID: 0}
-    assignedArea: []
-    trapList: []
-    emergencyAccessDoors: []
-  avaiableCommands: []
-  customCodes: []
-  storedObjects: []
-  fullName: 
-  systemType: 
-  restrictedAccess: 1
-  secLvl: 1
-  detectionChance: 0
-  traceProgress: 0
-  detected: 0
-  databaseLockout: 0
-  trojans: 
-  _source: {fileID: 0}
-  _ambient: {fileID: 0}
 --- !u!114 &6625404176670214109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -894,7 +742,6 @@ GameObject:
   - component: {fileID: 965717614539936654}
   - component: {fileID: 5277684407219034976}
   - component: {fileID: 3633340516619695059}
-  - component: {fileID: 2337734225539559441}
   - component: {fileID: 4543711856285062597}
   m_Layer: 0
   m_Name: Bottom
@@ -996,43 +843,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &2337734225539559441
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5451814798195513305}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8795d0be115cca4fb6970dc25a5624c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  centerLoc: {x: 0, y: 0}
-  _size: {x: 0, y: 0}
-  securityLevel: 0
-  accessLevel: 0
-  limited: 0
-  locked: 0
-  zone:
-    assignedTerminal: {fileID: 0}
-    assignedArea: []
-    trapList: []
-    emergencyAccessDoors: []
-  avaiableCommands: []
-  customCodes: []
-  storedObjects: []
-  fullName: 
-  systemType: 
-  restrictedAccess: 1
-  secLvl: 1
-  detectionChance: 0
-  traceProgress: 0
-  detected: 0
-  databaseLockout: 0
-  trojans: 
-  _source: {fileID: 0}
-  _ambient: {fileID: 0}
 --- !u!114 &4543711856285062597
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1107,7 +917,6 @@ GameObject:
   - component: {fileID: 305111590048737706}
   - component: {fileID: 7200024315862480423}
   - component: {fileID: 1333803660801641567}
-  - component: {fileID: 7321063856481664787}
   - component: {fileID: 7598810351545240772}
   m_Layer: 0
   m_Name: TR
@@ -1209,43 +1018,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &7321063856481664787
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7173313474100761777}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8795d0be115cca4fb6970dc25a5624c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  centerLoc: {x: 0, y: 0}
-  _size: {x: 0, y: 0}
-  securityLevel: 0
-  accessLevel: 0
-  limited: 0
-  locked: 0
-  zone:
-    assignedTerminal: {fileID: 0}
-    assignedArea: []
-    trapList: []
-    emergencyAccessDoors: []
-  avaiableCommands: []
-  customCodes: []
-  storedObjects: []
-  fullName: 
-  systemType: 
-  restrictedAccess: 1
-  secLvl: 1
-  detectionChance: 0
-  traceProgress: 0
-  detected: 0
-  databaseLockout: 0
-  trojans: 
-  _source: {fileID: 0}
-  _ambient: {fileID: 0}
 --- !u!114 &7598810351545240772
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1488,6 +1260,7 @@ MonoBehaviour:
   locked: 0
   trojans: 
   ejectionSpot: {fileID: 1276335332577536561}
+  couplers: []
   s_transmitting: 0
   s_redeploying: 0
 --- !u!114 &457395203926888844

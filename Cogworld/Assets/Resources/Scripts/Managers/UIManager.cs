@@ -2479,7 +2479,7 @@ public class UIManager : MonoBehaviour
 
             // (Off topic) -- Calculate Chance of Success --
             float chance = 0f;
-            if(secLvl == 0)
+            if (secLvl == 0)
             {
                 chance = 1f; // Open System
             }
@@ -2495,15 +2495,16 @@ public class UIManager : MonoBehaviour
                 {
                     baseChance = (float)((float)hack.directChance.y / 100f);
                 }
-                else if(secLvl == 3)
+                else if (secLvl == 3)
                 {
                     baseChance = (float)((float)hack.directChance.z / 100f);
                 }
                 chance = HF.CalculateHackSuccessChance(baseChance);
             }
 
-            targetCommand.GetComponent<UIHackTarget>().Setup(command, drawLine, chance);
+            targetCommand.GetComponent<UIHackTarget>().Setup(command, drawLine, chance, !command.available);
             i++;
+            
         }
 
         // Lastly, initiate the manual command
