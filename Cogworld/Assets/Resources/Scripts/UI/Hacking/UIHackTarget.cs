@@ -143,7 +143,7 @@ public class UIHackTarget : MonoBehaviour
                 {
                     SetAsUsed();
                     // Create result in terminal
-                    UIManager.inst.Terminal_CreateResult(rewardString, lowDetColor, header);
+                    UIManager.inst.Terminal_CreateResult(rewardString, lowDetColor, header, true);
                     // Create log messages
                     UIManager.inst.CreateNewLogMessage(header, lowDetColor, darkGreenColor, true);
                     UIManager.inst.CreateNewLogMessage(rewardString, UIManager.inst.deepInfoBlue, UIManager.inst.infoBlue, true, true);

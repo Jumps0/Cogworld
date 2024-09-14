@@ -2410,9 +2410,53 @@ public class UIManager : MonoBehaviour
 
         yield return null;
 
-        if(forceExit)
+        if (summonInvestigationSquad)
         {
-            Terminal_FailClose(summonInvestigationSquad);
+            string name = "";
+            if (terminal_targetTerm.GetComponent<Terminal>()) // Open Terminal
+            {
+                name = terminal_targetTerm.GetComponent<Terminal>().fullName;
+            }
+            else if (terminal_targetTerm.GetComponent<Fabricator>()) // Open Fabricator
+            {
+                name = terminal_targetTerm.GetComponent<Fabricator>().fullName;
+            }
+            else if (terminal_targetTerm.GetComponent<Scanalyzer>()) // Open Scanalyzer
+            {
+                name = terminal_targetTerm.GetComponent<Scanalyzer>().fullName;
+            }
+            else if (terminal_targetTerm.GetComponent<RepairStation>()) // Open Repair Station
+            {
+                name = terminal_targetTerm.GetComponent<RepairStation>().fullName;
+            }
+            else if (terminal_targetTerm.GetComponent<RecyclingUnit>()) // Open Recycling Unit
+            {
+                name = terminal_targetTerm.GetComponent<RecyclingUnit>().fullName;
+            }
+            else if (terminal_targetTerm.GetComponent<Garrison>()) // Open Garrison
+            {
+                name = terminal_targetTerm.GetComponent<Garrison>().fullName;
+            }
+            else if (terminal_targetTerm.GetComponent<TerminalCustom>()) // Open Custom Terminal
+            {
+                name = terminal_targetTerm.GetComponent<TerminalCustom>().fullName;
+            }
+
+            // Also consider secondary consequences
+            HF.TerminalFailConsequence(name);
+
+            string alertString = "ALERT: Suspicious activity at " + name + ". Dispatching Investigation squad.";
+            GameManager.inst.DeploySquadTo("Investigation", terminal_targetTerm);
+            UIManager.inst.CreateLeftMessage(alertString);
+            UIManager.inst.CreateNewLogMessage(alertString, UIManager.inst.complexWhite, UIManager.inst.inactiveGray, false, true);
+
+            // We now need to display this message in the terminal's results area aswell (without the header though).
+            UIManager.inst.Terminal_CreateResult($"[{alertString}]", inactiveGray, "", false);
+        }
+
+        if (forceExit)
+        {
+            StartCoroutine(Terminal_CloseAnim());
         }
     }
 
@@ -2635,13 +2679,16 @@ public class UIManager : MonoBehaviour
 
     public void Terminal_CreateResult(string text, Color setColor, string whiteText, bool tryDetection = false)
     {
-        GameObject header = Instantiate(terminal_hackResults_prefab, terminal_hackResultsArea.transform.position, Quaternion.identity);
-        header.transform.SetParent(terminal_hackResultsArea.transform);
-        header.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
-        // Add it to list
-        terminal_hackResultsList.Add(header);
-        // Assign Details
-        header.GetComponent<UIHackResults>().Setup(whiteText, header.GetComponent<UIHackResults>().headerWhite);
+        if (whiteText != "")
+        {
+            GameObject header = Instantiate(terminal_hackResults_prefab, terminal_hackResultsArea.transform.position, Quaternion.identity);
+            header.transform.SetParent(terminal_hackResultsArea.transform);
+            header.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+            // Add it to list
+            terminal_hackResultsList.Add(header);
+            // Assign Details
+            header.GetComponent<UIHackResults>().Setup(whiteText, header.GetComponent<UIHackResults>().headerWhite);
+        }
 
         GameObject result = Instantiate(terminal_hackResults_prefab, terminal_hackResultsArea.transform.position, Quaternion.identity);
         result.transform.SetParent(terminal_hackResultsArea.transform);
@@ -2651,11 +2698,11 @@ public class UIManager : MonoBehaviour
         // Assign Details
         result.GetComponent<UIHackResults>().Setup(text, setColor, true);
 
-        //if (tryDetection)
-        //{
+        if (tryDetection)
+        {
             // Possibly increase detection chance
             HF.TraceHacking(UIManager.inst.terminal_targetTerm);
-        //}
+        }
     }
 
     public void Terminal_CreateManualInput()
@@ -2907,48 +2954,6 @@ public class UIManager : MonoBehaviour
         // Un-Freeze the player
         PlayerData.inst.GetComponent<PlayerGridMovement>().playerMovementAllowed = true;
 
-    }
-
-    public void Terminal_FailClose(bool summonInvestigationSquad = true)
-    {
-        if (summonInvestigationSquad)
-        {
-            string name = "";
-            if (terminal_targetTerm.GetComponent<Terminal>()) // Open Terminal
-            {
-                name = terminal_targetTerm.GetComponent<Terminal>().fullName;
-            }
-            else if (terminal_targetTerm.GetComponent<Fabricator>()) // Open Fabricator
-            {
-                name = terminal_targetTerm.GetComponent<Fabricator>().fullName;
-            }
-            else if (terminal_targetTerm.GetComponent<Scanalyzer>()) // Open Scanalyzer
-            {
-                name = terminal_targetTerm.GetComponent<Scanalyzer>().fullName;
-            }
-            else if (terminal_targetTerm.GetComponent<RepairStation>()) // Open Repair Station
-            {
-                name = terminal_targetTerm.GetComponent<RepairStation>().fullName;
-            }
-            else if (terminal_targetTerm.GetComponent<RecyclingUnit>()) // Open Recycling Unit
-            {
-                name = terminal_targetTerm.GetComponent<RecyclingUnit>().fullName;
-            }
-            else if (terminal_targetTerm.GetComponent<Garrison>()) // Open Garrison
-            {
-                name = terminal_targetTerm.GetComponent<Garrison>().fullName;
-            }
-            else if (terminal_targetTerm.GetComponent<TerminalCustom>()) // Open Custom Terminal
-            {
-                name = terminal_targetTerm.GetComponent<TerminalCustom>().fullName;
-            }
-            string alertString = "ALERT: Suspicious activity at " + name + ". Dispatching Investigation squad.";
-            GameManager.inst.DeploySquadTo("Investigation", terminal_targetTerm);
-            UIManager.inst.CreateLeftMessage(alertString);
-            UIManager.inst.CreateNewLogMessage(alertString, UIManager.inst.complexWhite, UIManager.inst.inactiveGray, false, true);
-        }
-        
-        StartCoroutine(Terminal_CloseAnim());
     }
 
     #endregion

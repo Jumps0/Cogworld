@@ -2133,6 +2133,31 @@ public static class HF
         return true;
     }
 
+    public static void TerminalFailConsequence(string machineName) // TODO
+    {
+        // Random chance to do the following:
+        // -Give corruption
+        // -Corrupt an equipped part
+        // -Nothing
+
+        float rand = Random.Range(0f, 1f);
+        if(rand <= 0.2f) // [20%] I don't know the true values for this, figure that out later.
+        {
+            // Decide what to do
+
+
+
+
+
+            // Do a printout for what we did
+            string failstring = "ALERT: Suspicious activity at " + machineName + ". Dispatching Investigation squad.";
+            UIManager.inst.CreateNewLogMessage(failstring, UIManager.inst.complexWhite, UIManager.inst.inactiveGray, false, true);
+
+            // We now need to display this message in the terminal's results area aswell (without the header though).
+            UIManager.inst.Terminal_CreateResult($"[{failstring}]", UIManager.inst.inactiveGray, "", false);
+        }
+        
+    }
     #endregion
 
     #region Find & Get
