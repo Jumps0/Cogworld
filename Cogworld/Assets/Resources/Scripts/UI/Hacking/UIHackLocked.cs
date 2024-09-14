@@ -23,7 +23,7 @@ public class UIHackLocked : MonoBehaviour
         if (doSound)
         {
             // Play sound
-            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[46]); // HACK_TRACED
+            AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.UI_Clips[46]); // UI - HACK_TRACED
         }
     }
 

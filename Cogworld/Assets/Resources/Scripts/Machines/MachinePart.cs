@@ -184,7 +184,7 @@ public class MachinePart : MonoBehaviour
             }
             else if (isExplored && !isVisible)
             {
-                this.GetComponent<SpriteRenderer>().color = new Color(disabledColor.r, disabledColor.g, disabledColor.b, 0.7f);
+                this.GetComponent<SpriteRenderer>().color = new Color(disabledColor.r, disabledColor.g, disabledColor.b, 0.9f);
             }
             else if (!isExplored)
             {

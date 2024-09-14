@@ -1176,7 +1176,7 @@ public static class HF
                     // 1. Play the closing sound
                     AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.DOOR_Clips[3]); // DOORS - SEAL
                     // 2. Init the red consequences bar /w "GARRISON ACCESS SHUTDOWN" and Forbid any further access to this garrison (via hacking)
-                    UIManager.inst.Terminal_DoConsequences(UIManager.inst.highSecRed, "GARRISON ACCESS SHUTDOWN", false, false, true);
+                    UIManager.inst.Terminal_DoConsequences(UIManager.inst.highSecRed, "GARRISON ACCESS SHUTDOWN", false, false, false);
                     // 3. Tell the garrison what to do
                     UIManager.inst.terminal_targetTerm.GetComponent<Garrison>().Seal();
 

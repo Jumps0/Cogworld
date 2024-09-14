@@ -2408,8 +2408,6 @@ public class UIManager : MonoBehaviour
         // Assign Details
         hackLock.GetComponent<UIHackLocked>().Setup(setColor, displayString, doSound);
 
-        yield return null;
-
         if (summonInvestigationSquad)
         {
             string name = "";
@@ -2454,9 +2452,11 @@ public class UIManager : MonoBehaviour
             UIManager.inst.Terminal_CreateResult($"[{alertString}]", inactiveGray, "", false);
         }
 
+        yield return null;
+
         if (forceExit)
         {
-            StartCoroutine(Terminal_CloseAnim());
+            StartCoroutine(Terminal_CloseAnim()); // Force close if asked to
         }
     }
 
