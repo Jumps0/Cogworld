@@ -14,14 +14,17 @@ public class UIHackLocked : MonoBehaviour
     public TextMeshProUGUI displayText;
     public Image backgroundImage;
 
-    public void Setup(Color setColor, string setText)
+    public void Setup(Color setColor, string setText, bool doSound = true)
     {
         // This just appears so nice and easy
         backgroundImage.color = setColor;
         displayText.text = setText;
 
-        // Play sound
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[46]); // HACK_TRACED
+        if (doSound)
+        {
+            // Play sound
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[46]); // HACK_TRACED
+        }
     }
 
     public void ShutDown()

@@ -408,6 +408,14 @@ public class BotAI : MonoBehaviour
     bool destinationReached = false;
     int timeOnPath = 0;
 
+    /* ==== MAJOR TODO ====
+     * -Instead of using A*, swap out to a better algorithm
+     * -Consider some of the following:
+     * https://cstheory.stackexchange.com/questions/11855/how-do-the-state-of-the-art-pathfinding-algorithms-for-changing-graphs-d-d-l
+     * Personally i'm interested in: Decentralized Lifelong Multi-agent Pathfinding via Planning and Learning | aka DynamicSWSF-FP
+     * (see: https://www.youtube.com/watch?v=LOJabCIDXiM)
+     * ====================
+     */
 
     public void SetNewAStar()
     {

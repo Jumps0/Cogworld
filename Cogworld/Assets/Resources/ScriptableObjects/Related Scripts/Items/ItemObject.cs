@@ -281,6 +281,10 @@ public class Item
                             {
                                 itemData.mechanicalDescription += "AC/0";
                             }
+                            if (E.couplerDetails.isCoupler) // Coupler stuff
+                            {
+                                itemData.mechanicalDescription += ""; // TODO
+                            }
                         }
                     }
 
@@ -564,6 +568,9 @@ public class ItemEffect
 
     [Header("Authchips")]
     public ItemAuthChip authchipDetails;
+
+    [Header("Couplers")]
+    public ItemCoupler couplerDetails;
 }
 
 public enum ItemQuality
@@ -1325,6 +1332,15 @@ public class ItemViewRangeEffect
 
 
 #endregion
+
+[System.Serializable]
+[Tooltip("Contains data relating to RIF Couplers.")]
+public class ItemCoupler
+{
+    public bool isCoupler = false;
+
+    public BotClass botclass;
+}
 
 [System.Serializable]
 [Tooltip("Contains data relating to authchips.")]

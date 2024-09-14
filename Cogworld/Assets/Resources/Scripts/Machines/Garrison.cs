@@ -34,6 +34,7 @@ public class Garrison : MonoBehaviour
     [Header("Operation")]
     [Tooltip("Where arriving bots are spawned, or the access point is created.")]
     public Transform ejectionSpot;
+    public List<Item> couplers = new List<Item>();
 
     [Header("Special Flags")]
     [Tooltip("This Garrison Access is communicating with additional reinforcements preparing for dispatch. Using a Signal Interpreter provides the precise number of turns remaining until the next dispatch.")]
@@ -60,6 +61,13 @@ public class Garrison : MonoBehaviour
 
         avaiableCommands.Add(newCommand);
 
+        // While we're here, fill the garrison with a list of 3-5 random couplers
+        for (int i = 0; i < Random.Range(3,5); i++)
+        {
+            Item newCoupler = new Item(InventoryControl.inst._itemDatabase.Items[Random.Range(0,5)]); // TODO: When all coupler items are added, update this range
+            couplers.Add(newCoupler);
+        }
+
         // [Seal]
         letter = alphabet[0].ToString().ToLower();
         alphabet.Remove(alphabet[0]);
@@ -85,19 +93,23 @@ public class Garrison : MonoBehaviour
     {
         doorRevealed = true;
 
+        // Not sure if anything else happens here?
     }
 
-    public void SealAccess()
+    public void Seal()
     {
         g_sealed = true;
-        this.GetComponentInChildren<AudioSource>().loop = false;
-        this.GetComponentInChildren<AudioSource>().playOnAwake = false;
-        this.GetComponentInChildren<AudioSource>().PlayOneShot(AudioManager.inst.DOOR_Clips[3]); // GARRISON_SEAL
+        
+        // Grey out the core sprite
+        this.GetComponentInChildren<MachinePart>().parentPart.GetComponent<SpriteRenderer>().color = Color.gray;
+        // Disable all further access
+        this.GetComponentInChildren<MachinePart>().parentPart.state = false;
+        locked = true;
     }
 
     public void CouplerStatus()
     {
-
+        // Nothing happens here?
     }
 
     #region Hacks

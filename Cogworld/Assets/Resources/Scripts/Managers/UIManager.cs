@@ -2392,12 +2392,12 @@ public class UIManager : MonoBehaviour
         yield return null;
     }
 
-    public void Terminal_DoConsequences(Color setColor, string displayString, bool forceExit = true)
+    public void Terminal_DoConsequences(Color setColor, string displayString, bool doSound = true, bool summonInvestigationSquad = true, bool forceExit = true)
     {
-        StartCoroutine(Terminal_InitConsequences(setColor, displayString, forceExit));
+        StartCoroutine(Terminal_InitConsequences(setColor, displayString, doSound, summonInvestigationSquad, forceExit));
     }
 
-    private IEnumerator Terminal_InitConsequences(Color setColor, string displayString, bool forceExit = true)
+    private IEnumerator Terminal_InitConsequences(Color setColor, string displayString, bool doSound = true, bool summonInvestigationSquad = true, bool forceExit = true)
     {
         // We want to init the consequences thingy
         GameObject hackLock = Instantiate(terminal_locked_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
@@ -2406,13 +2406,13 @@ public class UIManager : MonoBehaviour
         // Add it to list
         terminal_hackinfoList.Add(hackLock);
         // Assign Details
-        hackLock.GetComponent<UIHackLocked>().Setup(setColor, displayString);
+        hackLock.GetComponent<UIHackLocked>().Setup(setColor, displayString, doSound);
 
         yield return null;
 
         if(forceExit)
         {
-            Terminal_FailClose();
+            Terminal_FailClose(summonInvestigationSquad);
         }
     }
 
@@ -2908,41 +2908,44 @@ public class UIManager : MonoBehaviour
 
     }
 
-    public void Terminal_FailClose()
+    public void Terminal_FailClose(bool summonInvestigationSquad = true)
     {
-        string name = "";
-        if (terminal_targetTerm.GetComponent<Terminal>()) // Open Terminal
+        if (summonInvestigationSquad)
         {
-            name = terminal_targetTerm.GetComponent<Terminal>().fullName;
+            string name = "";
+            if (terminal_targetTerm.GetComponent<Terminal>()) // Open Terminal
+            {
+                name = terminal_targetTerm.GetComponent<Terminal>().fullName;
+            }
+            else if (terminal_targetTerm.GetComponent<Fabricator>()) // Open Fabricator
+            {
+                name = terminal_targetTerm.GetComponent<Fabricator>().fullName;
+            }
+            else if (terminal_targetTerm.GetComponent<Scanalyzer>()) // Open Scanalyzer
+            {
+                name = terminal_targetTerm.GetComponent<Scanalyzer>().fullName;
+            }
+            else if (terminal_targetTerm.GetComponent<RepairStation>()) // Open Repair Station
+            {
+                name = terminal_targetTerm.GetComponent<RepairStation>().fullName;
+            }
+            else if (terminal_targetTerm.GetComponent<RecyclingUnit>()) // Open Recycling Unit
+            {
+                name = terminal_targetTerm.GetComponent<RecyclingUnit>().fullName;
+            }
+            else if (terminal_targetTerm.GetComponent<Garrison>()) // Open Garrison
+            {
+                name = terminal_targetTerm.GetComponent<Garrison>().fullName;
+            }
+            else if (terminal_targetTerm.GetComponent<TerminalCustom>()) // Open Custom Terminal
+            {
+                name = terminal_targetTerm.GetComponent<TerminalCustom>().fullName;
+            }
+            string alertString = "ALERT: Suspicious activity at " + name + ". Dispatching Investigation squad.";
+            GameManager.inst.DeploySquadTo("Investigation", terminal_targetTerm);
+            UIManager.inst.CreateLeftMessage(alertString);
+            UIManager.inst.CreateNewLogMessage(alertString, UIManager.inst.complexWhite, UIManager.inst.inactiveGray, false, true);
         }
-        else if (terminal_targetTerm.GetComponent<Fabricator>()) // Open Fabricator
-        {
-            name = terminal_targetTerm.GetComponent<Fabricator>().fullName;
-        }
-        else if (terminal_targetTerm.GetComponent<Scanalyzer>()) // Open Scanalyzer
-        {
-            name = terminal_targetTerm.GetComponent<Scanalyzer>().fullName;
-        }
-        else if (terminal_targetTerm.GetComponent<RepairStation>()) // Open Repair Station
-        {
-            name = terminal_targetTerm.GetComponent<RepairStation>().fullName;
-        }
-        else if (terminal_targetTerm.GetComponent<RecyclingUnit>()) // Open Recycling Unit
-        {
-            name = terminal_targetTerm.GetComponent<RecyclingUnit>().fullName;
-        }
-        else if (terminal_targetTerm.GetComponent<Garrison>()) // Open Garrison
-        {
-            name = terminal_targetTerm.GetComponent<Garrison>().fullName;
-        }
-        else if (terminal_targetTerm.GetComponent<TerminalCustom>()) // Open Custom Terminal
-        {
-            name = terminal_targetTerm.GetComponent<TerminalCustom>().fullName;
-        }
-        string alertString = "ALERT: Suspicious activity at " + name + ". Dispatching Investigation squad.";
-        GameManager.inst.DeploySquadTo("Investigation", terminal_targetTerm);
-        UIManager.inst.CreateLeftMessage(alertString);
-        UIManager.inst.CreateNewLogMessage(alertString, UIManager.inst.complexWhite, UIManager.inst.inactiveGray, false, true);
         
         StartCoroutine(Terminal_CloseAnim());
     }
@@ -3903,6 +3906,18 @@ public class UIManager : MonoBehaviour
                     }
                 }
             }
+        }
+
+        // Lastly, if this map has a different ambient heat level, we need to display that too
+        int ambientHeat = MapManager.inst.ambientHeat;
+        // This should be displayed as " (amb. ?##)"
+        if (ambientHeat > 0) // HOT. Make the text orange (#A65806)
+        {
+            currentHeatText.text += $" (amb. <color=#A65806>+{ambientHeat}</color>)";
+        }
+        else if(ambientHeat < 0) // COOL. Make the text blue (#00C7FF)
+        {
+            currentHeatText.text += $" (amb. <color=#00C7FF>{ambientHeat}</color>)";
         }
 
         // ---------- MOVEMENT ------------

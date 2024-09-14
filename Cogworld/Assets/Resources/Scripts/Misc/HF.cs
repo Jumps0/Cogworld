@@ -1134,21 +1134,51 @@ public static class HF
                     break;
                 case TerminalCommandType.Couplers:
                     // Query systems for current list of installed relay couplers.
+                    // Unique for each garrison, this hack is repeatable (if you back out and open it again)
+                    // The hack does basically nothing
+
+                    string output = "Installed:\n";
+
+                    Garrison g = UIManager.inst.terminal_targetTerm.GetComponent<Garrison>();
+                    if (g.couplers.Count <= 0)
+                    {
+                        output += "    [None]";
+                    }
+                    else
+                    {
+                        for (int i = 0; i < g.couplers.Count; i++)
+                        {
+                            // Get the info
+                            ItemCoupler details = null;
+                            foreach (var E in g.couplers[i].itemData.itemEffects)
+                            {
+                                if (E.couplerDetails.isCoupler)
+                                {
+                                    details = E.couplerDetails;
+                                }
+                            }
+
+                            output += "    Relay Coupler [" + details.ToString() + "] (" + g.couplers[i].amount + ")";
+                            if (i != g.couplers.Count - 1) // Don't add a newline on the final one
+                            {
+                                output += "\n";
+                            }
+                        }
+                    }
 
                     UIManager.inst.terminal_targetTerm.GetComponent<Garrison>().CouplerStatus();
 
-                    break;
+                    return output;
                 case TerminalCommandType.Seal:
                     // Seal this garrison's access door, preventing squad dispatches from this location and slowing extermination squad response times across the entire floor.
 
-                    // TODO
-                    // We want to:
                     // -print the statement (see below)
-                    // -play the closing sound
-                    // -init the red consequences bar /w "GARRISON ACCESS SHUTDOWN"
-                    // -forbid any further access to this garrison (via hacking)
-                    UIManager.inst.Terminal_DoConsequences(UIManager.inst.highSecRed, "GARRISON ACCESS SHUTDOWN", false);
-                    UIManager.inst.terminal_targetTerm.GetComponent<Garrison>().SealAccess();
+                    // 1. Play the closing sound
+                    AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.DOOR_Clips[3]); // DOORS - SEAL
+                    // 2. Init the red consequences bar /w "GARRISON ACCESS SHUTDOWN" and Forbid any further access to this garrison (via hacking)
+                    UIManager.inst.Terminal_DoConsequences(UIManager.inst.highSecRed, "GARRISON ACCESS SHUTDOWN", false, false, true);
+                    // 3. Tell the garrison what to do
+                    UIManager.inst.terminal_targetTerm.GetComponent<Garrison>().Seal();
 
                     return "Access door sealed.";
                 case TerminalCommandType.Unlock:
