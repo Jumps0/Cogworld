@@ -124,9 +124,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 0, y: 0}
+  info: {fileID: 11400000, guid: b872ba10f80f7214fa55549404c830a5, type: 2}
+  displayName: Power Conduit
+  type: 8
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -151,7 +152,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -290,9 +312,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 0, y: 0}
+  info: {fileID: 11400000, guid: b872ba10f80f7214fa55549404c830a5, type: 2}
+  displayName: Power Conduit
+  type: 8
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -317,7 +340,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -456,9 +500,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 0, y: 0}
+  info: {fileID: 11400000, guid: b872ba10f80f7214fa55549404c830a5, type: 2}
+  displayName: Power Conduit
+  type: 8
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -483,7 +528,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -622,9 +688,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 0, y: 0}
+  info: {fileID: 11400000, guid: 2d924389613942a4b95068ee1e75f348, type: 2}
+  displayName: Power Conduit
+  type: 8
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -649,7 +716,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -788,9 +876,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 0, y: 0}
+  info: {fileID: 11400000, guid: d905272a4f4287f41a3b3d319b30d969, type: 2}
+  displayName: Power Conduit
+  type: 8
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -815,7 +904,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -954,9 +1064,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 0, y: 0}
+  info: {fileID: 11400000, guid: 2d924389613942a4b95068ee1e75f348, type: 2}
+  displayName: Power Conduit
+  type: 8
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -981,7 +1092,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -1182,9 +1314,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 30, y: 30}
+  info: {fileID: 11400000, guid: d905272a4f4287f41a3b3d319b30d969, type: 2}
+  displayName: Power Conduit
+  type: 8
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 1
   heatTransfer: 50
@@ -1473,9 +1606,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 0, y: 0}
+  info: {fileID: 11400000, guid: b872ba10f80f7214fa55549404c830a5, type: 2}
+  displayName: Power Conduit
+  type: 8
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -1500,7 +1634,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -1639,9 +1794,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 0, y: 0}
+  info: {fileID: 11400000, guid: d905272a4f4287f41a3b3d319b30d969, type: 2}
+  displayName: Power Conduit
+  type: 8
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -1666,7 +1822,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0

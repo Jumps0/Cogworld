@@ -195,8 +195,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
+  info: {fileID: 11400000, guid: 03270aa49f344404895ac9e0ba03fa63, type: 2}
+  displayName: Terminal
+  type: 5
   armor: {x: 15, y: 15}
   state: 1
   explodes: 0
@@ -251,7 +252,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0.01449275, g: 1, b: 0, a: 1}
+  activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts: []
   parentPart: {fileID: 457395203926888844}

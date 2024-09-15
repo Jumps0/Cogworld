@@ -124,8 +124,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
+  info: {fileID: 11400000, guid: 0400495cd0392ce47ae31e8f0f995085, type: 2}
+  displayName: Fusion Modulator
+  type: 8
   armor: {x: 15, y: 15}
   state: 1
   explodes: 0
@@ -320,8 +321,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
+  info: {fileID: 11400000, guid: 624831afe1ba8d048bc639a8e8193ee1, type: 2}
+  displayName: Fusion Modulator
+  type: 8
   armor: {x: 15, y: 15}
   state: 1
   explodes: 0
@@ -516,8 +518,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
+  info: {fileID: 11400000, guid: 624831afe1ba8d048bc639a8e8193ee1, type: 2}
+  displayName: Fusion Modulator
+  type: 8
   armor: {x: 15, y: 15}
   state: 1
   explodes: 0
@@ -712,8 +715,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
+  info: {fileID: 11400000, guid: 0400495cd0392ce47ae31e8f0f995085, type: 2}
+  displayName: Fusion Modulator
+  type: 8
   armor: {x: 15, y: 15}
   state: 1
   explodes: 0
@@ -908,8 +912,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
+  info: {fileID: 11400000, guid: 0400495cd0392ce47ae31e8f0f995085, type: 2}
+  displayName: Fusion Modulator
+  type: 8
   armor: {x: 15, y: 15}
   state: 1
   explodes: 0
@@ -1104,8 +1109,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
+  info: {fileID: 11400000, guid: 624831afe1ba8d048bc639a8e8193ee1, type: 2}
+  displayName: Fusion Modulator
+  type: 8
   armor: {x: 15, y: 15}
   state: 1
   explodes: 0
@@ -1300,8 +1306,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
+  info: {fileID: 11400000, guid: 0400495cd0392ce47ae31e8f0f995085, type: 2}
+  displayName: Fusion Modulator
+  type: 8
   armor: {x: 15, y: 15}
   state: 1
   explodes: 0
@@ -1558,9 +1565,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 30, y: 30}
+  info: {fileID: 11400000, guid: b872ba10f80f7214fa55549404c830a5, type: 2}
+  displayName: Fusion Modulator
+  type: 8
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 1
   heatTransfer: 50
@@ -1850,8 +1858,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
+  info: {fileID: 11400000, guid: 624831afe1ba8d048bc639a8e8193ee1, type: 2}
+  displayName: Fusion Modulator
+  type: 8
   armor: {x: 15, y: 15}
   state: 1
   explodes: 0

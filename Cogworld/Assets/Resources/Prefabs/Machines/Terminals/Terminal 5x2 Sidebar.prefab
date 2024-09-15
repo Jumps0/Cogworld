@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8396553423172835445}
   - component: {fileID: 4142158779648084184}
   - component: {fileID: 581022915983837444}
-  - component: {fileID: 7472050226585939057}
   - component: {fileID: 2502785805459021588}
   m_Layer: 0
   m_Name: Machine Wide Right
@@ -113,43 +112,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &7472050226585939057
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 196127770645650115}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8795d0be115cca4fb6970dc25a5624c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  centerLoc: {x: 0, y: 0}
-  _size: {x: 0, y: 0}
-  securityLevel: 0
-  accessLevel: 0
-  limited: 0
-  locked: 0
-  zone:
-    assignedTerminal: {fileID: 0}
-    assignedArea: []
-    trapList: []
-    emergencyAccessDoors: []
-  avaiableCommands: []
-  customCodes: []
-  storedObjects: []
-  fullName: 
-  systemType: 
-  restrictedAccess: 1
-  secLvl: 1
-  detectionChance: 0
-  traceProgress: 0
-  detected: 0
-  databaseLockout: 0
-  trojans: 
-  _source: {fileID: 0}
-  _ambient: {fileID: 0}
 --- !u!114 &2502785805459021588
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,9 +124,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 0, y: 0}
+  info: {fileID: 11400000, guid: 0400495cd0392ce47ae31e8f0f995085, type: 2}
+  displayName: Terminal
+  type: 5
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -189,7 +152,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -197,7 +181,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 0.54901963, b: 0, a: 1}
+  activeColor: {r: 0, g: 1, b: 0, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts:
   - {fileID: 457395203926888844}
@@ -217,7 +201,6 @@ GameObject:
   - component: {fileID: 3153523976701639335}
   - component: {fileID: 3896557543263928359}
   - component: {fileID: 7089662539912117037}
-  - component: {fileID: 6392559628421648533}
   - component: {fileID: 2259348552590967516}
   m_Layer: 0
   m_Name: M Left 1
@@ -319,43 +302,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &6392559628421648533
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1192436693603455396}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8795d0be115cca4fb6970dc25a5624c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  centerLoc: {x: 0, y: 0}
-  _size: {x: 0, y: 0}
-  securityLevel: 0
-  accessLevel: 0
-  limited: 0
-  locked: 0
-  zone:
-    assignedTerminal: {fileID: 0}
-    assignedArea: []
-    trapList: []
-    emergencyAccessDoors: []
-  avaiableCommands: []
-  customCodes: []
-  storedObjects: []
-  fullName: 
-  systemType: 
-  restrictedAccess: 1
-  secLvl: 1
-  detectionChance: 0
-  traceProgress: 0
-  detected: 0
-  databaseLockout: 0
-  trojans: 
-  _source: {fileID: 0}
-  _ambient: {fileID: 0}
 --- !u!114 &2259348552590967516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -368,9 +314,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 0, y: 0}
+  info: {fileID: 11400000, guid: 66cf1c5850568364cb986228842d4b5d, type: 2}
+  displayName: Terminal
+  type: 5
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -395,7 +342,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -403,7 +371,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 0.54901963, b: 0, a: 1}
+  activeColor: {r: 0, g: 1, b: 0, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts:
   - {fileID: 457395203926888844}
@@ -423,7 +391,6 @@ GameObject:
   - component: {fileID: 6602297190324989224}
   - component: {fileID: 4046323472411953310}
   - component: {fileID: 6348166940274492980}
-  - component: {fileID: 4195848200680762900}
   - component: {fileID: 3224745760628964261}
   m_Layer: 0
   m_Name: Machine Wide Left
@@ -525,43 +492,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &4195848200680762900
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1808584133607861958}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8795d0be115cca4fb6970dc25a5624c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  centerLoc: {x: 0, y: 0}
-  _size: {x: 0, y: 0}
-  securityLevel: 0
-  accessLevel: 0
-  limited: 0
-  locked: 0
-  zone:
-    assignedTerminal: {fileID: 0}
-    assignedArea: []
-    trapList: []
-    emergencyAccessDoors: []
-  avaiableCommands: []
-  customCodes: []
-  storedObjects: []
-  fullName: 
-  systemType: 
-  restrictedAccess: 1
-  secLvl: 1
-  detectionChance: 0
-  traceProgress: 0
-  detected: 0
-  databaseLockout: 0
-  trojans: 
-  _source: {fileID: 0}
-  _ambient: {fileID: 0}
 --- !u!114 &3224745760628964261
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -574,9 +504,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 0, y: 0}
+  info: {fileID: 11400000, guid: 0400495cd0392ce47ae31e8f0f995085, type: 2}
+  displayName: Terminal
+  type: 5
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -601,7 +532,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -609,7 +561,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 0.54901963, b: 0, a: 1}
+  activeColor: {r: 0, g: 1, b: 0, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts:
   - {fileID: 457395203926888844}
@@ -629,7 +581,6 @@ GameObject:
   - component: {fileID: 7052686464989780068}
   - component: {fileID: 2534098707084474164}
   - component: {fileID: 7920870327167178937}
-  - component: {fileID: 7390177820685588000}
   - component: {fileID: 4406303226917338365}
   m_Layer: 0
   m_Name: Machine Core Left
@@ -731,43 +682,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &7390177820685588000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2437682090712717721}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8795d0be115cca4fb6970dc25a5624c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  centerLoc: {x: 0, y: 0}
-  _size: {x: 0, y: 0}
-  securityLevel: 0
-  accessLevel: 0
-  limited: 0
-  locked: 0
-  zone:
-    assignedTerminal: {fileID: 0}
-    assignedArea: []
-    trapList: []
-    emergencyAccessDoors: []
-  avaiableCommands: []
-  customCodes: []
-  storedObjects: []
-  fullName: 
-  systemType: 
-  restrictedAccess: 1
-  secLvl: 1
-  detectionChance: 0
-  traceProgress: 0
-  detected: 0
-  databaseLockout: 0
-  trojans: 
-  _source: {fileID: 0}
-  _ambient: {fileID: 0}
 --- !u!114 &4406303226917338365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -780,9 +694,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 0, y: 0}
+  info: {fileID: 11400000, guid: 0cf902f22a516b1429f6d5b215c6cffa, type: 2}
+  displayName: Terminal
+  type: 5
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -807,7 +722,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -815,7 +751,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 0.54901963, b: 0, a: 1}
+  activeColor: {r: 0, g: 1, b: 0, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts:
   - {fileID: 457395203926888844}
@@ -835,7 +771,6 @@ GameObject:
   - component: {fileID: 8701703091876141278}
   - component: {fileID: 394774031023515163}
   - component: {fileID: 5790860590171636539}
-  - component: {fileID: 6192892435353137664}
   - component: {fileID: 8584542443526425242}
   m_Layer: 0
   m_Name: M Center Low
@@ -937,43 +872,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &6192892435353137664
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4674803718201433235}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8795d0be115cca4fb6970dc25a5624c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  centerLoc: {x: 0, y: 0}
-  _size: {x: 0, y: 0}
-  securityLevel: 0
-  accessLevel: 0
-  limited: 0
-  locked: 0
-  zone:
-    assignedTerminal: {fileID: 0}
-    assignedArea: []
-    trapList: []
-    emergencyAccessDoors: []
-  avaiableCommands: []
-  customCodes: []
-  storedObjects: []
-  fullName: 
-  systemType: 
-  restrictedAccess: 1
-  secLvl: 1
-  detectionChance: 0
-  traceProgress: 0
-  detected: 0
-  databaseLockout: 0
-  trojans: 
-  _source: {fileID: 0}
-  _ambient: {fileID: 0}
 --- !u!114 &8584542443526425242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -986,9 +884,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 0, y: 0}
+  info: {fileID: 11400000, guid: 2d924389613942a4b95068ee1e75f348, type: 2}
+  displayName: Terminal
+  type: 5
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -1013,7 +912,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -1021,7 +941,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 0.54901963, b: 0, a: 1}
+  activeColor: {r: 0, g: 1, b: 0, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts:
   - {fileID: 457395203926888844}
@@ -1041,7 +961,6 @@ GameObject:
   - component: {fileID: 7000910767074212123}
   - component: {fileID: 26060255560628518}
   - component: {fileID: 3720169226193762301}
-  - component: {fileID: 831844734894910847}
   - component: {fileID: 4447224439100804804}
   m_Layer: 0
   m_Name: M Right 1
@@ -1143,43 +1062,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &831844734894910847
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6006557602169184598}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8795d0be115cca4fb6970dc25a5624c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  centerLoc: {x: 0, y: 0}
-  _size: {x: 0, y: 0}
-  securityLevel: 0
-  accessLevel: 0
-  limited: 0
-  locked: 0
-  zone:
-    assignedTerminal: {fileID: 0}
-    assignedArea: []
-    trapList: []
-    emergencyAccessDoors: []
-  avaiableCommands: []
-  customCodes: []
-  storedObjects: []
-  fullName: 
-  systemType: 
-  restrictedAccess: 1
-  secLvl: 1
-  detectionChance: 0
-  traceProgress: 0
-  detected: 0
-  databaseLockout: 0
-  trojans: 
-  _source: {fileID: 0}
-  _ambient: {fileID: 0}
 --- !u!114 &4447224439100804804
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1192,9 +1074,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 0, y: 0}
+  info: {fileID: 11400000, guid: 66cf1c5850568364cb986228842d4b5d, type: 2}
+  displayName: Terminal
+  type: 5
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -1219,7 +1102,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -1227,7 +1131,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 0.54901963, b: 0, a: 1}
+  activeColor: {r: 0, g: 1, b: 0, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts:
   - {fileID: 2259348552590967516}
@@ -1247,7 +1151,6 @@ GameObject:
   - component: {fileID: 7258639593067054963}
   - component: {fileID: 7465928763839222825}
   - component: {fileID: 3851020062972082453}
-  - component: {fileID: 8734442648888805660}
   - component: {fileID: 6904260812545557662}
   m_Layer: 0
   m_Name: M Right 2
@@ -1349,43 +1252,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &8734442648888805660
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6680899304723630173}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8795d0be115cca4fb6970dc25a5624c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  centerLoc: {x: 0, y: 0}
-  _size: {x: 0, y: 0}
-  securityLevel: 0
-  accessLevel: 0
-  limited: 0
-  locked: 0
-  zone:
-    assignedTerminal: {fileID: 0}
-    assignedArea: []
-    trapList: []
-    emergencyAccessDoors: []
-  avaiableCommands: []
-  customCodes: []
-  storedObjects: []
-  fullName: 
-  systemType: 
-  restrictedAccess: 1
-  secLvl: 1
-  detectionChance: 0
-  traceProgress: 0
-  detected: 0
-  databaseLockout: 0
-  trojans: 
-  _source: {fileID: 0}
-  _ambient: {fileID: 0}
 --- !u!114 &6904260812545557662
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1398,9 +1264,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 0, y: 0}
+  info: {fileID: 11400000, guid: 8cfeffcf7156b3e4da80d53318f08474, type: 2}
+  displayName: Terminal
+  type: 5
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -1425,7 +1292,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -1433,7 +1321,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 0.54901963, b: 0, a: 1}
+  activeColor: {r: 0, g: 1, b: 0, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts:
   - {fileID: 457395203926888844}
@@ -1485,7 +1373,6 @@ GameObject:
   - component: {fileID: 9149347440396361264}
   - component: {fileID: 7069805515475449667}
   - component: {fileID: 1969525273900445769}
-  - component: {fileID: 3679759206477688910}
   - component: {fileID: 4301556539901113062}
   m_Layer: 0
   m_Name: M Left 2
@@ -1587,43 +1474,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &3679759206477688910
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8080483313832568044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8795d0be115cca4fb6970dc25a5624c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  centerLoc: {x: 0, y: 0}
-  _size: {x: 0, y: 0}
-  securityLevel: 0
-  accessLevel: 0
-  limited: 0
-  locked: 0
-  zone:
-    assignedTerminal: {fileID: 0}
-    assignedArea: []
-    trapList: []
-    emergencyAccessDoors: []
-  avaiableCommands: []
-  customCodes: []
-  storedObjects: []
-  fullName: 
-  systemType: 
-  restrictedAccess: 1
-  secLvl: 1
-  detectionChance: 0
-  traceProgress: 0
-  detected: 0
-  databaseLockout: 0
-  trojans: 
-  _source: {fileID: 0}
-  _ambient: {fileID: 0}
 --- !u!114 &4301556539901113062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1636,9 +1486,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 0, y: 0}
+  info: {fileID: 11400000, guid: 8cfeffcf7156b3e4da80d53318f08474, type: 2}
+  displayName: Terminal
+  type: 5
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -1663,7 +1514,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -1671,7 +1543,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 0.54901963, b: 0, a: 1}
+  activeColor: {r: 0, g: 1, b: 0, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts:
   - {fileID: 457395203926888844}
@@ -1852,8 +1724,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
+  info: {fileID: 11400000, guid: 03270aa49f344404895ac9e0ba03fa63, type: 2}
+  displayName: Terminal
+  type: 5
   armor: {x: 15, y: 15}
   state: 1
   explodes: 0
@@ -1908,7 +1781,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0.015686275, g: 1, b: 0, a: 1}
+  activeColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts:
   - {fileID: 4406303226917338365}
@@ -2031,7 +1904,6 @@ GameObject:
   - component: {fileID: 5284129332267453488}
   - component: {fileID: 7725606183137944610}
   - component: {fileID: 5960793365455445008}
-  - component: {fileID: 3097956364763388207}
   - component: {fileID: 9125320466865504197}
   m_Layer: 0
   m_Name: Machine Core Right
@@ -2133,43 +2005,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &3097956364763388207
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8386060919956580954}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8795d0be115cca4fb6970dc25a5624c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  centerLoc: {x: 0, y: 0}
-  _size: {x: 0, y: 0}
-  securityLevel: 0
-  accessLevel: 0
-  limited: 0
-  locked: 0
-  zone:
-    assignedTerminal: {fileID: 0}
-    assignedArea: []
-    trapList: []
-    emergencyAccessDoors: []
-  avaiableCommands: []
-  customCodes: []
-  storedObjects: []
-  fullName: 
-  systemType: 
-  restrictedAccess: 1
-  secLvl: 1
-  detectionChance: 0
-  traceProgress: 0
-  detected: 0
-  databaseLockout: 0
-  trojans: 
-  _source: {fileID: 0}
-  _ambient: {fileID: 0}
 --- !u!114 &9125320466865504197
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2182,9 +2017,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  type: 0
-  armor: {x: 0, y: 0}
+  info: {fileID: 11400000, guid: 0cf902f22a516b1429f6d5b215c6cffa, type: 2}
+  displayName: Terminal
+  type: 5
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -2209,7 +2045,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -2217,7 +2074,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 0.54901963, b: 0, a: 1}
+  activeColor: {r: 0, g: 1, b: 0, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts:
   - {fileID: 4406303226917338365}
