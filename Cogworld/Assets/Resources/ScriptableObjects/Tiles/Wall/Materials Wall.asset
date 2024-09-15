@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Materials Wall
   m_EditorClassIdentifier: 
   Id: 1
-  displaySprite: {fileID: 1307979838, guid: e99f78a2ae096f84fa128ef39f15d8d0, type: 3}
+  displaySprite: {fileID: 219417969, guid: fb10cc78639952642858fbe0ed0250dd, type: 3}
   tileName: Materials Wall
   type: 1
   altSprite: {fileID: 0}
-  destroyedSprite: {fileID: 378825528, guid: 42a2036963460eb4197828f13297a2de, type: 3}
+  destroyedSprite: {fileID: -1365252575, guid: fb10cc78639952642858fbe0ed0250dd, type: 3}
   asciiRep: {fileID: 1342612219, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
   asciiColor: {r: 0.61960787, g: 0.5254902, b: 0.3921569, a: 1}
   isDirty: 0
@@ -30,3 +30,5 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 17ada9be668b0da409442c5bf5213d61, type: 3}
   - {fileID: 8300000, guid: 0ece50c181c0e404ab64d5dbbd370ce4, type: 3}
   resistances: []
+  door_open: []
+  door_close: []

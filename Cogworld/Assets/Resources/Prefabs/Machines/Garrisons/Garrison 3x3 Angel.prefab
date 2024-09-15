@@ -106,7 +106,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: -1292552832, guid: e99f78a2ae096f84fa128ef39f15d8d0, type: 3}
+  m_Sprite: {fileID: -169589389, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -158,7 +158,7 @@ MonoBehaviour:
   info: {fileID: 11400000, guid: b872ba10f80f7214fa55549404c830a5, type: 2}
   displayName: Garrison
   type: 1
-  armor: {x: 0, y: 0}
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -183,7 +183,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -281,7 +302,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 1759030363, guid: e99f78a2ae096f84fa128ef39f15d8d0, type: 3}
+  m_Sprite: {fileID: 618859876, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -333,7 +354,7 @@ MonoBehaviour:
   info: {fileID: 11400000, guid: 6206ee235830de5489fc4ee237dc22df, type: 2}
   displayName: Garrison
   type: 1
-  armor: {x: 0, y: 0}
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -358,7 +379,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -456,7 +498,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 1759030363, guid: e99f78a2ae096f84fa128ef39f15d8d0, type: 3}
+  m_Sprite: {fileID: 618859876, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -508,7 +550,7 @@ MonoBehaviour:
   info: {fileID: 11400000, guid: 6206ee235830de5489fc4ee237dc22df, type: 2}
   displayName: Garrison
   type: 1
-  armor: {x: 0, y: 0}
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -533,7 +575,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -631,7 +694,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: -1292552832, guid: e99f78a2ae096f84fa128ef39f15d8d0, type: 3}
+  m_Sprite: {fileID: -169589389, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -683,7 +746,7 @@ MonoBehaviour:
   info: {fileID: 11400000, guid: b872ba10f80f7214fa55549404c830a5, type: 2}
   displayName: Garrison
   type: 1
-  armor: {x: 0, y: 0}
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -708,7 +771,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -806,7 +890,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: -1292552832, guid: e99f78a2ae096f84fa128ef39f15d8d0, type: 3}
+  m_Sprite: {fileID: -169589389, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -858,7 +942,7 @@ MonoBehaviour:
   info: {fileID: 11400000, guid: b872ba10f80f7214fa55549404c830a5, type: 2}
   displayName: Garrison
   type: 1
-  armor: {x: 0, y: 0}
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -883,7 +967,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -981,7 +1086,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 1759030363, guid: e99f78a2ae096f84fa128ef39f15d8d0, type: 3}
+  m_Sprite: {fileID: 618859876, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1033,7 +1138,7 @@ MonoBehaviour:
   info: {fileID: 11400000, guid: 6206ee235830de5489fc4ee237dc22df, type: 2}
   displayName: Garrison
   type: 1
-  armor: {x: 0, y: 0}
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -1058,7 +1163,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -1156,7 +1282,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: -1292552832, guid: e99f78a2ae096f84fa128ef39f15d8d0, type: 3}
+  m_Sprite: {fileID: -169589389, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1208,7 +1334,7 @@ MonoBehaviour:
   info: {fileID: 11400000, guid: b872ba10f80f7214fa55549404c830a5, type: 2}
   displayName: Garrison
   type: 1
-  armor: {x: 0, y: 0}
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -1233,7 +1359,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -1373,7 +1520,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 422613513, guid: 1dae7a0e94ed95c4e977ed3db317d744, type: 3}
+  m_Sprite: {fileID: -1033083984, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

@@ -1,0 +1,118 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Floor Atlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 0
+      generateMipMaps: 0
+      readable: 1
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 0
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: -1631056861, guid: d5ad05e7c7495e643a98821a567988a6, type: 3}
+    - {fileID: 1721558278, guid: 0669e38ad5cf6a74b85a00b903976e80, type: 3}
+    - {fileID: -149759266, guid: d5ad05e7c7495e643a98821a567988a6, type: 3}
+    - {fileID: 2005457400, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+    - {fileID: 181450392, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+    - {fileID: 1288400815, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+    - {fileID: 127309488, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+    - {fileID: -1173133144, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+    - {fileID: 2008920389, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+    - {fileID: -1791171408, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+    - {fileID: 1295635702, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+    - {fileID: -958950437, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+    - {fileID: 102297338, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+    - {fileID: 2056442380, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+    - {fileID: -835539902, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+    - {fileID: -553001657, guid: ca25f47075cbcda48bc3ae9eb4cfc7f1, type: 3}
+    - {fileID: 370472696, guid: f83c5e3c90bfbe545870f061eaac973e, type: 3}
+    - {fileID: -1191629845, guid: e99f78a2ae096f84fa128ef39f15d8d0, type: 3}
+    - {fileID: -278464589, guid: 8d119f5c66ae5e54eafe1a10a8a38103, type: 3}
+    - {fileID: 1394617339, guid: eb83f3b11142ddc4ab7e81acb278eeba, type: 3}
+    - {fileID: 804739188, guid: eb83f3b11142ddc4ab7e81acb278eeba, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: -553001657, guid: ca25f47075cbcda48bc3ae9eb4cfc7f1, type: 3}
+  - {fileID: 804739188, guid: eb83f3b11142ddc4ab7e81acb278eeba, type: 3}
+  - {fileID: 1394617339, guid: eb83f3b11142ddc4ab7e81acb278eeba, type: 3}
+  - {fileID: -1191629845, guid: e99f78a2ae096f84fa128ef39f15d8d0, type: 3}
+  - {fileID: -1631056861, guid: d5ad05e7c7495e643a98821a567988a6, type: 3}
+  - {fileID: -149759266, guid: d5ad05e7c7495e643a98821a567988a6, type: 3}
+  - {fileID: 1721558278, guid: 0669e38ad5cf6a74b85a00b903976e80, type: 3}
+  - {fileID: 2008920389, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+  - {fileID: -1791171408, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+  - {fileID: 127309488, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+  - {fileID: -1173133144, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+  - {fileID: 181450392, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+  - {fileID: 1288400815, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+  - {fileID: 2005457400, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+  - {fileID: 1295635702, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+  - {fileID: -958950437, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+  - {fileID: 2056442380, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+  - {fileID: 102297338, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+  - {fileID: -835539902, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
+  - {fileID: 370472696, guid: f83c5e3c90bfbe545870f061eaac973e, type: 3}
+  - {fileID: -278464589, guid: 8d119f5c66ae5e54eafe1a10a8a38103, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - structure_telepad
+  - machine_terminalOFF
+  - structure_telepad2
+  - materials_floor
+  - cavefloor_2
+  - floortrash_13
+  - floor_damaged
+  - floortrash_6
+  - floortrash_7
+  - floortrash_4
+  - floortrash_5
+  - floortrash_2
+  - floortrash_3
+  - floortrash_1
+  - floortrash_8
+  - floortrash_9
+  - floortrash_11
+  - floortrash_10
+  - floortrash_12
+  - scrap
+  - floor_pristine
+  m_RenderDataMap: {}
+  m_Tag: Floor Atlas
+  m_IsVariant: 0

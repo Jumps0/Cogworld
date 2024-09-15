@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Emergency Access Door
   m_EditorClassIdentifier: 
   Id: 13
-  displaySprite: {fileID: 1475030336, guid: 032440cf9a8a9ef4f9edce948afbc788, type: 3}
+  displaySprite: {fileID: 301293600, guid: 1cbb9aac05749df48bf649f7efbf4fcf, type: 3}
   tileName: Emergency Access Door
   type: 2
-  altSprite: {fileID: 800203600, guid: 7e78217f5530ef640a115f74414426ef, type: 3}
-  destroyedSprite: {fileID: 1411414500, guid: 584229b3f588c1c4c9f168abe700b2de, type: 3}
+  altSprite: {fileID: -15203962, guid: 1cbb9aac05749df48bf649f7efbf4fcf, type: 3}
+  destroyedSprite: {fileID: 1118698724, guid: 1cbb9aac05749df48bf649f7efbf4fcf, type: 3}
   asciiRep: {fileID: 921198686, guid: 14ab35a0b2c4fc84681e675af9facbe5, type: 3}
   asciiColor: {r: 0, g: 0.8470589, b: 1, a: 1}
   isDirty: 0

@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Industrial Cave Wall
   m_EditorClassIdentifier: 
   Id: 3
-  displaySprite: {fileID: -440446855, guid: 0baaa671f5673164fbd9cbd465c9e16b, type: 3}
+  displaySprite: {fileID: -1920745793, guid: fb10cc78639952642858fbe0ed0250dd, type: 3}
   tileName: Industrial Cave Wall
   type: 1
   altSprite: {fileID: 0}
-  destroyedSprite: {fileID: 378825528, guid: 42a2036963460eb4197828f13297a2de, type: 3}
+  destroyedSprite: {fileID: -1365252575, guid: fb10cc78639952642858fbe0ed0250dd, type: 3}
   asciiRep: {fileID: 1342612219, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
   asciiColor: {r: 0.54509807, g: 0.54509807, b: 0.5411765, a: 1}
   isDirty: 0
@@ -30,3 +30,5 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 17ada9be668b0da409442c5bf5213d61, type: 3}
   - {fileID: 8300000, guid: 0ece50c181c0e404ab64d5dbbd370ce4, type: 3}
   resistances: []
+  door_open: []
+  door_close: []

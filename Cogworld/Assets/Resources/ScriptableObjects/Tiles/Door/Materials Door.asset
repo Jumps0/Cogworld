@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Materials Door
   m_EditorClassIdentifier: 
   Id: 5
-  displaySprite: {fileID: -1104504303, guid: 4bafb0a39ba20ee4a889b11fa6e431b6, type: 3}
+  displaySprite: {fileID: -85178787, guid: 1cbb9aac05749df48bf649f7efbf4fcf, type: 3}
   tileName: Materials Door
   type: 2
-  altSprite: {fileID: -268443102, guid: 0669e38ad5cf6a74b85a00b903976e80, type: 3}
-  destroyedSprite: {fileID: 1411414500, guid: 584229b3f588c1c4c9f168abe700b2de, type: 3}
+  altSprite: {fileID: 1413448110, guid: 1cbb9aac05749df48bf649f7efbf4fcf, type: 3}
+  destroyedSprite: {fileID: 1118698724, guid: 1cbb9aac05749df48bf649f7efbf4fcf, type: 3}
   asciiRep: {fileID: 921198686, guid: 14ab35a0b2c4fc84681e675af9facbe5, type: 3}
   asciiColor: {r: 0.56078434, g: 0.27058825, b: 0, a: 1}
   isDirty: 0
