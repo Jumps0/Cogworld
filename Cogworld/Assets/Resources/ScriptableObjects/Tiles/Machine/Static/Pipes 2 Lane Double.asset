@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Pipes 2 Lane Double
   m_EditorClassIdentifier: 
   Id: 41
-  displaySprite: {fileID: 199128929, guid: 5ae6d44a61e36b7419465f617dccd3c8, type: 3}
+  displaySprite: {fileID: -345670785, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   tileName: Pipes
   type: 3
   altSprite: {fileID: 0}

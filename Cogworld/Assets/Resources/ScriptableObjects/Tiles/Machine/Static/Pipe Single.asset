@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Pipe Single
   m_EditorClassIdentifier: 
   Id: 41
-  displaySprite: {fileID: -993204697, guid: 4bafb0a39ba20ee4a889b11fa6e431b6, type: 3}
+  displaySprite: {fileID: -299661096, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   tileName: Pipes
   type: 3
   altSprite: {fileID: 0}

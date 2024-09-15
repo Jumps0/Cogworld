@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caf3c7381c065f640ad97b10eeab224e, type: 3}
   m_Name: Pipe Single Corner
   m_EditorClassIdentifier: 
-  Id: 41
-  displaySprite: {fileID: 363161855, guid: 07bbe80aaa550af4d83c0915e0f9a2b7, type: 3}
+  Id: 32
+  displaySprite: {fileID: 1005252157, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   tileName: Pipes
   type: 3
   altSprite: {fileID: 0}

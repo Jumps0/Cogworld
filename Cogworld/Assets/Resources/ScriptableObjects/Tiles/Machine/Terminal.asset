@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Terminal
   m_EditorClassIdentifier: 
   Id: 41
-  displaySprite: {fileID: 932017115, guid: 1dae7a0e94ed95c4e977ed3db317d744, type: 3}
+  displaySprite: {fileID: -1714579695, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   tileName: Terminal
   type: 3
   altSprite: {fileID: 0}

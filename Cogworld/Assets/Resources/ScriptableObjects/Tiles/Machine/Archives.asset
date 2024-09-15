@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caf3c7381c065f640ad97b10eeab224e, type: 3}
   m_Name: Archives
   m_EditorClassIdentifier: 
-  Id: 0
-  displaySprite: {fileID: 1171570517, guid: 0135ad032d3d64548990237d233a09a4, type: 3}
+  Id: 29
+  displaySprite: {fileID: -2048724185, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   tileName: Archive Terminal
   type: 3
   altSprite: {fileID: 0}

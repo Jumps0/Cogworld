@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caf3c7381c065f640ad97b10eeab224e, type: 3}
   m_Name: Architerminal
   m_EditorClassIdentifier: 
-  Id: 0
-  displaySprite: {fileID: -409347224, guid: a5f7bd6703b80224eb2151967ffa32ed, type: 3}
+  Id: 28
+  displaySprite: {fileID: -1818419537, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   tileName: Unknown Terminal
   type: 3
   altSprite: {fileID: 0}

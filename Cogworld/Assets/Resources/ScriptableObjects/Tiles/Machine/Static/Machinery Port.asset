@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caf3c7381c065f640ad97b10eeab224e, type: 3}
   m_Name: Machinery Port
   m_EditorClassIdentifier: 
-  Id: 41
-  displaySprite: {fileID: 1759030363, guid: e99f78a2ae096f84fa128ef39f15d8d0, type: 3}
+  Id: 47
+  displaySprite: {fileID: 618859876, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   tileName: Machinery
   type: 3
   altSprite: {fileID: 686718923, guid: bbf1a054510493147ace67589225c41a, type: 3}

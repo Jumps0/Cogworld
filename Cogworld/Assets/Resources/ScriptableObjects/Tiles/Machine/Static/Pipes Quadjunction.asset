@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Pipes Quadjunction
   m_EditorClassIdentifier: 
   Id: 41
-  displaySprite: {fileID: -1739163969, guid: e99f78a2ae096f84fa128ef39f15d8d0, type: 3}
+  displaySprite: {fileID: -2019361955, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   tileName: Pipes
   type: 3
   altSprite: {fileID: 0}

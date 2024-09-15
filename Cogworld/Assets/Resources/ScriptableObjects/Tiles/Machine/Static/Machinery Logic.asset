@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Machinery Logic
   m_EditorClassIdentifier: 
   Id: 41
-  displaySprite: {fileID: -1292552832, guid: e99f78a2ae096f84fa128ef39f15d8d0, type: 3}
+  displaySprite: {fileID: -169589389, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   tileName: Machinery
   type: 3
   altSprite: {fileID: -279944297, guid: 0f98ae4f61612184ab250349db1b02ec, type: 3}

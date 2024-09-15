@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Fabricator
   m_EditorClassIdentifier: 
   Id: 0
-  displaySprite: {fileID: -1489681065, guid: a0f149f32da53b84cbc73bcc63b033d2, type: 3}
+  displaySprite: {fileID: 30316025, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   tileName: Fabricator
   type: 3
   altSprite: {fileID: 0}
