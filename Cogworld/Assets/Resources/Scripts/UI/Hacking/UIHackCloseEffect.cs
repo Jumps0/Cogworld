@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Linq;
 
 public class UIHackCloseEffect : MonoBehaviour
 {
@@ -11,23 +12,23 @@ public class UIHackCloseEffect : MonoBehaviour
     [SerializeField] private Image blackCover;          // The black cover sprite with a fill amount
 
     [Range(0.5f, 5f)]
-    [SerializeField] private float animationDuration = 1.5f;
+    [SerializeField] private float animationDuration = 1.5f; 
 
     void Start()
     {
         ResetEffect(); // Ensure initial states are set (bar at the top, cover at 0% fill)
     }
-
+    
     public void ResetEffect()
     {
         // Place the bar at the top of the hackingArea
-        movingBar.anchoredPosition = new Vector2(movingBar.anchoredPosition.x, hackingArea.rect.height);
+        movingBar.transform.position = Vector2.zero;
 
         blackCover.fillAmount = 0f; // Set the black cover fill to 0%
 
         movingBar.gameObject.SetActive(false); // Disable the bar
         blackCover.enabled = false; // Disable the cover
-        UIManager.inst.terminal_static.SetActive(false); // Disable the static
+        //UIManager.inst.terminal_static.SetActive(false); // Disable the static
     }
 
     public void Close()
@@ -43,8 +44,8 @@ public class UIHackCloseEffect : MonoBehaviour
         blackCover.enabled = true; // Enable the cover
 
         // Initial position of the bar (top of hackingArea)
-        Vector2 startPos = new Vector2(movingBar.anchoredPosition.x, hackingArea.rect.height);
-        Vector2 endPos = new Vector2(movingBar.anchoredPosition.x, 0f); // Final position (bottom)
+        Vector2 startPos = Vector2.zero;
+        Vector2 endPos = new Vector2(0, -hackingArea.rect.height);
 
         while (elapsedTime < animationDuration)
         {
@@ -67,6 +68,6 @@ public class UIHackCloseEffect : MonoBehaviour
         movingBar.gameObject.SetActive(false); // Disable the bar
 
         // Enable the static in UIManager
-        UIManager.inst.terminal_static.SetActive(true);
+        //UIManager.inst.terminal_static.SetActive(true);
     }
 }

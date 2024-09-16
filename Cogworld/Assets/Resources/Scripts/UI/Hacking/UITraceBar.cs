@@ -71,6 +71,7 @@ public class UITraceBar : MonoBehaviour
             //_detValueText.text = "Low (" + detectionChance + "%)";
             tracePercentText.color = lowDetColor;
         }
+        percent = Mathf.Clamp01(percent); // Clamp
         tracePercentText.text = (int)(percent * 100) + "%";
 
         Color usedColor = tracePercentText.color;
