@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.FilePathAttribute;
 
 public class AudioManager : MonoBehaviour
 {
@@ -212,5 +213,31 @@ public class AudioManager : MonoBehaviour
 
         // Destroy it
         Destroy(clip);
+    }
+
+    public GameObject MakeLoopingEffect(AudioClip clip, float volume = -1)
+    {
+        // Create new temp gameObject
+        GameObject newAudio = new GameObject();
+        newAudio.transform.SetParent(this.transform);
+        newAudio.transform.position = PlayerData.inst.transform.position;
+        newAudio.AddComponent<AudioSource>();
+
+        if (volume != -1)
+        {
+            newAudio.GetComponent<AudioSource>().volume = volume;
+        }
+        else
+        {
+            newAudio.GetComponent<AudioSource>().volume = 1f;
+        }
+        newAudio.GetComponent<AudioSource>().playOnAwake = false;
+        newAudio.GetComponent<AudioSource>().loop = true;
+        newAudio.GetComponent<AudioSource>().clip = clip;
+
+        //newAudio.GetComponent<AudioSource>().PlayOneShot(clip, volume);
+        newAudio.GetComponent<AudioSource>().Play();
+
+        return newAudio;
     }
 }

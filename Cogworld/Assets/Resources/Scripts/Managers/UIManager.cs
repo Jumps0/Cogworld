@@ -1816,6 +1816,7 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI terminal_name; // Terminal ?### - ? Access
     public Image terminal_secLvl_backing;
     public TextMeshProUGUI terminal_secLvl;
+    [SerializeField] private UIHackCloseEffect terminal_closeEffect;
     // - Prefabs
     public GameObject terminal_hackinfoV1_prefab;
     public GameObject terminal_hackinfoV2_prefab;
@@ -1832,6 +1833,8 @@ public class UIManager : MonoBehaviour
     public List<GameObject> terminal_hackTargetsList = new List<GameObject>();
     public List<GameObject> terminal_hackResultsList = new List<GameObject>();
     public List<GameObject> terminal_hackCodesList = new List<GameObject>();
+    private GameObject terminal_staticAudio = null;
+    public GameObject terminal_static;
 
     [Header("    Codes Window")]
     public GameObject codes_window;
@@ -2392,12 +2395,12 @@ public class UIManager : MonoBehaviour
         yield return null;
     }
 
-    public void Terminal_DoConsequences(Color setColor, string displayString, bool doSound = true, bool summonInvestigationSquad = true, bool forceExit = true)
+    public void Terminal_DoConsequences(Color setColor, string displayString, bool doSound = true, bool summonInvestigationSquad = true, bool forceExit = false)
     {
         StartCoroutine(Terminal_InitConsequences(setColor, displayString, doSound, summonInvestigationSquad, forceExit));
     }
 
-    private IEnumerator Terminal_InitConsequences(Color setColor, string displayString, bool doSound = true, bool summonInvestigationSquad = true, bool forceExit = true)
+    private IEnumerator Terminal_InitConsequences(Color setColor, string displayString, bool doSound = true, bool summonInvestigationSquad = true, bool forceExit = false)
     {
         // We want to init the consequences thingy
         GameObject hackLock = Instantiate(terminal_locked_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
@@ -2414,8 +2417,12 @@ public class UIManager : MonoBehaviour
             T.GetComponent<UIHackTarget>().ForceDisabled();
         }
 
-        // TODO: Do an animation over the hacking /TARGET/ window
+        // Do an animation over the hacking /TARGET/ window (this effect is greatly simplified since I don't know how to optimally achieve the true effect)
+        // This also enables the static
+        terminal_closeEffect.Close();
 
+        // Create the looping static sound
+        terminal_staticAudio = AudioManager.inst.MakeLoopingEffect(AudioManager.inst.UI_Clips[45], 0.6f); // UI - HACK_STATIC
 
         if (summonInvestigationSquad)
         {
@@ -2888,6 +2895,13 @@ public class UIManager : MonoBehaviour
         #endregion
 
         yield return null;
+
+        // Stop static effects
+        terminal_closeEffect.ResetEffect();
+        if(terminal_staticAudio != null)
+        {
+            Destroy(terminal_staticAudio);
+        }
 
         // Shut down all the lines
         foreach (var i in terminal_hackinfoList.ToList())
