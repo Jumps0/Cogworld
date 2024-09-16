@@ -85,7 +85,7 @@ public class GlobalSettings : MonoBehaviour
     [SerializeField] private Image dImage2;
     [SerializeField] private TextMeshProUGUI dText1;
     [SerializeField] private TextMeshProUGUI dText2;
-    private string dString;
+    private string dString = "";
 
     #endregion
 
@@ -697,6 +697,8 @@ public class GlobalSettings : MonoBehaviour
         dImage2.gameObject.SetActive(false);
         dText1.text = "Layer 0:";
         dText2.text = "Layer 1:";
+
+        dString = dField.text;
 
         if (dString.Contains(",") && !dString.Contains("!")) // 2nd part is a failsafe to stop parsing
         {
