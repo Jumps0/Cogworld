@@ -2408,6 +2408,15 @@ public class UIManager : MonoBehaviour
         // Assign Details
         hackLock.GetComponent<UIHackLocked>().Setup(setColor, displayString, doSound);
 
+        // Force disabled all hacking options
+        foreach (var T in terminal_hackTargetsList.ToList())
+        {
+            T.GetComponent<UIHackTarget>().ForceDisabled();
+        }
+
+        // TODO: Do an animation over the hacking /TARGET/ window
+
+
         if (summonInvestigationSquad)
         {
             string name = "";

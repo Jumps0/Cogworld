@@ -368,6 +368,16 @@ public class UIHackTarget : MonoBehaviour
         primaryText.color = new Color(grayedOutColor.r, grayedOutColor.g, grayedOutColor.b, 1f);
     }
 
+    /// <summary>
+    /// Force this target to be non-interactable.
+    /// </summary>
+    public void ForceDisabled()
+    {
+        this.GetComponent<Button>().enabled = false;
+        this.GetComponent<UIHoverEvent>().disabled = true;
+        this.GetComponent<UIHoverEvent>().enabled = false;
+    }
+
     public void ShutDown()
     {
         StartCoroutine(ShutdownAnim());
