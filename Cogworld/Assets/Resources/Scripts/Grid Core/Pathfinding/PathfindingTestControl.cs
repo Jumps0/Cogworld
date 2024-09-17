@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Color = UnityEngine.Color;
+using DungeonResources;
 
 /// <summary>
 /// Controls the main aspects of the PathfindingTest Scene, not used in main game.
@@ -41,6 +41,7 @@ public class PathfindingTestControl : MonoBehaviour
     [Header("Parents")]
     public GameObject parent_tiles;
     public GameObject parent_landmarks;
+    public GameObject parent_actor;
 
     [Header("Colors")]
     public Color openColor;
@@ -50,10 +51,13 @@ public class PathfindingTestControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Create the map
         GenerateMap();
         StartCoroutine(SnapNodes());
         statusText.text = "No route.";
         infoText.text = "No route.";
+
+        Initialize(grid, HF.V3_to_V2I(start.transform.position), HF.V3_to_V2I(finish.transform.position));
     }
 
     #region MapGeneration
@@ -142,8 +146,317 @@ public class PathfindingTestControl : MonoBehaviour
 
     #endregion
 
-    #region Pathfinding
+    #region Pathfinding (D* Lite)
+    public Vector2Int startLocation;
+    public Vector2Int goalLocation;
 
+    private int gridWidth;
+    private int gridHeight;
+    private Dictionary<Vector2Int, float> gScores;
+    private Dictionary<Vector2Int, float> rhsScores;
+    private PriorityQueue<Vector2Int> openSet;
+    private LandmarkHeuristic landmarkHeuristic;
+
+    // Initialize the pathfinding grid and landmarks
+    public void Initialize(GameObject[,] grid, Vector2Int start, Vector2Int goal)
+    {
+        this.grid = grid;
+        this.startLocation = start;
+        this.goalLocation = goal;
+
+        gridWidth = grid.GetLength(0);
+        gridHeight = grid.GetLength(1);
+
+        gScores = new Dictionary<Vector2Int, float>();
+        rhsScores = new Dictionary<Vector2Int, float>();
+        openSet = new PriorityQueue<Vector2Int>();
+
+        landmarkHeuristic = new LandmarkHeuristic();
+        landmarkHeuristic.SetLandmarks(landmarkHeuristic.landmarks, landmarkHeuristic.precomputedDistances);
+
+        // Initialize g and rhs values
+        for (int x = 0; x < gridWidth; x++)
+        {
+            for (int y = 0; y < gridHeight; y++)
+            {
+                Vector2Int pos = new Vector2Int(x, y);
+                gScores[pos] = float.MaxValue;
+                rhsScores[pos] = float.MaxValue;
+            }
+        }
+
+        rhsScores[goal] = 0;
+        openSet.Enqueue(goal, CalculateKey(goal));
+    }
+
+    // Calculate the priority/key for D* Lite (used in the priority queue)
+    private Vector2 CalculateKey(Vector2Int node)
+    {
+        float h = landmarkHeuristic.GetHeuristic(startLocation, node);
+        float g = gScores.ContainsKey(node) ? gScores[node] : float.MaxValue;
+        float rhs = rhsScores.ContainsKey(node) ? rhsScores[node] : float.MaxValue;
+        return new Vector2(Mathf.Min(g, rhs) + h, Mathf.Min(g, rhs));
+    }
+
+    // Function to update the grid dynamically and recalculate paths
+    public void UpdateMap(Vector2Int updatedPosition)
+    {
+        // If an obstacle or shortcut was added/removed, update the rhs and g values of the surrounding nodes
+        if (grid[updatedPosition.x, updatedPosition.y].GetComponent<SpriteRenderer>().color == Color.gray)
+        {
+            // Blocked tile (obstacle)
+            gScores[updatedPosition] = float.MaxValue;
+            rhsScores[updatedPosition] = float.MaxValue;
+        }
+        else
+        {
+            // Walkable tile (open space)
+            ComputeRHS(updatedPosition);
+        }
+
+        UpdateVertex(updatedPosition);
+    }
+
+    // Function to compute the rhs value of a node
+    private void ComputeRHS(Vector2Int node)
+    {
+        if (node != goalLocation)
+        {
+            float minRHS = float.MaxValue;
+
+            foreach (var direction in landmarkHeuristic.directions)
+            {
+                Vector2Int neighbor = node + direction;
+
+                if (IsValidPosition(neighbor) && IsWalkable(neighbor))
+                {
+                    float cost = GetTraversalCost(node, neighbor);
+                    minRHS = Mathf.Min(minRHS, gScores[neighbor] + cost);
+                }
+            }
+
+            rhsScores[node] = minRHS;
+        }
+    }
+
+    // D* Lite pathfinding function
+    public void FindPath()
+    {
+        while (VectorCompare(openSet.PeekPriority(), CalculateKey(startLocation)) || rhsScores[startLocation] != gScores[startLocation])
+        {
+            Vector2Int currentNode = openSet.Dequeue();
+
+            if (gScores[currentNode] > rhsScores[currentNode])
+            {
+                gScores[currentNode] = rhsScores[currentNode];
+            }
+            else
+            {
+                gScores[currentNode] = float.MaxValue;
+                ComputeRHS(currentNode);
+            }
+
+            UpdateVertex(currentNode);
+
+            foreach (var direction in landmarkHeuristic.directions)
+            {
+                Vector2Int neighbor = currentNode + direction;
+                if (IsValidPosition(neighbor) && IsWalkable(neighbor))
+                {
+                    UpdateVertex(neighbor);
+                }
+            }
+        }
+
+        Debug.Log("Path found from start to goal.");
+    }
+
+    private bool VectorCompare(Vector2 a, Vector2 b)
+    {
+        // Compare x values first
+        if (a.x < b.x) return true;
+        if (a.x > b.x) return false;
+
+        // If x values are equal, compare y values
+        return a.y < b.y;
+    }
+
+    // Function to update a vertex and reinsert into the priority queue
+    private void UpdateVertex(Vector2Int node)
+    {
+        if (gScores[node] != rhsScores[node])
+        {
+            if (openSet.Contains(node))
+            {
+                openSet.UpdatePriority(node, CalculateKey(node));
+            }
+            else
+            {
+                openSet.Enqueue(node, CalculateKey(node));
+            }
+        }
+        else if (openSet.Contains(node))
+        {
+            openSet.Remove(node);
+        }
+    }
+
+    // Helper function to get the traversal cost between nodes
+    private float GetTraversalCost(Vector2Int from, Vector2Int to)
+    {
+        // Assume all traversal costs are 1 for simplicity
+        return 1f;
+    }
+
+    // Helper function to check if a node is walkable
+    private bool IsWalkable(Vector2Int position)
+    {
+        return grid[position.x, position.y].GetComponent<SpriteRenderer>().color == Color.white;
+    }
+
+    // Helper function to check if a position is valid within the grid
+    private bool IsValidPosition(Vector2Int position)
+    {
+        return position.x >= 0 && position.x < gridWidth && position.y >= 0 && position.y < gridHeight;
+    }
+
+    #endregion
+
+    private void SetPainting()
+    {
+        foreach (var T in pathing.openSet)
+        {
+            grid[T.X, T.Y].GetComponent<SpriteRenderer>().color = openColor;
+        }
+
+        foreach (var T in pathing.closedSet)
+        {
+            grid[T.X, T.Y].GetComponent<SpriteRenderer>().color = closedColor;
+        }
+
+        foreach (var T in pathing.path)
+        {
+            grid[T.X, T.Y].GetComponent<SpriteRenderer>().color = pathColor;
+        }
+    }
+
+    private void ResetColors()
+    {
+        foreach (GameObject T in grid)
+        {
+            if (T)
+            {
+                if (T.name.Contains("Border"))
+                {
+                    T.GetComponent<SpriteRenderer>().color = Color.black;
+                }
+                else if (T.name.Contains("Wall"))
+                {
+                    T.GetComponent<SpriteRenderer>().color = Color.gray;
+                }
+                else if (T.name.Contains("Floor"))
+                {
+                    T.GetComponent<SpriteRenderer>().color = Color.white;
+                }
+            }
+        }
+    }
+
+    // Snap the nodes to nearest int
+    private IEnumerator SnapNodes()
+    {
+        while (true)
+        {
+            start.transform.position = new Vector3((int)start.transform.position.x, (int)start.transform.position.y);
+            finish.transform.position = new Vector3((int)finish.transform.position.x, (int)finish.transform.position.y);
+
+            yield return new WaitForSeconds(5f);
+        }
+    }
+
+    public class PriorityQueue<T>
+    {
+        private List<KeyValuePair<T, Vector2>> elements = new List<KeyValuePair<T, Vector2>>();
+
+        public int Count => elements.Count;
+        public List<KeyValuePair<T, Vector2>> E => elements;
+
+        public void Enqueue(T item, Vector2 priority)
+        {
+            elements.Add(new KeyValuePair<T, Vector2>(item, priority));
+        }
+
+        public T Dequeue()
+        {
+            int bestIndex = 0;
+
+            for (int i = 0; i < elements.Count; i++)
+            {
+                if (elements[i].Value.x < elements[bestIndex].Value.x ||
+                   (elements[i].Value.x == elements[bestIndex].Value.x && elements[i].Value.y < elements[bestIndex].Value.y))
+                {
+                    bestIndex = i;
+                }
+            }
+
+            T bestItem = elements[bestIndex].Key;
+            elements.RemoveAt(bestIndex);
+            return bestItem;
+        }
+
+        public Vector2 PeekPriority()
+        {
+            int bestIndex = 0;
+
+            for (int i = 0; i < elements.Count; i++)
+            {
+                if (elements[i].Value.x < elements[bestIndex].Value.x ||
+                   (elements[i].Value.x == elements[bestIndex].Value.x && elements[i].Value.y < elements[bestIndex].Value.y))
+                {
+                    bestIndex = i;
+                }
+            }
+
+            Debug.Log($"E:{elements} | Count: {elements.Count} | i:{bestIndex}");
+            return elements[bestIndex].Value;
+        }
+
+        public bool Contains(T item)
+        {
+            return elements.Exists(x => x.Key.Equals(item));
+        }
+
+        public void Remove(T item)
+        {
+            elements.RemoveAll(x => x.Key.Equals(item));
+        }
+
+        public void UpdatePriority(T item, Vector2 newPriority)
+        {
+            for (int i = 0; i < elements.Count; i++)
+            {
+                if (elements[i].Key.Equals(item))
+                {
+                    elements[i] = new KeyValuePair<T, Vector2>(item, newPriority);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void Update()
+    {
+        Debug.ClearDeveloperConsole();
+        string output = $"QPUEUE STATUS ({openSet.Count}): ";
+        foreach (var KVP in openSet.E)
+        {
+           output += $"{KVP.Key.ToString()} - {KVP.Value.ToString()}";
+        }
+        Debug.Log(output);
+    }
+
+    #region OLD
+    /*
     public void Pathfind()
     {
         ResetColors();
@@ -197,45 +510,7 @@ public class PathfindingTestControl : MonoBehaviour
         statusImage.color = Color.green;
     }
 
-    private void SetPainting()
-    {
-        foreach (var T in pathing.openSet)
-        {
-            grid[T.X, T.Y].GetComponent<SpriteRenderer>().color = openColor;
-        }
-
-        foreach (var T in pathing.closedSet)
-        {
-            grid[T.X, T.Y].GetComponent<SpriteRenderer>().color = closedColor;
-        }
-
-        foreach (var T in pathing.path)
-        {
-            grid[T.X, T.Y].GetComponent<SpriteRenderer>().color = pathColor;
-        }
-    }
-
-    private void ResetColors()
-    {
-        foreach(GameObject T in grid)
-        {
-            if (T)
-            {
-                if (T.name.Contains("Border"))
-                {
-                    T.GetComponent<SpriteRenderer>().color = Color.black;
-                }
-                else if (T.name.Contains("Wall"))
-                {
-                    T.GetComponent<SpriteRenderer>().color = Color.gray;
-                }
-                else if (T.name.Contains("Floor"))
-                {
-                    T.GetComponent<SpriteRenderer>().color = Color.white;
-                }
-            }
-        }
-    }
+    
 
     private void PlaceLandmarks()
     {
@@ -254,26 +529,6 @@ public class PathfindingTestControl : MonoBehaviour
             newLandmark.transform.parent = parent_landmarks.transform; // Set parent
         }
     }
-
+    */
     #endregion
-
-    // Snap the nodes to nearest int
-    private IEnumerator SnapNodes()
-    {
-        while (true)
-        {
-            start.transform.position = new Vector3((int)start.transform.position.x, (int)start.transform.position.y);
-            finish.transform.position = new Vector3((int)finish.transform.position.x, (int)finish.transform.position.y);
-
-            yield return new WaitForSeconds(5f);
-        }
-    }
-
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            Pathfind();
-        }
-    }
 }

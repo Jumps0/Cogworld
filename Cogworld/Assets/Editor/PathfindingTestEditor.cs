@@ -16,7 +16,7 @@ public class PathfindingTestEditor : Editor
         if (GUILayout.Button("\nPathfind\n"))
         {
             // Call the Pathfind function when the button is clicked
-            pathfindingTest.Pathfind();
+            pathfindingTest.FindPath();
         }
     }
 }
