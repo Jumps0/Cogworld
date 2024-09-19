@@ -4,7 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Color = UnityEngine.Color;
-using DungeonResources;
+using System;
+using System.Linq;
+using PathfindingDSL;
+using Random = UnityEngine.Random;
+using System.IO;
+
 
 /// <summary>
 /// Controls the main aspects of the PathfindingTest Scene, not used in main game.
@@ -48,8 +53,13 @@ public class PathfindingTestControl : MonoBehaviour
     public Color closedColor;
     public Color pathColor;
 
-    // Start is called before the first frame update
-    void Start()
+    [Header("D* Lite")]
+    public DStarLite<Vector2> dslite;
+    public Node<Vector2> startNode;
+    public Node<Vector2> goalNode;
+    public List<Node<Vector2>> allNodes = new List<Node<Vector2>>();
+
+    private void Start()
     {
         // Create the map
         GenerateMap();
@@ -57,7 +67,66 @@ public class PathfindingTestControl : MonoBehaviour
         statusText.text = "No route.";
         infoText.text = "No route.";
 
-        Initialize(grid, HF.V3_to_V2I(start.transform.position), HF.V3_to_V2I(finish.transform.position));
+    }
+
+    readonly Func<Node<Vector2>, Node<Vector2>, float> cost = (node, neighbor) => Vector2.Distance(node.Data, neighbor.Data);
+    readonly Func<Node<Vector2>, Node<Vector2>, float> heuristic = (node, neighbor) => Vector2.Distance(node.Data, neighbor.Data);
+
+    public void CalculateGraph(/*GameObject p, bool b*/)
+    {
+        GameObject goal = finish;
+
+        goalNode = new Node<Vector2>(goal.transform.position, cost, heuristic);
+        startNode = new Node<Vector2>(start.transform.position, cost, heuristic);
+        allNodes.Clear();
+
+        foreach (GameObject waypoint in grid)
+        {
+            if(waypoint != null)
+            {
+                Node<Vector2> node = new Node<Vector2>(waypoint.transform.position, cost, heuristic);
+                //waypoint.GetComponent<NodeVisualizer>().Setup(node);
+                allNodes.Add(node);
+            }
+        }
+
+        //start.GetComponent<NodeVisualizer>().Setup(startNode);
+        //goal.GetComponenet<NodeVisualizer>().Setup(goalNode);
+
+        // What is n???
+        Node<Vector2> n = startNode;
+
+        // Set up 3 neighbors for each node from allNodes
+        foreach(var node in allNodes)
+        {
+            node.Neighbors = allNodes
+                .OrderBy(node => Vector2.Distance(n.Data, node.Data))
+                .Where(node => n != node)
+                .Distinct()
+                .Take(3)
+                .ToList();
+        }
+
+        startNode.Neighbors = startNode.Neighbors.Where(n => n != goalNode && n != startNode).ToList();
+        goalNode.Neighbors = goalNode.Neighbors.Where(n => n != goalNode && n != startNode).ToList();
+
+        dslite = new DStarLite<Vector2>(startNode, goalNode, allNodes);
+        dslite.Initialize();
+        dslite.ComputeShortestPath();
+        UpdatePathVisual(dslite.GetPath());
+
+    }
+
+    private void UpdatePathVisual(List<Node<Vector2>> path)
+    {
+        foreach (Node<Vector2> node in path)
+        {
+            if(node != startNode && node != goalNode)
+            {
+                Vector2 pos = node.Data;
+                grid[(int)pos.x, (int)pos.y].GetComponent<SpriteRenderer>().color = Color.yellow;
+            }
+        }
     }
 
     #region MapGeneration
@@ -67,7 +136,7 @@ public class PathfindingTestControl : MonoBehaviour
         // - We need to generate a random map for pathfinding based on the map size -
 
         // Set array
-        grid = new GameObject[mapSize.x,mapSize.y];
+        grid = new GameObject[mapSize.x, mapSize.y];
 
         // Create border
         for (int x = 0; x < mapSize.x - 1; x++) // Bottom
@@ -95,7 +164,7 @@ public class PathfindingTestControl : MonoBehaviour
             {
                 float random = Random.Range(0f, 1f);
                 bool occupied;
-                if(random > percentWalls)
+                if (random > percentWalls)
                 {
                     occupied = false;
                 }
@@ -144,7 +213,35 @@ public class PathfindingTestControl : MonoBehaviour
         grid[loc.x, loc.y] = spawnedTile;
     }
 
+
+    // Snap the nodes to nearest int
+    private IEnumerator SnapNodes()
+    {
+        while (true)
+        {
+            start.transform.position = new Vector3((int)start.transform.position.x, (int)start.transform.position.y);
+            finish.transform.position = new Vector3((int)finish.transform.position.x, (int)finish.transform.position.y);
+
+            yield return new WaitForSeconds(5f);
+        }
+    }
     #endregion
+
+    #region OLD 2
+
+    /*
+    // Start is called before the first frame update
+    void Start()
+    {
+        // Create the map
+        GenerateMap();
+        StartCoroutine(SnapNodes());
+        statusText.text = "No route.";
+        infoText.text = "No route.";
+
+        Initialize(grid, HF.V3_to_V2I(start.transform.position), HF.V3_to_V2I(finish.transform.position));
+    }
+
 
     #region Pathfinding (D* Lite)
     public Vector2Int startLocation;
@@ -362,17 +459,6 @@ public class PathfindingTestControl : MonoBehaviour
         }
     }
 
-    // Snap the nodes to nearest int
-    private IEnumerator SnapNodes()
-    {
-        while (true)
-        {
-            start.transform.position = new Vector3((int)start.transform.position.x, (int)start.transform.position.y);
-            finish.transform.position = new Vector3((int)finish.transform.position.x, (int)finish.transform.position.y);
-
-            yield return new WaitForSeconds(5f);
-        }
-    }
 
     public class PriorityQueue<T>
     {
@@ -393,7 +479,7 @@ public class PathfindingTestControl : MonoBehaviour
             for (int i = 0; i < elements.Count; i++)
             {
                 if (elements[i].Value.x < elements[bestIndex].Value.x ||
-                   (elements[i].Value.x == elements[bestIndex].Value.x && elements[i].Value.y < elements[bestIndex].Value.y))
+                    (elements[i].Value.x == elements[bestIndex].Value.x && elements[i].Value.y < elements[bestIndex].Value.y))
                 {
                     bestIndex = i;
                 }
@@ -411,7 +497,7 @@ public class PathfindingTestControl : MonoBehaviour
             for (int i = 0; i < elements.Count; i++)
             {
                 if (elements[i].Value.x < elements[bestIndex].Value.x ||
-                   (elements[i].Value.x == elements[bestIndex].Value.x && elements[i].Value.y < elements[bestIndex].Value.y))
+                    (elements[i].Value.x == elements[bestIndex].Value.x && elements[i].Value.y < elements[bestIndex].Value.y))
                 {
                     bestIndex = i;
                 }
@@ -450,7 +536,7 @@ public class PathfindingTestControl : MonoBehaviour
         string output = $"QPUEUE STATUS ({openSet.Count}): ";
         foreach (var KVP in openSet.E)
         {
-           output += $"{KVP.Key.ToString()} - {KVP.Value.ToString()}";
+            output += $"{KVP.Key.ToString()} - {KVP.Value.ToString()}";
         }
         Debug.Log(output);
     }
@@ -510,7 +596,7 @@ public class PathfindingTestControl : MonoBehaviour
         statusImage.color = Color.green;
     }
 
-    
+
 
     private void PlaceLandmarks()
     {
@@ -529,6 +615,15 @@ public class PathfindingTestControl : MonoBehaviour
             newLandmark.transform.parent = parent_landmarks.transform; // Set parent
         }
     }
-    */
+
     #endregion
+    */
+
+    #endregion
+}
+
+
+public static class NE
+{
+    public static bool Approx(this float f1, float f2) => Mathf.Approximately(f1, f2);
 }

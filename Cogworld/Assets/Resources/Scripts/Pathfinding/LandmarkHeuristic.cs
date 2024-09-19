@@ -19,6 +19,7 @@ public class LandmarkHeuristic : MonoBehaviour
         new Vector2Int(-1, 1), // Up-Left
     };
 
+    /*
     // Constructor
     public LandmarkHeuristic()
     {
@@ -211,4 +212,5 @@ public class LandmarkHeuristic : MonoBehaviour
     {
         return grid[position.x, position.y] && grid[position.x, position.y].GetComponent<SpriteRenderer>().color == Color.white;
     }
+    */
 }

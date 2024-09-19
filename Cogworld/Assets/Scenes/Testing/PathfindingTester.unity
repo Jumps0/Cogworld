@@ -1716,7 +1716,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6397f8f05ce70c643b313c534df06f3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapSize: {x: 100, y: 100}
+  mapSize: {x: 45, y: 45}
   percentWalls: 0.3
   start: {fileID: 623539117}
   finish: {fileID: 585307088}
@@ -1733,8 +1733,6 @@ MonoBehaviour:
   openColor: {r: 0.19575472, g: 0.47933418, b: 0.7830189, a: 1}
   closedColor: {r: 0, g: 0.12534203, b: 0.7264151, a: 1}
   pathColor: {r: 0, g: 0.4811321, b: 0.02641515, a: 1}
-  numActors: 1
-  landmarks: []
 --- !u!1 &1607364775
 GameObject:
   m_ObjectHideFlags: 0
