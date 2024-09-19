@@ -10265,7 +10265,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 89.586105, y: 0}
   m_SizeDelta: {x: 0, y: 22.777779}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &272249432
@@ -11508,7 +11508,7 @@ MonoBehaviour:
   hackingArea: {fileID: 319977815}
   movingBar: {fileID: 1101140633}
   blackCover: {fileID: 319977816}
-  animationDuration: 1.5
+  animationDuration: 1
 --- !u!1 &320656963
 GameObject:
   m_ObjectHideFlags: 0
@@ -39007,6 +39007,7 @@ MonoBehaviour:
   terminal_hackTitleBacker: {fileID: 591258371}
   terminal_targetResultBorder1: {fileID: 965665477}
   terminal_targetResultBorder2: {fileID: 1836659679}
+  terminal_resultsScrollrect: {fileID: 2142358346}
   terminal_hackOptionsArea: {fileID: 1783066452}
   terminal_hackResultsArea: {fileID: 64064822}
   terminal_activeInput: {fileID: 0}

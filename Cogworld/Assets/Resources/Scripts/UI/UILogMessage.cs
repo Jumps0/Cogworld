@@ -22,7 +22,13 @@ public class UILogMessage : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         // Should this happen in the other log too? (Only if it's active)
         if (UIManager.inst.currentActiveMenu_LAIC == "L" || UIManager.inst.currentActiveMenu_LAIC == "l")
         {
-            UIManager.inst.CreateNewSecondaryLogMessage(message, color, highlight, false, false);
+            if(UIManager.inst.calcMessages.Count > 0 && UIManager.inst.calcMessages[UIManager.inst.calcMessages.Count - 1]) // Failsafes to not cause a stackoverflow
+            {
+                if(UIManager.inst.calcMessages[UIManager.inst.calcMessages.Count - 1].GetComponent<UILogMessage>()._message != _message)
+                {
+                    UIManager.inst.CreateNewSecondaryLogMessage(message, color, highlight, false, false);
+                }
+            }
         }
 
         _message = message;

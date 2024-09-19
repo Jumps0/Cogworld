@@ -1805,6 +1805,7 @@ public class UIManager : MonoBehaviour
     public Image terminal_hackTitleBacker;
     public Image terminal_targetResultBorder1;
     public Image terminal_targetResultBorder2;
+    public ScrollRect terminal_resultsScrollrect;
     public List<KeyValuePair<string, TerminalCommand>> terminal_manualBuffer = new List<KeyValuePair<string, TerminalCommand>>(); // Past used terminal codes
     //
     public GameObject terminal_hackOptionsArea; // Where the hacking option prefabs will be put (Target)

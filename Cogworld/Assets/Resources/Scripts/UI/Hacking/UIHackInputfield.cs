@@ -272,6 +272,7 @@ public class UIHackInputfield : MonoBehaviour
         {
             UIManager.inst.Terminal_CreateResult(HF.GenericHackFailure(random), highDetColor, (">>" + HF.ParseHackName(hack)), true);
         }
+        HF.ScrollToBottom(UIManager.inst.terminal_resultsScrollrect); // Force scroll to bottom
     }
 
     #region Auto-Suggestion

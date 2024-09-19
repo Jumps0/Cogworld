@@ -163,6 +163,7 @@ public class UIHackTarget : MonoBehaviour
                 UIManager.inst.Terminal_CreateManualInput();
             }
         }
+        HF.ScrollToBottom(UIManager.inst.terminal_resultsScrollrect); // Force scroll to bottom
     }
 
     public void AppearAnim()

@@ -16,6 +16,7 @@ using System.Text;
 using Color = UnityEngine.Color;
 using static Unity.VisualScripting.Member;
 using static UnityEngine.GraphicsBuffer;
+using UnityEngine.UI;
 
 /// <summary>
 /// Contains helper functions to be used globally.
@@ -5021,6 +5022,14 @@ public static class HF
     #endregion
 
     #region Misc
+    public static void ScrollToTop(this ScrollRect scrollRect)
+    {
+        scrollRect.normalizedPosition = new Vector2(0, 1);
+    }
+    public static void ScrollToBottom(this ScrollRect scrollRect)
+    {
+        scrollRect.normalizedPosition = new Vector2(0, 0);
+    }
 
     public static Color HexToRGB(string hex)
     {

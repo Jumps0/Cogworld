@@ -209,5 +209,6 @@ public class UISchematicOption : MonoBehaviour
         {
             UIManager.inst.Terminal_CreateResult(HF.GenericHackFailure(random), highDetColor, (">>" + HF.ParseHackName(command.hack)), true);
         }
+        HF.ScrollToBottom(UIManager.inst.terminal_resultsScrollrect); // Force scroll to bottom
     }
 }
