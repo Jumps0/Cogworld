@@ -157,7 +157,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 20
-  m_Sprite: {fileID: -824662763, guid: 79f85e31eb99f3e43af37b613c295404, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 10993c8bf10db5843834d2b49336363d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -363,13 +363,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blocksMovement: 1
+  uniqueName: 
   currentHealth: 0
-  maxHealth: 0
+  maxHealth: 10
   currentHeat: 0
-  heatDissipation: 0
-  energyGeneration: 0
-  currentMatter: 0
+  heatDissipation: 20
+  residualHeat: []
+  energyGeneration: 33
   currentEnergy: 100
+  maxEnergy: 250
   corruption: 0
   siegeMode: 0
   inStatis: 0
@@ -383,7 +385,7 @@ MonoBehaviour:
   components: {fileID: 0}
   inventory: {fileID: 0}
   isAlive: 1
-  fieldOfViewRange: 8
+  fieldOfViewRange: 14
   fieldOfView: []
   AI: {fileID: 0}
   botInfo: {fileID: 11400000, guid: 1c3e89cb69ac6184fa8146daa510eea7, type: 2}
