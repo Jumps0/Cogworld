@@ -42,7 +42,7 @@ public class Actor : Entity
     public bool state_DISARMED = false; // Grayed-out green
     [Tooltip("This bot is cloaked and is moving in stealth, but through one reason or another the player knows their position. Has a different sprite")]
     public bool state_CLOAKED = false; // Grayed-out blue
-    [Tooltip("UNPOWERED: Unpowered robots will never become active. (Though yeah they’re very much real and you can harvest them for parts if you’d like.)")]
+    [Tooltip("UNPOWERED: Unpowered robots will never become active. (Though yeah theyâ€™re very much real and you can harvest them for parts if youâ€™d like.)")]
     public bool state_UNPOWERED = false; // Grayed-out red
     [Tooltip("DISABLED: Some robots have been temporarily disabled and put in garrison storage. Prime candidates for rewiring!")]
     public bool state_DISABLED = false; // Grayed-out normal
@@ -56,14 +56,30 @@ public class Actor : Entity
     [Header("Conditions")]
     public List<ModHacks> hacked_mods = new List<ModHacks>();
 
+#region Pre-setup
     private void OnValidate()
     {
         if (GetComponent<UnitAI>())
         {
             AI = GetComponent<UnitAI>();
         }
-    }
+    
+        if(botInfo != null)
+        {
+            if(_sprite != null && botInfo.displaySprite != null)
+            {
+                // Auto-assign sprite
+                _sprite.sprite = botInfo.displaySprite;
+            }
 
+            // Set up the other values while we're here
+            heatDissipation = botInfo.heatDissipation;
+            energyGeneration = botInfo.energyGeneration;
+            fieldOfViewRange = botInfo.visualRange;
+            maxHealth = botInfo.coreIntegrity;
+        }   
+    }
+#endregion
 
     private void Awake()
     {
@@ -83,11 +99,7 @@ public class Actor : Entity
                 TurnManager.inst.AddActor(this);
                 fow_sprite.color = Color.black; // temp fix
 
-                fieldOfViewRange = botInfo.visualRange;
-                maxHealth = botInfo.coreIntegrity;
                 currentHealth = maxHealth;
-                heatDissipation = botInfo.heatDissipation;
-                energyGeneration = botInfo.energyGeneration;
 
                 StartCoroutine(SetBotName());
 
