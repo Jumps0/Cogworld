@@ -212,7 +212,7 @@ public static class Action
                         Action.ModifyPlayerCore(-(int)damage);
                     }
 
-                    UIManager.inst.CreateNewLogMessage("Slammed into " + target.GetComponent<Actor>().botInfo.name + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
+                    UIManager.inst.CreateNewLogMessage("Slammed into " + target.GetComponent<Actor>().botInfo.botName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
                 }
             }
             else
@@ -381,7 +381,7 @@ public static class Action
                         DamageBot(target.GetComponent<Actor>(), damageAmount, weapon, source, crit);
 
                         // Do a calc message
-                        string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHit * 100}%) Hit";
+                        string message = $"{source.botInfo.botName}: {weapon.itemData.name} ({toHit * 100}%) Hit";
 
                         UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange, UIManager.inst.warmYellow, false, true);
 
@@ -551,7 +551,7 @@ public static class Action
                                 DamageBot(target.GetComponent<Actor>(), damageAmount, weapon, source, crit);
 
                                 // Do a calc message
-                                string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHit * 100}%) Hit";
+                                string message = $"{source.botInfo.botName}: {weapon.itemData.name} ({toHit * 100}%) Hit";
 
                                 UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange, UIManager.inst.warmYellow, false, true);
 
@@ -933,7 +933,7 @@ public static class Action
                         DamageBot(target.GetComponent<Actor>(), damageAmount, weapon, source, crit);
 
                         // Do a calc message
-                        string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Hit";
+                        string message = $"{source.botInfo.botName}: {weapon.itemData.name} ({toHitChance * 100}%) Hit";
 
                         UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange, UIManager.inst.warmYellow, false, true);
 
@@ -970,7 +970,7 @@ public static class Action
                     if (target.GetComponent<PlayerData>()) // Player being targeted
                     {
                         // Do a calc message
-                        string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Miss";
+                        string message = $"{source.botInfo.botName}: {weapon.itemData.name} ({toHitChance * 100}%) Miss";
 
                         UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange_faded, UIManager.inst.corruptOrange, false, true);
                     }
@@ -1141,7 +1141,7 @@ public static class Action
                     {
                         if (target.botInfo) // Bot
                         {
-                            UIManager.inst.CreateNewLogMessage(target.botInfo.name + " is immune to being knocked back.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                            UIManager.inst.CreateNewLogMessage(target.botInfo.botName + " is immune to being knocked back.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                             return;
                         }
                         else // Player
@@ -1496,7 +1496,7 @@ public static class Action
                     }
 
                     // Do a calc message
-                    string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Hit";
+                    string message = $"{source.botInfo.botName}: {weapon.itemData.name} ({toHitChance * 100}%) Hit";
 
                     UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange, UIManager.inst.warmYellow, false, true);
 
@@ -1529,7 +1529,7 @@ public static class Action
                 if (target.GetComponent<PlayerData>()) // Player being targeted
                 {
                     // Do a calc message
-                    string message = $"{source.botInfo.name}: {weapon.itemData.name} ({toHitChance * 100}%) Miss";
+                    string message = $"{source.botInfo.botName}: {weapon.itemData.name} ({toHitChance * 100}%) Miss";
 
                     UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.corruptOrange_faded, UIManager.inst.corruptOrange, false, true);
                 }
@@ -1938,7 +1938,7 @@ public static class Action
                 else // AI being targeted
                 {
                     // Do a calc message
-                    string message = target.GetComponent<Actor>().botInfo.name + " evaded the explosion.";
+                    string message = target.GetComponent<Actor>().botInfo.botName + " evaded the explosion.";
 
                     UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.dullGreen, UIManager.inst.normalGreen, false, true);
                 }
@@ -4364,7 +4364,7 @@ public static class Action
             if (imm.criticals)
             {
                 crit = false;
-                UIManager.inst.CreateNewLogMessage(target.botInfo.name + " is immune to critical effects.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                UIManager.inst.CreateNewLogMessage(target.botInfo.botName + " is immune to critical effects.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
             }
 
             switch (critType)
@@ -4378,26 +4378,26 @@ public static class Action
                     if (imm.meltdown)
                     {
                         crit = false;
-                        UIManager.inst.CreateNewLogMessage(target.botInfo.name + " is immune to a total meltdown.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                        UIManager.inst.CreateNewLogMessage(target.botInfo.botName + " is immune to a total meltdown.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                     }
                     break;
                 case CritType.Destroy:
                     if (imm.coring)
                     {
                         crit = false;
-                        UIManager.inst.CreateNewLogMessage(target.botInfo.name + " is immune to coring.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                        UIManager.inst.CreateNewLogMessage(target.botInfo.botName + " is immune to coring.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                     }
                     break;
                 case CritType.Blast:
                     if (imm.coring)
                     {
                         crit = false;
-                        UIManager.inst.CreateNewLogMessage(target.botInfo.name + " is immune to coring.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                        UIManager.inst.CreateNewLogMessage(target.botInfo.botName + " is immune to coring.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                     }
                     else if(imm.dismemberment)
                     {
                         crit = false;
-                        UIManager.inst.CreateNewLogMessage(target.botInfo.name + " is immune to dismemberment.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                        UIManager.inst.CreateNewLogMessage(target.botInfo.botName + " is immune to dismemberment.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                     }
                     break;
                 case CritType.Corrupt:
@@ -4406,21 +4406,21 @@ public static class Action
                     if (imm.coring)
                     {
                         crit = false;
-                        UIManager.inst.CreateNewLogMessage(target.botInfo.name + " is immune to coring.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                        UIManager.inst.CreateNewLogMessage(target.botInfo.botName + " is immune to coring.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                     }
                     break;
                 case CritType.Sever:
                     if (imm.dismemberment)
                     {
                         crit = false;
-                        UIManager.inst.CreateNewLogMessage(target.botInfo.name + " is immune to dismemberment.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                        UIManager.inst.CreateNewLogMessage(target.botInfo.botName + " is immune to dismemberment.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                     }
                     break;
                 case CritType.Puncture:
                     if (imm.coring)
                     {
                         crit = false;
-                        UIManager.inst.CreateNewLogMessage(target.botInfo.name + " is immune to coring.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                        UIManager.inst.CreateNewLogMessage(target.botInfo.botName + " is immune to coring.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                     }
                     break;
                 case CritType.Detonate:
@@ -4429,7 +4429,7 @@ public static class Action
                     if (imm.dismemberment)
                     {
                         crit = false;
-                        UIManager.inst.CreateNewLogMessage(target.botInfo.name + " is immune to dismemberment.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                        UIManager.inst.CreateNewLogMessage(target.botInfo.botName + " is immune to dismemberment.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                     }
                     break;
                 case CritType.Intensify:
@@ -4438,7 +4438,7 @@ public static class Action
                     if (imm.coring)
                     {
                         crit = false;
-                        UIManager.inst.CreateNewLogMessage(target.botInfo.name + " is immune to coring.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                        UIManager.inst.CreateNewLogMessage(target.botInfo.botName + " is immune to coring.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                     }
                     break;
                 case CritType.Impale:
@@ -4510,7 +4510,7 @@ public static class Action
                     burnCrit = true;
                     if (target.botInfo)
                     {
-                        UIManager.inst.CreateNewCalcMessage(target.botInfo.name + " suffers critical burn.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                        UIManager.inst.CreateNewCalcMessage(target.botInfo.botName + " suffers critical burn.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
                     }
                     else
                     {
@@ -4520,7 +4520,7 @@ public static class Action
                 case CritType.Meltdown:
                     if (target.botInfo)
                     {
-                        target.Die(target.name + " suffers critical meltdown.");
+                        target.Die(target.botInfo.botName + " suffers critical meltdown.");
                     }
                     else
                     {
@@ -4533,7 +4533,7 @@ public static class Action
                         // Destroy the core
                         if (target.botInfo)
                         {
-                            target.Die(target.name + "'s core has been completely destroyed.");
+                            target.Die(target.botInfo.botName + "'s core has been completely destroyed.");
                         }
                         else
                         {
@@ -4573,7 +4573,7 @@ public static class Action
                     corruptCrit = true;
                     if (target.botInfo)
                     {
-                        UIManager.inst.CreateNewCalcMessage(target.botInfo.name + " suffers critical corruption.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                        UIManager.inst.CreateNewCalcMessage(target.botInfo.botName + " suffers critical corruption.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
                     }
                     else
                     {
@@ -4651,7 +4651,7 @@ public static class Action
                     {
                         target.currentHealth -= (damage / 2);
 
-                        UIManager.inst.CreateNewCalcMessage(target.botInfo.name + " suffers critical puncture.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                        UIManager.inst.CreateNewCalcMessage(target.botInfo.botName + " suffers critical puncture.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
                     }
                     else
                     {
@@ -4707,7 +4707,7 @@ public static class Action
                     string botName = "";
                     if (target.botInfo)
                     {
-                        botName = target.botInfo.name;
+                        botName = target.botInfo.botName;
                     }
                     else
                     {
@@ -4725,7 +4725,7 @@ public static class Action
                     string botName2 = "";
                     if (target.botInfo)
                     {
-                        botName2 = target.botInfo.name;
+                        botName2 = target.botInfo.botName;
                     }
                     else
                     {
@@ -4739,8 +4739,8 @@ public static class Action
                     // Destroy the core
                     if (target.botInfo)
                     {
-                        UIManager.inst.CreateNewCalcMessage("Critical on " + target.botInfo.name + "'s core.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
-                        target.Die(target.name + "'s core has impaled by " + weapon + ", destroying it completely.");
+                        UIManager.inst.CreateNewCalcMessage("Critical on " + target.botInfo.botName + "'s core.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                        target.Die(target.botInfo.botName + "'s core has impaled by " + weapon + ", destroying it completely.");
                     }
                     else
                     {
@@ -6246,7 +6246,7 @@ public static class Action
         string name = "";
         if (source.botInfo)
         {
-            name = source.botInfo.name;
+            name = source.botInfo.botName;
         }
         else
         {

@@ -689,7 +689,7 @@ public class BotAI : MonoBehaviour
     {
         talking = true;
 
-        string botName = this.GetComponent<Actor>().botInfo.name;
+        string botName = this.GetComponent<Actor>().botInfo.botName;
         if (uniqueName != "")
             botName = uniqueName;
         UIManager.inst.Dialogue_OpenBox(botName, this.GetComponent<Actor>());

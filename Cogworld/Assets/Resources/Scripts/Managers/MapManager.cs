@@ -2138,7 +2138,7 @@ public class MapManager : MonoBehaviour
 
                     BotObject bot = HF.FindBotOfTier(tier);
 
-                    string displayText = bot.name;
+                    string displayText = bot.botName;
 
                     TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Analysis, "Analysis", hack, null, null, bot);
 
@@ -2287,7 +2287,7 @@ public class MapManager : MonoBehaviour
 
                     BotObject bot = HF.FindBotOfTier(tier);
 
-                    string displayText = bot.name;
+                    string displayText = bot.botName;
 
                     TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Schematic, "Schematic", hack, null, null, bot);
 
@@ -2627,7 +2627,7 @@ public class MapManager : MonoBehaviour
     {
         var spawnedBot = Instantiate(bots[type], new Vector3(pos.x * GridManager.inst.globalScale, pos.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
         spawnedBot.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
-        spawnedBot.name = ($"{bots[type].name} @ ({pos.x},{pos.y})"); // Give grid based name
+        spawnedBot.name = ($"{bots[type].GetComponent<BotObject>().botName} @ ({pos.x},{pos.y})"); // Give grid based name
         spawnedBot.GetComponent<Actor>().isVisible = false;
         spawnedBot.GetComponent<Actor>().isExplored = false;
 
@@ -2651,7 +2651,7 @@ public class MapManager : MonoBehaviour
 
         var spawnedBot = Instantiate(bots[type], new Vector3(pos.x * GridManager.inst.globalScale, pos.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
         spawnedBot.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
-        spawnedBot.name = ($"{bots[type].name}* @ ({pos.x},{pos.y})"); // Give grid based name
+        spawnedBot.name = ($"{bots[type].GetComponent<BotObject>().botName}* @ ({pos.x},{pos.y})"); // Give grid based name
         spawnedBot.GetComponent<Actor>().isVisible = false;
         spawnedBot.GetComponent<Actor>().isExplored = false;
 

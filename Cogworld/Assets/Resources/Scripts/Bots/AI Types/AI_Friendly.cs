@@ -113,7 +113,7 @@ public class AI_Friendly : MonoBehaviour
     {
         talking = true;
 
-        string botName = this.botInfo.name;
+        string botName = this.botInfo.botName;
         if (this.GetComponent<BotAI>().uniqueName != "")
             botName = this.GetComponent<BotAI>().uniqueName;
         UIManager.inst.Dialogue_OpenBox(botName, this.GetComponent<Actor>());

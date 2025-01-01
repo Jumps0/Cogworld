@@ -104,8 +104,8 @@ public class Actor : Entity
                 StartCoroutine(SetBotName());
 
                 // Create new inventories
-                armament = new InventoryObject(botInfo.armament.Count, botInfo.name + "'s Armament");
-                components = new InventoryObject(botInfo.components.Count, botInfo.name + "'s Components");
+                armament = new InventoryObject(botInfo.armament.Count, botInfo.botName + "'s Armament");
+                components = new InventoryObject(botInfo.components.Count, botInfo.botName + "'s Components");
 
                 // Fill up armament & component inventories
                 foreach (var item in botInfo.armament)
@@ -117,10 +117,10 @@ public class Actor : Entity
                     components.AddItem(item.item, 1);
                 }
 
-                inventory = new InventoryObject(HF.CalculateMaxInventorySize(components), botInfo.name + "'s Inventory");
+                inventory = new InventoryObject(HF.CalculateMaxInventorySize(components), botInfo.botName + "'s Inventory");
 
                 myFaction = botInfo.locations.alignment;
-                uniqueName = botInfo.name; // TODO: Fancy system for names (later)
+                uniqueName = botInfo.botName; // TODO: Fancy system for names (later)
             }
 
             algorithm = new AdamMilVisibility(this); // Set visual algo
@@ -154,8 +154,8 @@ public class Actor : Entity
             yield return null;
         }
 
-        string name = this.botInfo.name;
-        if (this.botInfo.name.Contains("("))
+        string name = this.botInfo.botName;
+        if (this.botInfo.botName.Contains("("))
         {
             // The name is most likely "Name (#)", we need to remove that second part
             string[] split = name.Split('(');
@@ -540,7 +540,7 @@ public class Actor : Entity
         if (corruption >= 1f) // This is a corruption death, its kinda different!
         {
             // Make a log message
-            string botName = this.botInfo.name;
+            string botName = this.botInfo.botName;
             if (this.GetComponent<BotAI>().uniqueName != "")
                 botName = this.GetComponent<BotAI>().uniqueName;
             string message = botName + " was utterly corrupted.";
@@ -607,7 +607,7 @@ public class Actor : Entity
         else
         {
             // Make a log message
-            string botName = this.botInfo.name;
+            string botName = this.botInfo.botName;
             if (this.GetComponent<BotAI>().uniqueName != "")
                 botName = this.GetComponent<BotAI>().uniqueName;
             string message = botName + " destroyed.";

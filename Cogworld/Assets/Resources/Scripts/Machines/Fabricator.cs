@@ -101,7 +101,7 @@ public class Fabricator : MonoBehaviour
 
                 hack = MapManager.inst.hackDatabase.Hack[16 + tier]; // bot commands actually start at 17 but the lowest tier can be is 1 so 16 + 1 = 17.
 
-                displayText += bot.name;
+                displayText += bot.botName;
 
                 newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Build, "", hack, null, null, bot);
 
@@ -185,7 +185,7 @@ public class Fabricator : MonoBehaviour
         }
         else if(bot != null)
         {
-            displayText += bot.name;
+            displayText += bot.botName;
 
             HackObject hack = MapManager.inst.hackDatabase.Hack[16 + bot.rating];
 

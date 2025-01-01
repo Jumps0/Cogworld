@@ -36,7 +36,7 @@ public class UISchematicOption : MonoBehaviour
         }
         else if(_bot != null )
         {
-            text_main.text = _bot.name;
+            text_main.text = _bot.botName;
         }
 
         this.GetComponent<RectTransform>().sizeDelta = new Vector2(350, this.GetComponent<RectTransform>().sizeDelta.y); // Un-stretch the rectTransform
@@ -193,7 +193,7 @@ public class UISchematicOption : MonoBehaviour
             }
             else if(bot != null)
             {
-                name = bot.name;
+                name = bot.botName;
             }
 
             string rewardString = HF.MachineReward_PrintPLUSAction(command, item, bot);

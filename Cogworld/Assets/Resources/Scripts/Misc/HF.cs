@@ -785,12 +785,12 @@ public static class HF
             if (command.bot != null) // This is a bot knowledge reward
             {
                 command.bot.playerHasAnalysisData = true;
-                return "Downloading analysis...\n    " + command.bot.name + "\n    Tier: " + command.bot.tier + "\n" + command.bot.description;
+                return "Downloading analysis...\n    " + command.bot.botName + "\n    Tier: " + command.bot.tier + "\n" + command.bot.description;
             }
             else if (command.item != null) // This is an item (prototype) knowledge reward
             {
                 command.item.knowByPlayer = true;
-                return "Downloading analysis...\n    " + command.item.name + "\n    Rating: " + command.item.rating + "\n" + command.item.description;
+                return "Downloading analysis...\n    " + command.item.itemName + "\n    Rating: " + command.item.rating + "\n" + command.item.description;
             }
             else // This is (probably) a lore reward
             {
@@ -1200,7 +1200,7 @@ public static class HF
                     else if (bot != null)
                     {
                         matterCost = bot.fabricationInfo.matterCost;
-                        name = bot.name;
+                        name = bot.botName;
                     }
 
                     if (PlayerData.inst.currentMatter >= matterCost)
@@ -1276,7 +1276,7 @@ public static class HF
                     }
                     else if (bot != null)
                     {
-                        bName = bot.name;
+                        bName = bot.botName;
                     }
 
                     UIManager.inst.terminal_targetTerm.GetComponent<Fabricator>().Build();
@@ -3729,7 +3729,7 @@ public static class HF
 
         foreach (var B in MapManager.inst.botDatabase.Bots)
         {
-            string name = B.name.ToLower();
+            string name = B.botName.ToLower();
             if (name == target || name == target.ToLower())
             {
                 bot = B;

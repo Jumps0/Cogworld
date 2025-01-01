@@ -9573,7 +9573,7 @@ public class UIManager : MonoBehaviour
             // Disable the big image because we don't use it
             dataMenu.data_superImageParent.gameObject.SetActive(false);
             // Set title to bot's name
-            dataMenu.data_mainTitle.text = bot.botInfo.name;
+            dataMenu.data_mainTitle.text = bot.botInfo.botName;
             // Set title image to bot's (world) image
             dataMenu.data_smallImage.sprite = bot.botInfo.displaySprite;
 
@@ -10127,7 +10127,7 @@ public class UIManager : MonoBehaviour
                     string Fname = "";
                     if (machine.GetComponent<Fabricator>().targetBot != null)
                     {
-                        Fname = machine.GetComponent<Fabricator>().targetBot.name;
+                        Fname = machine.GetComponent<Fabricator>().targetBot.botName;
                     }
                     else if (machine.GetComponent<Fabricator>().targetPart != null)
                     {
