@@ -15,8 +15,6 @@ public class InventoryControl : MonoBehaviour
         inst = this;
     }
 
-    [Header("Item Database")]
-    public ItemDatabaseObject _itemDatabase;
     [Header("Player's Inventories")]
     public InventoryObject p_inventoryPower;
     public InventoryObject p_inventoryPropulsion;
@@ -82,9 +80,9 @@ public class InventoryControl : MonoBehaviour
         spawnedItem.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
         spawnedItem.name = $"Floor Item {location.x} {location.y} - "; // Give grid based name
 
-        Item item = new Item(_itemDatabase.Items[id]);
+        Item item = new Item(MapManager.inst.itemDatabase.Items[id]);
 
-        if (_itemDatabase.Items[id].instantUnique) // For stuff like matter, change this later (this is still probably not the best idea)
+        if (MapManager.inst.itemDatabase.Items[id].instantUnique) // For stuff like matter, change this later (this is still probably not the best idea)
         {
             item.amount = specificAmount;
         }

@@ -472,7 +472,7 @@ public class QuestManager : MonoBehaviour
         if(rewards_matter > 0) // -- Matter --
         {
             // Add a stack of matter (the item) with the specific amount to the Hideout Inventory Object
-            InventoryControl.inst.hideout_inventory.AddItem(new Item(InventoryControl.inst._itemDatabase.Items[17]), rewards_matter);
+            InventoryControl.inst.hideout_inventory.AddItem(new Item(MapManager.inst.itemDatabase.Items[17]), rewards_matter);
         }
     }
 

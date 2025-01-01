@@ -701,7 +701,7 @@ public class MapManager : MonoBehaviour
                 int itemsPlaced = 0;
 
                 List<int> validitems = new List<int>();
-                foreach (ItemObject item in InventoryControl.inst._itemDatabase.Items)
+                foreach (ItemObject item in MapManager.inst.itemDatabase.Items)
                 {
                     // Items that can spawn on at this level
                     if (item.schematicDetails.hackable && item.schematicDetails.location[0].y == currentLevel)
@@ -1023,7 +1023,7 @@ public class MapManager : MonoBehaviour
 
                     // Generate a list of valid items to spawn based on the rating
                     List<int> validitems = new List<int>();
-                    foreach (ItemObject item in InventoryControl.inst._itemDatabase.Items)
+                    foreach (ItemObject item in MapManager.inst.itemDatabase.Items)
                     {
                         if (item.type == _type && item.rating == int.Parse(_rating))
                         {

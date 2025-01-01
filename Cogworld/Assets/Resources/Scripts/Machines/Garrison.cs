@@ -64,7 +64,7 @@ public class Garrison : MonoBehaviour
         // While we're here, fill the garrison with a list of 3-5 random couplers
         for (int i = 0; i < Random.Range(3,5); i++)
         {
-            Item newCoupler = new Item(InventoryControl.inst._itemDatabase.Items[Random.Range(0,5)]); // TODO: When all coupler items are added, update this range
+            Item newCoupler = new Item(MapManager.inst.itemDatabase.Items[Random.Range(0,5)]); // TODO: When all coupler items are added, update this range
             couplers.Add(newCoupler);
         }
 

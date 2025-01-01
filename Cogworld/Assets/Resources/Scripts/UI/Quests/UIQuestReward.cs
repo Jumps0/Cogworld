@@ -42,8 +42,8 @@ public class UIQuestReward : MonoBehaviour
         {
             Debug.LogWarning($"No reward set!");
         }
-        image_icon.sprite = InventoryControl.inst._itemDatabase.Items[id].inventoryDisplay;
-        image_icon.color = InventoryControl.inst._itemDatabase.Items[id].itemColor;
+        image_icon.sprite = MapManager.inst.itemDatabase.Items[id].inventoryDisplay;
+        image_icon.color = MapManager.inst.itemDatabase.Items[id].itemColor;
 
         // Then modify colors based on what we are given
         image_border.color = colors[0];
