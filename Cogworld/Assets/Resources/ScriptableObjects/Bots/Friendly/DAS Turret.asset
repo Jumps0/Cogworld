@@ -115,3 +115,4 @@ MonoBehaviour:
     relation: 2
     alignment: 1
   playerHasAnalysisData: 0
+  prefab: {fileID: 1489840735499938570, guid: 13a34325f006c7f47a891ca9d74bf78b, type: 3}

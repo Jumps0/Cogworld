@@ -288,3 +288,4 @@ MonoBehaviour:
     relation: 1
     alignment: 0
   playerHasAnalysisData: 0
+  prefab: {fileID: 1489840735499938570, guid: 7c4a9f77f94a4774b99384f875147e0f, type: 3}

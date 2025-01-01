@@ -928,3 +928,4 @@ MonoBehaviour:
     relation: 2
     alignment: 5
   playerHasAnalysisData: 0
+  prefab: {fileID: 1489840735499938570, guid: 32be7b7d4f425114eae0384675d6b647, type: 3}
