@@ -165,6 +165,9 @@ public abstract class BotObject : ScriptableObject
     public BotLocations locations;
 
     public bool playerHasAnalysisData = false;
+
+    [Header("Prefab")]
+    public GameObject prefab;
 }
 
 [System.Serializable]

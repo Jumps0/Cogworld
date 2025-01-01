@@ -5,6 +5,8 @@ using TMPro;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
 
 public class GlobalSettings : MonoBehaviour
 {
@@ -81,8 +83,8 @@ public class GlobalSettings : MonoBehaviour
     [SerializeField] private GameObject debugUI_parent;
     [SerializeField] private TMP_InputField dField;
     [SerializeField] private Button dButton;
-    [SerializeField] private Image dImage1;
-    [SerializeField] private Image dImage2;
+    [SerializeField] private UnityEngine.UI.Image dImage1;
+    [SerializeField] private UnityEngine.UI.Image dImage2;
     [SerializeField] private TextMeshProUGUI dText1;
     [SerializeField] private TextMeshProUGUI dText2;
     private string dString = "";
@@ -516,7 +518,7 @@ public class GlobalSettings : MonoBehaviour
         switch (bits[0])
         {
             case "set":
-                // This is everything we need
+                // Important variables:
                 Actor c_target = null;
                 string value = "";
                 float amount = 0f;
@@ -530,7 +532,7 @@ public class GlobalSettings : MonoBehaviour
                 else
                 {
                     // Try to parse the target
-                    string target = bits[1];
+                    string target = bits[1].ToLower();
                     if (target.Contains("player")) // Player is target
                     {
                         c_target = PlayerData.inst.GetComponent<Actor>();
@@ -563,7 +565,7 @@ public class GlobalSettings : MonoBehaviour
                         else
                         {
                             // Is the 3rd word valid?
-                            value = bits[2];
+                            value = bits[2].ToLower();
 
                             if(value == "health" || value == "energy" || value == "matter" || value == "corruption" || value == "heat")
                             {
@@ -669,7 +671,81 @@ public class GlobalSettings : MonoBehaviour
 
                 break;
             case "spawn":
-                // TODO
+                // Important variables:
+                string tospawn = "";
+                ItemObject tospawn_item = null;
+                BotObject tospawn_bot = null;
+
+                // Second wrod
+                if (bits.Length == 1) // There is no second word
+                {
+                    DebugBarHelper("[spawn] Must specify thing type (ex. item OR bot)");
+                    return;
+                }
+                else
+                {
+                    // Try to parse the target
+                    string thing = bits[1].ToLower();
+                    if (thing.Contains("bot"))
+                    {
+                        tospawn = "bot";
+                    }
+                    else if (thing.Contains("item"))
+                    {
+                        tospawn = "item";
+                    }
+
+                    // Valid option chosen?
+                    if(tospawn == "")
+                    {
+                        DebugBarHelper("[spawn] Must specify valid type (ex. item)");
+                        return;
+                    }
+                    else // Continue
+                    {
+                        // Is the 3rd word valid?
+                        string obj = bits[2].ToLower();
+                        // Need to now search for this thing based on type we got earlier (we will just go through the databases)
+                        if(thing == "bot")
+                        {
+                            foreach (var B in MapManager.inst.botDatabase.Bots)
+                            {
+                                if(B.botName.ToLower() == thing || B.botName.ToLower().Contains(thing)) // Maybe make this more forgiving
+                                {
+                                    tospawn_bot = B;
+                                }
+                            }
+                        }
+                        else if(thing == "item")
+                        {
+                            foreach (var I in MapManager.inst.itemDatabase.Items)
+                            {
+                                if (I.itemName.ToLower() == thing || I.itemName.ToLower().Contains(thing)) // Maybe make this more forgiving
+                                {
+                                    tospawn_item = I;
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+                // Now do the command since we have what we need
+
+                // We want to spawn it as close to the player as possible
+                Vector2Int playerloc = new Vector2Int((int)PlayerData.inst.transform.position.x, (int)PlayerData.inst.transform.position.y);
+
+                switch (tospawn)
+                {
+                    case "bot":
+                        MapManager.inst.PlaceBot(playerloc, tospawn_bot);
+                        break;
+
+                    case "item":
+                        InventoryControl.inst.CreateItemInWorld(tospawn_item.data.Id, playerloc, true);
+                        break;
+                }
+
                 break;
 
             case "fow":

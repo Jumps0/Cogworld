@@ -275,7 +275,7 @@ public class Fabricator : MonoBehaviour
         else if(targetBot != null)
         {
             // Spawn in a new ALLIED bot at this location
-            Actor newBot = MapManager.inst.PlaceBot(dropLocation, targetBot.Id);
+            Actor newBot = MapManager.inst.PlaceBot(dropLocation, targetBot);
             newBot.directPlayerAlly = true;
             newBot.wasFabricated = true;
 

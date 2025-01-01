@@ -633,9 +633,9 @@ public class MapManager : MonoBehaviour
         PlaceHideoutCache(new Vector2Int(bl.x + 8, bl.y + 10));
 
         // # - Test bot
-        Actor testBot = PlaceBot(new Vector2Int(bl.x + 12, bl.y + 5), 9);
+        Actor testBot = PlaceBot(new Vector2Int(bl.x + 12, bl.y + 5), HF.GetBotByString("Thug"));
         // Test QUEST Bot
-        Actor questBot = PlaceBot(new Vector2Int(bl.x + 5, bl.y + 16), 13);
+        Actor questBot = PlaceBot(new Vector2Int(bl.x + 5, bl.y + 16), HF.GetBotByString("Zionite"));
 
         // test trap
         PlaceTrap(MapManager.inst.itemDatabase.Items[103], new Vector2Int(bl.x + 5, bl.y + 11));
@@ -1051,11 +1051,11 @@ public class MapManager : MonoBehaviour
 
                     bot = HF.FindBotOfTier(int.Parse(rating));
 
-                    PlaceBot(HF.V3_to_V2I(spawnLocation), bot.Id, obj.gameObject);
+                    PlaceBot(HF.V3_to_V2I(spawnLocation), bot, obj.gameObject);
                 }
                 else // Bot was found, place it
                 {
-                    PlaceBot(HF.V3_to_V2I(spawnLocation), bot.Id, obj.gameObject);
+                    PlaceBot(HF.V3_to_V2I(spawnLocation), bot, obj.gameObject);
                 }
             }
             else if (obj.tag == "Trigger" || obj.gameObject.name.Contains("Trigger"))
@@ -2474,59 +2474,61 @@ public class MapManager : MonoBehaviour
                 }
 
                 // Pick a bot to spawn
-                int ID = Random.Range(0, 4);
+                string[] options = {"K-01 Serf", "T-07 Excavator", "U-05 Engineer", "A-02 Transporter", "R-06 Scavenger"};
+                string toSpawn = options[Random.Range(0, 4)]; // Start off randomly
 
+                // And adjust based on existing spawns
                 if (haulers < minLow)
                 {
-                    ID = 0;
+                    toSpawn = options[0];
                 }
 
                 if (serfs < minLow)
                 {
-                    ID = 1;
+                    toSpawn = options[1];
                 }
 
                 if (engis < minLow)
                 {
-                    ID = 2;
+                    toSpawn = options[2];
                 }
 
                 if (scavs < minLow - 2) // Lower Prio
                 {
-                    ID = 3;
+                    toSpawn = options[3];
                 }
 
                 if (drills < minLow - 2) // Lower Prio
                 {
-                    ID = 4;
+                    toSpawn = options[4];
                 }
 
 
 
                 // Spawn the bot
                 int random = Random.Range(0, possibleSpawnLocations.Count - 1);
-                PlaceBot(possibleSpawnLocations[random], ID);
+                PlaceBot(possibleSpawnLocations[random], HF.GetBotByString(toSpawn));
                 initialAISpawnPositions.Add(possibleSpawnLocations[random]);
                 possibleSpawnLocations.Remove(possibleSpawnLocations[random]);
 
 
                 // Decrement
                 t--;
-                switch (ID)
+                switch (toSpawn)
                 {
-                    case 0:
+                    case "A-02 Transporter":
                         haulers += 1;
                         break;
-                    case 1:
+                    case "K-01 Serf":
                         serfs += 1;
                         break;
-                    case 2:
+                    case "U-05 Engineer":
                         engis += 1;
                         break;
-                    case 3:
+                    case "R-06 Scavenger":
                         scavs += 1;
                         break;
-                    case 4:
+                    case "T-07 Excavator":
                         drills += 1;
                         break;
                 }
@@ -2583,11 +2585,11 @@ public class MapManager : MonoBehaviour
                     if (edges.Count >= 2)
                     {
                         // Spawn them all next to each-other
-                        GameObject squadLead = PlaceBotSquadLead(edges[0].position, 5);
+                        GameObject squadLead = PlaceBot(edges[0].position, HF.GetBotByString("G-34 Mercenary"), true).gameObject;
                         if (edges.Count >= 2)
-                            squadLead.GetComponent<GroupLeader>().AddBotToPatrol(PlaceBot(edges[1].position, 5));
+                            squadLead.GetComponent<GroupLeader>().AddBotToPatrol(PlaceBot(edges[1].position, HF.GetBotByString("G-34 Mercenary")));
                         if (edges.Count >= 3)
-                            squadLead.GetComponent<GroupLeader>().AddBotToPatrol(PlaceBot(edges[2].position, 5));
+                            squadLead.GetComponent<GroupLeader>().AddBotToPatrol(PlaceBot(edges[2].position, HF.GetBotByString("G-34 Mercenary")));
                     }
                 }
                 else
@@ -2598,15 +2600,15 @@ public class MapManager : MonoBehaviour
                     if (edges.Count >= 2)
                     {
                         // Spawn them all next to each-other
-                        GameObject squadLead = PlaceBotSquadLead(edges[0].position, 8);
-                        squadLead.GetComponent<GroupLeader>().AddBotToPatrol(PlaceBot(edges[0].position, 8));
+                        GameObject squadLead = PlaceBot(edges[0].position, HF.GetBotByString("S-10 Pest"), true).gameObject;
+                        squadLead.GetComponent<GroupLeader>().AddBotToPatrol(PlaceBot(edges[0].position, HF.GetBotByString("S-10 Pest")));
 
                         if (edges.Count >= 2)
-                            squadLead.GetComponent<GroupLeader>().AddBotToPatrol(PlaceBot(edges[1].position, 8));
+                            squadLead.GetComponent<GroupLeader>().AddBotToPatrol(PlaceBot(edges[1].position, HF.GetBotByString("S-10 Pest")));
                         if (edges.Count >= 3)
-                            squadLead.GetComponent<GroupLeader>().AddBotToPatrol(PlaceBot(edges[2].position, 8));
+                            squadLead.GetComponent<GroupLeader>().AddBotToPatrol(PlaceBot(edges[2].position, HF.GetBotByString("S-10 Pest")));
                         if (edges.Count >= 4)
-                            squadLead.GetComponent<GroupLeader>().AddBotToPatrol(PlaceBot(edges[3].position, 8));
+                            squadLead.GetComponent<GroupLeader>().AddBotToPatrol(PlaceBot(edges[3].position, HF.GetBotByString("S-10 Pest")));
                     }
                 }
 
@@ -2622,19 +2624,21 @@ public class MapManager : MonoBehaviour
 
     }
 
-    public List<GameObject> bots = new List<GameObject>();
-    public Actor PlaceBot(Vector2Int pos, int type, GameObject _reference = null)
+    public Actor PlaceBot(Vector2Int pos, BotObject info, bool squadlead = false, GameObject _reference = null)
     {
-        var spawnedBot = Instantiate(bots[type], new Vector3(pos.x * GridManager.inst.globalScale, pos.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
+        var spawnedBot = Instantiate(info.prefab, new Vector3(pos.x * GridManager.inst.globalScale, pos.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
         spawnedBot.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
-        spawnedBot.name = ($"{bots[type].GetComponent<BotObject>().botName} @ ({pos.x},{pos.y})"); // Give grid based name
+        spawnedBot.name = ($"{info.botName} @ ({pos.x},{pos.y})"); // Give grid based name
         spawnedBot.GetComponent<Actor>().isVisible = false;
         spawnedBot.GetComponent<Actor>().isExplored = false;
 
         spawnedBot.GetComponent<Actor>().maxHealth = spawnedBot.GetComponent<Actor>().botInfo.coreIntegrity;
         spawnedBot.GetComponent<Actor>().currentHealth = spawnedBot.GetComponent<Actor>().maxHealth;
 
-        
+        // Make it a squad leader
+        if (squadlead)
+            spawnedBot.AddComponent<GroupLeader>();
+
         spawnedBot.transform.SetParent(botParent, true);
         if(_reference)
             CopyComponentData<BotAI>(_reference, spawnedBot.gameObject);
@@ -2644,26 +2648,6 @@ public class MapManager : MonoBehaviour
             _reference.GetComponent<Actor>().TransferStates(spawnedBot.GetComponent<Actor>()); // Transfer any states
 
         return spawnedBot.GetComponent<Actor>();
-    }
-
-    private GameObject PlaceBotSquadLead(Vector2Int pos, int type)
-    {
-
-        var spawnedBot = Instantiate(bots[type], new Vector3(pos.x * GridManager.inst.globalScale, pos.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
-        spawnedBot.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
-        spawnedBot.name = ($"{bots[type].GetComponent<BotObject>().botName}* @ ({pos.x},{pos.y})"); // Give grid based name
-        spawnedBot.GetComponent<Actor>().isVisible = false;
-        spawnedBot.GetComponent<Actor>().isExplored = false;
-
-        spawnedBot.GetComponent<Actor>().maxHealth = spawnedBot.GetComponent<Actor>().botInfo.coreIntegrity;
-        spawnedBot.GetComponent<Actor>().currentHealth = spawnedBot.GetComponent<Actor>().maxHealth;
-
-        // Make it a squad leader
-        spawnedBot.AddComponent<GroupLeader>();
-
-        spawnedBot.transform.SetParent(botParent, true);
-
-        return spawnedBot;
     }
 
     #endregion
