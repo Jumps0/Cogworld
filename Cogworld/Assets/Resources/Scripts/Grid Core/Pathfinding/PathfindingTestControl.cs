@@ -53,11 +53,22 @@ public class PathfindingTestControl : MonoBehaviour
     public Color closedColor;
     public Color pathColor;
 
+    /*
     [Header("D* Lite")]
     public DStarLite<Vector2> dslite;
     public Node<Vector2> startNode;
     public Node<Vector2> goalNode;
     public List<Node<Vector2>> allNodes = new List<Node<Vector2>>();
+    */
+
+    private Node[,] nodes;
+    private Node startNode;
+    private Node goalNode;
+    private PriorityQueue openList;
+    private Vector2Int[] directions = {
+        new Vector2Int(1, 0), new Vector2Int(-1, 0), new Vector2Int(0, 1), new Vector2Int(0, -1),
+        new Vector2Int(1, 1), new Vector2Int(1, -1), new Vector2Int(-1, 1), new Vector2Int(-1, -1)
+    };
 
     private void Start()
     {
@@ -66,13 +77,170 @@ public class PathfindingTestControl : MonoBehaviour
         StartCoroutine(SnapNodes());
         statusText.text = "No route.";
         infoText.text = "No route.";
-
     }
 
+    #region attempt 4
+    public void CalculateGraph()
+    {
+        InitializeNodes();
+        InitializeDStarLite();
+        ComputeShortestPath();
+        VisualizeFinalPath();
+    }
+
+    // Initializes the nodes grid based on the GameObject[,] grid
+    private void InitializeNodes()
+    {
+        GameObject goal = finish;
+        int width = grid.GetLength(0);
+        int height = grid.GetLength(1);
+        nodes = new Node[width, height];
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                bool isWalkable = grid[x, y] != null && grid[x, y].GetComponent<SpriteRenderer>().color == Color.white;
+                nodes[x, y] = new Node(new Vector2Int(x, y), isWalkable, grid[x, y]);
+            }
+        }
+
+        startNode = nodes[(int)start.transform.position.x, (int)start.transform.position.y];
+        goalNode = nodes[(int)goal.transform.position.x, (int)goal.transform.position.y];
+    }
+
+    // Initialize the D* Lite algorithm
+    private void InitializeDStarLite()
+    {
+        openList = new PriorityQueue(); // Reset queue
+
+        foreach (Node node in nodes) // Max out all nodes
+        {
+            node.GCost = float.MaxValue;
+            node.RHS = float.MaxValue;
+        }
+
+        goalNode.RHS = 0; // Set goal node to 0
+        openList.Enqueue(goalNode); // Add goal node to openList
+    }
+
+    // Main function to compute the shortest path
+    private void ComputeShortestPath()
+    {
+        /*
+        while (openList.Count > 0 && (openList.queue.Min.Item1 < startNode.CalculateKey(startNode) || startNode.GCost > startNode.RHS))
+        {
+            Node current = openList.Dequeue();
+            current.UpdateColor(Color.blue);  // Update color of the node in the open list
+
+            if (current.GCost > current.RHS)
+            {
+                current.GCost = current.RHS;
+            }
+            else
+            {
+                current.GCost = float.MaxValue;
+                UpdateNode(current);
+            }
+
+            foreach (var neighbor in GetNeighbors(current))
+            {
+                UpdateNode(neighbor);
+            }
+        }
+        */
+    }
+
+    // Updates a node's costs and its position in the priority queue
+    private void UpdateNode(Node node)
+    {
+        if (node != goalNode)
+        {
+            float minRHS = float.MaxValue;
+            Node minNeighbor = null;
+            foreach (var neighbor in GetNeighbors(node))
+            {
+                float cost = neighbor.GCost + 1; // Assuming uniform cost for movement
+                if (cost < minRHS)
+                {
+                    minRHS = cost;
+                    minNeighbor = neighbor;
+                }
+            }
+            node.RHS = minRHS;
+            node.Parent = minNeighbor;
+        }
+
+        if (openList.Contains(node))
+        {
+            openList.Remove(node);
+        }
+
+        if (node.GCost != node.RHS)
+        {
+            openList.Enqueue(node);
+        }
+    }
+
+    // Returns a list of walkable neighboring nodes
+    private List<Node> GetNeighbors(Node node)
+    {
+        List<Node> neighbors = new List<Node>();
+
+        foreach (var direction in directions)
+        {
+            Vector2Int neighborPos = node.Position + direction;
+            if (IsPositionValid(neighborPos))
+            {
+                neighbors.Add(nodes[neighborPos.x, neighborPos.y]);
+            }
+        }
+
+        return neighbors;
+    }
+
+    // Checks if a position is within the bounds of the grid and walkable
+    private bool IsPositionValid(Vector2Int position)
+    {
+        return position.x >= 0 && position.x < nodes.GetLength(0) &&
+               position.y >= 0 && position.y < nodes.GetLength(1) &&
+               nodes[position.x, position.y].Walkable;
+    }
+
+    // Call this method whenever obstacles change to update the path
+    public void UpdateGrid(Vector2Int position, bool isWalkable)
+    {
+        Node node = nodes[position.x, position.y];
+        node.Walkable = isWalkable;
+
+        if (!node.Walkable)
+        {
+            node.RHS = float.MaxValue;
+        }
+
+        UpdateNode(node);
+        ComputeShortestPath();
+    }
+
+    // Visualize the final path from start to goal
+    private void VisualizeFinalPath()
+    {
+        Node current = startNode;
+        while (current != null && current != goalNode)
+        {
+            current.UpdateColor(Color.green);
+            current = current.Parent;
+        }
+        goalNode.UpdateColor(Color.green);  // Mark the goal as part of the path
+    }
+    #endregion
+
+    #region OLD 3
+    /*
     readonly Func<Node<Vector2>, Node<Vector2>, float> cost = (node, neighbor) => Vector2.Distance(node.Data, neighbor.Data);
     readonly Func<Node<Vector2>, Node<Vector2>, float> heuristic = (node, neighbor) => Vector2.Distance(node.Data, neighbor.Data);
 
-    public void CalculateGraph(/*GameObject p, bool b*/)
+    public void CalculateGraph(/*GameObject p, bool b)
     {
         GameObject goal = finish;
 
@@ -128,6 +296,8 @@ public class PathfindingTestControl : MonoBehaviour
             }
         }
     }
+    */
+    #endregion
 
     #region MapGeneration
 
@@ -620,6 +790,99 @@ public class PathfindingTestControl : MonoBehaviour
     */
 
     #endregion
+}
+
+// Define the Node class to hold information about each cell in the grid
+public class Node
+{
+    public Vector2Int Position;  // Position of the node in the grid
+    public float GCost;          // Cost from the start node
+    public float RHS;            // One-step lookahead cost
+    public float Heuristic;      // Heuristic cost to the goal
+    public bool Walkable;        // Whether the node is walkable
+    public Node Parent;          // Parent node in the current path
+    public GameObject Tile;      // Reference to the GameObject associated with this node
+    public float KeyModifier;
+
+    public Node(Vector2Int position, bool walkable, GameObject tile)
+    {
+        Position = position;
+        GCost = float.MaxValue;
+        RHS = float.MaxValue;
+        Heuristic = 0;
+        Walkable = walkable;
+        Parent = null;
+        Tile = tile;
+        KeyModifier = 0;
+    }
+
+    public Node(Vector2Int position, float g, float rhs, float h, bool walkable, GameObject tile, float km)
+    {
+        this.Position = position;
+        this.GCost = g;
+        this.RHS = rhs;
+        this.Heuristic = h;
+        this.Walkable = walkable;
+        this.Parent = null;
+        this.Tile = tile;
+        this.KeyModifier = km;
+    }
+
+    // Returns the total cost used for priority queue ordering
+    public float Priority => Mathf.Min(GCost, RHS) + Heuristic;
+
+    public float CalculateKey(Node node)
+    {
+        //return new Node(); // ?
+        return Mathf.Min(node.GCost, node.RHS) + node.Heuristic + KeyModifier;
+    }
+
+    // Updates the tile's color based on the node's state
+    public void UpdateColor(Color color)
+    {
+        if (Tile != null && Tile.GetComponent<SpriteRenderer>() != null)
+        {
+            Tile.GetComponent<SpriteRenderer>().color = color;
+        }
+    }
+}
+
+// Priority Queue implementation for managing nodes based on priority
+public class PriorityQueue
+{
+    // Custom comparer to handle node priority ordering
+    public readonly SortedSet<(Node, float)> queue = new SortedSet<(Node, float)>(Comparer<(Node, float)>.Create((a, b) =>
+    {
+        if (a.Item2 == b.Item2)
+        {
+            // Custom comparison of Vector2Int since it lacks IComparable interface
+            if (a.Item1.Position.x == b.Item1.Position.x)
+                return a.Item1.Position.y.CompareTo(b.Item1.Position.y);
+            return a.Item1.Position.x.CompareTo(b.Item1.Position.x);
+        }
+        return a.Item2.CompareTo(b.Item2);
+    }));
+
+    public void Enqueue(Node node)
+    {
+        queue.Add((node, node.Priority));
+    }
+
+    public Node Dequeue()
+    {
+        var node = queue.Min.Item1;
+        queue.Remove(queue.Min);
+        return node;
+    }
+
+    public bool Contains(Node node) => queue.Any(item => item.Item1 == node);
+
+    public void Remove(Node node)
+    {
+        queue.RemoveWhere(item => item.Item1 == node);
+    }
+
+    public int Count => queue.Count;
 }
 
 
