@@ -210,6 +210,9 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
+    /// <summary>
+    /// Updates the field of view for every existing entity. Updates player FOV as well
+    /// </summary>
     public void AllActorsVisUpdate()
     {
         foreach (Entity E in entities)

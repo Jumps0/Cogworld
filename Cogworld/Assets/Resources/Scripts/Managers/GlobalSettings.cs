@@ -370,7 +370,7 @@ public class GlobalSettings : MonoBehaviour
         }
         */
 
-        if (Input.GetKeyDown(KeyCode.RightBracket))
+        if (Input.GetKeyDown(KeyCode.BackQuote))
         {
             ToggleDebugBar();
         }
@@ -513,7 +513,8 @@ public class GlobalSettings : MonoBehaviour
          */
 
         // Split the command into parts
-        string[] bits = input.ToLower().Split(" ");
+        input = input.ToLower();
+        string[] bits = input.Split(" ");
 
         switch (bits[0])
         {
@@ -532,7 +533,7 @@ public class GlobalSettings : MonoBehaviour
                 else
                 {
                     // Try to parse the target
-                    string target = bits[1].ToLower();
+                    string target = bits[1];
                     if (target.Contains("player")) // Player is target
                     {
                         c_target = PlayerData.inst.GetComponent<Actor>();
@@ -565,7 +566,7 @@ public class GlobalSettings : MonoBehaviour
                         else
                         {
                             // Is the 3rd word valid?
-                            value = bits[2].ToLower();
+                            value = bits[2];
 
                             if(value == "health" || value == "energy" || value == "matter" || value == "corruption" || value == "heat")
                             {
@@ -685,7 +686,7 @@ public class GlobalSettings : MonoBehaviour
                 else
                 {
                     // Try to parse the target
-                    string thing = bits[1].ToLower();
+                    string thing = bits[1];
                     if (thing.Contains("bot"))
                     {
                         tospawn = "bot";
@@ -703,14 +704,14 @@ public class GlobalSettings : MonoBehaviour
                     }
                     else // Continue
                     {
-                        // Is the 3rd word valid?
-                        string obj = bits[2].ToLower();
+                        // Lastly, utilize the rest of the input (which will be a full name with spaces included)
+                        string obj = input.Split(bits[1])[1].Trim();
                         // Need to now search for this thing based on type we got earlier (we will just go through the databases)
                         if(thing == "bot")
                         {
                             foreach (var B in MapManager.inst.botDatabase.Bots)
                             {
-                                if(B.botName.ToLower() == thing || B.botName.ToLower().Contains(thing)) // Maybe make this more forgiving
+                                if(B.botName.ToLower() == obj || B.botName.ToLower().Contains(obj)) // Maybe make this more forgiving
                                 {
                                     tospawn_bot = B;
                                 }
@@ -720,7 +721,7 @@ public class GlobalSettings : MonoBehaviour
                         {
                             foreach (var I in MapManager.inst.itemDatabase.Items)
                             {
-                                if (I.itemName.ToLower() == thing || I.itemName.ToLower().Contains(thing)) // Maybe make this more forgiving
+                                if (I.itemName.ToLower() == obj || I.itemName.ToLower().Contains(obj)) // Maybe make this more forgiving
                                 {
                                     tospawn_item = I;
                                 }
@@ -739,12 +740,20 @@ public class GlobalSettings : MonoBehaviour
                 {
                     case "bot":
                         MapManager.inst.PlaceBot(playerloc, tospawn_bot);
+                        DebugBarHelper($"Spawned a {tospawn_bot.botName}.");
                         break;
 
                     case "item":
                         InventoryControl.inst.CreateItemInWorld(tospawn_item.data.Id, playerloc, true);
+                        DebugBarHelper($"Spawned a {tospawn_item.itemName}.");
                         break;
                 }
+
+                // Update FOV/FOW
+                GameManager.inst.AllActorsVisUpdate();
+
+                // Clear the input box
+                db_input.text = "";
 
                 break;
 

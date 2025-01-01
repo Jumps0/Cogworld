@@ -4078,11 +4078,11 @@ public static class HF
         {
             if (ignoreFloorItems)
             {
-                return !T.bottom.occupied;
+                return !T.bottom.occupied && HF.FindActorAtPosition(position) == null;
             }
             else
             {
-                return T.bottom._partOnTop == null && !T.bottom.occupied;
+                return T.bottom._partOnTop == null && !T.bottom.occupied && HF.FindActorAtPosition(position) == null;
             }
         }
 
