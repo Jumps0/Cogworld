@@ -5,8 +5,6 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 using System.Linq;
-using Unity.VisualScripting;
-using Newtonsoft.Json.Linq;
 using UnityEngine.UIElements;
 
 /// <summary>
