@@ -388,6 +388,8 @@ public class GlobalSettings : MonoBehaviour
     [SerializeField] private TextMeshProUGUI db_textaid;
     [SerializeField] private bool db_helper_override = false;
     private Coroutine db_helperCooldown;
+    private List<string> db_commandHistory = new List<string>(); // Tracks past commands which can be re-used
+
     private void ToggleDebugBar()
     {
         db_main.SetActive(!db_main.activeInHierarchy);
@@ -414,6 +416,22 @@ public class GlobalSettings : MonoBehaviour
             {
                 DebugBarDoCommand(command);
             }
+        }
+        else if (Input.GetKeyDown(KeyCode.UpArrow) && db_commandHistory.Count > 0) // Load previous command from history
+        { // TODO: FINISH THIS
+            List<string> commands = db_commandHistory;
+            commands.Reverse(); // Reverse the list
+            
+            string toload = commands[commands.Count - 1]; // Load the latest command
+            commands.Remove(toload); // And remove it as an option
+
+            db_input.text = toload; // Update the display
+
+            // Set input field as focus and move carrot to end
+            db_input.Select();
+            db_input.ActivateInputField();
+            db_input.caretPosition = db_input.text.Length;
+
         }
 
         if(db_input.text.Length > 2) // We want to assist the user and tell them what each thing does
@@ -667,6 +685,10 @@ public class GlobalSettings : MonoBehaviour
                         // Do nothing? This shouldn't happen?
                         break;
                 }
+
+                // Save command
+                db_commandHistory.Add(input);
+
                 // Clear the input box
                 db_input.text = "";
 
@@ -752,6 +774,9 @@ public class GlobalSettings : MonoBehaviour
                 // Update FOV/FOW
                 GameManager.inst.AllActorsVisUpdate();
 
+                // Save command
+                db_commandHistory.Add(input);
+
                 // Clear the input box
                 db_input.text = "";
 
@@ -759,12 +784,26 @@ public class GlobalSettings : MonoBehaviour
 
             case "fow":
                 FogOfWar.inst.DEBUG_RevealAll();
+
+                // Save command
+                db_commandHistory.Add(input);
+
+                // Clear the input box
+                db_input.text = "";
+
                 break;
             case "notiles":
                 foreach (var T in MapManager.inst._allTilesRealized)
                 {
                     T.Value.bottom._renderer.enabled = !T.Value.bottom._renderer.enabled;
                 }
+
+                // Save command
+                db_commandHistory.Add(input);
+
+                // Clear the input box
+                db_input.text = "";
+
                 break;
 
             default: // Unknown command
