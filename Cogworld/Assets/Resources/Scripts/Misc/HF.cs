@@ -4041,8 +4041,9 @@ public static class HF
     /// Will attempt to locate the nearest free space to the specified location. Usually used for item placement on the floor.
     /// </summary>
     /// <param name="center">The start location to perform the search.</param>
+    /// <param name="ignoreFloorItems">Do we care about an item being on the floor already? (Used for bot placement)</param>
     /// <returns>A free position (Vector2Int) that has been found.</returns>
-    public static Vector2Int LocateFreeSpace(Vector2Int center)
+    public static Vector2Int LocateFreeSpace(Vector2Int center, bool ignoreFloorItems = false)
     {
         HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
@@ -4071,11 +4072,18 @@ public static class HF
         return center;
     }
 
-    public static bool IsOpenSpace(Vector2Int position)
+    public static bool IsOpenSpace(Vector2Int position, bool ignoreFloorItems = false)
     {
         if (MapManager.inst._allTilesRealized.TryGetValue(position, out TData T))
         {
-            return T.bottom._partOnTop == null && !T.bottom.occupied;
+            if (ignoreFloorItems)
+            {
+                return !T.bottom.occupied;
+            }
+            else
+            {
+                return T.bottom._partOnTop == null && !T.bottom.occupied;
+            }
         }
 
         return false;
