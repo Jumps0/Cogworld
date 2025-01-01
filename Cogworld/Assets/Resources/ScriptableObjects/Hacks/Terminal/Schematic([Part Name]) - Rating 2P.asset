@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 709c8031387567e43becdecce8b8477c, type: 3}
   m_Name: Schematic([Part Name]) - Rating 2P
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 131
+  trueName: Download Part Schematic
   relatedMachine: 5
   hackType: 13
   directChance: {x: 31, y: 15, z: 7}

@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 709c8031387567e43becdecce8b8477c, type: 3}
   m_Name: Analysis([Bot Name]) - Tier 7
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 84
+  trueName: Analyze
   relatedMachine: 5
   hackType: 12
   directChance: {x: 18, y: 9, z: 4}

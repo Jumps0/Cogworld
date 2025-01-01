@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Build - Part Rating 4P
   m_EditorClassIdentifier: 
   Id: 0
-  trueName: 
+  trueName: Build
   relatedMachine: 0
   hackType: 20
   directChance: {x: 50, y: 25, z: 12}

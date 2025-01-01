@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 709c8031387567e43becdecce8b8477c, type: 3}
   m_Name: Repair - Rating 5
   m_EditorClassIdentifier: 
-  Id: 0
-  trueName: 
+  Id: 44
+  trueName: Repair Part
   relatedMachine: 3
   hackType: 23
   directChance: {x: 55, y: 27, z: 13}

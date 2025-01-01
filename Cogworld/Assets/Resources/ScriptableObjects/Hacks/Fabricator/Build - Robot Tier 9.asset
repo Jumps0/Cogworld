@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Build - Robot Tier 9
   m_EditorClassIdentifier: 
   Id: 0
-  trueName: 
+  trueName: Build
   relatedMachine: 0
   hackType: 20
   directChance: {x: 14, y: 7, z: 3}

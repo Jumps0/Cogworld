@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Scanalyze - Rating 3
   m_EditorClassIdentifier: 
   Id: 0
-  trueName: 
+  trueName: Scanalyze
   relatedMachine: 4
   hackType: 28
   directChance: {x: 85, y: 42, z: 21}

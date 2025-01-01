@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 709c8031387567e43becdecce8b8477c, type: 3}
   m_Name: Scanalyze - Rating 4
   m_EditorClassIdentifier: 
-  Id: 0
-  trueName: 
+  Id: 61
+  trueName: Scanalyze
   relatedMachine: 4
   hackType: 28
   directChance: {x: 80, y: 40, z: 20}

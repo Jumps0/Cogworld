@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 709c8031387567e43becdecce8b8477c, type: 3}
   m_Name: Download(Navigation)
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 88
+  trueName: Download Navigate
   relatedMachine: 5
   hackType: 14
   directChance: {x: 25, y: 12, z: 6}

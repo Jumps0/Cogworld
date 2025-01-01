@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Refit
   m_EditorClassIdentifier: 
   Id: 36
-  trueName: 
+  trueName: Refit
   relatedMachine: 3
   hackType: 22
   directChance: {x: 35, y: 17, z: 8}

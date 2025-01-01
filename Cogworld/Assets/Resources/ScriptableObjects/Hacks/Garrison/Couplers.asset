@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Couplers
   m_EditorClassIdentifier: 
   Id: 0
-  trueName: 
+  trueName: Couplers
   relatedMachine: 1
   hackType: 15
   directChance: {x: 40, y: 20, z: 10}

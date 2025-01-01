@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Force(Jam)
   m_EditorClassIdentifier: 
   Id: 0
-  trueName: 
+  trueName: Force
   relatedMachine: 8
   hackType: 30
   directChance: {x: 67, y: 33, z: 16}

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 709c8031387567e43becdecce8b8477c, type: 3}
   m_Name: Trojan(Report)
   m_EditorClassIdentifier: 
-  Id: 0
-  trueName: 
+  Id: 180
+  trueName: Trojan
   relatedMachine: 8
   hackType: 29
   directChance: {x: 67, y: 33, z: 16}

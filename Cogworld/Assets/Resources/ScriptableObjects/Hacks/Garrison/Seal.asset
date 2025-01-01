@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Seal
   m_EditorClassIdentifier: 
   Id: 0
-  trueName: 
+  trueName: Seal
   relatedMachine: 1
   hackType: 16
   directChance: {x: 30, y: 15, z: 7}
