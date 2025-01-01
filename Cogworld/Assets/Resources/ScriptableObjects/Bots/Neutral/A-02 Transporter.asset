@@ -274,6 +274,7 @@ MonoBehaviour:
     fabTime: {x: 81, y: 40, z: 27}
     matterCost: 50
     componenetsRequired: []
+  botName: A-02 Transporter
   description: A-series haulers transport matter and parts vital to construction
     and manufacturing. To minimize losses during derelict incursions, like most other
     maintenance robots they are of relatively sturdy construction, but remain somewhat

@@ -308,6 +308,7 @@ MonoBehaviour:
     fabTime: {x: 81, y: 40, z: 27}
     matterCost: 50
     componenetsRequired: []
+  botName: U-05 Engineer
   description: U-class builders lay floors, assemble new machines, and reinforce
     and analyze the structural integrity of walls. They travel alone, but all those
     within a certain vicinity will work together to complete a task.

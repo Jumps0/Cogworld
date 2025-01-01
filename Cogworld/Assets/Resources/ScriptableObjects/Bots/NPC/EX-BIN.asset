@@ -917,6 +917,7 @@ MonoBehaviour:
     fabTime: {x: 81, y: 40, z: 27}
     matterCost: 180
     componenetsRequired: []
+  botName: EX-BIN
   description: One of the three EXILEd researchers EX-BIN. Responsible for general
     research and analysis.
   locations:

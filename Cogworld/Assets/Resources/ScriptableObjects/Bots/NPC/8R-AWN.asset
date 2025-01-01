@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 530edc62ed973694caed63aea242337c, type: 3}
   m_Name: 8R-AWN
   m_EditorClassIdentifier: 
-  Id: 10
+  Id: 14
   displaySprite: {fileID: 21300000, guid: 448062d3d726527448ef3c47ff255da5, type: 3}
   asciiRep: {fileID: 0}
   _class: 62
@@ -481,6 +481,7 @@ MonoBehaviour:
     fabTime: {x: 81, y: 40, z: 27}
     matterCost: 180
     componenetsRequired: []
+  botName: 8R-AWN
   description: A former grunt armed and aligned with the EXILES. A loyal defender
     and friend, 8R-AWN is usually found around their base or on scouting missions.
     Don't mess with him!

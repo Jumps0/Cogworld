@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 530edc62ed973694caed63aea242337c, type: 3}
   m_Name: EX-HEX
   m_EditorClassIdentifier: 
-  Id: 11
+  Id: 15
   displaySprite: {fileID: 21300000, guid: 15eeb0e92d91da948ab5ca3b737cdb8c, type: 3}
   asciiRep: {fileID: 0}
   _class: 62
@@ -917,6 +917,7 @@ MonoBehaviour:
     fabTime: {x: 81, y: 40, z: 27}
     matterCost: 180
     componenetsRequired: []
+  botName: EX-HEX
   description: One of the three EXILEd researchers EX-HEX. Responsible for research
     into the Assembled.
   locations:

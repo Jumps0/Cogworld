@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 530edc62ed973694caed63aea242337c, type: 3}
   m_Name: Samaritan
   m_EditorClassIdentifier: 
-  Id: 13
+  Id: 11
   displaySprite: {fileID: 21300000, guid: af90b3b9e9c043d4f9405db3c4e7eec7, type: 3}
   asciiRep: {fileID: 0}
   _class: 56
@@ -638,6 +638,7 @@ MonoBehaviour:
     fabTime: {x: 81, y: 40, z: 27}
     matterCost: 50
     componenetsRequired: []
+  botName: Samaritan
   description: As a number of derelicts have insufficient or unreliable power supplies,
     some crafty derelict came up with the idea to create mobile recharging stations
     that generate and transmit energy to all nearby robot systems.

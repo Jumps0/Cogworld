@@ -240,6 +240,7 @@ MonoBehaviour:
     fabTime: {x: 81, y: 40, z: 27}
     matterCost: 50
     componenetsRequired: []
+  botName: R-06 Scavenger
   description: R-series recyclers collect used, damaged, or unregistered components
     for recycling and repurposing. To minimize losses during derelict incursions,
     like most other maintenance robots they are of relatively sturdy construction,

@@ -951,6 +951,7 @@ MonoBehaviour:
     fabTime: {x: 81, y: 40, z: 27}
     matterCost: 180
     componenetsRequired: []
+  botName: EX-DEC
   description: One of the three EXILEd researchers EX-DEC. Responsible for research
     into component development.
   locations:

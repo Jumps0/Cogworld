@@ -345,6 +345,7 @@ MonoBehaviour:
     fabTime: {x: 134, y: 67, z: 44}
     matterCost: 200
     componenetsRequired: []
+  botName: Y-54 Gaurdian
   description: Y-54 Defenders improve on the Y-45 with better armor and greater effectiveness
     against both single and multiple targets, swapping out the beam rifle and heavy
     assault rifle for a gatling laser and flak gun. Like all Y-series sentries, their

@@ -240,6 +240,7 @@ MonoBehaviour:
     fabTime: {x: 81, y: 40, z: 27}
     matterCost: 180
     componenetsRequired: []
+  botName: G-34 Mercenary
   description: G-series grunts serve as low-level front-line combat units, of sturdy
     construction but with fairly weak armament. Internal systems are not as protected
     as they could be, to enable rapid repair in the field, but this also makes them

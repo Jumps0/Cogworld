@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 530edc62ed973694caed63aea242337c, type: 3}
   m_Name: S-10 Pest
   m_EditorClassIdentifier: 
-  Id: 2
+  Id: 8
   displaySprite: {fileID: 21300000, guid: 00737218d3a0d2149a1f19144229e5c6, type: 3}
   asciiRep: {fileID: 0}
   _class: 66
@@ -206,6 +206,7 @@ MonoBehaviour:
     fabTime: {x: 81, y: 40, z: 27}
     matterCost: 100
     componenetsRequired: []
+  botName: S-10 Pest
   description: S-series swarmers are small with a weak and exposed core, but as such
     are quick to manufacture and can quickly overwhelm targets with greater numbers
     and superior speed. The light assault rifle was designed specifically for the

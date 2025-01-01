@@ -274,6 +274,7 @@ MonoBehaviour:
     fabTime: {x: 81, y: 40, z: 27}
     matterCost: 50
     componenetsRequired: []
+  botName: T-07 Excavator
   description: ' T-class tunnelers analyze subsurface integrity and open new areas
     for expansion.'
   locations:

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 530edc62ed973694caed63aea242337c, type: 3}
   m_Name: W-16 Scout
   m_EditorClassIdentifier: 
-  Id: 2
+  Id: 6
   displaySprite: {fileID: 21300000, guid: 5134324cb16a49e40971816a48ac0f76, type: 3}
   asciiRep: {fileID: 0}
   _class: 75
@@ -298,6 +298,7 @@ MonoBehaviour:
     fabTime: {x: 81, y: 40, z: 27}
     matterCost: 90
     componenetsRequired: []
+  botName: W-16 Scout
   description: W-series watchers are equipped with a wide variety of sensors to excel
     at surveillance. However, their heavy reliance on highly-exposed advanced electronic
     systems means they are extremely susceptible to electromagnetic attacks. On detecting

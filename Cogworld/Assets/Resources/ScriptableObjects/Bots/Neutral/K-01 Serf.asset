@@ -236,6 +236,7 @@ MonoBehaviour:
     fabTime: {x: 81, y: 40, z: 27}
     matterCost: 50
     componenetsRequired: []
+  botName: K-01 Serf
   description: K-class workers perform menial tasks such as clearing debris to facilitate
     work by other robots. Their built-in compact recycling unit can break down almost
     any form of debris into reusable matter. As K-01 Serfs are extremely cheap to

@@ -349,6 +349,7 @@ MonoBehaviour:
     fabTime: {x: 81, y: 40, z: 27}
     matterCost: 180
     componenetsRequired: []
+  botName: Thug
   description: A derelict improvement on the grunt that essentially fits them with
     a beamcaster, an interesting weapon of derelict origin. Some variants suffer
     serious heat issues from the added firepower, however.

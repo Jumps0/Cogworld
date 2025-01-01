@@ -67,6 +67,7 @@ MonoBehaviour:
     fabTime: {x: 81, y: 40, z: 27}
     matterCost: 50
     componenetsRequired: []
+  botName: Zionite
   description: A common derelict found in or near zion. Lightly armed and armored,
     very weak.
   locations:

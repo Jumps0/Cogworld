@@ -156,7 +156,8 @@ public abstract class BotObject : ScriptableObject
     [Header("Fabrication")]
     public ItemFabInfo fabricationInfo;
 
-    [Header("Description")]
+    [Header("Name")]
+    public string botName;
     [TextArea(3,5)]
     public string description;
 
