@@ -17,6 +17,7 @@ using Color = UnityEngine.Color;
 using static Unity.VisualScripting.Member;
 using static UnityEngine.GraphicsBuffer;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// Contains helper functions to be used globally.
@@ -5104,7 +5105,7 @@ public static class HF
     /// <returns>True/False. If the mouse is "over the UI area".</returns>
     public static bool MouseBoundsCheck()
     {
-        Vector3 position = UnityEngine.Input.mousePosition;
+        Vector3 position = Mouse.current.position.ReadValue();
         return position.x > 888 || position.y > 555;
     }
 

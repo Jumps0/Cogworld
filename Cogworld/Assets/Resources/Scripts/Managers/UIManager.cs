@@ -9,6 +9,7 @@ using static System.Net.Mime.MediaTypeNames;
 using Image = UnityEngine.UI.Image;
 using System.Drawing;
 using Color = UnityEngine.Color;
+using UnityEngine.InputSystem;
 //using static UnityEditor.Progress;
 
 public class UIManager : MonoBehaviour
@@ -5506,7 +5507,7 @@ public class UIManager : MonoBehaviour
             volleyHeader.text = "/VOLLEY/";
 
             // Now we need to get a bunch of info from the mouse and what the player is actually targeting.
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
             // End point correction due to sneaky rounding
             mousePosition = new Vector3(Mathf.RoundToInt(mousePosition.x), Mathf.RoundToInt(mousePosition.y));
 

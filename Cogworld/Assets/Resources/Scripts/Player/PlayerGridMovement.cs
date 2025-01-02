@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerGridMovement : MonoBehaviour
 {
@@ -18,25 +19,48 @@ public class PlayerGridMovement : MonoBehaviour
     [Tooltip("Use non-smooth \"instant\" tile movement.")]
     public bool doInstantMovement = true;
 
+    #region Input Registering
+    public InterfacingMode interfacingMode = InterfacingMode.COMBAT;
+    public PlayerInputActions inputActions;
+    private Vector2 moveInput;
+
+    private void Awake()
+    {
+        inputActions = new PlayerInputActions();
+    }
+
+    private void OnEnable()
+    {
+        inputActions.Player.Enable();
+        inputActions.Player.Move.performed += OnMovePerformed;
+        inputActions.Player.Move.canceled += OnMoveCanceled;
+        inputActions.Player.Click.performed += OnMouseClickPerformed;
+    }
+
+    private void OnDisable()
+    {
+        inputActions.Player.Move.performed -= OnMovePerformed;
+        inputActions.Player.Move.canceled -= OnMoveCanceled;
+        inputActions.Player.Click.performed -= OnMouseClickPerformed;
+        inputActions.Player.Disable();
+    }
+
+    private void OnMovePerformed(InputAction.CallbackContext context)
+    {
+        moveInput = context.ReadValue<Vector2>();
+        HandleMovement(moveInput);
+    }
+
+    private void OnMoveCanceled(InputAction.CallbackContext context)
+    {
+        moveInput = Vector2.zero;
+    }
+    #endregion
+
     // Update is called once per frame
     void Update()
     {
-        if (GetComponent<Actor>().isAlive)
-        {
-            CheckForPlayerMovement();
-            CheckForGroundItemInteraction();
-            CheckMoveMethod();
-        }
-
-        if(Input.GetKeyDown(KeyCode.J))
-        {
-            TileBlock currentTile = GetCurrentPlayerTile();
-            int currentX = currentTile.locX;
-            int currentY = currentTile.locY;
-            Debug.Log(MapManager.inst._allTilesRealized[new Vector2Int(currentX, currentY)] + " <> " + GridManager.inst.grid[currentX,currentY]);
-        }
-
-        if(Input.GetAxis("Mouse ScrollWheel") != 0f)
+        if(Mouse.current.scroll.ReadValue().y != 0f)
         {
             TrySkipTurn();
         }
@@ -74,140 +98,48 @@ public class PlayerGridMovement : MonoBehaviour
 
     #region Movement
 
-    private void CheckForPlayerMovement()
+    private void OnMouseClickPerformed(InputAction.CallbackContext context)
     {
-        if (playerMovementAllowed && !inDialogueSequence)
+        if (!GetComponent<Actor>().isAlive) return;
+
+        if (!GameManager.inst.allowMouseMovement) return;
+
+        if (GridManager.inst.astar == null) return;
+
+        if (GridManager.inst.astar.path.Count > 0 &&
+            GridManager.inst.astar.searchStatus == AStarSearchStatus.Success)
         {
+            TileBlock currentTile = GetCurrentPlayerTile();
+            int lastItem = GridManager.inst.astar.path.Count - 2;
+            int targetX = GridManager.inst.astar.path[lastItem].X - currentTile.locX;
+            int targetY = GridManager.inst.astar.path[lastItem].Y - currentTile.locY;
 
-            // -- Mouse Movement --
-            #region Mouse Movement
-            if (GameManager.inst.allowMouseMovement)
-            {
-                if(GridManager.inst.astar == null) {
-                    return;
-                }
-
-                if(GridManager.inst.astar.path.Count > 0 && GridManager.inst.astar.searchStatus == AStarSearchStatus.Success) // Does a successful path exist?
-                {
-                    if (Input.GetMouseButtonDown(0)) // Move on left click
-                    {
-                        //Debug.Log(GridManager.inst.astar.path[0].X + "," + GridManager.inst.astar.path[0].Y);
-                        TileBlock currentTile = GetCurrentPlayerTile();
-                        int lastItem = GridManager.inst.astar.path.Count - 2; // List includes the starting spot
-                        int targetX = GridManager.inst.astar.path[lastItem].X - currentTile.locX;
-                        int targetY = GridManager.inst.astar.path[lastItem].Y - currentTile.locY;
-
-                        AttemptMovement(targetX, targetY);
-                        GridManager.inst.ClearGridOfHighlightColor(UIManager.inst.dullGreen);
-                    }
-                }
-            }
-            #endregion
-
-            #region Keyboard Movement
-
-            // Diagonal Movement
-            if (Input.GetKey(KeyCode.UpArrow) && !isMoving) // [UP-LEFT]
-            {
-                if (Input.GetKeyDown(KeyCode.LeftArrow) && !isMoving)
-                {
-                    AttemptMovement(-1, 1);
-                    return;
-                }
-            }
-            else if (Input.GetKey(KeyCode.LeftArrow) && !isMoving) // [UP-LEFT]
-            {
-                if (Input.GetKeyDown(KeyCode.UpArrow) && !isMoving)
-                {
-                    AttemptMovement(-1, 1);
-                    return;
-                }
-            }
-            else if (Input.GetKey(KeyCode.UpArrow) && !isMoving) // [UP-RIGHT]
-            {
-                if (Input.GetKeyDown(KeyCode.RightArrow) && !isMoving)
-                {
-                    AttemptMovement(1, 1);
-                    return;
-                }
-            }
-            else if (Input.GetKey(KeyCode.RightArrow) && !isMoving) // [UP-RIGHT]
-            {
-                if (Input.GetKeyDown(KeyCode.UpArrow) && !isMoving)
-                {
-                    AttemptMovement(1, 1);
-                    return;
-                }
-            }
-            else if (Input.GetKey(KeyCode.DownArrow) && !isMoving) // [DOWN-LEFT]
-            {
-                if (Input.GetKeyDown(KeyCode.LeftArrow) && !isMoving)
-                {
-                    AttemptMovement(-1, -1);
-                    return;
-                }
-            }
-            else if (Input.GetKey(KeyCode.LeftArrow) && !isMoving) // [DOWN-LEFT]
-            {
-                if (Input.GetKeyDown(KeyCode.DownArrow) && !isMoving)
-                {
-                    AttemptMovement(-1, -1);
-                    return;
-                }
-            }
-            else if (Input.GetKey(KeyCode.DownArrow) && !isMoving) // [DOWN-RIGHT]
-            {
-                if (Input.GetKeyDown(KeyCode.RightArrow) && !isMoving)
-                {
-                    AttemptMovement(1, -1);
-                    return;
-                }
-            }
-            else if (Input.GetKey(KeyCode.RightArrow) && !isMoving) // [DOWN-RIGHT]
-            {
-                if (Input.GetKeyDown(KeyCode.DownArrow) && !isMoving)
-                {
-                    AttemptMovement(1, -1);
-                    return;
-                }
-            }
-            // Regular Movement
-            if (Input.GetKeyDown(KeyCode.UpArrow) && !isMoving) // [UP]
-            {
-                AttemptMovement(0, 1);
-                //StartCoroutine(MovePlayer(Vector3.up));
-                return;
-            }
-            else if (Input.GetKeyDown(KeyCode.DownArrow) && !isMoving) // [DOWN]
-            {
-                AttemptMovement(0, -1);
-                //StartCoroutine(MovePlayer(Vector3.down));
-                return;
-            }
-            else if (Input.GetKeyDown(KeyCode.LeftArrow) && !isMoving) // [LEFT]
-            {
-                AttemptMovement(-1, 0);
-                //StartCoroutine(MovePlayer(Vector3.left));
-                return;
-            }
-            else if (Input.GetKeyDown(KeyCode.RightArrow) && !isMoving) // [RIGHT]
-            {
-                AttemptMovement(1, 0);
-                //StartCoroutine(MovePlayer(Vector3.right));
-                return;
-            }
-            #endregion
-
+            AttemptMovement(targetX, targetY);
+            GridManager.inst.ClearGridOfHighlightColor(UIManager.inst.dullGreen);
         }
-        else if (inDialogueSequence)
+    }
+
+    private void HandleMovement(Vector2 direction)
+    {
+        if (!GetComponent<Actor>().isAlive) return;
+
+        if (isMoving || !playerMovementAllowed || inDialogueSequence) return;
+
+        int x = Mathf.RoundToInt(direction.x);
+        int y = Mathf.RoundToInt(direction.y);
+
+        if (x != 0 || y != 0)
         {
-            // Attempting to move will also skip dialogue (plus Space/Enter/Escape)
-            if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow)
-                || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D)
-                || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Escape))
-            {
-                UIManager.inst.Dialogue_MoveToNext();
-            }
+            AttemptMovement(x, y);
+        }
+    }
+
+    public void OnToggleMovementMode(InputValue value)
+    {
+        if(interfacingMode == InterfacingMode.COMBAT)
+        {
+            GameManager.inst.allowMouseMovement = !GameManager.inst.allowMouseMovement;
+            GridManager.inst.ClearGridOfHighlightColor(UIManager.inst.dullGreen);
         }
     }
 
@@ -425,12 +357,14 @@ public class PlayerGridMovement : MonoBehaviour
 
     #endregion
 
-    private void CheckForGroundItemInteraction()
+    public void OnPickup(InputValue value)
     {
+        if (!GetComponent<Actor>().isAlive) return;
+
         // Player must be on top of a tile with an item on it to be able to interact with it
         TileBlock currentTile = GetCurrentPlayerTile();
 
-        if(currentTile != null && currentTile._partOnTop == null)
+        if (currentTile != null && currentTile._partOnTop == null)
         {
             return;
         }
@@ -458,13 +392,15 @@ public class PlayerGridMovement : MonoBehaviour
             itemCheck._partOnTop.TryEquipItem(); // Try equipping it
         }
     }
+}
 
-    private void CheckMoveMethod()
-    {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            GameManager.inst.allowMouseMovement = !GameManager.inst.allowMouseMovement;
-            GridManager.inst.ClearGridOfHighlightColor(UIManager.inst.dullGreen);
-        }
-    }
+[System.Serializable]
+[Tooltip("Which interaction mode is the player in?")]
+public enum InterfacingMode
+{
+    DEFAULT,
+    [Tooltip("Moving around, shooting, etc.")]
+    COMBAT,
+    [Tooltip("Interacting with something, like a terminal. Normal keyboard typing.")]
+    TYPING
 }

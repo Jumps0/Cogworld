@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 public class UIMouseBounds : MonoBehaviour
 {
@@ -22,7 +23,7 @@ public class UIMouseBounds : MonoBehaviour
         if (!disabled)
         {
             // Check if mouse is over the UI element
-            bool mouseOver = RectTransformUtility.RectangleContainsScreenPoint(rectTransform, Input.mousePosition);
+            bool mouseOver = RectTransformUtility.RectangleContainsScreenPoint(rectTransform, Mouse.current.position.ReadValue());
 
             // If mouse just entered the bounds
             if (!isMouseOver && mouseOver)

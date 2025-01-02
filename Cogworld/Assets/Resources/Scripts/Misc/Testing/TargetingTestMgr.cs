@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.InputSystem;
 
 public class TargetingTestMgr : MonoBehaviour
 {
@@ -129,7 +130,7 @@ public class TargetingTestMgr : MonoBehaviour
         path = new List<GameObject>();
 
         // We want to draw a line FROM *the player* TO the *mouse position*.
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         Vector3 playerPosition = player.transform.position;
 
         // There are multiple ways of finding a path from point A to point B.

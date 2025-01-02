@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
 
 public class GridManager : MonoBehaviour
@@ -130,7 +131,7 @@ public class GridManager : MonoBehaviour
     void CheckMouseLocation()
     {
         //Debug.Log("Checking...");
-        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()), Vector2.zero);
 
         if (hit.collider != null)
         {
@@ -188,7 +189,7 @@ public class GridManager : MonoBehaviour
         mouseTargetTile = null;
         TileBlock toReturn = null;
 
-        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()), Vector2.zero);
 
         if (hit.collider != null)
         {

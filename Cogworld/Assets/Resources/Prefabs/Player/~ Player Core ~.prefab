@@ -93,6 +93,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1489840735499938571}
+  - component: {fileID: 608665528205624348}
   - component: {fileID: 1489840735499938568}
   - component: {fileID: 8588803844905677363}
   - component: {fileID: 38123581663690283}
@@ -125,6 +126,36 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &608665528205624348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1489840735499938570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 416e4da904196554aa0d4706c2db9b20, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!114 &1489840735499938568
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,6 +197,7 @@ MonoBehaviour:
   currentCoreExposure: 0
   maxEnergy: 0
   currentEnergy: 0
+  innateEnergyProduction: 0
   energyOutput1: 0
   energyOutput2: 0
   maxInternalEnergy: 0
@@ -179,6 +211,7 @@ MonoBehaviour:
   currentHeat: 0
   heatRate1: 0
   heatRate2: 0
+  heatRate3: 0
   naturalHeatDissipation: 25
   moveSpeed1: 0
   moveSpeed2: 0
@@ -196,6 +229,7 @@ MonoBehaviour:
   baseWeightSupport: 3
   maxInvSize: 0
   currentInvCount: 0
+  artifacts_used: []
   currentSupport: 3
   alertLevel: 0
   linkedTerminalBotnet: 0
@@ -208,11 +242,10 @@ MonoBehaviour:
   hasRIF: 0
   hasImprinted: 0
   hasFARCOM: 0
+  rif_immuneToCorruption: 0
   robotsKilled: 0
-  kills_0b10: 0
-  kills_derelict: 0
-  kills_zion: 0
-  kills_warlord: 0
+  robotsKilledData: []
+  robotsKilledAlignment: 
   uk_imprinter: 0
   uk_warlord: 0
   uk_dataminer: 0
@@ -409,9 +442,10 @@ MonoBehaviour:
   maxHealth: 0
   currentHeat: 0
   heatDissipation: 0
+  residualHeat: []
   energyGeneration: 0
-  currentMatter: 0
   currentEnergy: 100
+  maxEnergy: 250
   corruption: 0
   siegeMode: 0
   inStatis: 0

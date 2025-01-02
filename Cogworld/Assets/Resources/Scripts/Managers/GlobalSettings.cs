@@ -2,11 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
 using Button = UnityEngine.UI.Button;
+using UnityEngine.InputSystem;
 
 public class GlobalSettings : MonoBehaviour
 {
@@ -80,7 +78,7 @@ public class GlobalSettings : MonoBehaviour
 
     #region DebugUI
     [Header("DebugUI")]
-    [SerializeField] private GameObject debugUI_parent;
+    [SerializeField] private GameObject debugUI_parent; // The dictionary checker
     [SerializeField] private TMP_InputField dField;
     [SerializeField] private Button dButton;
     [SerializeField] private UnityEngine.UI.Image dImage1;
@@ -324,12 +322,6 @@ public class GlobalSettings : MonoBehaviour
 
     private void CheckForDebug()
     {
-        if (Input.GetKeyDown(KeyCode.LeftBracket))
-        {
-            // Toggle Debug Menu
-            debugUI_parent.SetActive(!debugUI_parent.activeInHierarchy);
-        }
-
         /*
         if (Input.GetKeyDown(KeyCode.RightBracket))
         {
@@ -370,15 +362,26 @@ public class GlobalSettings : MonoBehaviour
         }
         */
 
-        if (Input.GetKeyDown(KeyCode.BackQuote))
-        {
-            ToggleDebugBar();
-        }
+        //if (Input.GetKeyDown(KeyCode.BackQuote))
+        //{
+        //    ToggleDebugBar();
+        //}
 
         if (db_main.activeInHierarchy)
         {
             DebugBarListenForInput();
         }
+    }
+
+    public void OnToggleDCCheck(InputValue value)
+    {
+        // Toggle Debug Menu
+        debugUI_parent.SetActive(!debugUI_parent.activeInHierarchy);
+    }
+
+    public void OnToggleDebug(InputValue value)
+    {
+        ToggleDebugBar();
     }
 
     #region Debug Bar
@@ -495,6 +498,11 @@ public class GlobalSettings : MonoBehaviour
                     db_textaid.gameObject.SetActive(true);
                     db_textaid.text = "> notiles [Toggles vision of all tile sprites]";
                 }
+                else if (command.Contains("mypos"))
+                {
+                    db_textaid.gameObject.SetActive(true);
+                    db_textaid.text = "> mypos [Returns current player coordinates]";
+                }
                 // Expand this as needed
             }
         }
@@ -527,6 +535,8 @@ public class GlobalSettings : MonoBehaviour
          *    -Toggles the fog of war
          *  > notiles
          *    -Toggles vision of all tile sprites
+         *  > mypos
+         *    -Returns coordinate position of player
          * ================================
          */
 
@@ -781,7 +791,6 @@ public class GlobalSettings : MonoBehaviour
                 db_input.text = "";
 
                 break;
-
             case "fow":
                 FogOfWar.inst.DEBUG_RevealAll();
 
@@ -797,6 +806,18 @@ public class GlobalSettings : MonoBehaviour
                 {
                     T.Value.bottom._renderer.enabled = !T.Value.bottom._renderer.enabled;
                 }
+
+                // Save command
+                db_commandHistory.Add(input);
+
+                // Clear the input box
+                db_input.text = "";
+
+                break;
+            case "mypos":
+                Vector2Int playerPos = new Vector2Int((int)PlayerData.inst.transform.position.x, (int)PlayerData.inst.transform.position.y);
+                Debug.Log($"Player position: {MapManager.inst._allTilesRealized[playerPos]}");
+                DebugBarHelper($"Player position: {MapManager.inst._allTilesRealized[playerPos]}");
 
                 // Save command
                 db_commandHistory.Add(input);

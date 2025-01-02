@@ -7,6 +7,7 @@ using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Experimental.GlobalIllumination;
+using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 using static UnityEditor.Progress;
 
@@ -350,7 +351,7 @@ public class PlayerData : MonoBehaviour
     public void DoTargeting()
     {
         // - First off get where the mouse is. We don't want to keep re-drawing the same line every frame, only if the mouse position has changed.
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         // End point correction due to sneaky rounding
         mousePosition = new Vector3(Mathf.RoundToInt(mousePosition.x), Mathf.RoundToInt(mousePosition.y));
 
@@ -1264,7 +1265,7 @@ public class PlayerData : MonoBehaviour
         Coroutine LTH_animationRoutine = null;
 
         // Get the current mouse position
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         mousePosition = new Vector3(Mathf.RoundToInt(mousePosition.x), Mathf.RoundToInt(mousePosition.y));
 
         // Has the mouse moved?
@@ -1282,7 +1283,7 @@ public class PlayerData : MonoBehaviour
         yield return new WaitForSeconds(3f);
 
         // Get the current mouse position
-        mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         mousePosition = new Vector3(Mathf.RoundToInt(mousePosition.x), Mathf.RoundToInt(mousePosition.y));
 
         // Has the mouse moved?
@@ -1313,7 +1314,7 @@ public class PlayerData : MonoBehaviour
     
     private Actor GetMouseTarget()
     {
-        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()), Vector2.zero);
 
         if (hit.collider != null)
         {
@@ -1344,7 +1345,7 @@ public class PlayerData : MonoBehaviour
             {
                 if (equippedWeapon != null && !attackBuffer)
                 {
-                    Vector2Int mousePosition = HF.V3_to_V2I(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+                    Vector2Int mousePosition = HF.V3_to_V2I(Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()));
 
                     if (!Action.IsTargetWithinRange(HF.V3_to_V2I(this.transform.position), mousePosition, equippedWeapon)) // Does this weapon have the range to reach the target?
                     {
@@ -1370,7 +1371,7 @@ public class PlayerData : MonoBehaviour
                         if (equippedWeapon.itemData.explosionDetails.radius > 0) // It's an AOE attack, we need to handle things slightly differently.
                         {
                             // Firstly, the target is wherever the player's mouse is.
-                            GameObject target = HF.GetTargetAtPosition(HF.V3_to_V2I(Camera.main.ScreenToWorldPoint(Input.mousePosition)));
+                            GameObject target = HF.GetTargetAtPosition(HF.V3_to_V2I(Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue())));
                             // Second, the attack only attack happens when the projectile we are firing reaches the target.
 
                             // - Calculate the travel time
@@ -1382,7 +1383,7 @@ public class PlayerData : MonoBehaviour
                         }
                         else // Normal attack
                         {
-                            GameObject target = HF.DetermineAttackTarget(this.gameObject, Camera.main.ScreenToWorldPoint(Input.mousePosition)); // Use ray-line to get target
+                            GameObject target = HF.DetermineAttackTarget(this.gameObject, Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue())); // Use ray-line to get target
 
                             Action.RangedAttackAction(this.GetComponent<Actor>(), target, equippedWeapon);
                         }
@@ -1486,7 +1487,10 @@ public class PlayerData : MonoBehaviour
     private void InventoryInputDetection()
     {
         // Check for player input
-        if (Input.anyKey && !UIManager.inst.terminal_targetresultsAreaRef.gameObject.activeInHierarchy && !InventoryControl.inst.awaitingSort && !GlobalSettings.inst.db_main.activeInHierarchy)
+        if (Keyboard.current.anyKey.wasPressedThisFrame
+            && !UIManager.inst.terminal_targetresultsAreaRef.gameObject.activeInHierarchy
+            && !InventoryControl.inst.awaitingSort
+            && !GlobalSettings.inst.db_main.activeInHierarchy)
         {
             // Go through all the interfaces
             foreach (var I in InventoryControl.inst.interfaces)
@@ -1550,7 +1554,7 @@ public class PlayerData : MonoBehaviour
             }
 
             // Get mouse position
-            Vector3 mousePos = Input.mousePosition;
+            Vector3 mousePos = Mouse.current.position.ReadValue();
             mousePos = Camera.main.ScreenToWorldPoint(mousePos);
 
             // Snap to nearest (by converting to V2I)

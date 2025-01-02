@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// This is assigned to an empty GameObject parent'd to the player. This GameObject will follow the players mouse, snapping to the nearest square.
@@ -12,7 +13,7 @@ public class MouseTracker : MonoBehaviour
     {
         if (PlayerData.inst)
         {
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
             mousePosition = new Vector3(Mathf.RoundToInt(mousePosition.x), Mathf.RoundToInt(mousePosition.y));
             this.transform.position = mousePosition;
         }

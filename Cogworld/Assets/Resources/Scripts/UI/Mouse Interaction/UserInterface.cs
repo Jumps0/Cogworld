@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
@@ -947,7 +948,7 @@ public abstract class UserInterface : MonoBehaviour
     {
         if (MouseData.tempItemBeingDragged != null)
         {
-            MouseData.tempItemBeingDragged.transform.position = Input.mousePosition;
+            MouseData.tempItemBeingDragged.transform.position = Mouse.current.position.ReadValue();
         }
     }
 

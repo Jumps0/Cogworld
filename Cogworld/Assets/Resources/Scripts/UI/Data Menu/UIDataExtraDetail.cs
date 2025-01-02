@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class UIDataExtraDetail : MonoBehaviour
@@ -25,7 +26,7 @@ public class UIDataExtraDetail : MonoBehaviour
         if (extraParent.activeInHierarchy)
         {
             RectTransform uiElement = extraParent.GetComponent<RectTransform>();
-            Vector3 mousePosition = Input.mousePosition;
+            Vector3 mousePosition = Mouse.current.position.ReadValue();
 
             uiElement.position = mousePosition + new Vector3 (10, 0);
 

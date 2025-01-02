@@ -10265,7 +10265,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 89.586105, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 22.777779}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &272249432
@@ -53181,7 +53181,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1220211836}
   - component: {fileID: 1220211835}
-  - component: {fileID: 1220211834}
+  - component: {fileID: 1220211837}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -53189,26 +53189,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1220211834
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1220211833}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SendPointerHoverToParent: 1
-  m_HorizontalAxis: Horizontal
-  m_VerticalAxis: Vertical
-  m_SubmitButton: Submit
-  m_CancelButton: Cancel
-  m_InputActionsPerSecond: 10
-  m_RepeatDelay: 0.5
-  m_ForceModuleActive: 0
 --- !u!114 &1220211835
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53239,6 +53219,35 @@ Transform:
   m_Father: {fileID: 938686407}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1220211837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1220211833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
+  m_MoveRepeatDelay: 0.5
+  m_MoveRepeatRate: 0.1
+  m_XRTrackingOrigin: {fileID: 0}
+  m_ActionsAsset: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_PointAction: {fileID: -1654692200621890270, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_MoveAction: {fileID: -8784545083839296357, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_SubmitAction: {fileID: 392368643174621059, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_CancelAction: {fileID: 7727032971491509709, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_LeftClickAction: {fileID: 3001919216989983466, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_MiddleClickAction: {fileID: -2185481485913320682, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_RightClickAction: {fileID: -4090225696740746782, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_ScrollWheelAction: {fileID: 6240969308177333660, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_TrackedDevicePositionAction: {fileID: 6564999863303420839, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_DeselectOnBackgroundClick: 1
+  m_PointerBehavior: 0
 --- !u!1 &1221908366
 GameObject:
   m_ObjectHideFlags: 0
@@ -58794,25 +58803,6 @@ MonoBehaviour:
   - {fileID: 7456691822352536937, guid: d0a5c429c00a21242b6ee3744229728a, type: 3}
   - {fileID: 7456691822352536937, guid: 30c5379d98a36da43b1bd279ced3eb82, type: 3}
   - {fileID: 7456691822352536937, guid: c5fff52d468e8774ca05c356f5845d23, type: 3}
-  bots:
-  - {fileID: 1489840735499938570, guid: e456c48335a5a1d42b973ba0fc6ec0dc, type: 3}
-  - {fileID: 1489840735499938570, guid: 8cbe6640f15e9694d8c92a6dc5eecb2c, type: 3}
-  - {fileID: 1489840735499938570, guid: 6c5de33c266a7574a8ca03f08844e4f7, type: 3}
-  - {fileID: 1489840735499938570, guid: 7c4a9f77f94a4774b99384f875147e0f, type: 3}
-  - {fileID: 1489840735499938570, guid: 61b91980d7b307145b0cd561d8b938c0, type: 3}
-  - {fileID: 1489840735499938570, guid: 1b5d941f6e8b3ed4396387e4b2125987, type: 3}
-  - {fileID: 1489840735499938570, guid: fd8b23ad38ebcc14e896f90c7d5476f3, type: 3}
-  - {fileID: 1489840735499938570, guid: 6fdbcd5331640204582e1c2d3e277439, type: 3}
-  - {fileID: 1489840735499938570, guid: 04f4ae77666ed604381cb3c1db783d7e, type: 3}
-  - {fileID: 1489840735499938570, guid: f2a4c14f84f10bb4082892437bbd4799, type: 3}
-  - {fileID: 1489840735499938570, guid: cbbdfc75c1c42bd4ca12fd24178c768b, type: 3}
-  - {fileID: 1489840735499938570, guid: 9efdcce393173414abed93891d81aaf3, type: 3}
-  - {fileID: 1489840735499938570, guid: 13a34325f006c7f47a891ca9d74bf78b, type: 3}
-  - {fileID: 1489840735499938570, guid: 5edc2a6f738c77941b05b4ff5e3d9676, type: 3}
-  - {fileID: 1489840735499938570, guid: e0a4390b5deb49f48bc4e52a1777998e, type: 3}
-  - {fileID: 1489840735499938570, guid: 32be7b7d4f425114eae0384675d6b647, type: 3}
-  - {fileID: 1489840735499938570, guid: f9248760a2e61a947af8d1b61050924c, type: 3}
-  - {fileID: 1489840735499938570, guid: d30481df34995f841a760905594c4118, type: 3}
   tempPlayer: {fileID: 0}
 --- !u!114 &1399552261
 MonoBehaviour:
@@ -63484,7 +63474,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b731bde927329ba45a5d4c9d53224247, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemDatabase: {fileID: 11400000, guid: de7b8b5ccd57e8f4bab9ca053bc6cdcc, type: 2}
   p_inventoryPower: {fileID: 11400000, guid: 5b66d627d9c4d4f4ca317899c1f935a9, type: 2}
   p_inventoryPropulsion: {fileID: 11400000, guid: af034d3f5bd86e844ae338c2f508665c, type: 2}
   p_inventoryUtilities: {fileID: 11400000, guid: c0380eaf0eee54c48b43ace639398c8f, type: 2}
