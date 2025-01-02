@@ -41,6 +41,9 @@ public class Part : MonoBehaviour
     [SerializeField] private GameObject _riggedSprite;
     private bool isRigged = false;
 
+    [Tooltip("Pickup cooldown for a few edge cases (like console-based item spawning)")]
+    private float pickupcooldown = 0.2f;
+
     public void Init()
     {
         // Set basic values
@@ -78,6 +81,20 @@ public class Part : MonoBehaviour
             StartCoroutine(RiggedFlash());
         }
         
+        StartCoroutine(PickupCooldown()); // Forbid picking up for a very small amount of time
+    }
+
+    private IEnumerator PickupCooldown()
+    {
+        float elapsedTime = 0f;
+        float duration = pickupcooldown;
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        pickupcooldown = 0f;
     }
 
     public void SetMatterColors()
@@ -348,9 +365,10 @@ public class Part : MonoBehaviour
 
     public void TryEquipItem()
     {
-        
         if (PlayerData.inst.GetComponent<PlayerGridMovement>().GetCurrentPlayerTile() == _tile) // Is the player ontop of this item?
         {
+            if (pickupcooldown > 0) return;
+
             // If the player clicks on this item, we want to first try and put it in one of their / PARTS / slots.
             bool slotAvailable = false;
 

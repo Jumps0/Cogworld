@@ -100,19 +100,7 @@ public class GlobalSettings : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (db_playerPosition.gameObject.activeInHierarchy)
-        {
-            if (PlayerData.inst)
-            {
-                Vector2Int playerPos = new Vector2Int((int)PlayerData.inst.transform.position.x, (int)PlayerData.inst.transform.position.y);
-                db_playerPosition.text = $"x:{playerPos.x} y:{playerPos.y}";
-            }
-        }
-
-        if (db_input.gameObject.activeInHierarchy && db_input.text.Length > 2) // We want to assist the user and tell them what each thing does
-        {
-            DebugBarHelper();
-        }
+        DebugBarLoop();
     }
 
     /// <summary>
@@ -400,18 +388,6 @@ public class GlobalSettings : MonoBehaviour
         }
     }
 
-    private Vector2 moveInput;
-    private void OnMovePerformed(InputAction.CallbackContext context)
-    {
-        moveInput = context.ReadValue<Vector2>();
-        DebugBarHistoryCheck();
-    }
-
-    private void OnMoveCanceled(InputAction.CallbackContext context)
-    {
-        moveInput = Vector2.zero;
-    }
-
     #region Debug Bar
     [Header("Debug Bar")]
     public GameObject db_main;
@@ -421,6 +397,33 @@ public class GlobalSettings : MonoBehaviour
     [SerializeField] private bool db_helper_override = false;
     private Coroutine db_helperCooldown;
     private List<string> db_commandHistory = new List<string>(); // Tracks past commands which can be re-used
+
+    private void DebugBarLoop()
+    {
+        // Primary debug bar stuff
+        if (db_input.gameObject.activeInHierarchy && db_input.text.Length > 2) // We want to assist the user and tell them what each thing does
+        {
+            DebugBarHelper();
+        }
+
+        if (db_input.gameObject.activeInHierarchy)
+        {
+            DebugBarHistoryCheck();
+        }
+
+        // Pos indicator
+        if (db_playerPosition.gameObject.activeInHierarchy && PlayerData.inst)
+        {
+            Vector2Int playerPos = new Vector2Int((int)PlayerData.inst.transform.position.x, (int)PlayerData.inst.transform.position.y);
+            db_playerPosition.text = $"x:{playerPos.x} y:{playerPos.y}";
+        }
+
+        // Interfacing mode enforcement
+        if(db_input.gameObject.activeInHierarchy && db_input.isFocused)
+        {
+            PlayerData.inst.GetComponent<PlayerGridMovement>().UpdateInterfacingMode(InterfacingMode.TYPING);
+        }
+    }
 
     private void ToggleDebugBar()
     {
@@ -435,28 +438,50 @@ public class GlobalSettings : MonoBehaviour
             DebugBarChangeFocus(true);
 
             // Switch interfacing mode
-            PlayerData.inst.GetComponent<PlayerGridMovement>().interfacingMode = InterfacingMode.TYPING;
+            PlayerData.inst.GetComponent<PlayerGridMovement>().UpdateInterfacingMode(InterfacingMode.TYPING);
         }
         else
         {
             // Switch interfacing mode
-            PlayerData.inst.GetComponent<PlayerGridMovement>().interfacingMode = InterfacingMode.COMBAT;
+            PlayerData.inst.GetComponent<PlayerGridMovement>().UpdateInterfacingMode(InterfacingMode.COMBAT);
         }
     }
 
+    private int db_commandHistoryIndex = -1;
     private void DebugBarHistoryCheck()
     {
-        if(moveInput.y > 0 && db_input.isFocused && db_commandHistory.Count > 0) // Load previous command from history
-        { // TODO: FINISH THIS
-            List<string> commands = db_commandHistory;
-            commands.Reverse(); // Reverse the list
+        // Load previous command from history
+        if (db_input.isFocused && db_commandHistory.Count > 0)
+        {
+            // ^ Arrow (Previous Command)
+            if (Keyboard.current.upArrowKey.wasPressedThisFrame)
+            {
+                if (db_commandHistoryIndex < db_commandHistory.Count - 1)
+                {
+                    db_commandHistoryIndex++;
+                    db_input.text = db_commandHistory[db_commandHistoryIndex];
+                }
+                else if (db_commandHistoryIndex == db_commandHistory.Count - 1)
+                {
+                    // Clear input when reaching the most recent command
+                    //db_commandHistoryIndex = -1;
+                    //db_input.text = string.Empty;
+                    // Or set to last command
+                    //db_input.text = db_commandHistory[0];
+                }
+            }
 
-            string toload = commands[commands.Count - 1]; // Load the latest command
-            commands.Remove(toload); // And remove it as an option
+            // v Down Arrow (Next Command)
+            else if (Keyboard.current.downArrowKey.wasPressedThisFrame)
+            {
+                if (db_commandHistoryIndex > 0)
+                {
+                    db_commandHistoryIndex--;
+                    db_input.text = db_commandHistory[db_commandHistoryIndex];
+                }
+            }
 
-            db_input.text = toload; // Update the display
-
-            // Set input field as focus and move carrot to end
+            // Set input field focus and move caret to end
             DebugBarChangeFocus(true);
         }
     }
@@ -841,7 +866,7 @@ public class GlobalSettings : MonoBehaviour
         if (success) // If we have successfully performed a command, we have a few things to finish up with
         {
             // Switch interfacing mode
-            PlayerData.inst.GetComponent<PlayerGridMovement>().interfacingMode = InterfacingMode.COMBAT;
+            PlayerData.inst.GetComponent<PlayerGridMovement>().UpdateInterfacingMode(InterfacingMode.COMBAT);
 
             // Save command
             db_commandHistory.Add(input);
@@ -915,9 +940,6 @@ public class GlobalSettings : MonoBehaviour
         inputActions.Player.ToggleDebug.performed += OnToggleDebug;
         inputActions.Player.ToggleDCCheck.performed += OnToggleDCCheck;
         inputActions.Player.Pickup.performed += OnSubmit;
-
-        inputActions.Player.Move.performed += OnMovePerformed;
-        inputActions.Player.Move.canceled += OnMoveCanceled;
     }
 
     private void OnDisable()
@@ -925,9 +947,6 @@ public class GlobalSettings : MonoBehaviour
         inputActions.Player.ToggleDebug.performed -= OnToggleDebug;
         inputActions.Player.ToggleDCCheck.performed -= OnToggleDCCheck;
         inputActions.Player.Pickup.performed -= OnSubmit;
-
-        inputActions.Player.Move.performed -= OnMovePerformed;
-        inputActions.Player.Move.canceled -= OnMoveCanceled;
     }
     #endregion
 

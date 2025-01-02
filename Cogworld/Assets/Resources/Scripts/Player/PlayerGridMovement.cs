@@ -50,6 +50,11 @@ public class PlayerGridMovement : MonoBehaviour
     {
         moveInput = Vector2.zero;
     }
+
+    public void UpdateInterfacingMode(InterfacingMode mode)
+    {
+        interfacingMode = mode;
+    }
     #endregion
 
     // Update is called once per frame
@@ -348,7 +353,7 @@ public class PlayerGridMovement : MonoBehaviour
 
     public void OnPickup(InputValue value)
     {
-        if (!GetComponent<Actor>().isAlive) return;
+        if (!GetComponent<Actor>().isAlive || interfacingMode != InterfacingMode.COMBAT) return;
 
         // Player must be on top of a tile with an item on it to be able to interact with it
         TileBlock currentTile = GetCurrentPlayerTile();
@@ -365,11 +370,8 @@ public class PlayerGridMovement : MonoBehaviour
         // See OnMouseDown()
 
         // - Player hitting enter
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
-        {
-            currentTile._partOnTop.TryEquipItem(); // Try equipping it
-            //InventoryControl.inst.DebugPrintInventory();
-        }
+        currentTile._partOnTop.TryEquipItem(); // Try equipping it
+        //InventoryControl.inst.DebugPrintInventory();
     }
 
     private void OnMouseDown() // When the player clicks on themselves
