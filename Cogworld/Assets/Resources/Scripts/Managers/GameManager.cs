@@ -4,12 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager inst;
+    public InputActionsSO inputSO;
+
 
     [Header("Data Related")]
     private iDataService DataService = new JsonDataService();

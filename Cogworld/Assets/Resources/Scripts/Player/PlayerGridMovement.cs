@@ -24,25 +24,20 @@ public class PlayerGridMovement : MonoBehaviour
     public PlayerInputActions inputActions;
     private Vector2 moveInput;
 
-    private void Awake()
-    {
-        inputActions = new PlayerInputActions();
-    }
-
     private void OnEnable()
     {
-        inputActions.Player.Enable();
+        inputActions = Resources.Load<InputActionsSO>("Inputs/InputActionsSO").InputActions;
+
         inputActions.Player.Move.performed += OnMovePerformed;
         inputActions.Player.Move.canceled += OnMoveCanceled;
-        inputActions.Player.Click.performed += OnMouseClickPerformed;
+        inputActions.Player.LeftClick.performed += OnMouseClickPerformed;
     }
 
     private void OnDisable()
     {
         inputActions.Player.Move.performed -= OnMovePerformed;
         inputActions.Player.Move.canceled -= OnMoveCanceled;
-        inputActions.Player.Click.performed -= OnMouseClickPerformed;
-        inputActions.Player.Disable();
+        inputActions.Player.LeftClick.performed -= OnMouseClickPerformed;
     }
 
     private void OnMovePerformed(InputAction.CallbackContext context)
@@ -100,11 +95,7 @@ public class PlayerGridMovement : MonoBehaviour
 
     private void OnMouseClickPerformed(InputAction.CallbackContext context)
     {
-        if (!GetComponent<Actor>().isAlive) return;
-
-        if (!GameManager.inst.allowMouseMovement) return;
-
-        if (GridManager.inst.astar == null) return;
+        if (!GetComponent<Actor>().isAlive || !GameManager.inst.allowMouseMovement || GridManager.inst.astar == null) return;
 
         if (GridManager.inst.astar.path.Count > 0 &&
             GridManager.inst.astar.searchStatus == AStarSearchStatus.Success)
@@ -121,9 +112,7 @@ public class PlayerGridMovement : MonoBehaviour
 
     private void HandleMovement(Vector2 direction)
     {
-        if (!GetComponent<Actor>().isAlive) return;
-
-        if (isMoving || !playerMovementAllowed || inDialogueSequence) return;
+        if (isMoving || !playerMovementAllowed || inDialogueSequence || !GetComponent<Actor>().isAlive || interfacingMode != InterfacingMode.COMBAT) return;
 
         int x = Mathf.RoundToInt(direction.x);
         int y = Mathf.RoundToInt(direction.y);

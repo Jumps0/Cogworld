@@ -54,6 +54,14 @@ public class GlobalSettings : MonoBehaviour
     public int startingInvSize = 5;
     [Tooltip("The minimum % chance the player can be spotted.")] public float minSpotChance = 0.1f;
 
+    public void SetStartingValues()
+    {
+        // Set location
+        MapManager.inst.currentBranch = 0;
+        MapManager.inst.currentLevel = -11;
+        MapManager.inst.currentLevelName = "Unknown"; // (Starting cave)
+        MapManager.inst.levelName = LevelName.Default;
+    }
     #endregion
 
     [Header("UI")]
@@ -92,16 +100,19 @@ public class GlobalSettings : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CheckForDebug();
-    }
-    
-    public void SetStartingValues()
-    {
-        // Set location
-        MapManager.inst.currentBranch = 0;
-        MapManager.inst.currentLevel = -11;
-        MapManager.inst.currentLevelName = "Unknown"; // (Starting cave)
-        MapManager.inst.levelName = LevelName.Default;
+        if (db_playerPosition.gameObject.activeInHierarchy)
+        {
+            if (PlayerData.inst)
+            {
+                Vector2Int playerPos = new Vector2Int((int)PlayerData.inst.transform.position.x, (int)PlayerData.inst.transform.position.y);
+                db_playerPosition.text = $"x:{playerPos.x} y:{playerPos.y}";
+            }
+        }
+
+        if (db_input.gameObject.activeInHierarchy && db_input.text.Length > 2) // We want to assist the user and tell them what each thing does
+        {
+            DebugBarHelper();
+        }
     }
 
     /// <summary>
@@ -361,27 +372,44 @@ public class GlobalSettings : MonoBehaviour
             debugLogMessageTest = false;
         }
         */
-
-        //if (Input.GetKeyDown(KeyCode.BackQuote))
-        //{
-        //    ToggleDebugBar();
-        //}
-
-        if (db_main.activeInHierarchy)
-        {
-            DebugBarListenForInput();
-        }
     }
 
-    public void OnToggleDCCheck(InputValue value)
+    public void OnToggleDCCheck(InputAction.CallbackContext context)
     {
         // Toggle Debug Menu
         debugUI_parent.SetActive(!debugUI_parent.activeInHierarchy);
     }
 
-    public void OnToggleDebug(InputValue value)
+    public void OnToggleDebug(InputAction.CallbackContext context)
     {
         ToggleDebugBar();
+    }
+
+    public void OnSubmit(InputAction.CallbackContext context)
+    {
+        if (db_main.activeInHierarchy)
+        {
+            // Read the input
+            string command = db_input.text;
+
+            // Parse the input and try to do something with that
+            if (command.Length >= 2)
+            {
+                DebugBarDoCommand(command);
+            }
+        }
+    }
+
+    private Vector2 moveInput;
+    private void OnMovePerformed(InputAction.CallbackContext context)
+    {
+        moveInput = context.ReadValue<Vector2>();
+        DebugBarHistoryCheck();
+    }
+
+    private void OnMoveCanceled(InputAction.CallbackContext context)
+    {
+        moveInput = Vector2.zero;
     }
 
     #region Debug Bar
@@ -389,6 +417,7 @@ public class GlobalSettings : MonoBehaviour
     public GameObject db_main;
     [SerializeField] private TMP_InputField db_input;
     [SerializeField] private TextMeshProUGUI db_textaid;
+    [SerializeField] private TextMeshProUGUI db_playerPosition;
     [SerializeField] private bool db_helper_override = false;
     private Coroutine db_helperCooldown;
     private List<string> db_commandHistory = new List<string>(); // Tracks past commands which can be re-used
@@ -403,43 +432,32 @@ public class GlobalSettings : MonoBehaviour
 
         if (db_main.activeInHierarchy)
         {
-            db_input.Select();
+            DebugBarChangeFocus(true);
+
+            // Switch interfacing mode
+            PlayerData.inst.GetComponent<PlayerGridMovement>().interfacingMode = InterfacingMode.TYPING;
+        }
+        else
+        {
+            // Switch interfacing mode
+            PlayerData.inst.GetComponent<PlayerGridMovement>().interfacingMode = InterfacingMode.COMBAT;
         }
     }
 
-    private void DebugBarListenForInput()
+    private void DebugBarHistoryCheck()
     {
-        if (Input.GetKeyDown(KeyCode.Return)) // Submit
-        {
-            // Read the input
-            string command = db_input.text;
-
-            // Parse the input and try to do something with that
-            if(command.Length >= 2)
-            {
-                DebugBarDoCommand(command);
-            }
-        }
-        else if (Input.GetKeyDown(KeyCode.UpArrow) && db_commandHistory.Count > 0) // Load previous command from history
+        if(moveInput.y > 0 && db_input.isFocused && db_commandHistory.Count > 0) // Load previous command from history
         { // TODO: FINISH THIS
             List<string> commands = db_commandHistory;
             commands.Reverse(); // Reverse the list
-            
+
             string toload = commands[commands.Count - 1]; // Load the latest command
             commands.Remove(toload); // And remove it as an option
 
             db_input.text = toload; // Update the display
 
             // Set input field as focus and move carrot to end
-            db_input.Select();
-            db_input.ActivateInputField();
-            db_input.caretPosition = db_input.text.Length;
-
-        }
-
-        if(db_input.text.Length > 2) // We want to assist the user and tell them what each thing does
-        {
-            DebugBarHelper();
+            DebugBarChangeFocus(true);
         }
     }
 
@@ -498,10 +516,10 @@ public class GlobalSettings : MonoBehaviour
                     db_textaid.gameObject.SetActive(true);
                     db_textaid.text = "> notiles [Toggles vision of all tile sprites]";
                 }
-                else if (command.Contains("mypos"))
+                else if (command.Contains("pos"))
                 {
                     db_textaid.gameObject.SetActive(true);
-                    db_textaid.text = "> mypos [Returns current player coordinates]";
+                    db_textaid.text = "> pos [Displays current player coordinates]";
                 }
                 // Expand this as needed
             }
@@ -539,6 +557,8 @@ public class GlobalSettings : MonoBehaviour
          *    -Returns coordinate position of player
          * ================================
          */
+
+        bool success = false;
 
         // Split the command into parts
         input = input.ToLower();
@@ -695,12 +715,7 @@ public class GlobalSettings : MonoBehaviour
                         // Do nothing? This shouldn't happen?
                         break;
                 }
-
-                // Save command
-                db_commandHistory.Add(input);
-
-                // Clear the input box
-                db_input.text = "";
+                success = true;
 
                 break;
             case "spawn":
@@ -773,32 +788,28 @@ public class GlobalSettings : MonoBehaviour
                     case "bot":
                         MapManager.inst.PlaceBot(playerloc, tospawn_bot);
                         DebugBarHelper($"Spawned a {tospawn_bot.botName}.");
+
+                        success = true;
+
+                        // Update FOV/FOW
+                        GameManager.inst.AllActorsVisUpdate();
                         break;
 
                     case "item":
                         InventoryControl.inst.CreateItemInWorld(tospawn_item.data.Id, playerloc, true);
                         DebugBarHelper($"Spawned a {tospawn_item.itemName}.");
+
+                        success = true;
+
+                        // Update FOV/FOW
+                        GameManager.inst.AllActorsVisUpdate();
                         break;
                 }
-
-                // Update FOV/FOW
-                GameManager.inst.AllActorsVisUpdate();
-
-                // Save command
-                db_commandHistory.Add(input);
-
-                // Clear the input box
-                db_input.text = "";
 
                 break;
             case "fow":
                 FogOfWar.inst.DEBUG_RevealAll();
-
-                // Save command
-                db_commandHistory.Add(input);
-
-                // Clear the input box
-                db_input.text = "";
+                success = true;
 
                 break;
             case "notiles":
@@ -807,23 +818,18 @@ public class GlobalSettings : MonoBehaviour
                     T.Value.bottom._renderer.enabled = !T.Value.bottom._renderer.enabled;
                 }
 
-                // Save command
-                db_commandHistory.Add(input);
-
-                // Clear the input box
-                db_input.text = "";
+                success = true;
 
                 break;
-            case "mypos":
+            case "pos":
                 Vector2Int playerPos = new Vector2Int((int)PlayerData.inst.transform.position.x, (int)PlayerData.inst.transform.position.y);
-                Debug.Log($"Player position: {MapManager.inst._allTilesRealized[playerPos]}");
-                DebugBarHelper($"Player position: {MapManager.inst._allTilesRealized[playerPos]}");
+                Debug.Log($"Player position: {playerPos}");
+                DebugBarHelper($"Player position: {playerPos}");
 
-                // Save command
-                db_commandHistory.Add(input);
+                // Toggle the text
+                db_playerPosition.gameObject.SetActive(!db_playerPosition.gameObject.activeInHierarchy);
 
-                // Clear the input box
-                db_input.text = "";
+                success = true;
 
                 break;
 
@@ -832,8 +838,39 @@ public class GlobalSettings : MonoBehaviour
                 return;
         }
 
+        if (success) // If we have successfully performed a command, we have a few things to finish up with
+        {
+            // Switch interfacing mode
+            PlayerData.inst.GetComponent<PlayerGridMovement>().interfacingMode = InterfacingMode.COMBAT;
+
+            // Save command
+            db_commandHistory.Add(input);
+
+            // Clear the input box
+            db_input.text = "";
+
+            // Unfocus
+            DebugBarChangeFocus(false);
+        }
+
         #endregion
     }
+
+    private void DebugBarChangeFocus(bool focus)
+    {
+        if (focus)
+        {
+            db_input.Select();
+            db_input.ActivateInputField();
+            db_input.caretPosition = db_input.text.Length;
+        }
+        else
+        {
+            db_input.DeactivateInputField();
+            db_input.caretPosition = 0;
+        }
+    }
+
     #endregion
 
     public void DEBUG_CheckDict()
@@ -868,6 +905,31 @@ public class GlobalSettings : MonoBehaviour
             }
         }
     }
+
+    #region Input Actions
+    public PlayerInputActions inputActions;
+    private void OnEnable()
+    {
+        inputActions = Resources.Load<InputActionsSO>("Inputs/InputActionsSO").InputActions;
+
+        inputActions.Player.ToggleDebug.performed += OnToggleDebug;
+        inputActions.Player.ToggleDCCheck.performed += OnToggleDCCheck;
+        inputActions.Player.Pickup.performed += OnSubmit;
+
+        inputActions.Player.Move.performed += OnMovePerformed;
+        inputActions.Player.Move.canceled += OnMoveCanceled;
+    }
+
+    private void OnDisable()
+    {
+        inputActions.Player.ToggleDebug.performed -= OnToggleDebug;
+        inputActions.Player.ToggleDCCheck.performed -= OnToggleDCCheck;
+        inputActions.Player.Pickup.performed -= OnSubmit;
+
+        inputActions.Player.Move.performed -= OnMovePerformed;
+        inputActions.Player.Move.canceled -= OnMoveCanceled;
+    }
+    #endregion
 
     /*
     // Size of each grid cell

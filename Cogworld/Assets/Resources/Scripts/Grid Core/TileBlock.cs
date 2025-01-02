@@ -8,6 +8,7 @@
 
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// A script used for the physical *real world* tiles used to build the world. What this tile is gets determined by its "tileInfo" (a TileObject variable).
@@ -120,7 +121,7 @@ public class TileBlock : MonoBehaviour
 
     private void OnMouseOver()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse1)) // Right Click to open /DATA/ Menu
+        if (Mouse.current.rightButton.wasPressedThisFrame) // Right Click to open /DATA/ Menu
         {
             if (UIManager.inst.dataMenu.data_parent.activeInHierarchy && !HF.MouseBoundsCheck())
             { // For tile objects, we only want to show info if the menu is already open so the player doesn't do it on accident in combat.
