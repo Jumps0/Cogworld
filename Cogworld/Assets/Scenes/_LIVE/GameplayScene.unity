@@ -10265,7 +10265,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 89.586105, y: 0}
   m_SizeDelta: {x: 0, y: 22.777779}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &272249432
@@ -28860,7 +28860,7 @@ MonoBehaviour:
   debugLogMessageTest: 0
   testitem: {fileID: 11400000, guid: 95a75134c1045e843b4020b526548816, type: 2}
   db_main: {fileID: 1854330115}
-  db_input: {fileID: 1213955988}
+  db_ifield: {fileID: 1213955988}
   db_textaid: {fileID: 1807259343}
   db_playerPosition: {fileID: 1864509533}
   db_helper_override: 0

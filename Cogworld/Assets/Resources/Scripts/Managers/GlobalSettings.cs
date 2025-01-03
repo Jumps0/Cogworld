@@ -317,50 +317,6 @@ public class GlobalSettings : MonoBehaviour
     public bool debugBottomMessageTest = false;
     public bool debugLogMessageTest = false;
     public ItemObject testitem;
-    //bool doOnce, doOnce2, doOnce3, doOnce4, doOnce5 = false;
-
-    private void CheckForDebug()
-    {
-        /*
-        if (Input.GetKeyDown(KeyCode.RightBracket))
-        {
-            UIManager.inst.NewFloor_BeginAnimate();
-        }
-
-        if(debugUI_parent.activeInHierarchy)
-        {
-            dString = dField.text;
-        }
-
-        if (debugitemtest && !doOnce)
-        {
-            PlayerData.inst.GetComponent<PartInventory>()._inventory.AddItem(new Item(testitem), 1);
-            debugitemtest = false;
-            doOnce = true;
-        }
-
-        if (debugLeftMessageTest && !doOnce2)
-        {
-            UIManager.inst.CreateLeftMessage("ALERT: Lockdown in effect, collecting threat data.", 10, AudioManager.inst.GAME_Clips[32]); // FACILITY_ALERT
-            doOnce2 = true;
-            debugLeftMessageTest = false;
-        }
-
-        if (debugBottomMessageTest && !doOnce3)
-        {
-            UIManager.inst.CreateBottomMessage("This is a test message", "Blue", 10);
-            doOnce3 = true;
-            debugBottomMessageTest = false;
-        }
-
-        if(debugLogMessageTest && !doOnce5)
-        {
-            UIManager.inst.CreateNewLogMessage("You are now entering the battlezone! Nuking is now legal, worldwide.", UIManager.inst.activeGreen, UIManager.inst.dullGreen);
-            doOnce5 = true;
-            debugLogMessageTest = false;
-        }
-        */
-    }
 
     public void OnToggleDCCheck(InputAction.CallbackContext context)
     {
@@ -378,7 +334,7 @@ public class GlobalSettings : MonoBehaviour
         if (db_main.activeInHierarchy)
         {
             // Read the input
-            string command = db_input.text;
+            string command = db_ifield.text;
 
             // Parse the input and try to do something with that
             if (command.Length >= 2)
@@ -391,7 +347,7 @@ public class GlobalSettings : MonoBehaviour
     #region Debug Bar
     [Header("Debug Bar")]
     public GameObject db_main;
-    [SerializeField] private TMP_InputField db_input;
+    [SerializeField] private TMP_InputField db_ifield;
     [SerializeField] private TextMeshProUGUI db_textaid;
     [SerializeField] private TextMeshProUGUI db_playerPosition;
     [SerializeField] private bool db_helper_override = false;
@@ -401,12 +357,12 @@ public class GlobalSettings : MonoBehaviour
     private void DebugBarLoop()
     {
         // Primary debug bar stuff
-        if (db_input.gameObject.activeInHierarchy && db_input.text.Length > 2) // We want to assist the user and tell them what each thing does
+        if (db_ifield.gameObject.activeInHierarchy && db_ifield.text.Length > 2) // We want to assist the user and tell them what each thing does
         {
             DebugBarHelper();
         }
 
-        if (db_input.gameObject.activeInHierarchy)
+        if (db_ifield.gameObject.activeInHierarchy)
         {
             DebugBarHistoryCheck();
         }
@@ -419,7 +375,7 @@ public class GlobalSettings : MonoBehaviour
         }
 
         // Interfacing mode enforcement
-        if(db_input.gameObject.activeInHierarchy && db_input.isFocused)
+        if(db_ifield.gameObject.activeInHierarchy && db_ifield.isFocused)
         {
             PlayerData.inst.GetComponent<PlayerGridMovement>().UpdateInterfacingMode(InterfacingMode.TYPING);
         }
@@ -451,7 +407,7 @@ public class GlobalSettings : MonoBehaviour
     private void DebugBarHistoryCheck()
     {
         // Load previous command from history
-        if (db_input.isFocused && db_commandHistory.Count > 0)
+        if (db_ifield.isFocused && db_commandHistory.Count > 0)
         {
             // ^ Arrow (Previous Command)
             if (Keyboard.current.upArrowKey.wasPressedThisFrame)
@@ -459,7 +415,7 @@ public class GlobalSettings : MonoBehaviour
                 if (db_commandHistoryIndex < db_commandHistory.Count - 1)
                 {
                     db_commandHistoryIndex++;
-                    db_input.text = db_commandHistory[db_commandHistoryIndex];
+                    db_ifield.text = db_commandHistory[db_commandHistoryIndex];
                 }
                 else if (db_commandHistoryIndex == db_commandHistory.Count - 1)
                 {
@@ -477,7 +433,7 @@ public class GlobalSettings : MonoBehaviour
                 if (db_commandHistoryIndex > 0)
                 {
                     db_commandHistoryIndex--;
-                    db_input.text = db_commandHistory[db_commandHistoryIndex];
+                    db_ifield.text = db_commandHistory[db_commandHistoryIndex];
                 }
             }
 
@@ -517,7 +473,7 @@ public class GlobalSettings : MonoBehaviour
             db_textaid.color = Color.white;
 
             // Now we need to parse the partial input
-            string command = db_input.text.ToLower();
+            string command = db_ifield.text.ToLower();
             if (command.Length > 2)
             {
                 // Check to see if the input contains a command type, if it does, give more detail on that
@@ -545,6 +501,16 @@ public class GlobalSettings : MonoBehaviour
                 {
                     db_textaid.gameObject.SetActive(true);
                     db_textaid.text = "> pos [Displays current player coordinates]";
+                }
+                else if (command.Contains("newflooranim"))
+                {
+                    db_textaid.gameObject.SetActive(true);
+                    db_textaid.text = "> newflooranim [Plays the \"new floor\" animation]";
+                }
+                else if (command.Contains("broadcast"))
+                {
+                    db_textaid.gameObject.SetActive(true);
+                    db_textaid.text = "> broadcast \"type\" \"message\" [Broadcasts a specific type of message]";
                 }
                 // Expand this as needed
             }
@@ -578,8 +544,14 @@ public class GlobalSettings : MonoBehaviour
          *    -Toggles the fog of war
          *  > notiles
          *    -Toggles vision of all tile sprites
-         *  > mypos
-         *    -Returns coordinate position of player
+         *  > pos
+         *    -Returns (and displays) coordinate position of player
+         *  > newflooranim
+         *    -Plays the "new floor" animation
+         *  > broadcast "type" "message"
+         *    -Broadcasts a message string with the specified type of broadcaster
+         *    Type: The different types of messenger system (alert, info, log)
+         *    Message: The message string to display
          * ================================
          */
 
@@ -857,7 +829,81 @@ public class GlobalSettings : MonoBehaviour
                 success = true;
 
                 break;
+            case "newflooranim":
+                UIManager.inst.NewFloor_BeginAnimate();
+                DebugBarHelper("Playing animation...");
 
+                success = true;
+
+                break;
+            case "broadcast":
+                string broadcast_message = "";
+                int broadcast_type = -1;
+
+                // Next go to the second word
+                if (bits.Length == 1) // There is no second word
+                {
+                    DebugBarHelper("[broadcast] Must specify type (ex. alert, info, log)");
+                    return;
+                }
+                else
+                {
+                    // Try to parse the type
+                    string type = bits[1];
+                    if (type.Contains("alert"))
+                    {
+                        broadcast_type = 0;
+                    }
+                    else if (type.Contains("info"))
+                    {
+                        broadcast_type = 1;
+                    }
+                    else if (type.Contains("log"))
+                    {
+                        broadcast_type = 2;
+                    }
+
+                    // Valid type?
+                    if (broadcast_type == -1)
+                    {
+                        DebugBarHelper("[broadcast] Invalid broadcast type");
+                        return;
+                    }
+
+                    // Do we have a 3rd word?
+                    if (bits.Length <= 2)
+                    {
+                        DebugBarHelper("[broadcast] Must specify a message to display (ex. Hello world)");
+                        return;
+                    }
+                    else
+                    {
+                        // Get the whole message
+                        broadcast_message = input.Split(bits[1])[1].Trim();
+                    }
+                }
+
+                // Now do the message
+                switch (broadcast_type)
+                {
+                    case 0:
+                        UIManager.inst.CreateLeftMessage(broadcast_message, 10, AudioManager.inst.GAME_Clips[32]); // FACILITY_ALERT
+                        DebugBarHelper("Broadcasting alert message...");
+                        break;
+                    case 1:
+                        UIManager.inst.CreateBottomMessage(broadcast_message, "Blue", 10);
+                        DebugBarHelper("Broadcasting info message...");
+                        break;
+                    case 2:
+                        UIManager.inst.CreateNewLogMessage(broadcast_message, UIManager.inst.activeGreen, UIManager.inst.dullGreen);
+                        DebugBarHelper("Broadcasting log message...");
+                        break;
+                    // Add more cases as needed
+                }
+
+                success = true;
+
+                break;
             default: // Unknown command
                 DebugBarHelper("Unknown command...");
                 return;
@@ -872,7 +918,7 @@ public class GlobalSettings : MonoBehaviour
             db_commandHistory.Add(input);
 
             // Clear the input box
-            db_input.text = "";
+            db_ifield.text = "";
 
             // Unfocus
             DebugBarChangeFocus(false);
@@ -885,14 +931,14 @@ public class GlobalSettings : MonoBehaviour
     {
         if (focus)
         {
-            db_input.Select();
-            db_input.ActivateInputField();
-            db_input.caretPosition = db_input.text.Length;
+            db_ifield.Select();
+            db_ifield.ActivateInputField();
+            db_ifield.caretPosition = db_ifield.text.Length;
         }
         else
         {
-            db_input.DeactivateInputField();
-            db_input.caretPosition = 0;
+            db_ifield.DeactivateInputField();
+            db_ifield.caretPosition = 0;
         }
     }
 

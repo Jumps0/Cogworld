@@ -240,14 +240,6 @@ public class MachinePart : MonoBehaviour
     }
     #endregion
 
-    private void OnMouseOver()
-    {
-        if (Input.GetKeyDown(KeyCode.Mouse1)) // Right Click to open /DATA/ Menu
-        {
-            UIManager.inst.Data_OpenMenu(null, this.gameObject);
-        }
-    }
-
     #region Destruction
 
     /// <summary>

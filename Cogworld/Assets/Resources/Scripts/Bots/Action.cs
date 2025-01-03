@@ -3341,9 +3341,9 @@ public static class Action
     }
 
 
-    public static Vector2Int V3_to_V2I(Vector3 input)
+    public static Vector2Int V3_to_V2I(Vector3 v)
     {
-        return new Vector2Int((int)input.x, (int)input.y);
+        return new Vector2Int((int)v.x, (int)v.y);
     }
 
     public static int GetTotalMass(Actor actor)

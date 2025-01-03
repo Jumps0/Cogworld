@@ -333,6 +333,7 @@ public class PlayerGridMovement : MonoBehaviour
 
     #endregion
 
+    #region MAJOR Interactions (Left Click/Right Click/ENTER)
     public void OnEnter(InputValue value)
     {
         if (!GetComponent<Actor>().isAlive || interfacingMode != InterfacingMode.COMBAT) return;
@@ -457,16 +458,19 @@ public class PlayerGridMovement : MonoBehaviour
             }
             else if (target.GetComponent<Part>()) // An item
             {
-                // If right clicked, the /DATA/ menu should open and display info about the bot.
+                // If right clicked, the /DATA/ menu should open and display info about the item.
                 Part p = target.GetComponent<Part>();
                 UIManager.inst.Data_OpenMenu(p._item);
             }
-            else if (target.GetComponent<TileBlock>()) // Some kind of structure
+            else if (target.GetComponent<MachinePart>()) // A machine
             {
-
+                // If right clicked, the /DATA/ menu should open and display info about the machine.
+                MachinePart m = target.GetComponent<MachinePart>();
+                UIManager.inst.Data_OpenMenu(null, m.gameObject);
             }
         }
     }
+    #endregion
 }
 
 [System.Serializable]
