@@ -355,14 +355,6 @@ public class Part : MonoBehaviour
         }
     }
 
-    private void OnMouseOver()
-    {
-        if (Input.GetKeyDown(KeyCode.Mouse1)) // Right Click to open /DATA/ Menu
-        {
-            UIManager.inst.Data_OpenMenu(_item);
-        }
-    }
-
     public void TryEquipItem()
     {
         if (PlayerData.inst.GetComponent<PlayerGridMovement>().GetCurrentPlayerTile() == _tile) // Is the player ontop of this item?

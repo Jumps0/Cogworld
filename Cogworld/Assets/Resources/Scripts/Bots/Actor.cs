@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class Actor : Entity
@@ -28,11 +29,12 @@ public class Actor : Entity
 
     public int Initiative = 0;
 
-    public bool IsAlive { get => isAlive; set => isAlive = value;  }
+    public bool IsAlive { get => isAlive; set => isAlive = value; }
     public List<Vector3Int> FieldofView { get => fieldOfView; }
 
     private Color baseColor;
     [SerializeField] private SpriteRenderer _sprite;
+    [HideInInspector] public BoxCollider2D _collider;
 
     [Header("Special Bot States")]
     [Tooltip("DORMANT: Robots temporarily resting in this mode are only a problem if they wake up, which may be triggered by alarm traps, " +
@@ -56,30 +58,32 @@ public class Actor : Entity
     [Header("Conditions")]
     public List<ModHacks> hacked_mods = new List<ModHacks>();
 
-#region Pre-setup
+    #region Pre-setup
     private void OnValidate()
     {
         if (GetComponent<UnitAI>())
         {
             AI = GetComponent<UnitAI>();
         }
-    
-        if(botInfo != null)
+
+        if (botInfo != null)
         {
-            if(_sprite != null && botInfo.displaySprite != null)
+            if (_sprite != null && botInfo.displaySprite != null)
             {
                 // Auto-assign sprite
                 _sprite.sprite = botInfo.displaySprite;
             }
+
+            _collider = this.GetComponent<BoxCollider2D>();
 
             // Set up the other values while we're here
             heatDissipation = botInfo.heatDissipation;
             energyGeneration = botInfo.energyGeneration;
             fieldOfViewRange = botInfo.visualRange;
             maxHealth = botInfo.coreIntegrity;
-        }   
+        }
     }
-#endregion
+    #endregion
 
     private void Awake()
     {
@@ -198,7 +202,7 @@ public class Actor : Entity
 
     private void DisabledCheck()
     {
-        if(TurnManager.inst.globalTime >= disabledTurn + disabledTime)
+        if (TurnManager.inst.globalTime >= disabledTurn + disabledTime)
         {
             state_DISARMED = false;
             canDisabledCheck = false;
@@ -232,7 +236,7 @@ public class Actor : Entity
     #region Turns
     public void StartTurn()
     {
-        if(this.GetComponent<BotAI>() != null)
+        if (this.GetComponent<BotAI>() != null)
         {
             this.GetComponent<BotAI>().isTurn = true;
             this.GetComponent<BotAI>().TakeTurn();
@@ -247,12 +251,12 @@ public class Actor : Entity
         if (this.GetComponent<BotAI>() != null)
             this.GetComponent<BotAI>().isTurn = false;
 
-        if (this.GetComponent<PlayerData>()) 
+        if (this.GetComponent<PlayerData>())
         { // Siege tracking
             int siegeTime = PlayerData.inst.timeTilSiege;
             if (siegeTime < 100)
             {
-                if((siegeTime <= 5 && siegeTime >= 1) || (siegeTime < 0 && siegeTime >= -5))
+                if ((siegeTime <= 5 && siegeTime >= 1) || (siegeTime < 0 && siegeTime >= -5))
                 {
                     PlayerData.inst.timeTilSiege--;
                 }
@@ -358,7 +362,7 @@ public class Actor : Entity
         // If close to destination
         if (Vector2.Distance(this.transform.position, this.GetComponent<GroupLeader>().route[this.GetComponent<GroupLeader>().pointInRoute]) <= 3)
         {
-            if(this.GetComponent<GroupLeader>().pointInRoute >= this.GetComponent<GroupLeader>().route.Count - 1)
+            if (this.GetComponent<GroupLeader>().pointInRoute >= this.GetComponent<GroupLeader>().route.Count - 1)
             {
                 this.GetComponent<GroupLeader>().pointInRoute = 0; // Loop
             }
@@ -373,7 +377,7 @@ public class Actor : Entity
 
         // Then move based on inputs from PF
         Vector2Int moveToLocation = Action.NormalizeMovement(this.gameObject.transform, this.GetComponent<OrientedPhysics>().desiredPostion);
-        Vector2Int realPos = Action.V3_to_V2I(this.GetComponent<OrientedPhysics>().desiredPostion); 
+        Vector2Int realPos = Action.V3_to_V2I(this.GetComponent<OrientedPhysics>().desiredPostion);
 
         if (MapManager.inst._allTilesRealized.ContainsKey(realPos) && this.GetComponent<Actor>().IsUnoccupiedTile(MapManager.inst._allTilesRealized[realPos].bottom))
         {
@@ -461,7 +465,7 @@ public class Actor : Entity
     {
         if (this.GetComponent<PlayerData>())
         {
-            if(PlayerData.inst.currentHealth <= 0)
+            if (PlayerData.inst.currentHealth <= 0)
             {
                 // Die!
                 SceneManager.LoadScene(0);
@@ -544,7 +548,7 @@ public class Actor : Entity
             if (this.GetComponent<BotAI>().uniqueName != "")
                 botName = this.GetComponent<BotAI>().uniqueName;
             string message = botName + " was utterly corrupted.";
-            if(deathMessage != "")
+            if (deathMessage != "")
             {
                 message = deathMessage;
             }
@@ -578,7 +582,7 @@ public class Actor : Entity
                             // Heat check
                             chance = ((currentHeat - item.itemData.integrityMax) / 4);
 
-                            if(Random.Range(0f, 1f) < chance) // Continue to next check
+                            if (Random.Range(0f, 1f) < chance) // Continue to next check
                             {
                                 // Corruption check
                                 chance = ((100 * corruption) - item.itemData.integrityMax) / 100;
@@ -720,7 +724,7 @@ public class Actor : Entity
 
         // Set tile underneath as dirty
         MapManager.inst._allTilesRealized[Action.V3_to_V2I(this.transform.position)].bottom.SetToDirty();
-        
+
         StartCoroutine(DestroySelf());
     }
 
@@ -735,7 +739,7 @@ public class Actor : Entity
 
     private void OnDestroy()
     {
-        if(TurnManager.inst)
+        if (TurnManager.inst)
             TurnManager.inst.turnEvents.onTurnTick -= TurnTick; // Stop listening to the turn tick event
 
         fieldOfView.Clear();
@@ -745,7 +749,7 @@ public class Actor : Entity
         {
             GameManager.inst.entities.Remove(this);
         }
-            
+
         if (TurnManager.inst)
         {
             TurnManager.inst.actors.Remove(this);
@@ -821,9 +825,9 @@ public class Actor : Entity
 
 
             // If this is a friendly bot and is seeing the player for the first AND, has; dialogue, hasn't talked yet, isn't talking, THEN perform that dialogue.
-            if ((this.GetComponent<BotAI>().relationToPlayer == BotRelation.Neutral || this.GetComponent<BotAI>().relationToPlayer == BotRelation.Friendly) 
-                && GetComponent<BotAI>().hasDialogue 
-                && !GetComponent<BotAI>().talking 
+            if ((this.GetComponent<BotAI>().relationToPlayer == BotRelation.Neutral || this.GetComponent<BotAI>().relationToPlayer == BotRelation.Friendly)
+                && GetComponent<BotAI>().hasDialogue
+                && !GetComponent<BotAI>().talking
                 && !GetComponent<BotAI>().finishedTalking &&
                 fieldOfView.Contains(new Vector3Int((int)PlayerData.inst.transform.position.x, (int)PlayerData.inst.transform.position.y, 0)))
             {
@@ -1026,12 +1030,12 @@ public class Actor : Entity
 
     private void DoBotPopup()
     {
-        
+
         Color a = Color.black, b = Color.black, c = Color.black;
         a = Color.black;
         string _message = "";
         _message = this.gameObject.name; // Name only
-                                                                              
+
         float HP = (float)botInfo.currentIntegrity / (float)botInfo.coreIntegrity; // Set color related to current item health
         if (HP >= 0.75) // Healthy
         {
@@ -1055,7 +1059,7 @@ public class Actor : Entity
         }
 
         UIManager.inst.CreateItemPopup(this.gameObject, _message, a, b, c);
-        
+
     }
 
     public void TransferStates(Actor target)
@@ -1067,24 +1071,6 @@ public class Actor : Entity
         target.state_UNPOWERED = this.state_UNPOWERED;
     }
 
-    public void OnMouseOver()
-    {
-        if (Input.GetKeyDown(KeyCode.Mouse1)) // Right Click to open /DATA/ Menu
-        {
-            UIManager.inst.Data_OpenMenu(null, this.gameObject, this);
-        }
-        else if (Input.GetKeyDown(KeyCode.Mouse0)) // Left Click to do quest START/END
-        {
-            QuestPoint quest = HF.ActorHasQuestPoint(this);
-            if(quest != null && quest.CanInteract()) // Has a quest that can be interacted with
-            {
-                if(Vector2.Distance(this.transform.position, PlayerData.inst.transform.position) < 1.2f) // Adjacency check (Expensive so we do it last)
-                {
-                    quest.Interact();
-                }
-            }
-        }
-    }
-
     #endregion
+
 }

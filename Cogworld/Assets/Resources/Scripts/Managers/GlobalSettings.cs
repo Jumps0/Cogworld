@@ -939,14 +939,14 @@ public class GlobalSettings : MonoBehaviour
 
         inputActions.Player.ToggleDebug.performed += OnToggleDebug;
         inputActions.Player.ToggleDCCheck.performed += OnToggleDCCheck;
-        inputActions.Player.Pickup.performed += OnSubmit;
+        inputActions.Player.Enter.performed += OnSubmit;
     }
 
     private void OnDisable()
     {
         inputActions.Player.ToggleDebug.performed -= OnToggleDebug;
         inputActions.Player.ToggleDCCheck.performed -= OnToggleDCCheck;
-        inputActions.Player.Pickup.performed -= OnSubmit;
+        inputActions.Player.Enter.performed -= OnSubmit;
     }
     #endregion
 

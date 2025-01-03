@@ -91,7 +91,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Pickup"",
+                    ""name"": ""Enter"",
                     ""type"": ""Button"",
                     ""id"": ""d9f7332b-b76b-4efc-957a-417550890912"",
                     ""expectedControlType"": ""Button"",
@@ -361,7 +361,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Pickup"",
+                    ""action"": ""Enter"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -372,7 +372,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Pickup"",
+                    ""action"": ""Enter"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -989,7 +989,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         m_Player_ToggleDebug = m_Player.FindAction("ToggleDebug", throwIfNotFound: true);
         m_Player_ToggleDCCheck = m_Player.FindAction("ToggleDCCheck", throwIfNotFound: true);
         m_Player_ToggleMovementMode = m_Player.FindAction("ToggleMovementMode", throwIfNotFound: true);
-        m_Player_Pickup = m_Player.FindAction("Pickup", throwIfNotFound: true);
+        m_Player_Enter = m_Player.FindAction("Enter", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1068,7 +1068,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_ToggleDebug;
     private readonly InputAction m_Player_ToggleDCCheck;
     private readonly InputAction m_Player_ToggleMovementMode;
-    private readonly InputAction m_Player_Pickup;
+    private readonly InputAction m_Player_Enter;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -1080,7 +1080,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         public InputAction @ToggleDebug => m_Wrapper.m_Player_ToggleDebug;
         public InputAction @ToggleDCCheck => m_Wrapper.m_Player_ToggleDCCheck;
         public InputAction @ToggleMovementMode => m_Wrapper.m_Player_ToggleMovementMode;
-        public InputAction @Pickup => m_Wrapper.m_Player_Pickup;
+        public InputAction @Enter => m_Wrapper.m_Player_Enter;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1111,9 +1111,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @ToggleMovementMode.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnToggleMovementMode;
                 @ToggleMovementMode.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnToggleMovementMode;
                 @ToggleMovementMode.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnToggleMovementMode;
-                @Pickup.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPickup;
-                @Pickup.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPickup;
-                @Pickup.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPickup;
+                @Enter.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEnter;
+                @Enter.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEnter;
+                @Enter.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEnter;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -1139,9 +1139,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @ToggleMovementMode.started += instance.OnToggleMovementMode;
                 @ToggleMovementMode.performed += instance.OnToggleMovementMode;
                 @ToggleMovementMode.canceled += instance.OnToggleMovementMode;
-                @Pickup.started += instance.OnPickup;
-                @Pickup.performed += instance.OnPickup;
-                @Pickup.canceled += instance.OnPickup;
+                @Enter.started += instance.OnEnter;
+                @Enter.performed += instance.OnEnter;
+                @Enter.canceled += instance.OnEnter;
             }
         }
     }
@@ -1305,7 +1305,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         void OnToggleDebug(InputAction.CallbackContext context);
         void OnToggleDCCheck(InputAction.CallbackContext context);
         void OnToggleMovementMode(InputAction.CallbackContext context);
-        void OnPickup(InputAction.CallbackContext context);
+        void OnEnter(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

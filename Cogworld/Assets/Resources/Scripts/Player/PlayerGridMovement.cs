@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -30,14 +28,16 @@ public class PlayerGridMovement : MonoBehaviour
 
         inputActions.Player.Move.performed += OnMovePerformed;
         inputActions.Player.Move.canceled += OnMoveCanceled;
-        inputActions.Player.LeftClick.performed += OnMouseClickPerformed;
+        //inputActions.Player.LeftClick.performed += OnLeftClick;
+        //inputActions.Player.RightClick.performed += OnRightClick;
     }
 
     private void OnDisable()
     {
         inputActions.Player.Move.performed -= OnMovePerformed;
         inputActions.Player.Move.canceled -= OnMoveCanceled;
-        inputActions.Player.LeftClick.performed -= OnMouseClickPerformed;
+        //inputActions.Player.LeftClick.performed -= OnLeftClick;
+        //inputActions.Player.RightClick.performed -= OnRightClick;
     }
 
     private void OnMovePerformed(InputAction.CallbackContext context)
@@ -97,24 +97,6 @@ public class PlayerGridMovement : MonoBehaviour
     }
 
     #region Movement
-
-    private void OnMouseClickPerformed(InputAction.CallbackContext context)
-    {
-        if (!GetComponent<Actor>().isAlive || !GameManager.inst.allowMouseMovement || GridManager.inst.astar == null) return;
-
-        if (GridManager.inst.astar.path.Count > 0 &&
-            GridManager.inst.astar.searchStatus == AStarSearchStatus.Success)
-        {
-            TileBlock currentTile = GetCurrentPlayerTile();
-            int lastItem = GridManager.inst.astar.path.Count - 2;
-            int targetX = GridManager.inst.astar.path[lastItem].X - currentTile.locX;
-            int targetY = GridManager.inst.astar.path[lastItem].Y - currentTile.locY;
-
-            AttemptMovement(targetX, targetY);
-            GridManager.inst.ClearGridOfHighlightColor(UIManager.inst.dullGreen);
-        }
-    }
-
     private void HandleMovement(Vector2 direction)
     {
         if (isMoving || !playerMovementAllowed || inDialogueSequence || !GetComponent<Actor>().isAlive || interfacingMode != InterfacingMode.COMBAT) return;
@@ -351,7 +333,7 @@ public class PlayerGridMovement : MonoBehaviour
 
     #endregion
 
-    public void OnPickup(InputValue value)
+    public void OnEnter(InputValue value)
     {
         if (!GetComponent<Actor>().isAlive || interfacingMode != InterfacingMode.COMBAT) return;
 
@@ -367,20 +349,122 @@ public class PlayerGridMovement : MonoBehaviour
 
         // Need to check for:
         // - Player clicking on the item (clicking on themselves really)
-        // See OnMouseDown()
+        // See OnLeftClick() below
 
         // - Player hitting enter
         currentTile._partOnTop.TryEquipItem(); // Try equipping it
         //InventoryControl.inst.DebugPrintInventory();
     }
 
-    private void OnMouseDown() // When the player clicks on themselves
+    // -- Handle [LEFT] Clicks
+    public void OnLeftClick(InputValue value)
     {
-        TileBlock itemCheck = GetCurrentPlayerTile(); // Get the current tile the player is on
-        if (itemCheck._partOnTop != null) // If there is an item on it (underneath the player)
+        if (!GetComponent<Actor>().isAlive) return;
+
+        // Get mouse position
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+
+        // Check if mouse overlaps with the player
+        if (PlayerData.inst.GetComponent<BoxCollider2D>().OverlapPoint(mousePos))
         {
-            Debug.Log("Try equip...");
-            itemCheck._partOnTop.TryEquipItem(); // Try equipping it
+            // If the user left clicks on themselves, they are trying to pick up an item beneath them.
+            TileBlock itemCheck = GetCurrentPlayerTile(); // Get the current tile the player is on
+            if (itemCheck._partOnTop != null) // If there is an item on it (underneath the player)
+            {
+                itemCheck._partOnTop.TryEquipItem(); // Try equipping it
+            }
+
+            // Finished
+            return;
+        }
+        else // Okay maybe they clicked on something else, lets find out.
+        {
+            GameObject target = HF.GetTargetAtPosition(new Vector2Int((int)mousePos.x, (int)mousePos.y));
+
+            // What did we get?
+            if(target == null) {} // Nothing
+            else if (target.GetComponent<Actor>()) // A bot
+            {
+                // If left clicked, the bot should have some special interaction if it has a quest point
+                Actor a = target.GetComponent<Actor>();
+                QuestPoint quest = HF.ActorHasQuestPoint(a);
+
+                if (quest != null && quest.CanInteract()) // Has a quest that can be interacted with
+                {
+                    if (Vector2.Distance(a.transform.position, PlayerData.inst.transform.position) < 1.2f) // Adjacency check (Expensive so we do it last)
+                    {
+                        quest.Interact();
+                    }
+
+                    // Finished
+                    return;
+                }
+            }
+            else if (target.GetComponent<TileBlock>()) // Some kind of structure
+            {
+                // ??
+
+                // Finished
+                return;
+            }
+        }
+
+        // If there is nothing else happening, consider mouse movement
+        // NOTE: This feels kinda bad to put here (at the end) considering how common this may be. Try and re-organize this later.
+        if (!playerMovementAllowed || !GameManager.inst.allowMouseMovement || GridManager.inst.astar == null) return;
+
+        if (GridManager.inst.astar.path.Count > 0 &&
+            GridManager.inst.astar.searchStatus == AStarSearchStatus.Success)
+        {
+            TileBlock currentTile = GetCurrentPlayerTile();
+            int lastItem = GridManager.inst.astar.path.Count - 2;
+            int targetX = GridManager.inst.astar.path[lastItem].X - currentTile.locX;
+            int targetY = GridManager.inst.astar.path[lastItem].Y - currentTile.locY;
+
+            AttemptMovement(targetX, targetY);
+            GridManager.inst.ClearGridOfHighlightColor(UIManager.inst.dullGreen);
+        }
+    }
+
+    // -- Handle [RIGHT] Clicks
+    public void OnRightClick(InputValue value)
+    {
+        if (!GetComponent<Actor>().isAlive) return;
+
+        // Get mouse position
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+
+        // Check if mouse overlaps with the player
+        if (PlayerData.inst.GetComponent<BoxCollider2D>().OverlapPoint(mousePos))
+        {
+            // If the user right clicks on themselves, we need to display their stats in the left side window.
+
+
+            // TODO: SHOW PLAYER INFO
+            Debug.Log("THIS FUNCTIONALITY HAS NOT BEEN IMPLEMENTED YET.");
+        }
+        else // Okay maybe they clicked on something else, lets find out.
+        {
+            GameObject target = HF.GetTargetAtPosition(new Vector2Int((int)mousePos.x, (int)mousePos.y));
+
+            // What did we get?
+            if (target == null) { return; } // Nothing, bail out
+            else if (target.GetComponent<Actor>()) // A bot
+            {
+                // If right clicked, the /DATA/ menu should open and display info about the bot.
+                Actor a = target.GetComponent<Actor>();
+                UIManager.inst.Data_OpenMenu(null, a.gameObject, a); // Open the /DATA/ menu
+            }
+            else if (target.GetComponent<Part>()) // An item
+            {
+                // If right clicked, the /DATA/ menu should open and display info about the bot.
+                Part p = target.GetComponent<Part>();
+                UIManager.inst.Data_OpenMenu(p._item);
+            }
+            else if (target.GetComponent<TileBlock>()) // Some kind of structure
+            {
+
+            }
         }
     }
 }

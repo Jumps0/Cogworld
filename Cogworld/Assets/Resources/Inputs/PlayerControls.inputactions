@@ -69,7 +69,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Pickup",
+                    "name": "Enter",
                     "type": "Button",
                     "id": "d9f7332b-b76b-4efc-957a-417550890912",
                     "expectedControlType": "Button",
@@ -339,7 +339,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Pickup",
+                    "action": "Enter",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -350,7 +350,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Pickup",
+                    "action": "Enter",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

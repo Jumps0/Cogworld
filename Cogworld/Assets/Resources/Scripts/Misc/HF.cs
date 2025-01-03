@@ -6076,6 +6076,7 @@ public static class HF
         GameObject bot = null;
         GameObject door = null;
         GameObject machine = null;
+        GameObject part = null;
         GameObject floor = null;
 
         // Loop through all the hits and set the targeting highlight on each tile (ideally shouldn't loop that many times)
@@ -6089,20 +6090,21 @@ public static class HF
             // -A bot
             // -A door
             // -A machine
+            // -A part (item)
             // -A floor tile
 
             // We will solve this problem by setting flags. And then going back afterwards and using our heirarchy.
 
             #region Hierarchy Flagging
-            if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Wall"))
-            {
-                // A wall
-                wall = hit.collider.gameObject;
-            }
-            else if (hit.collider.GetComponent<Actor>())
+            if (hit.collider.GetComponent<Actor>())
             {
                 // A bot
                 bot = hit.collider.gameObject;
+            }
+            else if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Wall"))
+            {
+                // A wall
+                wall = hit.collider.gameObject;
             }
             else if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Door"))
             {
@@ -6114,9 +6116,14 @@ public static class HF
                 // Machine
                 machine = hit.collider.gameObject;
             }
+            else if (hit.collider.GetComponent<Part>())
+            {
+                // Part (Item)
+                part = hit.collider.gameObject;
+            }
             else if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Floor"))
             {
-                // Dirty floor tile
+                // Floor tile
                 floor = hit.collider.gameObject;
             }
 
@@ -6125,11 +6132,7 @@ public static class HF
 
         GameObject retObject = null;
 
-        if(wall != null)
-        {
-            retObject = wall;
-        }
-        else if (bot != null)
+        if (bot != null)
         {
             retObject = bot;
         }
@@ -6140,6 +6143,14 @@ public static class HF
         else if (machine != null)
         {
             retObject = machine;
+        }
+        else if (wall != null)
+        {
+            retObject = wall;
+        }
+        else if(part != null)
+        {
+            retObject = part;
         }
         else if (floor != null)
         {
