@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class TestMgr : MonoBehaviour
 {
@@ -38,11 +39,11 @@ public class TestMgr : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             StartCoroutine(Delay());
         }
-        else if (Input.GetKeyDown(KeyCode.V))
+        else if (Keyboard.current.vKey.wasPressedThisFrame)
         {
             refA.GetComponent<UIDataHeader>().Close();
             refB.GetComponent<UIDataGenericDetail>().Close();

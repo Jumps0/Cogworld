@@ -77,11 +77,11 @@ public class TargetingTestMgr : MonoBehaviour
 
     public void DrawTargetingLine()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             FindLinePath();
         }
-        else if(Input.GetKeyDown(KeyCode.C))
+        else if(Keyboard.current.cKey.wasPressedThisFrame)
         {
             CleanAllTiles();
         }

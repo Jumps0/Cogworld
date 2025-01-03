@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine.EventSystems;
 using System.Linq;
 using UnityEngine.UIElements;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// Used for directly typing out commands during hacking.
@@ -91,7 +92,7 @@ public class UIHackInputfield : MonoBehaviour
 
             SuggestionBoxCheck();
 
-            if (Input.GetKey(KeyCode.Escape))
+            if (Keyboard.current.escapeKey.wasPressedThisFrame)
             {
                 CloseCodesWindow();
                 // and destroy this manual input
@@ -99,7 +100,7 @@ public class UIHackInputfield : MonoBehaviour
                 Destroy(this.gameObject);
             }
 
-            if (Input.GetKeyDown(KeyCode.Tab))
+            if (Keyboard.current.tabKey.wasPressedThisFrame)
             {
                 SetFocus(true);
 
@@ -146,7 +147,7 @@ public class UIHackInputfield : MonoBehaviour
     int suggID = -1;
     private void BufferSuggestions()
     {
-        if (Input.GetKeyDown(KeyCode.DownArrow))
+        if (Keyboard.current.downArrowKey.wasPressedThisFrame)
         {
             if (suggID > 0)
             {
@@ -154,7 +155,7 @@ public class UIHackInputfield : MonoBehaviour
                 field.text = UIManager.inst.terminal_manualBuffer[suggID].Key;
             }
         }
-        else if (Input.GetKeyDown(KeyCode.UpArrow))
+        else if (Keyboard.current.upArrowKey.wasPressedThisFrame)
         {
             if(suggID < (UIManager.inst.terminal_manualBuffer.Count - 1))
             {
@@ -406,7 +407,7 @@ public class UIHackInputfield : MonoBehaviour
             // Now for navigation
             if (box_main.activeInHierarchy)
             {
-                if (Input.GetKeyDown(KeyCode.DownArrow))
+                if (Keyboard.current.downArrowKey.wasPressedThisFrame)
                 {
                     if (suggestionID < (activeSuggestions.Count - 1))
                     {
@@ -417,7 +418,7 @@ public class UIHackInputfield : MonoBehaviour
                         IndicateSelectedSuggestion(suggestionID);
                     }
                 }
-                else if (Input.GetKeyDown(KeyCode.UpArrow))
+                else if (Keyboard.current.upArrowKey.wasPressedThisFrame)
                 {
                     if (suggestionID != 0)
                     {

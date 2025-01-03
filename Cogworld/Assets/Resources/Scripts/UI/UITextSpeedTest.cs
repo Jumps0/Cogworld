@@ -6,6 +6,7 @@ using TMPro;
 using static System.Net.Mime.MediaTypeNames;
 using System.Linq;
 using System.Text;
+using UnityEngine.InputSystem;
 
 public class UITextSpeedTest : MonoBehaviour
 {
@@ -19,7 +20,7 @@ public class UITextSpeedTest : MonoBehaviour
     {
         if (!once)
         {
-            if(Input.GetKeyDown(KeyCode.Slash))
+            if(Keyboard.current.slashKey.wasPressedThisFrame)
             {
                 StartCoroutine(RealTestLoop());
                 StartCoroutine(Loop());
