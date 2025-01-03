@@ -98,6 +98,33 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Quit"",
+                    ""type"": ""Button"",
+                    ""id"": ""6ca76705-eacd-4871-84ff-981cd34eda48"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Volley"",
+                    ""type"": ""Button"",
+                    ""id"": ""e177fca8-4f22-4541-bfec-51bf81efb992"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Autocomplete"",
+                    ""type"": ""Button"",
+                    ""id"": ""6148ee14-ec00-4d16-ad6c-88cc4414f070"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -395,6 +422,39 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""RightClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ecae1aea-33f0-4a0a-9120-612a48b91564"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Quit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e4af3929-c555-4aad-91a8-e22aea609101"",
+                    ""path"": ""<Keyboard>/v"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Volley"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b5a640fc-d719-44b9-af08-6d3c6f2c22f8"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Autocomplete"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -990,6 +1050,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         m_Player_ToggleDCCheck = m_Player.FindAction("ToggleDCCheck", throwIfNotFound: true);
         m_Player_ToggleMovementMode = m_Player.FindAction("ToggleMovementMode", throwIfNotFound: true);
         m_Player_Enter = m_Player.FindAction("Enter", throwIfNotFound: true);
+        m_Player_Quit = m_Player.FindAction("Quit", throwIfNotFound: true);
+        m_Player_Volley = m_Player.FindAction("Volley", throwIfNotFound: true);
+        m_Player_Autocomplete = m_Player.FindAction("Autocomplete", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1069,6 +1132,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_ToggleDCCheck;
     private readonly InputAction m_Player_ToggleMovementMode;
     private readonly InputAction m_Player_Enter;
+    private readonly InputAction m_Player_Quit;
+    private readonly InputAction m_Player_Volley;
+    private readonly InputAction m_Player_Autocomplete;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -1081,6 +1147,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         public InputAction @ToggleDCCheck => m_Wrapper.m_Player_ToggleDCCheck;
         public InputAction @ToggleMovementMode => m_Wrapper.m_Player_ToggleMovementMode;
         public InputAction @Enter => m_Wrapper.m_Player_Enter;
+        public InputAction @Quit => m_Wrapper.m_Player_Quit;
+        public InputAction @Volley => m_Wrapper.m_Player_Volley;
+        public InputAction @Autocomplete => m_Wrapper.m_Player_Autocomplete;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1114,6 +1183,15 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @Enter.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEnter;
                 @Enter.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEnter;
                 @Enter.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEnter;
+                @Quit.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnQuit;
+                @Quit.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnQuit;
+                @Quit.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnQuit;
+                @Volley.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnVolley;
+                @Volley.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnVolley;
+                @Volley.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnVolley;
+                @Autocomplete.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAutocomplete;
+                @Autocomplete.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAutocomplete;
+                @Autocomplete.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAutocomplete;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -1142,6 +1220,15 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @Enter.started += instance.OnEnter;
                 @Enter.performed += instance.OnEnter;
                 @Enter.canceled += instance.OnEnter;
+                @Quit.started += instance.OnQuit;
+                @Quit.performed += instance.OnQuit;
+                @Quit.canceled += instance.OnQuit;
+                @Volley.started += instance.OnVolley;
+                @Volley.performed += instance.OnVolley;
+                @Volley.canceled += instance.OnVolley;
+                @Autocomplete.started += instance.OnAutocomplete;
+                @Autocomplete.performed += instance.OnAutocomplete;
+                @Autocomplete.canceled += instance.OnAutocomplete;
             }
         }
     }
@@ -1306,6 +1393,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         void OnToggleDCCheck(InputAction.CallbackContext context);
         void OnToggleMovementMode(InputAction.CallbackContext context);
         void OnEnter(InputAction.CallbackContext context);
+        void OnQuit(InputAction.CallbackContext context);
+        void OnVolley(InputAction.CallbackContext context);
+        void OnAutocomplete(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

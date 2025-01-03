@@ -87,57 +87,6 @@ public class UIManager : MonoBehaviour
      *  41/42/43 - New Level AnimTileBlocks
      */
 
-    private void Update()
-    {
-        // - Check to close Terminal window via Escape Key -
-        if(terminal_targetTerm != null) // Window is open
-        {
-            if (terminal_activeInput == null) // And the player isn't in the input window
-            {
-                if (Input.GetKeyDown(KeyCode.Escape))
-                {
-                    Terminal_CloseAny();
-                }
-            }
-        }
-
-        // Volley check
-        if((volleyMain.activeInHierarchy || volleyTiles.Count > 0) && !volleyAnimating)
-            Evasion_VolleyCheck();
-
-        // - Check to close the /DATA/ menu via left click
-        #region Data
-        if (dataMenu.data_parent.gameObject.activeInHierarchy)
-        {
-            if ((Input.GetMouseButtonDown(0) && dataMenu.data_focusObject == null && dataMenu.data_onTraits == false && dataMenu.data_onAnalysis == false) || Input.GetKeyDown(KeyCode.Escape)) // Close the menu
-            {
-                Data_CloseMenu();
-            }
-            else if (Input.GetMouseButtonDown(0) && dataMenu.data_focusObject != null) // Open the special detail menu instead
-            {
-                if (!dataMenu.data_extraDetail.activeInHierarchy) // Menu isn't already open
-                {
-                    dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().ShowExtraDetail(dataMenu.data_focusObject.extraDetailString);
-                }
-            }
-            else if (Input.GetMouseButtonDown(0) && dataMenu.data_onTraits && dataMenu.selection_obj != null) // Open the traits menu
-            {
-                if (!dataMenu.data_traitBox.activeInHierarchy) // Menu isn't already open
-                {
-                    dataMenu.data_traitBox.GetComponent<UIDataTraitbox>().Open();
-                }
-            }
-            else if (Input.GetMouseButtonDown(0) && dataMenu.data_onAnalysis && dataMenu.selection_obj != null) // Open the analysis menu
-            {
-                if (!dataMenu.data_traitBox.activeInHierarchy) // Menu isn't already open
-                {
-                    dataMenu.data_traitBox.GetComponent<UIDataTraitbox>().Open();
-                }
-            }
-        }
-        #endregion
-    }
-
     #region > New Floor & Fresh Start Animations <
 
     [Header("Fresh Start Animation")]
@@ -1812,7 +1761,8 @@ public class UIManager : MonoBehaviour
     public GameObject terminal_hackOptionsArea; // Where the hacking option prefabs will be put (Target)
     public GameObject terminal_hackResultsArea; // Where the hacking result prefabs will be put (Results)
     //
-    public GameObject terminal_activeInput = null;
+    [Tooltip("Input Field gameObject when using a Terminal")]
+    public GameObject terminal_activeIField = null;
     //
     public TextMeshProUGUI terminal_backingBinary;
     public TextMeshProUGUI terminal_name; // Terminal ?### - ? Access
@@ -1849,6 +1799,9 @@ public class UIManager : MonoBehaviour
 
         // Freeze player
         PlayerData.inst.GetComponent<PlayerGridMovement>().playerMovementAllowed = false;
+
+        // Change interfacing mode
+        PlayerData.inst.GetComponent<PlayerGridMovement>().UpdateInterfacingMode(InterfacingMode.TYPING);
 
         // Set target
         terminal_targetTerm = target;
@@ -2725,18 +2678,18 @@ public class UIManager : MonoBehaviour
 
     public void Terminal_CreateManualInput()
     {
-        if(terminal_activeInput != null) // Destroy it if a clone exists
+        if(terminal_activeIField != null) // Destroy it if a clone exists
         {
-            Destroy(terminal_activeInput);
-            terminal_activeInput = null;
+            Destroy(terminal_activeIField);
+            terminal_activeIField = null;
         }
 
         // We want to insert the input field prefab and set the focus to that.
-        terminal_activeInput = Instantiate(terminal_input_prefab, terminal_hackResultsArea.transform.position, Quaternion.identity);
-        terminal_activeInput.transform.SetParent(terminal_hackResultsArea.transform);
-        terminal_activeInput.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+        terminal_activeIField = Instantiate(terminal_input_prefab, terminal_hackResultsArea.transform.position, Quaternion.identity);
+        terminal_activeIField.transform.SetParent(terminal_hackResultsArea.transform);
+        terminal_activeIField.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Assign Details
-        terminal_activeInput.GetComponent<UIHackInputfield>().Setup();
+        terminal_activeIField.GetComponent<UIHackInputfield>().Setup();
     }
 
     public void Terminal_InstantFinishResults()
@@ -2978,6 +2931,9 @@ public class UIManager : MonoBehaviour
 
         // Un-Freeze the player
         PlayerData.inst.GetComponent<PlayerGridMovement>().playerMovementAllowed = true;
+
+        // Change interfacing mode
+        PlayerData.inst.GetComponent<PlayerGridMovement>().UpdateInterfacingMode(InterfacingMode.COMBAT);
 
     }
 
@@ -5662,18 +5618,9 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private void Evasion_VolleyCheck()
-    {
-        // Here we are just checking if the player presses the "V" key or not. This activates a special visual, and also changes the color of the "V".
-        if(Input.GetKeyDown(KeyCode.V))
-        {
-            Evasion_VolleyModeFlip();
-        }
-    }
-
     #region /VOLLEY/ Animation
     [HideInInspector] public bool volleyMode = false;
-    private bool volleyAnimating = false;
+    [HideInInspector] public bool volleyAnimating = false;
     public void Evasion_VolleyModeFlip()
     {
         volleyMode = !volleyMode; // Flip
@@ -5699,7 +5646,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private Dictionary<Vector2Int, GameObject> volleyTiles = new Dictionary<Vector2Int, GameObject>();
+    [HideInInspector] public Dictionary<Vector2Int, GameObject> volleyTiles = new Dictionary<Vector2Int, GameObject>();
 
     private IEnumerator Evasion_VolleyAnimation()
     {
@@ -5988,7 +5935,7 @@ public class UIManager : MonoBehaviour
     }
 
     #region Rightside - CEWQ
-    public void CEWQ_Click(int value) // Separate function for the buttons because it won't show up in the list for functions with more than 1 input.
+    public void CEWQ_Click(int value) // Separate function for the buttons because it won't show up in the list for functions with more than 1 input
     {
         CEWQ_SetMode(value, true);
     }

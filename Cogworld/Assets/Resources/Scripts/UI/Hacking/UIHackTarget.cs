@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 using System.Linq;
+using UnityEngine.InputSystem.Controls;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// Used for the the hacking targets in the hacking screen. "a - [Do a thing] ------------ ##%"
@@ -103,19 +105,19 @@ public class UIHackTarget : MonoBehaviour
         AppearAnim();
     }
 
-    KeyCode assignedKey;
+    KeyControl assignedKey;
     bool ready = false;
     private void SetKey()
     {
-        assignedKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), assignedLetter.ToUpper());
+        assignedKey = Keyboard.current[assignedLetter.ToLower()] as KeyControl;
     }
 
     private void Update()
     {
         // Input listener
-        if (available && ready && UIManager.inst.terminal_activeInput == null) // Don't want to accept input when doing so somewhere else!
+        if (available && ready && UIManager.inst.terminal_activeIField == null) // Don't want to accept input when doing so somewhere else!
         {
-            if (Input.GetKeyDown(assignedKey))
+            if (assignedKey.wasPressedThisFrame)
             {
                 AttemptHack();
             }
@@ -156,7 +158,7 @@ public class UIHackTarget : MonoBehaviour
         }
         else // Manual Command stuff here
         {
-            if(UIManager.inst.terminal_activeInput  == null) // dont wanna double-up
+            if(UIManager.inst.terminal_activeIField  == null) // dont wanna double-up
             {
                 // Play the "MANUAL" sound (56)
                 AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[56]); // MANUAL

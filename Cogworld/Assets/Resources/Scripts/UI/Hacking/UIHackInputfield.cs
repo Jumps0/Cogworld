@@ -95,7 +95,7 @@ public class UIHackInputfield : MonoBehaviour
             {
                 CloseCodesWindow();
                 // and destroy this manual input
-                UIManager.inst.terminal_activeInput = null;
+                UIManager.inst.terminal_activeIField = null;
                 Destroy(this.gameObject);
             }
 

@@ -333,7 +333,7 @@ public class PlayerGridMovement : MonoBehaviour
 
     #endregion
 
-    #region MAJOR Interactions (Left Click/Right Click/ENTER)
+    #region Input Handling
     public void OnEnter(InputValue value)
     {
         if (!GetComponent<Actor>().isAlive || interfacingMode != InterfacingMode.COMBAT) return;
@@ -365,7 +365,37 @@ public class PlayerGridMovement : MonoBehaviour
         // -- Combat --
         if(this.GetComponent<PlayerData>().doTargeting)
             this.GetComponent<PlayerData>().HandleMouseAttack();
-        // --        --
+
+        #region /DATA/ menu
+        if (UIManager.inst.dataMenu.data_parent.gameObject.activeInHierarchy)
+        {
+            if(UIManager.inst.dataMenu.data_focusObject == null && UIManager.inst.dataMenu.data_onTraits == false && UIManager.inst.dataMenu.data_onAnalysis == false)
+            {
+                UIManager.inst.Data_CloseMenu();
+            }
+            else if (UIManager.inst.dataMenu.data_focusObject != null) // Open the special detail menu instead
+            {
+                if (!UIManager.inst.dataMenu.data_extraDetail.activeInHierarchy) // Menu isn't already open
+                {
+                    UIManager.inst.dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().ShowExtraDetail(UIManager.inst.dataMenu.data_focusObject.extraDetailString);
+                }
+            }
+            else if (UIManager.inst.dataMenu.data_onTraits && UIManager.inst.dataMenu.selection_obj != null) // Open the traits menu
+            {
+                if (!UIManager.inst.dataMenu.data_traitBox.activeInHierarchy) // Menu isn't already open
+                {
+                    UIManager.inst.dataMenu.data_traitBox.GetComponent<UIDataTraitbox>().Open();
+                }
+            }
+            else if (UIManager.inst.dataMenu.data_onAnalysis && UIManager.inst.dataMenu.selection_obj != null) // Open the analysis menu
+            {
+                if (!UIManager.inst.dataMenu.data_traitBox.activeInHierarchy) // Menu isn't already open
+                {
+                    UIManager.inst.dataMenu.data_traitBox.GetComponent<UIDataTraitbox>().Open();
+                }
+            }
+        }
+        #endregion
 
         // Get mouse position
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
@@ -481,6 +511,41 @@ public class PlayerGridMovement : MonoBehaviour
                 MachinePart m = target.GetComponent<MachinePart>();
                 UIManager.inst.Data_OpenMenu(null, m.gameObject);
             }
+        }
+    }
+
+    /// <summary>
+    /// aka the ESCAPE key
+    /// </summary>
+    /// <param name="value"></param>
+    public void OnQuit(InputValue value)
+    {
+        // - Check to close Terminal window -
+        if (UIManager.inst.terminal_targetTerm != null) // Window is open
+        {
+            if (UIManager.inst.terminal_activeIField == null) // And the player isn't in the input window
+            {
+                UIManager.inst.Terminal_CloseAny(); // The close the window
+            }
+        }
+
+        // - Check to close the /DATA/ window -
+        if (UIManager.inst.dataMenu.data_parent.gameObject.activeInHierarchy)
+        {
+            UIManager.inst.Data_CloseMenu();
+        }
+    }
+
+    /// <summary>
+    /// aka the V key. Used for EVASION - Volley mode switching. See `Evasion_VolleyModeFlip()` inside UIManager for more details.
+    /// </summary>
+    /// <param name="value"></param>
+    public void OnVolley(InputValue value)
+    {
+        // Here we are just checking if the player presses the "V" key or not. This activates a special visual, and also changes the color of the "V".
+        if ((UIManager.inst.volleyMain.activeInHierarchy || UIManager.inst.volleyTiles.Count > 0) && !UIManager.inst.volleyAnimating)
+        {
+            UIManager.inst.Evasion_VolleyModeFlip();
         }
     }
     #endregion

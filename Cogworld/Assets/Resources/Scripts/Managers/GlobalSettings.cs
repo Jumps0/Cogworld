@@ -19,9 +19,6 @@ public class GlobalSettings : MonoBehaviour
 #endif
     }
 
-    [Header("Cheats")]
-    public bool cheat_fullVision = false;
-
     #region Defaults
     [Header("Defaults")]
         [Header("Player")]
@@ -371,7 +368,11 @@ public class GlobalSettings : MonoBehaviour
         if (db_playerPosition.gameObject.activeInHierarchy && PlayerData.inst)
         {
             Vector2Int playerPos = new Vector2Int((int)PlayerData.inst.transform.position.x, (int)PlayerData.inst.transform.position.y);
-            db_playerPosition.text = $"x:{playerPos.x} y:{playerPos.y}";
+
+            Vector2 m = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            Vector2Int mousePos = new Vector2Int((int)(m.x + 0.5f), (int)(m.y + 0.5f)); // Adjustment due to tiles being offset slightly from natural grid
+
+            db_playerPosition.text = $"player  x:{playerPos.x} y:{playerPos.y}" + "\n" + $"mouse   x:{mousePos.x} y:{mousePos.y}";
         }
 
         // Interfacing mode enforcement
@@ -545,7 +546,7 @@ public class GlobalSettings : MonoBehaviour
          *  > notiles
          *    -Toggles vision of all tile sprites
          *  > pos
-         *    -Returns (and displays) coordinate position of player
+         *    -Returns (and displays) coordinate position of player, and mouse
          *  > newflooranim
          *    -Plays the "new floor" animation
          *  > broadcast "type" "message"
@@ -805,7 +806,7 @@ public class GlobalSettings : MonoBehaviour
 
                 break;
             case "fow":
-                FogOfWar.inst.DEBUG_RevealAll();
+                FogOfWar.inst.DEBUG_ToggleFog();
                 success = true;
 
                 break;

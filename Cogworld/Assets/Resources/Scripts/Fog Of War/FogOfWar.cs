@@ -26,9 +26,9 @@ public class FogOfWar : MonoBehaviour
             {
                 TData T = MapManager.inst._allTilesRealized[(Vector2Int)pos];
 
-                if (GlobalSettings.inst.cheat_fullVision)
+                if (debug_nofog)
                 {
-                    // For full vision cheat
+                    // For full vision
                     T.vis = 2;
                 }
                 else
@@ -135,50 +135,60 @@ public class FogOfWar : MonoBehaviour
         }
     }
 
-    public void DEBUG_RevealAll()
+    private bool debug_nofog = false;
+    public void DEBUG_ToggleFog()
     {
-        foreach (var T in MapManager.inst._allTilesRealized)
+        debug_nofog = !debug_nofog;
+
+        if (debug_nofog) // DEBUG mode, show everything
         {
-            TData TD = T.Value;
-            TD.vis = 2;
-
-            MapManager.inst._allTilesRealized[T.Key] = TD;
-
-            MapManager.inst._allTilesRealized[T.Key].bottom.UpdateVis(TD.vis); // Update the vis for the bottom
-            if (MapManager.inst._allTilesRealized[T.Key].top != null) // And if it exists, update the vis for the top
-                HF.SetGenericTileVis(MapManager.inst._allTilesRealized[T.Key].top, TD.vis);
-        }
-
-        // Bots
-        foreach (Entity E in GameManager.inst.entities)
-        {
-            if (E)
+            foreach (var T in MapManager.inst._allTilesRealized)
             {
-                E.GetComponent<Actor>().isVisible = true;
-                E.GetComponent<Actor>().isExplored = true;
+                TData TD = T.Value;
+                TD.vis = 2;
+
+                MapManager.inst._allTilesRealized[T.Key] = TD;
+
+                MapManager.inst._allTilesRealized[T.Key].bottom.UpdateVis(TD.vis); // Update the vis for the bottom
+                if (MapManager.inst._allTilesRealized[T.Key].top != null) // And if it exists, update the vis for the top
+                    HF.SetGenericTileVis(MapManager.inst._allTilesRealized[T.Key].top, TD.vis);
+            }
+
+            // Bots
+            foreach (Entity E in GameManager.inst.entities)
+            {
+                if (E)
+                {
+                    E.GetComponent<Actor>().isVisible = true;
+                    E.GetComponent<Actor>().isExplored = true;
+                }
+            }
+
+            // Items
+            foreach (var item in InventoryControl.inst.worldItems)
+            {
+                if (item.Value != null)
+                {
+                    item.Value.GetComponent<Part>().isVisible = true;
+                    item.Value.GetComponent<Part>().isExplored = true;
+                }
+            }
+
+            // Quest points
+            foreach (var qp in QuestManager.inst.questPoints)
+            {
+                if (qp != null)
+                {
+                    Vector3Int pos = new Vector3Int((int)qp.transform.position.x, (int)qp.transform.position.y, (int)qp.transform.position.z);
+
+                    qp.GetComponent<QuestPoint>().isVisible = true;
+                    qp.GetComponent<QuestPoint>().isExplored = true;
+                }
             }
         }
-
-        // Items
-        foreach (var item in InventoryControl.inst.worldItems)
+        else // Back to normal
         {
-            if (item.Value != null)
-            {
-                item.Value.GetComponent<Part>().isVisible = true;
-                item.Value.GetComponent<Part>().isExplored = true;
-            }
-        }
-
-        // Quest points
-        foreach (var qp in QuestManager.inst.questPoints)
-        {
-            if (qp != null)
-            {
-                Vector3Int pos = new Vector3Int((int)qp.transform.position.x, (int)qp.transform.position.y, (int)qp.transform.position.z);
-
-                qp.GetComponent<QuestPoint>().isVisible = true;
-                qp.GetComponent<QuestPoint>().isExplored = true;
-            }
+            // ?
         }
     }
 

@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 using System.Linq;
+using UnityEngine.InputSystem.Controls;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// Support script for an individual custom hacking code.
@@ -53,21 +55,21 @@ public class UIHackCustomCode : MonoBehaviour
         available = true;
     }
 
-    KeyCode assignedKeyCode;
+    KeyControl assignedKeyCode;
     bool ready = false;
     bool available = false;
 
     private void SetKey()
     {
-        assignedKeyCode = (KeyCode)System.Enum.Parse(typeof(KeyCode), assignedKey.ToUpper());
+        assignedKeyCode = Keyboard.current[assignedKey.ToLower()] as KeyControl;
     }
 
     private void Update()
     {
         // Input listener
-        if (available && ready && UIManager.inst.terminal_activeInput == null) // Don't want to accept input when doing so somewhere else!
+        if (available && ready && UIManager.inst.terminal_activeIField == null) // Don't want to accept input when doing so somewhere else!
         {
-            if (Input.GetKeyDown(assignedKeyCode))
+            if (assignedKeyCode.wasPressedThisFrame)
             {
                 AttemptHack();
             }
