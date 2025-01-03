@@ -4513,15 +4513,15 @@ public static class HF
     /// <summary>
     /// Given a single input string, will split it up given a position value within the string. Ex: (apple, 1) -> (a, p, ple)
     /// </summary>
-    /// <param name="input">The input string to split.</param>
+    /// <param name="istring">The input string to split.</param>
     /// <param name="position">The position within the string to select as our "split point".</param>
     /// <param name="left">All the characters to the left of the split point.</param>
     /// <param name="middle">The single character at the split point.</param>
     /// <param name="right">All the characters to the right of the split point.</param>
-    public static void SplitString(string input, int position, out string left, out string middle, out string right)
+    public static void SplitString(string istring, int position, out string left, out string middle, out string right)
     {
         // Check if the position is within the bounds of the string
-        if (position < 0 || position >= input.Length)
+        if (position < 0 || position >= istring.Length)
         {
             // If the position is out of bounds, set all output strings to empty
             left = "";
@@ -4531,27 +4531,27 @@ public static class HF
         }
 
         // Get the substring to the left of the character at the given position
-        left = input.Substring(0, position);
+        left = istring.Substring(0, position);
 
         // Get the character at the given position
-        middle = input.Substring(position, 1);
+        middle = istring.Substring(position, 1);
 
         // Get the substring to the right of the character at the given position
-        right = input.Substring(position + 1);
+        right = istring.Substring(position + 1);
     }
 
     /// <summary>
     /// Extracts text from the inside of (   ). Example Name(This)
     /// </summary>
-    /// <param name="input">A string in the format of "Name(This)".</param>
+    /// <param name="istring">A string in the format of "Name(This)".</param>
     /// <returns></returns>
-    public static string ExtractText(string input)
+    public static string ExtractText(string istring)
     {
-        int bracketStartIndex = input.IndexOf('(');
-        int bracketEndIndex = input.IndexOf(')');
+        int bracketStartIndex = istring.IndexOf('(');
+        int bracketEndIndex = istring.IndexOf(')');
         if (bracketStartIndex != -1 && bracketEndIndex != -1 && bracketEndIndex > bracketStartIndex)
         {
-            return input.Substring(bracketStartIndex + 1, bracketEndIndex - bracketStartIndex - 1).Trim();
+            return istring.Substring(bracketStartIndex + 1, bracketEndIndex - bracketStartIndex - 1).Trim();
         }
 
         return string.Empty;
@@ -4566,49 +4566,49 @@ public static class HF
     /// <summary>
     /// Access a string in the form of word(word), returns anything to the left of the "(".
     /// </summary>
-    /// <param name="input">A string that contains "(", usually in the form of word(word)</param>
+    /// <param name="istring">A string that contains "(", usually in the form of word(word)</param>
     /// <returns>Returns the characters to the left of the "(" character.</returns>
-    public static string GetLeftSubstring(string input)
+    public static string GetLeftSubstring(string istring)
     {
-        int index = input.IndexOf("(");
+        int index = istring.IndexOf("(");
         if (index != -1)
         {
-            return input.Substring(0, index);
+            return istring.Substring(0, index);
         }
 
-        return input;
+        return istring;
     }
 
     /// <summary>
     /// Access a string in the form of word(word), returns anything to the right of the "(".
     /// </summary>
-    /// <param name="input">A string that contains "(", usually in the form of word(word)</param>
+    /// <param name="istring">A string that contains "(", usually in the form of word(word)</param>
     /// <returns>Returns the characters to the right of the "(" character.</returns>
-    public static string GetRightSubstring(string input)
+    public static string GetRightSubstring(string istring)
     {
-        int index = input.IndexOf("(");
+        int index = istring.IndexOf("(");
         if (index != -1)
         {
-            return input.Substring(index + 1, input.Length - index - 2);
+            return istring.Substring(index + 1, istring.Length - index - 2);
         }
 
         return string.Empty;
     }
 
-    public static string RemoveTrailingNewline(string input)
+    public static string RemoveTrailingNewline(string istring)
     {
-        if (!string.IsNullOrEmpty(input))
+        if (!string.IsNullOrEmpty(istring))
         {
-            int length = input.Length;
-            while (length > 0 && input[length - 1] == '\n')
+            int length = istring.Length;
+            while (length > 0 && istring[length - 1] == '\n')
             {
                 length--;
             }
 
-            return input.Substring(0, length);
+            return istring.Substring(0, length);
         }
 
-        return input;
+        return istring;
     }
 
     /// <summary>
@@ -4652,10 +4652,10 @@ public static class HF
     }
 
     // UNUSED (doesnt work)
-    public static string GenerateMarkedString(string input)
+    public static string GenerateMarkedString(string istring)
     {
         // Split the input string into words
-        string[] words = input.Split(new char[] { ' ', '\t' }, System.StringSplitOptions.RemoveEmptyEntries);
+        string[] words = istring.Split(new char[] { ' ', '\t' }, System.StringSplitOptions.RemoveEmptyEntries);
 
         // Initialize a StringBuilder to construct the marked string
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -4670,19 +4670,19 @@ public static class HF
         return sb.ToString();
     }
 
-    public static string GetLastCharOfString(string input)
+    public static string GetLastCharOfString(string istring)
     {
-        if (input.Length == 0)
+        if (istring.Length == 0)
         {
             return "";
         }
-        else if (input.Length == 1)
+        else if (istring.Length == 1)
         {
-            return input;
+            return istring;
         }
         else
         {
-            return input[input.Length - 1].ToString();
+            return istring[istring.Length - 1].ToString();
         }
     }
 
@@ -4937,17 +4937,17 @@ public static class HF
         return cName;
     }
 
-    public static string StringCoverageGradient(string input, Color left, Color right, bool fixedLength = false)
+    public static string StringCoverageGradient(string istring, Color left, Color right, bool fixedLength = false)
     {
         int fixedLengthValue = GlobalSettings.inst.maxCharBarLength;
 
-        int length = input.Length;
+        int length = istring.Length;
         int gradientLength = fixedLength ? Mathf.Min(fixedLengthValue, length) : length;
         int startIndex = fixedLength ? Mathf.Max(0, length - fixedLengthValue) : 0;
 
         StringBuilder sb = new StringBuilder();
 
-        if(input.Length > 1)
+        if(istring.Length > 1)
         {
             for (int i = 0; i < length; i++)
             {
@@ -4962,12 +4962,12 @@ public static class HF
                     color = Color.Lerp(left, right, t);
                 }
 
-                sb.Append($"<color=#{ColorUtility.ToHtmlStringRGB(color)}>{input[i]}</color>");
+                sb.Append($"<color=#{ColorUtility.ToHtmlStringRGB(color)}>{istring[i]}</color>");
             }
         }
         else // Failsafe
         {
-            sb.Append($"<color=#{ColorUtility.ToHtmlStringRGB(right)}>{input[0]}</color>");
+            sb.Append($"<color=#{ColorUtility.ToHtmlStringRGB(right)}>{istring[0]}</color>");
         }
         
 
@@ -5508,15 +5508,15 @@ public static class HF
         }
     }
 
-    public static List<string> StringToList(string input)
+    public static List<string> StringToList(string istring)
     {
         List<string> resultList = new List<string>();
 
         // Iterate over each character in the input string
-        for (int i = 0; i <= input.Length; i++)
+        for (int i = 0; i <= istring.Length; i++)
         {
             // Extract the substring from the beginning up to the current character
-            string substring = input.Substring(0, i);
+            string substring = istring.Substring(0, i);
             // Add the substring to the result list
             resultList.Add(substring);
         }

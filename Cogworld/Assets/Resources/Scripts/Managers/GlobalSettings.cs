@@ -421,9 +421,9 @@ public class GlobalSettings : MonoBehaviour
                 {
                     // Clear input when reaching the most recent command
                     //db_commandHistoryIndex = -1;
-                    //db_input.text = string.Empty;
+                    //db_ifield.text = string.Empty;
                     // Or set to last command
-                    //db_input.text = db_commandHistory[0];
+                    //db_ifield.text = db_commandHistory[0];
                 }
             }
 
@@ -527,7 +527,7 @@ public class GlobalSettings : MonoBehaviour
         db_textaid.text = "";
     }
 
-    private void DebugBarDoCommand(string input)
+    private void DebugBarDoCommand(string istring)
     {
         #region Possible Commands
         /* ===== [ POSSIBLE COMMANDS ] =====
@@ -558,8 +558,8 @@ public class GlobalSettings : MonoBehaviour
         bool success = false;
 
         // Split the command into parts
-        input = input.ToLower();
-        string[] bits = input.Split(" ");
+        istring = istring.ToLower();
+        string[] bits = istring.Split(" ");
 
         switch (bits[0])
         {
@@ -749,7 +749,7 @@ public class GlobalSettings : MonoBehaviour
                     else // Continue
                     {
                         // Lastly, utilize the rest of the input (which will be a full name with spaces included)
-                        string obj = input.Split(bits[1])[1].Trim();
+                        string obj = istring.Split(bits[1])[1].Trim();
                         // Need to now search for this thing based on type we got earlier (we will just go through the databases)
                         if(thing == "bot")
                         {
@@ -879,7 +879,7 @@ public class GlobalSettings : MonoBehaviour
                     else
                     {
                         // Get the whole message
-                        broadcast_message = input.Split(bits[1])[1].Trim();
+                        broadcast_message = istring.Split(bits[1])[1].Trim();
                     }
                 }
 
@@ -915,7 +915,7 @@ public class GlobalSettings : MonoBehaviour
             PlayerData.inst.GetComponent<PlayerGridMovement>().UpdateInterfacingMode(InterfacingMode.COMBAT);
 
             // Save command
-            db_commandHistory.Add(input);
+            db_commandHistory.Add(istring);
 
             // Clear the input box
             db_ifield.text = "";
