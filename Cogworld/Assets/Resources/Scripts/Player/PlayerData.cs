@@ -291,8 +291,8 @@ public class PlayerData : MonoBehaviour
 
     #region Combat
 
-    bool canDoTargeting = false;
-    bool doTargeting = false;
+    [HideInInspector] public bool canDoTargeting = false;
+    [HideInInspector] public bool doTargeting = false;
 
     // Checks for combat inputs
     public void CombatInputs()
@@ -308,17 +308,13 @@ public class PlayerData : MonoBehaviour
         {
             canDoTargeting = true;
 
-            // Now look for key inputs
-            if (Input.GetKeyDown(KeyCode.Mouse1))
-            {
-                doTargeting = !doTargeting;
-            }
+            // NOTE: `doTargeting` is handled in `PlayerGridMovement.cs`
 
             if (doTargeting)
             {
                 DoTargeting();
 
-                CheckForMouseAttack();
+                // NOTE: Attacking has been moved to inside `OnLeftClick` inside `PlayerGridMovement.cs`
             }
             else
             {
@@ -1324,74 +1320,77 @@ public class PlayerData : MonoBehaviour
         return null;
     }
 
-    public void CheckForMouseAttack()
+    // This is called from inside `PlayerGridMovement.cs` upon ANY mouse Left Click.
+    public void HandleMouseAttack()
     {
         if (TurnManager.inst.isPlayerTurn)
         {
             Item equippedWeapon = Action.FindActiveWeapon(this.GetComponent<Actor>());
 
-            // TODO: Have UIManager perform a little animation or whatever in the player's Matter/Energy bars to indicate how much this attack will cost
-            if(equippedWeapon != null)
+            // Perform the attack only if the player has a valid weapon equipped
+            if (equippedWeapon != null)
             {
+                PerformMouseAttack(equippedWeapon);
+            }
+        }
+    }
 
+    private void PerformMouseAttack(Item equippedWeapon)
+    {
+        // TODO: Have UIManager perform a little animation or whatever in the player's Matter/Energy bars to indicate how much this attack will cost
+
+        if (equippedWeapon != null && !attackBuffer)
+        {
+            Vector2Int mousePosition = HF.V3_to_V2I(Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()));
+
+            if (!Action.IsTargetWithinRange(HF.V3_to_V2I(this.transform.position), mousePosition, equippedWeapon)) // Does this weapon have the range to reach the target?
+            {
+                return; // Don't attack if the target is not within range.
             }
 
-            if (Input.GetKey(KeyCode.Mouse0)) // Leftclick
+            // Does the player have the required resources to perform this attack?
+            if (!Action.HasResourcesToAttack(this.GetComponent<Actor>(), equippedWeapon))
             {
-                if (equippedWeapon != null && !attackBuffer)
+                return;
+            }
+
+            StartCoroutine(AttackBuffer()); // Activate the attacking (interaction) cooldown.
+
+            if (Action.IsMeleeWeapon(equippedWeapon))
+            {
+                GameObject target = HF.GetTargetAtPosition(mousePosition); // Use ray-line to get target
+                Action.MeleeAction(this.GetComponent<Actor>(), target);
+            }
+            else
+            {
+                // Is this is standard ranged attack or an AOE attack?
+                if (equippedWeapon.itemData.explosionDetails.radius > 0) // It's an AOE attack, we need to handle things slightly differently.
                 {
-                    Vector2Int mousePosition = HF.V3_to_V2I(Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()));
+                    // Firstly, the target is wherever the player's mouse is.
+                    GameObject target = HF.GetTargetAtPosition(HF.V3_to_V2I(Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue())));
+                    // Second, the attack only attack happens when the projectile we are firing reaches the target.
 
-                    if (!Action.IsTargetWithinRange(HF.V3_to_V2I(this.transform.position), mousePosition, equippedWeapon)) // Does this weapon have the range to reach the target?
-                    {
-                        return; // Don't attack if the target is not within range.
-                    }
+                    // - Calculate the travel time
+                    float distance = Vector3.Distance(this.transform.position, target.transform.position);
+                    float travelTime = distance / 20f; // distance / speed
 
-                    // Does the player have the required resources to perform this attack?
-                    if (!Action.HasResourcesToAttack(this.GetComponent<Actor>(), equippedWeapon))
-                    {
-                        return;
-                    }
+                    // Now we need to launch the projectile, and stall until it reaches its target.
+                    StartCoroutine(StalledAOEAttack(travelTime, target, equippedWeapon));
+                }
+                else // Normal attack
+                {
+                    GameObject target = HF.DetermineAttackTarget(this.gameObject, Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue())); // Use ray-line to get target
 
-                    StartCoroutine(AttackBuffer()); // Activate the attacking (interaction) cooldown.
-
-                    if (Action.IsMeleeWeapon(equippedWeapon))
-                    {
-                        GameObject target = HF.GetTargetAtPosition(mousePosition); // Use ray-line to get target
-                        Action.MeleeAction(this.GetComponent<Actor>(), target);
-                    }
-                    else
-                    {
-                        // Is this is standard ranged attack or an AOE attack?
-                        if (equippedWeapon.itemData.explosionDetails.radius > 0) // It's an AOE attack, we need to handle things slightly differently.
-                        {
-                            // Firstly, the target is wherever the player's mouse is.
-                            GameObject target = HF.GetTargetAtPosition(HF.V3_to_V2I(Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue())));
-                            // Second, the attack only attack happens when the projectile we are firing reaches the target.
-
-                            // - Calculate the travel time
-                            float distance = Vector3.Distance(this.transform.position, target.transform.position);
-                            float travelTime = distance / 20f; // distance / speed
-
-                            // Now we need to launch the projectile, and stall until it reaches its target.
-                            StartCoroutine(StalledAOEAttack(travelTime, target, equippedWeapon));
-                        }
-                        else // Normal attack
-                        {
-                            GameObject target = HF.DetermineAttackTarget(this.gameObject, Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue())); // Use ray-line to get target
-
-                            Action.RangedAttackAction(this.GetComponent<Actor>(), target, equippedWeapon);
-                        }
-                    }
-
-                    ClearAllHighlights();
-                    LTH_Clear();
-                    doTargeting = false;
-
-                    // TODO: Tell UIManager to stop doing the cost "animation"
-
+                    Action.RangedAttackAction(this.GetComponent<Actor>(), target, equippedWeapon);
                 }
             }
+
+            ClearAllHighlights();
+            LTH_Clear();
+            doTargeting = false;
+
+            // TODO: Tell UIManager to stop doing the cost "animation"
+
         }
     }
 

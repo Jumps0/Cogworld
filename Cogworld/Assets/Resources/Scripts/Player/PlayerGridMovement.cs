@@ -362,6 +362,11 @@ public class PlayerGridMovement : MonoBehaviour
     {
         if (!GetComponent<Actor>().isAlive) return;
 
+        // -- Combat --
+        if(this.GetComponent<PlayerData>().doTargeting)
+            this.GetComponent<PlayerData>().HandleMouseAttack();
+        // --        --
+
         // Get mouse position
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
 
@@ -431,6 +436,14 @@ public class PlayerGridMovement : MonoBehaviour
     public void OnRightClick(InputValue value)
     {
         if (!GetComponent<Actor>().isAlive) return;
+
+        // -- Combat Targeting --
+        if (this.GetComponent<PlayerData>().canDoTargeting)
+        {
+            // Toggle
+            this.GetComponent<PlayerData>().doTargeting = !this.GetComponent<PlayerData>().doTargeting;
+        }
+        // --                  --
 
         // Get mouse position
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
