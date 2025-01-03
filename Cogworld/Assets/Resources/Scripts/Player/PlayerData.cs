@@ -1,15 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using Unity.Burst.CompilerServices;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.InputSystem;
-using UnityEngine.Tilemaps;
-using static UnityEditor.Progress;
+using UnityEngine.InputSystem.Controls;
 
 /// <summary>
 /// Stores all data related to the player.
@@ -1508,24 +1503,16 @@ public class PlayerData : MonoBehaviour
                         {
                             detect = reference._assignedChar;
 
-                            KeyCode parse = KeyCode.None;
-#pragma warning disable CS0168
-                            try
+                            // Validate the character and check key press
+                            if (!string.IsNullOrEmpty(detect))
                             {
-                                parse = (KeyCode)System.Enum.Parse(typeof(KeyCode), detect); // Make sure this is an actual key we can press
-                            }
-                            catch (Exception e)
-                            {
-                                // do nothing
-                                return;
-                            }
+                                // Convert assigned character to KeyControl
+                                var keyControl = Keyboard.current[detect.ToLower()] as KeyControl;
 
-                            if (detect != "" && parse != KeyCode.None && Input.GetKeyDown(parse)) // Is that key currenlty down?
-                            {
-                                // Toggle!
-                                if (reference != null)
+                                if (keyControl != null && keyControl.wasPressedThisFrame)
                                 {
-                                    reference.Click();
+                                    // Toggle!
+                                    reference?.Click();
                                     return;
                                 }
                             }
