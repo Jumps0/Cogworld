@@ -2365,7 +2365,7 @@ public class UIManager : MonoBehaviour
         // Do an animation over the hacking /TARGET/ window (this effect is greatly simplified since I don't know how to optimally achieve the true effect)
         // This also enables the static
         terminal_static.transform.parent.gameObject.SetActive(true);
-        terminal_static.GetComponent<UIHackStatic>().DoStatic();
+        StartCoroutine(ImageTransparentAnim(terminal_static.GetComponent<Image>(), 1f, true));
         terminal_closeEffect.Close();
 
         // Create the looping static sound
@@ -2846,7 +2846,7 @@ public class UIManager : MonoBehaviour
         // Stop static effects
         terminal_closeEffect.ResetEffect();
         terminal_static.transform.parent.gameObject.SetActive(false);
-        terminal_static.GetComponent<UIHackStatic>().StopStatic();
+        StartCoroutine(ImageTransparentAnim(terminal_static.GetComponent<Image>(), 1f, false));
         if (terminal_staticAudio != null)
         {
             Destroy(terminal_staticAudio);
@@ -2929,6 +2929,33 @@ public class UIManager : MonoBehaviour
         // Change interfacing mode
         PlayerData.inst.GetComponent<PlayerGridMovement>().UpdateInterfacingMode(InterfacingMode.COMBAT);
 
+    }
+
+    private IEnumerator ImageTransparentAnim(Image target, float duration, bool fadeIn)
+    {
+        float startValue, endValue;
+
+        if (fadeIn)
+        {
+            startValue = 0f;
+            endValue = 1f;
+        }
+        else
+        {
+            startValue = 1f;
+            endValue = 0f;
+        }
+
+        float elapsedTime = 0f;
+        while (elapsedTime < duration) // Green -> Black
+        {
+            target.color = new Color(target.color.r, target.color.g, target.color.b, Mathf.Lerp(startValue, endValue, elapsedTime / duration));
+
+            elapsedTime += Time.deltaTime;
+            yield return null; // Wait for the next frame
+        }
+
+        target.color = new Color(target.color.r, target.color.g, target.color.b, endValue);
     }
 
     #endregion
