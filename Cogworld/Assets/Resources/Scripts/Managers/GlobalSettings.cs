@@ -5,6 +5,8 @@ using TMPro;
 using UnityEngine;
 using Button = UnityEngine.UI.Button;
 using UnityEngine.InputSystem;
+using System.Security.Cryptography;
+using Unity.VisualScripting;
 
 public class GlobalSettings : MonoBehaviour
 {
@@ -513,6 +515,11 @@ public class GlobalSettings : MonoBehaviour
                     db_textaid.gameObject.SetActive(true);
                     db_textaid.text = "> broadcast \"type\" \"message\" [Broadcasts a specific type of message]";
                 }
+                else if (command.Contains("hackfail"))
+                {
+                    db_textaid.gameObject.SetActive(true);
+                    db_textaid.text = "> hackfail [If a terminal is open, forces it to fail.]";
+                }
                 // Expand this as needed
             }
         }
@@ -553,6 +560,8 @@ public class GlobalSettings : MonoBehaviour
          *    -Broadcasts a message string with the specified type of broadcaster
          *    Type: The different types of messenger system (alert, info, log)
          *    Message: The message string to display
+         *  > hackfail
+         *    -If a terminal is open, forces it into the fail state
          * ================================
          */
 
@@ -902,6 +911,43 @@ public class GlobalSettings : MonoBehaviour
                     // Add more cases as needed
                 }
 
+                success = true;
+
+                break;
+            case "hackfail":
+
+                if(UIManager.inst.terminal_targetTerm != null)
+                {
+                    // Need to get current hack status values
+                    float detectionChance = 0f;
+                    float traceProgress = 0f;
+                    bool detected = false;
+
+                    (detectionChance, traceProgress, detected) = HF.GetTraceValues(UIManager.inst.terminal_targetTerm);
+
+                    if (!detected)
+                    {
+                        UIManager.inst.Terminal_InitTrace(); // Activate the trace bar
+                    }
+
+                    foreach (var item in UIManager.inst.terminal_hackinfoList.ToList())
+                    {
+                        if (item.GetComponent<UITraceBar>())
+                        {
+                            item.GetComponent<UITraceBar>().ExpandByPercent(1f);
+
+                            DebugBarHelper("Failing hack...");
+
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    DebugBarHelper("[FAILED] No hack in progress.");
+                }
+
+                // For this special case, we will mark it as successful
                 success = true;
 
                 break;
