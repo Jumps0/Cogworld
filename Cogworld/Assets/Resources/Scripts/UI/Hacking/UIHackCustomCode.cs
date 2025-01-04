@@ -69,7 +69,7 @@ public class UIHackCustomCode : MonoBehaviour
         // Input listener
         if (available && ready && UIManager.inst.terminal_activeIField == null) // Don't want to accept input when doing so somewhere else!
         {
-            if (assignedKeyCode.wasPressedThisFrame)
+            if (assignedKeyCode.wasPressedThisFrame && !GlobalSettings.inst.db_main.gameObject.activeInHierarchy) // Make sure to not trigger when typing in console
             {
                 AttemptHack();
             }

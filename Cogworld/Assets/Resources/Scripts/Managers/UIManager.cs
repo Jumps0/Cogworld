@@ -2845,8 +2845,6 @@ public class UIManager : MonoBehaviour
 
         // Stop static effects
         terminal_closeEffect.ResetEffect();
-        terminal_static.transform.parent.gameObject.SetActive(false);
-        StartCoroutine(ImageTransparentAnim(terminal_static.GetComponent<Image>(), 1f, false));
         if (terminal_staticAudio != null)
         {
             Destroy(terminal_staticAudio);
@@ -2905,6 +2903,8 @@ public class UIManager : MonoBehaviour
         
 
         yield return null;
+
+        terminal_static.transform.parent.gameObject.SetActive(false);
 
         terminal_hackinfoList.Clear(); // Clear the list
         terminal_hackTargetsList.Clear();
