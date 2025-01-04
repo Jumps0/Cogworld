@@ -5,12 +5,9 @@ using UnityEngine.UI;
 using TMPro;
 using System.Linq;
 using System.Text;
-using static System.Net.Mime.MediaTypeNames;
 using Image = UnityEngine.UI.Image;
-using System.Drawing;
 using Color = UnityEngine.Color;
 using UnityEngine.InputSystem;
-//using static UnityEditor.Progress;
 
 public class UIManager : MonoBehaviour
 {
@@ -1769,6 +1766,8 @@ public class UIManager : MonoBehaviour
     public Image terminal_secLvl_backing;
     public TextMeshProUGUI terminal_secLvl;
     [SerializeField] private UIHackCloseEffect terminal_closeEffect;
+    [SerializeField] private GameObject terminal_static;
+    private GameObject terminal_staticAudio = null;
     // - Prefabs
     public GameObject terminal_hackinfoV1_prefab;
     public GameObject terminal_hackinfoV2_prefab;
@@ -1785,8 +1784,6 @@ public class UIManager : MonoBehaviour
     public List<GameObject> terminal_hackTargetsList = new List<GameObject>();
     public List<GameObject> terminal_hackResultsList = new List<GameObject>();
     public List<GameObject> terminal_hackCodesList = new List<GameObject>();
-    private GameObject terminal_staticAudio = null;
-    public GameObject terminal_static;
 
     [Header("    Codes Window")]
     public GameObject codes_window;
@@ -1962,7 +1959,7 @@ public class UIManager : MonoBehaviour
 
         // First, the hacking window opens
         terminal_hackingAreaRef.SetActive(true);
-        terminal_hackingAreaRef.GetComponent<AudioSource>().PlayOneShot(terminal_hackingAreaRef.GetComponent<AudioSource>().clip, 0.7f); // Play the opening sound
+        terminal_hackingAreaRef.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.UI_Clips[64], 0.7f); // UI - OPEN1
         StartCoroutine(Terminal_HackBorderAnim());
 
         // Play (typing) sound
@@ -2316,11 +2313,6 @@ public class UIManager : MonoBehaviour
 
     public void Terminal_InitTrace()
     {
-        StartCoroutine(Terminal_TraceOpener());
-    }
-
-    private IEnumerator Terminal_TraceOpener()
-    {
         // We want to open up the trance progress
         // -- "Estimated Trace Progress" --
         GameObject hackEstTrace = Instantiate(terminal_hackinfoV1_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
@@ -2346,8 +2338,6 @@ public class UIManager : MonoBehaviour
         hackSpacer8.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
         terminal_hackinfoList.Add(hackSpacer8);
-
-        yield return null;
     }
 
     public void Terminal_DoConsequences(Color setColor, string displayString, bool doSound = true, bool summonInvestigationSquad = true, bool forceExit = false)
@@ -2374,6 +2364,8 @@ public class UIManager : MonoBehaviour
 
         // Do an animation over the hacking /TARGET/ window (this effect is greatly simplified since I don't know how to optimally achieve the true effect)
         // This also enables the static
+        terminal_static.transform.parent.gameObject.SetActive(true);
+        terminal_static.GetComponent<UIHackStatic>().DoStatic();
         terminal_closeEffect.Close();
 
         // Create the looping static sound
@@ -2434,7 +2426,7 @@ public class UIManager : MonoBehaviour
     private IEnumerator Terminal_OpenTargetResults()
     {
         terminal_targetresultsAreaRef.SetActive(true); // Enable the window
-        terminal_targetresultsAreaRef.GetComponent<AudioSource>().PlayOneShot(terminal_targetresultsAreaRef.GetComponent<AudioSource>().clip, 0.7f); // Play the opening sound
+        terminal_targetresultsAreaRef.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.UI_Clips[64], 0.7f); // UI - OPEN1
         StartCoroutine(Terminal_TargetResultBorderAnim()); // Do the opener animation
 
         yield return new WaitForSeconds(0.4f);
@@ -2853,7 +2845,9 @@ public class UIManager : MonoBehaviour
 
         // Stop static effects
         terminal_closeEffect.ResetEffect();
-        if(terminal_staticAudio != null)
+        terminal_static.transform.parent.gameObject.SetActive(false);
+        terminal_static.GetComponent<UIHackStatic>().StopStatic();
+        if (terminal_staticAudio != null)
         {
             Destroy(terminal_staticAudio);
         }
