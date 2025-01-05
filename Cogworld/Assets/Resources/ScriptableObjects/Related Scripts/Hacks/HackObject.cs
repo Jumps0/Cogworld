@@ -10,6 +10,8 @@ public abstract class HackObject : ScriptableObject
     [Header("Overview")]
     public int Id;
     public string trueName;
+    [TextArea(3,5)]
+    public string description;
     public MachineType relatedMachine;
     public TerminalCommandType hackType;
 

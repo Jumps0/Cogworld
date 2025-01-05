@@ -395,6 +395,7 @@ public class PlayerGridMovement : MonoBehaviour
                 }
             }
         }
+
         #endregion
 
         // Get mouse position

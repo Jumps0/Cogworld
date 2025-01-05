@@ -2527,6 +2527,9 @@ public class UIManager : MonoBehaviour
         manualCommand.GetComponent<UIHackTarget>().SetupAsManualCommand(drawLine2);
 
         yield return null;
+
+        // Start detail checking
+        Terminal_ExtraDetail(true);
     }
 
     public void Terminal_RefreshHackingOptions()
@@ -2789,6 +2792,9 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator Terminal_CloseAnim()
     {
+        // Stop detail checking
+        Terminal_ExtraDetail(false);
+
         // Null out main reference
         terminal_targetTerm = null;
 
@@ -2956,6 +2962,88 @@ public class UIManager : MonoBehaviour
         }
 
         target.color = new Color(target.color.r, target.color.g, target.color.b, endValue);
+    }
+
+    /// <summary>
+    /// Handles logic for the ExtraDetail tooltip when hovering over hacking options.
+    /// </summary>
+    private void Terminal_ExtraDetail(bool check)
+    {
+        if (check)
+        {
+            // We need to start the checking loop.
+            if(terminal_extradetail_co != null)
+            {
+                StopCoroutine(terminal_extradetail_co);
+            }
+
+            terminal_extradetail_co = StartCoroutine(Terminal_ExtraDetailLoop());
+        }
+        else
+        {
+            // We need to stop the checking loop.
+            StopCoroutine(terminal_extradetail_co);
+            terminal_extradetail_co = null;
+        }
+    }
+
+    private Coroutine terminal_extradetail_co = null;
+    [Tooltip("The hacking option the mouse is currently hovering over. Updated via function.")]
+    private GameObject terminal_hoveredChoice = null;
+    public void Terminal_UpdateHoveredChoice(GameObject option, bool enteredBounds)
+    {
+        if (enteredBounds) // If this option has just been entered, it is now the new hovered choice.
+        {
+            terminal_hoveredChoice = option;
+        }
+        else // If this option has just been exited, and nothing new has been set to replace it, it needs to be null.
+        {
+            if(terminal_hoveredChoice == option)
+            {
+                terminal_hoveredChoice = null;
+            }
+        }
+    }
+
+    private IEnumerator Terminal_ExtraDetailLoop()
+    {
+        while (terminal_hackResultsArea.gameObject.activeInHierarchy) // Pretty much a forever loop but this is just here for safety
+        {
+            // Is the player's mouse currently over a hacking option?
+            if(terminal_hoveredChoice != null)
+            {
+                GameObject firstObject = terminal_hoveredChoice;
+
+                yield return new WaitForSeconds(3f); // Start the timer
+
+                // Is it still being hovered over the same object?
+                if(firstObject == terminal_hoveredChoice)
+                {
+                    // Then show the detail!
+                    // - Get display string from object
+                    string display = "";
+                    UIHackTarget hack = terminal_hoveredChoice.GetComponent<UIHackTarget>();
+                    TerminalCommand comm = terminal_hoveredChoice.GetComponent<UIHackTarget>().command;
+                    // - If it's the manual command we show something different
+                    if (hack.isManualCommand)
+                    {
+                        display = "Manually input a command.";
+                    }
+                    else
+                    {
+                        display = comm.hack.description;
+                    }
+
+                    dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().ShowExtraDetail(display);
+                }
+            }
+            else // Not hovering over anything? Hide the detail
+            {
+                dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().HideExtraDetail();
+            }
+
+            yield return null;
+        }
     }
 
     #endregion

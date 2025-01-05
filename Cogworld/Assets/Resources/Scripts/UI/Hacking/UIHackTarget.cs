@@ -40,7 +40,7 @@ public class UIHackTarget : MonoBehaviour
     private bool available = true;
     private string setText;
     private string optText = "";
-    private bool isManualCommand = false;
+    public bool isManualCommand = false;
 
     [Header("Button Related")]
     public GameObject buttonStuff;
@@ -437,5 +437,10 @@ public class UIHackTarget : MonoBehaviour
     {
         // Play the hover UI sound
         AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.UI_Clips[48]); // HOVER
+    }
+
+    public void MouseHoverUpdate(bool mouseEnter)
+    {
+        UIManager.inst.Terminal_UpdateHoveredChoice(this.gameObject, mouseEnter);
     }
 }
