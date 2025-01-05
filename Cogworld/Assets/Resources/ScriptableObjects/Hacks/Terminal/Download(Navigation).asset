@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Download(Navigation)
   m_EditorClassIdentifier: 
   Id: 88
-  trueName: Download Navigate
+  trueName: Download Navigation
+  description: Obtain protocols for extracting patrol squad routing information throughout
+    the connected Complex 0b10 area.
   relatedMachine: 5
   hackType: 14
   directChance: {x: 25, y: 12, z: 6}

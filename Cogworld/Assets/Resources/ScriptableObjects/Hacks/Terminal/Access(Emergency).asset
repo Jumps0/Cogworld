@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 74
   trueName: Emergency Access Points
+  description: Locate all nearby hidden doors. Also locate all phase walls if inside
+    a Garrison.
   relatedMachine: 5
   hackType: 0
   directChance: {x: 60, y: 30, z: 15}

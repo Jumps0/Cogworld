@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 38
   trueName: Repair Part
+  description: Initiate repair process for the last scanned part.
   relatedMachine: 3
   hackType: 23
   directChance: {x: 63, y: 32, z: 16}

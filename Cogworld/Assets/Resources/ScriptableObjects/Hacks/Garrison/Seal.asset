@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 709c8031387567e43becdecce8b8477c, type: 3}
   m_Name: Seal
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 29
   trueName: Seal
+  description: Seal this garrison's access door, preventing squad dispatches from
+    this location and slowing extermination squad response times across the entire
+    floor.
   relatedMachine: 1
   hackType: 16
   directChance: {x: 30, y: 15, z: 7}

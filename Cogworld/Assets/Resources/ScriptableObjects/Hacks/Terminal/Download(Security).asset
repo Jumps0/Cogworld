@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 90
   trueName: Download Security
+  description: Learn all active security positions throughout the connect Complex
+    0b10 area.
   relatedMachine: 5
   hackType: 14
   directChance: {x: 20, y: 10, z: 5}

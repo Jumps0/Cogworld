@@ -3027,7 +3027,9 @@ public class UIManager : MonoBehaviour
                     // - If it's the manual command we show something different
                     if (hack.isManualCommand)
                     {
-                        display = "Manually input a command.";
+                        display = "Enter special manual hacking codes prefixed by \\\\, or manually enter any known trojans, brute force hacks, or regular hacks." +
+                            " Start typing and press Spacebar or Tab to complete the current text, or Up/Down to select from among Multiple autocomplete matches." +
+                            " Up/Down arrows on an empty line cycler through past manual commands.";
                     }
                     else
                     {

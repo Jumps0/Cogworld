@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 709c8031387567e43becdecce8b8477c, type: 3}
   m_Name: Insert([Part Name])
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 55
   trueName: Insert Part
+  description: Insert and scan a part to prepare for analysis.
   relatedMachine: 4
   hackType: 27
   directChance: {x: 80, y: 40, z: 20}

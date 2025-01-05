@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 112
   trueName: Prototype Inventory
+  description: Query system for the location of all prototype stockpiles, also revealing
+    their dominant component.
   relatedMachine: 5
   hackType: 4
   directChance: {x: 10, y: 5, z: 2}

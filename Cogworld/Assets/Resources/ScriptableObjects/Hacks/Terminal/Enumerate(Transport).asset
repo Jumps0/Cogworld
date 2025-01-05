@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Enumerate(Transport)
   m_EditorClassIdentifier: 
   Id: 103
-  trueName: Transport Status
+  trueName: Hauler Manifests
+  description: Query system for a list of all transport squad contents, including
+    whether each is escorted.
   relatedMachine: 5
   hackType: 2
   directChance: {x: 50, y: 25, z: 12}

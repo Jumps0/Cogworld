@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 106
   trueName: Machine Index
+  description: Download coordinates for all interactive machines.
   relatedMachine: 5
   hackType: 3
   directChance: {x: 0, y: 0, z: 0}

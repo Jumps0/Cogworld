@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 107
   trueName: Recycling Unit Index
+  description: Download coordinates for all Recycling Units.
   relatedMachine: 5
   hackType: 3
   directChance: {x: 20, y: 10, z: 5}

@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 152
   trueName: Query
+  description: Access this informational record. Additional record links may be available
+    from within the data itself.
   relatedMachine: 5
   hackType: 10
   directChance: {x: 100, y: 80, z: 60}

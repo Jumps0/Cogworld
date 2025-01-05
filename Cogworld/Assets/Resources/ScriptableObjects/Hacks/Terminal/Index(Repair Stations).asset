@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 108
   trueName: Repair Station Index
+  description: Download coordinates for all Repair Stations.
   relatedMachine: 5
   hackType: 3
   directChance: {x: 20, y: 10, z: 5}

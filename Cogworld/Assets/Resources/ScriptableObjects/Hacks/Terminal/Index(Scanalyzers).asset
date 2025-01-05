@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 109
   trueName: Scanalyzer Index
+  description: Download coordinates for all Scanalyzer.
   relatedMachine: 5
   hackType: 3
   directChance: {x: 30, y: 15, z: 7}

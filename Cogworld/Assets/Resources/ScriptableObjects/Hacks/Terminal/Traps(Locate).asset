@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 147
   trueName: Locate Traps
+  description: Locate all nearby traps.
   relatedMachine: 5
   hackType: 6
   directChance: {x: 60, y: 30, z: 15}

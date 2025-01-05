@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 148
   trueName: Reprogram Traps
+  description: Reprogram a nearby random trap array, causing it to target hostiles.
   relatedMachine: 5
   hackType: 6
   directChance: {x: 30, y: 15, z: 7}

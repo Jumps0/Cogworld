@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 134
   trueName: Download Part Schematic
+  description: Download the given schematic, making it possible to build this part
+    at a Fabricator. Review all known schematics for the Status window.
   relatedMachine: 5
   hackType: 13
   directChance: {x: 29, y: 14, z: 7}

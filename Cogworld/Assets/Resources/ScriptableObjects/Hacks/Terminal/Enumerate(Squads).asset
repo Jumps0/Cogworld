@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Enumerate(Squads)
   m_EditorClassIdentifier: 
   Id: 101
-  trueName: Squad Status
+  trueName: Dispatch Records
+  description: Query system for a list of all active squads.
   relatedMachine: 5
   hackType: 2
   directChance: {x: 60, y: 30, z: 15}

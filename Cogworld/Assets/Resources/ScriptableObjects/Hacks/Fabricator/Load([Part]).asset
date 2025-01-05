@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 709c8031387567e43becdecce8b8477c, type: 3}
   m_Name: Load([Part])
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 26
   trueName: Load Schematic
+  description: Upload a part or robot schematic to prepare for fabrication.
   relatedMachine: 0
   hackType: 19
   directChance: {x: 90, y: 45, z: 22}

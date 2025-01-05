@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 709c8031387567e43becdecce8b8477c, type: 3}
+  m_Name: Force(Jam)
+  m_EditorClassIdentifier: 
+  Id: 162
+  trueName: Force Jam
+  description: Seal this garrison's access door, preventing squad dispatches from
+    this location and slowing extermination squad response times across the entire
+    floor. Also, locks the machine and summons an investigation squad like all force
+    hacks.
+  relatedMachine: 8
+  hackType: 30
+  directChance: {x: 80, y: 40, z: 20}
+  indirectChance: {x: 80, y: 40, z: 20}

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 35
   trueName: Retrieve Matter
+  description: Eject all local matter reserves.
   relatedMachine: 2
   hackType: 25
   directChance: {x: 60, y: 30, z: 15}

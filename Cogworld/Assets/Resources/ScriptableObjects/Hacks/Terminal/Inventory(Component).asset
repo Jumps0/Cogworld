@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 111
   trueName: Component Inventory
+  description: Query system for the location of all non-prototype stockpiles, also
+    revealing their dominant component.
   relatedMachine: 5
   hackType: 4
   directChance: {x: 30, y: 15, z: 7}

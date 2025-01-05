@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 709c8031387567e43becdecce8b8477c, type: 3}
   m_Name: Build - Robot Tier 8
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 24
   trueName: Build
+  description: Initiate build process for currently loaded schematic.
   relatedMachine: 0
   hackType: 20
   directChance: {x: 18, y: 9, z: 4}

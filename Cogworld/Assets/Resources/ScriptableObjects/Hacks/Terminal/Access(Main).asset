@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 75
   trueName: Level Access Points
+  description: Locate all main access points in and out of this floor.
   relatedMachine: 5
   hackType: 0
   directChance: {x: 20, y: 10, z: 5}

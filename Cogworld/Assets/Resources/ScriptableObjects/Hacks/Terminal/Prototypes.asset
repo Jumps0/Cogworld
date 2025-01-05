@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 115
   trueName: Prototype Inventory
+  description: Download information about prototype parts, making it possible to
+    identify them before use and distinguish between faulty and non-faulty versions.
   relatedMachine: 5
   hackType: 9
   directChance: {x: 50, y: 25, z: 12}

@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 36
   trueName: Refit
+  description: Analyze build configuration and attach backup components to restore
+    vital functionality.
   relatedMachine: 3
   hackType: 22
   directChance: {x: 35, y: 17, z: 8}

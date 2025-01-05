@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 113
   trueName: Zone Layout
+  description: Reveal all nearby terrain belonging to this terminal's zone.
   relatedMachine: 5
   hackType: 11
   directChance: {x: 50, y: 25, z: 12}

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 73
   trueName: Branch Access Points
+  description: Locate all branch access points in and out of this floor.
   relatedMachine: 5
   hackType: 0
   directChance: {x: 30, y: 15, z: 7}

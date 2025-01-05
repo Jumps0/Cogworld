@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 709c8031387567e43becdecce8b8477c, type: 3}
   m_Name: Store(Matter)
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 186
   trueName: Store Matter
+  description: Submits 100 matter at a time to be stored in this machine.
   relatedMachine: 6
   hackType: 4
   directChance: {x: 100, y: 100, z: 100}

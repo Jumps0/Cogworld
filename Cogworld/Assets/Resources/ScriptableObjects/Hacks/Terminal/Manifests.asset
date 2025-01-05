@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 114
   trueName: Hauler Manifests
+  description: Query system for a list of all transport squad contents, including
+    whether each is escorted.
   relatedMachine: 5
   hackType: 7
   directChance: {x: 50, y: 25, z: 12}

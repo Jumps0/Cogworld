@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 92
   trueName: Coupling Status
+  description: Query system for a list of all coupling squads and their current positions.
   relatedMachine: 5
   hackType: 2
   directChance: {x: 30, y: 15, z: 7}

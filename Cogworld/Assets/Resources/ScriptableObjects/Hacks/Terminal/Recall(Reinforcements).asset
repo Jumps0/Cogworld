@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 119
   trueName: Recall Reinforcements
+  description: Instruct a random active reinforcement squad to leave the floor.
   relatedMachine: 5
   hackType: 5
   directChance: {x: 20, y: 10, z: 5}

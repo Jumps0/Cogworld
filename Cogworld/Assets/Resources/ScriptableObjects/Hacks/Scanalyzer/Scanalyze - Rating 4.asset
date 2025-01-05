@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 61
   trueName: Scanalyze
+  description: Analyze the contained part to obtain its schematic for use at a Fabricator.
   relatedMachine: 4
   hackType: 28
   directChance: {x: 80, y: 40, z: 20}

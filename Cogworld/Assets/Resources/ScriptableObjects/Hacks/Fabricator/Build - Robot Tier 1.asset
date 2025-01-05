@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 17
   trueName: Build
+  description: Initiate build process for currently loaded schematic.
   relatedMachine: 0
   hackType: 20
   directChance: {x: 46, y: 23, z: 11}

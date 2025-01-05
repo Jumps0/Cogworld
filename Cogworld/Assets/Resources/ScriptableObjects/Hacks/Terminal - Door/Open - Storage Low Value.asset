@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 150
   trueName: Open Door
+  description: Open the non-automatic door associated with this terminal.
   relatedMachine: 5
   hackType: 8
   directChance: {x: 80, y: 80, z: 80}

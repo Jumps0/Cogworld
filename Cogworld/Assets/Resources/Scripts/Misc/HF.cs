@@ -18,6 +18,9 @@ using static Unity.VisualScripting.Member;
 using static UnityEngine.GraphicsBuffer;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using static UnityEngine.Rendering.CoreUtils;
+using Unity.VisualScripting;
+using ColorUtility = UnityEngine.ColorUtility;
 
 /// <summary>
 /// Contains helper functions to be used globally.
@@ -1439,12 +1442,14 @@ public static class HF
                     }
                     else if (parsedName.Contains("Assimilate"))
                     {
-                        // hack
+                        // Reprograms this terminal's Operator when it attempts to use it.
                         return "Trojan loaded successfully.\nTesting...\nSystem interface override in place.";
                     }
                     else if (parsedName.Contains("Botnet"))
                     {
-                        // hack
+                        // Co-opts this terminal to aid in hacking other machines.
+                        // Confers a +6% to hacks, while the benefit of each additional botnet terminal is halved (+3%, +1%),
+                        // with each terminal providing no less than +1%.
                         string print = "Trojan loaded successfully.\nTesting...\nTerminal linked with " + PlayerData.inst.linkedTerminalBotnet + " systems.\nAwaiting botnet instructions.";
                         PlayerData.inst.linkedTerminalBotnet++;
                         GameObject target = UIManager.inst.terminal_targetTerm;
@@ -1481,7 +1486,7 @@ public static class HF
                     }
                     else if (parsedName.Contains("Detonate"))
                     {
-                        // hack
+                        // Rigs all nearby potentially explosive machines to detonate when passed by a hostile Complex 0b10 combat robot.
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
                     }
                     else if (parsedName.Contains("Broadcast"))
@@ -1510,62 +1515,80 @@ public static class HF
                     }
                     else if (parsedName.Contains("Disrupt"))
                     {
-                        // hack
+                        // Disrupts targeting coordination signals among hostile Complex 0b10 combat robots, reducing their chance to hit targets by 10% while within a range of 10.
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
                     }
                     else if (parsedName.Contains("Fabnet"))
                     {
-                        // hack
+                        // Provides a cumulative 3% chance to temporarily trick any common 0b10 combat robot system encountered hostiles
+                        // on the depth above this one into believing it is allied with Cogmind.
+                        // After 10 turns the network will perform an automated quickboot to restore it to normal, a process which takes anywhere from 5 to 10 turns.
+                        // The effect is less likely to occur on the depth above that (only 1% chance), and it is capped at 15%.
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
                     }
                     else if (parsedName.Contains("Haulers"))
                     {
-                        // hack
+                        // Reports in real time the position of all haulers across the entire floor.
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
                     }
                     else if (parsedName.Contains("Intercept"))
                     {
-                        // hack
+                        // Intercepts tactical planning and coordination transmissions,
+                        // providing self and all controllable allies with a +15% accuracy bonus against hostile Complex 0b10 combat robots within a range of 20.
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
                     }
                     else if (parsedName.Contains("Liberate"))
                     {
-                        // hack
+                        // Frees any robots built by 0b10 at this location from central system control.
                         return "Trojan loaded successfully.\nTesting...\nReady to liberate!.";
                     }
                     else if (parsedName.Contains("Mask"))
                     {
-                        // hack
+                        // Prevents recyclers from collecting parts within a 31 x 31 zone.
                         return "Trojan loaded successfully.\nTesting...\nMasking routine running.";
                     }
                     else if (parsedName.Contains("Mechanics"))
                     {
-                        // hack
+                        // Reports in real time the position of all mechanics across the entire floor.
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
                     }
                     else if (parsedName.Contains("Monitor"))
                     {
-                        // hack
+                        // Reports every object inserted into any recycling unit by a registered recycler.
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
                     }
                     else if (parsedName.Contains("Operators"))
                     {
-                        // hack
+                        // Reports in real time the position of all operators across the entire floor.
                         return "Trojan loaded successfully.\nTesting...\nOperator tracking enabled and active.";
                     }
                     else if (parsedName.Contains("Prioritize"))
                     {
-                        // hack
+                        // Accelerates fabrication speed to 200% by forcing the network to allocate matter to this system first.
+                        // (Effect also applies to builds already in progress.)
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
                     }
                     else if (parsedName.Contains("Recyclers"))
                     {
-                        // hack
+                        // Reports in real time the position of all recyclers across the entire floor.
+                        return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
+                    }
+                    else if (parsedName.Contains("Redirect"))
+                    {
+                        // Redirects all squads emerging from this garrison away from their intended targets,
+                        // though the chance for its presence to be detect increases by 25% each time it takes effect.
+                        // No effect on prototypes, though if dispatched from there they do not affect the installed trojan.
+
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
                     }
                     else if (parsedName.Contains("Reject"))
                     {
-                        // hack
+                        // Ejects any object inserted into this recycling unit by a registered recycler.
+                        return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
+                    }
+                    else if (parsedName.Contains("Reprogram"))
+                    {
+                        // // Reprograms the next squad emerging from this garrison. No effect on prototypes, though if dispatched from here they do not affect the installed trojan.
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
                     }
                     else if (parsedName.Contains("Report"))
@@ -1575,12 +1598,25 @@ public static class HF
                     }
                     else if (parsedName.Contains("Researchers"))
                     {
-                        // hack
+                        // Reports in real time the position of all researchers across the entire floor.
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
                     }
                     else if (parsedName.Contains("Restock"))
                     {
                         // Manipulates coupler status records, prompting a Programmer to come replace them.
+                        return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
+                    }
+                    else if (parsedName.Contains("Skim"))
+                    {
+                        // Opportunistically gathers and reports on potentially useful intel remotely extracted from vulnerable Complex 0b10 networks.
+                        // Must be installed on multiple terminals before it can take effect.
+                        // (After being installed on 5 terminals, gathers 10 pieces of intel over around 100 turns, then is purged from the system.)
+                        return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
+                    }
+                    else if (parsedName.Contains("Track"))
+                    {
+                        // Reports in real time the position and type of all robots near this terminal.
+                        // The range of this effect is dependent on the terminal level: 10 for Security Level 3, 8 on level 2 terminals, and 6 on all other terminals.
                         return "Trojan loaded successfully.\nTesting...\nEjection routine running.";
                     }
                     else if (parsedName.Contains("Watchers"))
@@ -1595,6 +1631,11 @@ public static class HF
                     {
                         return "";
                     }
+                    else if (parsedName.Contains("Fedlink"))
+                    {
+                        // Allocates additional resources to the UFD reserves. Also, locks the machines and summons an investigation squad like all force hacks.
+                        return "";
+                    }
                     else if (parsedName.Contains("Jam"))
                     {
                         // Seal this garrison's access door, preventing squad dispatches from this location and slowing extermination squad response times across the entire floor.
@@ -1603,10 +1644,25 @@ public static class HF
                     }
                     else if (parsedName.Contains("Overload"))
                     {
+                        // Render the fabricator inoperable, but cause it to send high corruption-causing arcs of electromagnetic energy at nearby bots for a short while.
+                        // Also, locks the machine and summons an investigation squad like all force hacks.
                         return "";
+                    }
+                    else if (parsedName.Contains("Override"))
+                    {
+                        // Reveals location of all exits in a Garrison and overrides the lockdown effect that prevents Cogmind from leaving the map.
+                        // Does nothing if outside a garrison.
+                        return "";
+                    }
+                    else if (parsedName.Contains("Recompile"))
+                    {
+                        // Ejects an Authchip from the fabricator with a type matching the currently loaded schematics.
+                        // Also, locks the machine and summons an investigation squad like all force hacks.
                     }
                     else if (parsedName.Contains("Download"))
                     {
+                        // Save the current schematic in the player's list of schematics.
+                        // Also, locks the machine and summons an investigation squad like all force hacks.
                         return "";
                     }
                     else if (parsedName.Contains("Eject"))
@@ -1615,16 +1671,40 @@ public static class HF
                         // Also, locks the machine and summons an investigation squad like all force hacks.
                         return "";
                     }
+                    else if (parsedName.Contains("Extract"))
+                    {
+                        // Extracts a random number of parts schematics from the machine. Most schematics will be non-prototype.
+                        // Also, locks the machine and summons an investigation squad like all force hacks.
+                        return "";
+                    }
                     else if (parsedName.Contains("Sabotage"))
                     {
+                        // Attempt to cause a random explosive machine on the floor to detonate.
+                        // This hack can succeed but fail to have any effect.
+                        // Also, locks the machine and summons an investigations quad like all force hacks.
                         return "";
                     }
                     else if (parsedName.Contains("Search"))
                     {
+                        // Locate all nearby interactive machines. Also, locks the machine and summons an investigation squad like all force hacks.
+                        return "";
+                    }
+                    else if (parsedName.Contains("Scrapoids"))
+                    {
+                        // Summons 5 Scrapoids within around 20 turns of performing the hack while consuming 2 resources from the UFD reserves.
+                        // The Scrapoids vary ased on depth. Also, locks the machines and summons an investigation squad like all force hacks.
                         return "";
                     }
                     else if (parsedName.Contains("Tunnel"))
                     {
+                        // 
+                        return "";
+                    }
+                    else if (parsedName.Contains("Patch"))
+                    {
+                        // Repairs multiple parts by 25 % integrity up to 50 % total integrity.
+                        // Level 1 stations repair up to 3 parts, level 2 4 parts, and level 3 5 parts.
+                        // Also, locks the machine and summons an investigation squad like all force hacks.
                         return "";
                     }
                     break;  // ---------- NOT DONE: TODO

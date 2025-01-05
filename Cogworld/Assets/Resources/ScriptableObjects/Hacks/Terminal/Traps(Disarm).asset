@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 146
   trueName: Disarm Traps
+  description: Disarm a nearby random trap array, rendering all of its traps nonfunctional.
   relatedMachine: 5
   hackType: 6
   directChance: {x: 45, y: 22, z: 11}

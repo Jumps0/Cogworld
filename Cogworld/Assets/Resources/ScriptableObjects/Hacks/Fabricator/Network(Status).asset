@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 27
   trueName: Network Status
+  description: Query system for fabrication network status, including location and
+    activities of each Fabricator.
   relatedMachine: 0
   hackType: 21
   directChance: {x: 70, y: 35, z: 17}

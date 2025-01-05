@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 104
   trueName: Fabricators Index
+  description: Download coordinates for all Fabricators.
   relatedMachine: 5
   hackType: 3
   directChance: {x: 40, y: 20, z: 10}

@@ -14,6 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 128
   trueName: Download Bot Schematic
+  description: Download the given schematic, making it possible to build this part
+    at a Fabricator. Review all known schematics from the status window. When manually
+    hacking for schematics, a general robot class name can be entered instead of
+    a specific variant in order to automatically choose a variant relevant at the
+    current depth.
   relatedMachine: 5
   hackType: 13
   directChance: {x: -4, y: -2, z: -1}

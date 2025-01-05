@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 709c8031387567e43becdecce8b8477c, type: 3}
   m_Name: Scanalyze - Rating 2
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 57
   trueName: Scanalyze
+  description: Analyze the contained part to obtain its schematic for use at a Fabricator.
   relatedMachine: 4
   hackType: 28
   directChance: {x: 90, y: 45, z: 22}
