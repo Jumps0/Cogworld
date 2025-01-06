@@ -2988,6 +2988,7 @@ public class UIManager : MonoBehaviour
     }
 
     private Coroutine terminal_extradetail_co = null;
+    private string terminal_extradetail_string = "";
     [Tooltip("The hacking option the mouse is currently hovering over. Updated via function.")]
     private GameObject terminal_hoveredChoice = null;
     public void Terminal_UpdateHoveredChoice(GameObject option, bool enteredBounds)
@@ -3005,39 +3006,76 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Called upon the Terminal menu being over and the player right clicking.
+    /// </summary>
+    public void Terminal_TryExtraDetail()
+    {
+        // The user has just right clicked. Should we do anything?
+
+        // - Is the detail menu closed?
+        if (!dataMenu.data_extraDetail.gameObject.activeInHierarchy)
+        {
+            // It's not so lets try and open it
+
+            // - Are we over a viable command option?
+            if(terminal_hoveredChoice != null && terminal_extradetail_string != "")
+            {
+                // We are, open the menu and display the string
+                dataMenu.data_extraDetail.SetActive(true);
+                dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().ShowExtraDetail(terminal_extradetail_string);
+                dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().myGameObject = terminal_hoveredChoice;
+            }
+        }
+    }
+
     private IEnumerator Terminal_ExtraDetailLoop()
     {
-        while (terminal_hackResultsArea.gameObject.activeInHierarchy) // Pretty much a forever loop but this is just here for safety
+        while (terminal_targetresultsAreaRef.gameObject.activeInHierarchy) // Pretty much a forever loop but this is just here for safety
         {
             // Is the player's mouse currently over a hacking option?
             if(terminal_hoveredChoice != null)
             {
-                GameObject firstObject = terminal_hoveredChoice;
-
-                yield return new WaitForSeconds(3f); // Start the timer
-
-                // Is it still being hovered over the same object?
-                if(firstObject == terminal_hoveredChoice)
-                {
-                    // Then show the detail!
-                    // - Get display string from object
-                    string display = "";
-                    UIHackTarget hack = terminal_hoveredChoice.GetComponent<UIHackTarget>();
-                    TerminalCommand comm = terminal_hoveredChoice.GetComponent<UIHackTarget>().command;
-                    // - If it's the manual command we show something different
-                    if (hack.isManualCommand)
-                    {
-                        display = "Enter special manual hacking codes prefixed by \\\\, or manually enter any known trojans, brute force hacks, or regular hacks." +
-                            " Start typing and press Spacebar or Tab to complete the current text, or Up/Down to select from among Multiple autocomplete matches." +
-                            " Up/Down arrows on an empty line cycler through past manual commands.";
-                    }
-                    else
-                    {
-                        display = comm.hack.description;
-                    }
-
-                    dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().ShowExtraDetail(display);
+                // It is! Lets get the display string for that command.
+                string display = "";
+                UIHackTarget hack = terminal_hoveredChoice.GetComponent<UIHackTarget>();
+                TerminalCommand comm = terminal_hoveredChoice.GetComponent<UIHackTarget>().command;
+                if (hack.isManualCommand)
+                { // - If it's the manual command we show something different
+                    display = "Enter special manual hacking codes prefixed by \\\\, or manually enter any known trojans, brute force hacks, or regular hacks." +
+                        " Start typing and press Spacebar or Tab to complete the current text, or Up/Down to select from among Multiple autocomplete matches." +
+                        " Up/Down arrows on an empty line cycler through past manual commands.";
                 }
+                else
+                {
+                    display = comm.hack.description;
+                }
+
+                // -- MAIN LOGIC --
+                if(terminal_extradetail_string == "") // Have we got a set string yet?
+                {
+                    // No? Set it
+                    terminal_extradetail_string = display;
+                }
+                else if(display == terminal_extradetail_string)
+                {
+                    // We already have this string set.
+                    // Just to be safe, check and see if the gameObjects are different
+                    if(dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().myGameObject != terminal_hoveredChoice)
+                    {
+                        // They are different, we need to close the window.
+                        dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().HideExtraDetail();
+                        terminal_extradetail_string = "";
+                    }
+                }
+                else
+                {
+                    // It's a different one, we should close the window.
+                    dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().HideExtraDetail();
+                    terminal_extradetail_string = "";
+                }
+
+                yield return null;
             }
             else // Not hovering over anything? Hide the detail
             {

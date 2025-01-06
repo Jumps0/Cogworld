@@ -476,6 +476,12 @@ public class PlayerGridMovement : MonoBehaviour
         }
         // --                  --
 
+        // -- Terminal Extra Detail Tooltip --
+        if (UIManager.inst.terminal_targetresultsAreaRef.activeInHierarchy) // We must be in the menu
+        {
+            UIManager.inst.Terminal_TryExtraDetail(); // Transfer over logic to UIManager to make things easier
+        }
+
         // Get mouse position
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
 

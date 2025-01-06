@@ -13,6 +13,8 @@ public class UIDataExtraDetail : MonoBehaviour
     public string extraAssignedString;
     private Coroutine extraAnim;
     [SerializeField] private Image extraBorders;
+    [Tooltip("Whatever object this window is displaying the details of.")]
+    [HideInInspector] public GameObject myGameObject = null;
 
     [Header("Colors")]
     public Color colorBlue;
@@ -79,10 +81,13 @@ public class UIDataExtraDetail : MonoBehaviour
 
     private IEnumerator OpenExtra()
     {
+        // Play the opening sound
+        AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[66], 0.9f); // UI - OPEN_OK
+
         // There is a bit more to this animation (a green scan bar that goes from top -> bottom, but its visibile for like 5 frames so honestly its not worth it)
 
         // Do the stretch animation
-        if(stretch != null)
+        if (stretch != null)
         {
             StopCoroutine(stretch);
             extraParent.GetComponent<RectTransform>().localScale = new Vector3(extraParent.GetComponent<RectTransform>().localScale.x, 1f, extraParent.GetComponent<RectTransform>().localScale.z);
@@ -157,6 +162,7 @@ public class UIDataExtraDetail : MonoBehaviour
 
     public void HideExtraDetail()
     {
+        extraAnim = null;
         extraParent.gameObject.SetActive(false);
     }
 }
