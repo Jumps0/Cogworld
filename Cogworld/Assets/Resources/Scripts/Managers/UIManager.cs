@@ -3012,7 +3012,6 @@ public class UIManager : MonoBehaviour
     public void Terminal_TryExtraDetail()
     {
         // The user has just right clicked. Should we do anything?
-
         // - Is the detail menu closed?
         if (!dataMenu.data_extraDetail.gameObject.activeInHierarchy)
         {
@@ -3052,7 +3051,7 @@ public class UIManager : MonoBehaviour
                 }
 
                 // -- MAIN LOGIC --
-                if(terminal_extradetail_string == "") // Have we got a set string yet?
+                if (terminal_extradetail_string == "") // Have we got a set string yet?
                 {
                     // No? Set it
                     terminal_extradetail_string = display;
@@ -3061,7 +3060,7 @@ public class UIManager : MonoBehaviour
                 {
                     // We already have this string set.
                     // Just to be safe, check and see if the gameObjects are different
-                    if(dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().myGameObject != terminal_hoveredChoice)
+                    if(dataMenu.data_extraDetail.gameObject.activeInHierarchy && dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().myGameObject != terminal_hoveredChoice)
                     {
                         // They are different, we need to close the window.
                         dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().HideExtraDetail();
