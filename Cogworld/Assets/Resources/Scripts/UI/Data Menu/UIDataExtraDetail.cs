@@ -12,6 +12,7 @@ public class UIDataExtraDetail : MonoBehaviour
     public GameObject extraParent;
     public string extraAssignedString;
     private Coroutine extraAnim;
+    [SerializeField] private GameObject wiperBar;
     [SerializeField] private Image extraBorders;
     [Tooltip("Whatever object this window is displaying the details of.")]
     [HideInInspector] public GameObject myGameObject = null;
@@ -84,7 +85,8 @@ public class UIDataExtraDetail : MonoBehaviour
         // Play the opening sound
         AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[66], 0.9f); // UI - OPEN_OK
 
-        // There is a bit more to this animation (a green scan bar that goes from top -> bottom, but its visibile for like 5 frames so honestly its not worth it)
+        // Do the wiper bar animation
+        //StartCoroutine(WiperBar());
 
         // Do the stretch animation
         if (stretch != null)
@@ -123,6 +125,47 @@ public class UIDataExtraDetail : MonoBehaviour
         extraText.color = colorBlue;
 
         extraAnim = null;
+    }
+
+    private IEnumerator WiperBar()
+    {
+        // This is only visible for half a second so stopping halfway shouldn't be an issue.
+
+        // - Set the bar to the top
+        Vector3[] worldPos = new Vector3[4];
+        this.GetComponent<Image>().rectTransform.GetWorldCorners(worldPos);
+
+        Vector3 pos = worldPos[0];
+        pos.y = worldPos[1].y - ((worldPos[1].y - worldPos[0].y) / 2);
+
+        Debug.Log($"POS--> {pos.y} | {worldPos[0]} | {worldPos[1]} | {worldPos[2]} | {worldPos[3]}");
+
+        float boxHeight = (worldPos[1].y - worldPos[0].y);
+        float startPos = worldPos[1].y;
+        wiperBar.transform.position = new Vector3(wiperBar.transform.position.x, startPos, wiperBar.transform.position.z);
+
+        // - Get where it needs to end up at the bottom
+        float endPos = worldPos[0].y;
+        Debug.Log($"Going from {startPos} to {endPos}, with and heigh of {boxHeight}.");
+        // - Enable it
+        wiperBar.SetActive(true);
+
+        // Send it to the bottom
+        float elapsedTime = 0f;
+        float duration = 5.4f;
+        while (elapsedTime < duration)
+        {
+            float y = Mathf.Lerp(startPos, endPos, elapsedTime / duration);
+            wiperBar.transform.position = new Vector3(wiperBar.transform.position.x, y, wiperBar.transform.position.z);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        wiperBar.transform.position = new Vector3(wiperBar.transform.position.x, endPos, wiperBar.transform.position.z);
+        Debug.Break();
+        // - Disable it
+        //wiperBar.SetActive(false);
     }
 
     private Coroutine stretch;
