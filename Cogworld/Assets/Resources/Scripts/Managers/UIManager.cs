@@ -3123,7 +3123,8 @@ public class UIManager : MonoBehaviour
         int secLvl = 0;
         bool restrictedAccess = true;
 
-        terminal_name.text = cTerminal_machine.fullName;
+        string cTerminalNameSpacer = " "; // Needed due to text alignment
+        terminal_name.text = cTerminalNameSpacer + cTerminal_machine.fullName;
         secLvl = cTerminal_machine.secLvl;
         restrictedAccess = cTerminal_machine.restrictedAccess;
 
