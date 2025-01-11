@@ -1748,10 +1748,11 @@ public class UIManager : MonoBehaviour
     public GameObject terminal_targetresultsAreaRef;
     public GameObject terminal_hackinfoArea1;
     public List<GameObject> terminal_hackinfoBorders = new List<GameObject>();
-    public List<GameObject> terminal_targetResultBorders = new List<GameObject>();
+    public Image terminal_TARGETBorders;
+    public Image terminal_RESULTSBorders;
     public Image terminal_hackTitleBacker;
-    public Image terminal_targetResultBorder1;
-    public Image terminal_targetResultBorder2;
+    public Image terminal_TARGETheaderbacker;
+    public Image terminal_RESULTSheaderbacker;
     public ScrollRect terminal_resultsScrollrect;
     public List<KeyValuePair<string, TerminalCommand>> terminal_manualBuffer = new List<KeyValuePair<string, TerminalCommand>>(); // Past used terminal codes
     //
@@ -1854,43 +1855,44 @@ public class UIManager : MonoBehaviour
         // Assign name + get Sec Level / Restricted access
         int secLvl = 0;
         bool restrictedAccess = true;
+        string terminalNameSpacer = " "; // Needed due to how UI alignment works
         switch (type)
         {
             case 0:
                 Debug.LogError("ERROR: Failed to indentify terminal type.");
                 break;
             case 1:
-                terminal_name.text = term.fullName;
+                terminal_name.text = terminalNameSpacer + term.fullName;
                 secLvl = term.secLvl;
                 restrictedAccess = term.restrictedAccess;
                 break;
             case 2:
-                terminal_name.text = fab.fullName;
+                terminal_name.text = terminalNameSpacer + fab.fullName;
                 secLvl = fab.secLvl;
                 restrictedAccess = fab.restrictedAccess;
                 break;
             case 3:
-                terminal_name.text = scan.fullName;
+                terminal_name.text = terminalNameSpacer + scan.fullName;
                 secLvl = scan.secLvl;
                 restrictedAccess = scan.restrictedAccess;
                 break;
             case 4:
-                terminal_name.text = rep.fullName;
+                terminal_name.text = terminalNameSpacer + rep.fullName;
                 secLvl = rep.secLvl;
                 restrictedAccess = rep.restrictedAccess;
                 break;
             case 5:
-                terminal_name.text = rec.fullName;
+                terminal_name.text = terminalNameSpacer + rec.fullName;
                 secLvl = rec.secLvl;
                 restrictedAccess = rec.restrictedAccess;
                 break;
             case 6:
-                terminal_name.text = gar.fullName;
+                terminal_name.text = terminalNameSpacer + gar.fullName;
                 secLvl = gar.secLvl;
                 restrictedAccess = gar.restrictedAccess;
                 break;
             case 7:
-                terminal_name.text = custom.fullName;
+                terminal_name.text = terminalNameSpacer + custom.fullName;
                 secLvl = custom.secLvl;
                 restrictedAccess = custom.restrictedAccess;
                 break;
@@ -2234,81 +2236,63 @@ public class UIManager : MonoBehaviour
 
         Color usedColor = highlightGreen;
 
-        terminal_targetResultBorders[0].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0f);
-        terminal_targetResultBorders[1].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0f);
-        terminal_targetResultBorders[2].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0f);
-        terminal_targetResultBorders[3].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0f);
-        terminal_targetResultBorder1.color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.25f);
-        terminal_targetResultBorders[4].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0f);
-        terminal_targetResultBorders[5].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0f);
-        terminal_targetResultBorders[6].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0f);
-        terminal_targetResultBorders[7].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0f);
-        terminal_targetResultBorder2.color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.25f);
+        float value = 0f;
+        float headerValue = 0.25f;
+        terminal_TARGETBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+        terminal_RESULTSBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+
+        terminal_TARGETheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        terminal_RESULTSheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
 
         yield return new WaitForSeconds(delay);
 
-        terminal_targetResultBorders[0].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_targetResultBorders[1].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_targetResultBorders[2].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_targetResultBorders[3].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_targetResultBorder1.color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.75f);
-        terminal_targetResultBorders[4].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_targetResultBorders[5].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_targetResultBorders[6].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_targetResultBorders[7].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_targetResultBorder2.color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.75f);
+        value = 0.4f;
+        headerValue = 0.75f;
+        terminal_TARGETBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+        terminal_RESULTSBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+
+        terminal_TARGETheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        terminal_RESULTSheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
 
         yield return new WaitForSeconds(delay);
 
-        terminal_targetResultBorders[0].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.2f);
-        terminal_targetResultBorders[1].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.2f);
-        terminal_targetResultBorders[2].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.2f);
-        terminal_targetResultBorders[3].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.2f);
-        terminal_targetResultBorder1.color = new Color(usedColor.r, usedColor.g, usedColor.b, 1f);
-        terminal_targetResultBorders[4].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.2f);
-        terminal_targetResultBorders[5].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.2f);
-        terminal_targetResultBorders[6].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.2f);
-        terminal_targetResultBorders[7].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.2f);
-        terminal_targetResultBorder2.color = new Color(usedColor.r, usedColor.g, usedColor.b, 1f);
+        value = 0.2f;
+        headerValue = 1f;
+        terminal_TARGETBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+        terminal_RESULTSBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+
+        terminal_TARGETheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        terminal_RESULTSheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
 
         yield return new WaitForSeconds(delay);
 
-        terminal_targetResultBorders[0].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.6f);
-        terminal_targetResultBorders[1].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.6f);
-        terminal_targetResultBorders[2].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.6f);
-        terminal_targetResultBorders[3].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.6f);
-        terminal_targetResultBorder1.color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.75f);
-        terminal_targetResultBorders[4].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.6f);
-        terminal_targetResultBorders[5].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.6f);
-        terminal_targetResultBorders[6].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.6f);
-        terminal_targetResultBorders[7].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.6f);
-        terminal_targetResultBorder2.color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.75f);
+        value = 0.6f;
+        headerValue = 0.75f;
+        terminal_TARGETBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+        terminal_RESULTSBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+
+        terminal_TARGETheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        terminal_RESULTSheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
 
         yield return new WaitForSeconds(delay);
 
-        terminal_targetResultBorders[0].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_targetResultBorders[1].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_targetResultBorders[2].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_targetResultBorders[3].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_targetResultBorder1.color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.25f);
-        terminal_targetResultBorders[4].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_targetResultBorders[5].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_targetResultBorders[6].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_targetResultBorders[7].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_targetResultBorder2.color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.25f);
+        value = 0.4f;
+        headerValue = 0.25f;
+        terminal_TARGETBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+        terminal_RESULTSBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+
+        terminal_TARGETheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        terminal_RESULTSheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
 
         yield return new WaitForSeconds(delay);
 
-        terminal_targetResultBorders[0].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 1f);
-        terminal_targetResultBorders[1].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 1f);
-        terminal_targetResultBorders[2].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 1f);
-        terminal_targetResultBorders[3].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 1f);
-        terminal_targetResultBorder1.color = new Color(usedColor.r, usedColor.g, usedColor.b, 0f);
-        terminal_targetResultBorders[4].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 1f);
-        terminal_targetResultBorders[5].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 1f);
-        terminal_targetResultBorders[6].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 1f);
-        terminal_targetResultBorders[7].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 1f);
-        terminal_targetResultBorder2.color = new Color(usedColor.r, usedColor.g, usedColor.b, 0f);
+        value = 1f;
+        headerValue = 0f;
+        terminal_TARGETBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+        terminal_RESULTSBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+
+        terminal_TARGETheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        terminal_RESULTSheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
     }
 
     public void Terminal_InitTrace()

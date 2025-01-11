@@ -12920,8 +12920,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: -30.912348}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1783066453}
+  m_Children: []
   m_Father: {fileID: 1988173708}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -27208,7 +27207,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &572237714
 RectTransform:
   m_ObjectHideFlags: 0
@@ -39202,25 +39201,18 @@ MonoBehaviour:
   - {fileID: 1509546481}
   - {fileID: 2017123313}
   - {fileID: 1457180969}
-  terminal_targetResultBorders:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  terminal_TARGETBorders: {fileID: 1387296174}
+  terminal_RESULTSBorders: {fileID: 989095394}
   terminal_hackTitleBacker: {fileID: 591258371}
-  terminal_targetResultBorder1: {fileID: 965665477}
-  terminal_targetResultBorder2: {fileID: 1836659679}
+  terminal_TARGETheaderbacker: {fileID: 965665477}
+  terminal_RESULTSheaderbacker: {fileID: 1836659679}
   terminal_resultsScrollrect: {fileID: 2142358346}
   terminal_hackOptionsArea: {fileID: 1783066452}
   terminal_hackResultsArea: {fileID: 64064822}
   terminal_activeIField: {fileID: 0}
   terminal_backingBinary: {fileID: 387781460}
   terminal_name: {fileID: 355644279}
-  terminal_secLvl_backing: {fileID: 2129393831}
+  terminal_secLvl_backing: {fileID: 648534756}
   terminal_secLvl: {fileID: 1541771764}
   terminal_closeEffect: {fileID: 319977818}
   terminal_static: {fileID: 2101139848}
@@ -92411,17 +92403,17 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1783066452}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -30.912348}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 363597358}
-  m_RootOrder: 0
+  m_Father: {fileID: 1988173708}
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1185.113, y: -51.40245}
-  m_SizeDelta: {x: 408.0604, y: 269.584}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 226, y: -94.775696}
+  m_SizeDelta: {x: 452, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1783066454
 MonoBehaviour:
@@ -92436,8 +92428,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 0
-    m_Right: 0
+    m_Left: 18
+    m_Right: 18
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 1
@@ -94394,7 +94386,7 @@ GameObject:
   - component: {fileID: 1836659679}
   - component: {fileID: 1836659678}
   m_Layer: 5
-  m_Name: ~Sparebacker~
+  m_Name: '[R Header Backer]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -100093,6 +100085,7 @@ RectTransform:
   - {fileID: 2129393830}
   - {fileID: 555357290}
   - {fileID: 363597358}
+  - {fileID: 1783066453}
   m_Father: {fileID: 1387296171}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
