@@ -78,6 +78,22 @@ public class UIHackInputfield : MonoBehaviour
 
     #endregion
 
+    /// <summary>
+    /// Called from *PlayerGridMovement.cs* when the ESCAPE bind is pressed.
+    /// </summary>
+    public void Input_Escape()
+    {
+
+    }
+
+    /// <summary>
+    /// Called from *PlayerGridMovement.cs* when the TAB (Autocomplete) bind is pressed.
+    /// </summary>
+    public void Input_Tab()
+    {
+
+    }
+
     private void Update()
     {
         SetFocus(true);
@@ -92,15 +108,16 @@ public class UIHackInputfield : MonoBehaviour
 
             SuggestionBoxCheck();
 
-            if (Keyboard.current.escapeKey.wasPressedThisFrame)
+            if (Keyboard.current.escapeKey.wasPressedThisFrame) // THIS IS NOT WORKING. INPUT NOT BEING DETECTED
             {
+                Debug.Log("Close");
                 CloseCodesWindow();
                 // and destroy this manual input
                 UIManager.inst.terminal_activeIField = null;
                 Destroy(this.gameObject);
             }
 
-            if (Keyboard.current.tabKey.wasPressedThisFrame)
+            if (Keyboard.current.tabKey.wasPressedThisFrame) // This is likely does not work due to the same reasons as above.
             {
                 SetFocus(true);
 

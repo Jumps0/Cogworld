@@ -334,6 +334,7 @@ public class PlayerGridMovement : MonoBehaviour
     #endregion
 
     #region Input Handling
+
     public void OnEnter(InputValue value)
     {
         if (!GetComponent<Actor>().isAlive || interfacingMode != InterfacingMode.COMBAT) return;
@@ -534,6 +535,10 @@ public class PlayerGridMovement : MonoBehaviour
             {
                 UIManager.inst.Terminal_CloseAny(); // The close the window
             }
+            else // If it does exist we need to tell it escape was pressed incase it should be closed out of.
+            {
+                UIManager.inst.terminal_activeIField.GetComponent<UIHackInputfield>().Input_Escape();
+            }
         }
 
         // - Check to close the /DATA/ window -
@@ -553,6 +558,21 @@ public class PlayerGridMovement : MonoBehaviour
         if ((UIManager.inst.volleyMain.activeInHierarchy || UIManager.inst.volleyTiles.Count > 0) && !UIManager.inst.volleyAnimating)
         {
             UIManager.inst.Evasion_VolleyModeFlip();
+        }
+    }
+
+    /// <summary>
+    /// aka the TAB key. Used for Autocompleting text while hacking
+    /// </summary>
+    /// <param name="value"></param>
+    public void OnAutocomplete(InputValue value)
+    {
+        if (UIManager.inst.terminal_targetTerm != null) // Window is open
+        {
+            if (UIManager.inst.terminal_activeIField != null) // And the player is in the input window
+            {
+                UIManager.inst.terminal_activeIField.GetComponent<UIHackInputfield>().Input_Tab();
+            }
         }
     }
     #endregion
