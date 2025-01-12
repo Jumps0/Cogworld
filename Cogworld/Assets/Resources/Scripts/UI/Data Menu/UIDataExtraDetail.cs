@@ -83,7 +83,7 @@ public class UIDataExtraDetail : MonoBehaviour
     private IEnumerator OpenExtra()
     {
         // Play the opening sound
-        AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[66], 0.9f); // UI - OPEN_OK
+        AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_ui["OPEN_OK"], 0.9f); // UI - OPEN_OK
 
         // Do the wiper bar animation
         //StartCoroutine(WiperBar());

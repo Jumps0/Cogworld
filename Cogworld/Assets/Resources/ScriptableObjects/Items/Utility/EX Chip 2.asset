@@ -15,7 +15,7 @@ MonoBehaviour:
   amount: 1
   data:
     Name: Weight Resdist. System
-    Id: 67
+    Id: 66
     stackable: 0
     amount: 1
     itemData: {fileID: 11400000}
@@ -179,7 +179,7 @@ MonoBehaviour:
   destroyOnRemove: 1
   canBeDisabled: 0
   quality: 2
-  itemName: EX Chip 1
+  itemName: EX Chip 2
   description: A unique chip used by the EXILEs that greatly increases hacking skills.
     This chip focuses mainly on machine hacking.
   mechanicalDescription: 

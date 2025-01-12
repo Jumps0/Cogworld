@@ -31,7 +31,7 @@ public abstract class QuestStep : MonoBehaviour
             quest.completedSteps[stepIndex] = true;
 
             GameManager.inst.questEvents.AdvanceQuest(questID);
-            AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[24], 0.8f); // Play a sound
+            AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_ui["CONFIRM"], 0.8f); // UI - CONFIRM
             // Make a message in the log
             string logMessage = $"Subtask completed: {stepDescription}";
             UIManager.inst.CreateNewLogMessage(logMessage, QuestManager.inst.c_yellow2, QuestManager.inst.c_yellow1, true);

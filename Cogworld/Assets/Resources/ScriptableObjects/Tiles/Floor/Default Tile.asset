@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 0
   displaySprite: {fileID: 0}
-  tileName: 
+  tileName: Default Tile
   type: 4
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}
@@ -31,3 +31,5 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 5d2ff793136e56646a6d8274f73e0e32, type: 3}
   - {fileID: 8300000, guid: 6338eef88de95414396b672d0e3e8b62, type: 3}
   resistances: []
+  door_open: []
+  door_close: []

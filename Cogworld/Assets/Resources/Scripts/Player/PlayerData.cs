@@ -1155,7 +1155,7 @@ public class PlayerData : MonoBehaviour
 
 
         // Play the scanline sound. ("UI/SCAN 5")
-        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[92]); // SCAN_5
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_ui["SCAN_5"]); // UI - SCAN_5
 
         // Now go through each row, and ping every block in the row
         foreach (var kvp in sortedResult)
@@ -1562,7 +1562,7 @@ public class PlayerData : MonoBehaviour
         if(!overheatcooldown)
         {
             // Play the sound
-            AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.UI_Clips[9]); // UI | ALARM_RESOURCES
+            AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_ui["ALARM_RESOURCES"]); // UI - ALARM_RESOURCES
             // Start the cooldown
             if(overheatwarning != null)
             {

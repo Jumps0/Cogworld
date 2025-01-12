@@ -267,13 +267,13 @@ public class MachinePart : MonoBehaviour
                 MapManager.inst._allTilesRealized[new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y)].bottom.SetToDirty();
             }
             // Play a sound
-            AudioClip clip = AudioManager.inst.nonBotDestruction_Clips[Random.Range(18, 22)]; // METAL_DEBRIS_1/2/3/4/5
+            AudioClip clip = AudioManager.inst.dict_nonbotdestruction["METAL_DEBRIS_" + Random.Range(1, 5).ToString()]; // METAL_DEBRIS_1/2/3/4/5
             AudioManager.inst.CreateTempClip(this.transform.position, clip, 0.8f);
         }
         else // No debris
         {
             // Play a sound
-            AudioClip clip = AudioManager.inst.nonBotDestruction_Clips[Random.Range(13, 17)]; // METAL_1/2/3/4/5
+            AudioClip clip = AudioManager.inst.dict_nonbotdestruction["METAL_" + Random.Range(1, 5).ToString()]; // METAL_1/2/3/4/5
             AudioManager.inst.CreateTempClip(this.transform.position, clip, 0.8f);
         }
 

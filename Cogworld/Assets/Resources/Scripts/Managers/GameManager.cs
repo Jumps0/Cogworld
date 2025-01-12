@@ -598,7 +598,7 @@ public class GameManager : MonoBehaviour
         EvolveButtonVisuals();
 
         doEvolutionCheck = true;
-        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.EVOLVE_Clips[1]); // SCAN_7
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_evolve["SCAN_7"]); // EVOLVE SCAN_7
     }
 
     public void CloseEvolutionScreen()
@@ -1120,12 +1120,12 @@ public class GameManager : MonoBehaviour
 
     public void EvoButtonSound()
     {
-        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[62], 0.5f); // MODE_ON
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_ui["MODE_ON"], 0.5f); // UI - MODE_ON
     }
 
     public void EvoHoverSound()
     {
-        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[48], 0.5f); // HOVER
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_ui["HOVER"], 0.5f); // UI - HOVER
     }
 
     #endregion
@@ -1171,7 +1171,7 @@ public class GameManager : MonoBehaviour
         }
 
         // And play the sound
-        AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[0]); // (0 - ACCESS)
+        AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_ui["ACCESS"]); // (UI - ACCESS)
 
         switch (id)
         {
@@ -1346,7 +1346,7 @@ public class GameManager : MonoBehaviour
         if(storedIntel.Count > 0)
         {
             // Play the sound
-            AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[0]); // (0 - ACCESS)
+            AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_ui["ACCESS"]); // (UI - ACCESS)
 
             // Merge all intel into types
             // - Zones (areas)

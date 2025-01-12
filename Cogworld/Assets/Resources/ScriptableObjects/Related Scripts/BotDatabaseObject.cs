@@ -6,6 +6,7 @@ using UnityEngine;
 public class BotDatabaseObject : ScriptableObject, ISerializationCallbackReceiver
 {
     public BotObject[] Bots; // Contains all bots that exists within the game.
+    public Dictionary<string, BotObject> dict;
 
     [ContextMenu("Update ID's")]
     public void UpdateIDs()
@@ -41,6 +42,16 @@ public class BotDatabaseObject : ScriptableObject, ISerializationCallbackReceive
     {
         UpdateIDs();
         SetDefaultBotKnowledge();
+    }
+
+    public void SetupDict()
+    {
+        dict = new Dictionary<string, BotObject>();
+
+        foreach (var v in Bots)
+        {
+            dict.Add(v.botName, v);
+        }
     }
 
     public void OnBeforeSerialize()

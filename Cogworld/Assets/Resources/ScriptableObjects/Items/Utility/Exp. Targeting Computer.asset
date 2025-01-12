@@ -178,7 +178,7 @@ MonoBehaviour:
   unstable: -1
   destroyOnRemove: 1
   canBeDisabled: 1
-  quality: 2
+  quality: 6
   itemName: Exp. Targeting Computer
   description: An experimental processor that increases non-melee weapon accuracy
     by a specified amount.

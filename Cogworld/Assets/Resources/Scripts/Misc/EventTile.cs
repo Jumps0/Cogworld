@@ -102,7 +102,7 @@ public class EventTile : MonoBehaviour
             // Play a tile animation for each
 
             // Play a sound
-            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.DOOR_Clips[Random.Range(8,9)]); // "HEAVY_OPEN_1/2"
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_door[$"HEAVY_OPEN_{Random.Range(1,2)}"]); // "HEAVY_OPEN_1/2"
         }
 
         // TODO: More possible events!

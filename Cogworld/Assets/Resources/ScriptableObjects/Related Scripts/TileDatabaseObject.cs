@@ -6,6 +6,7 @@ using UnityEngine;
 public class TileDatabaseObject : ScriptableObject, ISerializationCallbackReceiver
 {
     public TileObject[] Tiles; // Contains all Tiles that exists within the game.
+    public Dictionary<string, TileObject> dict;
 
     [ContextMenu("Update ID's")]
     public void UpdateIDs()
@@ -14,6 +15,16 @@ public class TileDatabaseObject : ScriptableObject, ISerializationCallbackReceiv
         {
             if (Tiles[i].Id != i)
                 Tiles[i].Id = i;
+        }
+    }
+
+    public void SetupDict()
+    {
+        dict = new Dictionary<string, TileObject>();
+
+        foreach (var v in Tiles)
+        {
+            dict.Add(v.tileName, v);
         }
     }
 

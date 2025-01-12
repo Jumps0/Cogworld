@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6ec149692851794295060569572dd78, type: 3}
   m_Name: Architect Wall
   m_EditorClassIdentifier: 
-  Id: 18
+  Id: 20
   displaySprite: {fileID: 1653356756, guid: fb10cc78639952642858fbe0ed0250dd, type: 3}
-  tileName: Wall
+  tileName: Architect Wall
   type: 1
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: -1365252575, guid: fb10cc78639952642858fbe0ed0250dd, type: 3}

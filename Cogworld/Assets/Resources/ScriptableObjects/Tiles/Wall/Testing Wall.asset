@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 19
   displaySprite: {fileID: 300287688, guid: fb10cc78639952642858fbe0ed0250dd, type: 3}
-  tileName: Wall
+  tileName: Testing Wall
   type: 1
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: -1365252575, guid: fb10cc78639952642858fbe0ed0250dd, type: 3}

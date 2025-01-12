@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 16
   displaySprite: {fileID: 1289442424, guid: 1cbb9aac05749df48bf649f7efbf4fcf, type: 3}
-  tileName: Materials Door
+  tileName: Research Door
   type: 2
   altSprite: {fileID: 641868806, guid: 1cbb9aac05749df48bf649f7efbf4fcf, type: 3}
   destroyedSprite: {fileID: 1118698724, guid: 1cbb9aac05749df48bf649f7efbf4fcf, type: 3}

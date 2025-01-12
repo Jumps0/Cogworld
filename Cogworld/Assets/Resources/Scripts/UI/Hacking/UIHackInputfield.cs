@@ -83,7 +83,13 @@ public class UIHackInputfield : MonoBehaviour
     /// </summary>
     public void Input_Escape()
     {
-
+        if (field.isFocused)
+        {
+            CloseCodesWindow();
+            // and destroy this manual input
+            UIManager.inst.terminal_activeIField = null;
+            Destroy(this.gameObject);
+        }
     }
 
     /// <summary>
@@ -91,7 +97,45 @@ public class UIHackInputfield : MonoBehaviour
     /// </summary>
     public void Input_Tab()
     {
+        if (field.isFocused)
+        {
+            // -- Just here to be safe --
+            if (field.text.Length == 0 && UIManager.inst.terminal_manualBuffer.Count > 0)
+            {
+                BufferSuggestions();
+            }
 
+            SuggestionBoxCheck();
+
+            SetFocus(true);
+
+            string hackString = "";
+
+            if (box_main.activeInHierarchy)
+            {
+                hackString = HF.GetLeftSubstring(field.text) + "(" + box_suggestionText.text;
+
+                field.textComponent.text = hackString;
+                field.text = hackString;
+                field.textComponent.ForceMeshUpdate();
+
+                field.caretPosition = field.text.Length; // Set to end of text
+
+                // And we want to close the window
+                ClearSuggestions();
+                CloseCodesWindow();
+            }
+            else
+            {
+                hackString = suggestionText.text;
+
+                field.textComponent.text = hackString;
+                field.text = hackString;
+                field.textComponent.ForceMeshUpdate();
+
+                field.caretPosition = field.text.Length; // Set to end of text
+            }
+        }
     }
 
     private void Update()
@@ -101,53 +145,14 @@ public class UIHackInputfield : MonoBehaviour
 
         if (field.isFocused)
         {
+            /*
             if(field.text.Length == 0 && UIManager.inst.terminal_manualBuffer.Count > 0) 
             {
                 BufferSuggestions();
             }
 
             SuggestionBoxCheck();
-
-            if (Keyboard.current.escapeKey.wasPressedThisFrame) // THIS IS NOT WORKING. INPUT NOT BEING DETECTED
-            {
-                Debug.Log("Close");
-                CloseCodesWindow();
-                // and destroy this manual input
-                UIManager.inst.terminal_activeIField = null;
-                Destroy(this.gameObject);
-            }
-
-            if (Keyboard.current.tabKey.wasPressedThisFrame) // This is likely does not work due to the same reasons as above.
-            {
-                SetFocus(true);
-
-                string hackString = "";
-
-                if (box_main.activeInHierarchy)
-                {
-                    hackString = HF.GetLeftSubstring(field.text) + "(" + box_suggestionText.text;
-
-                    field.textComponent.text = hackString;
-                    field.text = hackString;
-                    field.textComponent.ForceMeshUpdate();
-
-                    field.caretPosition = field.text.Length; // Set to end of text
-
-                    // And we want to close the window
-                    ClearSuggestions();
-                    CloseCodesWindow();
-                }
-                else
-                {
-                    hackString = suggestionText.text;
-
-                    field.textComponent.text = hackString;
-                    field.text = hackString;
-                    field.textComponent.ForceMeshUpdate();
-
-                    field.caretPosition = field.text.Length; // Set to end of text
-                }
-            }
+            */
 
             backerText.text = "<mark=#000000>>>" + suggestionText.text + "</mark>"; // Mark highlights it as pure black
             main_backerText.text = "<mark=#000000>" + field.text + "</mark>"; // Mark highlights it as pure black
@@ -204,12 +209,16 @@ public class UIHackInputfield : MonoBehaviour
 
     public void AttemptHack(HackObject hack, TerminalCommand command)
     {
+        Debug.Log($"Attempting hack: {hack} | {hack.trueName} | C: {command}");
+
         // -- Calculate Chance of Success --
         float chance = 0f;
+        bool openSystem = false;
         int secLvl = HF.GetMachineSecLvl(UIManager.inst.terminal_targetTerm);
         if (secLvl == 0)
         {
             chance = 1f; // Open System
+            openSystem = true;
         }
         else
         {
@@ -227,10 +236,11 @@ public class UIHackInputfield : MonoBehaviour
                 baseChance = (float)((float)hack.directChance.z / 100f);
             }
             chance = HF.CalculateHackSuccessChance(baseChance);
+            Debug.Log($"Base chance: {baseChance} | Chance: {chance}");
         }
 
         float random = Random.Range(0.0f, 1.0f);
-
+        Debug.Log($"Chance: {chance} | Random: {random} | s?{random <= chance}");
         if (hack.hackType == TerminalCommandType.Query 
             || hack.hackType == TerminalCommandType.Schematic 
             || hack.hackType == TerminalCommandType.Analysis 
@@ -263,7 +273,7 @@ public class UIHackInputfield : MonoBehaviour
 
                 UIManager.inst.Terminal_CreateResult("Central database compromised, local access revoked.", highDetColor, (">>" + HF.ParseHackName(hack)), true);
                 UIManager.inst.CreateNewLogMessage("Central database lockdown, local access denied.", UIManager.inst.complexWhite, UIManager.inst.inactiveGray, true, true);
-                UIManager.inst.CreateLeftMessage("ALERT: Central database lockdown, local access denied.", 10f, AudioManager.inst.GAME_Clips[28]); // DISPATCH_ALERT
+                UIManager.inst.CreateLeftMessage("ALERT: Central database lockdown, local access denied.", 10f, AudioManager.inst.dict_game["DISPATCH_ALERT"]); // GAME - DISPATCH_ALERT
                 return;
             }
 

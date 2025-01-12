@@ -30,6 +30,12 @@ public class MapManager : MonoBehaviour
     public void Awake()
     {
         inst = this;
+
+        tileDatabase.SetupDict();
+        botDatabase.SetupDict();
+        itemDatabase.SetupDict();
+        hackDatabase.SetupDict();
+        knowledgeDatabase.SetupDict();
     }
 
     [Header("Prefabs")]
@@ -530,7 +536,7 @@ public class MapManager : MonoBehaviour
         spawnedPlayer.GetComponent<PlayerGridMovement>().playerMovementAllowed = true;
 
         // - Completion Effects -
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.INTRO_Clips[4], 0.25f); // DONE
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_intro["DONE"], 0.25f); // INTRO - DONE
         PlayAmbientMusic(); // Ambient music
 
         UIManager.inst.CreateNewLogMessage("Arrived at Hideout...", UIManager.inst.deepInfoBlue, UIManager.inst.coolBlue, true);

@@ -909,7 +909,7 @@ public class InvDisplayItem : MonoBehaviour
         }
 
         // Play the hover UI sound
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[48]); // HOVER
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_ui["HOVER"]); // UI - HOVER
     }
 
     public void HoverEnd()
@@ -984,7 +984,7 @@ public class InvDisplayItem : MonoBehaviour
         TextTypeOutAnimation(true);
 
         // Play a sound
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[71]); // PART_OFF
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_ui["PART_OFF"]); // UI - PART_OFF
 
         // Update the UI
         UIManager.inst.UpdateInventory();
@@ -1009,7 +1009,7 @@ public class InvDisplayItem : MonoBehaviour
         TextTypeOutAnimation(false);
 
         // Play a sound
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[73]); // PART_ON
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_ui["PART_ON"]); // UI - PART_ON
 
         // Update the UI
         UIManager.inst.UpdateInventory();
@@ -1130,7 +1130,7 @@ public class InvDisplayItem : MonoBehaviour
         OverloadTransitionAnimation();
 
         // Play a sound
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[73]); // PART_ON
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_ui["PART_ON"]); // UI - PART_ON
 
         // Update the UI
         UIManager.inst.UpdateInventory();
@@ -1227,7 +1227,7 @@ public class InvDisplayItem : MonoBehaviour
             item.siege = true;
 
             // Play a sound
-            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[73]); // PART_ON
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_ui["PART_ON"]); // UI - PART_ON
         }
         else if (startState == 1 && endState == 2) // (begin) -> SIEGE
         {
@@ -1237,7 +1237,7 @@ public class InvDisplayItem : MonoBehaviour
             item.siege = true;
 
             // Play a sound
-            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.ITEMS_Clips[72]); // ITEMS/SIEGE_TREADS_ACTIVE
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_items["SIEGE_TREADS_ACTIVE"]); // ITEMS/SIEGE_TREADS_ACTIVE
         }
         else if (startState == 2 && endState == 3) // SIEGE -> (end)
         {
@@ -1247,7 +1247,7 @@ public class InvDisplayItem : MonoBehaviour
             item.siege = true;
 
             // Play a sound
-            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[71]); // PART_OFF
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_ui["PART_OFF"]); // PART_OFF
         }
         else if (startState == 3 && endState == 4) // (end) -> Enabled
         {
@@ -1257,7 +1257,7 @@ public class InvDisplayItem : MonoBehaviour
             item.siege = false;
 
             // Play a sound
-            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.ITEMS_Clips[73]); // ITEMS/SIEGE_TREADS_END
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_items["SIEGE_TREADS_END"]); // ITEMS/SIEGE_TREADS_END
         }
 
         StartCoroutine(SecondaryDataFlash()); // Flash the secondary
@@ -1743,7 +1743,7 @@ public class InvDisplayItem : MonoBehaviour
     {
         // Play a destroyed item sound
         if (!isSecondaryItem) // dont play multiple at the same time!
-            AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[85]); // UI/PT_LOST
+            AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_ui["PT_LOST"]); // UI/PT_LOST
 
         // Disabled the health indicator (but keep the spacing)
         healthDisplay.enabled = false;
@@ -1788,7 +1788,7 @@ public class InvDisplayItem : MonoBehaviour
 
     public void Sort_StaggeredMove(Vector3 end, List<Vector3> positions, float delay = 0f)
     {
-        AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[70]); // UI | PART_SORT
+        AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_ui["PART_SORT"]); // UI - PART_SORT
 
         StartCoroutine(StaggeredMove(end, positions, delay));
 

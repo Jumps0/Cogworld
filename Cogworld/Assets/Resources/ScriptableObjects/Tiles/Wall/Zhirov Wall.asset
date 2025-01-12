@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 14
   displaySprite: {fileID: -952566843, guid: fb10cc78639952642858fbe0ed0250dd, type: 3}
-  tileName: Waste Wall
+  tileName: Zhirov Wall
   type: 1
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: -1365252575, guid: fb10cc78639952642858fbe0ed0250dd, type: 3}

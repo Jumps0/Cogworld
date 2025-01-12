@@ -390,7 +390,7 @@ public class GlobalSettings : MonoBehaviour
         db_textaid.gameObject.SetActive(false);
 
         // Play a sound
-        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.UI_Clips[42], 0.5f); // UI - HACK_BUTTON
+        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_ui["HACK_BUTTON"], 0.5f); // UI - HACK_BUTTON
 
         if (db_main.activeInHierarchy)
         {
@@ -897,7 +897,7 @@ public class GlobalSettings : MonoBehaviour
                 switch (broadcast_type)
                 {
                     case 0:
-                        UIManager.inst.CreateLeftMessage(broadcast_message, 10, AudioManager.inst.GAME_Clips[32]); // FACILITY_ALERT
+                        UIManager.inst.CreateLeftMessage(broadcast_message, 10, AudioManager.inst.dict_game["FACILITY_ALERT"]); // GAME - FACILITY_ALERT
                         DebugBarHelper("Broadcasting alert message...");
                         break;
                     case 1:

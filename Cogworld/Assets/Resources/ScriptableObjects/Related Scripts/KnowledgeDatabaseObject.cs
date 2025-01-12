@@ -6,6 +6,7 @@ using UnityEngine;
 public class KnowledgeDatabaseObject : ScriptableObject, ISerializationCallbackReceiver
 {
     public KnowledgeObject[] Data; // Contains all knowledge data that exists within the game.
+    public Dictionary<string, KnowledgeObject> dict;
 
     [ContextMenu("Update ID's")]
     public void UpdateIDs()
@@ -14,6 +15,16 @@ public class KnowledgeDatabaseObject : ScriptableObject, ISerializationCallbackR
         {
             if (Data[i].Id != i)
                 Data[i].Id = i;
+        }
+    }
+
+    public void SetupDict()
+    {
+        dict = new Dictionary<string, KnowledgeObject>();
+
+        foreach (var v in Data)
+        {
+            dict.Add(v.name, v);
         }
     }
 

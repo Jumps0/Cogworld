@@ -9,6 +9,8 @@ public class AudioManager : MonoBehaviour
     public void Awake()
     {
         inst = this;
+
+        SetupDicts();
     }
 
     [Header("Temp Audio Prefab")]
@@ -26,27 +28,170 @@ public class AudioManager : MonoBehaviour
     public AudioSource globalTypingSource;
 
     [Header("Audio Clips")]
+    // -- Contains the raw clips --
     [Tooltip("Only map ambience in here. Machine ambience gets assigned individually.")]
-    public List<AudioClip> AMBIENT_Clips = new List<AudioClip>();
-    public List<AudioClip> DIALOGUE_Clips = new List<AudioClip>();
-    public List<AudioClip> DOOR_Clips = new List<AudioClip>();
-    public List<AudioClip> ENDINGS_Clips = new List<AudioClip>();
-    public List<AudioClip> EVOLVE_Clips = new List<AudioClip>();
-    public List<AudioClip> GAME_Clips = new List<AudioClip>();
-    public List<AudioClip> GAMEOVER_Clips = new List<AudioClip>();
-    public List<AudioClip> INTRO_Clips = new List<AudioClip>();
-    public List<AudioClip> ITEMS_Clips = new List<AudioClip>();
-    public List<AudioClip> TITLE_Clips = new List<AudioClip>();
-    public List<AudioClip> TRAPS_Clips = new List<AudioClip>();
-    public List<AudioClip> UI_Clips = new List<AudioClip>();
-    public List<AudioClip> ROBOTHACK_Clips = new List<AudioClip>();
+    [SerializeField] private List<AudioClip> AMBIENT_Clips = new List<AudioClip>();
+    [SerializeField] private List<AudioClip> DIALOGUE_Clips = new List<AudioClip>();
+    [SerializeField] private List<AudioClip> DOOR_Clips = new List<AudioClip>();
+    [SerializeField] private List<AudioClip> ENDINGS_Clips = new List<AudioClip>();
+    [SerializeField] private List<AudioClip> EVOLVE_Clips = new List<AudioClip>();
+    [SerializeField] private List<AudioClip> GAME_Clips = new List<AudioClip>();
+    [SerializeField] private List<AudioClip> GAMEOVER_Clips = new List<AudioClip>();
+    [SerializeField] private List<AudioClip> INTRO_Clips = new List<AudioClip>();
+    [SerializeField] private List<AudioClip> ITEMS_Clips = new List<AudioClip>();
+    [SerializeField] private List<AudioClip> TITLE_Clips = new List<AudioClip>();
+    [SerializeField] private List<AudioClip> TRAPS_Clips = new List<AudioClip>();
+    [SerializeField] private List<AudioClip> UI_Clips = new List<AudioClip>();
+    [SerializeField] private List<AudioClip> ROBOTHACK_Clips = new List<AudioClip>();
     [Header("   MATERIALS")]
-    public List<AudioClip> equipItem_Clips = new List<AudioClip>();
-    public List<AudioClip> dropItem_Clips = new List<AudioClip>();
-    public List<AudioClip> RobotDestruction_Clips = new List<AudioClip>();
-    public List<AudioClip> nonBotDestruction_Clips = new List<AudioClip>();
+    [SerializeField] private List<AudioClip> equipItem_Clips = new List<AudioClip>();
+    [SerializeField] private List<AudioClip> dropItem_Clips = new List<AudioClip>();
+    [SerializeField] private List<AudioClip> RobotDestruction_Clips = new List<AudioClip>();
+    [SerializeField] private List<AudioClip> nonBotDestruction_Clips = new List<AudioClip>();
 
-    public List<AudioClip> globalMusicClips = new List<AudioClip>(); // Will probably never be used
+    [SerializeField] private List<AudioClip> globalMusicClips = new List<AudioClip>(); // Will probably never be used
+
+    // -- DICTIONARIES --
+    // Accessed across the project
+    public Dictionary<string, AudioClip> dict_ambient;
+    public Dictionary<string, AudioClip> dict_dialogue;
+    public Dictionary<string, AudioClip> dict_door;
+    public Dictionary<string, AudioClip> dict_endings;
+    public Dictionary<string, AudioClip> dict_evolve;
+    public Dictionary<string, AudioClip> dict_game;
+    public Dictionary<string, AudioClip> dict_gameover;
+    public Dictionary<string, AudioClip> dict_intro;
+    public Dictionary<string, AudioClip> dict_items;
+    public Dictionary<string, AudioClip> dict_title;
+    public Dictionary<string, AudioClip> dict_traps;
+    public Dictionary<string, AudioClip> dict_ui;
+    public Dictionary<string, AudioClip> dict_robothack;
+    public Dictionary<string, AudioClip> dict_equipitem;
+    public Dictionary<string, AudioClip> dict_dropitem;
+    public Dictionary<string, AudioClip> dict_robotdestruction;
+    public Dictionary<string, AudioClip> dict_nonbotdestruction;
+
+    private void SetupDicts()
+    {
+        dict_ambient = new Dictionary<string, AudioClip>();
+
+        foreach (var v in AMBIENT_Clips)
+        {
+            dict_ambient.Add(v.name, v);
+        }
+
+        dict_dialogue = new Dictionary<string, AudioClip>();
+
+        foreach (var v in DIALOGUE_Clips)
+        {
+            dict_dialogue.Add(v.name, v);
+        }
+
+        dict_door = new Dictionary<string, AudioClip>();
+
+        foreach (var v in DOOR_Clips)
+        {
+            dict_door.Add(v.name, v);
+        }
+
+        dict_endings = new Dictionary<string, AudioClip>();
+
+        foreach (var v in ENDINGS_Clips)
+        {
+            dict_endings.Add(v.name, v);
+        }
+
+        dict_evolve = new Dictionary<string, AudioClip>();
+
+        foreach (var v in EVOLVE_Clips)
+        {
+            dict_evolve.Add(v.name, v);
+        }
+
+        dict_game = new Dictionary<string, AudioClip>();
+
+        foreach (var v in GAME_Clips)
+        {
+            dict_game.Add(v.name, v);
+        }
+
+        dict_gameover = new Dictionary<string, AudioClip>();
+
+        foreach (var v in GAMEOVER_Clips)
+        {
+            dict_gameover.Add(v.name, v);
+        }
+
+        dict_intro = new Dictionary<string, AudioClip>();
+
+        foreach (var v in INTRO_Clips)
+        {
+            dict_intro.Add(v.name, v);
+        }
+
+        dict_items = new Dictionary<string, AudioClip>();
+
+        foreach (var v in ITEMS_Clips)
+        {
+            dict_items.Add(v.name, v);
+        }
+
+        dict_title = new Dictionary<string, AudioClip>();
+
+        foreach (var v in TITLE_Clips)
+        {
+            dict_title.Add(v.name, v);
+        }
+
+        dict_traps = new Dictionary<string, AudioClip>();
+
+        foreach (var v in TRAPS_Clips)
+        {
+            dict_traps.Add(v.name, v);
+        }
+
+        dict_ui = new Dictionary<string, AudioClip>();
+
+        foreach (var v in UI_Clips)
+        {
+            dict_ui.Add(v.name, v);
+        }
+
+        dict_robothack = new Dictionary<string, AudioClip>();
+
+        foreach (var v in ROBOTHACK_Clips)
+        {
+            dict_robothack.Add(v.name, v);
+        }
+
+        dict_equipitem = new Dictionary<string, AudioClip>();
+
+        foreach (var v in equipItem_Clips)
+        {
+            dict_equipitem.Add(v.name, v);
+        }
+
+        dict_dropitem = new Dictionary<string, AudioClip>();
+
+        foreach (var v in dropItem_Clips)
+        {
+            dict_dropitem.Add(v.name, v);
+        }
+
+        dict_robotdestruction = new Dictionary<string, AudioClip>();
+
+        foreach (var v in RobotDestruction_Clips)
+        {
+            dict_robotdestruction.Add(v.name, v);
+        }
+
+        dict_nonbotdestruction = new Dictionary<string, AudioClip>();
+
+        foreach (var v in nonBotDestruction_Clips)
+        {
+            dict_nonbotdestruction.Add(v.name, v);
+        }
+    }
 
     public void PlayAmbient(int id, float volume = -1)
     {

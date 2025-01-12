@@ -15,7 +15,7 @@ MonoBehaviour:
   amount: 1
   data:
     Name: 
-    Id: 96
+    Id: 95
     stackable: 0
     amount: 1
     itemData: {fileID: 11400000}
@@ -189,7 +189,7 @@ MonoBehaviour:
   destroyOnRemove: 0
   canBeDisabled: 1
   quality: 0
-  itemName: Hover Unit
+  itemName: Mak. Hover Unit
   description: A poorly made hover unit that provides support for smaller bots. Commonly
     used by derelicts.
   mechanicalDescription: 

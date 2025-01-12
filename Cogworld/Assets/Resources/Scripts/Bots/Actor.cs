@@ -676,15 +676,15 @@ public class Actor : Entity
         // Play a death sound
         if (botInfo._size == BotSize.Tiny || botInfo._size == BotSize.Small)
         {
-            this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.RobotDestruction_Clips[Random.Range(36, 38)]); // STATIC_SML_1/2/3
+            this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_robotdestruction[$"STATIC_SML_{Random.Range(1, 3)}"]); // STATIC_SML_1/2/3
         }
         else if (botInfo._size == BotSize.Medium)
         {
-            this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.RobotDestruction_Clips[Random.Range(33, 35)]); // STATIC_MED_1/2/3
+            this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_robotdestruction[$"STATIC_MED_{Random.Range(1, 3)}"]); // STATIC_MED_1/2/3
         }
         else
         {
-            this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.RobotDestruction_Clips[Random.Range(25, 32)]); // STATIC_LRG_1/2/3/4/5/6/7/8
+            this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_robotdestruction[$"STATIC_LRG_{Random.Range(1, 3)}"]); // STATIC_LRG_1/2/3/4/5/6/7/8
         }
 
         // Drop all items in inventory
@@ -1011,7 +1011,7 @@ public class Actor : Entity
             // Player a warning message
             UIManager.inst.ShowCenterMessageTop("Collision imminent! Confirm direction.", UIManager.inst.dangerRed, Color.black);
             // Play a warning sound
-            AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[21], 0.7f); // UI - COLLISION_WARNING
+            AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_ui["COLLISION_WARNING"], 0.7f); // UI - COLLISION_WARNING
             // Flash an indicator on the target
             target.FlashAlertIndicator();
             // Start the timer

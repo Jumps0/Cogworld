@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 47
   displaySprite: {fileID: 618859876, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
-  tileName: Machinery
+  tileName: Machinery Reciever
   type: 3
   altSprite: {fileID: 686718923, guid: bbf1a054510493147ace67589225c41a, type: 3}
   destroyedSprite: {fileID: 0}

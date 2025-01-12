@@ -32,7 +32,7 @@ public class UICenterMessage : MonoBehaviour
     IEnumerator AnimateText()
     {
         // Play (typing) sound
-        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[77]); // PRINT_3
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_ui["PRINT_3"]); // UI - PRINT_3
 
         _text.color = textColor;
         backBar.color = backgroundColor;

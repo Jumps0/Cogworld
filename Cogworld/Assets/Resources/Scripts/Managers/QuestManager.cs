@@ -407,7 +407,7 @@ public class QuestManager : MonoBehaviour
     {
         Quest quest = GetQuestById(id);
 
-        AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.ENDINGS_Clips[5], 0.8f); // Play a sound
+        AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_endings["SURFACE_DATA"], 0.8f); // ENDINGS - SURFACE_DATA
         
         // Make a message in the log
         string logMessage = $"Quest Completed: {quest.info.displayName}";
@@ -434,7 +434,7 @@ public class QuestManager : MonoBehaviour
         quest.info.reward_claimed = true; // Set claimed flag
 
         ui_ClaimRewardsButton.SetActive(false); // Disable the Claim button
-        AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[14], 0.5f); // Play a claim sound [UI - CASH_REGISTER]
+        AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_ui["CASH_REGISTER"], 0.5f); // Play a claim sound [UI - CASH_REGISTER]
 
         List<ItemObject> rewards_item = quest.info.reward_items;
         int rewards_matter = quest.info.reward_matter;
@@ -697,7 +697,7 @@ public class QuestManager : MonoBehaviour
 
     public void ButtonHoverEnter()
     {
-        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.UI_Clips[48], 0.8f); // Play hover sound
+        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.dict_ui["HOVER"], 0.8f); // UI - HOVER
     }
 
     public void ButtonHoverExit()
@@ -718,7 +718,7 @@ public class QuestManager : MonoBehaviour
     public void OpenQuestMenu()
     {
         // Play the OPEN sound
-        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.UI_Clips[64]);
+        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_ui["OPEN"]); // UI - OPEN
 
         ui_mainReference.SetActive(true);
         ui_animator.Play("QUEST_WindowOpen");
@@ -917,7 +917,7 @@ public class QuestManager : MonoBehaviour
     public void CloseQuestMenu()
     {
         // Play the close sound
-        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.UI_Clips[20]);
+        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_ui["CLOSE"]); // UI - CLOSE
 
         // Clear out the quests
         UI_ClearSmallQuests();

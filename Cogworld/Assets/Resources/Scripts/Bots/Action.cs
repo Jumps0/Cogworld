@@ -121,7 +121,7 @@ public static class Action
             if (actor.confirmCollision)
             {
                 // Play collision sound
-                AudioManager.inst.PlayGlobalCombatSound(AudioManager.inst.GAME_Clips[9], 0.7f); // GAME - CAVEHIT_02
+                AudioManager.inst.PlayGlobalCombatSound(AudioManager.inst.dict_game["CAVEHIT_02"], 0.7f); // GAME - CAVEHIT_02
                 MeleeAction(actor, target.gameObject);
                 ShuntAction(actor, target);
             }

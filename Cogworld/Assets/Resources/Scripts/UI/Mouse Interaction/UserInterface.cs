@@ -109,7 +109,7 @@ public abstract class UserInterface : MonoBehaviour
             }
 
             MouseData.tempItemBeingDragged = CreatetempItem(obj);
-            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[27]);
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_ui["DRAG"]); // UI - DRAG
         }
             
     }
@@ -189,7 +189,7 @@ public abstract class UserInterface : MonoBehaviour
                     UIManager.inst.CreateNewLogMessage("Discarded " + obj.GetComponent<InvDisplayItem>().item.itemData.itemName + ".", UIManager.inst.cautiousYellow, UIManager.inst.dullGreen, false, true); // Do a UI message
 
                     // Play the discard sound
-                    AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.UI_Clips[82]); // UI/PT_DISC
+                    AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_ui["PT_DISC"]); // UI - PT_DISC
 
                     _inventory.RemoveItem(obj.GetComponent<InvDisplayItem>().item); // Remove item from inventory
 

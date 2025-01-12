@@ -161,7 +161,7 @@ public class UIHackTarget : MonoBehaviour
             if(UIManager.inst.terminal_activeIField  == null) // dont wanna double-up
             {
                 // Play the "MANUAL" sound (56)
-                AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[56]); // MANUAL
+                AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_ui["MANUAL"]); // UI - MANUAL
                 UIManager.inst.Terminal_CreateManualInput();
             }
         }
@@ -436,7 +436,7 @@ public class UIHackTarget : MonoBehaviour
     public void PlayHoverSound()
     {
         // Play the hover UI sound
-        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.UI_Clips[48]); // HOVER
+        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.dict_ui["HOVER"]); // UI - HOVER
     }
 
     public void MouseHoverUpdate(bool mouseEnter)

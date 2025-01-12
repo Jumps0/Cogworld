@@ -1087,7 +1087,7 @@ public static class HF
                     // Open the entrance to this garrison
 
                     // 1. Play the sound
-                    AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.DOOR_Clips[4]); // DOORS - GARRISON_UNLOCK
+                    AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_door["GARRISON_UNLOCK"]); // DOORS - GARRISON_UNLOCK
                     // 2. Print out in info blue (time) "EXIT=UNLOCKED: GARRISON"
                     UIManager.inst.CreateNewLogMessage("EXIT=UNLOCKED: GARRISON", UIManager.inst.infoBlue, UIManager.inst.dullGreen, true);
                     // 3. Spawn an exit to garrison underneath the player, and ensure that the exit notification appears
@@ -1178,7 +1178,7 @@ public static class HF
 
                     // -print the statement (see below)
                     // 1. Play the closing sound
-                    AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.DOOR_Clips[3]); // DOORS - SEAL
+                    AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_door["SEAL"]); // DOORS - SEAL
                     // 2. Init the red consequences bar /w "GARRISON ACCESS SHUTDOWN" and Forbid any further access to this garrison (via hacking)
                     UIManager.inst.Terminal_DoConsequences(UIManager.inst.highSecRed, "GARRISON ACCESS SHUTDOWN", false, false, false);
                     // 3. Tell the garrison what to do
@@ -1351,7 +1351,7 @@ public static class HF
                             PlayerData.inst.GetComponent<Actor>().SpecialPickupCheck(pos); // Do the check
 
                             // Play a sound
-                            AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.GAME_Clips[31], 0.5f); // GAME - FABRICATION (is there a better sound for this?)
+                            AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_game["FABRICATION"], 0.5f); // GAME - FABRICATION (is there a better sound for this?)
 
                             return $"Ejecting {stored} matter...";
                         }
@@ -1365,7 +1365,7 @@ public static class HF
                             PlayerData.inst.GetComponent<Actor>().SpecialPickupCheck(pos); // Do the check
 
                             // Play a sound
-                            AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.GAME_Clips[31], 0.5f); // GAME - FABRICATION (is there a better sound for this?)
+                            AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_game["FABRICATION"], 0.5f); // GAME - FABRICATION (is there a better sound for this?)
 
                             return $"Ejecting 100 matter...";
                         }
@@ -1391,7 +1391,7 @@ public static class HF
                                 recycler.storedMatter = 0; // Set storage to 0
 
                                 // Play a sound
-                                AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.GAME_Clips[31], 0.5f); // GAME - FABRICATION (is there a better sound for this?)
+                                AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_game["FABRICATION"], 0.5f); // GAME - FABRICATION (is there a better sound for this?)
 
                                 return "Ejecting local matter reserves...";
                             }
@@ -1415,7 +1415,7 @@ public static class HF
                                 recycler.storedComponents.Container.Clear();
 
                                 // Play a sound
-                                AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.GAME_Clips[31], 0.5f); // GAME - FABRICATION (is there a better sound for this?)
+                                AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_game["FABRICATION"], 0.5f); // GAME - FABRICATION (is there a better sound for this?)
 
                                 return $"Ejecting stored components...";
                             }
@@ -2003,7 +2003,7 @@ public static class HF
                 // Detected!
                 detected = true;
                 UIManager.inst.Terminal_InitTrace();
-                AudioManager.inst.CreateTempClip(UIManager.inst.transform.position, AudioManager.inst.UI_Clips[43]); // HACK_DETECTED
+                AudioManager.inst.CreateTempClip(UIManager.inst.transform.position, AudioManager.inst.dict_ui["HACK_DETECTED"]); // UI - HACK_DETECTED
             }
             else
             {

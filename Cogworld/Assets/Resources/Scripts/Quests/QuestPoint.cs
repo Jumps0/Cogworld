@@ -59,12 +59,12 @@ public class QuestPoint : MonoBehaviour
         if(currentQuestState.Equals(QuestState.CAN_START) && startPoint)
         {
             GameManager.inst.questEvents.StartQuest(questID);
-            AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.ROBOTHACK_Clips[0], 0.6f); // Play a sound
+            AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_robothack["ANOMALY"], 0.6f); // ROBOT_HACK - ANOMALY
         }
         else if (currentQuestState.Equals(QuestState.CAN_FINISH) && finishPoint)
         {
             GameManager.inst.questEvents.FinishQuest(questID);
-            AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.UI_Clips[1], 0.6f); // Play a sound
+            AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_ui["ACHIEVEMENT_BLIP"], 0.6f); // UI - ACHIEVEMENT_BLIP
         }
     }
 

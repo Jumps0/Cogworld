@@ -27,7 +27,7 @@ public class UISimpleCycle : MonoBehaviour
         buttonAnim = StartCoroutine(ButtonHoverAnim(true));
 
         // Play the hover UI sound
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[48]); // HOVER
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_ui["HOVER"]); // UI - HOVER
     }
 
     public void HoverEnd()

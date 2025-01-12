@@ -6,6 +6,7 @@ using UnityEngine;
 public class HackDatabaseObject : ScriptableObject, ISerializationCallbackReceiver
 {
     public HackObject[] Hack; // Contains all Hack data that exists within the game.
+    public Dictionary<string, HackObject> dict;
 
     [ContextMenu("Update ID's")]
     public void UpdateIDs()
@@ -14,6 +15,16 @@ public class HackDatabaseObject : ScriptableObject, ISerializationCallbackReceiv
         {
             if (Hack[i].Id != i)
                 Hack[i].Id = i;
+        }
+    }
+
+    public void SetupDict()
+    {
+        dict = new Dictionary<string, HackObject>();
+
+        foreach(var hack in Hack)
+        {
+            dict.Add(hack.name, hack); // Doesn't use trueName because that is used for a special purpose.
         }
     }
 

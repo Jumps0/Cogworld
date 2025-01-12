@@ -50,7 +50,7 @@ public class UILogMessage : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         if (hasAudioPlayout)
         {
             // Play (typing) sound
-            AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[76]); // PRINT_2
+            AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_ui["PRINT_2"]); // UI - PRINT_2
         }
 
         int len = _message.Length;

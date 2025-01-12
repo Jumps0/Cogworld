@@ -247,7 +247,7 @@ public class TileBlock : MonoBehaviour
 
         if (doSound)
         {
-            AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.UI_Clips[0], 0.5f); // UI - ACCESS
+            AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_ui["ACCESS"], 0.5f); // UI - ACCESS
         }
 
         isExplored = true;
@@ -420,7 +420,7 @@ public class TileBlock : MonoBehaviour
     public void PhaseWall_Open()
     {
         // Play the open sound
-        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.DOOR_Clips[Random.Range(8, 9)]); // HEAVY_OPEN_1/2
+        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_door[$"HEAVY_OPEN_{Random.Range(1, 2)}"]); // HEAVY_OPEN_1/2
 
         walkable = true;
 
@@ -437,7 +437,7 @@ public class TileBlock : MonoBehaviour
     public void PhaseWall_Close()
     {
         // Play the close sound
-        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.DOOR_Clips[Random.Range(10, 12)]); // PHASE_CLOSE_1/2/3
+        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_door[$"PHASE_CLOSE_{Random.Range(1, 3)}"]); // PHASE_CLOSE_1/2/3
 
         walkable = false;
 

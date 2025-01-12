@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 41
   displaySprite: {fileID: -345670785, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
-  tileName: Pipes
+  tileName: Pipes Double 2 Split
   type: 3
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}

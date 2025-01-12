@@ -133,7 +133,7 @@ public class UIManager : MonoBehaviour
         FSA_Inventory.Play("FSUI_Inventory");
 
         // Play the "MANUAL" sound (56)
-        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[56]); // MANUAL
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_ui["MANUAL"]); // UI - MANUAL
 
         yield return null;
 
@@ -156,7 +156,7 @@ public class UIManager : MonoBehaviour
         else
         {
             // - Completion Effects -
-            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.INTRO_Clips[4], 0.45f); // "UI/DONE" this audio clip is too loud for its own good
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_intro["DONE"], 0.45f); // "INTRO/DONE" this audio clip is too loud for its own good
             MapManager.inst.PlayAmbientMusic(); // Ambient music
             MapManager.inst.FreezePlayer(false); // Unfreeze the player, we are done!
         }
@@ -602,7 +602,7 @@ public class UIManager : MonoBehaviour
 
         // -- END --
         // - Completion Effects -
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.INTRO_Clips[4], 0.45f); // "UI/DONE" this audio clip is too loud for its own good
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_intro["DONE"], 0.45f); // "UI/DONE" this audio clip is too loud for its own good
         MapManager.inst.PlayAmbientMusic(); // Ambient music
         MapManager.inst.FreezePlayer(false); // Unfreeze the player, we are done!
 
@@ -640,7 +640,7 @@ public class UIManager : MonoBehaviour
         for (int i = 0; i < 6; i++)
         {
             // Play a sound ("UI/IntelON")
-            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.UI_Clips[51]); // INTEL_ON
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_ui["INTEL_ON"]); // UI - INTEL_ON
 
             if (i == 0 || i == 4) // Only one dart
             {
@@ -847,7 +847,7 @@ public class UIManager : MonoBehaviour
         for (int i = 0; i < 5; i++) // 5 times total
         {
             // Play the scanline sound. ("INTRO/MAPSCAN")
-            AudioManager.inst.PlayMiscSpecific(AudioManager.inst.INTRO_Clips[6]); // MAPSCAN
+            AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_intro["MAPSCAN"]); // INTRO - MAPSCAN
 
             // Now go through each row, and ping every block in the row
             foreach (var kvp in sortedResult)
@@ -1721,7 +1721,7 @@ public class UIManager : MonoBehaviour
         AudioManager.inst.StopDialogueAmbient();
 
         // Play the close sound
-        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[20]); // CLOSE
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_ui["CLOSE"]); // UI - CLOSE
     }
 
     private IEnumerator Dialogue_QuitAnim()
@@ -1961,11 +1961,11 @@ public class UIManager : MonoBehaviour
 
         // First, the hacking window opens
         terminal_hackingAreaRef.SetActive(true);
-        terminal_hackingAreaRef.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.UI_Clips[64], 0.7f); // UI - OPEN1
+        terminal_hackingAreaRef.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["OPEN_1"], 0.7f); // UI - OPEN_1
         StartCoroutine(Terminal_HackBorderAnim());
 
         // Play (typing) sound
-        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[76]); // PRINT_2
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_ui["PRINT_2"]); // UI - PRINT_2
 
         // Next, the "Utilities" text appears at the top of the hacking window
         GameObject hackUtilitiesMessage = Instantiate(terminal_hackinfoV2_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
@@ -2353,7 +2353,7 @@ public class UIManager : MonoBehaviour
         terminal_closeEffect.Close();
 
         // Create the looping static sound
-        terminal_staticAudio = AudioManager.inst.MakeLoopingEffect(AudioManager.inst.UI_Clips[45], 0.6f); // UI - HACK_STATIC
+        terminal_staticAudio = AudioManager.inst.MakeLoopingEffect(AudioManager.inst.dict_ui["HACK_STATIC"], 0.6f); // UI - HACK_STATIC
 
         if (summonInvestigationSquad)
         {
@@ -2410,7 +2410,7 @@ public class UIManager : MonoBehaviour
     private IEnumerator Terminal_OpenTargetResults()
     {
         terminal_targetresultsAreaRef.SetActive(true); // Enable the window
-        terminal_targetresultsAreaRef.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.UI_Clips[64], 0.7f); // UI - OPEN1
+        terminal_targetresultsAreaRef.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["OPEN_1"], 0.7f); // UI - OPEN_1
         StartCoroutine(Terminal_TargetResultBorderAnim()); // Do the opener animation
 
         yield return new WaitForSeconds(0.4f);
@@ -2769,7 +2769,7 @@ public class UIManager : MonoBehaviour
             return;
         }
 
-        AudioManager.inst.CreateTempClip(terminal_targetTerm.transform.position, AudioManager.inst.UI_Clips[20]); // Play CLOSE sound
+        AudioManager.inst.CreateTempClip(terminal_targetTerm.transform.position, AudioManager.inst.dict_ui["CLOSE"]); // UI - CLOSE
 
         StartCoroutine(Terminal_CloseAnim());
     }
@@ -3177,7 +3177,7 @@ public class UIManager : MonoBehaviour
         StartCoroutine(Terminal_HackBorderAnim());
 
         // Play (typing) sound
-        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[76]); // PRINT_2
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_ui["PRINT_2"]); // UI - PRINT_2
 
         if (cTerminal_machine.restrictedAccess)
         {
@@ -3355,7 +3355,7 @@ public class UIManager : MonoBehaviour
             return;
         }
 
-        AudioManager.inst.CreateTempClip(terminal_targetTerm.transform.position, AudioManager.inst.UI_Clips[20]); // Play CLOSE sound
+        AudioManager.inst.CreateTempClip(terminal_targetTerm.transform.position, AudioManager.inst.dict_ui["CLOSE"]); // UI - CLOSE
 
         // Did we just close the cache window?
         bool wasCache = (cTerminal_machine.type == CustomTerminalType.HideoutCache);
@@ -5091,7 +5091,7 @@ public class UIManager : MonoBehaviour
 
 
 
-        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.UI_Clips[0]); // ACCESS
+        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_ui["ACCESS"]); // UI - ACCESS
     }
 
     public void Scan_IndicateFriendlies() // 2
@@ -5111,7 +5111,7 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.UI_Clips[0]); // ACCESS
+        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_ui["ACCESS"]); // UI - ACCESS
     }
 
     public void Scan_IndicateParts() // 3
@@ -5131,7 +5131,7 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.UI_Clips[0]); // ACCESS
+        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_ui["ACCESS"]); // UI - ACCESS
     }
 
     public void Scan_IndicateExits() // 4
@@ -5159,7 +5159,7 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.UI_Clips[0]); // ACCESS
+        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_ui["ACCESS"]); // UI - ACCESS
     }
 
     public void Scan_FlipSubmode(bool state, GameObject focusObj = null)
@@ -5775,7 +5775,7 @@ public class UIManager : MonoBehaviour
             Evasion_VolleyCleanup(); // Clean up the animation
 
             // Play the sound "RANGE_OFF" (ui-86)
-            AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[86]); // RANGE_OFF
+            AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_ui["RANGE_OFF"]); // UI - RANGE_OFF
         }
     }
 
@@ -5866,7 +5866,7 @@ public class UIManager : MonoBehaviour
         }
 
         // Play the sound "SCAN_4" (ui-91)
-        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[91]); // SCAN_4
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_ui["SCAN_4"]); // SCAN_4
 
         // Now go through each row, and ping every block in the row
         foreach (int row in sortedRows)
@@ -6075,7 +6075,7 @@ public class UIManager : MonoBehaviour
 
     public void CEWQ_HoverEnter(int id)
     {
-        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.UI_Clips[48], 0.8f); // Play hover sound
+        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.dict_ui["HOVER"], 0.8f); // UI - HOVER
 
         switch (id)
         {
@@ -6273,7 +6273,7 @@ public class UIManager : MonoBehaviour
 
     public void Map_HoverEnter()
     {
-        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.UI_Clips[48], 0.8f); // Play hover sound
+        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.dict_ui["HOVER"], 0.8f); // UI - HOVER
     }
 
     public void Map_HoverExit()
@@ -6298,7 +6298,7 @@ public class UIManager : MonoBehaviour
 
     public void ESC_HoverEnter()
     {
-        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.UI_Clips[48], 0.8f); // Play hover sound
+        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.dict_ui["HOVER"], 0.8f); // UI - HOVER
     }
 
     public void ESC_HoverExit()
@@ -7602,7 +7602,7 @@ public class UIManager : MonoBehaviour
         dataMenu.data_smallImage.transform.parent.gameObject.SetActive(true);
 
         // Play a sound
-        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[64]); // OPEN_1
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_ui["OPEN_1"]); // UI - OPEN_1
 
         // There isn't actually an opening animation for the menu itself (thankfully).
         // But most items inside the menu do have their own animations, which we will handle inside their own scripts.
@@ -10612,7 +10612,7 @@ public class UIManager : MonoBehaviour
     public void Data_CloseMenu()
     {
         // Play a sound
-        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.UI_Clips[20]); // CLOSE
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_ui["CLOSE"]); // UI - CLOSE
 
         dataMenu.selection_item = null;
         dataMenu.selection_obj = null;
