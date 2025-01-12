@@ -70,12 +70,14 @@ public class InventoryControl : MonoBehaviour
     /// <summary>
     /// Directly creates a NEW item in the world based off of a specified ID.
     /// </summary>
-    /// <param name="id">The id of the item to place.</param>
+    /// <param name="itemName">The name of the item to place.</param>
     /// <param name="location">Where in the world to place the item.</param>
     /// <param name="native">Is this item 'native' to 0b10? If false, scavengers will pick this up and recycle it.</param>
     /// <param name="specificAmount">A specific amount of this item to spawn, only really applies to matter</param>
-    public void CreateItemInWorld(int id, Vector2Int location, bool native = false, int specificAmount = 1)
+    public void CreateItemInWorld(string itemName, Vector2Int location, bool native = false, int specificAmount = 1)
     {
+        int id = MapManager.inst.itemDatabase.dict[itemName].data.Id;
+
         var spawnedItem = Instantiate(_itemGroundPrefab, new Vector3(location.x * GridManager.inst.globalScale, location.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
         spawnedItem.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
         spawnedItem.name = $"Floor Item {location.x} {location.y} - "; // Give grid based name

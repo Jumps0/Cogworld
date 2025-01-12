@@ -270,7 +270,7 @@ public class Fabricator : MonoBehaviour
         if (targetPart != null)
         {
             // Spawn in this part on the floor
-            InventoryControl.inst.CreateItemInWorld(targetPart.data.Id, dropLocation, true);
+            InventoryControl.inst.CreateItemInWorld(targetPart.itemName, dropLocation, true);
         }
         else if(targetBot != null)
         {

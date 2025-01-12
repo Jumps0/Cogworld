@@ -803,7 +803,7 @@ public class GlobalSettings : MonoBehaviour
                         break;
 
                     case "item":
-                        InventoryControl.inst.CreateItemInWorld(tospawn_item.data.Id, playerloc, true);
+                        InventoryControl.inst.CreateItemInWorld(tospawn_item.itemName, playerloc, true);
                         DebugBarHelper($"Spawned a {tospawn_item.itemName}.");
 
                         success = true;

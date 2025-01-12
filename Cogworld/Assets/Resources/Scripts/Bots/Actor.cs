@@ -718,7 +718,7 @@ public class Actor : Entity
             }
 
             // Drop some matter
-            InventoryControl.inst.CreateItemInWorld(17, HF.LocateFreeSpace(HF.V3_to_V2I(this.transform.position)), false, randomPull);
+            InventoryControl.inst.CreateItemInWorld("Matter", HF.LocateFreeSpace(HF.V3_to_V2I(this.transform.position)), false, randomPull);
         }
         #endregion
 

@@ -644,7 +644,7 @@ public class MapManager : MonoBehaviour
         Actor questBot = PlaceBot(new Vector2Int(bl.x + 5, bl.y + 16), HF.GetBotByString("Zionite"));
 
         // test trap
-        PlaceTrap(MapManager.inst.itemDatabase.Items[103], new Vector2Int(bl.x + 5, bl.y + 11));
+        PlaceTrap(MapManager.inst.itemDatabase.dict["Blade Trap"], new Vector2Int(bl.x + 5, bl.y + 11));
     }
 
     /// <summary>
@@ -706,13 +706,13 @@ public class MapManager : MonoBehaviour
                 List<RoomCTR> rooms = DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().rooms;
                 int itemsPlaced = 0;
 
-                List<int> validitems = new List<int>();
+                List<string> validitems = new List<string>();
                 foreach (ItemObject item in MapManager.inst.itemDatabase.Items)
                 {
                     // Items that can spawn on at this level
                     if (item.schematicDetails.hackable && item.schematicDetails.location[0].y == currentLevel)
                     {
-                        validitems.Add(item.data.Id);
+                        validitems.Add(item.itemName);
                     }
                 }
 
@@ -755,16 +755,41 @@ public class MapManager : MonoBehaviour
                         random,
                         200 - random
                     };
-                    int[] idsToSpawn = { 4, 4, 9, 9, Random.Range(10, 13), Random.Range(10, 13), 2, 3, 5, 15, 14, 16, 6, 8, 17, 17 };
 
-                    SpawnItems(idsToSpawn, spawnArea, matterRNG);
+                    // Propulsion
+                    List<ItemObject> propulsion = new List<ItemObject>();
+                    // Add 6
+                    propulsion.Add(HF.FindItemOfTierAndSlot(1, ItemSlot.Propulsion, false));
+                    propulsion.Add(HF.FindItemOfTierAndSlot(1, ItemSlot.Propulsion, false));
+                    propulsion.Add(HF.FindItemOfTierAndSlot(1, ItemSlot.Propulsion, false));
+                    propulsion.Add(HF.FindItemOfTierAndSlot(1, ItemSlot.Propulsion, false));
+                    propulsion.Add(HF.FindItemOfTierAndSlot(1, ItemSlot.Propulsion, false));
+                    propulsion.Add(HF.FindItemOfTierAndSlot(1, ItemSlot.Propulsion, false));
+                    // Sort them
+                    propulsion.Sort();
+                    // Remove the last two so we have four
+                    propulsion.RemoveRange(4, 5);
 
-                    InventoryControl.inst.CreateItemInWorld(45, new Vector2Int(57, 57), true); // ONLY FOR TESTING. REMOVE LATER  (Beamcaster)
-                    InventoryControl.inst.CreateItemInWorld(102, new Vector2Int(56, 57), true); // ONLY FOR TESTING. REMOVE LATER (Rocket Launcher)
-                    InventoryControl.inst.CreateItemInWorld(101, new Vector2Int(55, 57), true); // ONLY FOR TESTING. REMOVE LATER (Vibroblade)
-                    InventoryControl.inst.CreateItemInWorld(91, new Vector2Int(54, 57), true); // ONLY FOR TESTING. REMOVE LATER (Exp. Target Analysis Processor)
-                    InventoryControl.inst.CreateItemInWorld(105, new Vector2Int(53, 57), true); // ONLY FOR TESTING. REMOVE LATER (Hvy. Siege Treads)
-                    InventoryControl.inst.CreateItemInWorld(66, new Vector2Int(52, 57), true); // ONLY FOR TESTING. REMOVE LATER (Ex. Chip 1)
+                    string[] itemsToSpawn = 
+                        { 
+                          propulsion[0].itemName, propulsion[1].itemName, propulsion[2].itemName, propulsion[3].itemName, 
+                          HF.FindItemOfTierAndType(1, ItemType.Armor, false).itemName, HF.FindItemOfTierAndType(1, ItemType.Armor, false).itemName,
+                          HF.FindItemOfTierAndType(1, ItemType.Engine, false).itemName, HF.FindItemOfTierAndType(1, ItemType.Engine, false).itemName,
+                          HF.FindItemOfTierAndType(1, ItemType.Storage, false).itemName,
+                          HF.FindItemOfTierAndType(1, ItemType.Device, false).itemName,
+                          HF.FindItemOfTierAndType(1, ItemType.Processor, false).itemName,
+                          HF.FindItemOfTierAndType(1, ItemType.Gun, false).itemName, HF.FindItemOfTierAndType(1, ItemType.Gun, false).itemName,
+                          HF.FindItemOfTierAndType(1, ItemType.EnergyGun, false).itemName 
+                        };
+
+                    SpawnItems(itemsToSpawn, spawnArea, matterRNG);
+
+                    InventoryControl.inst.CreateItemInWorld("Beamcaster", new Vector2Int(57, 57), true); // ONLY FOR TESTING. REMOVE LATER  (Beamcaster)
+                    InventoryControl.inst.CreateItemInWorld("Rocket Launcher", new Vector2Int(56, 57), true); // ONLY FOR TESTING. REMOVE LATER (Rocket Launcher)
+                    InventoryControl.inst.CreateItemInWorld("Vibroblade", new Vector2Int(55, 57), true); // ONLY FOR TESTING. REMOVE LATER (Vibroblade)
+                    InventoryControl.inst.CreateItemInWorld("Exp. Target Analysis Processor", new Vector2Int(54, 57), true); // ONLY FOR TESTING. REMOVE LATER (Exp. Target Analysis Processor)
+                    InventoryControl.inst.CreateItemInWorld("Hvy. Siege Treads", new Vector2Int(53, 57), true); // ONLY FOR TESTING. REMOVE LATER (Hvy. Siege Treads)
+                    InventoryControl.inst.CreateItemInWorld("Ex. Chip 1", new Vector2Int(52, 57), true); // ONLY FOR TESTING. REMOVE LATER (Ex. Chip 1)
                 }
 
 
@@ -776,23 +801,23 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    void SpawnItems(int[] itemIds, Vector2Int spawnArea, List<int> randomValues = null)
+    void SpawnItems(string[] items, Vector2Int spawnArea, List<int> randomValues = null)
     {
         HashSet<Vector2Int> usedLocations = new HashSet<Vector2Int>();
         int i = 0;
 
-        foreach (int itemId in itemIds)
+        foreach (string item in items)
         {
             Vector2Int location = GetRandomLocation(spawnArea, usedLocations);
 
-            if (itemId == 17) // This is *MATTER*, we need a random amount.
+            if (item == "Matter") // This is *MATTER*, we need a random amount.
             {
-                InventoryControl.inst.CreateItemInWorld(itemId, location, true, randomValues[i]);
+                InventoryControl.inst.CreateItemInWorld(item, location, true, randomValues[i]);
                 i++;
             }
             else // Just normal item.
             {
-                InventoryControl.inst.CreateItemInWorld(itemId, location, true);
+                InventoryControl.inst.CreateItemInWorld(item, location, true);
             }
 
             usedLocations.Add(location);
@@ -1006,11 +1031,11 @@ public class MapManager : MonoBehaviour
                 if (obj.gameObject.name.Contains("*")) // Specific Item Reference
                 {
                     string[] itemName = obj.gameObject.name.Split("*");
-                    InventoryControl.inst.CreateItemInWorld(HF.GetItemByString(itemName[0]).data.Id, HF.V3_to_V2I(spawnLocation));
+                    InventoryControl.inst.CreateItemInWorld(itemName[0], HF.V3_to_V2I(spawnLocation));
                 }
                 else if (obj.gameObject.GetComponent<MiscItemPool>()) // Specific Item Pool
                 {
-                    InventoryControl.inst.CreateItemInWorld(obj.gameObject.GetComponent<MiscItemPool>().itemPool[Random.Range(0, obj.gameObject.GetComponent<MiscItemPool>().itemPool.Count - 1)].data.Id, HF.V3_to_V2I(spawnLocation));
+                    InventoryControl.inst.CreateItemInWorld(obj.gameObject.GetComponent<MiscItemPool>().itemPool[Random.Range(0, obj.gameObject.GetComponent<MiscItemPool>().itemPool.Count - 1)].itemName, HF.V3_to_V2I(spawnLocation));
                 }
                 else // Generic Reference
                 {
@@ -1028,12 +1053,12 @@ public class MapManager : MonoBehaviour
                     }
 
                     // Generate a list of valid items to spawn based on the rating
-                    List<int> validitems = new List<int>();
+                    List<string> validitems = new List<string>();
                     foreach (ItemObject item in MapManager.inst.itemDatabase.Items)
                     {
                         if (item.type == _type && item.rating == int.Parse(_rating))
                         {
-                            validitems.Add(item.data.Id);
+                            validitems.Add(item.itemName);
                         }
                     }
 

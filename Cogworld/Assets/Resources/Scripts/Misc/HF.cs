@@ -1347,7 +1347,7 @@ public static class HF
                             Vector2Int pos = HF.V3_to_V2I(PlayerData.inst.transform.position);
 
                             // The easiest way to do this is to just drop it under the player and force the pick up check because the logic there is already complete.
-                            InventoryControl.inst.CreateItemInWorld(17, pos, false, stored); // Spawn some matter
+                            InventoryControl.inst.CreateItemInWorld("Matter", pos, false, stored); // Spawn some matter
                             PlayerData.inst.GetComponent<Actor>().SpecialPickupCheck(pos); // Do the check
 
                             // Play a sound
@@ -1361,7 +1361,7 @@ public static class HF
                             Vector2Int pos = HF.V3_to_V2I(PlayerData.inst.transform.position);
 
                             // The easiest way to do this is to just drop it under the player and force the pick up check because the logic there is already complete.
-                            InventoryControl.inst.CreateItemInWorld(17, HF.LocateFreeSpace(pos), false, 100); // Spawn some matter
+                            InventoryControl.inst.CreateItemInWorld("Matter", HF.LocateFreeSpace(pos), false, 100); // Spawn some matter
                             PlayerData.inst.GetComponent<Actor>().SpecialPickupCheck(pos); // Do the check
 
                             // Play a sound
@@ -1385,7 +1385,7 @@ public static class HF
                                 Vector2Int pos = HF.V3_to_V2I(recycler.ejectionSpot.transform.position);
 
                                 // The easiest way to do this is to just drop it under the player and force the pick up check because the logic there is already complete.
-                                InventoryControl.inst.CreateItemInWorld(17, HF.LocateFreeSpace(pos), false, toDrop); // Spawn some matter
+                                InventoryControl.inst.CreateItemInWorld("Matter", HF.LocateFreeSpace(pos), false, toDrop); // Spawn some matter
                                 PlayerData.inst.GetComponent<Actor>().SpecialPickupCheck(pos); // Do the check
 
                                 recycler.storedMatter = 0; // Set storage to 0
@@ -2660,6 +2660,80 @@ public static class HF
             else
             {
                 if (item.rating == tier)
+                {
+                    items.Add(item);
+                }
+            }
+        }
+
+        if (items.Count > 0)
+        {
+            return items[Random.Range(0, items.Count - 1)];
+        }
+
+        return MapManager.inst.itemDatabase.Items[0]; // Failsafe
+    }
+
+    /// <summary>
+    /// Finds a random item (in the database) of a specified tier (1-10) and fit into the specified slot.
+    /// </summary>
+    /// <param name="tier">The specified tier to search for. 1 to 10</param>
+    /// <param name="slot">The specific slot this item needs to fit in.</param>
+    /// <param name="isUnknown">Whether the item shouldn't be known to the player or not (aka a Prototype).</param>
+    /// <returns></returns>
+    public static ItemObject FindItemOfTierAndSlot(int tier, ItemSlot slot, bool isUnknown = true)
+    {
+        List<ItemObject> items = new List<ItemObject>();
+
+        foreach (ItemObject item in MapManager.inst.itemDatabase.Items)
+        {
+            if (isUnknown)
+            {
+                if (item.rating == tier && item.slot == slot && !item.knowByPlayer) // Prototypes only
+                {
+                    items.Add(item);
+                }
+            }
+            else
+            {
+                if (item.rating == tier && item.slot == slot)
+                {
+                    items.Add(item);
+                }
+            }
+        }
+
+        if (items.Count > 0)
+        {
+            return items[Random.Range(0, items.Count - 1)];
+        }
+
+        return MapManager.inst.itemDatabase.Items[0]; // Failsafe
+    }
+
+    /// <summary>
+    /// Finds a random item (in the database) of a specified tier (1-10) and fit into the specified slot.
+    /// </summary>
+    /// <param name="tier">The specified tier to search for. 1 to 10</param>
+    /// <param name="type">The specific type this item should be.</param>
+    /// <param name="isUnknown">Whether the item shouldn't be known to the player or not (aka a Prototype).</param>
+    /// <returns></returns>
+    public static ItemObject FindItemOfTierAndType(int tier, ItemType type, bool isUnknown = true)
+    {
+        List<ItemObject> items = new List<ItemObject>();
+
+        foreach (ItemObject item in MapManager.inst.itemDatabase.Items)
+        {
+            if (isUnknown)
+            {
+                if (item.rating == tier && item.type == type && !item.knowByPlayer) // Prototypes only
+                {
+                    items.Add(item);
+                }
+            }
+            else
+            {
+                if (item.rating == tier && item.type == type)
                 {
                     items.Add(item);
                 }
