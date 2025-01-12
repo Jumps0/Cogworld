@@ -2822,9 +2822,8 @@ public static class HF
 
             /* The following hacks are in this category:
              * -Load, Network, Recycle(part,process,report), Retrieve(comp,mat), Scan, Insert, Access(b,e,m), Alert(purge,check), Analysis(bots)
-             * [26]   [27]     [31,32,33]                    [34,35]            [54]   [55]    [73,74,75]     [77,76]             [77-87]
-             * -Download(N,R,S), Enumerate, Index, Inventory, Layout, Recall, Schematic(Bot&Parts), Traps(D,L,R), Query, Trojan,         Force
-             * [88,89,90]        [91-103]  [104-110][111,112] [113]  [116-119][120-128][129-145]   [146,147,148] [152]  [153-160,169-184] [161,168]
+             * -Download(N,R,S), Enumerate, Index, Inventory, Layout, Recall, Schematic(Bot&Parts), Traps(D,L,R), Query, Trojan, Force
+             * -Load(Indir), Store(Matter)
              */
 
             string c = left.ToLower();
@@ -2833,30 +2832,30 @@ public static class HF
             {
                 if (item != null)
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[26];
+                    hack = MapManager.inst.hackDatabase.dict["Load([Part])"];
                 }
                 else
                 {
-                    Debug.LogError("ERROR: `item` is null! Cannot parse.");
+                    hack = MapManager.inst.hackDatabase.dict["Load(Indir)"];
                 }
             }
             else if (c == "network")
             {
-                hack = MapManager.inst.hackDatabase.Hack[27];
+                hack = MapManager.inst.hackDatabase.dict["Network(Status)"];
             }
             else if (c == "recycle")
             {
                 if (item != null)
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[31];
+                    hack = MapManager.inst.hackDatabase.dict["Recycle([Part Name])"];
                 }
                 else if (right.ToLower() == "process")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[32];
+                    hack = MapManager.inst.hackDatabase.dict["Recycle(Process)"];
                 }
                 else if (right.ToLower() == "report")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[33];
+                    hack = MapManager.inst.hackDatabase.dict["Recycle(Report)"];
                 }
                 else
                 {
@@ -2867,18 +2866,18 @@ public static class HF
             {
                 if (right.ToLower() == "components")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[34];
+                    hack = MapManager.inst.hackDatabase.dict["Retrieve(Components)"];
                 }
                 else if (right.ToLower() == "matter")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[35];
+                    hack = MapManager.inst.hackDatabase.dict["Retrieve(Matter)"];
                 }
             }
             else if (c == "scan")
             {
                 if (item != null)
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[54];
+                    hack = MapManager.inst.hackDatabase.dict["Scan([Part Name])"];
                 }
                 else
                 {
@@ -2889,7 +2888,7 @@ public static class HF
             {
                 if (item != null)
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[55];
+                    hack = MapManager.inst.hackDatabase.dict["Insert([Part Name])"];
                 }
                 else
                 {
@@ -2900,26 +2899,26 @@ public static class HF
             {
                 if (right.ToLower() == "branch")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[73];
+                    hack = MapManager.inst.hackDatabase.dict["Access(Branch)"];
                 }
                 else if (right.ToLower() == "emergency")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[74];
+                    hack = MapManager.inst.hackDatabase.dict["Access(Emergency)"];
                 }
                 else if (right.ToLower() == "main")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[75];
+                    hack = MapManager.inst.hackDatabase.dict["Access(Main)"];
                 }
             }
             else if (c == "alert")
             {
                 if (right.ToLower() == "check")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[76];
+                    hack = MapManager.inst.hackDatabase.dict["Alert(Check)"];
                 }
                 else if (right.ToLower() == "purge")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[77];
+                    hack = MapManager.inst.hackDatabase.dict["Alert(Purge)"];
                 }
             }
             else if (c == "analysis")
@@ -2930,34 +2929,34 @@ public static class HF
                     switch (rating)
                     {
                         case 1:
-                            hack = MapManager.inst.hackDatabase.Hack[78];
+                            hack = MapManager.inst.hackDatabase.dict["Analysis([Bot Name]) - Tier 1"];
                             break;
                         case 2:
-                            hack = MapManager.inst.hackDatabase.Hack[79];
+                            hack = MapManager.inst.hackDatabase.dict["Analysis([Bot Name]) - Tier 2"];
                             break;
                         case 3:
-                            hack = MapManager.inst.hackDatabase.Hack[80];
+                            hack = MapManager.inst.hackDatabase.dict["Analysis([Bot Name]) - Tier 3"];
                             break;
                         case 4:
-                            hack = MapManager.inst.hackDatabase.Hack[81];
+                            hack = MapManager.inst.hackDatabase.dict["Analysis([Bot Name]) - Tier 4"];
                             break;
                         case 5:
-                            hack = MapManager.inst.hackDatabase.Hack[82];
+                            hack = MapManager.inst.hackDatabase.dict["Analysis([Bot Name]) - Tier 5"];
                             break;
                         case 6:
-                            hack = MapManager.inst.hackDatabase.Hack[83];
+                            hack = MapManager.inst.hackDatabase.dict["Analysis([Bot Name]) - Tier 6"];
                             break;
                         case 7:
-                            hack = MapManager.inst.hackDatabase.Hack[84];
+                            hack = MapManager.inst.hackDatabase.dict["Analysis([Bot Name]) - Tier 7"];
                             break;
                         case 8:
-                            hack = MapManager.inst.hackDatabase.Hack[85];
+                            hack = MapManager.inst.hackDatabase.dict["Analysis([Bot Name]) - Tier 8"];
                             break;
                         case 9:
-                            hack = MapManager.inst.hackDatabase.Hack[86];
+                            hack = MapManager.inst.hackDatabase.dict["Analysis([Bot Name]) - Tier 9"];
                             break;
                         case 10:
-                            hack = MapManager.inst.hackDatabase.Hack[87];
+                            hack = MapManager.inst.hackDatabase.dict["Analysis([Bot Name]) - Tier 10"];
                             break;
                     }
                 }
@@ -2970,135 +2969,135 @@ public static class HF
             {
                 if (right.ToLower() == "navigation")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[88];
+                    hack = MapManager.inst.hackDatabase.dict["Download(Navigation)"];
                 }
                 else if (right.ToLower() == "registry")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[89];
+                    hack = MapManager.inst.hackDatabase.dict["Download(Registry)"];
                 }
                 else if (right.ToLower() == "security")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[90];
+                    hack = MapManager.inst.hackDatabase.dict["Download(Security)"];
                 }
             }
             else if (c == "enumerate")
             {
                 if (right.ToLower() == "assaults")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[91];
+                    hack = MapManager.inst.hackDatabase.dict["Enumerate(Assaults)"];
                 }
                 else if (right.ToLower() == "coupling")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[92];
+                    hack = MapManager.inst.hackDatabase.dict["Enumerate(Coupling)"];
                 }
                 else if (right.ToLower() == "exterminations")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[93];
+                    hack = MapManager.inst.hackDatabase.dict["Enumerate(Exterminations)"];
                 }
                 else if (right.ToLower() == "garrison")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[94];
+                    hack = MapManager.inst.hackDatabase.dict["Enumerate(Garrison)"];
                 }
                 else if (right.ToLower() == "gaurds")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[95];
+                    hack = MapManager.inst.hackDatabase.dict["Enumerate(Gaurds)"];
                 }
                 else if (right.ToLower() == "intercept")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[96];
+                    hack = MapManager.inst.hackDatabase.dict["Enumerate(Intercept)"];
                 }
                 else if (right.ToLower() == "investigations")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[97];
+                    hack = MapManager.inst.hackDatabase.dict["Enumerate(Investigations)"];
                 }
                 else if (right.ToLower() == "maintenance")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[98];
+                    hack = MapManager.inst.hackDatabase.dict["Enumerate(Maintenance)"];
                 }
                 else if (right.ToLower() == "patrols")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[99];
+                    hack = MapManager.inst.hackDatabase.dict["Enumerate(Patrols)"];
                 }
                 else if (right.ToLower() == "reinforcements")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[100];
+                    hack = MapManager.inst.hackDatabase.dict["Enumerate(Reinforcements)"];
                 }
                 else if (right.ToLower() == "squads")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[101];
+                    hack = MapManager.inst.hackDatabase.dict["Enumerate(Squads)"];
                 }
                 else if (right.ToLower() == "surveillance")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[102];
+                    hack = MapManager.inst.hackDatabase.dict["Enumerate(Surveillance)"];
                 }
                 else if (right.ToLower() == "transport")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[103];
+                    hack = MapManager.inst.hackDatabase.dict["Enumerate(Transport)"];
                 }
             }
             else if (c == "index")
             {
                 if (right.ToLower() == "fabricators")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[104];
+                    hack = MapManager.inst.hackDatabase.dict["Index(Fabricators)"];
                 }
                 else if (right.ToLower() == "garrisons")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[105];
+                    hack = MapManager.inst.hackDatabase.dict["Index(Garrisons)"];
                 }
                 else if (right.ToLower() == "machines")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[106];
+                    hack = MapManager.inst.hackDatabase.dict["Index(Machines)"];
                 }
                 else if (right.ToLower() == "recycling units")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[107];
+                    hack = MapManager.inst.hackDatabase.dict["Index(Recycling Units)"];
                 }
                 else if (right.ToLower() == "repair stations")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[108];
+                    hack = MapManager.inst.hackDatabase.dict["Index(Repair Stations)"];
                 }
                 else if (right.ToLower() == "scanalyzers")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[109];
+                    hack = MapManager.inst.hackDatabase.dict["Index(Scanalyzers)"];
                 }
                 else if (right.ToLower() == "terminals")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[110];
+                    hack = MapManager.inst.hackDatabase.dict["Index(Terminals)"];
                 }
             }
             else if (c == "inventory")
             {
                 if (right.ToLower() == "component")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[111];
+                    hack = MapManager.inst.hackDatabase.dict["Inventory(Component)"];
                 }
                 else if (right.ToLower() == "prototype")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[112];
+                    hack = MapManager.inst.hackDatabase.dict["Inventory(Prototype)"];
                 }
             }
             else if (c == "layout")
             {
-                hack = MapManager.inst.hackDatabase.Hack[113];
+                hack = MapManager.inst.hackDatabase.dict["Layout(Zone)"];
             }
             else if (c == "recall")
             {
                 if (right.ToLower() == "assault")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[116];
+                    hack = MapManager.inst.hackDatabase.dict["Recall(Assault)"];
                 }
                 else if (right.ToLower() == "extermination")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[117];
+                    hack = MapManager.inst.hackDatabase.dict["Recall(Extermination)"];
                 }
                 else if (right.ToLower() == "investigation")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[118];
+                    hack = MapManager.inst.hackDatabase.dict["Recall(Investigation)"];
                 }
                 else if (right.ToLower() == "reinforcements")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[119];
+                    hack = MapManager.inst.hackDatabase.dict["Recall(Reinforcements)"];
                 }
             }
             else if (c == "schematic")
@@ -3109,31 +3108,31 @@ public static class HF
                     switch (rating)
                     {
                         case 1:
-                            hack = MapManager.inst.hackDatabase.Hack[120];
+                            hack = MapManager.inst.hackDatabase.dict["Schematic([Bot Name]) - Tier 1"];
                             break;
                         case 2:
-                            hack = MapManager.inst.hackDatabase.Hack[121];
+                            hack = MapManager.inst.hackDatabase.dict["Schematic([Bot Name]) - Tier 2"];
                             break;
                         case 3:
-                            hack = MapManager.inst.hackDatabase.Hack[122];
+                            hack = MapManager.inst.hackDatabase.dict["Schematic([Bot Name]) - Tier 3"];
                             break;
                         case 4:
-                            hack = MapManager.inst.hackDatabase.Hack[123];
+                            hack = MapManager.inst.hackDatabase.dict["Schematic([Bot Name]) - Tier 4"];
                             break;
                         case 5:
-                            hack = MapManager.inst.hackDatabase.Hack[124];
+                            hack = MapManager.inst.hackDatabase.dict["Schematic([Bot Name]) - Tier 5"];
                             break;
                         case 6:
-                            hack = MapManager.inst.hackDatabase.Hack[125];
+                            hack = MapManager.inst.hackDatabase.dict["Schematic([Bot Name]) - Tier 6"];
                             break;
                         case 7:
-                            hack = MapManager.inst.hackDatabase.Hack[126];
+                            hack = MapManager.inst.hackDatabase.dict["Schematic([Bot Name]) - Tier 7"];
                             break;
                         case 8:
-                            hack = MapManager.inst.hackDatabase.Hack[127];
+                            hack = MapManager.inst.hackDatabase.dict["Schematic([Bot Name]) - Tier 8"];
                             break;
                         case 9:
-                            hack = MapManager.inst.hackDatabase.Hack[128];
+                            hack = MapManager.inst.hackDatabase.dict["Schematic([Bot Name]) - Tier 9"];
                             break;
                     }
 
@@ -3238,154 +3237,182 @@ public static class HF
             {
                 if (right.ToLower() == "disarm")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[146];
+                    hack = MapManager.inst.hackDatabase.dict["Traps(Disarm)"];
                 }
                 else if (right.ToLower() == "locate")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[147];
+                    hack = MapManager.inst.hackDatabase.dict["Traps(Locate)"];
                 }
                 else if (right.ToLower() == "reprogram")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[148];
+                    hack = MapManager.inst.hackDatabase.dict["Traps(Reprogram)"];
                 }
             }
             else if (c == "query")
             {
-                hack = MapManager.inst.hackDatabase.Hack[152];
+                hack = MapManager.inst.hackDatabase.dict["Query"];
             }
             else if (c == "trojan")
             {
                 if (right.ToLower() == "assimilate")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[153];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Assimilate)"];
                 }
                 else if (right.ToLower() == "botnet")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[154];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Botnet)"];
                 }
                 else if (right.ToLower() == "broadcast")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[155];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Broadcast)"];
                 }
                 else if (right.ToLower() == "decoy")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[156];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Decoy)"];
                 }
                 else if (right.ToLower() == "detonate")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[157];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Detonate)"];
                 }
                 else if (right.ToLower() == "redirect")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[158];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Redirect)"];
                 }
                 else if (right.ToLower() == "reprogram")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[159];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Reprogram)"];
                 }
                 else if (right.ToLower() == "track")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[160];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Track)"];
                 }
                 else if (right.ToLower() == "disrupt")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[169];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Disrupt)"];
                 }
                 else if (right.ToLower() == "fabnet")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[170];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Fabnet)"];
                 }
                 else if (right.ToLower() == "haulers")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[171];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Haulers)"];
                 }
                 else if (right.ToLower() == "intercept")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[172];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Intercept)"];
+                }
+                else if (right.ToLower() == "liberate")
+                {
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Liberate)"];
                 }
                 else if (right.ToLower() == "mask")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[173];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Mask)"];
                 }
                 else if (right.ToLower() == "mechanics")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[174];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Mechanics)"];
                 }
                 else if (right.ToLower() == "monitor")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[175];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Monitor)"];
                 }
                 else if (right.ToLower() == "operators")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[176];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Operators)"];
                 }
                 else if (right.ToLower() == "prioritize")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[177];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Prioritize)"];
                 }
                 else if (right.ToLower() == "recyclers")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[178];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Recyclers)"];
                 }
                 else if (right.ToLower() == "reject")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[179];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Reject)"];
                 }
                 else if (right.ToLower() == "report")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[180];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Report)"];
                 }
                 else if (right.ToLower() == "researchers")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[181];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Researchers)"];
                 }
                 else if (right.ToLower() == "restock")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[182];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Restock)"];
                 }
-                else if (right.ToLower() == "siphon")
+                else if (right.ToLower() == "skim")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[183];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Skim)"];
                 }
                 else if (right.ToLower() == "watchers")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[184];
+                    hack = MapManager.inst.hackDatabase.dict["Trojan(Watchers)"];
                 }
             }
             else if (c == "force")
             {
                 if (right.ToLower() == "extract")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[161];
+                    hack = MapManager.inst.hackDatabase.dict["Force(Extract)"];
                 }
                 else if (right.ToLower() == "jam")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[162];
+                    hack = MapManager.inst.hackDatabase.dict["Force(Jam)"];
                 }
                 else if (right.ToLower() == "overload")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[163];
+                    hack = MapManager.inst.hackDatabase.dict["Force(Overload)"];
                 }
                 else if (right.ToLower() == "download")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[164];
+                    hack = MapManager.inst.hackDatabase.dict["Force(Download)"];
                 }
                 else if (right.ToLower() == "eject")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[165];
+                    hack = MapManager.inst.hackDatabase.dict["Force(Eject)"];
                 }
                 else if (right.ToLower() == "sabotage")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[166];
+                    hack = MapManager.inst.hackDatabase.dict["Force(Sabotage)"];
                 }
                 else if (right.ToLower() == "search")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[167];
+                    hack = MapManager.inst.hackDatabase.dict["Force(Search)"];
                 }
                 else if (right.ToLower() == "tunnel")
                 {
-                    hack = MapManager.inst.hackDatabase.Hack[168];
+                    hack = MapManager.inst.hackDatabase.dict["Force(Tunnel)"];
                 }
+                else if (right.ToLower() == "patch")
+                {
+                    hack = MapManager.inst.hackDatabase.dict["Force(Patch)"];
+                }
+                else if (right.ToLower() == "recompile")
+                {
+                    hack = MapManager.inst.hackDatabase.dict["Force(Recompile)"];
+                }
+                else if (right.ToLower() == "fedlink")
+                {
+                    hack = MapManager.inst.hackDatabase.dict["Force(Fedlink)"];
+                }
+                else if (right.ToLower() == "scrapoids")
+                {
+                    hack = MapManager.inst.hackDatabase.dict["Force(Scrapoids)"];
+                }
+                else if (right.ToLower() == "override")
+                {
+                    hack = MapManager.inst.hackDatabase.dict["Force(Override)"];
+                }
+            }
+            else if (c == "store")
+            {
+                hack = MapManager.inst.hackDatabase.dict["Store(Matter)"];
             }
         }
         else
@@ -3394,7 +3421,6 @@ public static class HF
              * -Couplers, Seal, Unlock, Manifests, Prototypes, Open (h,m,l)
              * and
              * -Build (Fabricator), Refit (Repair Station), Repair (Repair Station), Scanalyze (Scanalyzer), 
-             * [0-16]p----b[17-25], [36]                  , [37-53]                , [56-72]
              */
 
             // command(inside)
@@ -3407,27 +3433,27 @@ public static class HF
 
             if (c == "couplers")
             {
-                hack = MapManager.inst.hackDatabase.Hack[28];
+                hack = MapManager.inst.hackDatabase.dict["Couplers"];
             }
             else if (c == "seal")
             {
-                hack = MapManager.inst.hackDatabase.Hack[29];
+                hack = MapManager.inst.hackDatabase.dict["Seal"];
             }
             else if (c == "unlock")
             {
-                hack = MapManager.inst.hackDatabase.Hack[30];
+                hack = MapManager.inst.hackDatabase.dict["Unlock"];
             }
             else if (c == "manifests")
             {
-                hack = MapManager.inst.hackDatabase.Hack[114];
+                hack = MapManager.inst.hackDatabase.dict["Manifests"];
             }
             else if (c == "prototypes")
             {
-                hack = MapManager.inst.hackDatabase.Hack[115];
+                hack = MapManager.inst.hackDatabase.dict["Prototypes"];
             }
             else if (c == "open")
             {
-                hack = MapManager.inst.hackDatabase.Hack[149];
+                hack = MapManager.inst.hackDatabase.dict["Open - Storage High Value"]; // not sure what to do here since there are 3 of these (High, Medium, Low)
             }
 
             // Now part 2
@@ -3435,128 +3461,128 @@ public static class HF
             BotObject bot = GetBotByString(right);
             if (c == "build")
             {
-                if (bot != null)
+                if (bot != null) // - Build Robot
                 {
                     int rating = bot.rating;
                     switch (rating)
                     {
                         case 1:
-                            hack = MapManager.inst.hackDatabase.Hack[17];
+                            hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 1"];
                             break;
                         case 2:
-                            hack = MapManager.inst.hackDatabase.Hack[18];
+                            hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 2"];
                             break;
                         case 3:
-                            hack = MapManager.inst.hackDatabase.Hack[19];
+                            hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 3"];
                             break;
                         case 4:
-                            hack = MapManager.inst.hackDatabase.Hack[20];
+                            hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 4"];
                             break;
                         case 5:
-                            hack = MapManager.inst.hackDatabase.Hack[21];
+                            hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 5"];
                             break;
                         case 6:
-                            hack = MapManager.inst.hackDatabase.Hack[22];
+                            hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 6"];
                             break;
                         case 7:
-                            hack = MapManager.inst.hackDatabase.Hack[23];
+                            hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 7"];
                             break;
                         case 8:
-                            hack = MapManager.inst.hackDatabase.Hack[24];
+                            hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 8"];
                             break;
                         case 9:
-                            hack = MapManager.inst.hackDatabase.Hack[25];
+                            hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 9"];
                             break;
                     }
 
                 }
-                else if (item != null)
+                else if (item != null) // Build - Item
                 {
                     int rating = item.rating;
                     bool starred = item.star;
                     switch (rating)
                     {
                         case 1:
-                            hack = MapManager.inst.hackDatabase.Hack[0];
+                            hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 1"];
                             break;
                         case 2:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[1];
+                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 2"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[2];
+                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 2P"];
                             }
                             break;
                         case 3:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[3];
+                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 3"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[4];
+                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 3P"];
                             }
                             break;
                         case 4:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[5];
+                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 4"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[6];
+                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 4P"];
                             }
                             break;
                         case 5:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[7];
+                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 5"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[8];
+                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 5P"];
                             }
                             break;
                         case 6:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[9];
+                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 6"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[10];
+                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 6P"];
                             }
                             break;
                         case 7:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[11];
+                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 7"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[12];
+                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 7P"];
                             }
                             break;
                         case 8:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[13];
+                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 8"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[14];
+                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 8P"];
                             }
                             break;
                         case 9:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[15];
+                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 9"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[16];
+                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 9P"];
                             }
                             break;
                     }
@@ -3568,7 +3594,7 @@ public static class HF
             }
             else if (c == "refit")
             {
-                hack = MapManager.inst.hackDatabase.Hack[36];
+                hack = MapManager.inst.hackDatabase.dict["Refit"];
             }
             else if (c == "repair")
             {
@@ -3579,86 +3605,86 @@ public static class HF
                     switch (rating)
                     {
                         case 1:
-                            hack = MapManager.inst.hackDatabase.Hack[37];
+                            hack = MapManager.inst.hackDatabase.dict["Repair - Rating 1"];
                             break;
                         case 2:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[38];
+                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 2"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[39];
+                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 2P"];
                             }
                             break;
                         case 3:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[40];
+                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 3"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[41];
+                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 3P"];
                             }
                             break;
                         case 4:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[42];
+                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 4"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[43];
+                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 4P"];
                             }
                             break;
                         case 5:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[44];
+                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 5"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[45];
+                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 5P"];
                             }
                             break;
                         case 6:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[46];
+                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 6"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[47];
+                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 6P"];
                             }
                             break;
                         case 7:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[48];
+                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 7"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[49];
+                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 7P"];
                             }
                             break;
                         case 8:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[50];
+                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 8"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[51];
+                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 8P"];
                             }
                             break;
                         case 9:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[52];
+                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 9"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[53];
+                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 9P"];
                             }
                             break;
                     }
@@ -3677,86 +3703,86 @@ public static class HF
                     switch (rating)
                     {
                         case 1:
-                            hack = MapManager.inst.hackDatabase.Hack[56];
+                            hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 1"];
                             break;
                         case 2:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[57];
+                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 2"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[58];
+                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 2P"];
                             }
                             break;
                         case 3:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[59];
+                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 3"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[60];
+                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 3P"];
                             }
                             break;
                         case 4:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[61];
+                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 4"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[62];
+                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 4P"];
                             }
                             break;
                         case 5:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[63];
+                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 5"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[64];
+                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 5P"];
                             }
                             break;
                         case 6:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[65];
+                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 6"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[66];
+                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 6P"];
                             }
                             break;
                         case 7:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[67];
+                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 7"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[68];
+                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 7P"];
                             }
                             break;
                         case 8:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[69];
+                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 8"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[70];
+                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 8P"];
                             }
                             break;
                         case 9:
                             if (!starred)
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[71];
+                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 9"];
                             }
                             else
                             {
-                                hack = MapManager.inst.hackDatabase.Hack[72];
+                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 9P"];
                             }
                             break;
                     }
