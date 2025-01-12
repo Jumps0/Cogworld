@@ -3866,60 +3866,17 @@ public static class HF
 
     public static ItemObject GetItemByString(string str)
     {
-        ItemObject item = null;
-
-        string target = str.ToLower();
-
-        foreach (var I in MapManager.inst.itemDatabase.Items)
-        {
-            string name = I.itemName.ToLower();
-            if (name == target || name == target.ToLower())
-            {
-                item = I;
-                break;
-            }
-        }
-
-        return item;
+        return MapManager.inst.itemDatabase.dict[str];
     }
 
     public static TileObject GetTileByString(string str)
     {
-        TileObject tile = null;
-
-        string target = str.ToLower();
-
-        foreach (var I in MapManager.inst.tileDatabase.Tiles)
-        {
-            string name = I.name.ToLower();
-
-            if (name == target || name == target.ToLower())
-            {
-                tile = I;
-                break;
-            }
-        }
-
-        return tile;
+        return MapManager.inst.tileDatabase.dict[str];
     }
 
     public static BotObject GetBotByString(string str)
     {
-        BotObject bot = null;
-
-        string target = str.ToLower();
-
-        foreach (var B in MapManager.inst.botDatabase.Bots)
-        {
-            string name = B.botName.ToLower();
-            if (name == target || name == target.ToLower())
-            {
-                bot = B;
-                break;
-            }
-        }
-
-        return bot;
+        return MapManager.inst.botDatabase.dict[str];
     }
 
     /// <summary>

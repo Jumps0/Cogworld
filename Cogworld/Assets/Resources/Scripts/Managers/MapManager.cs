@@ -639,7 +639,7 @@ public class MapManager : MonoBehaviour
         PlaceHideoutCache(new Vector2Int(bl.x + 8, bl.y + 10));
 
         // # - Test bot
-        Actor testBot = PlaceBot(new Vector2Int(bl.x + 12, bl.y + 5), HF.GetBotByString("Thug"));
+        Actor testBot = PlaceBot(new Vector2Int(bl.x + 12, bl.y + 5), HF.GetBotByString("Thug (5)"));
         // Test QUEST Bot
         Actor questBot = PlaceBot(new Vector2Int(bl.x + 5, bl.y + 16), HF.GetBotByString("Zionite"));
 
@@ -2114,7 +2114,7 @@ public class MapManager : MonoBehaviour
                     KnowledgeObject data = knowledgeDatabase.Data[Random.Range(0, knowledgeDatabase.Data.Length)];
                     string displayText = "\"" + data.name + "\"";
 
-                    HackObject hack = hackDatabase.Hack[152];
+                    HackObject hack = hackDatabase.dict["Query"];
 
                     TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Query, "Record", hack, data);
 
@@ -2130,7 +2130,8 @@ public class MapManager : MonoBehaviour
                     string letter = alphabet[0].ToString().ToLower();
                     alphabet.Remove(alphabet[0]);
 
-                    HackObject hack = hackDatabase.Hack[Random.Range(73, 75)];
+                    string[] options = { "Access(Branch)", "Access(Emergency)", "Access(Main)" };
+                    HackObject hack = hackDatabase.dict[options[Random.Range(0,options.Length - 1)]];
                     string displayText = hack.trueName;
 
                     TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Access, "", hack, null);
@@ -2144,7 +2145,8 @@ public class MapManager : MonoBehaviour
                     string letter = alphabet[0].ToString().ToLower();
                     alphabet.Remove(alphabet[0]);
 
-                    HackObject hack = hackDatabase.Hack[Random.Range(76, 77)];
+                    string[] options = { "Alert(Check)", "Alert(Purge)" };
+                    HackObject hack = hackDatabase.dict[options[Random.Range(0, options.Length - 1)]];
                     string displayText = hack.trueName;
 
                     TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Alert, "", hack, null);
@@ -2165,7 +2167,7 @@ public class MapManager : MonoBehaviour
                         tier = 1;
                     }
 
-                    HackObject hack = hackDatabase.Hack[tier + 77];
+                    HackObject hack = hackDatabase.dict[$"Analysis([Bot Name]) - Tier {tier}"];
 
                     BotObject bot = HF.FindBotOfTier(tier);
 
@@ -2177,36 +2179,43 @@ public class MapManager : MonoBehaviour
                 }
 
                 // Enumerate [91-103]
-                int rE = Random.Range(91, 103);
                 if (Random.Range(0f, 1f) >= 0.5f)
                 {
                     string letter = alphabet[0].ToString().ToLower();
                     alphabet.Remove(alphabet[0]);
 
-                    HackObject hack = hackDatabase.Hack[rE];
+                    List<string> options = new List<string>();
+                    options.Add("Enumerate(Assaults)");
+                    options.Add("Enumerate(Coupling)");
+                    options.Add("Enumerate(Exterminations)");
+                    options.Add("Enumerate(Garrison)");
+                    options.Add("Enumerate(Guards)");
+                    options.Add("Enumerate(Intercept)");
+                    options.Add("Enumerate(Investigations)");
+                    options.Add("Enumerate(Maintenance)");
+                    options.Add("Enumerate(Patrols)");
+                    options.Add("Enumerate(Reinforcements)");
+                    options.Add("Enumerate(Squads)");
+                    options.Add("Enumerate(Surveillance)");
+                    options.Add("Enumerate(Transport)");
+
+                    int index = Random.Range(0, options.Count - 1);
+                    HackObject hack = hackDatabase.dict[options[index]];
 
                     string displayText = hack.trueName;
 
                     TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Enumerate, "", hack, null);
 
                     term.GetComponentInChildren<Terminal>().avaiableCommands.Add(newCommand);
-                }
-                if (Random.Range(0f, 1f) >= 0.5f)
-                {
-                    string letter = alphabet[0].ToString().ToLower();
-                    alphabet.Remove(alphabet[0]);
 
-                    int rand = Random.Range(91, 103);
-                    if (rand == rE) // Try again
-                    {
-                        rand = Random.Range(91, 103);
-                    }
+                    // Then do another one
+                    options.RemoveAt(index);
+                    index = Random.Range(0, options.Count - 1);
+                    hack = hackDatabase.dict[options[index]];
 
-                    HackObject hack = hackDatabase.Hack[rand];
+                    displayText = hack.trueName;
 
-                    string displayText = hack.trueName;
-
-                    TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Enumerate, "", hack, null);
+                    newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Enumerate, "", hack, null);
 
                     term.GetComponentInChildren<Terminal>().avaiableCommands.Add(newCommand);
                 }
@@ -2217,8 +2226,17 @@ public class MapManager : MonoBehaviour
                     string letter = alphabet[0].ToString().ToLower();
                     alphabet.Remove(alphabet[0]);
 
-                    int rand = Random.Range(104, 110);
-                    HackObject hack = hackDatabase.Hack[rand];
+                    List<string> options = new List<string>();
+                    options.Add("Index(Fabricators)");
+                    options.Add("Index(Garrisons)");
+                    options.Add("Index(Machines)");
+                    options.Add("Index(Recycling Units)");
+                    options.Add("Index(Repair Stations)");
+                    options.Add("Index(Scanalyzers)");
+                    options.Add("Index(Terminals)");
+
+                    int rand = Random.Range(0, options.Count - 1);
+                    HackObject hack = hackDatabase.dict[options[rand]];
 
                     string displayText = hack.trueName;
 
@@ -2233,7 +2251,7 @@ public class MapManager : MonoBehaviour
                     string letter = alphabet[0].ToString().ToLower();
                     alphabet.Remove(alphabet[0]);
 
-                    HackObject hack = hackDatabase.Hack[113];
+                    HackObject hack = hackDatabase.dict["Layout(Zone)"];
 
                     string displayText = hack.trueName;
 
@@ -2254,19 +2272,19 @@ public class MapManager : MonoBehaviour
 
                         if (GameManager.inst.activeAssaults.Count > 0)
                         {
-                            hack = hackDatabase.Hack[116];
+                            hack = hackDatabase.dict["Recall(Assaults)"];
                         }
                         else if (GameManager.inst.activeExterminations.Count > 0)
                         {
-                            hack = hackDatabase.Hack[117];
+                            hack = hackDatabase.dict["Recall(Extermination)"];
                         }
                         else if (GameManager.inst.activeInvestigations.Count > 0)
                         {
-                            hack = hackDatabase.Hack[118];
+                            hack = hackDatabase.dict["Recall(Investigation)"];
                         }
                         else if (GameManager.inst.activeReinforcements.Count > 0)
                         {
-                            hack = hackDatabase.Hack[119];
+                            hack = hackDatabase.dict["Recall(Reinforcements)"];
                         }
 
                         string displayText = hack.trueName;
@@ -2290,7 +2308,18 @@ public class MapManager : MonoBehaviour
                         tier = 3;
                     }
 
-                    HackObject hack = hackDatabase.Hack[tier + 128 + Random.Range(0, 1)];
+                    bool star = false;
+                    if(Random.Range(0f, 1f) > 0.65f) // Chance to get a "starred" item
+                    {
+                        star = true;
+                    }
+                    string p = "";
+                    if (star)
+                    {
+                        p = "P";
+                    }
+
+                    HackObject hack = hackDatabase.dict[$"Schematic([Part Name]) - Rating {tier}{p}"];
 
                     ItemObject item = HF.FindItemOfTier(tier);
 
@@ -2314,7 +2343,7 @@ public class MapManager : MonoBehaviour
                         tier = 1;
                     }
 
-                    HackObject hack = hackDatabase.Hack[tier + 119];
+                    HackObject hack = hackDatabase.dict[$"Schematic([Bot Name]) - Tier {tier}"];
 
                     BotObject bot = HF.FindBotOfTier(tier);
 
@@ -2330,7 +2359,12 @@ public class MapManager : MonoBehaviour
                     string letter = alphabet[0].ToString().ToLower();
                     alphabet.Remove(alphabet[0]);
 
-                    HackObject hack = hackDatabase.Hack[Random.Range(146, 148)];
+                    List<string> options = new List<string>();
+                    options.Add("Traps(Disarm)");
+                    options.Add("Traps(Locate)");
+                    options.Add("Traps(Reprogram)");
+
+                    HackObject hack = hackDatabase.dict[options[Random.Range(0, options.Count - 1)]];
 
                     string displayText = hack.trueName;
 
