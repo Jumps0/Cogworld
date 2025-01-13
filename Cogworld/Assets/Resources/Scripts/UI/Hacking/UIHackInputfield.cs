@@ -39,7 +39,8 @@ public class UIHackInputfield : MonoBehaviour
 
     [Header("Audio")]
     public AudioSource aSource;
-    public AudioClip aClip;
+    private AudioClip aClip;
+    [SerializeField] private Vector2 pitchRange;
 
     public void Setup()
     {
@@ -53,6 +54,8 @@ public class UIHackInputfield : MonoBehaviour
         {
             OpenCodesWindow();
         }
+
+        aClip = AudioManager.inst.dict_ui["KEYIN"]; // UI - KEYIN
 
         field.onValueChanged.AddListener(OnInputFieldValueChanged);
         field.onSubmit.AddListener(TrySubmit);
@@ -326,8 +329,9 @@ public class UIHackInputfield : MonoBehaviour
     }
 
 
-    private void OnInputFieldValueChanged(string value)
+    private void OnInputFieldValueChanged(string value) // Place a sound every time a character is altered
     {
+        aSource.pitch = Random.Range(pitchRange.x, pitchRange.y); // Randomize pitch so it sounds distinct each time
         aSource.PlayOneShot(aClip, 1f);
         if (string.IsNullOrEmpty(value))
         {

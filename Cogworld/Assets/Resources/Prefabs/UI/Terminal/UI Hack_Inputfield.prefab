@@ -1628,7 +1628,7 @@ MonoBehaviour:
   box_suggestionText: {fileID: 7033530325654880691}
   box_small: {fileID: 4742951596031367603}
   aSource: {fileID: 7186045672543901486}
-  aClip: {fileID: 8300000, guid: f1eb0e447f2de9e4990f616c4fb8b850, type: 3}
+  pitchRange: {x: 0.95, y: 1}
   AC_list: []
   activeSuggestions: []
   suggestions: []

@@ -639,7 +639,7 @@ public class MapManager : MonoBehaviour
         PlaceHideoutCache(new Vector2Int(bl.x + 8, bl.y + 10));
 
         // # - Test bot
-        Actor testBot = PlaceBot(new Vector2Int(bl.x + 12, bl.y + 5), HF.GetBotByString("Thug (5)"));
+        Actor testBot = PlaceBot(new Vector2Int(bl.x + 12, bl.y + 5), HF.GetBotByString("Thug"));
         // Test QUEST Bot
         Actor questBot = PlaceBot(new Vector2Int(bl.x + 5, bl.y + 16), HF.GetBotByString("Zionite"));
 
