@@ -21,6 +21,9 @@ public abstract class HackObject : ScriptableObject
     [Header("    Indirect")]
     [Tooltip("In most cases there is no data on this, so if its unset we will just -10% from each part.")]
     public Vector3Int indirectChance;
+
+    [Tooltip("If true, this will not appear in the suggestions box for manual hacking.")]
+    public bool doNotSuggest = false;
 }
 
 

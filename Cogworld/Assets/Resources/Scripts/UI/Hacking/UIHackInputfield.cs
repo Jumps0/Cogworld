@@ -148,15 +148,6 @@ public class UIHackInputfield : MonoBehaviour
 
         if (field.isFocused)
         {
-            /*
-            if(field.text.Length == 0 && UIManager.inst.terminal_manualBuffer.Count > 0) 
-            {
-                BufferSuggestions();
-            }
-
-            SuggestionBoxCheck();
-            */
-
             backerText.text = "<mark=#000000>>>" + suggestionText.text + "</mark>"; // Mark highlights it as pure black
             main_backerText.text = "<mark=#000000>" + field.text + "</mark>"; // Mark highlights it as pure black
             primaryText.ForceMeshUpdate();
@@ -331,8 +322,19 @@ public class UIHackInputfield : MonoBehaviour
 
     private void OnInputFieldValueChanged(string value) // Place a sound every time a character is altered
     {
+        // Suggestions check
+        if (field.text.Length == 0 && UIManager.inst.terminal_manualBuffer.Count > 0)
+        {
+            BufferSuggestions();
+        }
+
+        SuggestionBoxCheck();
+
+        // Sounds
         aSource.pitch = Random.Range(pitchRange.x, pitchRange.y); // Randomize pitch so it sounds distinct each time
         aSource.PlayOneShot(aClip, 1f);
+
+        // Text update
         if (string.IsNullOrEmpty(value))
         {
             suggestionText.text = string.Empty;
@@ -364,52 +366,20 @@ public class UIHackInputfield : MonoBehaviour
         return closestMatch;
     }
 
-    // Calculates the Levenshtein distance between two strings
-    private int LevenshteinDistance(string source, string target)
-    {
-        int[,] matrix = new int[source.Length + 1, target.Length + 1];
-
-        for (int i = 0; i <= source.Length; i++)
-        {
-            matrix[i, 0] = i;
-        }
-
-        for (int j = 0; j <= target.Length; j++)
-        {
-            matrix[0, j] = j;
-        }
-
-        for (int i = 1; i <= source.Length; i++)
-        {
-            for (int j = 1; j <= target.Length; j++)
-            {
-                int cost = source[i - 1] == target[j - 1] ? 0 : 1;
-
-                matrix[i, j] = Mathf.Min(
-                    matrix[i - 1, j] + 1,
-                    matrix[i, j - 1] + 1,
-                    matrix[i - 1, j - 1] + cost
-                );
-            }
-        }
-
-        return matrix[source.Length, target.Length];
-    }
-
-    public List<GameObject> activeSuggestions = new List<GameObject>();
-    public List<string> suggestions = new List<string>();
-    public string currentSuggestion = "";
-    public int suggestionID = -1;
-    private bool filled = false;
+    [SerializeField] private List<GameObject> activeSuggestions = new List<GameObject>();
+    [SerializeField] private List<string> suggestions = new List<string>();
+    [SerializeField] private string currentSuggestion = "";
+    [SerializeField] private int suggestionID = -1;
+    [SerializeField] private bool filled = false;
     private void SuggestionBoxCheck()
     {
         // -- Micro Suggestions Check --
         List<string> microSC = new List<string>();
         foreach (HackObject hack in MapManager.inst.hackDatabase.Hack)
         {
-            if (hack.name.ToLower().Contains(HF.GetLeftSubstring(field.text))) // If this command is a variant of what the player is currently attempting to type
+            if (!hack.doNotSuggest && hack.name.ToLower().Contains(HF.GetLeftSubstring(field.text))) // If this command is a variant of what the player is currently attempting to type
             {
-                string newCom = HF.GetRightSubstring(HF.ParseHackName(hack));
+                string newCom = HF.ExtractText(hack.name);
                 microSC.Add(newCom);
             }
         }
@@ -424,6 +394,7 @@ public class UIHackInputfield : MonoBehaviour
         }
         else // Not that many suggestions, use the window
         {
+            // !! TODO: Check here if the hack has a parenthesis in it. If it doesn't we dont want to suggest anything.
             if (field.text.Contains("(") && field.text[field.text.Length - 1].ToString() != ")")
             {
                 if (!filled)
@@ -436,7 +407,7 @@ public class UIHackInputfield : MonoBehaviour
             }
 
             // Now for navigation
-            if (box_main.activeInHierarchy)
+            if (box_main.activeInHierarchy) // This may be broken now that it is not called continuously. REQUIRES INVESTIGATION
             {
                 if (Keyboard.current.downArrowKey.wasPressedThisFrame)
                 {
@@ -498,7 +469,7 @@ public class UIHackInputfield : MonoBehaviour
         int floorRating = MapManager.inst.currentLevel + 11; // ex: -10 + 11 = 1
         foreach (HackObject hack in MapManager.inst.hackDatabase.Hack)
         {
-            if (hack.name.ToLower().Contains(HF.GetLeftSubstring(field.text))) // If this command is a variant of what the player is currently attempting to type
+            if (!hack.doNotSuggest && hack.name.ToLower().Contains(HF.GetLeftSubstring(field.text))) // If this command is a variant of what the player is currently attempting to type
             {
                 // We also want to fill the (inside) if its a certain type that grants knowledge like:
                 // -Query(Knowledge), Analysis(Bot), Schematic(Item), Schematic(Bot)
@@ -560,7 +531,7 @@ public class UIHackInputfield : MonoBehaviour
                 }
                 else
                 {
-                    string newCom = HF.GetRightSubstring(HF.ParseHackName(hack));
+                    string newCom = HF.ExtractText(hack.name);
                     suggestions.Add(newCom);
                 }
             }

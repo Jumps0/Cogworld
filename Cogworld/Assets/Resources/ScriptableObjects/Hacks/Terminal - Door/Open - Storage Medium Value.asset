@@ -19,3 +19,4 @@ MonoBehaviour:
   hackType: 8
   directChance: {x: 60, y: 60, z: 60}
   indirectChance: {x: 60, y: 60, z: 60}
+  doNotSuggest: 1

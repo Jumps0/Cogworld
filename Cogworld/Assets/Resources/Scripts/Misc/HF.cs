@@ -2797,6 +2797,11 @@ public static class HF
         return returns;
     }
 
+    /// <summary>
+    /// Given a string, returns a tuple (HackObject, TerminalCommand) if that string matches a valid hack.
+    /// </summary>
+    /// <param name="str">The input string which should be the specific name of a hack.</param>
+    /// <returns>A tuple (HackObject, TerminalCommand) of the hack if one was found. Null on failure.</returns>
     public static (HackObject, TerminalCommand) ParseHackString(string str)
     {
         HackObject hack = null;
