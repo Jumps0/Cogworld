@@ -15,7 +15,7 @@ MonoBehaviour:
   Id: 150
   trueName: Open Door
   description: Open the non-automatic door associated with this terminal.
-  relatedMachine: 5
+  relatedMachine: 6
   hackType: 8
   directChance: {x: 80, y: 80, z: 80}
   indirectChance: {x: 80, y: 80, z: 80}

@@ -17,7 +17,8 @@ MonoBehaviour:
   description: Redirects the next squad emerging from this garrison away from its
     intended target. No effect on prototypes, though if dispatched from here they
     do not affect the installed trojan.
-  relatedMachine: 8
+  relatedMachine: 1
   hackType: 29
   directChance: {x: 70, y: 35, z: 17}
   indirectChance: {x: 70, y: 35, z: 17}
+  doNotSuggest: 0

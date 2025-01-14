@@ -16,7 +16,8 @@ MonoBehaviour:
   trueName: Force Search
   description: Locate all nearby interactive machines. Also, locks the machine and
     summons an investigation squad like all force hacks.
-  relatedMachine: 8
+  relatedMachine: 5
   hackType: 30
   directChance: {x: 80, y: 40, z: 20}
   indirectChance: {x: 80, y: 40, z: 20}
+  doNotSuggest: 0

@@ -12,13 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 709c8031387567e43becdecce8b8477c, type: 3}
   m_Name: Trojan(Skim)
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 183
   trueName: Trojan Skim
   description: Opportunistically gathers and reports on potentially useful intel
     remotely extracted from vulnerable Complex 0b10 networks. Must be installed on
     multiple terminals before it can take effect. (After being installed on 5 terminals,
     gathers 10 pieces of intel over around 100 turns, then is purged from the system.)
-  relatedMachine: 8
+  relatedMachine: 5
   hackType: 29
   directChance: {x: 60, y: 30, z: 15}
   indirectChance: {x: 60, y: 30, z: 15}
+  doNotSuggest: 0

@@ -12,13 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 709c8031387567e43becdecce8b8477c, type: 3}
   m_Name: Force(Scrapoids)
   m_EditorClassIdentifier: 
-  Id: 168
+  Id: 191
   trueName: Force Scrapoids
   description: Summons 5 Scrapoids within around 20 turns of performing the hack
     while consuming 2 resources from the UFD reserves. The Scrapoids vary ased on
     depth. Also, locks the machines and summons an investigation squad like all force
     hacks.
-  relatedMachine: 8
+  relatedMachine: 2
   hackType: 30
   directChance: {x: 80, y: 40, z: 20}
   indirectChance: {x: 80, y: 40, z: 20}
+  doNotSuggest: 0

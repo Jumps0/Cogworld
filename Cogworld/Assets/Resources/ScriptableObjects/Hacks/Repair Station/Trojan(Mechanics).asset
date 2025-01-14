@@ -16,7 +16,8 @@ MonoBehaviour:
   trueName: Trojan Mechanics
   description: Reports in real time the position of all mechanics across the entire
     floor.
-  relatedMachine: 8
+  relatedMachine: 3
   hackType: 29
   directChance: {x: 70, y: 35, z: 17}
   indirectChance: {x: 70, y: 35, z: 17}
+  doNotSuggest: 0

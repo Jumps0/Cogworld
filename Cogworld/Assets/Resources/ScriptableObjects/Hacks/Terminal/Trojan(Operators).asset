@@ -16,7 +16,8 @@ MonoBehaviour:
   trueName: Trojan Operators
   description: Reports in real time the position of all operators across the entire
     floor.
-  relatedMachine: 8
+  relatedMachine: 5
   hackType: 29
   directChance: {x: 40, y: 20, z: 10}
   indirectChance: {x: 40, y: 20, z: 10}
+  doNotSuggest: 0

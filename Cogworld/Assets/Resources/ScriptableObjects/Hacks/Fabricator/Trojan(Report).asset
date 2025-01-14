@@ -15,7 +15,8 @@ MonoBehaviour:
   Id: 180
   trueName: Trojan Report
   description: Reports on floorwide Fabricator activity.
-  relatedMachine: 8
+  relatedMachine: 0
   hackType: 29
   directChance: {x: 60, y: 30, z: 15}
   indirectChance: {x: 60, y: 30, z: 15}
+  doNotSuggest: 0

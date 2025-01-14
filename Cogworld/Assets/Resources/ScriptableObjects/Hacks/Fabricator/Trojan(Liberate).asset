@@ -16,7 +16,8 @@ MonoBehaviour:
   trueName: Trojan Liberate
   description: Frees any robots built by 0b10 at this location from central system
     control.
-  relatedMachine: 8
+  relatedMachine: 0
   hackType: 29
   directChance: {x: 80, y: 40, z: 20}
   indirectChance: {x: 80, y: 40, z: 20}
+  doNotSuggest: 0

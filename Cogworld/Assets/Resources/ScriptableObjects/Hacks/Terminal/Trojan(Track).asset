@@ -17,7 +17,8 @@ MonoBehaviour:
   description: 'Reports in real time the position and type of all robots near this
     terminal. The range of this effect is dependent on the terminal level: 10 for
     Security Level 3, 8 on level 2 terminals, and 6 on all other terminals.'
-  relatedMachine: 8
+  relatedMachine: 5
   hackType: 29
   directChance: {x: 70, y: 35, z: 17}
   indirectChance: {x: 70, y: 35, z: 17}
+  doNotSuggest: 0

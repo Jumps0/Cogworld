@@ -16,7 +16,8 @@ MonoBehaviour:
   trueName: Trojan Monitor
   description: Reports every object inserted into any recycling unit by a registered
     recycler.
-  relatedMachine: 8
+  relatedMachine: 2
   hackType: 29
   directChance: {x: 70, y: 35, z: 17}
   indirectChance: {x: 70, y: 35, z: 17}
+  doNotSuggest: 0

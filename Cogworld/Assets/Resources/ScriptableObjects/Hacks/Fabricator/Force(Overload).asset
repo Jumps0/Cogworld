@@ -17,7 +17,8 @@ MonoBehaviour:
   description: Render the fabricator inoperable, but cause it to send high corruption-causing
     arcs of electromagnetic energy at nearby bots for a short while. Also, locks
     the machine and summons an investigation squad like all force hacks.
-  relatedMachine: 8
+  relatedMachine: 0
   hackType: 30
   directChance: {x: 67, y: 33, z: 16}
   indirectChance: {x: 80, y: 40, z: 20}
+  doNotSuggest: 0

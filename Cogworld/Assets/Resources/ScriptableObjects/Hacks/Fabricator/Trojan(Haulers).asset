@@ -16,7 +16,8 @@ MonoBehaviour:
   trueName: Trojan Haulers
   description: Reports in real time the position of all haulers across the entire
     floor.
-  relatedMachine: 8
+  relatedMachine: 0
   hackType: 29
   directChance: {x: 50, y: 25, z: 12}
   indirectChance: {x: 50, y: 25, z: 12}
+  doNotSuggest: 0

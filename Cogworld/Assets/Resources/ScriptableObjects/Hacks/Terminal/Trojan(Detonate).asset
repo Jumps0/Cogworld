@@ -16,7 +16,8 @@ MonoBehaviour:
   trueName: Trojan Detonate
   description: Rigs all nearby potentially explosive machines to detonate when passed
     by a hostile Complex 0b10 combat robot.
-  relatedMachine: 8
+  relatedMachine: 5
   hackType: 29
   directChance: {x: 20, y: 10, z: 5}
   indirectChance: {x: 20, y: 10, z: 5}
+  doNotSuggest: 0

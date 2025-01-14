@@ -17,7 +17,8 @@ MonoBehaviour:
   description: Disrupts targeting coordination signals among hostile Complex 0b10
     combat robots, reducing their chance to hit targets by 10% while within a range
     of 10.
-  relatedMachine: 8
+  relatedMachine: 5
   hackType: 29
   directChance: {x: 30, y: 15, z: 7}
   indirectChance: {x: 30, y: 15, z: 7}
+  doNotSuggest: 0

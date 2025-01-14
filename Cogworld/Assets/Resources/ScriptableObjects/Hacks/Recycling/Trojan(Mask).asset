@@ -15,7 +15,8 @@ MonoBehaviour:
   Id: 173
   trueName: Trojan Mask
   description: Prevents recyclers from collecting parts within a 31 x 31 zone.
-  relatedMachine: 8
+  relatedMachine: 2
   hackType: 29
   directChance: {x: 40, y: 20, z: 10}
   indirectChance: {x: 40, y: 20, z: 10}
+  doNotSuggest: 0

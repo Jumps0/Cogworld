@@ -17,7 +17,8 @@ MonoBehaviour:
   description: Co-opts this terminal to aid in hacking other machines. Confers a
     +6% to hacks, while the benefit of each additional botnet terminal is halved
     (+3%, +1%), with each terminal providing no less than +1%.
-  relatedMachine: 8
+  relatedMachine: 5
   hackType: 29
   directChance: {x: 50, y: 25, z: 12}
   indirectChance: {x: 50, y: 25, z: 12}
+  doNotSuggest: 0

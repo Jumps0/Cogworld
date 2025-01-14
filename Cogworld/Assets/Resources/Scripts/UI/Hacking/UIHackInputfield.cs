@@ -199,6 +199,10 @@ public class UIHackInputfield : MonoBehaviour
             SetFocus(false);
             Destroy(this.gameObject);
         }
+        else // Invalid command? PUNISHED!!
+        { // This is in uppercase for stylistic reasons.
+            UIManager.inst.Terminal_CreateResult("Unknown command.", highDetColor, (">>" + field.text.ToUpper()), true);
+        }
     }
 
     public void AttemptHack(HackObject hack, TerminalCommand command)
@@ -207,7 +211,7 @@ public class UIHackInputfield : MonoBehaviour
 
         // -- Calculate Chance of Success --
         float chance = 0f;
-        bool openSystem = false;
+        bool openSystem = false; // TODO: Figure out how open systems work
         int secLvl = HF.GetMachineSecLvl(UIManager.inst.terminal_targetTerm);
         if (secLvl == 0)
         {
@@ -235,63 +239,75 @@ public class UIHackInputfield : MonoBehaviour
 
         float random = Random.Range(0.0f, 1.0f);
         Debug.Log($"Chance: {chance} | Random: {random} | s?{random <= chance}");
-        if (hack.hackType == TerminalCommandType.Query 
-            || hack.hackType == TerminalCommandType.Schematic 
-            || hack.hackType == TerminalCommandType.Analysis 
-            || hack.hackType == TerminalCommandType.Prototypes)
+
+        // We should do a special check here in case the specified command is not valid given the current machine (in cases of Manual Entry).
+        // For example, they should not be able to 'Enumerate(Guards)' on a Scanalyzer, since that command only works on terminals.
+        if (validHacks.Contains(hack))
         {
-            if (MapManager.inst.centerDatabaseLockout) // Instant fail
-            {
-                UIManager.inst.Terminal_CreateResult("Central database compromised, local access revoked.", highDetColor, (">>" + HF.ParseHackName(hack)), true);
-                return;
-            }
-        }
-
-        if (random <= chance) // SUCCESS
-        {
-            // ---
-            // ** Central Database Lockout **
-            // "Successful indirect hacking of central "database-related" targets (queries, schematics, analysis, prototypes)
-            // incurs a 25% chance to trigger a database lockout, preventing indirect access to those types of targets at every terminal on the same map."
-            // ---
-
-            List<float> bonuses = HF.SystemShieldBonuses();
-
-            if (Random.Range(0.0f, 1.0f) <= (0.25f - bonuses[3]) 
-                && (hack.hackType == TerminalCommandType.Query
+            if (hack.hackType == TerminalCommandType.Query
             || hack.hackType == TerminalCommandType.Schematic
             || hack.hackType == TerminalCommandType.Analysis
-            || hack.hackType == TerminalCommandType.Prototypes))
+            || hack.hackType == TerminalCommandType.Prototypes)
             {
-                MapManager.inst.centerDatabaseLockout = true;
-
-                UIManager.inst.Terminal_CreateResult("Central database compromised, local access revoked.", highDetColor, (">>" + HF.ParseHackName(hack)), true);
-                UIManager.inst.CreateNewLogMessage("Central database lockdown, local access denied.", UIManager.inst.complexWhite, UIManager.inst.inactiveGray, true, true);
-                UIManager.inst.CreateLeftMessage("ALERT: Central database lockdown, local access denied.", 10f, AudioManager.inst.dict_game["DISPATCH_ALERT"]); // GAME - DISPATCH_ALERT
-                return;
+                if (MapManager.inst.centerDatabaseLockout) // Instant fail
+                {
+                    UIManager.inst.Terminal_CreateResult("Central database compromised, local access revoked.", highDetColor, (">>" + HF.ParseHackName(hack)), true);
+                    return;
+                }
             }
 
-            // ---
-
-            string right = HF.GetRightSubstring(field.text); // inside)
-            right = right.Substring(0, right.Length - 1); // Remove the ")", now: inside
-
-            string header = ">>" + HF.ParseHackName(hack, right);
-            string rewardString = HF.MachineReward_PrintPLUSAction(command, command.item, command.bot);
-
-            if (rewardString.Length > 0)
+            if (random <= chance) // SUCCESS
             {
-                // Create result in terminal
-                UIManager.inst.Terminal_CreateResult(rewardString, lowDetColor, header, true);
-                // Create log messages
-                UIManager.inst.CreateNewLogMessage(header, lowDetColor, darkGreenColor, true);
-                UIManager.inst.CreateNewLogMessage(rewardString, UIManager.inst.deepInfoBlue, UIManager.inst.infoBlue, true, true);
+                // ---
+                // ** Central Database Lockout **
+                // "Successful indirect hacking of central "database-related" targets (queries, schematics, analysis, prototypes)
+                // incurs a 25% chance to trigger a database lockout, preventing indirect access to those types of targets at every terminal on the same map."
+                // ---
+
+                List<float> bonuses = HF.SystemShieldBonuses();
+
+                if (Random.Range(0.0f, 1.0f) <= (0.25f - bonuses[3])
+                    && (hack.hackType == TerminalCommandType.Query
+                || hack.hackType == TerminalCommandType.Schematic
+                || hack.hackType == TerminalCommandType.Analysis
+                || hack.hackType == TerminalCommandType.Prototypes))
+                {
+                    MapManager.inst.centerDatabaseLockout = true;
+
+                    UIManager.inst.Terminal_CreateResult("Central database compromised, local access revoked.", highDetColor, (">>" + HF.ParseHackName(hack)), true);
+                    UIManager.inst.CreateNewLogMessage("Central database lockdown, local access denied.", UIManager.inst.complexWhite, UIManager.inst.inactiveGray, true, true);
+                    UIManager.inst.CreateLeftMessage("ALERT: Central database lockdown, local access denied.", 10f, AudioManager.inst.dict_game["DISPATCH_ALERT"]); // GAME - DISPATCH_ALERT
+                    return;
+                }
+
+                // ---
+
+                string right = HF.GetRightSubstring(field.text); // inside)
+                right = right.Substring(0, right.Length - 1); // Remove the ")", now: inside
+
+                string header = ">>" + HF.ParseHackName(hack, right);
+                string rewardString = HF.MachineReward_PrintPLUSAction(command, command.item, command.bot);
+
+                if (rewardString.Length > 0)
+                {
+                    // Create result in terminal
+                    UIManager.inst.Terminal_CreateResult(rewardString, lowDetColor, header, true);
+                    // Create log messages
+                    UIManager.inst.CreateNewLogMessage(header, lowDetColor, darkGreenColor, true);
+                    UIManager.inst.CreateNewLogMessage(rewardString, UIManager.inst.deepInfoBlue, UIManager.inst.infoBlue, true, true);
+                }
+            }
+            else // FAILURE
+            {
+                UIManager.inst.Terminal_CreateResult(HF.GenericHackFailure(random), highDetColor, (">>" + HF.ParseHackName(hack)), true);
             }
         }
-        else // FAILURE
+        else // This hack cannot be ran on this specific machine. Give a special warning.
         {
-            UIManager.inst.Terminal_CreateResult(HF.GenericHackFailure(random), highDetColor, (">>" + HF.ParseHackName(hack)), true);
+            UIManager.inst.Terminal_CreateResult("Command unavailable on this system.", highDetColor, (">>" + HF.ParseHackName(hack)), true);
         }
+
+        
         HF.ScrollToBottom(UIManager.inst.terminal_resultsScrollrect); // Force scroll to bottom
     }
 
@@ -306,14 +322,22 @@ public class UIHackInputfield : MonoBehaviour
      * there are. With arrow keys switching between.
      */
 
+    [Tooltip("A string list of all valid hacks for the currently open machine. Contains only the first half of the hack. Ex: Enumerate(Guards) -> enumerate.")]
     public List<string> AC_list = new List<string>();
+    [Tooltip("A list of all valid hacks for the currently open machine. Compiled in Setup() -> AC_Setup() upon startup.")]
+    public List<HackObject> validHacks = new List<HackObject>();
     private void AC_Setup()
     {
         AC_list.Clear();
 
         foreach (HackObject hack in MapManager.inst.hackDatabase.Hack)
         {
-            AC_list.Add(HF.GetLeftSubstring(HF.ParseHackName(hack).ToLower()));
+            // Hack must be compatible with this machine.
+            if(HF.GetMachineType(UIManager.inst.terminal_targetTerm) == hack.relatedMachine)
+            {
+                AC_list.Add(HF.GetLeftSubstring(HF.ParseHackName(hack).ToLower()));
+                validHacks.Add(hack);
+            }
         }
 
         AC_list = AC_list.Distinct().ToList(); // Remove duplicates
@@ -343,6 +367,8 @@ public class UIHackInputfield : MonoBehaviour
 
         string closestMatch = GetClosestMatch(value);
         suggestionText.text = closestMatch;
+
+        field.text = field.text.ToLower(); // No uppercase!
     }
 
     private string GetClosestMatch(string value)
@@ -371,33 +397,51 @@ public class UIHackInputfield : MonoBehaviour
     [SerializeField] private string currentSuggestion = "";
     [SerializeField] private int suggestionID = -1;
     [SerializeField] private bool filled = false;
+    [SerializeField] private int maxSuggestions = 8;
     private void SuggestionBoxCheck()
     {
+        string fieldString = field.text;
+
         // -- Micro Suggestions Check --
-        List<string> microSC = new List<string>();
-        foreach (HackObject hack in MapManager.inst.hackDatabase.Hack)
+        List<string> microSuggestions = new List<string>();
+
+        foreach (HackObject hack in validHacks)
         {
-            if (!hack.doNotSuggest && hack.name.ToLower().Contains(HF.GetLeftSubstring(field.text))) // If this command is a variant of what the player is currently attempting to type
+            string hackName = hack.name.ToLower();
+
+            if (!hack.doNotSuggest && hackName.Contains(fieldString)) // If this command is a variant of what the player is currently attempting to type
             {
-                string newCom = HF.ExtractText(hack.name);
-                microSC.Add(newCom);
+                microSuggestions.Add(hack.name);
             }
         }
 
-        microSC = microSC.Distinct().ToList(); // Remove duplicates
-        // --
+        microSuggestions = microSuggestions.Distinct().ToList(); // Remove duplicates
 
-        if(microSC.Count > 7) // Too many suggestions, do the simplified version
+        Debug.Log($"MSCount[{microSuggestions.Count}] - Field Length[{fieldString.Length}]");
+
+        if(microSuggestions.Count >= maxSuggestions) // Too many suggestions, do the simplified version
         {
             ClearSuggestions();
 
         }
         else // Not that many suggestions, use the window
         {
-            // !! TODO: Check here if the hack has a parenthesis in it. If it doesn't we dont want to suggest anything.
-            if (field.text.Contains("(") && field.text[field.text.Length - 1].ToString() != ")")
+            if (field.text.Length > 0 && field.text.Contains("(") && field.text[field.text.Length - 1].ToString() != ")")
             {
-                if (!filled)
+                // Check here if the hack has a parenthesis in it. If it doesn't we dont want to suggest anything.
+                string closestString = GetClosestMatch(fieldString);
+                bool HACK_HAS_PARENTHESIS = false;
+
+                foreach (string s in microSuggestions)
+                {
+                    if(s.Contains(closestString) && s.Contains("("))
+                    {
+                        HACK_HAS_PARENTHESIS = true;
+                        break;
+                    }
+                }
+
+                if (!filled && HACK_HAS_PARENTHESIS)
                     FillSuggestions();
             }
             else
@@ -467,7 +511,7 @@ public class UIHackInputfield : MonoBehaviour
         // Create list of suggestions
         suggestions.Clear();
         int floorRating = MapManager.inst.currentLevel + 11; // ex: -10 + 11 = 1
-        foreach (HackObject hack in MapManager.inst.hackDatabase.Hack)
+        foreach (HackObject hack in validHacks)
         {
             if (!hack.doNotSuggest && hack.name.ToLower().Contains(HF.GetLeftSubstring(field.text))) // If this command is a variant of what the player is currently attempting to type
             {

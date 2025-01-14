@@ -16,7 +16,8 @@ MonoBehaviour:
   trueName: Force Fedlink
   description: Allocates additional resources to the UFD reserves. Also, locks the
     machines and summons an investigation squad like all force hacks.
-  relatedMachine: 8
+  relatedMachine: 2
   hackType: 30
   directChance: {x: 80, y: 40, z: 20}
   indirectChance: {x: 80, y: 40, z: 20}
+  doNotSuggest: 0

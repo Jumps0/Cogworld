@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 709c8031387567e43becdecce8b8477c, type: 3}
   m_Name: Force(Override)
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 192
   trueName: Force Override
   description: Reveals location of all exits in a Garrison and overrides the lockdown
     effect that prevents Cogmind from leaving the map. Does nothing if outside a
     garrison.
-  relatedMachine: 8
+  relatedMachine: 5
   hackType: 30
   directChance: {x: 40, y: 20, z: 10}
   indirectChance: {x: 40, y: 20, z: 10}
+  doNotSuggest: 0

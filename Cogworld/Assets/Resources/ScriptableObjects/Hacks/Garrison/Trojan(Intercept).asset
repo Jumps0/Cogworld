@@ -17,7 +17,8 @@ MonoBehaviour:
   description: Intercepts tactical planning and coordination transmissions, providing
     self and all controllable allies with a +15% accuracy bonus against hostile Complex
     0b10 combat robots within a range of 20.
-  relatedMachine: 8
+  relatedMachine: 1
   hackType: 29
   directChance: {x: 50, y: 25, z: 12}
   indirectChance: {x: 50, y: 25, z: 12}
+  doNotSuggest: 0

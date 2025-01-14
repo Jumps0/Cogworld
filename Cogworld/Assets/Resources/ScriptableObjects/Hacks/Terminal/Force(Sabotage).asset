@@ -17,7 +17,8 @@ MonoBehaviour:
   description: Attempt to cause a random explosive machine on the floor to detonate.
     This hack can succeed but fail to have any effect. Also, locks the machine and
     summons an investigations quad like all force hacks.
-  relatedMachine: 8
+  relatedMachine: 5
   hackType: 30
   directChance: {x: 60, y: 30, z: 15}
   indirectChance: {x: 60, y: 30, z: 15}
+  doNotSuggest: 0

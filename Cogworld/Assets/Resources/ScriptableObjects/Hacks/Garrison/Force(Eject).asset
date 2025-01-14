@@ -16,7 +16,8 @@ MonoBehaviour:
   trueName: Force Eject
   description: Eject all relay couplers installed in this garrison to the floor.
     Also, locks the machine and summons an investigation squad like all force hacks.
-  relatedMachine: 8
+  relatedMachine: 1
   hackType: 30
   directChance: {x: 80, y: 40, z: 20}
   indirectChance: {x: 80, y: 40, z: 20}
+  doNotSuggest: 0

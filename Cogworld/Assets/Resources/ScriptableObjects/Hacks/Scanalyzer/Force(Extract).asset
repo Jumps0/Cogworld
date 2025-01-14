@@ -17,7 +17,8 @@ MonoBehaviour:
   description: Extracts a random number of parts schematics from the machine. Most
     schematics will be non-prototype. Also, locks the machine and summons an investigation
     squad like all force hacks.
-  relatedMachine: 8
+  relatedMachine: 4
   hackType: 30
   directChance: {x: 80, y: 40, z: 20}
   indirectChance: {x: 80, y: 40, z: 20}
+  doNotSuggest: 0

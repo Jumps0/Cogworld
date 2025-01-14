@@ -18,7 +18,8 @@ MonoBehaviour:
     targets, though the chance for its presence to be detect increases by 25% each
     time it takes effect. No effect on prototypes, though if dispatched from there
     they do not affect the installed trojan.
-  relatedMachine: 8
+  relatedMachine: 1
   hackType: 29
   directChance: {x: 30, y: 15, z: 7}
   indirectChance: {x: 30, y: 15, z: 7}
+  doNotSuggest: 0

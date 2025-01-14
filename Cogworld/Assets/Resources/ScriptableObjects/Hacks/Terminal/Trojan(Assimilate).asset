@@ -15,7 +15,8 @@ MonoBehaviour:
   Id: 153
   trueName: Trojan Assimilate
   description: Reprograms this terminal's Operator when it attempts to use it.
-  relatedMachine: 8
+  relatedMachine: 5
   hackType: 29
   directChance: {x: 40, y: 20, z: 10}
   indirectChance: {x: 40, y: 20, z: 10}
+  doNotSuggest: 0

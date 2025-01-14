@@ -15,7 +15,8 @@ MonoBehaviour:
   Id: 155
   trueName: Trojan Broadcast
   description: Reports the position and composition of squads emerging from any garrison.
-  relatedMachine: 8
+  relatedMachine: 1
   hackType: 29
   directChance: {x: 70, y: 35, z: 17}
   indirectChance: {x: 70, y: 35, z: 17}
+  doNotSuggest: 0

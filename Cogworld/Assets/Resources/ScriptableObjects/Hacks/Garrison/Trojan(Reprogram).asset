@@ -16,7 +16,8 @@ MonoBehaviour:
   trueName: Trojan Reprogram
   description: Reprograms the next squad emerging from this garrison. No effect on
     prototypes, though if dispatched from here they do not affect the installed trojan.
-  relatedMachine: 8
+  relatedMachine: 1
   hackType: 29
   directChance: {x: 20, y: 10, z: 5}
   indirectChance: {x: 20, y: 10, z: 5}
+  doNotSuggest: 0

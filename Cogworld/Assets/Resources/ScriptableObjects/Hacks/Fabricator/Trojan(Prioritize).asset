@@ -16,7 +16,8 @@ MonoBehaviour:
   trueName: Trojan Prioritize
   description: Accelerates fabrication speed to 200% by forcing the network to allocate
     matter to this system first. (Effect also applies to builds already in progress.)
-  relatedMachine: 8
+  relatedMachine: 0
   hackType: 29
   directChance: {x: 30, y: 15, z: 7}
   indirectChance: {x: 30, y: 15, z: 7}
+  doNotSuggest: 0

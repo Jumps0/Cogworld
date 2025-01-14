@@ -569,7 +569,12 @@ public static class HF
         return "Unknown";
     }
 
-    public static string GetMachineType(GameObject machine)
+    /// <summary>
+    /// Given a gameObject references a specific machine, will determine what type of machine that is and return it as a String.
+    /// </summary>
+    /// <param name="machine">The gameObject which MUST have some kind of machine script attached to it.</param>
+    /// <returns>A string of the type of the machine.</returns>
+    public static string GetMachineTypeAsString(GameObject machine)
     {
         if (machine != null)
         {
@@ -605,6 +610,49 @@ public static class HF
 
         return "Unknown";
     }
+
+    /// <summary>
+    /// Given a gameObject references a specific machine, will determine what type of machine that is and return it as a MachineType enum.
+    /// </summary>
+    /// <param name="machine">The gameObject which MUST have some kind of machine script attached to it.</param>
+    /// <returns>A MachineType enum of the type of the machine.</returns>
+    public static MachineType GetMachineType(GameObject machine)
+    {
+        if (machine != null)
+        {
+            if (machine.GetComponent<Terminal>()) // Open Terminal
+            {
+                return MachineType.Terminal;
+            }
+            else if (machine.GetComponent<Fabricator>()) // Open Fabricator
+            {
+                return MachineType.Fabricator;
+            }
+            else if (machine.GetComponent<Scanalyzer>()) // Open Scanalyzer
+            {
+                return MachineType.Scanalyzer;
+            }
+            else if (machine.GetComponent<RepairStation>()) // Open Repair Station
+            {
+                return MachineType.RepairStation;
+            }
+            else if (machine.GetComponent<RecyclingUnit>()) // Open Recycling Unit
+            {
+                return MachineType.Recycling;
+            }
+            else if (machine.GetComponent<Garrison>()) // Open Garrison
+            {
+                return MachineType.Garrison;
+            }
+            else if (machine.GetComponent<TerminalCustom>()) // Open Custom Terminal
+            {
+                return MachineType.CustomTerminal;
+            }
+        }
+
+        return MachineType.Misc;
+    }
+
 
     public static GameObject GetRandomMachineOfType(MachineType type)
     {
@@ -2807,11 +2855,29 @@ public static class HF
         HackObject hack = null;
         TerminalCommand command = new TerminalCommand("x", "x", TerminalCommandType.NONE);
 
+        #region Validity Check
+        // Check to see if this is actually a valid hack and not gibberish
+        bool valid = false;
+        foreach (HackObject h in MapManager.inst.hackDatabase.Hack)
+        {
+            if(h.name.ToLower() == str.ToLower())
+            {
+                valid = true;
+                break;
+            }
+        }
+
+        if (!valid)
+        {
+            return (null, null);
+        }
+        #endregion
+
         if (str.Contains("("))
         {
             // command(inside)
             string left = HF.GetLeftSubstring(str); // command
-            string right = HF.GetRightSubstring(str); // inside)
+            string right = HF.GetRightSubstring(str); // inside
             //right = right.Substring(0, right.Length - 1); // Remove the ")", now: inside
             right = right.ToLower();
 
@@ -3460,346 +3526,348 @@ public static class HF
             {
                 hack = MapManager.inst.hackDatabase.dict["Open - Storage High Value"]; // not sure what to do here since there are 3 of these (High, Medium, Low)
             }
+            else // Interacting with some kind of item or bot
+            {
+                // Now part 2
+                ItemObject item = GetItemByString(right);
+                BotObject bot = GetBotByString(right);
+                if (c == "build")
+                {
+                    if (bot != null) // - Build Robot
+                    {
+                        int rating = bot.rating;
+                        switch (rating)
+                        {
+                            case 1:
+                                hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 1"];
+                                break;
+                            case 2:
+                                hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 2"];
+                                break;
+                            case 3:
+                                hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 3"];
+                                break;
+                            case 4:
+                                hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 4"];
+                                break;
+                            case 5:
+                                hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 5"];
+                                break;
+                            case 6:
+                                hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 6"];
+                                break;
+                            case 7:
+                                hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 7"];
+                                break;
+                            case 8:
+                                hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 8"];
+                                break;
+                            case 9:
+                                hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 9"];
+                                break;
+                        }
 
-            // Now part 2
-            ItemObject item = GetItemByString(right);
-            BotObject bot = GetBotByString(right);
-            if (c == "build")
-            {
-                if (bot != null) // - Build Robot
-                {
-                    int rating = bot.rating;
-                    switch (rating)
-                    {
-                        case 1:
-                            hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 1"];
-                            break;
-                        case 2:
-                            hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 2"];
-                            break;
-                        case 3:
-                            hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 3"];
-                            break;
-                        case 4:
-                            hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 4"];
-                            break;
-                        case 5:
-                            hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 5"];
-                            break;
-                        case 6:
-                            hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 6"];
-                            break;
-                        case 7:
-                            hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 7"];
-                            break;
-                        case 8:
-                            hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 8"];
-                            break;
-                        case 9:
-                            hack = MapManager.inst.hackDatabase.dict["Build - Robot Tier 9"];
-                            break;
                     }
+                    else if (item != null) // Build - Item
+                    {
+                        int rating = item.rating;
+                        bool starred = item.star;
+                        switch (rating)
+                        {
+                            case 1:
+                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 1"];
+                                break;
+                            case 2:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 2"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 2P"];
+                                }
+                                break;
+                            case 3:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 3"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 3P"];
+                                }
+                                break;
+                            case 4:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 4"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 4P"];
+                                }
+                                break;
+                            case 5:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 5"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 5P"];
+                                }
+                                break;
+                            case 6:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 6"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 6P"];
+                                }
+                                break;
+                            case 7:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 7"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 7P"];
+                                }
+                                break;
+                            case 8:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 8"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 8P"];
+                                }
+                                break;
+                            case 9:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 9"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 9P"];
+                                }
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError("ERROR: Both `bot` and `item` are null! Cannot parse.");
+                    }
+                }
+                else if (c == "refit")
+                {
+                    hack = MapManager.inst.hackDatabase.dict["Refit"];
+                }
+                else if (c == "repair")
+                {
+                    if (item != null)
+                    {
+                        int rating = item.rating;
+                        bool starred = item.star;
+                        switch (rating)
+                        {
+                            case 1:
+                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 1"];
+                                break;
+                            case 2:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Repair - Rating 2"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Repair - Rating 2P"];
+                                }
+                                break;
+                            case 3:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Repair - Rating 3"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Repair - Rating 3P"];
+                                }
+                                break;
+                            case 4:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Repair - Rating 4"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Repair - Rating 4P"];
+                                }
+                                break;
+                            case 5:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Repair - Rating 5"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Repair - Rating 5P"];
+                                }
+                                break;
+                            case 6:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Repair - Rating 6"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Repair - Rating 6P"];
+                                }
+                                break;
+                            case 7:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Repair - Rating 7"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Repair - Rating 7P"];
+                                }
+                                break;
+                            case 8:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Repair - Rating 8"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Repair - Rating 8P"];
+                                }
+                                break;
+                            case 9:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Repair - Rating 9"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Repair - Rating 9P"];
+                                }
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError("ERROR: `item` is null! Cannot parse.");
+                    }
+                }
+                else if (c == "scanalyze")
+                {
+                    if (item != null)
+                    {
+                        int rating = item.rating;
+                        bool starred = item.star;
+                        switch (rating)
+                        {
+                            case 1:
+                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 1"];
+                                break;
+                            case 2:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 2"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 2P"];
+                                }
+                                break;
+                            case 3:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 3"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 3P"];
+                                }
+                                break;
+                            case 4:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 4"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 4P"];
+                                }
+                                break;
+                            case 5:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 5"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 5P"];
+                                }
+                                break;
+                            case 6:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 6"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 6P"];
+                                }
+                                break;
+                            case 7:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 7"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 7P"];
+                                }
+                                break;
+                            case 8:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 8"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 8P"];
+                                }
+                                break;
+                            case 9:
+                                if (!starred)
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 9"];
+                                }
+                                else
+                                {
+                                    hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 9P"];
+                                }
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError("ERROR: `item` is null! Cannot parse.");
+                    }
+                }
 
-                }
-                else if (item != null) // Build - Item
-                {
-                    int rating = item.rating;
-                    bool starred = item.star;
-                    switch (rating)
-                    {
-                        case 1:
-                            hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 1"];
-                            break;
-                        case 2:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 2"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 2P"];
-                            }
-                            break;
-                        case 3:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 3"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 3P"];
-                            }
-                            break;
-                        case 4:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 4"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 4P"];
-                            }
-                            break;
-                        case 5:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 5"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 5P"];
-                            }
-                            break;
-                        case 6:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 6"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 6P"];
-                            }
-                            break;
-                        case 7:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 7"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 7P"];
-                            }
-                            break;
-                        case 8:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 8"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 8P"];
-                            }
-                            break;
-                        case 9:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 9"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Build - Part Rating 9P"];
-                            }
-                            break;
-                    }
-                }
-                else
-                {
-                    Debug.LogError("ERROR: Both `bot` and `item` are null! Cannot parse.");
-                }
+                command.item = item;
+                command.bot = bot;
             }
-            else if (c == "refit")
-            {
-                hack = MapManager.inst.hackDatabase.dict["Refit"];
-            }
-            else if (c == "repair")
-            {
-                if (item != null)
-                {
-                    int rating = item.rating;
-                    bool starred = item.star;
-                    switch (rating)
-                    {
-                        case 1:
-                            hack = MapManager.inst.hackDatabase.dict["Repair - Rating 1"];
-                            break;
-                        case 2:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 2"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 2P"];
-                            }
-                            break;
-                        case 3:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 3"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 3P"];
-                            }
-                            break;
-                        case 4:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 4"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 4P"];
-                            }
-                            break;
-                        case 5:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 5"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 5P"];
-                            }
-                            break;
-                        case 6:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 6"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 6P"];
-                            }
-                            break;
-                        case 7:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 7"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 7P"];
-                            }
-                            break;
-                        case 8:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 8"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 8P"];
-                            }
-                            break;
-                        case 9:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 9"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Repair - Rating 9P"];
-                            }
-                            break;
-                    }
-                }
-                else
-                {
-                    Debug.LogError("ERROR: `item` is null! Cannot parse.");
-                }
-            }
-            else if (c == "scanalyze")
-            {
-                if (item != null)
-                {
-                    int rating = item.rating;
-                    bool starred = item.star;
-                    switch (rating)
-                    {
-                        case 1:
-                            hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 1"];
-                            break;
-                        case 2:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 2"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 2P"];
-                            }
-                            break;
-                        case 3:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 3"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 3P"];
-                            }
-                            break;
-                        case 4:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 4"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 4P"];
-                            }
-                            break;
-                        case 5:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 5"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 5P"];
-                            }
-                            break;
-                        case 6:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 6"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 6P"];
-                            }
-                            break;
-                        case 7:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 7"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 7P"];
-                            }
-                            break;
-                        case 8:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 8"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 8P"];
-                            }
-                            break;
-                        case 9:
-                            if (!starred)
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 9"];
-                            }
-                            else
-                            {
-                                hack = MapManager.inst.hackDatabase.dict["Scanalyze - Rating 9P"];
-                            }
-                            break;
-                    }
-                }
-                else
-                {
-                    Debug.LogError("ERROR: `item` is null! Cannot parse.");
-                }
-            }
-
-            command.item = item;
-            command.bot = bot;
         }
 
         command.hack = hack;
@@ -4707,7 +4775,7 @@ public static class HF
     }
 
     /// <summary>
-    /// Access a string in the form of word(word), returns anything to the left of the "(".
+    /// Access a string in the form of word(word), returns anything to the left of the "(". No change if "(" is not present.
     /// </summary>
     /// <param name="istring">A string that contains "(", usually in the form of word(word)</param>
     /// <returns>Returns the characters to the left of the "(" character.</returns>

@@ -20,7 +20,8 @@ MonoBehaviour:
     quickboot to restore it to normal, a process which takes anywhere from 5 to 10
     turns. The effect is less likely to occur on the depth above that (only 1% chance),
     and it is capped at 15%.
-  relatedMachine: 8
+  relatedMachine: 0
   hackType: 29
   directChance: {x: 20, y: 10, z: 5}
   indirectChance: {x: 20, y: 10, z: 5}
+  doNotSuggest: 0
