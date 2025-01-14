@@ -98,7 +98,7 @@ public class UIHackInputfield : MonoBehaviour
     /// <summary>
     /// Called from *PlayerGridMovement.cs* when the TAB (Autocomplete) bind is pressed.
     /// </summary>
-    public void Input_Tab()
+    public void Input_Tab() // TODO: AUTOCOMPLETING IS BREAKING THE SUGGESTIONS. THEY NO LONGER POP UP
     {
         if (field.isFocused)
         {
@@ -195,20 +195,18 @@ public class UIHackInputfield : MonoBehaviour
         if (hack != null)
         {
             AttemptHack(hack, command);
-            // Destroy this input field
-            SetFocus(false);
-            Destroy(this.gameObject);
         }
         else // Invalid command? PUNISHED!!
         { // This is in uppercase for stylistic reasons.
             UIManager.inst.Terminal_CreateResult("Unknown command.", highDetColor, (">>" + field.text.ToUpper()), true);
         }
+
+        // Lastly, we destroy this input field
+        ShutDown();
     }
 
     public void AttemptHack(HackObject hack, TerminalCommand command)
     {
-        Debug.Log($"Attempting hack: {hack} | {hack.trueName} | C: {command}");
-
         // -- Calculate Chance of Success --
         float chance = 0f;
         bool openSystem = false; // TODO: Figure out how open systems work
@@ -234,11 +232,26 @@ public class UIHackInputfield : MonoBehaviour
                 baseChance = (float)((float)hack.directChance.z / 100f);
             }
             chance = HF.CalculateHackSuccessChance(baseChance);
-            Debug.Log($"Base chance: {baseChance} | Chance: {chance}");
+        }
+
+        string printoutFill = "";
+        if(command != null)
+        {
+            if(command.item != null)
+            {
+                printoutFill = command.item.itemName;
+            }
+            else if(command.bot != null)
+            {
+                printoutFill = command.bot.botName;
+            }
+            else if(command.knowledge != null)
+            {
+                printoutFill = command.knowledge.name;
+            }
         }
 
         float random = Random.Range(0.0f, 1.0f);
-        Debug.Log($"Chance: {chance} | Random: {random} | s?{random <= chance}");
 
         // We should do a special check here in case the specified command is not valid given the current machine (in cases of Manual Entry).
         // For example, they should not be able to 'Enumerate(Guards)' on a Scanalyzer, since that command only works on terminals.
@@ -251,7 +264,7 @@ public class UIHackInputfield : MonoBehaviour
             {
                 if (MapManager.inst.centerDatabaseLockout) // Instant fail
                 {
-                    UIManager.inst.Terminal_CreateResult("Central database compromised, local access revoked.", highDetColor, (">>" + HF.ParseHackName(hack)), true);
+                    UIManager.inst.Terminal_CreateResult("Central database compromised, local access revoked.", highDetColor, (">>" + HF.HackToPrintout(hack, printoutFill)), true);
                     return;
                 }
             }
@@ -274,7 +287,7 @@ public class UIHackInputfield : MonoBehaviour
                 {
                     MapManager.inst.centerDatabaseLockout = true;
 
-                    UIManager.inst.Terminal_CreateResult("Central database compromised, local access revoked.", highDetColor, (">>" + HF.ParseHackName(hack)), true);
+                    UIManager.inst.Terminal_CreateResult("Central database compromised, local access revoked.", highDetColor, (">>" + HF.HackToPrintout(hack, printoutFill)), true);
                     UIManager.inst.CreateNewLogMessage("Central database lockdown, local access denied.", UIManager.inst.complexWhite, UIManager.inst.inactiveGray, true, true);
                     UIManager.inst.CreateLeftMessage("ALERT: Central database lockdown, local access denied.", 10f, AudioManager.inst.dict_game["DISPATCH_ALERT"]); // GAME - DISPATCH_ALERT
                     return;
@@ -282,10 +295,7 @@ public class UIHackInputfield : MonoBehaviour
 
                 // ---
 
-                string right = HF.GetRightSubstring(field.text); // inside)
-                right = right.Substring(0, right.Length - 1); // Remove the ")", now: inside
-
-                string header = ">>" + HF.ParseHackName(hack, right);
+                string header = ">>" + HF.HackToPrintout(hack, printoutFill);
                 string rewardString = HF.MachineReward_PrintPLUSAction(command, command.item, command.bot);
 
                 if (rewardString.Length > 0)
@@ -299,12 +309,12 @@ public class UIHackInputfield : MonoBehaviour
             }
             else // FAILURE
             {
-                UIManager.inst.Terminal_CreateResult(HF.GenericHackFailure(random), highDetColor, (">>" + HF.ParseHackName(hack)), true);
+                UIManager.inst.Terminal_CreateResult(HF.GenericHackFailure(random), highDetColor, (">>" + HF.HackToPrintout(hack, printoutFill)), true);
             }
         }
         else // This hack cannot be ran on this specific machine. Give a special warning.
         {
-            UIManager.inst.Terminal_CreateResult("Command unavailable on this system.", highDetColor, (">>" + HF.ParseHackName(hack)), true);
+            UIManager.inst.Terminal_CreateResult("Command unavailable on this system.", highDetColor, (">>" + HF.HackToPrintout(hack, printoutFill)), true);
         }
 
         
@@ -367,8 +377,6 @@ public class UIHackInputfield : MonoBehaviour
 
         string closestMatch = GetClosestMatch(value);
         suggestionText.text = closestMatch;
-
-        field.text = field.text.ToLower(); // No uppercase!
     }
 
     private string GetClosestMatch(string value)
@@ -647,15 +655,7 @@ public class UIHackInputfield : MonoBehaviour
 
     public void ShutDown()
     {
-        StartCoroutine(ShutdownAnim());
-    }
-
-    private IEnumerator ShutdownAnim()
-    {
-
-        yield return null;
-
+        SetFocus(false);
         Destroy(this.gameObject);
-
     }
 }

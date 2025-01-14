@@ -183,21 +183,20 @@ public class UISchematicOption : MonoBehaviour
     {
         float random = Random.Range(0.0f, 1.0f);
 
+        string fill = "";
+        if (item != null)
+        {
+            fill = item.itemName;
+        }
+        else if (bot != null)
+        {
+            fill = bot.botName;
+        }
+
         if (random <= chanceOfSuccess)
         { // SUCCESS
-
-            string name = "";
-            if(item != null)
-            {
-                name = item.itemName;
-            }
-            else if(bot != null)
-            {
-                name = bot.botName;
-            }
-
             string rewardString = HF.MachineReward_PrintPLUSAction(command, item, bot);
-            string header = ">>" + HF.ParseHackName(command.hack, name);
+            string header = ">>" + HF.HackToPrintout(command.hack, fill);
 
             // Create result in terminal
             UIManager.inst.Terminal_CreateResult(rewardString, lowDetColor, header, true);
@@ -207,7 +206,7 @@ public class UISchematicOption : MonoBehaviour
         }
         else // FAILURE
         {
-            UIManager.inst.Terminal_CreateResult(HF.GenericHackFailure(random), highDetColor, (">>" + HF.ParseHackName(command.hack)), true);
+            UIManager.inst.Terminal_CreateResult(HF.GenericHackFailure(random), highDetColor, (">>" + HF.HackToPrintout(command.hack)), true);
         }
         HF.ScrollToBottom(UIManager.inst.terminal_resultsScrollrect); // Force scroll to bottom
     }

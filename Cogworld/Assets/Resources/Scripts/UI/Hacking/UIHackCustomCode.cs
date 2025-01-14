@@ -90,7 +90,7 @@ public class UIHackCustomCode : MonoBehaviour
             else // Do nothing (dummy)
             {
                 SetAsUsed();
-                UIManager.inst.Terminal_CreateResult("Unknown command", highDetColor, codeText.text, true);
+                UIManager.inst.Terminal_CreateResult("Unknown command.", highDetColor, codeText.text, true);
             }
         }
         

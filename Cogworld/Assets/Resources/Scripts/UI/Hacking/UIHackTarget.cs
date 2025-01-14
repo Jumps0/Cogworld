@@ -130,15 +130,23 @@ public class UIHackTarget : MonoBehaviour
         {
             float random = Random.Range(0.0f, 1.0f);
 
+            string fill = "";
+            if (command.item != null)
+            {
+                fill = command.item.itemName;
+            }
+            else if (command.bot != null)
+            {
+                fill = command.bot.botName;
+            }
+            else if (command.knowledge != null)
+            {
+                fill = command.knowledge.name;
+            }
+
             if (random <= chanceOfSuccess) // SUCCESS
             {
-                string fill = "";
-                if(command.hack.hackType == TerminalCommandType.Query || command.hack.hackType == TerminalCommandType.Analysis || command.hack.hackType == TerminalCommandType.Schematic)
-                {
-                    fill = setText;
-                }
-
-                string header = ">>" + HF.ParseHackName(command.hack, fill);
+                string header = ">>" + HF.HackToPrintout(command.hack, fill);
                 string rewardString = HF.MachineReward_PrintPLUSAction(command, command.item, command.bot);
 
                 if(rewardString.Length > 0)
@@ -153,7 +161,7 @@ public class UIHackTarget : MonoBehaviour
             }
             else // FAILURE
             {
-                UIManager.inst.Terminal_CreateResult(HF.GenericHackFailure(random), highDetColor, (">>" + HF.ParseHackName(command.hack)), true);
+                UIManager.inst.Terminal_CreateResult(HF.GenericHackFailure(random), highDetColor, (">>" + HF.HackToPrintout(command.hack, fill)), true);
             }
         }
         else // Manual Command stuff here

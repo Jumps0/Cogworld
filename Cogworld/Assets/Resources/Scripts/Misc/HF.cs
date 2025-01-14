@@ -2290,6 +2290,38 @@ public static class HF
         
     }
 
+    /// <summary>
+    /// Converts a HackObject's name to a string of what should be printed out in the /RESULTS/ window.
+    /// </summary>
+    /// <param name="hack">The HackObject we want to display the name of.</param>
+    /// <param name="fill">[OPTIONAL] Any fill text that should be inserted between (    ).</param>
+    /// <returns>A string which can be printed out to the /RESULTS/ window.</returns>
+    public static string HackToPrintout(HackObject hack, string fill = "")
+    {
+        string hackName = hack.name;
+
+        // Check for the presence of "[" and "]"
+        bool removed = false;
+        int bracketStartIndex = hackName.IndexOf('[');
+        int bracketEndIndex = hackName.IndexOf(']');
+        if (bracketStartIndex != -1 && bracketEndIndex != -1 && bracketEndIndex > bracketStartIndex)
+        {
+            // Remove the brackets and their content
+            hackName = hackName.Remove(bracketStartIndex, bracketEndIndex - bracketStartIndex + 1);
+
+            removed = true;
+        }
+
+        // If we removed something from [   ] and have a fill, we should put that in now
+        if (removed && fill != "")
+        {
+            string[] split = hackName.Split("(");
+            hackName = split[0] + "(" + fill + ")";
+        }
+
+        return hackName;
+    }
+
     #endregion
 
     #region Find & Get
@@ -3939,17 +3971,17 @@ public static class HF
 
     public static ItemObject GetItemByString(string str)
     {
-        return MapManager.inst.itemDatabase.dict[str];
+        return MapManager.inst.itemDatabase.dict.ContainsKey(str) ? MapManager.inst.itemDatabase.dict[str] : null;
     }
 
     public static TileObject GetTileByString(string str)
     {
-        return MapManager.inst.tileDatabase.dict[str];
+        return MapManager.inst.tileDatabase.dict.ContainsKey(str) ? MapManager.inst.tileDatabase.dict[str] : null;
     }
 
     public static BotObject GetBotByString(string str)
     {
-        return MapManager.inst.botDatabase.dict[str];
+        return MapManager.inst.botDatabase.dict.ContainsKey(str) ? MapManager.inst.botDatabase.dict[str] : null;
     }
 
     /// <summary>
