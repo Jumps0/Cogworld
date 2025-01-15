@@ -14,7 +14,7 @@ public class UIHackinfoV3 : MonoBehaviour
     public TextMeshProUGUI _detectionChanceText;
     public TextMeshProUGUI _detValueText;
     public Image detectedBacker;
-    public GameObject machine = null;
+    public InteractableMachine machine = null;
 
     [Header("Color Pallet")]
     public Color lowDetColor;
@@ -27,41 +27,14 @@ public class UIHackinfoV3 : MonoBehaviour
 
     [SerializeField] private float textSpeed = 0.007f;
 
-    public void Setup(GameObject terminal)
+    public void Setup(InteractableMachine terminal)
     {
         machine = terminal;
         detectionChance = 1f;
 
         if (machine != null)
         {
-            if (machine.GetComponent<Terminal>()) // Open Terminal
-            {
-                detectionChance = machine.GetComponent<Terminal>().detectionChance;
-            }
-            else if (machine.GetComponent<Fabricator>()) // Open Fabricator
-            {
-                detectionChance = machine.GetComponent<Fabricator>().detectionChance;
-            }
-            else if (machine.GetComponent<Scanalyzer>()) // Open Scanalyzer
-            {
-                detectionChance = machine.GetComponent<Scanalyzer>().detectionChance;
-            }
-            else if (machine.GetComponent<RepairStation>()) // Open Repair Station
-            {
-                detectionChance = machine.GetComponent<RepairStation>().detectionChance;
-            }
-            else if (machine.GetComponent<RecyclingUnit>()) // Open Recycling Unit
-            {
-                detectionChance = machine.GetComponent<RecyclingUnit>().detectionChance;
-            }
-            else if (machine.GetComponent<Garrison>()) // Open Garrison
-            {
-                detectionChance = machine.GetComponent<Garrison>().detectionChance;
-            }
-            else if (machine.GetComponent<TerminalCustom>()) // Open Custom Terminal
-            {
-                detectionChance = machine.GetComponent<TerminalCustom>().detectionChance;
-            }
+            detectionChance = terminal.detectionChance;
         }
 
         // Get any possible bonuses from system sheields

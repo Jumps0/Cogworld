@@ -210,52 +210,28 @@ public class PlayerGridMovement : MonoBehaviour
         } 
         
         // -- Machine Interaction (Parsing) --
-
-        // Theres a lot here [0 = Static, 1 = Terminal, 2 = Fabricator, 3 = Scanalyzer, 4 = Repair Station, 5 = Recycling Unit, 6 = Garrison, 7 = Custom Terminal]
-        if(machineInteraction != null && !HF.IsMachineLocked(machineInteraction))
+        if(machineInteraction != null && !machineInteraction.GetComponent<InteractableMachine>().locked)
         {
-            if (machineInteraction.GetComponent<Terminal>()) // Open Terminal
+            InteractableMachine machine = machineInteraction.GetComponent<InteractableMachine>();
+            MachineType type = machine.type;
+            if (type == MachineType.CustomTerminal)
             {
-                // Create log messages
-                UIManager.inst.CreateNewLogMessage("Connecting with Terminal...", UIManager.inst.highlightGreen, UIManager.inst.dullGreen, true);
-                UIManager.inst.Terminal_OpenGeneric(machineInteraction);
+                UIManager.inst.CTerminal_Open(machine);
             }
-            else if (machineInteraction.GetComponent<Fabricator>()) // Open Fabricator
-            {
-                // Create log messages
-                UIManager.inst.CreateNewLogMessage("Connecting with Fabricator...", UIManager.inst.highlightGreen, UIManager.inst.dullGreen, true);
-                UIManager.inst.Terminal_OpenGeneric(machineInteraction);
-            }
-            else if (machineInteraction.GetComponent<Scanalyzer>()) // Open Scanalyzer
-            {
-                // Create log messages
-                UIManager.inst.CreateNewLogMessage("Connecting with Scanalyzer...", UIManager.inst.highlightGreen, UIManager.inst.dullGreen, true);
-                UIManager.inst.Terminal_OpenGeneric(machineInteraction);
-            }
-            else if (machineInteraction.GetComponent<RepairStation>()) // Open Repair Station
-            {
-                // Create log messages
-                UIManager.inst.CreateNewLogMessage("Connecting with Repair Station...", UIManager.inst.highlightGreen, UIManager.inst.dullGreen, true);
-                UIManager.inst.Terminal_OpenGeneric(machineInteraction);
-            }
-            else if (machineInteraction.GetComponent<RecyclingUnit>()) // Open Recycling Unit
-            {
-                // Create log messages
-                UIManager.inst.CreateNewLogMessage("Connecting with Recycling Unit...", UIManager.inst.highlightGreen, UIManager.inst.dullGreen, true);
-                UIManager.inst.Terminal_OpenGeneric(machineInteraction);
-            }
-            else if (machineInteraction.GetComponent<Garrison>()) // Open Garrison
+            else if(type == MachineType.Garrison)
             {
                 if (!machineInteraction.GetComponent<Garrison>().g_sealed)
                 {
                     // Create log messages
                     UIManager.inst.CreateNewLogMessage("Connecting with Garrison Access...", UIManager.inst.highlightGreen, UIManager.inst.dullGreen, true);
-                    UIManager.inst.Terminal_OpenGeneric(machineInteraction);
+                    UIManager.inst.Terminal_OpenGeneric(machine);
                 }
             }
-            else if (machineInteraction.GetComponent<TerminalCustom>()) // Open Custom Terminal
+            else
             {
-                UIManager.inst.CTerminal_Open(machineInteraction);
+                // Create log messages
+                UIManager.inst.CreateNewLogMessage($"Connecting with {HF.GetMachineTypeAsString(machine)}...", UIManager.inst.highlightGreen, UIManager.inst.dullGreen, true);
+                UIManager.inst.Terminal_OpenGeneric(machine);
             }
         }
         // -----------------------------------------

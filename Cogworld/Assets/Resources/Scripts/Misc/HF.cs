@@ -458,248 +458,82 @@ public static class HF
         }
     }
 
-    public static string GetTerminalSystemName(GameObject machine)
-    {
-        if (machine != null)
-        {
-            if (machine.GetComponent<Terminal>()) // Open Terminal
-            {
-                return machine.GetComponent<Terminal>().systemType;
-            }
-            else if (machine.GetComponent<Fabricator>()) // Open Fabricator
-            {
-                return machine.GetComponent<Fabricator>().systemType;
-            }
-            else if (machine.GetComponent<Scanalyzer>()) // Open Scanalyzer
-            {
-                return machine.GetComponent<Scanalyzer>().systemType;
-            }
-            else if (machine.GetComponent<RepairStation>()) // Open Repair Station
-            {
-                return machine.GetComponent<RepairStation>().systemType;
-            }
-            else if (machine.GetComponent<RecyclingUnit>()) // Open Recycling Unit
-            {
-                return machine.GetComponent<RecyclingUnit>().systemName;
-            }
-            else if (machine.GetComponent<Garrison>()) // Open Garrison
-            {
-                return machine.GetComponent<Garrison>().systemType;
-            }
-            else if (machine.GetComponent<TerminalCustom>()) // Open Custom Terminal
-            {
-                return machine.GetComponent<TerminalCustom>().systemName;
-            }
-        }
-
-        return "Unknown Terminal";
-    }
-
-    public static int GetMachineSecLvl(GameObject machine)
-    {
-        if (machine != null)
-        {
-            if (machine.GetComponent<Terminal>()) // Open Terminal
-            {
-                return machine.GetComponent<Terminal>().secLvl;
-            }
-            else if (machine.GetComponent<Fabricator>()) // Open Fabricator
-            {
-                return machine.GetComponent<Fabricator>().secLvl;
-            }
-            else if (machine.GetComponent<Scanalyzer>()) // Open Scanalyzer
-            {
-                return machine.GetComponent<Scanalyzer>().secLvl;
-            }
-            else if (machine.GetComponent<RepairStation>()) // Open Repair Station
-            {
-                return machine.GetComponent<RepairStation>().secLvl;
-            }
-            else if (machine.GetComponent<RecyclingUnit>()) // Open Recycling Unit
-            {
-                return machine.GetComponent<RecyclingUnit>().secLvl;
-            }
-            else if (machine.GetComponent<Garrison>()) // Open Garrison
-            {
-                return machine.GetComponent<Garrison>().secLvl;
-            }
-            else if (machine.GetComponent<TerminalCustom>()) // Open Custom Terminal
-            {
-                return machine.GetComponent<TerminalCustom>().secLvl;
-            }
-        }
-
-        return 0;
-    }
-
-    public static string GetGenericMachineName(GameObject machine)
-    {
-        if (machine != null)
-        {
-            if (machine.GetComponent<Terminal>()) // Open Terminal
-            {
-                return machine.GetComponent<Terminal>().fullName;
-            }
-            else if (machine.GetComponent<Fabricator>()) // Open Fabricator
-            {
-                return machine.GetComponent<Fabricator>().fullName;
-            }
-            else if (machine.GetComponent<Scanalyzer>()) // Open Scanalyzer
-            {
-                return machine.GetComponent<Scanalyzer>().fullName;
-            }
-            else if (machine.GetComponent<RepairStation>()) // Open Repair Station
-            {
-                return machine.GetComponent<RepairStation>().fullName;
-            }
-            else if (machine.GetComponent<RecyclingUnit>()) // Open Recycling Unit
-            {
-                return machine.GetComponent<RecyclingUnit>().fullName;
-            }
-            else if (machine.GetComponent<Garrison>()) // Open Garrison
-            {
-                return machine.GetComponent<Garrison>().fullName;
-            }
-            else if (machine.GetComponent<TerminalCustom>()) // Open Custom Terminal
-            {
-                return machine.GetComponent<TerminalCustom>().fullName;
-            }
-        }
-
-        return "Unknown";
-    }
-
     /// <summary>
     /// Given a gameObject references a specific machine, will determine what type of machine that is and return it as a String.
     /// </summary>
     /// <param name="machine">The gameObject which MUST have some kind of machine script attached to it.</param>
     /// <returns>A string of the type of the machine.</returns>
-    public static string GetMachineTypeAsString(GameObject machine)
+    public static string GetMachineTypeAsString(InteractableMachine machine)
     {
-        if (machine != null)
+        switch (machine.type)
         {
-            if (machine.GetComponent<Terminal>()) // Open Terminal
-            {
-                return "Terminal";
-            }
-            else if (machine.GetComponent<Fabricator>()) // Open Fabricator
-            {
+            case MachineType.Fabricator:
                 return "Fabricator";
-            }
-            else if (machine.GetComponent<Scanalyzer>()) // Open Scanalyzer
-            {
-                return "Scanalyzer";
-            }
-            else if (machine.GetComponent<RepairStation>()) // Open Repair Station
-            {
-                return "Repair Bay";
-            }
-            else if (machine.GetComponent<RecyclingUnit>()) // Open Recycling Unit
-            {
-                return "Recycling Unit";
-            }
-            else if (machine.GetComponent<Garrison>()) // Open Garrison
-            {
+            case MachineType.Garrison:
                 return "Garrison";
-            }
-            else if (machine.GetComponent<TerminalCustom>()) // Open Custom Terminal
-            {
+            case MachineType.Recycling:
+                return "Recycling Unit";
+            case MachineType.RepairStation:
+                return "Repair Bay";
+            case MachineType.Scanalyzer:
+                return "Scanalyzer";
+            case MachineType.Terminal:
                 return "Terminal";
-            }
+            case MachineType.CustomTerminal:
+                return "Terminal";
+            case MachineType.DoorTerminal:
+                return "Terminal";
+            case MachineType.Misc:
+                return "Unknown";
+            default:
+                return "Unknown";
         }
-
-        return "Unknown";
     }
 
-    /// <summary>
-    /// Given a gameObject references a specific machine, will determine what type of machine that is and return it as a MachineType enum.
-    /// </summary>
-    /// <param name="machine">The gameObject which MUST have some kind of machine script attached to it.</param>
-    /// <returns>A MachineType enum of the type of the machine.</returns>
-    public static MachineType GetMachineType(GameObject machine)
+    public static InteractableMachine GetRandomMachineOfType(MachineType type)
     {
-        if (machine != null)
-        {
-            if (machine.GetComponent<Terminal>()) // Open Terminal
-            {
-                return MachineType.Terminal;
-            }
-            else if (machine.GetComponent<Fabricator>()) // Open Fabricator
-            {
-                return MachineType.Fabricator;
-            }
-            else if (machine.GetComponent<Scanalyzer>()) // Open Scanalyzer
-            {
-                return MachineType.Scanalyzer;
-            }
-            else if (machine.GetComponent<RepairStation>()) // Open Repair Station
-            {
-                return MachineType.RepairStation;
-            }
-            else if (machine.GetComponent<RecyclingUnit>()) // Open Recycling Unit
-            {
-                return MachineType.Recycling;
-            }
-            else if (machine.GetComponent<Garrison>()) // Open Garrison
-            {
-                return MachineType.Garrison;
-            }
-            else if (machine.GetComponent<TerminalCustom>()) // Open Custom Terminal
-            {
-                return MachineType.CustomTerminal;
-            }
-        }
-
-        return MachineType.Misc;
-    }
-
-
-    public static GameObject GetRandomMachineOfType(MachineType type)
-    {
-        GameObject ret = null;
-
         switch (type)
         {
             case MachineType.Fabricator:
                 if(MapManager.inst.machines_fabricators.Count > 0)
                 {
-                    return MapManager.inst.machines_fabricators[Random.Range(0, MapManager.inst.machines_fabricators.Count - 1)];
+                    return MapManager.inst.machines_fabricators[Random.Range(0, MapManager.inst.machines_fabricators.Count - 1)].GetComponent<InteractableMachine>();
                 }
                 break;
             case MachineType.Garrison:
                 if (MapManager.inst.machines_garrisons.Count > 0)
                 {
-                    return MapManager.inst.machines_garrisons[Random.Range(0, MapManager.inst.machines_garrisons.Count - 1)];
+                    return MapManager.inst.machines_garrisons[Random.Range(0, MapManager.inst.machines_garrisons.Count - 1)].GetComponent<InteractableMachine>();
                 }
                 break;
             case MachineType.Recycling:
                 if (MapManager.inst.machines_recyclingUnits.Count > 0)
                 {
-                    return MapManager.inst.machines_recyclingUnits[Random.Range(0, MapManager.inst.machines_recyclingUnits.Count - 1)];
+                    return MapManager.inst.machines_recyclingUnits[Random.Range(0, MapManager.inst.machines_recyclingUnits.Count - 1)].GetComponent<InteractableMachine>();
                 }
                 break;
             case MachineType.RepairStation:
                 if (MapManager.inst.machines_repairStation.Count > 0)
                 {
-                    return MapManager.inst.machines_repairStation[Random.Range(0, MapManager.inst.machines_repairStation.Count - 1)];
+                    return MapManager.inst.machines_repairStation[Random.Range(0, MapManager.inst.machines_repairStation.Count - 1)].GetComponent<InteractableMachine>();
                 }
                 break;
             case MachineType.Scanalyzer:
                 if (MapManager.inst.machines_scanalyzers.Count > 0)
                 {
-                    return MapManager.inst.machines_scanalyzers[Random.Range(0, MapManager.inst.machines_scanalyzers.Count - 1)];
+                    return MapManager.inst.machines_scanalyzers[Random.Range(0, MapManager.inst.machines_scanalyzers.Count - 1)].GetComponent<InteractableMachine>();
                 }
                 break;
             case MachineType.Terminal:
                 if (MapManager.inst.machines_terminals.Count > 0)
                 {
-                    return MapManager.inst.machines_terminals[Random.Range(0, MapManager.inst.machines_terminals.Count - 1)];
+                    return MapManager.inst.machines_terminals[Random.Range(0, MapManager.inst.machines_terminals.Count - 1)].GetComponent<InteractableMachine>();
                 }
                 break;
             case MachineType.CustomTerminal:
                 if (MapManager.inst.machines_customTerminals.Count > 0)
                 {
-                    return MapManager.inst.machines_customTerminals[Random.Range(0, MapManager.inst.machines_customTerminals.Count - 1)];
+                    return MapManager.inst.machines_customTerminals[Random.Range(0, MapManager.inst.machines_customTerminals.Count - 1)].GetComponent<InteractableMachine>();
                 }
                 break;
             case MachineType.DoorTerminal:
@@ -710,7 +544,7 @@ public static class HF
                 break;
         }
 
-        return ret;
+        return null;
     }
 
     public static float CalculateHackSuccessChance(float baseChance)
@@ -908,7 +742,7 @@ public static class HF
                     }
                     else if (command.secondaryText == "emergency")
                     {
-                        GameManager.inst.AccessEmergency(UIManager.inst.terminal_targetTerm);
+                        GameManager.inst.AccessEmergency(UIManager.inst.terminal_targetTerm.gameObject);
                         return "Local emergency access data updated.";
                     }
                     break;
@@ -1258,7 +1092,7 @@ public static class HF
                     if (PlayerData.inst.currentMatter >= matterCost)
                     {
                         int buildTime = 0;
-                        int secLvl = GetMachineSecLvl(UIManager.inst.terminal_targetTerm);
+                        int secLvl = UIManager.inst.terminal_targetTerm.secLvl;
 
                         if (item != null)
                         {
@@ -1344,7 +1178,7 @@ public static class HF
                     return "Repairing " + HF.ExtractText(parsedName) + "...\nETC: " + UIManager.inst.terminal_targetTerm.GetComponent<RepairStation>().timeToComplete;
                 case TerminalCommandType.Scan:
                     int buildTime3 = 0;
-                    int secLvl3 = GetMachineSecLvl(UIManager.inst.terminal_targetTerm);
+                    int secLvl3 = UIManager.inst.terminal_targetTerm.secLvl;
                     if (secLvl3 == 1)
                     {
                         buildTime3 = item.fabricationInfo.fabTime.x;
@@ -1376,7 +1210,7 @@ public static class HF
                         TerminalCustom cache = null;
                         foreach (GameObject machine in MapManager.inst.machines_customTerminals)
                         {
-                            if (machine.GetComponentInChildren<TerminalCustom>() && machine.GetComponentInChildren<TerminalCustom>().type == CustomTerminalType.HideoutCache)
+                            if (machine.GetComponentInChildren<TerminalCustom>() && machine.GetComponentInChildren<TerminalCustom>().customType == CustomTerminalType.HideoutCache)
                             {
                                 cache = machine.GetComponentInChildren<TerminalCustom>();
                             }
@@ -1500,35 +1334,9 @@ public static class HF
                         // with each terminal providing no less than +1%.
                         string print = "Trojan loaded successfully.\nTesting...\nTerminal linked with " + PlayerData.inst.linkedTerminalBotnet + " systems.\nAwaiting botnet instructions.";
                         PlayerData.inst.linkedTerminalBotnet++;
-                        GameObject target = UIManager.inst.terminal_targetTerm;
-                        if (target.GetComponent<Terminal>())
-                        {
-                            target.GetComponent<Terminal>().trojans.Add(TrojanType.Botnet);
-                        }
-                        else if (target.GetComponent<Fabricator>())
-                        {
-                            target.GetComponent<Fabricator>().trojans.Add(TrojanType.Botnet);
-                        }
-                        else if (target.GetComponent<Scanalyzer>())
-                        {
-                            target.GetComponent<Scanalyzer>().trojans.Add(TrojanType.Botnet);
-                        }
-                        else if (target.GetComponent<RepairStation>())
-                        {
-                            target.GetComponent<RepairStation>().trojans.Add(TrojanType.Botnet);
-                        }
-                        else if (target.GetComponent<RecyclingUnit>())
-                        {
-                            target.GetComponent<RecyclingUnit>().trojans.Add(TrojanType.Botnet);
-                        }
-                        else if (target.GetComponent<Garrison>())
-                        {
-                            target.GetComponent<Garrison>().trojans.Add(TrojanType.Botnet);
-                        }
-                        else if (target.GetComponent<TerminalCustom>())
-                        {
-                            target.GetComponent<TerminalCustom>().trojans.Add(TrojanType.Botnet);
-                        }
+
+                        UIManager.inst.terminal_targetTerm.trojans.Add(TrojanType.Botnet);
+
                         return print;
 
                     }
@@ -1764,7 +1572,7 @@ public static class HF
                     TerminalCustom terminal = null;
                     foreach (GameObject machine in MapManager.inst.machines_customTerminals)
                     {
-                        if(machine.GetComponentInChildren<TerminalCustom>() && machine.GetComponentInChildren<TerminalCustom>().type == CustomTerminalType.HideoutCache)
+                        if(machine.GetComponentInChildren<TerminalCustom>() && machine.GetComponentInChildren<TerminalCustom>().customType == CustomTerminalType.HideoutCache)
                         {
                             terminal = machine.GetComponentInChildren<TerminalCustom>();
                         }
@@ -1960,70 +1768,36 @@ public static class HF
 
     }
 
-    /// <summary>
-    /// When given a gameObject (machine) returns the 3 values related to tracing. Detection Chance, Trace Progress, and if the hack has been detected.
-    /// </summary>
-    /// <param name="machine">The machine gameObject to investigate</param>
-    /// <returns>(float, float, bool) Detection Chance, Trace Progress, and if the hack has been detected.</returns>
-    public static (float, float, bool) GetTraceValues(GameObject machine)
+    public static void TraceHacking(InteractableMachine machine, float levelOfFailure = 0f)
     {
-        float detectionChance = 0f;
-        float traceProgress = 0f;
-        bool detected = false;
+        #region From the Manual
+        /*
+        The system responds in three phases:
 
-        if (machine.GetComponent<Terminal>()) // Open Terminal
-        {
-            detectionChance = machine.GetComponent<Terminal>().detectionChance;
-            traceProgress = machine.GetComponent<Terminal>().traceProgress;
-            detected = machine.GetComponent<Terminal>().detected;
-        }
-        else if (machine.GetComponent<Fabricator>()) // Open Fabricator
-        {
-            detectionChance = machine.GetComponent<Fabricator>().detectionChance;
-            traceProgress = machine.GetComponent<Fabricator>().traceProgress;
-            detected = machine.GetComponent<Fabricator>().detected;
-        }
-        else if (machine.GetComponent<Scanalyzer>()) // Open Scanalyzer
-        {
-            detectionChance = machine.GetComponent<Scanalyzer>().detectionChance;
-            traceProgress = machine.GetComponent<Scanalyzer>().traceProgress;
-            detected = machine.GetComponent<Scanalyzer>().detected;
-        }
-        else if (machine.GetComponent<RepairStation>()) // Open Repair Station
-        {
-            detectionChance = machine.GetComponent<RepairStation>().detectionChance;
-            traceProgress = machine.GetComponent<RepairStation>().traceProgress;
-            detected = machine.GetComponent<RepairStation>().detected;
-        }
-        else if (machine.GetComponent<RecyclingUnit>()) // Open Recycling Unit
-        {
-            detectionChance = machine.GetComponent<RecyclingUnit>().detectionChance;
-            traceProgress = machine.GetComponent<RecyclingUnit>().traceProgress;
-            detected = machine.GetComponent<RecyclingUnit>().detected;
-        }
-        else if (machine.GetComponent<Garrison>()) // Open Garrison
-        {
-            detectionChance = machine.GetComponent<Garrison>().detectionChance;
-            traceProgress = machine.GetComponent<Garrison>().traceProgress;
-            detected = machine.GetComponent<Garrison>().detected;
-        }
-        else if (machine.GetComponent<TerminalCustom>()) // Open Custom Terminal
-        {
-            detectionChance = machine.GetComponent<TerminalCustom>().detectionChance;
-            traceProgress = machine.GetComponent<TerminalCustom>().traceProgress;
-            detected = machine.GetComponent<TerminalCustom>().detected;
-        }
+        * Detection: 
+        * Initially your presence is unknown, but with each subsequent action there is a chance your activity will be detected. 
+        * Detection happens more quickly at higher security machines, and becomes more likely with each failed hack, 
+        * but can be mitigated by defensive hackware. 
+        * Accessing the same machine more than once also increases the chance of detection, if it was previously hacked but not traced.
 
-        return (detectionChance, traceProgress, detected);
-    }
+        * Tracing: 
+        * As soon as suspicious activity is detected, the system attempts to locate it. 
+        * Failing hacks increases the speed of the trace, more quickly for worse failures. 
+        * If a session is terminated while a trace is in progress, that trace will resume from where it left off if a connection is reestablished.
 
-    public static void TraceHacking(GameObject machine)
-    {
-        float detectionChance = 0f;
-        float traceProgress = 0f;
-        bool detected = false;
+        * Feedback: 
+        * Once traced, the system is permanently locked and may attempt to counterattack the source of the unauthorized access, 
+        * which either causes system corruption or disables connected hackware.
 
-        (detectionChance, traceProgress, detected) = HF.GetTraceValues(machine);
+        Note that successful hacks (especially those which were difficult to pull off) have a chance to cause an increase in local alert level, 
+        though this result is less likely while using defensive hackware.
+         */
+        #endregion
+
+        float detectionChance = machine.detectionChance;
+        float traceProgress = machine.traceProgress;
+        bool detected = machine.detected;
+        int timesAccessed = machine.timesAccessed;
 
         /*
         Detection: Initially your presence is unknown, but with each subsequent action there is a chance your activity will be detected. 
@@ -2036,7 +1810,7 @@ public static class HF
             which either causes system corruption or disables connected hackware.
          */
 
-        int secLvl = HF.GetMachineSecLvl(machine);
+        int secLvl = machine.secLvl;
 
         // Get any possible bonuses from system sheields
         List<float> bonuses = HF.SystemShieldBonuses();
@@ -2062,6 +1836,13 @@ public static class HF
                     // Increase detection chance
                     detectionChance += (increaseChance - bonuses[0]);
                 }
+
+                // Also increase chance if this machine was interacted with before
+                if(timesAccessed > 1 && detectionChance > GlobalSettings.inst.defaultHackingDetectionChance)
+                {
+                    // Increase detection chance
+                    detectionChance += 0.2f;
+                }
             }
 
             foreach (var i in UIManager.inst.terminal_hackinfoList.ToList())
@@ -2078,6 +1859,17 @@ public static class HF
             float old = traceProgress;
             traceProgress += detectionChance;
 
+            // Include a "bonus" for how badly you failed
+            float failureBonus = 0f;
+            if(levelOfFailure > 0)
+            {
+                // The idea here isn't to just add more trace percentage based on what we calculated so far since that seems like too much.
+                // Here we are just gonna take a static amount of 35%, and take a portion of that based on the level of failure (which is usually around 50-60%).
+                // This will come out to some value around 17% (more or less), which seems fair.
+                failureBonus = GlobalSettings.inst.hackingLevelOfFailureBaseBonus * levelOfFailure;
+                traceProgress += failureBonus;
+            }
+
             foreach (var item in UIManager.inst.terminal_hackinfoList.ToList())
             {
                 if (item.GetComponent<UITraceBar>())
@@ -2090,48 +1882,9 @@ public static class HF
         // Now update values
         detectionChance += bonuses[1]; // add it back so spam open/closing doesn't cheese the detecting
 
-        if (machine.GetComponent<Terminal>()) // Open Terminal
-        {
-            machine.GetComponent<Terminal>().detectionChance = detectionChance;
-            machine.GetComponent<Terminal>().traceProgress = traceProgress;
-            machine.GetComponent<Terminal>().detected = detected;
-        }
-        else if (machine.GetComponent<Fabricator>()) // Open Fabricator
-        {
-            machine.GetComponent<Fabricator>().detectionChance = detectionChance;
-            machine.GetComponent<Fabricator>().traceProgress = traceProgress;
-            machine.GetComponent<Fabricator>().detected = detected;
-        }
-        else if (machine.GetComponent<Scanalyzer>()) // Open Scanalyzer
-        {
-            machine.GetComponent<Scanalyzer>().detectionChance = detectionChance;
-            machine.GetComponent<Scanalyzer>().traceProgress = traceProgress;
-            machine.GetComponent<Scanalyzer>().detected = detected;
-        }
-        else if (machine.GetComponent<RepairStation>()) // Open Repair Station
-        {
-            machine.GetComponent<RepairStation>().detectionChance = detectionChance;
-            machine.GetComponent<RepairStation>().traceProgress = traceProgress;
-            machine.GetComponent<RepairStation>().detected = detected;
-        }
-        else if (machine.GetComponent<RecyclingUnit>()) // Open Recycling Unit
-        {
-            machine.GetComponent<RecyclingUnit>().detectionChance = detectionChance;
-            machine.GetComponent<RecyclingUnit>().traceProgress = traceProgress;
-            machine.GetComponent<RecyclingUnit>().detected = detected;
-        }
-        else if (machine.GetComponent<Garrison>()) // Open Garrison
-        {
-            machine.GetComponent<Garrison>().detectionChance = detectionChance;
-            machine.GetComponent<Garrison>().traceProgress = traceProgress;
-            machine.GetComponent<Garrison>().detected = detected;
-        }
-        else if (machine.GetComponent<TerminalCustom>()) // Open Custom Terminal
-        {
-            machine.GetComponent<TerminalCustom>().detectionChance = detectionChance;
-            machine.GetComponent<TerminalCustom>().traceProgress = traceProgress;
-            machine.GetComponent<TerminalCustom>().detected = detected;
-        }
+        machine.detectionChance = detectionChance;
+        machine.detected = detected;
+        machine.traceProgress = traceProgress;
     }
 
     /// <summary>
@@ -2223,45 +1976,6 @@ public static class HF
         }
     }
 
-    /// <summary>
-    /// Determines if the specified machine is locked and unusuable. Returns true/false.
-    /// </summary>
-    /// <param name="machine">The machine gameObject to investigate.</param>
-    /// <returns>True/False if the machine is locked.</returns>
-    public static bool IsMachineLocked(GameObject machine)
-    {
-        if (machine.GetComponent<Terminal>()) // Terminal
-        {
-            return machine.GetComponent<Terminal>().locked;
-        }
-        else if (machine.GetComponent<Fabricator>()) // Fabricator
-        {
-            return machine.GetComponent<Fabricator>().locked;
-        }
-        else if (machine.GetComponent<Scanalyzer>()) // Scanalyzer
-        {
-            return machine.GetComponent<Scanalyzer>().locked;
-        }
-        else if (machine.GetComponent<RepairStation>()) // Repair Station
-        {
-            return machine.GetComponent<RepairStation>().locked;
-        }
-        else if (machine.GetComponent<RecyclingUnit>()) // Recycling Unit
-        {
-            return machine.GetComponent<RecyclingUnit>().locked;
-        }
-        else if (machine.GetComponent<Garrison>()) // Garrison
-        {
-            return machine.GetComponent<Garrison>().locked || machine.GetComponent<Garrison>().g_sealed;
-        }
-        else if (machine.GetComponent<TerminalCustom>()) // Custom Terminal
-        {
-            return machine.GetComponent<TerminalCustom>().locked;
-        }
-
-        return true;
-    }
-
     public static void TerminalFailConsequence(string machineName) // TODO
     {
         // "Getting traced may result in receiving Corruption, your Hackware breaking, but most commonly an Investigation Squad."
@@ -2337,7 +2051,7 @@ public static class HF
         // We first need to find the physical cache machine, which is a Custom Terminal
         foreach (var machines in MapManager.inst.machines_customTerminals)
         {
-            if(machines.GetComponentInChildren<TerminalCustom>() && machines.GetComponentInChildren<TerminalCustom>().type == CustomTerminalType.HideoutCache)
+            if(machines.GetComponentInChildren<TerminalCustom>() && machines.GetComponentInChildren<TerminalCustom>().customType == CustomTerminalType.HideoutCache)
             {
                 value = machines.GetComponentInChildren<TerminalCustom>().storedMatter; // Get the value
             }
@@ -2354,7 +2068,7 @@ public static class HF
         // We first need to find the physical cache machine, which is a Custom Terminal
         foreach (var machines in MapManager.inst.machines_customTerminals)
         {
-            if (machines.GetComponentInChildren<TerminalCustom>() && machines.GetComponentInChildren<TerminalCustom>().type == CustomTerminalType.HideoutCache)
+            if (machines.GetComponentInChildren<TerminalCustom>() && machines.GetComponentInChildren<TerminalCustom>().customType == CustomTerminalType.HideoutCache)
             {
                 machines.GetComponentInChildren<TerminalCustom>().storedMatter = value; // Set the value
             }
@@ -2618,40 +2332,6 @@ public static class HF
         }
 
         return null;
-    }
-
-    public static List<TrojanType> GetMachineTrojans(GameObject target)
-    {
-        if (target.GetComponent<Terminal>())
-        {
-            return target.GetComponent<Terminal>().trojans;
-        }
-        else if (target.GetComponent<Fabricator>())
-        {
-            return target.GetComponent<Fabricator>().trojans;
-        }
-        else if (target.GetComponent<Scanalyzer>())
-        {
-            return target.GetComponent<Scanalyzer>().trojans;
-        }
-        else if (target.GetComponent<RepairStation>())
-        {
-            return target.GetComponent<RepairStation>().trojans;
-        }
-        else if (target.GetComponent<RecyclingUnit>())
-        {
-            return target.GetComponent<RecyclingUnit>().trojans;
-        }
-        else if (target.GetComponent<Garrison>())
-        {
-            return target.GetComponent<Garrison>().trojans;
-        }
-        else if (target.GetComponent<TerminalCustom>())
-        {
-            return target.GetComponent<TerminalCustom>().trojans;
-        }
-
-        return new List<TrojanType>();
     }
 
     public static ItemDamageType GetDamageType(ItemObject weapon)

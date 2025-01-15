@@ -46,7 +46,7 @@ public class QS_DestroyThing : QuestStep
 
         if (destroy_specificMachine)
         {
-            string name = HF.GetGenericMachineName(destroy_machine.gameObject);
+            string name = HF.GetMachineTypeAsString(destroy_machine.GetComponent<InteractableMachine>());
             stepDescription = $"Locate and destroy {name}.";
         }
         else if (destroy_specificObject)

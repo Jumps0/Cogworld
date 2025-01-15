@@ -724,9 +724,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c3b0cb9955cee4d969dcad39e557ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _size: {x: 1, y: 1}
+  _size: {x: 2, y: 2}
   fullName: Hideout Cache
-  systemName: 
+  specialName: 
+  type: 5
   avaiableCommands: []
   restrictedAccess: 0
   secLvl: 0
@@ -734,9 +735,10 @@ MonoBehaviour:
   traceProgress: 0
   detected: 0
   locked: 0
-  ejectionSpot: {fileID: 0}
+  timesAccessed: 0
   trojans: 
-  type: 5
+  ejectionSpot: {fileID: 0}
+  customType: 0
   prototypes: []
   wallRevealCoordinates: []
   wallRevealObjs: []

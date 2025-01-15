@@ -3,33 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Garrison : MonoBehaviour
+public class Garrison : InteractableMachine
 {
-    public Vector2Int _size;
     public bool doorRevealed = false; // The player can now ENTER the garrison.
     public bool g_sealed = false; // This garrison is permanently closed.
-
-    [Header("Identification")]
-    public string fullName;
-    /// <summary>
-    /// EX: Garrison Terminal
-    /// </summary>
-    public string systemType;
-
-    [Header("Commands")]
-    public List<TerminalCommand> avaiableCommands;
-
-    [Header("Security")]
-    public bool restrictedAccess = true;
-    [Tooltip("0, 1, 2, 3. 0 = Open System")]
-    public int secLvl = 1;
-    public float detectionChance;
-    public float traceProgress;
-    public bool detected;
-    public bool locked = false; // No longer accessable
-
-    [Header("Trojans")]
-    public List<TrojanType> trojans = new List<TrojanType>();
 
     [Header("Operation")]
     [Tooltip("Where arriving bots are spawned, or the access point is created.")]
@@ -43,6 +20,9 @@ public class Garrison : MonoBehaviour
 
     public void Init()
     {
+        detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
+        type = MachineType.Garrison;
+
         char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
         List<char> alphabet = alpha.ToList(); // Fill alphabet list
 

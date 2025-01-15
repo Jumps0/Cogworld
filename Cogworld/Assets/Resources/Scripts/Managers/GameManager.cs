@@ -1367,7 +1367,7 @@ public class GameManager : MonoBehaviour
 
     #region Squad Deployment
 
-    public void DeploySquadTo(string type, GameObject targetLocation) // ------------ NOT FINISHED ---------
+    public void DeploySquadTo(string type, InteractableMachine targetLocation) // ------------ NOT FINISHED ---------
     {
         // We want to deploy a squad of a specific type of bots to go to a location.
 

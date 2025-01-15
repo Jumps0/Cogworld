@@ -201,7 +201,7 @@ public class UIHackInputfield : MonoBehaviour
         }
         else // Invalid command? PUNISHED!!
         { // This is in uppercase for stylistic reasons.
-            UIManager.inst.Terminal_CreateResult("Unknown command.", highDetColor, (">>" + field.text.ToUpper()), true);
+            UIManager.inst.Terminal_CreateResult("Unknown command.", highDetColor, (">>" + field.text.ToUpper()), true, 0.5f);
         }
 
         // Lastly, we destroy this input field
@@ -212,12 +212,11 @@ public class UIHackInputfield : MonoBehaviour
     {
         // -- Calculate Chance of Success --
         float chance = 0f;
-        bool openSystem = false; // TODO: Figure out how open systems work
-        int secLvl = HF.GetMachineSecLvl(UIManager.inst.terminal_targetTerm);
+
+        int secLvl = UIManager.inst.terminal_targetTerm.secLvl;
         if (secLvl == 0)
         {
-            chance = 1f; // Open System
-            openSystem = true;
+            chance = 1f; // If its an open system we auto-succeed
         }
         else
         {
@@ -267,7 +266,7 @@ public class UIHackInputfield : MonoBehaviour
             {
                 if (MapManager.inst.centerDatabaseLockout) // Instant fail
                 {
-                    UIManager.inst.Terminal_CreateResult("Central database compromised, local access revoked.", highDetColor, (">>" + HF.HackToPrintout(hack, printoutFill)), true);
+                    UIManager.inst.Terminal_CreateResult("Central database compromised, local access revoked.", highDetColor, (">>" + HF.HackToPrintout(hack, printoutFill)), true, 0.7f);
                     return;
                 }
             }
@@ -290,7 +289,7 @@ public class UIHackInputfield : MonoBehaviour
                 {
                     MapManager.inst.centerDatabaseLockout = true;
 
-                    UIManager.inst.Terminal_CreateResult("Central database compromised, local access revoked.", highDetColor, (">>" + HF.HackToPrintout(hack, printoutFill)), true);
+                    UIManager.inst.Terminal_CreateResult("Central database compromised, local access revoked.", highDetColor, (">>" + HF.HackToPrintout(hack, printoutFill)), true, 0.75f);
                     UIManager.inst.CreateNewLogMessage("Central database lockdown, local access denied.", UIManager.inst.complexWhite, UIManager.inst.inactiveGray, true, true);
                     UIManager.inst.CreateLeftMessage("ALERT: Central database lockdown, local access denied.", 10f, AudioManager.inst.dict_game["DISPATCH_ALERT"]); // GAME - DISPATCH_ALERT
                     return;
@@ -298,30 +297,35 @@ public class UIHackInputfield : MonoBehaviour
 
                 // ---
 
-                string header = ">>" + HF.HackToPrintout(hack, printoutFill);
-                string rewardString = HF.MachineReward_PrintPLUSAction(command, command.item, command.bot);
-
-                if (rewardString.Length > 0)
-                {
-                    // Create result in terminal
-                    UIManager.inst.Terminal_CreateResult(rewardString, lowDetColor, header, true);
-                    // Create log messages
-                    UIManager.inst.CreateNewLogMessage(header, lowDetColor, darkGreenColor, true);
-                    UIManager.inst.CreateNewLogMessage(rewardString, UIManager.inst.deepInfoBlue, UIManager.inst.infoBlue, true, true);
-                }
+                SucceedHack(printoutFill, hack, command);
             }
             else // FAILURE
             {
-                UIManager.inst.Terminal_CreateResult(HF.GenericHackFailure(random), highDetColor, (">>" + HF.HackToPrintout(hack, printoutFill)), true);
+                UIManager.inst.Terminal_CreateResult(HF.GenericHackFailure(random), highDetColor, (">>" + HF.HackToPrintout(hack, printoutFill)), true, chance - random);
             }
         }
         else // This hack cannot be ran on this specific machine. Give a special warning.
         {
-            UIManager.inst.Terminal_CreateResult("Command unavailable on this system.", highDetColor, (">>" + HF.HackToPrintout(hack, printoutFill)), true);
+            UIManager.inst.Terminal_CreateResult("Command unavailable on this system.", highDetColor, (">>" + HF.HackToPrintout(hack, printoutFill)), true, 0.4f);
         }
 
         
         HF.ScrollToBottom(UIManager.inst.terminal_resultsScrollrect); // Force scroll to bottom
+    }
+
+    private void SucceedHack(string fill, HackObject hack, TerminalCommand command)
+    {
+        string header = ">>" + HF.HackToPrintout(hack, fill);
+        string rewardString = HF.MachineReward_PrintPLUSAction(command, command.item, command.bot);
+
+        if (rewardString.Length > 0)
+        {
+            // Create result in terminal
+            UIManager.inst.Terminal_CreateResult(rewardString, lowDetColor, header, true);
+            // Create log messages
+            UIManager.inst.CreateNewLogMessage(header, lowDetColor, darkGreenColor, true);
+            UIManager.inst.CreateNewLogMessage(rewardString, UIManager.inst.deepInfoBlue, UIManager.inst.infoBlue, true, true);
+        }
     }
 
     #region Auto-Suggestion
@@ -344,7 +348,7 @@ public class UIHackInputfield : MonoBehaviour
         foreach (HackObject hack in MapManager.inst.hackDatabase.Hack)
         {
             // Hack must be compatible with this machine.
-            if(HF.GetMachineType(UIManager.inst.terminal_targetTerm) == hack.relatedMachine)
+            if(UIManager.inst.terminal_targetTerm.type == hack.relatedMachine)
             {
                 AC_list.Add(HF.GetLeftSubstring(HF.ParseHackName(hack).ToLower()));
                 validHacks.Add(hack);
@@ -424,8 +428,6 @@ public class UIHackInputfield : MonoBehaviour
         }
 
         microSuggestions = microSuggestions.Distinct().ToList(); // Remove duplicates
-
-        Debug.Log($"MSCount[{microSuggestions.Count}] - Field Length[{fieldString.Length}]");
 
         if(microSuggestions.Count >= GlobalSettings.inst.maxHackingSuggestions) // Too many suggestions, do the simplified version
         {

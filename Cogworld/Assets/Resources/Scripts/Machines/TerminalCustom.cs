@@ -3,35 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class TerminalCustom : MonoBehaviour
+public class TerminalCustom : InteractableMachine
 {
-    public Vector2Int _size;
-
-    [Header("Identification")]
-    public string fullName;
-    /// <summary>
-    /// EX: Outpost Terminal (Limited) | Zhirov's Terminal (Local) | DSF Access (Limited) | WAR.Sys (Local) | SHOP.Sys
-    /// </summary>
-    public string systemName;
-
-    [Header("Commands")]
-    public List<TerminalCommand> avaiableCommands;
-
-    [Header("Security")]
-    public bool restrictedAccess = true;
-    [Tooltip("0, 1, 2, 3. 0 = Open System")]
-    public int secLvl = 1;
-    public float detectionChance;
-    public float traceProgress;
-    public bool detected;
-    public bool locked = false; // No longer accessable
     [Tooltip("(Optional) Where completed components get spawned.")]
     public Transform ejectionSpot;
 
-    [Header("Trojans")]
-    public List<TrojanType> trojans = new List<TrojanType>();
-
-    public CustomTerminalType type;
+    public CustomTerminalType customType;
 
     [Header("Prototypes")]
     public List<ItemObject> prototypes = new List<ItemObject>();
@@ -44,9 +21,13 @@ public class TerminalCustom : MonoBehaviour
     public AudioSource _doorSource;
     [SerializeField] private TileObject replaceTile;
 
-    public void Init(CustomTerminalType type = CustomTerminalType.Misc)
+    public void Init(CustomTerminalType customtype = CustomTerminalType.Misc)
     {
-        switch (type)
+        detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
+        type = MachineType.CustomTerminal;
+        customType = customtype;
+
+        switch (customType)
         {
             case CustomTerminalType.Shop:
                 break;
@@ -86,13 +67,13 @@ public class TerminalCustom : MonoBehaviour
     public int storedMatter = 0;
     public void SetupAsCache()
     {
-        type = CustomTerminalType.HideoutCache;
-        systemName = "Hideout Cache (Local)";
+        customType = CustomTerminalType.HideoutCache;
+        specialName = "Hideout Cache (Local)";
 
         // Setup component inventory
         if(InventoryControl.inst.hideout_inventory == null)
         {
-            InventoryControl.inst.hideout_inventory = new InventoryObject(25, systemName + "'s component Inventory");
+            InventoryControl.inst.hideout_inventory = new InventoryObject(25, specialName + "'s component Inventory");
         }
 
         #region Add Commands

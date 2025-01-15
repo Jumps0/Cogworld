@@ -193,21 +193,34 @@ public class UISchematicOption : MonoBehaviour
             fill = bot.botName;
         }
 
-        if (random <= chanceOfSuccess)
-        { // SUCCESS
-            string rewardString = HF.MachineReward_PrintPLUSAction(command, item, bot);
-            string header = ">>" + HF.HackToPrintout(command.hack, fill);
-
-            // Create result in terminal
-            UIManager.inst.Terminal_CreateResult(rewardString, lowDetColor, header, true);
-            // Create log messages
-            UIManager.inst.CreateNewLogMessage(header, lowDetColor, darkGreenColor, true);
-            UIManager.inst.CreateNewLogMessage(rewardString, UIManager.inst.deepInfoBlue, UIManager.inst.infoBlue, true, true);
-        }
-        else // FAILURE
+        // If its an open system we auto-succeed
+        if (UIManager.inst.terminal_targetTerm.secLvl == 0)
         {
-            UIManager.inst.Terminal_CreateResult(HF.GenericHackFailure(random), highDetColor, (">>" + HF.HackToPrintout(command.hack)), true);
+            SucceedHack(fill);
         }
-        HF.ScrollToBottom(UIManager.inst.terminal_resultsScrollrect); // Force scroll to bottom
+        else
+        {
+            if (random <= chanceOfSuccess)
+            { // SUCCESS
+                SucceedHack(fill);
+            }
+            else // FAILURE
+            {
+                UIManager.inst.Terminal_CreateResult(HF.GenericHackFailure(random), highDetColor, (">>" + HF.HackToPrintout(command.hack)), true, chanceOfSuccess - random);
+            }
+            HF.ScrollToBottom(UIManager.inst.terminal_resultsScrollrect); // Force scroll to bottom
+        }
+    }
+
+    private void SucceedHack(string fill)
+    {
+        string rewardString = HF.MachineReward_PrintPLUSAction(command, item, bot);
+        string header = ">>" + HF.HackToPrintout(command.hack, fill);
+
+        // Create result in terminal
+        UIManager.inst.Terminal_CreateResult(rewardString, lowDetColor, header, true);
+        // Create log messages
+        UIManager.inst.CreateNewLogMessage(header, lowDetColor, darkGreenColor, true);
+        UIManager.inst.CreateNewLogMessage(rewardString, UIManager.inst.deepInfoBlue, UIManager.inst.infoBlue, true, true);
     }
 }

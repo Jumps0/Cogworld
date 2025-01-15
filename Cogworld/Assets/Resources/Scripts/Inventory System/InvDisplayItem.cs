@@ -733,7 +733,7 @@ public class InvDisplayItem : MonoBehaviour
             || isSecondaryItem // Only lead items should be able to be toggled.
             || (item != null && item.isBroken) // Forbid broken items from being toggled
             || (item != null && item.disabledTimer > 0) // Forbid force disabled items from being toggled.
-            || (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.type == CustomTerminalType.HideoutCache)) // Don't toggle items while in the cache inventory mode
+            || (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.customType == CustomTerminalType.HideoutCache)) // Don't toggle items while in the cache inventory mode
         {
             return;
         }

@@ -63,6 +63,10 @@ public class GlobalSettings : MonoBehaviour
     }
     #endregion
 
+    public float defaultHackingDetectionChance = 0.1f;
+    [Tooltip("See inside HF.cs -> TraceHacking() for a better description of what this value is used for.")]
+    public float hackingLevelOfFailureBaseBonus = 0.35f;
+
     [Header("UI")]
     public float itemPopupLifetime = 5;
     public float globalTextSpeed = 0.35f;
@@ -921,11 +925,7 @@ public class GlobalSettings : MonoBehaviour
                 if(UIManager.inst.terminal_targetTerm != null)
                 {
                     // Need to get current hack status values
-                    float detectionChance = 0f;
-                    float traceProgress = 0f;
-                    bool detected = false;
-
-                    (detectionChance, traceProgress, detected) = HF.GetTraceValues(UIManager.inst.terminal_targetTerm);
+                    bool detected = UIManager.inst.terminal_targetTerm.detected;
 
                     if (!detected)
                     {

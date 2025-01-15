@@ -857,7 +857,7 @@ public abstract class UserInterface : MonoBehaviour
                 if (destinationSlot.parent.GetComponent<StaticInterface>()) // Moving TO the /INVENTORY/
                 {
                     word = "Detached ";
-                    if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.type == CustomTerminalType.HideoutCache)
+                    if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.customType == CustomTerminalType.HideoutCache)
                         word = "Retrieved ";
 
                     UIManager.inst.ShowCenterMessageTop(word + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
@@ -873,7 +873,7 @@ public abstract class UserInterface : MonoBehaviour
                     }
 
                     word = "Attached ";
-                    if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.type == CustomTerminalType.HideoutCache)
+                    if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.customType == CustomTerminalType.HideoutCache)
                         word = "Stored ";
 
                     if (originSlot.item.itemData.slot == ItemSlot.Power)
@@ -1002,7 +1002,7 @@ public abstract class UserInterface : MonoBehaviour
                                 break; // We have space!
                             }
                         }
-                        else if(UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.type == CustomTerminalType.HideoutCache)
+                        else if(UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.customType == CustomTerminalType.HideoutCache)
                         { // UNLESS we have the CACHE inventory open and are trying to add something to it, then there are no limits.
                             // We've found our slot
                             destinationObjects.Add(S.Key);
@@ -1044,7 +1044,7 @@ public abstract class UserInterface : MonoBehaviour
                     UIManager.inst.CreateNewLogMessage("Identified " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
                 }
 
-                if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.type == CustomTerminalType.HideoutCache) // Special case if we are instead submitting it to the cache
+                if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.customType == CustomTerminalType.HideoutCache) // Special case if we are instead submitting it to the cache
                 {
                     InventoryControl.inst.hideout_inventory.AddItem(item, 1);
                     if (!once)

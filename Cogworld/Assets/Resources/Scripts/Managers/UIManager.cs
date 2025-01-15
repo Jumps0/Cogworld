@@ -1741,7 +1741,7 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region Generic Machine / Terminal
-    [HideInInspector] public GameObject terminal_targetTerm;
+    [HideInInspector] public InteractableMachine terminal_targetTerm;
     [Header("Terminal/Generic Machines")]
     public bool terminal_isAnimating = false;
     public GameObject terminal_hackingAreaRef;
@@ -1791,7 +1791,7 @@ public class UIManager : MonoBehaviour
     public GameObject codes_setArea; // Where prefabs are assigned to
     public GameObject codes_prefab;
 
-    public void Terminal_OpenGeneric(GameObject target)
+    public void Terminal_OpenGeneric(InteractableMachine target)
     {
         terminal_isAnimating = true;
 
@@ -1807,99 +1807,16 @@ public class UIManager : MonoBehaviour
         // Binary (Background)
         InvokeRepeating("Terminal_Binary", 0f, 1f);
 
-        // Reference
-        int type = 0;
-        Terminal term = null;
-        Fabricator fab = null;
-        Scanalyzer scan = null;
-        RepairStation rep = null;
-        RecyclingUnit rec = null;
-        Garrison gar = null;
-        TerminalCustom custom = null;
-        if (target.GetComponent<Terminal>())
-        {
-            term = (Terminal)target.GetComponent<Terminal>();
-            type = 1;
-        }
-        else if (target.GetComponent<Fabricator>())
-        {
-            fab = target.GetComponent<Fabricator>();
-            type = 2;
-        }
-        else if (target.GetComponent<Scanalyzer>())
-        {
-            scan = target.GetComponent<Scanalyzer>();
-            type = 3;
-        }
-        else if (target.GetComponent<RepairStation>())
-        {
-            rep = target.GetComponent<RepairStation>();
-            type = 4;
-        }
-        else if (target.GetComponent<RecyclingUnit>())
-        {
-            rec = target.GetComponent<RecyclingUnit>();
-            type = 5;
-        }
-        else if (target.GetComponent<Garrison>())
-        {
-            gar = target.GetComponent<Garrison>();
-            type = 6;
-        }
-        else if (target.GetComponent<TerminalCustom>())
-        {
-            custom = target.GetComponent<TerminalCustom>();
-            type = 7;
-        }
+        // Also take the time to track how many times this machine has been interacted with for later use.
+        terminal_targetTerm.timesAccessed++;
 
         // Assign name + get Sec Level / Restricted access
-        int secLvl = 0;
+        int secLvl = UIManager.inst.terminal_targetTerm.secLvl;
         bool restrictedAccess = true;
         string terminalNameSpacer = " "; // Needed due to how UI alignment works
-        switch (type)
-        {
-            case 0:
-                Debug.LogError("ERROR: Failed to indentify terminal type.");
-                break;
-            case 1:
-                terminal_name.text = terminalNameSpacer + term.fullName;
-                secLvl = term.secLvl;
-                restrictedAccess = term.restrictedAccess;
-                break;
-            case 2:
-                terminal_name.text = terminalNameSpacer + fab.fullName;
-                secLvl = fab.secLvl;
-                restrictedAccess = fab.restrictedAccess;
-                break;
-            case 3:
-                terminal_name.text = terminalNameSpacer + scan.fullName;
-                secLvl = scan.secLvl;
-                restrictedAccess = scan.restrictedAccess;
-                break;
-            case 4:
-                terminal_name.text = terminalNameSpacer + rep.fullName;
-                secLvl = rep.secLvl;
-                restrictedAccess = rep.restrictedAccess;
-                break;
-            case 5:
-                terminal_name.text = terminalNameSpacer + rec.fullName;
-                secLvl = rec.secLvl;
-                restrictedAccess = rec.restrictedAccess;
-                break;
-            case 6:
-                terminal_name.text = terminalNameSpacer + gar.fullName;
-                secLvl = gar.secLvl;
-                restrictedAccess = gar.restrictedAccess;
-                break;
-            case 7:
-                terminal_name.text = terminalNameSpacer + custom.fullName;
-                secLvl = custom.secLvl;
-                restrictedAccess = custom.restrictedAccess;
-                break;
-            default:
-                Debug.LogError("ERROR: Failed to indentify terminal type.");
-                break;
-        }
+
+        terminal_name.text = terminalNameSpacer + terminal_targetTerm.fullName;
+        restrictedAccess = terminal_targetTerm.restrictedAccess;
 
         // Restricted access?
         if (restrictedAccess)
@@ -2046,7 +1963,7 @@ public class UIManager : MonoBehaviour
         // Add it to list
         terminal_hackinfoList.Add(hackSystemName);
         // Assign Details
-        hackSystemName.GetComponent<UIHackinfoV1>().Setup(HF.GetTerminalSystemName(terminal_targetTerm));
+        hackSystemName.GetComponent<UIHackinfoV1>().Setup(terminal_targetTerm.specialName);
 
         // Add a spacer
         GameObject hackSpacer4 = Instantiate(terminal_hackinfoSpacer_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
@@ -2358,34 +2275,7 @@ public class UIManager : MonoBehaviour
         if (summonInvestigationSquad)
         {
             string name = "";
-            if (terminal_targetTerm.GetComponent<Terminal>()) // Open Terminal
-            {
-                name = terminal_targetTerm.GetComponent<Terminal>().fullName;
-            }
-            else if (terminal_targetTerm.GetComponent<Fabricator>()) // Open Fabricator
-            {
-                name = terminal_targetTerm.GetComponent<Fabricator>().fullName;
-            }
-            else if (terminal_targetTerm.GetComponent<Scanalyzer>()) // Open Scanalyzer
-            {
-                name = terminal_targetTerm.GetComponent<Scanalyzer>().fullName;
-            }
-            else if (terminal_targetTerm.GetComponent<RepairStation>()) // Open Repair Station
-            {
-                name = terminal_targetTerm.GetComponent<RepairStation>().fullName;
-            }
-            else if (terminal_targetTerm.GetComponent<RecyclingUnit>()) // Open Recycling Unit
-            {
-                name = terminal_targetTerm.GetComponent<RecyclingUnit>().fullName;
-            }
-            else if (terminal_targetTerm.GetComponent<Garrison>()) // Open Garrison
-            {
-                name = terminal_targetTerm.GetComponent<Garrison>().fullName;
-            }
-            else if (terminal_targetTerm.GetComponent<TerminalCustom>()) // Open Custom Terminal
-            {
-                name = terminal_targetTerm.GetComponent<TerminalCustom>().fullName;
-            }
+            name = terminal_targetTerm.fullName;
 
             // Also consider secondary consequences
             HF.TerminalFailConsequence(name);
@@ -2416,43 +2306,8 @@ public class UIManager : MonoBehaviour
         yield return new WaitForSeconds(0.4f);
 
         // Generate the hacking target options
-        List<TerminalCommand> commands = new List<TerminalCommand>();
-        int secLvl = 0;
-        if (terminal_targetTerm.GetComponent<Terminal>()) // Open Terminal
-        {
-            commands = terminal_targetTerm.GetComponent<Terminal>().avaiableCommands;
-            secLvl = terminal_targetTerm.GetComponent<Terminal>().secLvl;
-        }
-        else if (terminal_targetTerm.GetComponent<Fabricator>()) // Open Fabricator
-        {
-            commands = terminal_targetTerm.GetComponent<Fabricator>().avaiableCommands;
-            secLvl = terminal_targetTerm.GetComponent<Fabricator>().secLvl;
-        }
-        else if (terminal_targetTerm.GetComponent<Scanalyzer>()) // Open Scanalyzer
-        {
-            commands = terminal_targetTerm.GetComponent<Scanalyzer>().avaiableCommands;
-            secLvl = terminal_targetTerm.GetComponent<Scanalyzer>().secLvl;
-        }
-        else if (terminal_targetTerm.GetComponent<RepairStation>()) // Open Repair Station
-        {
-            commands = terminal_targetTerm.GetComponent<RepairStation>().avaiableCommands;
-            secLvl = terminal_targetTerm.GetComponent<RepairStation>().secLvl;
-        }
-        else if (terminal_targetTerm.GetComponent<RecyclingUnit>()) // Open Recycling Unit
-        {
-            commands = terminal_targetTerm.GetComponent<RecyclingUnit>().avaiableCommands;
-            secLvl = terminal_targetTerm.GetComponent<RecyclingUnit>().secLvl;
-        }
-        else if (terminal_targetTerm.GetComponent<Garrison>()) // Open Garrison
-        {
-            commands = terminal_targetTerm.GetComponent<Garrison>().avaiableCommands;
-            secLvl = terminal_targetTerm.GetComponent<Garrison>().secLvl;
-        }
-        else if (terminal_targetTerm.GetComponent<TerminalCustom>()) // Open Custom Terminal
-        {
-            commands = terminal_targetTerm.GetComponent<TerminalCustom>().avaiableCommands;
-            secLvl = terminal_targetTerm.GetComponent<TerminalCustom>().secLvl;
-        }
+        List<TerminalCommand> commands = terminal_targetTerm.avaiableCommands;
+        int secLvl = terminal_targetTerm.secLvl;
 
         // Create & Setup the pre-set options the player can choose (Targets)
         int i = 0;
@@ -2532,44 +2387,8 @@ public class UIManager : MonoBehaviour
         // Then we need to put in the new ones again
         #region New options
         // Generate the hacking target options
-        List<TerminalCommand> commands = new List<TerminalCommand>();
-        int secLvl = 0;
-        if (terminal_targetTerm.GetComponent<Terminal>()) // Open Terminal
-        {
-            commands = terminal_targetTerm.GetComponent<Terminal>().avaiableCommands;
-            secLvl = terminal_targetTerm.GetComponent<Terminal>().secLvl;
-        }
-        else if (terminal_targetTerm.GetComponent<Fabricator>()) // Open Fabricator
-        {
-            commands = terminal_targetTerm.GetComponent<Fabricator>().avaiableCommands;
-            secLvl = terminal_targetTerm.GetComponent<Fabricator>().secLvl;
-        }
-        else if (terminal_targetTerm.GetComponent<Scanalyzer>()) // Open Scanalyzer
-        {
-            commands = terminal_targetTerm.GetComponent<Scanalyzer>().avaiableCommands;
-            secLvl = terminal_targetTerm.GetComponent<Scanalyzer>().secLvl;
-        }
-        else if (terminal_targetTerm.GetComponent<RepairStation>()) // Open Repair Station
-        {
-            commands = terminal_targetTerm.GetComponent<RepairStation>().avaiableCommands;
-            secLvl = terminal_targetTerm.GetComponent<RepairStation>().secLvl;
-        }
-        else if (terminal_targetTerm.GetComponent<RecyclingUnit>()) // Open Recycling Unit
-        {
-            commands = terminal_targetTerm.GetComponent<RecyclingUnit>().avaiableCommands;
-            secLvl = terminal_targetTerm.GetComponent<RecyclingUnit>().secLvl;
-        }
-        else if (terminal_targetTerm.GetComponent<Garrison>()) // Open Garrison
-        {
-            commands = terminal_targetTerm.GetComponent<Garrison>().avaiableCommands;
-            secLvl = terminal_targetTerm.GetComponent<Garrison>().secLvl;
-        }
-        else if (terminal_targetTerm.GetComponent<TerminalCustom>()) // Open Custom Terminal
-        {
-            commands = terminal_targetTerm.GetComponent<TerminalCustom>().avaiableCommands;
-            secLvl = terminal_targetTerm.GetComponent<TerminalCustom>().secLvl;
-        }
-
+        List<TerminalCommand> commands = terminal_targetTerm.avaiableCommands;
+        int secLvl = terminal_targetTerm.secLvl;
 
         int i = 0;
         foreach (TerminalCommand command in commands)
@@ -2627,7 +2446,7 @@ public class UIManager : MonoBehaviour
         #endregion
     }
 
-    public void Terminal_CreateResult(string text, Color setColor, string whiteText, bool tryDetection = false)
+    public void Terminal_CreateResult(string text, Color setColor, string whiteText, bool tryDetection = false, float levelOfFailure = 0f)
     {
         if (whiteText != "")
         {
@@ -2651,7 +2470,7 @@ public class UIManager : MonoBehaviour
         if (tryDetection)
         {
             // Possibly increase detection chance
-            HF.TraceHacking(UIManager.inst.terminal_targetTerm);
+            HF.TraceHacking(UIManager.inst.terminal_targetTerm, levelOfFailure);
         }
     }
 
@@ -3077,7 +2896,7 @@ public class UIManager : MonoBehaviour
     public GameObject cTerminal_gibberishPrefab;
     public bool cTerminal_animating = false;
 
-    public void CTerminal_Open(GameObject target)
+    public void CTerminal_Open(InteractableMachine target)
     {
         cTerminal_animating = true;
 
@@ -3086,10 +2905,10 @@ public class UIManager : MonoBehaviour
 
         // Set target
         cTerminal_machine = target.GetComponent<TerminalCustom>();
-        terminal_targetTerm = target.gameObject;
+        terminal_targetTerm = target;
 
         // If this is the Hideout Cache, we need to change the / PARTS / header to / CACHE /
-        if(cTerminal_machine.type == CustomTerminalType.HideoutCache)
+        if(cTerminal_machine.customType == CustomTerminalType.HideoutCache)
         {
             partsHeaderText.text = "/CACHE/";
             PartsFlashHeader(); // Flash it too so the player can recognize the change
@@ -3262,7 +3081,7 @@ public class UIManager : MonoBehaviour
         // Add it to list
         terminal_hackinfoList.Add(hackSystemName);
         // Assign Details
-        hackSystemName.GetComponent<UIHackinfoV1>().Setup(HF.GetTerminalSystemName(terminal_targetTerm));
+        hackSystemName.GetComponent<UIHackinfoV1>().Setup(terminal_targetTerm.specialName);
 
         // Add a spacer
         GameObject hackSpacer4 = Instantiate(terminal_hackinfoSpacer_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
@@ -3358,7 +3177,7 @@ public class UIManager : MonoBehaviour
         AudioManager.inst.CreateTempClip(terminal_targetTerm.transform.position, AudioManager.inst.dict_ui["CLOSE"]); // UI - CLOSE
 
         // Did we just close the cache window?
-        bool wasCache = (cTerminal_machine.type == CustomTerminalType.HideoutCache);
+        bool wasCache = (cTerminal_machine.customType == CustomTerminalType.HideoutCache);
 
         // Un-assign target
         terminal_targetTerm = null;
@@ -10108,10 +9927,9 @@ public class UIManager : MonoBehaviour
             mArmor.Setup(true, false, true, "Armor", aC, extra, a, false, "", false, "", machine.armor.y / 75f, true);
 
             // State - there is some variance in this
-            float detectionChance = 0f;
-            float traceProgress = 0f;
-            bool detected = false;
-            (detectionChance, traceProgress, detected) = HF.GetTraceValues(machine.gameObject);
+            float traceProgress = machine.gameObject.GetComponent<InteractableMachine>().traceProgress;
+            bool detected = machine.gameObject.GetComponent<InteractableMachine>().detected;
+
             // https://www.gridsagegames.com/blog/2015/11/garrison-access/
             UIDataGenericDetail mState = UIManager.inst.Data_CreateGeneric();
             /*
@@ -10242,7 +10060,7 @@ public class UIManager : MonoBehaviour
             {
                 if (machine.state)
                 {
-                    List<TrojanType> trojans = HF.GetMachineTrojans(machine.gameObject);
+                    List<TrojanType> trojans = machine.gameObject.GetComponent<InteractableMachine>().trojans;
                     bool first = true;
                     if (trojans.Count > 0)
                     {

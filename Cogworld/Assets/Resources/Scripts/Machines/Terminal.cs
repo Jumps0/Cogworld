@@ -5,50 +5,29 @@ using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class Terminal : MonoBehaviour
+public class Terminal : InteractableMachine
 {
     public Vector2Int centerLoc; // Where this terminal is in the grid.
-    public Vector2Int _size;
-    public int securityLevel; // 1, 2, 3
-    public int accessLevel; // 1 = 0b10, 2 = Free
-    public bool limited; // Limited = for doors only
-    public bool locked = false; // No longer accessable
 
     public TerminalZone zone;
-    //public Bot assignedBot; (Technician, Administrator, etc)
+    public Actor assignedBot; // (Technician, Administrator, etc)
 
-    [Header("Commands")]
-    public List<TerminalCommand> avaiableCommands = new List<TerminalCommand>();
     public List<TerminalCustomCode> customCodes = new List<TerminalCustomCode>();
 
     public List<ItemObject> storedObjects;
 
-    [Header("Idenifier")] // Terminal ?### - ? Access
-    private string name1;
-    private string name2;
-    public string fullName;
-    /// <summary>
-    /// EX: Outpost Terminal (Limited) | Terminal vFe.01a | Terminal vTi.06n
-    /// </summary>
-    public string systemType;
-
-    [Header("Security")]
-    public bool restrictedAccess = true;
-    [Tooltip("0, 1, 2, 3. 0 = Open System")]
-    public int secLvl = 1;
-    public float detectionChance;
-    public float traceProgress;
-    public bool detected;
     public bool databaseLockout = false;
-
-    [Header("Trojans")]
-    public List<TrojanType> trojans = new List<TrojanType>();
 
     [Header("Audio")]
     public AudioSource _source;
     public AudioClip _ambient;
 
+    public void Init()
+    {
+        detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
+        base.type = MachineType.Terminal;
 
+    }
 
     public void UseCustomCode(TerminalCustomCode code)
     {

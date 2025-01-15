@@ -3,32 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Fabricator : MonoBehaviour
+public class Fabricator : InteractableMachine
 {
-    public Vector2Int _size;
-
-    [Header("Identification")]
-    public string fullName;
-    /// <summary>
-    /// EX: Fabricator vF.08n
-    /// </summary>
-    public string systemType;
-
-    [Header("Commands")]
-    public List<TerminalCommand> avaiableCommands;
-
-    [Header("Security")]
-    public bool restrictedAccess = true;
-    [Tooltip("0, 1, 2, 3. 0 = Open System")]
-    public int secLvl = 1;
-    public float detectionChance;
-    public float traceProgress;
-    public bool detected;
-    public bool locked = false; // No longer accessable
-
-    [Header("Trojans")]
-    public List<TrojanType> trojans = new List<TrojanType>();
-
     [Header("Operation")]
     public ItemObject targetPart = null;
     public BotObject targetBot = null;
@@ -43,6 +19,9 @@ public class Fabricator : MonoBehaviour
 
     public void Init()
     {
+        detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
+        type = MachineType.Fabricator;
+
         char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
         List<char> alphabet = alpha.ToList(); // Fill alphabet list
 

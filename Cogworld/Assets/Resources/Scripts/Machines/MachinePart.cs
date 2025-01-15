@@ -132,11 +132,11 @@ public class MachinePart : MonoBehaviour
         {
             if (parentPart)
             {
-                displayName = parentPart.GetComponent<TerminalCustom>().systemName;
+                displayName = parentPart.GetComponent<TerminalCustom>().specialName;
             }
             else
             {
-                displayName = this.GetComponent<TerminalCustom>().systemName;
+                displayName = this.GetComponent<TerminalCustom>().specialName;
             }
             type = MachineType.CustomTerminal;
         }
@@ -334,11 +334,11 @@ public class MachinePart : MonoBehaviour
         {
             if (parentPart)
             {
-                message = parentPart.GetComponent<TerminalCustom>().systemName;
+                message = parentPart.GetComponent<TerminalCustom>().specialName;
             }
             else
             {
-                message = this.GetComponent<TerminalCustom>().systemName;
+                message = this.GetComponent<TerminalCustom>().specialName;
             }
         }
         else if (this.GetComponent<StaticMachine>())

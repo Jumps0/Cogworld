@@ -1144,46 +1144,46 @@ public class MapManager : MonoBehaviour
                 CopyComponentData<MachinePart>(obj.gameObject, M);
 
                 #region Specific Machine Types
-                if (obj.gameObject.GetComponent<Terminal>())
+                switch (obj.gameObject.GetComponent<InteractableMachine>().type)
                 {
-                    CopyComponentData<Terminal>(obj.gameObject, M);
-                    machines_terminals.Add(M.gameObject);
+                    case MachineType.Fabricator:
+                        CopyComponentData<Fabricator>(obj.gameObject, M);
+                        machines_fabricators.Add(M.gameObject);
+                        break;
+                    case MachineType.Garrison:
+                        CopyComponentData<Garrison>(obj.gameObject, M);
+                        machines_garrisons.Add(M.gameObject);
+                        break;
+                    case MachineType.Recycling:
+                        CopyComponentData<RecyclingUnit>(obj.gameObject, M);
+                        machines_recyclingUnits.Add(M.gameObject);
+                        break;
+                    case MachineType.RepairStation:
+                        CopyComponentData<RepairStation>(obj.gameObject, M);
+                        machines_repairStation.Add(M.gameObject);
+                        break;
+                    case MachineType.Scanalyzer:
+                        CopyComponentData<Scanalyzer>(obj.gameObject, M);
+                        machines_scanalyzers.Add(M.gameObject);
+                        break;
+                    case MachineType.Terminal:
+                        CopyComponentData<Terminal>(obj.gameObject, M);
+                        machines_terminals.Add(M.gameObject);
+                        break;
+                    case MachineType.CustomTerminal:
+                        CopyComponentData<TerminalCustom>(obj.gameObject, M);
+                        machines_customTerminals.Add(M.gameObject);
+                        break;
+                    case MachineType.DoorTerminal:
+                        break;
+                    case MachineType.Misc:
+                        break;
+                    default: // Static Machine
+                        CopyComponentData<StaticMachine>(obj.gameObject, M);
+                        machines_static.Add(M.gameObject);
+                        break;
                 }
-                else if (obj.gameObject.GetComponent<TerminalCustom>())
-                {
-                    CopyComponentData<TerminalCustom>(obj.gameObject, M);
-                    machines_customTerminals.Add(M.gameObject);
-                }
-                else if (obj.gameObject.GetComponent<Scanalyzer>())
-                {
-                    CopyComponentData<Scanalyzer>(obj.gameObject, M);
-                    machines_scanalyzers.Add(M.gameObject);
-                }
-                else if (obj.gameObject.GetComponent<Garrison>())
-                {
-                    CopyComponentData<Garrison>(obj.gameObject, M);
-                    machines_garrisons.Add(M.gameObject);
-                }
-                else if (obj.gameObject.GetComponent<RepairStation>())
-                {
-                    CopyComponentData<RepairStation>(obj.gameObject, M);
-                    machines_repairStation.Add(M.gameObject);
-                }
-                else if (obj.gameObject.GetComponent<Fabricator>())
-                {
-                    CopyComponentData<Fabricator>(obj.gameObject, M);
-                    machines_fabricators.Add(M.gameObject);
-                }
-                else if (obj.gameObject.GetComponent<RecyclingUnit>())
-                {
-                    CopyComponentData<RecyclingUnit>(obj.gameObject, M);
-                    machines_recyclingUnits.Add(M.gameObject);
-                }
-                else if (obj.gameObject.GetComponent<StaticMachine>())
-                {
-                    CopyComponentData<StaticMachine>(obj.gameObject, M);
-                    machines_static.Add(M.gameObject);
-                }
+
                 #endregion
 
                 M.GetComponent<SpriteRenderer>().sortingOrder = 7;
@@ -1920,7 +1920,7 @@ public class MapManager : MonoBehaviour
                 string letter2 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
                 string letter3 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
 
-                term.GetComponentInChildren<Terminal>().systemType = "Terminal v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
+                term.GetComponentInChildren<Terminal>().specialName = "Terminal v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
                 term.GetComponentInChildren<Terminal>().fullName = "Terminal " + currentLevelName[0] + fill + amount.ToString();
 
                 amount++;
@@ -1950,7 +1950,7 @@ public class MapManager : MonoBehaviour
                 string letter2 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
                 string letter3 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
 
-                fab.GetComponentInChildren<Fabricator>().systemType = "Fabricator v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
+                fab.GetComponentInChildren<Fabricator>().specialName = "Fabricator v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
 
                 fab.GetComponentInChildren<Fabricator>().fullName = "Fabricator " + currentLevelName[0] + fill + amount.ToString();
                 amount++;
@@ -1980,7 +1980,7 @@ public class MapManager : MonoBehaviour
                 string letter2 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
                 string letter3 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
 
-                recy.GetComponentInChildren<RecyclingUnit>().systemName = "Recycling v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
+                recy.GetComponentInChildren<RecyclingUnit>().specialName = "Recycling v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
 
                 recy.GetComponentInChildren<RecyclingUnit>().fullName = "Recycling Unit " + currentLevelName[0] + fill + amount.ToString();
                 amount++;
@@ -2006,7 +2006,7 @@ public class MapManager : MonoBehaviour
                     fill = "0";
                 }
 
-                garr.GetComponentInChildren<Garrison>().systemType = "Garrison Terminal";
+                garr.GetComponentInChildren<Garrison>().specialName = "Garrison Terminal";
 
                 garr.GetComponentInChildren<Garrison>().fullName = "Garrison " + currentLevelName[0] + fill + amount.ToString();
                 amount++;
@@ -2036,7 +2036,7 @@ public class MapManager : MonoBehaviour
                 string letter2 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
                 string letter3 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
 
-                reps.GetComponentInChildren<RepairStation>().systemType = "Repair Station v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
+                reps.GetComponentInChildren<RepairStation>().specialName = "Repair Station v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
 
                 reps.GetComponentInChildren<RepairStation>().fullName = "Repair Station " + currentLevelName[0] + fill + amount.ToString();
                 amount++;
@@ -2066,7 +2066,7 @@ public class MapManager : MonoBehaviour
                 string letter2 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
                 string letter3 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
 
-                scan.GetComponentInChildren<Scanalyzer>().systemType = "Scanalyzer v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
+                scan.GetComponentInChildren<Scanalyzer>().specialName = "Scanalyzer v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
 
                 scan.GetComponentInChildren<Scanalyzer>().fullName = "Scanalyzer " + currentLevelName[0] + fill + amount.ToString();
                 amount++;
@@ -2089,7 +2089,7 @@ public class MapManager : MonoBehaviour
         // We do terminals here, all other machines will self load
         if (machines_terminals.Count > 0)
         {
-            foreach (var term in machines_terminals)
+            foreach (var term in machines_terminals) // TODO, MOVE THIS TO INSIDE THE TERMINAL SCRIPT
             {
                 int amount = 0;
 
@@ -2378,7 +2378,7 @@ public class MapManager : MonoBehaviour
         // Plus assign wall reveal tiles for Custom Terminals
         foreach (GameObject obj in machines_customTerminals)
         {
-            if(obj.GetComponentInChildren<TerminalCustom>().type == CustomTerminalType.DoorLock)
+            if(obj.GetComponentInChildren<TerminalCustom>().customType == CustomTerminalType.DoorLock)
             {
                 foreach (Vector2Int loc in obj.GetComponentInChildren<TerminalCustom>().wallRevealCoordinates)
                 {

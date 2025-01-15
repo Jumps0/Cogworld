@@ -10,31 +10,8 @@ using UnityEngine;
 ///
 /// Similarly, unprocessed parts can be listed and retrieved via other system commands.
 /// </summary>
-public class RecyclingUnit : MonoBehaviour
+public class RecyclingUnit : InteractableMachine
 {
-    public Vector2Int _size;
-
-    [Header("Identification")]
-    public string fullName;
-    /// <summary>
-    /// EX: Recycling vF.08n
-    /// </summary>
-    public string systemName;
-
-    [Header("Commands")]
-    public List<TerminalCommand> avaiableCommands;
-
-    [Header("Security")]
-    public bool restrictedAccess = true;
-    [Tooltip("0, 1, 2, 3. 0 = Open System")]
-    public int secLvl = 1;
-    public float detectionChance;
-    public float traceProgress;
-    public bool detected;
-    public bool locked = false; // No longer accessable
-
-    [Header("Trojans")]
-    public List<TrojanType> trojans = new List<TrojanType>();
 
     [Header("Operation")]
     public ItemObject targetPart = null;
@@ -46,8 +23,11 @@ public class RecyclingUnit : MonoBehaviour
 
     public void Init()
     {
+        detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
+        type = MachineType.Recycling;
+
         // Setup component inventory
-        storedComponents = new InventoryObject(10, systemName + "'s component Inventory");
+        storedComponents = new InventoryObject(10, specialName + "'s component Inventory");
 
         // We need to load this machine with the following commands:
 

@@ -144,24 +144,21 @@ public class UIHackTarget : MonoBehaviour
                 fill = command.knowledge.name;
             }
 
-            if (random <= chanceOfSuccess) // SUCCESS
+            // If its an open system we auto-succeed
+            if (UIManager.inst.terminal_targetTerm.secLvl == 0)
             {
-                string header = ">>" + HF.HackToPrintout(command.hack, fill);
-                string rewardString = HF.MachineReward_PrintPLUSAction(command, command.item, command.bot);
-
-                if(rewardString.Length > 0)
-                {
-                    SetAsUsed();
-                    // Create result in terminal
-                    UIManager.inst.Terminal_CreateResult(rewardString, lowDetColor, header, true);
-                    // Create log messages
-                    UIManager.inst.CreateNewLogMessage(header, lowDetColor, darkGreenColor, true);
-                    UIManager.inst.CreateNewLogMessage(rewardString, UIManager.inst.deepInfoBlue, UIManager.inst.infoBlue, true, true);
-                }
+                SucceedHack(fill);
             }
-            else // FAILURE
+            else
             {
-                UIManager.inst.Terminal_CreateResult(HF.GenericHackFailure(random), highDetColor, (">>" + HF.HackToPrintout(command.hack, fill)), true);
+                if (random <= chanceOfSuccess) // SUCCESS
+                {
+                    SucceedHack(fill);
+                }
+                else // FAILURE
+                {
+                    UIManager.inst.Terminal_CreateResult(HF.GenericHackFailure(random), highDetColor, (">>" + HF.HackToPrintout(command.hack, fill)), true, chanceOfSuccess - random);
+                }
             }
         }
         else // Manual Command stuff here
@@ -174,6 +171,22 @@ public class UIHackTarget : MonoBehaviour
             }
         }
         HF.ScrollToBottom(UIManager.inst.terminal_resultsScrollrect); // Force scroll to bottom
+    }
+
+    private void SucceedHack(string fill)
+    {
+        string header = ">>" + HF.HackToPrintout(command.hack, fill);
+        string rewardString = HF.MachineReward_PrintPLUSAction(command, command.item, command.bot);
+
+        if (rewardString.Length > 0)
+        {
+            SetAsUsed();
+            // Create result in terminal
+            UIManager.inst.Terminal_CreateResult(rewardString, lowDetColor, header, true);
+            // Create log messages
+            UIManager.inst.CreateNewLogMessage(header, lowDetColor, darkGreenColor, true);
+            UIManager.inst.CreateNewLogMessage(rewardString, UIManager.inst.deepInfoBlue, UIManager.inst.infoBlue, true, true);
+        }
     }
 
     public void AppearAnim()
