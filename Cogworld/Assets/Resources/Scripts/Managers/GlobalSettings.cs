@@ -70,6 +70,8 @@ public class GlobalSettings : MonoBehaviour
     public int defaultItemDataMode = 3;
     [Tooltip("The maximum amount of characters to use in representing a bar. Ex: ||||||||||||")]
     public int maxCharBarLength = 12;
+    [Tooltip("The maximum amount of suggestions that can be displayed in the manual hacking suggestion box before the box is considered 'too large' to show.")]
+    public int maxHackingSuggestions = 15;
     public List<TMP_FontAsset> fonts = new List<TMP_FontAsset>();
     //
     [Tooltip("When not in view, indicators that hug the border will slowly flash (if true).")]

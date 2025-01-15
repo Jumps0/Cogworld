@@ -98,7 +98,7 @@ public class UIHackInputfield : MonoBehaviour
     /// <summary>
     /// Called from *PlayerGridMovement.cs* when the TAB (Autocomplete) bind is pressed.
     /// </summary>
-    public void Input_Tab() // TODO: AUTOCOMPLETING IS BREAKING THE SUGGESTIONS. THEY NO LONGER POP UP
+    public void Input_Tab()
     {
         if (field.isFocused)
         {
@@ -138,6 +138,9 @@ public class UIHackInputfield : MonoBehaviour
 
                 field.caretPosition = field.text.Length; // Set to end of text
             }
+
+            // Need to call this again or else the auto-suggest breaks.
+            SuggestionBoxCheck();
         }
     }
 
@@ -325,11 +328,9 @@ public class UIHackInputfield : MonoBehaviour
 
     /*
      * -IMPORTANT NOTE-
-     * 
-     * If the amount of suggestions is greater than (lets just say 8), 
-     * then we DONT open the box, and instead do a shorter autosuggest
-     * that also contains a (##+) at the end to how how many others
-     * there are. With arrow keys switching between.
+     * If the amount of suggestions is greater than our specified value (maxSuggestions), 
+     * then we DONT open the box, and instead do a shorter autosuggest that also contains
+     * a (##+) at the end to how how many others there are. With arrow keys switching between.
      */
 
     [Tooltip("A string list of all valid hacks for the currently open machine. Contains only the first half of the hack. Ex: Enumerate(Guards) -> enumerate.")]
@@ -405,7 +406,6 @@ public class UIHackInputfield : MonoBehaviour
     [SerializeField] private string currentSuggestion = "";
     [SerializeField] private int suggestionID = -1;
     [SerializeField] private bool filled = false;
-    [SerializeField] private int maxSuggestions = 8;
     private void SuggestionBoxCheck()
     {
         string fieldString = field.text;
@@ -427,10 +427,9 @@ public class UIHackInputfield : MonoBehaviour
 
         Debug.Log($"MSCount[{microSuggestions.Count}] - Field Length[{fieldString.Length}]");
 
-        if(microSuggestions.Count >= maxSuggestions) // Too many suggestions, do the simplified version
+        if(microSuggestions.Count >= GlobalSettings.inst.maxHackingSuggestions) // Too many suggestions, do the simplified version
         {
             ClearSuggestions();
-
         }
         else // Not that many suggestions, use the window
         {
