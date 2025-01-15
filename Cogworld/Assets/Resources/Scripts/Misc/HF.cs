@@ -490,50 +490,55 @@ public static class HF
         }
     }
 
-    public static InteractableMachine GetRandomMachineOfType(MachineType type)
+    public static InteractableMachine GetInteractableMachine(GameObject machine)
+    {
+        return machine.GetComponent<InteractableMachine>() ? machine.GetComponent<InteractableMachine>() : null;
+    }
+
+    public static GameObject GetRandomMachineOfType(MachineType type)
     {
         switch (type)
         {
             case MachineType.Fabricator:
                 if(MapManager.inst.machines_fabricators.Count > 0)
                 {
-                    return MapManager.inst.machines_fabricators[Random.Range(0, MapManager.inst.machines_fabricators.Count - 1)].GetComponent<InteractableMachine>();
+                    return MapManager.inst.machines_fabricators[Random.Range(0, MapManager.inst.machines_fabricators.Count - 1)];
                 }
                 break;
             case MachineType.Garrison:
                 if (MapManager.inst.machines_garrisons.Count > 0)
                 {
-                    return MapManager.inst.machines_garrisons[Random.Range(0, MapManager.inst.machines_garrisons.Count - 1)].GetComponent<InteractableMachine>();
+                    return MapManager.inst.machines_garrisons[Random.Range(0, MapManager.inst.machines_garrisons.Count - 1)];
                 }
                 break;
             case MachineType.Recycling:
                 if (MapManager.inst.machines_recyclingUnits.Count > 0)
                 {
-                    return MapManager.inst.machines_recyclingUnits[Random.Range(0, MapManager.inst.machines_recyclingUnits.Count - 1)].GetComponent<InteractableMachine>();
+                    return MapManager.inst.machines_recyclingUnits[Random.Range(0, MapManager.inst.machines_recyclingUnits.Count - 1)];
                 }
                 break;
             case MachineType.RepairStation:
                 if (MapManager.inst.machines_repairStation.Count > 0)
                 {
-                    return MapManager.inst.machines_repairStation[Random.Range(0, MapManager.inst.machines_repairStation.Count - 1)].GetComponent<InteractableMachine>();
+                    return MapManager.inst.machines_repairStation[Random.Range(0, MapManager.inst.machines_repairStation.Count - 1)];
                 }
                 break;
             case MachineType.Scanalyzer:
                 if (MapManager.inst.machines_scanalyzers.Count > 0)
                 {
-                    return MapManager.inst.machines_scanalyzers[Random.Range(0, MapManager.inst.machines_scanalyzers.Count - 1)].GetComponent<InteractableMachine>();
+                    return MapManager.inst.machines_scanalyzers[Random.Range(0, MapManager.inst.machines_scanalyzers.Count - 1)];
                 }
                 break;
             case MachineType.Terminal:
                 if (MapManager.inst.machines_terminals.Count > 0)
                 {
-                    return MapManager.inst.machines_terminals[Random.Range(0, MapManager.inst.machines_terminals.Count - 1)].GetComponent<InteractableMachine>();
+                    return MapManager.inst.machines_terminals[Random.Range(0, MapManager.inst.machines_terminals.Count - 1)];
                 }
                 break;
             case MachineType.CustomTerminal:
                 if (MapManager.inst.machines_customTerminals.Count > 0)
                 {
-                    return MapManager.inst.machines_customTerminals[Random.Range(0, MapManager.inst.machines_customTerminals.Count - 1)].GetComponent<InteractableMachine>();
+                    return MapManager.inst.machines_customTerminals[Random.Range(0, MapManager.inst.machines_customTerminals.Count - 1)];
                 }
                 break;
             case MachineType.DoorTerminal:

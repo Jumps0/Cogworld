@@ -140,13 +140,15 @@ public class PlayerGridMovement : MonoBehaviour
         //Debug.Log("Want to move from: (" + currentX + "," + currentY + ") to " + moveTarget);
 
         // -- Machine interaction detection --
-        GameObject machineInteraction = null;
+        InteractableMachine machineInteraction = null;
 
         if (MapManager.inst._allTilesRealized.ContainsKey(moveTarget) && MapManager.inst._allTilesRealized[moveTarget].top != null) // Is there a layered object here?
         {
-            if (MapManager.inst._allTilesRealized[moveTarget].top.GetComponent<MachinePart>()) // Is there a machine here?
+            GameObject top = MapManager.inst._allTilesRealized[moveTarget].top;
+            InteractableMachine interactable = HF.GetInteractableMachine(top);
+            if (interactable != null) // Is there an interactable machine here?
             {
-                machineInteraction = MapManager.inst._allTilesRealized[moveTarget].top;
+                machineInteraction = interactable;
             }
         }
 
@@ -207,16 +209,15 @@ public class PlayerGridMovement : MonoBehaviour
         else if (desiredDestinationTile.GetComponent<AccessObject>()) // "About to Leave Area" (Walking into exit)
         {
             ConfirmLeaveArea(desiredDestinationTile.GetComponent<AccessObject>());
-        } 
-        
+        }
+
         // -- Machine Interaction (Parsing) --
-        if(machineInteraction != null && !machineInteraction.GetComponent<InteractableMachine>().locked)
+        if (machineInteraction != null && !machineInteraction.locked) // Can interact with this machine
         {
-            InteractableMachine machine = machineInteraction.GetComponent<InteractableMachine>();
-            MachineType type = machine.type;
+            MachineType type = machineInteraction.type;
             if (type == MachineType.CustomTerminal)
             {
-                UIManager.inst.CTerminal_Open(machine);
+                UIManager.inst.CTerminal_Open(machineInteraction);
             }
             else if(type == MachineType.Garrison)
             {
@@ -224,14 +225,14 @@ public class PlayerGridMovement : MonoBehaviour
                 {
                     // Create log messages
                     UIManager.inst.CreateNewLogMessage("Connecting with Garrison Access...", UIManager.inst.highlightGreen, UIManager.inst.dullGreen, true);
-                    UIManager.inst.Terminal_OpenGeneric(machine);
+                    UIManager.inst.Terminal_OpenGeneric(machineInteraction);
                 }
             }
             else
             {
                 // Create log messages
-                UIManager.inst.CreateNewLogMessage($"Connecting with {HF.GetMachineTypeAsString(machine)}...", UIManager.inst.highlightGreen, UIManager.inst.dullGreen, true);
-                UIManager.inst.Terminal_OpenGeneric(machine);
+                UIManager.inst.CreateNewLogMessage($"Connecting with {HF.GetMachineTypeAsString(machineInteraction)}...", UIManager.inst.highlightGreen, UIManager.inst.dullGreen, true);
+                UIManager.inst.Terminal_OpenGeneric(machineInteraction);
             }
         }
         // -----------------------------------------
@@ -475,9 +476,10 @@ public class PlayerGridMovement : MonoBehaviour
         {
             GameObject target = HF.GetTargetAtPosition(new Vector2Int((int)mousePos.x, (int)mousePos.y));
 
-            // What did we get?
-            if (target == null) { return; } // Nothing, bail out
-            else if (target.GetComponent<Actor>()) // A bot
+            // If they click on a Bot, Item, or Machine, the /DATA/ window should open
+            if (target == null || UIManager.inst.dataMenu.isAnimating) { return; } // Nothing, bail out (or the menu is in the process of opening or closing)
+            
+            if (target.GetComponent<Actor>()) // A bot
             {
                 // If right clicked, the /DATA/ menu should open and display info about the bot.
                 Actor a = target.GetComponent<Actor>();

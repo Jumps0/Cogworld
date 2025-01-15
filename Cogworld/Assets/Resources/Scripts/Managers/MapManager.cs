@@ -1144,44 +1144,45 @@ public class MapManager : MonoBehaviour
                 CopyComponentData<MachinePart>(obj.gameObject, M);
 
                 #region Specific Machine Types
-                switch (obj.gameObject.GetComponent<InteractableMachine>().type)
+                if(obj.gameObject.GetComponent<Terminal>())
                 {
-                    case MachineType.Fabricator:
-                        CopyComponentData<Fabricator>(obj.gameObject, M);
-                        machines_fabricators.Add(M.gameObject);
-                        break;
-                    case MachineType.Garrison:
-                        CopyComponentData<Garrison>(obj.gameObject, M);
-                        machines_garrisons.Add(M.gameObject);
-                        break;
-                    case MachineType.Recycling:
-                        CopyComponentData<RecyclingUnit>(obj.gameObject, M);
-                        machines_recyclingUnits.Add(M.gameObject);
-                        break;
-                    case MachineType.RepairStation:
-                        CopyComponentData<RepairStation>(obj.gameObject, M);
-                        machines_repairStation.Add(M.gameObject);
-                        break;
-                    case MachineType.Scanalyzer:
-                        CopyComponentData<Scanalyzer>(obj.gameObject, M);
-                        machines_scanalyzers.Add(M.gameObject);
-                        break;
-                    case MachineType.Terminal:
-                        CopyComponentData<Terminal>(obj.gameObject, M);
-                        machines_terminals.Add(M.gameObject);
-                        break;
-                    case MachineType.CustomTerminal:
-                        CopyComponentData<TerminalCustom>(obj.gameObject, M);
-                        machines_customTerminals.Add(M.gameObject);
-                        break;
-                    case MachineType.DoorTerminal:
-                        break;
-                    case MachineType.Misc:
-                        break;
-                    default: // Static Machine
-                        CopyComponentData<StaticMachine>(obj.gameObject, M);
-                        machines_static.Add(M.gameObject);
-                        break;
+                    CopyComponentData<Terminal>(obj.gameObject, M);
+                    machines_terminals.Add(M.gameObject);
+                }
+                else if (obj.gameObject.GetComponent<TerminalCustom>())
+                {
+                    CopyComponentData<TerminalCustom>(obj.gameObject, M);
+                    machines_customTerminals.Add(M.gameObject);
+                }
+                else if (obj.gameObject.GetComponent<Scanalyzer>())
+                {
+                    CopyComponentData<Scanalyzer>(obj.gameObject, M);
+                    machines_scanalyzers.Add(M.gameObject);
+                }
+                else if (obj.gameObject.GetComponent<Garrison>())
+                {
+                    CopyComponentData<Garrison>(obj.gameObject, M);
+                    machines_garrisons.Add(M.gameObject);
+                }
+                else if (obj.gameObject.GetComponent<RepairStation>())
+                {
+                    CopyComponentData<RepairStation>(obj.gameObject, M);
+                    machines_repairStation.Add(M.gameObject);
+                }
+                else if (obj.gameObject.GetComponent<Fabricator>())
+                {
+                    CopyComponentData<Fabricator>(obj.gameObject, M);
+                    machines_fabricators.Add(M.gameObject);
+                }
+                else if (obj.gameObject.GetComponent<RecyclingUnit>())
+                {
+                    CopyComponentData<RecyclingUnit>(obj.gameObject, M);
+                    machines_recyclingUnits.Add(M.gameObject);
+                }
+                else if (obj.gameObject.GetComponent<StaticMachine>())
+                {
+                    CopyComponentData<StaticMachine>(obj.gameObject, M);
+                    machines_static.Add(M.gameObject);
                 }
 
                 #endregion

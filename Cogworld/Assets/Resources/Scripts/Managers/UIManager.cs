@@ -9888,7 +9888,6 @@ public class UIManager : MonoBehaviour
         {
             // Pretty simple, not much to show here besides overview and resistances
 
-
             // Disable the big image because we don't use it
             dataMenu.data_superImageParent.gameObject.SetActive(false);
             // Set title to machine's name
@@ -9927,8 +9926,7 @@ public class UIManager : MonoBehaviour
             mArmor.Setup(true, false, true, "Armor", aC, extra, a, false, "", false, "", machine.armor.y / 75f, true);
 
             // State - there is some variance in this
-            float traceProgress = machine.gameObject.GetComponent<InteractableMachine>().traceProgress;
-            bool detected = machine.gameObject.GetComponent<InteractableMachine>().detected;
+            InteractableMachine interactable = HF.GetInteractableMachine(machine.gameObject);
 
             // https://www.gridsagegames.com/blog/2015/11/garrison-access/
             UIDataGenericDetail mState = UIManager.inst.Data_CreateGeneric();
@@ -9995,10 +9993,10 @@ public class UIManager : MonoBehaviour
                     mState.Setup(true, true, false, "State", highSecRed, extra, "", false, "", false, "UNSTABLE " + machine.GetComponent<StaticMachine>().detonate_timer);
                 }
             }
-            else if (!machine.GetComponent<StaticMachine>() && detected) // Tracing
+            else if (!machine.GetComponent<StaticMachine>() && interactable != null && interactable.detected) // Tracing (this is some kind of interactable machine)
             {
                 extra = "Due to recently detected hacking attempts, the central control system is currently attempting to trace the approximate location of the intrusion. Once successful, and investigate squad will be sent to this position.";
-                mState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "TRACING " + (traceProgress * 100).ToString());
+                mState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "TRACING " + (interactable.traceProgress * 100).ToString());
             }
             else if (machine.state) // Active (green)
             {
@@ -10625,6 +10623,8 @@ public class UIManager : MonoBehaviour
     #region Animations
     private IEnumerator DataAnim_TitleOpen()
     {
+        dataMenu.isAnimating = true;
+
         // Set brackets to black
         dataMenu.data_bracketLeft.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(Color.black)}aa><color=#{ColorUtility.ToHtmlStringRGB(Color.black)}>{"["}</color></mark>";
         dataMenu.data_bracketRight.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(Color.black)}aa><color=#{ColorUtility.ToHtmlStringRGB(Color.black)}>{"["}</color></mark>";
@@ -10683,6 +10683,7 @@ public class UIManager : MonoBehaviour
         // - Unhighlight the right bracket
         dataMenu.data_bracketRight.text = "]";
 
+        dataMenu.isAnimating = false;
     }
 
     private IEnumerator DataAnim_SmallImageOpen()
@@ -10711,6 +10712,8 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator DataAnim_TitleTextClose()
     {
+        dataMenu.isAnimating = true;
+
         string oldtext = dataMenu.data_mainTitle.text;
 
         float elapsedTime = 0f;
@@ -10728,6 +10731,8 @@ public class UIManager : MonoBehaviour
 
             yield return null;
         }
+
+        dataMenu.isAnimating = false;
     }
 
     #endregion
@@ -10784,6 +10789,7 @@ public class UIDataDisplay
     public List<Image> bits = new List<Image>(); // Gets faded out/in when the menu closes
 
     [Header("Animation")]
+    public bool isAnimating = false;
     public Animator data_SuperImageAnimator;
     public Animator data_ComparisonAnimator;
 
