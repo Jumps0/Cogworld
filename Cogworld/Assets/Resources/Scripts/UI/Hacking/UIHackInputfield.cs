@@ -120,7 +120,6 @@ public class UIHackInputfield : MonoBehaviour
 
                 field.textComponent.text = hackString;
                 field.text = hackString;
-                field.textComponent.ForceMeshUpdate();
 
                 field.caretPosition = field.text.Length; // Set to end of text
 
@@ -134,7 +133,6 @@ public class UIHackInputfield : MonoBehaviour
 
                 field.textComponent.text = hackString;
                 field.text = hackString;
-                field.textComponent.ForceMeshUpdate();
 
                 field.caretPosition = field.text.Length; // Set to end of text
             }
@@ -142,6 +140,8 @@ public class UIHackInputfield : MonoBehaviour
             // Need to call this again or else the auto-suggest breaks.
             SuggestionBoxCheck();
         }
+
+        ForceMeshUpdates();
     }
 
     private void Update()
@@ -153,10 +153,7 @@ public class UIHackInputfield : MonoBehaviour
         {
             backerText.text = "<mark=#000000>>>" + suggestionText.text + "</mark>"; // Mark highlights it as pure black
             main_backerText.text = "<mark=#000000>" + field.text + "</mark>"; // Mark highlights it as pure black
-            primaryText.ForceMeshUpdate();
-            backerText.ForceMeshUpdate();
-            suggestionText.ForceMeshUpdate();
-            main_backerText.ForceMeshUpdate();
+            ForceMeshUpdates();
         }
 
         // Suggestion box navigation
@@ -663,5 +660,14 @@ public class UIHackInputfield : MonoBehaviour
     {
         SetFocus(false);
         Destroy(this.gameObject);
+    }
+
+    public void ForceMeshUpdates()
+    {
+        primaryText.ForceMeshUpdate();
+        backerText.ForceMeshUpdate();
+        suggestionText.ForceMeshUpdate();
+        main_backerText.ForceMeshUpdate();
+        field.textComponent.ForceMeshUpdate();
     }
 }
