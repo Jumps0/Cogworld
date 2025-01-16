@@ -26372,7 +26372,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 548664382}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
   m_Name: 
@@ -28969,10 +28969,13 @@ MonoBehaviour:
   startingWeight: 3
   startingInvSize: 5
   minSpotChance: 0.1
+  defaultHackingDetectionChance: 0.1
+  hackingLevelOfFailureBaseBonus: 0.35
   itemPopupLifetime: 5
   globalTextSpeed: 0.35
   defaultItemDataMode: 3
   maxCharBarLength: 12
+  maxHackingSuggestions: 15
   fonts:
   - {fileID: 11400000, guid: 98d17509c081c294d86d1c1c4fdb352e, type: 2}
   - {fileID: 11400000, guid: 9cef3aef9d9cf2947b9ecc68fced2f89, type: 2}
@@ -39510,6 +39513,7 @@ MonoBehaviour:
     - {fileID: 1429354299}
     - {fileID: 1168675216}
     - {fileID: 1015091510}
+    isAnimating: 0
     data_SuperImageAnimator: {fileID: 2051464422}
     data_ComparisonAnimator: {fileID: 1414622424}
     data_onTraits: 0
@@ -86948,7 +86952,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1625025405}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 31a19414c41e5ae4aae2af33fee712f6, type: 3}
   m_Name: 
@@ -86961,7 +86965,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1625025405}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 

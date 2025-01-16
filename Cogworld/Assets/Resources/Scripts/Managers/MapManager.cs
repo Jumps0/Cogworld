@@ -735,7 +735,7 @@ public class MapManager : MonoBehaviour
                 {
                     // We want to spawn the starting items centered in the first room
                     // All in all, we should spawn:
-                    // - 4 movement parts (2 of one type, 2 of another | Lets just do legs/treads)
+                    // - 4 movement parts (2 Legs, 2 Treads)
                     // - 2 armor parts
                     // - 2 engines
                     // - 1 storage (small/medium)
@@ -758,17 +758,10 @@ public class MapManager : MonoBehaviour
 
                     // Propulsion
                     List<ItemObject> propulsion = new List<ItemObject>();
-                    // Add 6
-                    propulsion.Add(HF.FindItemOfTierAndSlot(1, ItemSlot.Propulsion, false));
-                    propulsion.Add(HF.FindItemOfTierAndSlot(1, ItemSlot.Propulsion, false));
-                    propulsion.Add(HF.FindItemOfTierAndSlot(1, ItemSlot.Propulsion, false));
-                    propulsion.Add(HF.FindItemOfTierAndSlot(1, ItemSlot.Propulsion, false));
-                    propulsion.Add(HF.FindItemOfTierAndSlot(1, ItemSlot.Propulsion, false));
-                    propulsion.Add(HF.FindItemOfTierAndSlot(1, ItemSlot.Propulsion, false));
-                    // Sort them
-                    propulsion.Sort();
-                    // Remove the last two so we have four
-                    propulsion.RemoveRange(4, 5);
+                    propulsion.Add(HF.FindItemOfTierAndType(1, ItemType.Legs, false));
+                    propulsion.Add(HF.FindItemOfTierAndType(1, ItemType.Legs, false));
+                    propulsion.Add(HF.FindItemOfTierAndType(1, ItemType.Treads, false));
+                    propulsion.Add(HF.FindItemOfTierAndType(1, ItemType.Treads, false));
 
                     string[] itemsToSpawn = 
                         { 
@@ -787,9 +780,9 @@ public class MapManager : MonoBehaviour
                     InventoryControl.inst.CreateItemInWorld("Beamcaster", new Vector2Int(57, 57), true); // ONLY FOR TESTING. REMOVE LATER  (Beamcaster)
                     InventoryControl.inst.CreateItemInWorld("Rocket Launcher", new Vector2Int(56, 57), true); // ONLY FOR TESTING. REMOVE LATER (Rocket Launcher)
                     InventoryControl.inst.CreateItemInWorld("Vibroblade", new Vector2Int(55, 57), true); // ONLY FOR TESTING. REMOVE LATER (Vibroblade)
-                    InventoryControl.inst.CreateItemInWorld("Exp. Target Analysis Processor", new Vector2Int(54, 57), true); // ONLY FOR TESTING. REMOVE LATER (Exp. Target Analysis Processor)
+                    InventoryControl.inst.CreateItemInWorld("Exp. Targeting Computer", new Vector2Int(54, 57), true); // ONLY FOR TESTING. REMOVE LATER (Exp. Targeting Computer)
                     InventoryControl.inst.CreateItemInWorld("Hvy. Siege Treads", new Vector2Int(53, 57), true); // ONLY FOR TESTING. REMOVE LATER (Hvy. Siege Treads)
-                    InventoryControl.inst.CreateItemInWorld("Ex. Chip 1", new Vector2Int(52, 57), true); // ONLY FOR TESTING. REMOVE LATER (Ex. Chip 1)
+                    InventoryControl.inst.CreateItemInWorld("EX Chip 1", new Vector2Int(52, 57), true); // ONLY FOR TESTING. REMOVE LATER (Ex. Chip 1)
                 }
 
 

@@ -676,15 +676,15 @@ public class Actor : Entity
         // Play a death sound
         if (botInfo._size == BotSize.Tiny || botInfo._size == BotSize.Small)
         {
-            this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_robotdestruction[$"STATIC_SML_{Random.Range(1, 3)}"]); // STATIC_SML_1/2/3
+            this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_robotdestruction[$"STATIC_SML_0{Random.Range(1, 3)}"]); // STATIC_SML_1/2/3
         }
         else if (botInfo._size == BotSize.Medium)
         {
-            this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_robotdestruction[$"STATIC_MED_{Random.Range(1, 3)}"]); // STATIC_MED_1/2/3
+            this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_robotdestruction[$"STATIC_MED_0{Random.Range(1, 3)}"]); // STATIC_MED_1/2/3
         }
         else
         {
-            this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_robotdestruction[$"STATIC_LRG_{Random.Range(1, 3)}"]); // STATIC_LRG_1/2/3/4/5/6/7/8
+            this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_robotdestruction[$"STATIC_LRG_0{Random.Range(1, 3)}"]); // STATIC_LRG_1/2/3/4/5/6/7/8
         }
 
         // Drop all items in inventory

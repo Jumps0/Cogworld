@@ -722,7 +722,8 @@ public class InvDisplayItem : MonoBehaviour
 
     public void RightClick()
     {
-        if(UIManager.inst.cTerminal_machine == null && UIManager.inst.terminal_targetTerm)
+        // Terminal not open and /DATA/ menu not in the process of animating
+        if(!UIManager.inst.terminal_targetresultsAreaRef.activeInHierarchy && !UIManager.inst.dataMenu.isAnimating)
             UIManager.inst.Data_OpenMenu(item, null, PlayerData.inst.GetComponent<Actor>());
     }
 

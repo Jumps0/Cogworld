@@ -437,22 +437,22 @@ public class InventoryControl : MonoBehaviour
         {
             if (isLight)
             {
-                AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_dropitem[$"EARTH_PART_LGT_{Random.Range(1, 2)}"], 0.7f); // EARTH_PART_LGT_1/2
+                AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_dropitem[$"EARTH_PART_LGT_0{Random.Range(1, 2)}"], 0.7f); // EARTH_PART_LGT_1/2
             }
             else
             {
-                AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_dropitem[$"EARTH_PART_{Random.Range(1, 2)}"], 0.5f); // EARTH_PART_1/2
+                AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_dropitem[$"EARTH_PART_0{Random.Range(1, 2)}"], 0.5f); // EARTH_PART_1/2
             }
         }
         else
         {
             if (isLight)
             {
-                AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_dropitem[$"STONE_PART_LGT_{Random.Range(1, 3)}"], 0.7f); // STONE_PART_LGT_1/2/3
+                AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_dropitem[$"STONE_PART_LGT_0{Random.Range(1, 3)}"], 0.7f); // STONE_PART_LGT_1/2/3
             }
             else
             {
-                AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_dropitem[$"STONE_PART_{Random.Range(1, 4)}"], 0.5f); // STONE_PART_1/2/3/4
+                AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_dropitem[$"STONE_PART_0{Random.Range(1, 4)}"], 0.5f); // STONE_PART_1/2/3/4
             }
         }
     }

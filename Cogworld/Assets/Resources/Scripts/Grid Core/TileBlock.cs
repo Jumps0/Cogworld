@@ -109,16 +109,6 @@ public class TileBlock : MonoBehaviour
         vis = newVis;
     }
 
-    void OnMouseEnter()
-    {
-        _highlight.SetActive(true);
-    }
-
-    void OnMouseExit()
-    {
-        _highlight.SetActive(false);
-    }
-
     #region Vision/Display
     public void UpdateVis(byte update)
     {
