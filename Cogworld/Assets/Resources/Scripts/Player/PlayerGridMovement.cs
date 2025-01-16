@@ -474,7 +474,9 @@ public class PlayerGridMovement : MonoBehaviour
         }
         else // Okay maybe they clicked on something else, lets find out.
         {
-            GameObject target = HF.GetTargetAtPosition(new Vector2Int((int)mousePos.x, (int)mousePos.y));
+            Vector2Int mPos = new Vector2Int((int)(mousePos.x + 0.5f), (int)(mousePos.y + 0.5f)); // Adjustment due to tiles being offset slightly from natural grid
+
+            GameObject target = HF.GetTargetAtPosition(mPos);
 
             // If they click on a Bot, Item, or Machine, the /DATA/ window should open
             if (target == null || UIManager.inst.dataMenu.isAnimating) { return; } // Nothing, bail out (or the menu is in the process of opening or closing)

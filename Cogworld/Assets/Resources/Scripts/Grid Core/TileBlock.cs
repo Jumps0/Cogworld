@@ -119,17 +119,6 @@ public class TileBlock : MonoBehaviour
         _highlight.SetActive(false);
     }
 
-    private void OnMouseOver()
-    {
-        if (Mouse.current.rightButton.wasPressedThisFrame) // Right Click to open /DATA/ Menu
-        {
-            if (UIManager.inst.dataMenu.data_parent.activeInHierarchy && !HF.MouseBoundsCheck())
-            { // For tile objects, we only want to show info if the menu is already open so the player doesn't do it on accident in combat.
-                UIManager.inst.Data_OpenMenu(null, this.gameObject);
-            }
-        }
-    }
-
     #region Vision/Display
     public void UpdateVis(byte update)
     {
