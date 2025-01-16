@@ -17,6 +17,9 @@ public class Fabricator : InteractableMachine
     [Header("Special Flags")]
     public bool flag_overload = false;
 
+    // TODO FUTURE WORK: AUTHCHIPS
+    // https://www.gridsagegames.com/blog/2021/11/design-overhaul-4-fabrication-2-0/
+
     public void Init()
     {
         detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;

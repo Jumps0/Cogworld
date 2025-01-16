@@ -6375,6 +6375,10 @@ public class UIManager : MonoBehaviour
     // -      -
     #endregion
 
+    #region Ambient SFX Menu
+    // Not yet implemented, see: https://www.gridsagegames.com/blog/2020/06/audio-accessibility-features-roguelikes/
+    #endregion
+
     #region DATA Menu (Item/Bot info display)
     [Header("/ DATA / Menu")]
     public UIDataDisplay dataMenu;
@@ -7548,6 +7552,13 @@ public class UIManager : MonoBehaviour
                     extra = "Rating is a relative indicator of the item's usefulness and/or value. When comparing items, the quickest and easiest method is to go with whatever has the highest rating. However, prototypes are almost always better than common parts with a similar rating (generally implying a +1 to their listed ratings)."; ;
                     if (item.itemData.star)
                         rText += "*";
+                    // Options:
+                    // -Standard, no box, faded green text
+                    // -Prototype, green vBox
+                    // -Alien, green vBox
+                    // -Faulty (Prototype), red vBox
+                    // -Construct, green vBox (see https://www.gridsagegames.com/blog/2022/10/the-scrap-engine/)
+                    // -And potentially more
                     switch (item.itemData.ratingType)
                     {
                         case ItemRatingType.Standard: // Faded out "Standard"
@@ -7558,6 +7569,12 @@ public class UIManager : MonoBehaviour
                             break;
                         case ItemRatingType.Alien: // Bright green vBox "Alien"
                             iRating.Setup(true, true, false, "Rating", highlightGreen, extra, rText, false, "", false, "Alien");
+                            break;
+                        case ItemRatingType.Faulty:
+                            iRating.Setup(true, true, false, "Faulty Prototype", highSecRed, extra, rText, false, "", false, "Faulty Prototype");
+                            break;
+                        case ItemRatingType.Construct:
+                            iRating.Setup(true, true, false, "Construct", highlightGreen, extra, "?", false, "", false, "Construct");
                             break;
                         default:
                             break;
@@ -7600,6 +7617,7 @@ public class UIManager : MonoBehaviour
                      *  NON-FUNCTIONAL : 
                      *  UNSTABLE       :
                      *  DISPOSABLE     :
+                     *  CHARGING       :
                      *  OVERLOADED     :
                      *  DETERIORATING  :
                      *  RIGGED         :
@@ -7621,7 +7639,12 @@ public class UIManager : MonoBehaviour
                     else if (item.disposable > 0) // Disposable
                     {
                         extra = "Disposable weapons become defunct after a certain number of uses.";
-                        iState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "DISPOSABLE " + item.unstable);
+                        iState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "DISPOSABLE " + item.disposable);
+                    }
+                    else if (item.chargable > 0) // Charging
+                    {
+                        extra = "Chargable parts automatically recharge while attached, draining your energy at their charge rate for as many turns as necessary to fully recharge, but will never reduce your energy below 50% capacity.";
+                        iState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "CHARGING");
                     }
                     else if (item.isOverloaded) // Overloaded (yellow)
                     {
@@ -9457,6 +9480,9 @@ public class UIManager : MonoBehaviour
                             fComp.Setup(true, false, false, "Components", Color.white, extra, "", false, "None", true);
                         }
                     }
+
+                    // TODO?
+                    // [MORE] https://www.gridsagegames.com/blog/2024/01/full-ui-upscaling-part-2-holy-mockups/
                 }
                 else
                 {

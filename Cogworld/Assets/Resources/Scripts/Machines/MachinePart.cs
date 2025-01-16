@@ -46,6 +46,9 @@ public class MachinePart : MonoBehaviour
     public GameObject indicator = null;
     private SpriteRenderer sr;
 
+    // Future note:
+    // -How to handle Machine audio: https://www.gridsagegames.com/blog/2020/06/building-cogminds-ambient-soundscape/
+
     #region Pre-setup
     private void OnValidate()
     {

@@ -77,6 +77,8 @@ public class Item
     [Tooltip("Is this item currently losing HP because of an external reason (deteriorating)?")] // see: https://www.gridsagegames.com/blog/2013/12/burnout-momentum-em-disruption/
     public bool isDeteriorating = false;
     public bool isRigged = false;
+    [Tooltip("FAULTY PROTOTYPE")]
+    public bool isFaulty = false;
     public bool isBroken = false;
     [Tooltip("Is this item corrupted?")]
     public bool corrupted = false;
@@ -85,7 +87,8 @@ public class Item
     [Tooltip("Unstable weapons implode after the indicated remaining number of shots. -1 = not unstable.")]
     public int unstable = -1; // -1 = not unstable | https://www.gridsagegames.com/forums/index.php?topic=1577.0
     [Tooltip("Some weapons have a limited number of uses and will destroy themselves after use. -1 = not disposable.")]
-    public int disposable = -1;
+    public int disposable = -1; // https://www.gridsagegames.com/blog/2023/11/post-balance-cogmind-item-expansion/
+    public int chargable = -1; // (See above link)
     [Tooltip("Is this item currently in siege mode?")]
     public bool siege = false; // https://www.gridsagegames.com/blog/2019/09/siege-tread-mechanics/
 
@@ -1380,6 +1383,7 @@ public class ItemFabInfo
     public int matterCost;
 
     [Tooltip("Some items require other items to craft. Leave this empty if that's not required.")]
+    // Unused for years: https://www.gridsagegames.com/blog/2022/05/kyzratis-game-design-philosophy/
     public List<ItemObject> componenetsRequired = new List<ItemObject>();
 }
 
@@ -1435,7 +1439,9 @@ public enum ItemRatingType
     [Tooltip("Has a special text box next to the rating")]
     Prototype,
     [Tooltip("Has a special text box next to the rating")]
-    Alien // ayy lmao
+    Alien, // ayy lmao
+    Faulty,
+    Construct
 }
 
 [System.Serializable]

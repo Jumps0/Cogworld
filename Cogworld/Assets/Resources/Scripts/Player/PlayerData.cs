@@ -126,6 +126,7 @@ public class PlayerData : MonoBehaviour
     public bool hasFARCOM = false;
 
     [Header("RIF Values")] // TODO: Expand on this later when RIF is worked on. It's got its own sub menu now to show stats (BETA 14)
+    // https://www.gridsagegames.com/blog/2019/06/robot-hacking-upgrades/
     public bool rif_immuneToCorruption = false;
 
     [Header("*STATS THIS RUN*")]

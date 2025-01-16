@@ -119,6 +119,7 @@ public class PlayerGridMovement : MonoBehaviour
         }
     }
 
+    // Future movement QoL: https://www.gridsagegames.com/blog/2019/11/movement-qol/
     [SerializeField] private bool moveKeyHeld;
     public void AttemptMovement(int X, int Y)
     {
@@ -468,7 +469,7 @@ public class PlayerGridMovement : MonoBehaviour
         if (PlayerData.inst.GetComponent<BoxCollider2D>().OverlapPoint(mousePos))
         {
             // If the user right clicks on themselves, we need to display their stats in the left side window.
-
+            // https://www.gridsagegames.com/blog/2024/01/full-ui-upscaling-part-2-holy-mockups/
 
             // TODO: SHOW PLAYER INFO
             Debug.Log("THIS FUNCTIONALITY HAS NOT BEEN IMPLEMENTED YET.");
