@@ -159,6 +159,9 @@ public class UIHackInputfield : MonoBehaviour
             main_backerText.ForceMeshUpdate();
         }
 
+        // Suggestion box navigation
+        ChooseBoxSuggestions();
+
         SetFocus(true);
         field.caretPosition = field.text.Length;
     }
@@ -458,31 +461,33 @@ public class UIHackInputfield : MonoBehaviour
                 if (filled)
                     ClearSuggestions();
             }
+        }
+    }
 
-            // Now for navigation
-            if (box_main.activeInHierarchy) // This may be broken now that it is not called continuously. REQUIRES INVESTIGATION
+    private void ChooseBoxSuggestions()
+    {
+        if (box_main.activeInHierarchy)
+        {
+            if (Keyboard.current.downArrowKey.wasPressedThisFrame)
             {
-                if (Keyboard.current.downArrowKey.wasPressedThisFrame)
+                if (suggestionID < (activeSuggestions.Count - 1))
                 {
-                    if (suggestionID < (activeSuggestions.Count - 1))
-                    {
-                        // Navigate down
-                        suggestionID++;
-                        currentSuggestion = suggestions[suggestionID];
-                        box_suggestionText.text = currentSuggestion + ")";
-                        IndicateSelectedSuggestion(suggestionID);
-                    }
+                    // Navigate down
+                    suggestionID++;
+                    currentSuggestion = suggestions[suggestionID];
+                    box_suggestionText.text = currentSuggestion + ")";
+                    IndicateSelectedSuggestion(suggestionID);
                 }
-                else if (Keyboard.current.upArrowKey.wasPressedThisFrame)
+            }
+            else if (Keyboard.current.upArrowKey.wasPressedThisFrame)
+            {
+                if (suggestionID != 0)
                 {
-                    if (suggestionID != 0)
-                    {
-                        // Navigate up
-                        suggestionID--;
-                        currentSuggestion = suggestions[suggestionID];
-                        box_suggestionText.text = currentSuggestion + ")";
-                        IndicateSelectedSuggestion(suggestionID);
-                    }
+                    // Navigate up
+                    suggestionID--;
+                    currentSuggestion = suggestions[suggestionID];
+                    box_suggestionText.text = currentSuggestion + ")";
+                    IndicateSelectedSuggestion(suggestionID);
                 }
             }
         }

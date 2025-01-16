@@ -2786,9 +2786,9 @@ public static class HF
                 {
                     hack = MapManager.inst.hackDatabase.dict["Enumerate(Garrison)"];
                 }
-                else if (right.ToLower() == "gaurds")
+                else if (right.ToLower() == "guards")
                 {
-                    hack = MapManager.inst.hackDatabase.dict["Enumerate(Gaurds)"];
+                    hack = MapManager.inst.hackDatabase.dict["Enumerate(Guards)"];
                 }
                 else if (right.ToLower() == "intercept")
                 {

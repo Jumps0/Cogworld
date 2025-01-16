@@ -215,6 +215,7 @@ public class PlayerGridMovement : MonoBehaviour
         if (machineInteraction != null && !machineInteraction.locked) // Can interact with this machine
         {
             MachineType type = machineInteraction.type;
+
             if (type == MachineType.CustomTerminal)
             {
                 UIManager.inst.CTerminal_Open(machineInteraction);
