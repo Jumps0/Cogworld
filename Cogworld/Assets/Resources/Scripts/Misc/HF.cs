@@ -27,6 +27,11 @@ using ColorUtility = UnityEngine.ColorUtility;
 /// </summary>
 public static class HF
 {
+    public static Vector3 LocationOfPlayer()
+    {
+        return PlayerData.inst.transform.position;
+    }
+
     #region Vector Conversions
     public static Vector2Int V3_to_V2I(Vector3 v3)
     {
@@ -4160,6 +4165,91 @@ public static class HF
         return 0f;
     }
 
+    /// <summary>
+    /// Randomly select a part the player has equipped. Returns an InvDisplayItem.
+    /// </summary>
+    /// <returns>Returns an InvDisplayItem that's currently on the UI.</returns>
+    public static InvDisplayItem GetRandomPlayerPart()
+    {
+        List<InvDisplayItem> valids = new List<InvDisplayItem>();
+
+        foreach (var I in InventoryControl.inst.interfaces)
+        {
+            if (I.GetComponent<DynamicInterface>())
+            {
+                foreach (KeyValuePair<GameObject, InventorySlot> S in I.GetComponent<DynamicInterface>().slotsOnInterface)
+                {
+                    InvDisplayItem idi = S.Key.GetComponent<InvDisplayItem>();
+
+                    if(idi.item != null && idi.item.Id >= 0)
+                    {
+                        valids.Add(idi);
+                    }
+                }
+            }
+        }
+
+        if(valids.Count > 0)
+        {
+            return valids[Random.Range(0, valids.Count - 1)];
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Attempts to get a specific items `InvDisplayItem` from the UI.
+    /// </summary>
+    /// <param name="item">The Item (Part) we want to get the related IDI from.</param>
+    /// <returns>The InvDisplayItem belonging to the input item.</returns>
+    public static InvDisplayItem GetInvDisplayItemFromPart(Item item)
+    {
+        foreach (var I in InventoryControl.inst.interfaces)
+        {
+            if (I.GetComponent<DynamicInterface>())
+            {
+                foreach (KeyValuePair<GameObject, InventorySlot> S in I.GetComponent<DynamicInterface>().slotsOnInterface)
+                {
+                    InvDisplayItem idi = S.Key.GetComponent<InvDisplayItem>();
+
+                    if (idi.item != null && idi.item == item)
+                    {
+                        return idi;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Attempts to find a current equipped part (InvDisplayItem) by the name being displayed.
+    /// </summary>
+    /// <param name="name">The display name to look for.</param>
+    /// <returns>An InvDisplayItem that matches the name requested.</returns>
+    public static InvDisplayItem GetInvDisplayItemByName(string name)
+    {
+        foreach (var I in InventoryControl.inst.interfaces)
+        {
+            if (I.GetComponent<DynamicInterface>())
+            {
+                foreach (KeyValuePair<GameObject, InventorySlot> S in I.GetComponent<DynamicInterface>().slotsOnInterface)
+                {
+                    InvDisplayItem idi = S.Key.GetComponent<InvDisplayItem>();
+
+                    if (idi.item != null && idi.nameUnmodified == name)
+                    {
+                        return idi;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
     #endregion
 
     #region Floor Traps
@@ -4771,6 +4861,11 @@ public static class HF
         if (item.isBroken)
         {
             fullName = "Broken " + fullName;
+        }
+
+        if (item.isFaulty)
+        {
+            fullName = "Faulty " + fullName;
         }
 
         return fullName;
@@ -5774,6 +5869,14 @@ public static class HF
         return Mathf.RoundToInt(total / count);
     }
 
+    public static void BreakPart(Item item, InvDisplayItem display)
+    {
+        // Change the internal variable
+        item.isBroken = true;
+
+        // Update the UI
+        display.BreakItem();
+    }
     #endregion
 
     #region Spotting

@@ -7442,7 +7442,7 @@ public class UIManager : MonoBehaviour
             dataMenu.data_superImageBW.sprite = itemSprite;
 
             // Set title to item's name
-            dataMenu.data_mainTitle.text = item.Name;
+            dataMenu.data_mainTitle.text = HF.GetFullItemName(item);
             // Set title image to item's (world) image
             dataMenu.data_smallImage.sprite = item.itemData.inventoryDisplay;
             dataMenu.data_smallImage.color = item.itemData.itemColor;

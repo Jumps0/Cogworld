@@ -526,6 +526,11 @@ public class GlobalSettings : MonoBehaviour
                     db_textaid.gameObject.SetActive(true);
                     db_textaid.text = "> hackfail [If a terminal is open, forces it to fail.]";
                 }
+                else if (command.Contains("break"))
+                {
+                    db_textaid.gameObject.SetActive(true);
+                    db_textaid.text = "> break \"item\" [Breaks an equipped item. Use 'random' for a random item.]";
+                }
                 // Expand this as needed
             }
         }
@@ -568,6 +573,8 @@ public class GlobalSettings : MonoBehaviour
          *    Message: The message string to display
          *  > hackfail
          *    -If a terminal is open, forces it into the fail state
+         *  > break "item"
+         *    -Breaks an equipped item. Use 'random' for a random item.
          * ================================
          */
 
@@ -737,7 +744,7 @@ public class GlobalSettings : MonoBehaviour
                 ItemObject tospawn_item = null;
                 BotObject tospawn_bot = null;
 
-                // Second wrod
+                // Second word
                 if (bits.Length == 1) // There is no second word
                 {
                     DebugBarHelper("[spawn] Must specify thing type (ex. item OR bot)");
@@ -952,6 +959,52 @@ public class GlobalSettings : MonoBehaviour
                 // For this special case, we will mark it as successful
                 success = true;
 
+                break;
+            case "break":
+                // Second word
+                if (bits.Length == 1) // There is no second word
+                {
+                    DebugBarHelper("[break] Must specify item name or 'random'");
+                    return;
+                }
+                else
+                {
+                    // Try to parse
+                    string target = bits[1];
+                    if (target.Contains("random"))
+                    {
+                        // Destroy random part
+                        InvDisplayItem idi = HF.GetRandomPlayerPart();
+
+                        if(idi != null && idi.item != null)
+                        {
+                            HF.BreakPart(idi.item, idi);
+
+                            DebugBarHelper($"Broke {idi.nameUnmodified}.");
+                        }
+                        else
+                        {
+                            DebugBarHelper($"Failed to find an item to break.");
+                        }
+                    }
+                    else
+                    {
+                        // Try to find this item on the UI
+                        List<Item> items = Action.CollectAllBotItems(PlayerData.inst.GetComponent<Actor>());
+                        InvDisplayItem idi = HF.GetInvDisplayItemByName(target);
+
+                        if (idi != null)
+                        {
+                            HF.BreakPart(idi.item, idi);
+
+                            DebugBarHelper($"Broke {idi.nameUnmodified}.");
+                        }
+                        else
+                        {
+                            DebugBarHelper($"Failed to find item '{target}'.");
+                        }
+                    }
+                }
                 break;
             default: // Unknown command
                 DebugBarHelper("Unknown command...");

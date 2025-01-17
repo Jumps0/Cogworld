@@ -405,8 +405,9 @@ public class InventoryControl : MonoBehaviour
 
         if (source != null && source.gameObject.GetComponent<PlayerData>()) // Is player?
         {
-            PlayDropSound(_item.itemData.itemName); // Play the drop sound
-            UIManager.inst.CreateNewLogMessage("Dropped " + _item.itemData.itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false); // Do a UI message
+            string itemName = HF.GetFullItemName(_item);
+            PlayDropSound(itemName); // Play the drop sound
+            UIManager.inst.CreateNewLogMessage("Dropped " + itemName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false); // Do a UI message
         }
 
         // Remove from inventory
