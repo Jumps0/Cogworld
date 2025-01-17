@@ -6,8 +6,8 @@ using UnityEngine.Events;
 using TMPro;
 using Unity.VisualScripting;
 using ColorUtility = UnityEngine.ColorUtility;
-using static UnityEditor.Progress;
 using System.Linq;
+using Image = UnityEngine.UI.Image;
 
 public class InvDisplayItem : MonoBehaviour
 {
@@ -268,20 +268,27 @@ public class InvDisplayItem : MonoBehaviour
             }
 
             // - Integrity Color Square - //
-            float currentIntegrity = (float)item.integrityCurrent / (float)item.itemData.integrityMax;
-            if (currentIntegrity >= 0.75f) // Green (>=75%)
+            if (!item.isBroken)
             {
-                healthDisplay.color = activeGreen;
+                float currentIntegrity = (float)item.integrityCurrent / (float)item.itemData.integrityMax;
+                if (currentIntegrity >= 0.75f) // Green (>=75%)
+                {
+                    healthDisplay.color = activeGreen;
+                }
+                else if (currentIntegrity < 0.75f && currentIntegrity <= 0.50f) // Yellow (75-50%)
+                {
+                    healthDisplay.color = hurtYellow;
+                }
+                else if (currentIntegrity < 0.5f && currentIntegrity <= 0.25f) // Orange (50-25%)
+                {
+                    healthDisplay.color = badOrange;
+                }
+                else // Red (25-0%)
+                {
+                    healthDisplay.color = dangerRed;
+                }
             }
-            else if (currentIntegrity < 0.75f && currentIntegrity <= 0.50f) // Yellow (75-50%)
-            {
-                healthDisplay.color = hurtYellow;
-            }
-            else if (currentIntegrity < 0.5f && currentIntegrity <= 0.25f) // Orange (50-25%)
-            {
-                healthDisplay.color = badOrange;
-            }
-            else // Red (25-0%)
+            else
             {
                 healthDisplay.color = dangerRed;
             }
@@ -1783,6 +1790,42 @@ public class InvDisplayItem : MonoBehaviour
         InventoryControl.inst.UpdateInterfaceInventories();
     }
 
+    #endregion
+
+    #region Breaking Items
+    public void BreakItem() // Called from `HF.BreakPart()`
+    {
+        // This item is now broken, update the UI to reflect that. We need to:
+        // 1. Play a sound - UI/PARTOK (this part is not ok)
+        // 2. Set the text to be red
+        // 3. Do the typeout animation again (Black -> Red)
+
+        // Sound
+        AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PARTOK"]);
+
+        // Color change
+        assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(dangerRed)}>{assignedOrderString}</color>";
+        healthDisplay.color = dangerRed;
+
+        // Text animation
+        Color start = Color.black, end = dangerRed, highlight = dangerRed;
+        nameUnmodified = HF.GetFullItemName(item); // Update the name
+        string text = nameUnmodified; // (this also resets old mark & color tags)
+
+        List<string> strings = HF.SteppedStringHighlightAnimation(text, highlight, start, end);
+
+        float delay = 0f;
+        float perDelay = 0.35f / text.Length;
+
+        foreach (string s in strings)
+        {
+            StartCoroutine(HF.DelayedSetText(itemNameText, s, delay += perDelay));
+        }
+
+        // Update the UI
+        UIManager.inst.UpdateInventory();
+        UIManager.inst.UpdateParts();
+    }
     #endregion
 
     #region Sorting

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
 public class PlayerGridMovement : MonoBehaviour
 {
@@ -63,6 +64,11 @@ public class PlayerGridMovement : MonoBehaviour
         if(Mouse.current.scroll.ReadValue().y != 0f)
         {
             TrySkipTurn();
+        }
+
+        if (this.gameObject.GetComponent<PartInventory>())
+        {
+            InventoryInputDetection();
         }
     }
 
@@ -554,6 +560,53 @@ public class PlayerGridMovement : MonoBehaviour
             if (UIManager.inst.terminal_activeIField != null) // And the player is in the input window
             {
                 UIManager.inst.terminal_activeIField.GetComponent<UIHackInputfield>().Input_Tab();
+            }
+        }
+    }
+
+    /// <summary>
+    /// For items in the /PARTS/ menu. If the corresponding letter is pressed on the keyboard, that item should be toggled. WE IGNORE INVENTORY ITEMS.
+    /// </summary>
+    private void InventoryInputDetection()
+    {
+        // Check for player input
+        if (Keyboard.current.anyKey.wasPressedThisFrame
+            && !UIManager.inst.terminal_targetresultsAreaRef.gameObject.activeInHierarchy
+            && !InventoryControl.inst.awaitingSort
+            && !GlobalSettings.inst.db_main.activeInHierarchy)
+        {
+            // Go through all the interfaces
+            foreach (var I in InventoryControl.inst.interfaces)
+            {
+                string detect = "";
+                InvDisplayItem reference = null;
+
+                // Get the letter
+                if (I.GetComponent<DynamicInterface>()) // Includes all items found in /PARTS/ menus (USES LETTER)
+                {
+                    foreach (var item in I.GetComponent<DynamicInterface>().slotsOnInterface)
+                    {
+                        reference = item.Key.GetComponent<InvDisplayItem>();
+                        if (reference.item != null && reference.item.Id >= 0)
+                        {
+                            detect = reference._assignedChar;
+
+                            // Validate the character and check key press
+                            if (!string.IsNullOrEmpty(detect))
+                            {
+                                // Convert assigned character to KeyControl
+                                var keyControl = Keyboard.current[detect.ToLower()] as KeyControl;
+
+                                if (keyControl != null && keyControl.wasPressedThisFrame)
+                                {
+                                    // Toggle!
+                                    reference?.Click();
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
