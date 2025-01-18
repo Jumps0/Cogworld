@@ -723,7 +723,7 @@ public class MapManager : MonoBehaviour
 
                     Vector2Int loc = spots[Random.Range(0, spots.Count - 1)].position;
 
-                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(validitems[Random.Range(0, validitems.Count - 1)], loc, 1, true, true));
+                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(validitems[Random.Range(0, validitems.Count - 1)], loc, 1, true, GlobalSettings.inst.faultyPrototypeChance));
                     itemsPlaced++;
                 }
 
@@ -777,12 +777,12 @@ public class MapManager : MonoBehaviour
 
                     SpawnItems(itemsToSpawn, spawnArea, matterRNG);
 
-                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Beamcaster", new Vector2Int(57, 57), 1, true, false)); // ONLY FOR TESTING. REMOVE LATER  (Beamcaster)
-                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Rocket Launcher", new Vector2Int(56, 57), 1, true, false)); // ONLY FOR TESTING. REMOVE LATER (Rocket Launcher)
-                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Vibroblade", new Vector2Int(55, 57), 1, true, false)); // ONLY FOR TESTING. REMOVE LATER (Vibroblade)
-                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Exp. Targeting Computer", new Vector2Int(54, 57), 1, true, false)); // ONLY FOR TESTING. REMOVE LATER (Exp. Targeting Computer)
-                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Hvy. Siege Treads", new Vector2Int(53, 57), 1, true, false)); // ONLY FOR TESTING. REMOVE LATER (Hvy. Siege Treads)
-                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("EX Chip 1", new Vector2Int(52, 57), 1, true, false)); // ONLY FOR TESTING. REMOVE LATER (Ex. Chip 1)
+                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Beamcaster", new Vector2Int(57, 57), 1, true)); // ONLY FOR TESTING. REMOVE LATER  (Beamcaster)
+                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Rocket Launcher", new Vector2Int(56, 57), 1, true)); // ONLY FOR TESTING. REMOVE LATER (Rocket Launcher)
+                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Vibroblade", new Vector2Int(55, 57), 1, true)); // ONLY FOR TESTING. REMOVE LATER (Vibroblade)
+                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Exp. Targeting Computer", new Vector2Int(54, 57), 1, true)); // ONLY FOR TESTING. REMOVE LATER (Exp. Targeting Computer)
+                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Hvy. Siege Treads", new Vector2Int(53, 57), 1, true)); // ONLY FOR TESTING. REMOVE LATER (Hvy. Siege Treads)
+                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("EX Chip 1", new Vector2Int(52, 57), 1, true)); // ONLY FOR TESTING. REMOVE LATER (Ex. Chip 1)
                 }
 
 
@@ -805,12 +805,12 @@ public class MapManager : MonoBehaviour
 
             if (item == "Matter") // This is *MATTER*, we need a random amount.
             {
-                InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(item, location, randomValues[i], true, false));
+                InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(item, location, randomValues[i], true));
                 i++;
             }
             else // Just normal item.
             {
-                InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(item, location, 1, true, true));
+                InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(item, location, 1, true, GlobalSettings.inst.faultyPrototypeChance));
             }
 
             usedLocations.Add(location);
@@ -1024,11 +1024,19 @@ public class MapManager : MonoBehaviour
                 if (obj.gameObject.name.Contains("*")) // Specific Item Reference
                 {
                     string[] itemName = obj.gameObject.name.Split("*");
-                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(itemName[0], HF.V3_to_V2I(spawnLocation), 1, true, true));
+                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(itemName[0], HF.V3_to_V2I(spawnLocation), 1, true, GlobalSettings.inst.faultyPrototypeChance));
                 }
                 else if (obj.gameObject.GetComponent<MiscItemPool>()) // Specific Item Pool
                 {
-                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(obj.gameObject.GetComponent<MiscItemPool>().itemPool[Random.Range(0, obj.gameObject.GetComponent<MiscItemPool>().itemPool.Count - 1)].itemName, HF.V3_to_V2I(spawnLocation), 1, true, true));
+                    InventoryControl.inst.CreateItemInWorld(
+                        new ItemSpawnInfo(
+                            obj.gameObject.GetComponent<MiscItemPool>().itemPool[Random.Range(0, 
+                            obj.gameObject.GetComponent<MiscItemPool>().itemPool.Count - 1)].itemName, 
+                            HF.V3_to_V2I(spawnLocation), 
+                            1, 
+                            true, 
+                            GlobalSettings.inst.faultyPrototypeChance)
+                        );
                 }
                 else // Generic Reference
                 {
@@ -1055,7 +1063,14 @@ public class MapManager : MonoBehaviour
                         }
                     }
 
-                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(validitems[Random.Range(0, validitems.Count - 1)], HF.V3_to_V2I(spawnLocation), 1, true, true));
+                    InventoryControl.inst.CreateItemInWorld(
+                        new ItemSpawnInfo(
+                            validitems[Random.Range(0, validitems.Count - 1)], 
+                            HF.V3_to_V2I(spawnLocation), 
+                            1, 
+                            true,
+                            GlobalSettings.inst.faultyPrototypeChance)
+                        );
                 }
             }
             else if (obj.tag.Contains("Bot"))

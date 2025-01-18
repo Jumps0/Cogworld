@@ -533,6 +533,11 @@ public class GlobalSettings : MonoBehaviour
                     db_textaid.gameObject.SetActive(true);
                     db_textaid.text = "> break \"item\" [Breaks an equipped item. Use 'random' for a random item.]";
                 }
+                else if (command.Contains("faulty"))
+                {
+                    db_textaid.gameObject.SetActive(true);
+                    db_textaid.text = "> faulty [Spawns in a random FAULTY prototype beneath the player.]";
+                }
                 // Expand this as needed
             }
         }
@@ -577,6 +582,8 @@ public class GlobalSettings : MonoBehaviour
          *    -If a terminal is open, forces it into the fail state
          *  > break "item"
          *    -Breaks an equipped item. Use 'random' for a random item.
+         *  > faulty
+         *    -Spawns in a random FAULTY prototype beneath the player.
          * ================================
          */
 
@@ -818,7 +825,7 @@ public class GlobalSettings : MonoBehaviour
                         break;
 
                     case "item":
-                        InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(tospawn_item.itemName, playerloc, 1, true, false));
+                        InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(tospawn_item.itemName, playerloc, 1, true));
                         DebugBarHelper($"Spawned a {tospawn_item.itemName}.");
 
                         success = true;
@@ -983,6 +990,7 @@ public class GlobalSettings : MonoBehaviour
                             HF.BreakPart(idi.item, idi);
 
                             DebugBarHelper($"Broke {idi.nameUnmodified}.");
+                            success = true;
                         }
                         else
                         {
@@ -1000,6 +1008,7 @@ public class GlobalSettings : MonoBehaviour
                             HF.BreakPart(idi.item, idi);
 
                             DebugBarHelper($"Broke {idi.nameUnmodified}.");
+                            success = true;
                         }
                         else
                         {
@@ -1007,6 +1016,26 @@ public class GlobalSettings : MonoBehaviour
                         }
                     }
                 }
+                break;
+            case "faulty":
+                // Get a prototype item
+                ItemObject toSpawn = HF.FindItemOfTier(Random.Range(4, 9), true);
+
+                // Spawn it in as faulty
+                if(toSpawn != null)
+                {
+                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(toSpawn.itemName, HF.LocationOfPlayer(), 1, false, 1.0f));
+
+                    DebugBarHelper($"Spawned a faulty {toSpawn.itemName}.");
+
+                    success = true;
+                }
+                else
+                {
+                    DebugBarHelper("[faulty] failed to find an item to spawn. Please try again.");
+                    return;
+                }
+
                 break;
             default: // Unknown command
                 DebugBarHelper("Unknown command...");
@@ -1023,6 +1052,9 @@ public class GlobalSettings : MonoBehaviour
 
             // Clear the input box
             db_ifield.text = "";
+
+            // Play a sound so the player knows its a success
+            AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_ui["CASH_REGISTER"], 0.75f);
 
             // Unfocus
             DebugBarChangeFocus(false);

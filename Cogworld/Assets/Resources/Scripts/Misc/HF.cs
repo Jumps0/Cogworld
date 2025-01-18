@@ -1184,7 +1184,7 @@ public static class HF
                             Vector2Int pos = HF.V3_to_V2I(PlayerData.inst.transform.position);
 
                             // The easiest way to do this is to just drop it under the player and force the pick up check because the logic there is already complete.
-                            InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Matter", pos, stored, false, false)); // Spawn some matter
+                            InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Matter", pos, stored, false)); // Spawn some matter
                             PlayerData.inst.GetComponent<Actor>().SpecialPickupCheck(pos); // Do the check
 
                             // Play a sound
@@ -1198,7 +1198,7 @@ public static class HF
                             Vector2Int pos = HF.V3_to_V2I(PlayerData.inst.transform.position);
 
                             // The easiest way to do this is to just drop it under the player and force the pick up check because the logic there is already complete.
-                            InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Matter", HF.LocateFreeSpace(pos), 100, false, false)); // Spawn some matter
+                            InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Matter", HF.LocateFreeSpace(pos), 100, false)); // Spawn some matter
                             PlayerData.inst.GetComponent<Actor>().SpecialPickupCheck(pos); // Do the check
 
                             // Play a sound
@@ -1222,7 +1222,7 @@ public static class HF
                                 Vector2Int pos = HF.V3_to_V2I(recycler.ejectionSpot.transform.position);
 
                                 // The easiest way to do this is to just drop it under the player and force the pick up check because the logic there is already complete.
-                                InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Matter", HF.LocateFreeSpace(pos), toDrop, false, false)); // Spawn some matter
+                                InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Matter", HF.LocateFreeSpace(pos), toDrop, false)); // Spawn some matter
                                 PlayerData.inst.GetComponent<Actor>().SpecialPickupCheck(pos); // Do the check
 
                                 recycler.storedMatter = 0; // Set storage to 0

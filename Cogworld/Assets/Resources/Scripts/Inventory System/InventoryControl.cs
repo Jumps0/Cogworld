@@ -70,17 +70,13 @@ public class InventoryControl : MonoBehaviour
     /// <summary>
     /// Directly creates a NEW item in the world based off of a specified ID.
     /// </summary>
-    /// <param name="itemName">The name of the item to place.</param>
-    /// <param name="location">Where in the world to place the item.</param>
-    /// <param name="native">Is this item 'native' to 0b10? If false, scavengers will pick this up and recycle it.</param>
-    /// <param name="specificAmount">A specific amount of this item to spawn, only really applies to matter</param>
     public void CreateItemInWorld(ItemSpawnInfo spawnInfo)
     {
         string itemName = spawnInfo.name;
         Vector2 location = spawnInfo.location;
         int specificAmount = spawnInfo.amount;
         bool native = spawnInfo.native;
-        bool faultyRoll = spawnInfo.rollForFaulty;
+        float faultyRoll = spawnInfo.chanceForFaulty;
 
         int id = MapManager.inst.itemDatabase.dict[itemName].data.Id;
 
@@ -100,15 +96,14 @@ public class InventoryControl : MonoBehaviour
         item.state = false;
 
         // Faulty roll
-        if (faultyRoll)
+        if (faultyRoll > 0f)
         {
             // To be a faulty prototype it actually needs to be a prototype, duh.
             if (!item.itemData.knowByPlayer)
             {
-                float chance = GlobalSettings.inst.faultyPrototypeChance;
                 float random = Random.Range(0f, 1f);
 
-                if(random <= chance)
+                if(random <= faultyRoll)
                 {
                     item.isFaulty = true;
                 }
@@ -558,21 +553,21 @@ public class ItemSpawnInfo
     public int amount = 1;
     [Tooltip("If this item should be considered 'native' to the environment. If false, scavengers will pick this up and recycle it.")]
     public bool native = false;
-    [Tooltip("If this item should have a (small) chance to spawn in as a faulty prototype.")]
-    public bool rollForFaulty = false;
+    [Tooltip("The chance for this item (if it is a prototype) to spawn in as a faulty prototype [0f to 1f].")]
+    public float chanceForFaulty;
 
-    public ItemSpawnInfo(string name, Vector2 location, int amount, bool native, bool rollForFaulty)
+    public ItemSpawnInfo(string name, Vector2 location, int amount, bool native, float rollForFaulty = 0f)
     {
         this.name = name;
         this.location = location;
         this.amount = amount;
         this.native = native;
-        this.rollForFaulty = rollForFaulty;
+        this.chanceForFaulty = rollForFaulty;
 
         // Failsafe for matter
         if(name.ToLower() == "Matter")
         {
-            this.rollForFaulty = false;
+            this.chanceForFaulty = 0f;
         }
     }
 }

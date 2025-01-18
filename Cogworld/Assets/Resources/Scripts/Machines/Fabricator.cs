@@ -253,7 +253,7 @@ public class Fabricator : InteractableMachine
         if (targetPart != null)
         {
             // Spawn in this part on the floor
-            InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(targetPart.itemName, dropLocation, 1, true, false));
+            InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(targetPart.itemName, dropLocation, 1, true));
         }
         else if(targetBot != null)
         {
