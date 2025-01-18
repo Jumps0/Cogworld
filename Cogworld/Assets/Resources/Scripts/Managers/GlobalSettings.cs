@@ -66,6 +66,8 @@ public class GlobalSettings : MonoBehaviour
     public float defaultHackingDetectionChance = 0.1f;
     [Tooltip("See inside HF.cs -> TraceHacking() for a better description of what this value is used for.")]
     public float hackingLevelOfFailureBaseBonus = 0.35f;
+    [Tooltip("The chance for a prototype to spawn in as 'faulty'.")]
+    public float faultyPrototypeChance = 0.10f;
 
     [Header("UI")]
     public float itemPopupLifetime = 5;
@@ -816,7 +818,7 @@ public class GlobalSettings : MonoBehaviour
                         break;
 
                     case "item":
-                        InventoryControl.inst.CreateItemInWorld(tospawn_item.itemName, playerloc, true);
+                        InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(tospawn_item.itemName, playerloc, 1, true, false));
                         DebugBarHelper($"Spawned a {tospawn_item.itemName}.");
 
                         success = true;

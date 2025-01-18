@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+// https://www.gridsagegames.com/blog/2013/12/scanalyzers-fabricators/
 public class Fabricator : InteractableMachine
 {
     [Header("Operation")]
@@ -252,7 +253,7 @@ public class Fabricator : InteractableMachine
         if (targetPart != null)
         {
             // Spawn in this part on the floor
-            InventoryControl.inst.CreateItemInWorld(targetPart.itemName, dropLocation, true);
+            InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(targetPart.itemName, dropLocation, 1, true, false));
         }
         else if(targetBot != null)
         {

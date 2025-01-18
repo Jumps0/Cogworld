@@ -21,6 +21,7 @@ using UnityEngine.InputSystem;
 using static UnityEngine.Rendering.CoreUtils;
 using Unity.VisualScripting;
 using ColorUtility = UnityEngine.ColorUtility;
+using static UnityEditor.Progress;
 
 /// <summary>
 /// Contains helper functions to be used globally.
@@ -1183,7 +1184,7 @@ public static class HF
                             Vector2Int pos = HF.V3_to_V2I(PlayerData.inst.transform.position);
 
                             // The easiest way to do this is to just drop it under the player and force the pick up check because the logic there is already complete.
-                            InventoryControl.inst.CreateItemInWorld("Matter", pos, false, stored); // Spawn some matter
+                            InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Matter", pos, stored, false, false)); // Spawn some matter
                             PlayerData.inst.GetComponent<Actor>().SpecialPickupCheck(pos); // Do the check
 
                             // Play a sound
@@ -1197,7 +1198,7 @@ public static class HF
                             Vector2Int pos = HF.V3_to_V2I(PlayerData.inst.transform.position);
 
                             // The easiest way to do this is to just drop it under the player and force the pick up check because the logic there is already complete.
-                            InventoryControl.inst.CreateItemInWorld("Matter", HF.LocateFreeSpace(pos), false, 100); // Spawn some matter
+                            InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Matter", HF.LocateFreeSpace(pos), 100, false, false)); // Spawn some matter
                             PlayerData.inst.GetComponent<Actor>().SpecialPickupCheck(pos); // Do the check
 
                             // Play a sound
@@ -1221,7 +1222,7 @@ public static class HF
                                 Vector2Int pos = HF.V3_to_V2I(recycler.ejectionSpot.transform.position);
 
                                 // The easiest way to do this is to just drop it under the player and force the pick up check because the logic there is already complete.
-                                InventoryControl.inst.CreateItemInWorld("Matter", HF.LocateFreeSpace(pos), false, toDrop); // Spawn some matter
+                                InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Matter", HF.LocateFreeSpace(pos), toDrop, false, false)); // Spawn some matter
                                 PlayerData.inst.GetComponent<Actor>().SpecialPickupCheck(pos); // Do the check
 
                                 recycler.storedMatter = 0; // Set storage to 0
@@ -5824,6 +5825,30 @@ public static class HF
 
         // Update the UI
         display.BreakItem();
+    }
+
+    public static void DiscoverPrototype(Item item, bool doInterfaceUpdate = true)
+    {
+        string fullName = HF.GetFullItemName(item);
+
+        // If this item was unknown to us, now add that data
+        if (!item.itemData.knowByPlayer)
+            item.itemData.knowByPlayer = true;
+
+        // If the item is faulty we should use a different text color
+        Color a = UIManager.inst.activeGreen, b = UIManager.inst.dullGreen;
+        if (item.isFaulty)
+        {
+            a = UIManager.inst.dangerRed;
+            b = UIManager.inst.highSecRed;
+        }
+
+        // Update Interface
+        if(doInterfaceUpdate)
+            InventoryControl.inst.UpdateInterfaceInventories();
+
+        // Display log message
+        UIManager.inst.CreateNewLogMessage("Aquired " + fullName + ".", a, b, false, true);
     }
     #endregion
 

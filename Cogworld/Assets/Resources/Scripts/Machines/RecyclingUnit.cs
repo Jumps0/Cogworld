@@ -9,6 +9,7 @@ using UnityEngine;
 /// Hack the retrieve matter command to have it eject its contents.
 ///
 /// Similarly, unprocessed parts can be listed and retrieved via other system commands.
+/// https://www.gridsagegames.com/blog/2014/01/recycling-units-repair-stations/
 /// </summary>
 public class RecyclingUnit : InteractableMachine
 {

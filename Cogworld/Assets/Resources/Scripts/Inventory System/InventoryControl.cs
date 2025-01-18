@@ -74,14 +74,22 @@ public class InventoryControl : MonoBehaviour
     /// <param name="location">Where in the world to place the item.</param>
     /// <param name="native">Is this item 'native' to 0b10? If false, scavengers will pick this up and recycle it.</param>
     /// <param name="specificAmount">A specific amount of this item to spawn, only really applies to matter</param>
-    public void CreateItemInWorld(string itemName, Vector2Int location, bool native = false, int specificAmount = 1)
+    public void CreateItemInWorld(ItemSpawnInfo spawnInfo)
     {
+        string itemName = spawnInfo.name;
+        Vector2 location = spawnInfo.location;
+        int specificAmount = spawnInfo.amount;
+        bool native = spawnInfo.native;
+        bool faultyRoll = spawnInfo.rollForFaulty;
+
         int id = MapManager.inst.itemDatabase.dict[itemName].data.Id;
 
+        // GameObject creation
         var spawnedItem = Instantiate(_itemGroundPrefab, new Vector3(location.x * GridManager.inst.globalScale, location.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
         spawnedItem.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
         spawnedItem.name = $"Floor Item {location.x} {location.y} - "; // Give grid based name
 
+        // Item creation
         Item item = new Item(MapManager.inst.itemDatabase.Items[id]);
 
         if (MapManager.inst.itemDatabase.Items[id].instantUnique) // For stuff like matter, change this later (this is still probably not the best idea)
@@ -90,6 +98,24 @@ public class InventoryControl : MonoBehaviour
         }
 
         item.state = false;
+
+        // Faulty roll
+        if (faultyRoll)
+        {
+            // To be a faulty prototype it actually needs to be a prototype, duh.
+            if (!item.itemData.knowByPlayer)
+            {
+                float chance = GlobalSettings.inst.faultyPrototypeChance;
+                float random = Random.Range(0f, 1f);
+
+                if(random <= chance)
+                {
+                    item.isFaulty = true;
+                }
+            }
+        }
+        
+        // Part setup
         spawnedItem.GetComponent<Part>()._item = item; // Assign part data from database by ID
 
         spawnedItem.name += spawnedItem.GetComponent<Part>()._item.itemData.itemName.ToString(); // Modify name with type
@@ -97,16 +123,21 @@ public class InventoryControl : MonoBehaviour
         spawnedItem.GetComponent<Part>().location.x = (int)location.x; // Assign X location
         spawnedItem.GetComponent<Part>().location.x = (int)location.y; // Assign Y location
         spawnedItem.GetComponent<Part>()._tile = MapManager.inst._allTilesRealized[new Vector2Int((int)location.x, (int)location.y)].bottom; // Assign tile
+        spawnedItem.GetComponent<Part>().native = native;
 
+        // Visibility
         spawnedItem.GetComponent<Part>().isExplored = false;
         spawnedItem.GetComponent<Part>().isVisible = false;
 
-        worldItems[new Vector2Int((int)location.x, (int)location.y)] = spawnedItem; // Add to Dictionary
+        // Dictionary storage
+        worldItems[new Vector2Int((int)location.x, (int)location.y)] = spawnedItem;
         MapManager.inst._allTilesRealized[new Vector2Int((int)location.x, (int)location.y)].bottom._partOnTop = spawnedItem.GetComponent<Part>();
 
         spawnedItem.GetComponentInChildren<SpriteRenderer>().sortingOrder = 6;
         spawnedItem.transform.parent = allFloorItems.transform;
-        spawnedItem.GetComponent<Part>().Init(); // Begin part setup
+
+        // Internal Setup
+        spawnedItem.GetComponent<Part>().Init();
     }
 
     /// <summary>
@@ -516,4 +547,32 @@ public class InventoryControl : MonoBehaviour
     }
 
     #endregion
+}
+
+[System.Serializable]
+[Tooltip("Contains details regarding the item spawning process of a specific item.")]
+public class ItemSpawnInfo
+{
+    public string name;
+    public Vector2 location;
+    public int amount = 1;
+    [Tooltip("If this item should be considered 'native' to the environment. If false, scavengers will pick this up and recycle it.")]
+    public bool native = false;
+    [Tooltip("If this item should have a (small) chance to spawn in as a faulty prototype.")]
+    public bool rollForFaulty = false;
+
+    public ItemSpawnInfo(string name, Vector2 location, int amount, bool native, bool rollForFaulty)
+    {
+        this.name = name;
+        this.location = location;
+        this.amount = amount;
+        this.native = native;
+        this.rollForFaulty = rollForFaulty;
+
+        // Failsafe for matter
+        if(name.ToLower() == "Matter")
+        {
+            this.rollForFaulty = false;
+        }
+    }
 }

@@ -29,6 +29,8 @@ public class RepairStation : InteractableMachine
         timeToComplete = time;
     }
 
+    // https://www.gridsagegames.com/blog/2014/01/recycling-units-repair-stations/
+    // TODO: Repair stations cannot repair faulty prototypes or deteriorating parts
     public void Repair()
     {
 

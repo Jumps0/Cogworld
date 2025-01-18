@@ -478,12 +478,8 @@ public class Part : MonoBehaviour
                         break;
                 }
 
-                // If this item was unknown to us, now add that data
-                if (!_item.itemData.knowByPlayer)
-                    _item.itemData.knowByPlayer = true;
-
-                InventoryControl.inst.UpdateInterfaceInventories();
-                UIManager.inst.CreateNewLogMessage("Aquired " + HF.GetFullItemName(_item) + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+                // Item Discovery and Logging
+                HF.DiscoverPrototype(_item);
 
                 // Play a sound
                 PlayEquipSound();

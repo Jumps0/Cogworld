@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// https://www.gridsagegames.com/blog/2013/12/scanalyzers-fabricators/
 public class Scanalyzer : InteractableMachine
 {
     [Header("Operation")]
@@ -19,6 +20,7 @@ public class Scanalyzer : InteractableMachine
 
     }
 
+    // NOTE: Higher level scanalyzers are required to scan prototypes and more advanced parts, and scanalyzers will reject broken or faulty parts.
     public void Check()
     {
 
