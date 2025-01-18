@@ -10084,7 +10084,7 @@ public class UIManager : MonoBehaviour
             {
                 if (machine.state)
                 {
-                    List<TrojanType> trojans = machine.gameObject.GetComponent<InteractableMachine>().trojans;
+                    List<HackObject> trojans = machine.gameObject.GetComponent<InteractableMachine>().trojans;
                     bool first = true;
                     if (trojans.Count > 0)
                     {
@@ -10093,11 +10093,11 @@ public class UIManager : MonoBehaviour
                             UIDataGenericDetail trojan = UIManager.inst.Data_CreateGeneric();
                             if (first)
                             {
-                                trojan.Setup(true, false, false, "Trojans", Color.white, HF.HackDescription(T), "", false, T.ToString());
+                                trojan.Setup(true, false, false, "Trojans", Color.white, T.description, "", false, T.ToString());
                             }
                             else
                             {
-                                trojan.Setup(true, false, false, "", Color.white, HF.HackDescription(T), "", false, T.ToString());
+                                trojan.Setup(true, false, false, "", Color.white, T.description, "", false, T.ToString());
                             }
 
                             first = false;

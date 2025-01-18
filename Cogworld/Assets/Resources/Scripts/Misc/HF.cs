@@ -341,62 +341,6 @@ public static class HF
     #endregion
 
     #region Machines/Hacking
-    public static string HackDescription(TrojanType type)
-    {
-        switch (type)
-        {
-            case TrojanType.Track:
-                return "Continuously report the position of all robots within a short distance of the terminal. The radius is 6 for a level 1 terminal, 8 for a level 2, and 10 for a level 3.";
-            case TrojanType.Assimilate:
-                return "Causes any operator attempting to report Cogmind to instead become a controllable (blue) ally.";
-            case TrojanType.Botnet:
-                return "Increase the success rate of hacking attempts on all other machines on the floor. The first hack increases success by 6%, the second by 3%, and all others by 1%.";
-            case TrojanType.Detonate:
-                return "Rig a nearby explosive machine to detonate when a hostile passes nearby.";
-            case TrojanType.Broadcast:
-                return "Enable reporting of any garrison dispatch type, robot composition, and position on the floor.";
-            case TrojanType.Decoy:
-                return "Redirect the next dispatch's target to another location, includes dispatches with otherwise perfect tracking like exterminations and assaults.";
-            case TrojanType.Redirect:
-                return "Redirect all dispatch targets to another location, includes dispatches with otherwise perfect tracking like exterminations and assaults. Each dispatch after the first has an increasing 25% chance of removing the hack, dispatching an extra investigation squad, and disabling the garrison machine.";
-            case TrojanType.Reprogram:
-                return "Reprogram the next dispatch to be allied but noncontrollable to Cogmind (purple color). Doesn't work against special dispatches like Lightnings.";
-            case TrojanType.Disrupt:
-                return "Reduce the targeting of all nearby hostile robots by 10%.";
-            case TrojanType.Fabnet:
-                return "Adds a 3% chance per 0b10 combat bot on the next depth up to temporarily turn friendly (purple) when alerted of any enemy (not just Cogmind) similar to the RIF hack overwrite IFF. This chance decreases to 1% on the following depth, and reaches 0% after that. Caps at 15%. There is a chance that the machine network on the floor will be permanently locked when this effect activates.";
-            case TrojanType.Haulers:
-                return "Continuously report the position of all Hauler class robots on the current floor.";
-            case TrojanType.Intercept:
-                return "Increases accuracy against nearby MAIN.C-controlled bot by 15% for all friendly bots.";
-            case TrojanType.Mask:
-                return "Prevent Recycler robots from picking up any parts in a 15-tile square area around the machine.";
-            case TrojanType.Mechanics:
-                return "Continuously report the position of all Mechanic class robots on the current floor.";
-            case TrojanType.Monitor:
-                return "Enable reporting of any parts inserted into any Recycling Machine, as well as their integrity.";
-            case TrojanType.Operators:
-                return "Continuously report the position of all Operator class robots on the current floor.";
-            case TrojanType.Prioritize:
-                return "Double the speed of fabrication for the current fabricator.";
-            case TrojanType.Recyclers:
-                return "Continuously report the position of all Recycler class robots on the current floor.";
-            case TrojanType.Reject:
-                return "Prevent parts from being deposited into the recycling machine. Instead, any inserted parts are deposited onto the floor.";
-            case TrojanType.Report:
-                return "Reports when any fabricator on the floor is finished building something, as well as its position.";
-            case TrojanType.Researchers:
-                return "Continuously report the position of all Researcher class robots on the current floor.";
-            case TrojanType.Restock:
-                return "Dispatches a programmer to the current garrison carrying relay couplers.";
-            case TrojanType.Watchers:
-                return "Continuously report the position of all Watcher class robots on the current floor.";
-            case TrojanType.Liberate:
-                return "Any bots created by this fabricator by 0b10 will be allied but noncontrollable to Cogmind (purple color). If on a factory floor, the bots will head for the closest caves exit and leave the map. Otherwise the bots will follow you as regular purple allies.";
-            default:
-                return "";
-        }
-    }
 
     public static int MachineSecLvl()
     {
@@ -1345,7 +1289,7 @@ public static class HF
                         string print = "Trojan loaded successfully.\nTesting...\nTerminal linked with " + PlayerData.inst.linkedTerminalBotnet + " systems.\nAwaiting botnet instructions.";
                         PlayerData.inst.linkedTerminalBotnet++;
 
-                        UIManager.inst.terminal_targetTerm.trojans.Add(TrojanType.Botnet);
+                        UIManager.inst.terminal_targetTerm.trojans.Add(MapManager.inst.hackDatabase.dict["Trojan(Botnet)"]);
 
                         return print;
 

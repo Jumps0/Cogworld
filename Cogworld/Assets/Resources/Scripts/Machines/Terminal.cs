@@ -525,31 +525,3 @@ public class TerminalCustomCode
         return randomString;
     }
 }
-
-public enum TrojanType // https://noemica.github.io/cog-minder/hacks.html
-{ // This doesn't include FORCE hacks for now
-    Track,
-    Assimilate,
-    Botnet,
-    Detonate,
-    Broadcast,
-    Decoy,
-    Redirect,
-    Reprogram,
-    Disrupt,
-    Fabnet,
-    Haulers,
-    Intercept,
-    Mask,
-    Mechanics,
-    Monitor,
-    Operators,
-    Prioritize,
-    Recyclers,
-    Reject,
-    Report,
-    Researchers,
-    Restock,
-    Watchers,
-    Liberate
-}

@@ -31,5 +31,5 @@ public class InteractableMachine : MonoBehaviour
     public int timesAccessed = 0;
 
     [Header("Trojans")]
-    public List<TrojanType> trojans = new List<TrojanType>();
+    public List<HackObject> trojans = new List<HackObject>();
 }
