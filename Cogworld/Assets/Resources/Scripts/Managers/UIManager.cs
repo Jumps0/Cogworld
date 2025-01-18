@@ -1137,7 +1137,7 @@ public class UIManager : MonoBehaviour
     /*
     public void ShowItemPopup(Part item)
     {
-        string displayString = item._item.itemName + " [" + item._item.rating.ToString() + "]";
+        string displayString = HF.GetFullItemName(item._item) + " [" + item._item.rating.ToString() + "]";
         // Display text should usually be black
         Color edgeColor = item.realColor; // Use item color for edge
         Color barColor = item.realColor * (1f - 0.15f); // Item Color for bar (but 15% darker)
@@ -1150,7 +1150,7 @@ public class UIManager : MonoBehaviour
 
         // Set the text of the item popup
         TextMeshProUGUI popupText = popupObject.GetComponentInChildren<TextMeshProUGUI>();
-        popupText.text = item._item.itemName;
+        popupText.text = HF.GetFullItemName(item._item);
 
         // Set the position of the item popup above the item origin
         RectTransform popupRect = popupObject.GetComponentInChildren<RectTransform>();
@@ -1904,12 +1904,12 @@ public class UIManager : MonoBehaviour
         yield return new WaitForSeconds(delay);
         // The hacking related parts (if the player has any) will appear
         // -Get the parts
-        List<ItemObject> hackware = new List<ItemObject>();
+        List<Item> hackware = new List<Item>();
         bool hasHackware = false;
         (hasHackware, hackware) = Action.FindPlayerHackware();
         if (hasHackware) // Display the hackware
         {
-            foreach (ItemObject item in hackware)
+            foreach (Item item in hackware)
             {
                 GameObject hackinfoMessage = Instantiate(terminal_hackinfoV1_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
                 hackinfoMessage.transform.SetParent(terminal_hackinfoArea1.transform);
@@ -1917,7 +1917,7 @@ public class UIManager : MonoBehaviour
                 // Add it to list
                 terminal_hackinfoList.Add(hackinfoMessage);
                 // Assign Details
-                hackinfoMessage.GetComponent<UIHackinfoV1>().Setup(item.itemName, item);
+                hackinfoMessage.GetComponent<UIHackinfoV1>().Setup(HF.GetFullItemName(item), item.itemData);
             }
         }
         else // Type out "(None)"
@@ -3021,12 +3021,12 @@ public class UIManager : MonoBehaviour
 
             // The hacking related parts (if the player has any) will appear
             // -Get the parts
-            List<ItemObject> hackware = new List<ItemObject>();
+            List<Item> hackware = new List<Item>();
             bool hasHackware = false;
             (hasHackware, hackware) = Action.FindPlayerHackware();
             if (hasHackware) // Display the hackware
             {
-                foreach (ItemObject item in hackware)
+                foreach (Item item in hackware)
                 {
                     GameObject hackinfoMessage = Instantiate(terminal_hackinfoV1_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
                     hackinfoMessage.transform.SetParent(terminal_hackinfoArea1.transform);
@@ -3034,7 +3034,7 @@ public class UIManager : MonoBehaviour
                     // Add it to list
                     terminal_hackinfoList.Add(hackinfoMessage);
                     // Assign Details
-                    hackinfoMessage.GetComponent<UIHackinfoV1>().Setup(item.itemName, item);
+                    hackinfoMessage.GetComponent<UIHackinfoV1>().Setup(HF.GetFullItemName(item), item.itemData);
                 }
             }
             else // Type out "(None)"
@@ -5123,7 +5123,7 @@ public class UIManager : MonoBehaviour
                     // Is this item a prototype? If so we don't show the true name
                     if (_item.itemData.knowByPlayer)
                     {
-                        _message = _item.itemData.itemName;
+                        _message = HF.GetFullItemName(_item);
                     }
                     else
                     {
@@ -7491,7 +7491,7 @@ public class UIManager : MonoBehaviour
                 {
                     // Type
                     UIDataGenericDetail iType = UIManager.inst.Data_CreateGeneric();
-                    iType.Setup(true, false, false, "Type", Color.white, "General classification of this item.", "", false, item.itemData.itemName);
+                    iType.Setup(true, false, false, "Type", Color.white, "General classification of this item.", "", false, HF.GetFullItemName(item));
                     // Slot
                     UIDataGenericDetail iSlot = UIManager.inst.Data_CreateGeneric();
                     iSlot.Setup(true, false, false, "Slot", Color.white, "Type of slot the part can be attached to, if applicable. Larger items may occupy multipel slots, both in the inventory and when attached.", "", false, "N/A", true);
@@ -7967,7 +7967,7 @@ public class UIManager : MonoBehaviour
 
                             if (E.chainExplode) // Chain reaction explosion
                             {
-                                textWall += " " + item.itemData.itemName + ": ";
+                                textWall += " " + HF.GetFullItemName(item) + ": ";
                                 textWall += "If triggered by chain reaction or rigged proximity response, explodes for ";
                                 textWall += item.itemData.explosionDetails.damage.x + "-" + item.itemData.explosionDetails.damage.y;
                                 textWall += " " + item.itemData.explosionDetails.damageType.ToString().ToLower();
@@ -9629,7 +9629,7 @@ public class UIManager : MonoBehaviour
                         // Only show the true name if the player has prototype knowledge about it. If not, append "Prototype" and call it by its type.
                         if (I.item.itemData.knowByPlayer)
                         {
-                            cName = I.item.itemData.itemName;
+                            cName = HF.GetFullItemName(I.item);
                         }
                         else
                         {
@@ -9687,7 +9687,7 @@ public class UIManager : MonoBehaviour
                         // Only show the true name if the player has prototype knowledge about it. If not, append "Prototype" and call it by its type.
                         if (I.item.itemData.knowByPlayer)
                         {
-                            cName = I.item.itemData.itemName;
+                            cName = HF.GetFullItemName(I.item);
                         }
                         else
                         {

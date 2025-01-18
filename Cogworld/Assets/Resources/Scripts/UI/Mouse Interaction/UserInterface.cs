@@ -132,7 +132,7 @@ public abstract class UserInterface : MonoBehaviour
                 destroyOnRemove = true;
             }
 
-            string itemName = obj.GetComponent<InvDisplayItem>().item.itemData.itemName;
+            string itemName = HF.GetFullItemName(obj.GetComponent<InvDisplayItem>().item);
             // Make sure not to unintentionally reveal the name if its a prototype!
             if (!obj.GetComponent<InvDisplayItem>().item.itemData.knowByPlayer)
             {
@@ -175,7 +175,7 @@ public abstract class UserInterface : MonoBehaviour
                 if (!obj.GetComponent<InvDisplayItem>().discard_readyToDestroy) // First time, give a warning, and start the reset time
                 {
                     obj.GetComponent<InvDisplayItem>().StartDiscardTimeout();
-                    UIManager.inst.ShowCenterMessageTop($"Will discard {obj.GetComponent<InvDisplayItem>().item.itemData.itemName}, repeat to confirm", UIManager.inst.dangerRed, Color.black);
+                    UIManager.inst.ShowCenterMessageTop($"Will discard {HF.GetFullItemName(obj.GetComponent<InvDisplayItem>().item)}, repeat to confirm", UIManager.inst.dangerRed, Color.black);
                 }
                 else // Not the first time, destroy the item
                 {
@@ -186,7 +186,7 @@ public abstract class UserInterface : MonoBehaviour
                     obj.GetComponent<InvDisplayItem>().DiscardForceStop();
 
                     // Make a log message
-                    UIManager.inst.CreateNewLogMessage("Discarded " + obj.GetComponent<InvDisplayItem>().item.itemData.itemName + ".", UIManager.inst.cautiousYellow, UIManager.inst.dullGreen, false, true); // Do a UI message
+                    UIManager.inst.CreateNewLogMessage("Discarded " + HF.GetFullItemName(obj.GetComponent<InvDisplayItem>().item) + ".", UIManager.inst.cautiousYellow, UIManager.inst.dullGreen, false, true); // Do a UI message
 
                     // Play the discard sound
                     AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_ui["PT_DISC"]); // UI - PT_DISC
@@ -635,15 +635,11 @@ public abstract class UserInterface : MonoBehaviour
                 // Prototype discovery
                 if(originSlot.AllowedItems.Count > 0)
                 {
-                    if (!originItem.itemData.knowByPlayer)
-                        originItem.itemData.knowByPlayer = true;
-                    UIManager.inst.CreateNewLogMessage("Identified " + originItem.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    HF.DiscoverPrototype(originItem, false);
                 }
                 else if (destinationSlot.AllowedItems.Count > 0)
                 {
-                    if (!destinationItem.itemData.knowByPlayer)
-                        destinationItem.itemData.knowByPlayer = true;
-                    UIManager.inst.CreateNewLogMessage("Identified " + destinationItem.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    HF.DiscoverPrototype(destinationItem, false);
                 }
 
                 // Now that we have all our data, we go through both at the same time and start swapping data (they will both have the same length).
@@ -670,8 +666,8 @@ public abstract class UserInterface : MonoBehaviour
                     slots_destination[i].Key.GetComponent<InvDisplayItem>().FlashItemDisplay(); // [DESTINATION]
                 }
 
-                UIManager.inst.ShowCenterMessageTop("Attached " + originItem.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                UIManager.inst.CreateNewLogMessage("Attached " + originItem.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(originItem), UIManager.inst.highlightGreen, Color.black);
+                UIManager.inst.CreateNewLogMessage("Attached " + HF.GetFullItemName(originItem), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
             }
             else // We can't swap the items, do a message.
             {
@@ -860,17 +856,13 @@ public abstract class UserInterface : MonoBehaviour
                     if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.customType == CustomTerminalType.HideoutCache)
                         word = "Retrieved ";
 
-                    UIManager.inst.ShowCenterMessageTop(word + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                    UIManager.inst.CreateNewLogMessage(word + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                    UIManager.inst.ShowCenterMessageTop(word + HF.GetFullItemName(originSlot.item), UIManager.inst.highlightGreen, Color.black);
+                    UIManager.inst.CreateNewLogMessage(word + HF.GetFullItemName(originSlot.item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
                 }
                 else if (destinationSlot.parent.GetComponent<DynamicInterface>())// Moving TO a /PARTS/ slot
                 {
                     // Prototype discovery (equip only)
-                    if (!originItem.itemData.knowByPlayer)
-                    {
-                        originItem.itemData.knowByPlayer = true;
-                        UIManager.inst.CreateNewLogMessage("Identified " + originItem.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                    }
+                    HF.DiscoverPrototype(originItem, false);
 
                     word = "Attached ";
                     if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.customType == CustomTerminalType.HideoutCache)
@@ -878,23 +870,23 @@ public abstract class UserInterface : MonoBehaviour
 
                     if (originSlot.item.itemData.slot == ItemSlot.Power)
                     {
-                        UIManager.inst.ShowCenterMessageTop(word + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                        UIManager.inst.CreateNewLogMessage(word + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.ShowCenterMessageTop(word + HF.GetFullItemName(originSlot.item), UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.CreateNewLogMessage(word + HF.GetFullItemName(originSlot.item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
                     }
                     else if (originSlot.item.itemData.slot == ItemSlot.Propulsion)
                     {
-                        UIManager.inst.ShowCenterMessageTop(word + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                        UIManager.inst.CreateNewLogMessage(word + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.ShowCenterMessageTop(word + HF.GetFullItemName(originSlot.item), UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.CreateNewLogMessage(word + HF.GetFullItemName(originSlot.item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
                     }
                     else if (originSlot.item.itemData.slot == ItemSlot.Utilities)
                     {
-                        UIManager.inst.ShowCenterMessageTop(word + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                        UIManager.inst.CreateNewLogMessage(word + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.ShowCenterMessageTop(word + HF.GetFullItemName(originSlot.item), UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.CreateNewLogMessage(word + HF.GetFullItemName(originSlot.item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
                     }
                     else if (originSlot.item.itemData.slot == ItemSlot.Weapons)
                     {
-                        UIManager.inst.ShowCenterMessageTop(word + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                        UIManager.inst.CreateNewLogMessage(word + originSlot.item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.ShowCenterMessageTop(word + HF.GetFullItemName(originSlot.item), UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.CreateNewLogMessage(word + HF.GetFullItemName(originSlot.item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
                     }
                     else
                     {
@@ -1038,19 +1030,15 @@ public abstract class UserInterface : MonoBehaviour
                 }
 
                 // Prototype discovery
-                if (!item.itemData.knowByPlayer)
-                {
-                    item.itemData.knowByPlayer = true;
-                    UIManager.inst.CreateNewLogMessage("Identified " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                }
+                HF.DiscoverPrototype(item, false);
 
                 if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.customType == CustomTerminalType.HideoutCache) // Special case if we are instead submitting it to the cache
                 {
                     InventoryControl.inst.hideout_inventory.AddItem(item, 1);
                     if (!once)
                     {
-                        UIManager.inst.ShowCenterMessageTop("Submitted " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                        UIManager.inst.CreateNewLogMessage("Submitted " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.ShowCenterMessageTop("Submitted " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.CreateNewLogMessage("Submitted " + HF.GetFullItemName(item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
                     }
                 }
                 else if (item.itemData.slot == ItemSlot.Power)
@@ -1058,8 +1046,8 @@ public abstract class UserInterface : MonoBehaviour
                     PlayerData.inst.GetComponent<PartInventory>().inv_power.AddItem(item, 1);
                     if (!once)
                     {
-                        UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                        UIManager.inst.CreateNewLogMessage("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.CreateNewLogMessage("Attached " + HF.GetFullItemName(item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
                     }
                 }
                 else if (item.itemData.slot == ItemSlot.Propulsion)
@@ -1067,8 +1055,8 @@ public abstract class UserInterface : MonoBehaviour
                     PlayerData.inst.GetComponent<PartInventory>().inv_propulsion.AddItem(item, 1);
                     if (!once)
                     {
-                        UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                        UIManager.inst.CreateNewLogMessage("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.CreateNewLogMessage("Attached " + HF.GetFullItemName(item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
                     }
                 }
                 else if (item.itemData.slot == ItemSlot.Utilities)
@@ -1076,8 +1064,8 @@ public abstract class UserInterface : MonoBehaviour
                     PlayerData.inst.GetComponent<PartInventory>().inv_utility.AddItem(item, 1);
                     if (!once)
                     {
-                        UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                        UIManager.inst.CreateNewLogMessage("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.CreateNewLogMessage("Attached " + HF.GetFullItemName(item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
                     }
                 }
                 else if (item.itemData.slot == ItemSlot.Weapons)
@@ -1085,8 +1073,8 @@ public abstract class UserInterface : MonoBehaviour
                     PlayerData.inst.GetComponent<PartInventory>().inv_weapon.AddItem(item, 1);
                     if (!once)
                     {
-                        UIManager.inst.ShowCenterMessageTop("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
-                        UIManager.inst.CreateNewLogMessage("Attached " + item.itemData.itemName, UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.CreateNewLogMessage("Attached " + HF.GetFullItemName(item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
                     }
                 }
 

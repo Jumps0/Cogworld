@@ -507,18 +507,18 @@ public static class HF
         float success = baseChance;
 
         // -- Hack Bonus --
-        List<ItemObject> hackware = new List<ItemObject>();
+        List<Item> hackware = new List<Item>();
         bool hasHackware = false;
         (hasHackware, hackware) = Action.FindPlayerHackware();
         float hackwareBonus = 0f;
 
         if (hasHackware)
         {
-            foreach (ItemObject item in hackware)
+            foreach (Item item in hackware)
             {
-                if (item.itemEffects.Count > 0)
+                if (item.itemData.itemEffects.Count > 0)
                 {
-                    foreach (ItemEffect effect in item.itemEffects)
+                    foreach (ItemEffect effect in item.itemData.itemEffects)
                     {
                         if (effect.hackBonuses.hasHackBonus)
                         {

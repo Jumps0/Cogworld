@@ -1147,7 +1147,7 @@ public static class Action
                         }
                         else // Player
                         {
-                            UIManager.inst.CreateNewLogMessage(item.itemData.itemName + " prevented being knocked back.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                            UIManager.inst.CreateNewLogMessage(HF.GetFullItemName(item) + " prevented being knocked back.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                             return;
                         }
                     }
@@ -3320,11 +3320,11 @@ public static class Action
         return (false, 0f);
     }
 
-    public static (bool, List<ItemObject>) FindPlayerHackware()
+    public static (bool, List<Item>) FindPlayerHackware()
     {
         bool hasHackware = false;
 
-        List<ItemObject> hackware = new List<ItemObject>();
+        List<Item> hackware = new List<Item>();
 
         foreach (InventorySlot item in PlayerData.inst.GetComponent<PartInventory>().inv_utility.Container.Items)
         {
@@ -3332,7 +3332,7 @@ public static class Action
             {
                 if (item.item.itemData.type == ItemType.Hackware)
                 {
-                    hackware.Add(item.item.itemData);
+                    hackware.Add(item.item);
                 }
             }
 
@@ -4471,7 +4471,7 @@ public static class Action
                         if (E.armorProtectionEffect.armorEffect_slotType.ToString().ToLower() == slotHit.ToString().ToLower())
                         {
                             crit = false;
-                            UIManager.inst.CreateNewLogMessage("    " + item.itemData.itemName + " prevented critical effect.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                            UIManager.inst.CreateNewLogMessage("    " + HF.GetFullItemName(item) + " prevented critical effect.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                             break;
                         }
                     }
@@ -4479,7 +4479,7 @@ public static class Action
                     if (E.armorProtectionEffect.critImmunity) // Special anti-crit item
                     {
                         crit = false;
-                        UIManager.inst.CreateNewLogMessage("    " + item.itemData.itemName + " prevented critical effect.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                        UIManager.inst.CreateNewLogMessage("    " + HF.GetFullItemName(item) + " prevented critical effect.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                         break;
                     }
                 }
@@ -5020,7 +5020,7 @@ public static class Action
     public static void DestoyItem(Actor owner, Item item, bool crit = false)
     {
         // There is a chance the player doesn't know what the item is that got destroyed
-        string item_name = item.itemData.itemName;
+        string item_name = HF.GetFullItemName(item);
         if (!item.itemData.knowByPlayer)
         {
             item_name = HF.ItemPrototypeName(item);
@@ -6065,19 +6065,19 @@ public static class Action
                     Item targetItem = null;
 
 
-                    message = weapon.itemData.itemName + " has caused a short circuit due to being overloaded, damaging " + targetItem.itemData.itemName;
+                    message = HF.GetFullItemName(weapon) + " has caused a short circuit due to being overloaded, damaging " + HF.GetFullItemName(targetItem);
                 }
                 else if (random < 0.8f && random >= 0.4f) // Heat Surge
                 {
 
 
-                    message = weapon.itemData.itemName + " has caused a massive surge in heat due to being overloaded.";
+                    message = HF.GetFullItemName(weapon) + " has caused a massive surge in heat due to being overloaded.";
                 }
                 else // Energy Drain
                 {
 
 
-                    message = weapon.itemData.itemName + " has caused a massive drain in energy due to being overloaded.";
+                    message = HF.GetFullItemName(weapon) + " has caused a massive drain in energy due to being overloaded.";
                 }
 
 
@@ -6254,7 +6254,7 @@ public static class Action
             name = "Cogmind";
         }
         UIManager.inst.CreateNewLogMessage(name + "'s engine has exploded due to a chain reaction.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
-        UIManager.inst.CreateNewCalcMessage(item.itemData.itemName + " explodes due to a chain reaction.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+        UIManager.inst.CreateNewCalcMessage(HF.GetFullItemName(item) + " explodes due to a chain reaction.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
 
         // Create an explosion
         Action.UnboundExplosion(item, HF.V3_to_V2I(source.transform.position));
@@ -6361,27 +6361,27 @@ public static class Action
             switch (item.itemData.slot)
             {
                 case ItemSlot.Power:
-                    message = $"Power failure, {item.itemData.itemName} shutdown.";
+                    message = $"Power failure, {HF.GetFullItemName(item)} shutdown.";
                     UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
                     break;
                 case ItemSlot.Propulsion:
-                    message = $"Propulsion failure, {item.itemData.itemName} shutdown.";
+                    message = $"Propulsion failure, {HF.GetFullItemName(item)} shutdown.";
                     UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
                     break;
                 case ItemSlot.Utilities:
-                    message = $"Device failure, {item.itemData.itemName} shutdown.";
+                    message = $"Device failure, {HF.GetFullItemName(item)} shutdown.";
                     UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
                     break;
                 case ItemSlot.Weapons:
-                    message = $"Weapon failure, {item.itemData.itemName} shutdown.";
+                    message = $"Weapon failure, {HF.GetFullItemName(item)} shutdown.";
                     UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
                     break;
                 case ItemSlot.Inventory:
-                    message = $"Item failure, {item.itemData.itemName} shutdown.";
+                    message = $"Item failure, {HF.GetFullItemName(item)} shutdown.";
                     UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
                     break;
                 case ItemSlot.Other:
-                    message = $"Item failure, {item.itemData.itemName} shutdown.";
+                    message = $"Item failure, {HF.GetFullItemName(item)} shutdown.";
                     UIManager.inst.CreateNewLogMessage(message, UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, false);
                     break;
                 default:

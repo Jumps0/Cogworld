@@ -291,7 +291,7 @@ public class Part : MonoBehaviour
                 string _message = "";
                 if (_item.itemData.instantUnique)
                 {
-                    _message = _item.amount.ToString() + " " + _item.itemData.itemName;
+                    _message = _item.amount.ToString() + " " + HF.GetFullItemName(_item);
                     b = _item.itemData.itemColor;
                     c = new Color(_item.itemData.itemColor.r, _item.itemData.itemColor.g, _item.itemData.itemColor.b, 0.7f);
                 }
@@ -592,11 +592,12 @@ public class Part : MonoBehaviour
     public void PlayEquipSound()
     {
         // First check if this item is light or not
-        if (_item.itemData.itemName.Contains("Lgt.") 
-            || _item.itemData.itemName.Contains("Lgt") 
-            || _item.itemData.itemName.Contains("LGT") 
-            || _item.itemData.itemName.Contains("LGT.") 
-            || _item.itemData.itemName.Contains("Light"))
+        string name = HF.GetFullItemName(_item);
+        if (name.Contains("Lgt.") 
+            || name.Contains("Lgt") 
+            || name.Contains("LGT") 
+            || name.Contains("LGT.") 
+            || name.Contains("Light"))
         {
             AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_equipitem[$"PART_LGT_0{Random.Range(1, 3)}"]); // PART_LIGHT_1/2/3
         }

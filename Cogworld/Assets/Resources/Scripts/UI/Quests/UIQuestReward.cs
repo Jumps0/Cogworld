@@ -35,7 +35,7 @@ public class UIQuestReward : MonoBehaviour
         }
         else if(ir != null) // Item reward
         {
-            text_name.text = ir.data.itemData.itemName;
+            text_name.text = HF.GetFullItemName(ir.data);
             id = ir.data.Id;
         }
         else
@@ -107,7 +107,7 @@ public class UIQuestReward : MonoBehaviour
         }
         else if (itemReward != null) // Item reward
         {
-            text_name.text = itemReward.data.itemData.itemName;
+            text_name.text = HF.GetFullItemName(itemReward.data);
         }
 
         Color dark = colors[2], dark_end = grayed[2]; // Dark
