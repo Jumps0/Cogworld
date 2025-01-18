@@ -479,7 +479,7 @@ public class Part : MonoBehaviour
                 }
 
                 // Item Discovery and Logging
-                HF.DiscoverPrototype(_item);
+                HF.DiscoverPrototype(_item, true);
 
                 // Play a sound
                 PlayEquipSound();

@@ -635,11 +635,11 @@ public abstract class UserInterface : MonoBehaviour
                 // Prototype discovery
                 if(originSlot.AllowedItems.Count > 0)
                 {
-                    HF.DiscoverPrototype(originItem, false);
+                    HF.DiscoverPrototype(originItem, true, false);
                 }
                 else if (destinationSlot.AllowedItems.Count > 0)
                 {
-                    HF.DiscoverPrototype(destinationItem, false);
+                    HF.DiscoverPrototype(destinationItem, true, false);
                 }
 
                 // Now that we have all our data, we go through both at the same time and start swapping data (they will both have the same length).
@@ -862,7 +862,7 @@ public abstract class UserInterface : MonoBehaviour
                 else if (destinationSlot.parent.GetComponent<DynamicInterface>())// Moving TO a /PARTS/ slot
                 {
                     // Prototype discovery (equip only)
-                    HF.DiscoverPrototype(originItem, false);
+                    HF.DiscoverPrototype(originItem, true, false);
 
                     word = "Attached ";
                     if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.customType == CustomTerminalType.HideoutCache)
@@ -1030,7 +1030,7 @@ public abstract class UserInterface : MonoBehaviour
                 }
 
                 // Prototype discovery
-                HF.DiscoverPrototype(item, false);
+                HF.DiscoverPrototype(item, true, false);
 
                 if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.customType == CustomTerminalType.HideoutCache) // Special case if we are instead submitting it to the cache
                 {

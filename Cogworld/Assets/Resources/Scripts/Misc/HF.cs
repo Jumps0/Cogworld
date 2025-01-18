@@ -5827,7 +5827,7 @@ public static class HF
         display.BreakItem();
     }
 
-    public static void DiscoverPrototype(Item item, bool doInterfaceUpdate = true)
+    public static void DiscoverPrototype(Item item, bool displayMessage, bool doInterfaceUpdate = true)
     {
         string fullName = HF.GetFullItemName(item);
 
@@ -5848,7 +5848,8 @@ public static class HF
             InventoryControl.inst.UpdateInterfaceInventories();
 
         // Display log message
-        UIManager.inst.CreateNewLogMessage("Aquired " + fullName + ".", a, b, false, true);
+        if (displayMessage)
+            UIManager.inst.CreateNewLogMessage("Aquired " + fullName + ".", a, b, false, true);
     }
     #endregion
 
