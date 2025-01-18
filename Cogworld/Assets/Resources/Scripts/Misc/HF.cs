@@ -5871,6 +5871,10 @@ public static class HF
 
     public static void BreakPart(Item item, InvDisplayItem display)
     {
+        // Log a message before the name changes
+        string message = $"{HF.GetFullItemName(item)} broken.";
+        UIManager.inst.CreateNewLogMessage(message, display.dangerRed, UIManager.inst.alertRed, false, true);
+        
         // Change the internal variable
         item.isBroken = true;
 

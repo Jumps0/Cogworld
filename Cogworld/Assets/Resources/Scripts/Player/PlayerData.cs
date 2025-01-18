@@ -303,8 +303,8 @@ public class PlayerData : MonoBehaviour
         }
 
         // First we only want to do this if the player actually has weapons and atleast one is active
-        ItemObject weaponInUse = HasActiveWeapon();
-        if (weaponInUse && !UIManager.inst.dataMenu.data_parent.activeInHierarchy && UIManager.inst.terminal_targetTerm == null && !HF.MouseBoundsCheck())
+        Item weaponInUse = Action.FindActiveWeapon(this.GetComponent<Actor>());
+        if (weaponInUse != null && !UIManager.inst.dataMenu.data_parent.activeInHierarchy && UIManager.inst.terminal_targetTerm == null && !HF.MouseBoundsCheck())
         {
             canDoTargeting = true;
 
@@ -1413,21 +1413,6 @@ public class PlayerData : MonoBehaviour
 
         attackBuffer = false;
     }
-
-    public ItemObject HasActiveWeapon()
-    {
-        foreach (InventorySlot slot in this.GetComponent<PartInventory>().inv_weapon.Container.Items)
-        {
-            if(slot.item.Id > -1 && slot.item.state && slot.item.disabledTimer <= 0) // There is an item here, and its active
-            {
-                return slot.item.itemData;
-            }
-        }
-
-        return null;
-    }
-
-
 
     #endregion
 
