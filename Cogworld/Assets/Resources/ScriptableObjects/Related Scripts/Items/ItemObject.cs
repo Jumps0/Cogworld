@@ -115,11 +115,22 @@ public class Item
         itemData = item.itemData;
         integrityCurrent = item.itemData.integrityMax;
 
+        // Special states
+        isDeteriorating = item.isDeteriorating;
+        isRigged = item.isRigged;
+        isFaulty = item.isFaulty;
+        doneFaultyFailure = item.doneFaultyFailure;
+        isBroken = item.isBroken;
+        corrupted = item.corrupted;
+        doneCorruptionFeedback = item.doneCorruptionFeedback;
+        disabledTimer = item.disabledTimer;
         unstable = item.unstable;
         disposable = item.disposable;
+        chargable = item.chargable;
         disabledTimer = item.disabledTimer;
         uniqueDetail = item.uniqueDetail;
 
+        // Duplicate
         isDuplicate = item.isDuplicate;
         duplicate_uuid = item.duplicate_uuid;
         if (item.duplicates == null)

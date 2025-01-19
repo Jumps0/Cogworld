@@ -2374,7 +2374,7 @@ public static class HF
             }
             else
             {
-                if (item.rating == tier)
+                if (item.rating == tier && item.knowByPlayer) // Needs to be known
                 {
                     items.Add(item);
                 }

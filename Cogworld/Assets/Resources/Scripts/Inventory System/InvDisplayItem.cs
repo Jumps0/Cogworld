@@ -124,9 +124,16 @@ public class InvDisplayItem : MonoBehaviour
         assignedOrderText.color = letterWhite;
         Color textColor = activeGreen;
 
-        if (item.isBroken || item.isFaulty)
+        if (item.itemData.knowByPlayer)
         {
-            textColor = UIManager.inst.highSecRed;
+            if (item.isBroken || item.isFaulty)
+            {
+                textColor = UIManager.inst.highSecRed;
+            }
+            else if (item.corrupted > 0)
+            {
+                textColor = gBlueHigh;
+            }
         }
             
         if (isSecondaryItem)
@@ -586,9 +593,18 @@ public class InvDisplayItem : MonoBehaviour
         end = activeGreen;
         highlight = inActiveGreen;
 
-        if (item.isBroken || item.isFaulty)
+        if (item.itemData.knowByPlayer)
         {
-            end = UIManager.inst.highSecRed;
+            if (item.isBroken || item.isFaulty)
+            {
+                end = UIManager.inst.highSecRed;
+                highlight = UIManager.inst.dangerRed;
+            }
+            else if (item.corrupted > 0)
+            {
+                end = gBlueHigh;
+                highlight = gBlueLow;
+            }
         }
 
         if (isSecondaryItem)
