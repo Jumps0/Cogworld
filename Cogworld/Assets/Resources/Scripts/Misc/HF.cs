@@ -5855,11 +5855,16 @@ public static class HF
             // -- Consequences --
             float random = Random.Range(0f, 1f);
 
+            // Always need to display a message too
+            Color mColor = UIManager.inst.corruptOrange;
+            Color bColor = UIManager.inst.corruptOrange_faded;
+
             // TODO: Figure out what can happen here
             if(random > 0.90f) {} // Nothing!
             else if (random <= 0.90f && random > 0.75f)
             {
                 // Power surge
+                UIManager.inst.CreateNewLogMessage($"Faulty integration triggers power surge.", mColor, bColor, false, true);
             }
             else if (random <= 0.75f && random > 0.50f)
             {
@@ -5916,7 +5921,6 @@ public static class HF
         // Display log message
         if (messagePreface != "")
         {
-            Debug.Log("HF Bag aquired");
             UIManager.inst.CreateNewLogMessage($"{messagePreface} {fullName}.", a, b, false, true);
         }
 
@@ -5927,10 +5931,8 @@ public static class HF
             b = UIManager.inst.highSecRed;
             UIManager.inst.CreateNewLogMessage($"Integrated {fullName} (+{corruption}).", a, b, false, true);
         }
-        else if (DO_FAULTY)
-        {
-            // unsure if there is a special one for this
-        }
+        else if (DO_FAULTY) { /* Messages handled previously in this function. */ }
+
     }
     #endregion
 

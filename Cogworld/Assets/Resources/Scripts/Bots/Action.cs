@@ -4500,7 +4500,16 @@ public static class Action
                 Smash: As Destroy, but gets to also apply an equal amount of damage as overflow damage (impact weapons)
                 Sever: Sever target part, or if hit core also damages and severs a different part (slashing weapons)
                 Puncture: Half of damage automatically transferred to core (piercing weapons)
-                (there are four other crit types associated with the special damage types not covered in this article: Detonate, Sunder, Intensity, and Phase)
+                Impale: Chance for this weapon to inflcit twice as much damage and further delay
+                        both attacker and target's next opporunity to act by 1 turn. 
+                        The attacker is not delayed if this effect is a property of a non-melee weapon.
+                Sunder: This effect will instantly sunder a bot, similar to the Core Stripper on a normal attack. 
+                        All parts are dropped between 1/3 and 2/3 integrity. Affected by the Dismemberment immunity. 
+                        The log message [target] is sundered. will appear when this happens.
+                Detonate: Chance for this weapon to detonate an engine, regardless of what part was hit.
+                Intensify: ???
+                Phase: Chance for this weapon to cause an equal amount of damage to target's core. 
+                       On a direct core hit, instead damagess a random part by the same amount.
              */
 
             switch (critType)
@@ -4662,9 +4671,12 @@ public static class Action
                     }
                     break;
                 case CritType.Detonate: // Vortex Rail, Vortex Rifle & Vortex Shotgun has this
-                    // (Assumption): Destroy random [utility] part
+                    // Chance for this weapon to detonate an engine, regardless of what part was hit.
                     // "Entropic reaction triggered in %1."
                     // "%1 blocked entropic reaction in %2." (shielding power, player only)
+
+                    // TODO: Rewrite this to reflect the new info above ^
+                    /*
                     Item shield = HF.DoesBotHaveSheild(target);
                     Item itemTarget = Action.FindRandomItemOfSlot(target, ItemSlot.Utilities);
                     if (!target.botInfo && shield != null)
@@ -4676,11 +4688,17 @@ public static class Action
                         Action.DestoyItem(target, itemTarget);
                         UIManager.inst.CreateNewCalcMessage("Entropic reaction triggered in " + itemTarget.Name + ".", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
                     }
+                    */
 
                     break;
                 case CritType.Sunder: // BFG-9k Vortex Edition, Vortex Driver, Vortex Lancer & Vortex Cannon has this
                     // "[name] %1 ripped off."
-                    // (Assumption): Damage & Remove random propulsion component
+                    // This effect will instantly sunder a bot, similar to the Core Stripper on a normal attack.
+                    // All parts are dropped between 1/3 and 2/3 integrity. Affected by the Dismemberment immunity.
+                    // The log message [target] is sundered. will appear when this happens.
+
+                    // TODO: Rewrite this to reflect the new info above ^
+                    /*
                     Item item4 = Action.FindRandomItemOfSlot(target, ItemSlot.Propulsion);
                     item4 = Action.DamageBot(target, damage, weapon, source, false);
                     if (item4 != null)
@@ -4698,6 +4716,7 @@ public static class Action
 
                         UIManager.inst.CreateNewCalcMessage(item4.Name + " was ripped off.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
                     }
+                    */
                     break;
                 case CritType.Intensify: // Zio. Phaser-S/M/H have this
                     // (Assumption): Double Damage
@@ -4720,7 +4739,11 @@ public static class Action
                     break;
                 case CritType.Phase: // L-Cannon, Drained L-Cannon, Zio. Alpha-Cannon & Zio. Alpha-Cannon MK.2 has this
                     // "Damage phase-mirrored to [name] %1." | [name] enveloped in phasic energy. see: https://youtu.be/0I_-Tuuv4Ww?si=MfiJZ4VfZbAkKsKX&t=9715
-                    // (Assumption): Mirror damage to neighbor
+                    // Chance for this weapon to cause an equal amount of damage to target's core. 
+                    // On a direct core hit, instead damagess a random part by the same amount.
+
+                    // TODO: Rewrite this to reflect the new info above ^
+                    /*
                     Actor neighbor = Action.FindNewNeighboringEnemy(target);
                     DamageBot(neighbor, damage, weapon, source, false);
                     string botName2 = "";
@@ -4734,9 +4757,16 @@ public static class Action
                     }
 
                     UIManager.inst.CreateNewCalcMessage("Damage phase-mirrored to " + botName2 + " [" + damage + "].", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                    
+                    */
+
                     break;
                 case CritType.Impale: // CR-A16's Behemoth Slayer & A bunch of other piercing weapons have this
-                    // (Assumption): Insta-kill
+                    // Chance for this weapon to inflcit twice as much damage and further delay both attacker and target's next opporunity to act by 1 turn.
+                    // The attacker is not delayed if this effect is a property of a non-melee weapon.
+
+                    // TODO: Rewrite this to reflect the new info above ^
+                    /*
                     // Destroy the core
                     if (target.botInfo)
                     {
@@ -4747,6 +4777,7 @@ public static class Action
                     {
                         PlayerData.inst.currentHealth = 0;
                     }
+                    */
                     break;
             }
 
