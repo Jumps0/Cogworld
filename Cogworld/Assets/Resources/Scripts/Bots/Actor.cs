@@ -583,6 +583,13 @@ public class Actor : Entity
                             if (Random.Range(0f, 1f) < chance) // Continue to next check
                             {
                                 // Corruption check
+                                /*
+                                 * One of the big changes to EM damage in Beta 11 was of course the potential to corrupt the victim’s salvage, 
+                                 * causing some amount of system corruption when attached. 
+                                 * This may cause players to shy away from corrupting targets with desirable salvage, 
+                                 * or avoid attaching quite as much of that salvage as they would before. 
+                                 * Still, sometimes you just have to put on that extra corrupted part to survive, or maybe just don’t care :)
+                                 */
                                 chance = ((100 * corruption) - item.itemData.integrityMax) / 100;
 
                                 if (Random.Range(0f, 1f) < chance) // Continue to next check
@@ -591,7 +598,8 @@ public class Actor : Entity
                                     if (Random.Range(0f, 1f) < corruption)
                                     { // This should really be "1 to (10*[corruption]/100)" but I have no idea how that math works out
                                       // Corrupted!
-                                        item.corrupted = true;
+                                        int calc = (10 * (int)(100 * corruption) / 100); // ex: This turns 60 -> 6
+                                        item.corrupted = Random.Range(1, calc);
                                         InventoryControl.inst.DropItemOnFloor(item, this, null, Vector2Int.zero);
                                     }
 

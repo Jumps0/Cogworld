@@ -77,11 +77,15 @@ public class Item
     [Tooltip("Is this item currently losing HP because of an external reason (deteriorating)?")] // see: https://www.gridsagegames.com/blog/2013/12/burnout-momentum-em-disruption/
     public bool isDeteriorating = false;
     public bool isRigged = false;
-    [Tooltip("FAULTY PROTOTYPE")]
-    public bool isFaulty = false;
+    [Tooltip("FAULTY PROTOTYPE. Faulty prototypes will almost always malfunction and have potentially serious side-effects when attached, and cannot be used or repaired, but may be scanned to obtain the schematic.")]
+    public bool isFaulty = false; // TODO: Attempted attachment of a *known* Faulty part warns about that before most other potential issues 
+    [Tooltip("Faulty items usually have a one time punishment for equipping them. If false this has not occurred yet.")]
+    public bool doneFaultyFailure = false;
     public bool isBroken = false;
-    [Tooltip("Is this item corrupted?")]
-    public bool corrupted = false;
+    [Tooltip("Is this item corrupted? Must be greater than 0. Capped at 100.")]
+    public int corrupted = 0;
+    [Tooltip("One time punishment for equipping a corrupted part.")]
+    public bool doneCorruptionFeedback = false;
     [Tooltip("If > 0, this item is disabled for the specified turns. (Usually due to overheating)")]
     public int disabledTimer = 0;
     [Tooltip("Unstable weapons implode after the indicated remaining number of shots. -1 = not unstable.")]

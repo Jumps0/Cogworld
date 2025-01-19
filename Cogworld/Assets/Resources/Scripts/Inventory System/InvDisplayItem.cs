@@ -123,10 +123,17 @@ public class InvDisplayItem : MonoBehaviour
     {
         assignedOrderText.color = letterWhite;
         Color textColor = activeGreen;
-        if (item.isBroken)
+
+        if (item.isBroken || item.isFaulty)
+        {
             textColor = UIManager.inst.highSecRed;
+        }
+            
         if (isSecondaryItem)
+        {
             textColor = wideBlue;
+        }
+
         itemNameText.color = textColor;
 
         partDisplay.gameObject.SetActive(true);
@@ -268,7 +275,11 @@ public class InvDisplayItem : MonoBehaviour
             }
 
             // - Integrity Color Square - //
-            if (!item.isBroken)
+            if(item.isBroken || item.isFaulty)
+            {
+                healthDisplay.color = dangerRed;
+            }
+            else
             {
                 float currentIntegrity = (float)item.integrityCurrent / (float)item.itemData.integrityMax;
                 if (currentIntegrity >= 0.75f) // Green (>=75%)
@@ -287,10 +298,6 @@ public class InvDisplayItem : MonoBehaviour
                 {
                     healthDisplay.color = dangerRed;
                 }
-            }
-            else
-            {
-                healthDisplay.color = dangerRed;
             }
 
             // - < Right Side Text > - //
@@ -579,8 +586,11 @@ public class InvDisplayItem : MonoBehaviour
         end = activeGreen;
         highlight = inActiveGreen;
 
-        if (item.isBroken)
+        if (item.isBroken || item.isFaulty)
+        {
             end = UIManager.inst.highSecRed;
+        }
+
         if (isSecondaryItem)
             end = wideBlue;
 
@@ -740,6 +750,7 @@ public class InvDisplayItem : MonoBehaviour
             || discardAnimationCoroutine != null // We should forbid toggling while in the middle of animating.
             || isSecondaryItem // Only lead items should be able to be toggled.
             || (item != null && item.isBroken) // Forbid broken items from being toggled
+            || (item != null && item.isFaulty) // Forbid faulty items from being toggled
             || (item != null && item.disabledTimer > 0) // Forbid force disabled items from being toggled.
             || (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.customType == CustomTerminalType.HideoutCache)) // Don't toggle items while in the cache inventory mode
         {
@@ -1017,7 +1028,7 @@ public class InvDisplayItem : MonoBehaviour
         TextTypeOutAnimation(false);
 
         // Play a sound
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_ui["PART_ON"]); // UI - PART_ON
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_ui["PARTON"]); // UI - PARTON
 
         // Update the UI
         UIManager.inst.UpdateInventory();
@@ -1138,7 +1149,7 @@ public class InvDisplayItem : MonoBehaviour
         OverloadTransitionAnimation();
 
         // Play a sound
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_ui["PART_ON"]); // UI - PART_ON
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_ui["PARTON"]); // UI - PARTON
 
         // Update the UI
         UIManager.inst.UpdateInventory();
@@ -1235,7 +1246,7 @@ public class InvDisplayItem : MonoBehaviour
             item.siege = true;
 
             // Play a sound
-            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_ui["PART_ON"]); // UI - PART_ON
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_ui["PARTON"]); // UI - PARTON
         }
         else if (startState == 1 && endState == 2) // (begin) -> SIEGE
         {

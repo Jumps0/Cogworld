@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using static UnityEditor.Progress;
 
 public abstract class UserInterface : MonoBehaviour
 {
@@ -635,11 +636,11 @@ public abstract class UserInterface : MonoBehaviour
                 // Prototype discovery
                 if(originSlot.AllowedItems.Count > 0)
                 {
-                    HF.DiscoverPrototype(originItem, true, false);
+                    HF.MiscItemEquipLogic(originItem, true, false);
                 }
                 else if (destinationSlot.AllowedItems.Count > 0)
                 {
-                    HF.DiscoverPrototype(destinationItem, true, false);
+                    HF.MiscItemEquipLogic(destinationItem, true, false);
                 }
 
                 // Now that we have all our data, we go through both at the same time and start swapping data (they will both have the same length).
@@ -862,7 +863,7 @@ public abstract class UserInterface : MonoBehaviour
                 else if (destinationSlot.parent.GetComponent<DynamicInterface>())// Moving TO a /PARTS/ slot
                 {
                     // Prototype discovery (equip only)
-                    HF.DiscoverPrototype(originItem, true, false);
+                    HF.MiscItemEquipLogic(originItem, true, false);
 
                     word = "Attached ";
                     if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.customType == CustomTerminalType.HideoutCache)
@@ -1017,97 +1018,151 @@ public abstract class UserInterface : MonoBehaviour
         }
         else // Yes! Relocate the item.
         {
-            bool once = false;
-            foreach (var dobj in destinationObjects)
+            // !! Before we do this, we need to give the player a warning if they are about to knowingly and willingly equip a faulty or corrupted item. !!
+            bool doWarning = false;
+            if((item.isFaulty && item.itemData.knowByPlayer) || item.corrupted > 0)
             {
-                // If this is a multi-slot item, we need to start modifying the children
-                if(dobj != destinationObjects[0]) // Not the first item (parent). This will only happen if we need to move more than 1 slot!
-                {
-                    // We need to re-assign our input variables to the children
-                    int index = destinationObjects.IndexOf(dobj) - 1; // -1 because destinationObjects also includes the parent item (at index 0)
-                    obj = children[index].Key;
-                    item = children[index].Value;
-                }
-
-                // Prototype discovery
-                HF.DiscoverPrototype(item, true, false);
-
-                if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.customType == CustomTerminalType.HideoutCache) // Special case if we are instead submitting it to the cache
-                {
-                    InventoryControl.inst.hideout_inventory.AddItem(item, 1);
-                    if (!once)
-                    {
-                        UIManager.inst.ShowCenterMessageTop("Submitted " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, Color.black);
-                        UIManager.inst.CreateNewLogMessage("Submitted " + HF.GetFullItemName(item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
-                    }
-                }
-                else if (item.itemData.slot == ItemSlot.Power)
-                {
-                    PlayerData.inst.GetComponent<PartInventory>().inv_power.AddItem(item, 1);
-                    if (!once)
-                    {
-                        UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, Color.black);
-                        UIManager.inst.CreateNewLogMessage("Attached " + HF.GetFullItemName(item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
-                    }
-                }
-                else if (item.itemData.slot == ItemSlot.Propulsion)
-                {
-                    PlayerData.inst.GetComponent<PartInventory>().inv_propulsion.AddItem(item, 1);
-                    if (!once)
-                    {
-                        UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, Color.black);
-                        UIManager.inst.CreateNewLogMessage("Attached " + HF.GetFullItemName(item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
-                    }
-                }
-                else if (item.itemData.slot == ItemSlot.Utilities)
-                {
-                    PlayerData.inst.GetComponent<PartInventory>().inv_utility.AddItem(item, 1);
-                    if (!once)
-                    {
-                        UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, Color.black);
-                        UIManager.inst.CreateNewLogMessage("Attached " + HF.GetFullItemName(item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
-                    }
-                }
-                else if (item.itemData.slot == ItemSlot.Weapons)
-                {
-                    PlayerData.inst.GetComponent<PartInventory>().inv_weapon.AddItem(item, 1);
-                    if (!once)
-                    {
-                        UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, Color.black);
-                        UIManager.inst.CreateNewLogMessage("Attached " + HF.GetFullItemName(item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
-                    }
-                }
-
-                // Remove the old item from wherever its stored
-                Action.FindRemoveItemFromPlayer(item);
-
-                obj.GetComponent<InvDisplayItem>().item = new Item(); // Set [ORIGIN]'s item to be empty in object
-                obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].item = new Item(); // Set [ORIGIN]'s item slot to be empty so we don't get errors
-
-                dobj.GetComponent<InvDisplayItem>().item = item; // Set the item on the [DESTINATION] object
-
-                // Force enable the item and animate it (if its disabled)
-                if (!dobj.GetComponent<InvDisplayItem>().item.state) // [DESTINATION]
-                {
-                    dobj.GetComponent<InvDisplayItem>().UIEnable();
-                }
-
-                // Flash the item's display square
-                dobj.GetComponent<InvDisplayItem>().FlashItemDisplay();
-
-                once = true;
+                doWarning = true;
             }
 
-            // Update Inventory Count
-            PlayerData.inst.currentInvCount = PlayerData.inst.GetComponent<PartInventory>()._inventory.ItemCount;
+            if (doWarning == false || (doWarning == true && confirmEquipBadItem))
+            {
+                bool once = false;
+                foreach (var dobj in destinationObjects)
+                {
+                    // If this is a multi-slot item, we need to start modifying the children
+                    if (dobj != destinationObjects[0]) // Not the first item (parent). This will only happen if we need to move more than 1 slot!
+                    {
+                        // We need to re-assign our input variables to the children
+                        int index = destinationObjects.IndexOf(dobj) - 1; // -1 because destinationObjects also includes the parent item (at index 0)
+                        obj = children[index].Key;
+                        item = children[index].Value;
+                    }
 
-            // Update UI
-            UIManager.inst.UpdatePSUI();
-            UIManager.inst.UpdateInventory();
-            UIManager.inst.UpdateParts();
-            InventoryControl.inst.UpdateInterfaceInventories();
+                    // Prototype discovery
+                    HF.MiscItemEquipLogic(item, true, false);
+
+                    if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.customType == CustomTerminalType.HideoutCache) // Special case if we are instead submitting it to the cache
+                    {
+                        InventoryControl.inst.hideout_inventory.AddItem(item, 1);
+                        if (!once)
+                        {
+                            UIManager.inst.ShowCenterMessageTop("Submitted " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, Color.black);
+                            UIManager.inst.CreateNewLogMessage("Submitted " + HF.GetFullItemName(item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
+                        }
+                    }
+                    else if (item.itemData.slot == ItemSlot.Power)
+                    {
+                        PlayerData.inst.GetComponent<PartInventory>().inv_power.AddItem(item, 1);
+                        if (!once)
+                        {
+                            UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, Color.black);
+                            UIManager.inst.CreateNewLogMessage("Attached " + HF.GetFullItemName(item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
+                        }
+                    }
+                    else if (item.itemData.slot == ItemSlot.Propulsion)
+                    {
+                        PlayerData.inst.GetComponent<PartInventory>().inv_propulsion.AddItem(item, 1);
+                        if (!once)
+                        {
+                            UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, Color.black);
+                            UIManager.inst.CreateNewLogMessage("Attached " + HF.GetFullItemName(item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
+                        }
+                    }
+                    else if (item.itemData.slot == ItemSlot.Utilities)
+                    {
+                        PlayerData.inst.GetComponent<PartInventory>().inv_utility.AddItem(item, 1);
+                        if (!once)
+                        {
+                            UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, Color.black);
+                            UIManager.inst.CreateNewLogMessage("Attached " + HF.GetFullItemName(item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
+                        }
+                    }
+                    else if (item.itemData.slot == ItemSlot.Weapons)
+                    {
+                        PlayerData.inst.GetComponent<PartInventory>().inv_weapon.AddItem(item, 1);
+                        if (!once)
+                        {
+                            UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, Color.black);
+                            UIManager.inst.CreateNewLogMessage("Attached " + HF.GetFullItemName(item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
+                        }
+                    }
+
+                    // Remove the old item from wherever its stored
+                    Action.FindRemoveItemFromPlayer(item);
+
+                    obj.GetComponent<InvDisplayItem>().item = new Item(); // Set [ORIGIN]'s item to be empty in object
+                    obj.GetComponent<InvDisplayItem>().my_interface.slotsOnInterface[obj].item = new Item(); // Set [ORIGIN]'s item slot to be empty so we don't get errors
+
+                    dobj.GetComponent<InvDisplayItem>().item = item; // Set the item on the [DESTINATION] object
+
+                    // Force enable the item and animate it (if its disabled)
+                    if (!dobj.GetComponent<InvDisplayItem>().item.state) // [DESTINATION]
+                    {
+                        dobj.GetComponent<InvDisplayItem>().UIEnable();
+                    }
+
+                    // Flash the item's display square
+                    dobj.GetComponent<InvDisplayItem>().FlashItemDisplay();
+
+                    once = true;
+                }
+
+                // Update Inventory Count
+                PlayerData.inst.currentInvCount = PlayerData.inst.GetComponent<PartInventory>()._inventory.ItemCount;
+
+                // Update UI
+                UIManager.inst.UpdatePSUI();
+                UIManager.inst.UpdateInventory();
+                UIManager.inst.UpdateParts();
+                InventoryControl.inst.UpdateInterfaceInventories();
+            }
+            else
+            {
+                BadItemEquipWarning(item);
+            }
+
         }
     }
+
+    #region Equip-warning
+    // !! We need to give the player a warning if they are about to knowingly and willingly equip a faulty or corrupted item. !!
+    [SerializeField] private bool confirmEquipBadItem = false;
+    [SerializeField] private float equipBadItemCooldown = 5f;
+    private void BadItemEquipWarning(Item item)
+    {
+        string qualifier = "";
+        string hideoutCase = "equip";
+
+        if (item.isFaulty)
+        {
+            qualifier = "faulty";
+        }
+        else if (item.corrupted > 0)
+        {
+            qualifier = "corrupted";
+        }
+
+        if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.customType == CustomTerminalType.HideoutCache)
+        {
+            hideoutCase = "store";
+        }
+
+        // Player a warning message
+        UIManager.inst.ShowCenterMessageTop($"About to {hideoutCase} {qualifier} item! Confirm intention.", UIManager.inst.dangerRed, Color.black);
+        // Start the timer
+        StartCoroutine(ConfirmEquipBadItemCooldown());
+    }
+
+    private IEnumerator ConfirmEquipBadItemCooldown()
+    {
+        confirmEquipBadItem = true;
+
+        yield return new WaitForSeconds(equipBadItemCooldown);
+
+        confirmEquipBadItem = false;
+    }
+    #endregion
 
     #region Auto-Sorting
     /// <summary>

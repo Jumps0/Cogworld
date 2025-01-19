@@ -538,6 +538,11 @@ public class GlobalSettings : MonoBehaviour
                     db_textaid.gameObject.SetActive(true);
                     db_textaid.text = "> faulty [Spawns in a random FAULTY prototype beneath the player.]";
                 }
+                else if (command.Contains("corrupted"))
+                {
+                    db_textaid.gameObject.SetActive(true);
+                    db_textaid.text = "> corrupted [Spawns in a random CORRUPTED item beneath the player.]";
+                }
                 // Expand this as needed
             }
         }
@@ -584,8 +589,11 @@ public class GlobalSettings : MonoBehaviour
          *    -Breaks an equipped item. Use 'random' for a random item.
          *  > faulty
          *    -Spawns in a random FAULTY prototype beneath the player.
+         *  > corrupted
+         *    -Spawns in a random CORRUPTED item beneath the player.
          * ================================
          */
+        #endregion
 
         bool success = false;
 
@@ -1037,6 +1045,26 @@ public class GlobalSettings : MonoBehaviour
                 }
 
                 break;
+            case "corrupted":
+                // Get an item
+                ItemObject corrItem = HF.FindItemOfTier(Random.Range(2, 9), false);
+
+                // Spawn it in as corrupted
+                if (corrItem != null)
+                {
+                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(corrItem.itemName, HF.LocationOfPlayer(), 1, false, 0, 100));
+
+                    DebugBarHelper($"Spawned a corrupted {corrItem.itemName}.");
+
+                    success = true;
+                }
+                else
+                {
+                    DebugBarHelper("[corrupted] failed to find an item to spawn. Please try again.");
+                    return;
+                }
+
+                break;
             default: // Unknown command
                 DebugBarHelper("Unknown command...");
                 return;
@@ -1059,8 +1087,6 @@ public class GlobalSettings : MonoBehaviour
             // Unfocus
             DebugBarChangeFocus(false);
         }
-
-        #endregion
     }
 
     private void DebugBarChangeFocus(bool focus)

@@ -109,7 +109,13 @@ public class InventoryControl : MonoBehaviour
                 }
             }
         }
-        
+
+        // Corruption
+        if(spawnInfo.corruptedAmount > 0)
+        {
+            item.corrupted = spawnInfo.corruptedAmount;
+        }
+
         // Part setup
         spawnedItem.GetComponent<Part>()._item = item; // Assign part data from database by ID
 
@@ -556,16 +562,21 @@ public class ItemSpawnInfo
     [Tooltip("The chance for this item (if it is a prototype) to spawn in as a faulty prototype [0f to 1f].")]
     public float chanceForFaulty;
 
-    public ItemSpawnInfo(string name, Vector2 location, int amount, bool native, float rollForFaulty = 0f)
+    // Extra stuff
+    [Tooltip("Rarely used. Make an item start with corruption on it.")]
+    public int corruptedAmount = 0;
+
+    public ItemSpawnInfo(string name, Vector2 location, int amount, bool native, float rollForFaulty = 0f, int corruption = 0)
     {
         this.name = name;
         this.location = location;
         this.amount = amount;
         this.native = native;
         this.chanceForFaulty = rollForFaulty;
+        this.corruptedAmount = corruption;
 
         // Failsafe for matter
-        if(name.ToLower() == "Matter")
+        if (name.ToLower() == "Matter")
         {
             this.chanceForFaulty = 0f;
         }

@@ -6424,7 +6424,70 @@ public static class Action
 
     public static bool IsItemActionable(Item item)
     {
-        return item.Id >= 0 && item.state && !item.isDuplicate && item.disabledTimer <= 0 && !item.isBroken;
+        return item.Id >= 0 && item.state && !item.isDuplicate && item.disabledTimer <= 0 && !item.isBroken && !item.isFaulty;
+    }
+
+    /// <summary>
+    /// Corruption consequences for the player.
+    /// </summary>
+    public static void CorruptionConsequences()
+    {
+        // https://noemica.github.io/cog-minder/wiki/Corruption
+        int currentCorruption = PlayerData.inst.currentCorruption;
+
+        // Lots of possible options here.
+        #region Possible Corruption Effects
+        /*
+         * Name                Effect                                                                                                                              Extra Conditions
+            Message Error       Garbled messages appear in the game log.                                                                                       N/A
+
+            Matter Fused        Loss of between 5-10 Matter, with the log message System corrupted: Matter fused (-x).                                         Only occurs if Cogmind has > 0 matter
+
+            Heat Flow Error     Large spike in Heat, between 100 and 300, with log message System corrupted: Heat flow error (+x).                             N/A
+
+            Energy Discharge    Loss of stored Energy, between 20-40% of current storage capacity, with log message System corrupted: Energy discharge (-x).   Only occurs if Cogmind has > 0 energy
+
+            Part Rejected       A random part is detached, not including fragile parts like processors, with log message                                       Only occurs while hostile bots are nearby
+                                System corrupted: [part name] rejected.                                                                                             
+
+            Part Fused          A random part that isn't fragile or fused already becomes fused and is unable to be detached without destruction,              N/A
+                                with log message System corrupted: [part name] fused.                                                                               
+
+            Data Loss           There are two similar effects of data loss. A minor data loss will lose 1-3 component part ID                                  N/A
+            (Minor/Major)       with the log message System corrupted: Component data lost. A major data loss will lose 3-5 component part IDs
+                                with the log message System corrupted: Substantial component data lost.                                                             
+
+            Misfire             A random weapon will be attempted to be fired.                                                                                 N/A
+                                Fails if the weapon does not have enough resources to fire (matter/energy). 
+                                This effect doesn't affect melee weapons, special weapons, or guided weapons. 
+                                Also has the log message System corrupted: FCS attempts to trigger [part name]. 
+                                If the misfire is successful, there is an additional log message System corrupted: [part name] misfires.                            
+
+            IFF Burst           An IFF burst comes from Cogmind, alerting hostiles within a 15 tile radius.                                                    N/A
+                                Bots will head to investigate the location of the IFF burst but do not gain active tracking on Cogmind. 
+                                Also has the log message IFF burst signal emitted.                                                                                  
+
+            Misdirection        Cogmind may move in a random direction other than the one commanded,                                                           Only occurs while hostile bots are nearby
+                                with game popup message (not log message) System corrupted: Misdirected. 
+                                On flight, may come with an additional penalty of slamming into a wall. 
+                                If this occurs, Cogmind will take minor impact damage, with the log message Slammed into [ceiling/wall].                            
+
+            Weapon Failure      A weapon will fail to fire during a volley. Based on if the weapon is a ballistic weapon, energy weapon, or launcher,          Only occurs on firing a volley
+                                the log message will be the following: System corrupted: [part name] jammed/failed to cycle/failed to launch.                       
+
+            Hacking Penalty     Cogmind suffers a [corruption % / 3] penalty to the success rate of hacks on all interactive machines.                         N/A
+
+            Accuracy Penalty    Cogmind suffers a [corruption % / 4]% penalty to accuracy.                                                                     N/A
+
+            Allied Trap         Can trigger allied traps when walking on top of them, with a [corruption %] chance of triggering.                              N/A
+            Triggering 
+
+            Instant Death       When Cogmind hits 100% corruption, the game is instantly over                                                                  >100% corruption 
+         */
+
+        #endregion
+
+
     }
     #endregion
 

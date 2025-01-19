@@ -1936,7 +1936,7 @@ public static class HF
         // "Getting traced may result in receiving Corruption, your Hackware breaking, but most commonly an Investigation Squad."
 
         // Random chance to do the following:
-        // -Give corruption
+        // -Give corruption (see: https://noemica.github.io/cog-minder/wiki/Corruption
         // -Corrupt an equipped part
         // -Nothing
 
@@ -4798,7 +4798,7 @@ public static class HF
 
         // If not we do the normal routine
         string fullName = item.itemData.itemName;
-        if (item.corrupted)
+        if (item.corrupted > 0)
         {
             fullName = "Corrupted " + fullName;
         }
@@ -5827,7 +5827,7 @@ public static class HF
         display.BreakItem();
     }
 
-    public static void DiscoverPrototype(Item item, bool displayMessage, bool doInterfaceUpdate = true)
+    public static void MiscItemEquipLogic(Item item, bool displayMessage, bool doInterfaceUpdate = true)
     {
         string fullName = HF.GetFullItemName(item);
 
@@ -5835,9 +5835,9 @@ public static class HF
         if (!item.itemData.knowByPlayer)
             item.itemData.knowByPlayer = true;
 
-        // If the item is faulty we should use a different text color
+        // If the item is faulty or broken we should use a different text color
         Color a = UIManager.inst.activeGreen, b = UIManager.inst.dullGreen;
-        if (item.isFaulty)
+        if (item.isFaulty || item.isBroken)
         {
             a = UIManager.inst.dangerRed;
             b = UIManager.inst.highSecRed;
@@ -5850,6 +5850,57 @@ public static class HF
         // Display log message
         if (displayMessage)
             UIManager.inst.CreateNewLogMessage("Aquired " + fullName + ".", a, b, false, true);
+
+        // -- Faulty item consequences --
+        if (item.isFaulty && !item.doneFaultyFailure)
+        {
+            item.doneFaultyFailure = true;
+
+            // Play the 'Broken' sound
+            AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PT_LOST"], 1);
+
+            // -- Consequences --
+            float random = Random.Range(0f, 1f);
+
+            // TODO: Figure out what can happen here
+            if(random > 0.90f) {} // Nothing!
+            else if (random <= 0.90f && random > 0.75f)
+            {
+                // Power surge
+            }
+            else if (random <= 0.75f && random > 0.50f)
+            {
+
+            }
+            else if (random <= 0.50f && random > 0.25f)
+            {
+
+            }
+            else if (random <= 0.25f)
+            {
+
+            }
+        }
+
+        // -- Corrupted item consequences --
+        // see (https://noemica.github.io/cog-minder/wiki/Corruption)
+        if (item.corrupted > 0 && !item.doneCorruptionFeedback)
+        {
+            item.doneCorruptionFeedback = true;
+
+            // Play the 'Broken' sound
+            AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PT_LOST"], 1);
+
+            // -- Consequences --
+            // 1% and [corruption % on death / 10] corruption, capped at 15%
+            int corruption = Random.Range(1, item.corrupted); // (not doing the division here because its already low)
+            if(corruption > 15)
+            {
+                corruption = 15;
+            }
+
+            // TODO
+        }
     }
     #endregion
 

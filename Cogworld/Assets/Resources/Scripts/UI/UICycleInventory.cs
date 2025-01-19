@@ -133,7 +133,7 @@ public class UICycleInventory : MonoBehaviour
         foreach (var E in elements)
         {
             // NOTE: Don't forget to check the current states of items! And if items can do the thing we want them to do.
-            if(!E.isSecondaryItem && !E.item.isBroken)
+            if(!E.isSecondaryItem && !E.item.isBroken && !E.item.isFaulty)
             {
                 switch (choice)
                 {

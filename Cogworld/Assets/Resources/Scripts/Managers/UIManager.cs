@@ -7559,26 +7559,31 @@ public class UIManager : MonoBehaviour
                     // -Faulty (Prototype), red vBox
                     // -Construct, green vBox (see https://www.gridsagegames.com/blog/2022/10/the-scrap-engine/)
                     // -And potentially more
-                    switch (item.itemData.ratingType)
+                    if (item.isFaulty)
                     {
-                        case ItemRatingType.Standard: // Faded out "Standard"
-                            iRating.Setup(true, false, false, "Rating", Color.white, extra, rText, false, "Standard", true);
-                            break;
-                        case ItemRatingType.Prototype: // Bright green vBox "Prototype"
-                            iRating.Setup(true, true, false, "Rating", highlightGreen, extra, rText, false, "", false, "Prototype");
-                            break;
-                        case ItemRatingType.Alien: // Bright green vBox "Alien"
-                            iRating.Setup(true, true, false, "Rating", highlightGreen, extra, rText, false, "", false, "Alien");
-                            break;
-                        case ItemRatingType.Faulty:
-                            iRating.Setup(true, true, false, "Faulty Prototype", highSecRed, extra, rText, false, "", false, "Faulty Prototype");
-                            break;
-                        case ItemRatingType.Construct:
-                            iRating.Setup(true, true, false, "Construct", highlightGreen, extra, "?", false, "", false, "Construct");
-                            break;
-                        default:
-                            break;
+                        iRating.Setup(true, true, false, "Faulty Prototype", highSecRed, extra, rText, false, "", false, "Faulty Prototype");
                     }
+                    else
+                    {
+                        switch (item.itemData.ratingType)
+                        {
+                            case ItemRatingType.Standard: // Faded out "Standard"
+                                iRating.Setup(true, false, false, "Rating", Color.white, extra, rText, false, "Standard", true);
+                                break;
+                            case ItemRatingType.Prototype: // Bright green vBox "Prototype"
+                                iRating.Setup(true, true, false, "Rating", highlightGreen, extra, rText, false, "", false, "Prototype");
+                                break;
+                            case ItemRatingType.Alien: // Bright green vBox "Alien"
+                                iRating.Setup(true, true, false, "Rating", highlightGreen, extra, rText, false, "", false, "Alien");
+                                break;
+                            case ItemRatingType.Construct:
+                                iRating.Setup(true, true, false, "Construct", highlightGreen, extra, "?", false, "", false, "Construct");
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    
                     // Integrity
                     UIDataGenericDetail iInteg = UIManager.inst.Data_CreateGeneric();
                     extra = "Integrity reflects the amount of damage a part can sustain before it is destroyed or rendered useless. Maximum integrity for a part type that cannot be repaired is preceded by a *.";

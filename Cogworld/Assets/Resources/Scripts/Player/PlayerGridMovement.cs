@@ -72,6 +72,7 @@ public class PlayerGridMovement : MonoBehaviour
         }
     }
 
+    #region Turn Skipping
     private bool skipTurnCooldown = false;
     private float skipTurnCooldownAmount = 0.1f;
     private Coroutine skipTurnCooldownRoutine = null;
@@ -101,6 +102,7 @@ public class PlayerGridMovement : MonoBehaviour
 
         skipTurnCooldown = true;
     }
+    #endregion
 
     #region Movement
     private void HandleMovement(Vector2 direction)
