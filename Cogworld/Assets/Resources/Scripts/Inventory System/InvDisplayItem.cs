@@ -282,29 +282,22 @@ public class InvDisplayItem : MonoBehaviour
             }
 
             // - Integrity Color Square - //
-            if(item.isBroken || item.isFaulty)
+            float currentIntegrity = (float)item.integrityCurrent / (float)item.itemData.integrityMax;
+            if (currentIntegrity >= 0.75f) // Green (>=75%)
+            {
+                healthDisplay.color = activeGreen;
+            }
+            else if (currentIntegrity < 0.75f && currentIntegrity <= 0.50f) // Yellow (75-50%)
+            {
+                healthDisplay.color = hurtYellow;
+            }
+            else if (currentIntegrity < 0.5f && currentIntegrity <= 0.25f) // Orange (50-25%)
+            {
+                healthDisplay.color = badOrange;
+            }
+            else // Red (25-0%)
             {
                 healthDisplay.color = dangerRed;
-            }
-            else
-            {
-                float currentIntegrity = (float)item.integrityCurrent / (float)item.itemData.integrityMax;
-                if (currentIntegrity >= 0.75f) // Green (>=75%)
-                {
-                    healthDisplay.color = activeGreen;
-                }
-                else if (currentIntegrity < 0.75f && currentIntegrity <= 0.50f) // Yellow (75-50%)
-                {
-                    healthDisplay.color = hurtYellow;
-                }
-                else if (currentIntegrity < 0.5f && currentIntegrity <= 0.25f) // Orange (50-25%)
-                {
-                    healthDisplay.color = badOrange;
-                }
-                else // Red (25-0%)
-                {
-                    healthDisplay.color = dangerRed;
-                }
             }
 
             // - < Right Side Text > - //

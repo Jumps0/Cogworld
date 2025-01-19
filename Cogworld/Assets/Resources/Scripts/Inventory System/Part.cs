@@ -488,7 +488,7 @@ public class Part : MonoBehaviour
                     }
 
                     // Item Discovery and Logging
-                    HF.MiscItemEquipLogic(_item, true);
+                    HF.MiscItemEquipLogic(_item, "Equipped");
 
                     // Play a sound
                     PlayEquipSound();

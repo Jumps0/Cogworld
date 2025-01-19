@@ -7671,10 +7671,7 @@ public class UIManager : MonoBehaviour
                     {
                         string hex = "86B200";
                         Color pearGreen = Color.white;
-                        if (ColorUtility.TryParseHtmlString(hex, out pearGreen))
-                        {
-                            // Convert hex to a usable color
-                        }
+                        if (ColorUtility.TryParseHtmlString(hex, out pearGreen)) {}
 
                         extra = "Fragile parts are destroyed if removed after attaching them for use. While attached, these are also marked with a colon next to their letter in the parts list, as a reminder.";
                         iState.Setup(true, true, false, "State", pearGreen, extra, "", false, "", false, "FRAGILE");

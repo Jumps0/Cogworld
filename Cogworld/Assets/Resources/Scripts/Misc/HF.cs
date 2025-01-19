@@ -5827,7 +5827,13 @@ public static class HF
         display.BreakItem();
     }
 
-    public static void MiscItemEquipLogic(Item item, bool displayMessage, bool doInterfaceUpdate = true)
+    /// <summary>
+    /// Misc logic that happens directly after equipping an item.
+    /// </summary>
+    /// <param name="item">The item (or primary item) that was just equipped.</param>
+    /// <param name="messagePreface">The preface for a message to be displayed. ex: Aquired, Equipped. No message if left unset.</param>
+    /// <param name="doInterfaceUpdate">If the interface should be forcefully updated or not. Default is true.</param>
+    public static void MiscItemEquipLogic(Item item, string messagePreface = "", bool doInterfaceUpdate = true)
     {
         string fullName = HF.GetFullItemName(item);
 
@@ -5908,9 +5914,10 @@ public static class HF
             InventoryControl.inst.UpdateInterfaceInventories();
 
         // Display log message
-        if (displayMessage)
+        if (messagePreface != "")
         {
-            UIManager.inst.CreateNewLogMessage("Aquired " + fullName + ".", a, b, false, true);
+            Debug.Log("HF Bag aquired");
+            UIManager.inst.CreateNewLogMessage($"{messagePreface} {fullName}.", a, b, false, true);
         }
 
         // Other messages
