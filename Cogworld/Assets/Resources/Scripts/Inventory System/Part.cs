@@ -446,52 +446,66 @@ public class Part : MonoBehaviour
                     return;
                 }
 
-                switch (_item.itemData.slot)
+                // !! Before we do this, we need to give the player a warning if they are about to knowingly and willingly equip a faulty or corrupted item. !!
+                bool doWarning = false;
+                if ((_item.isFaulty && _item.itemData.knowByPlayer) || _item.corrupted > 0)
                 {
-                    case ItemSlot.Power:
-                        InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>().inv_power);
-
-                        break;
-                    case ItemSlot.Propulsion:
-                        InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>().inv_propulsion);
-                        PlayerData.inst.maxWeight += _item.itemData.propulsion[0].support;
-
-                        break;
-                    case ItemSlot.Utilities:
-                        InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>().inv_utility);
-
-                        break;
-                    case ItemSlot.Weapons:
-                        InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>().inv_weapon);
-
-                        break;
-                    case ItemSlot.Other: // This one goes into inventory instead
-                        InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>()._inventory);
-
-                        break;
-                    case ItemSlot.Inventory: // This one goes into inventory instead
-                        InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>()._inventory);
-
-                        break;
-                    default:
-                        Debug.LogError("ERROR: Item slot type not set!");
-                        break;
+                    doWarning = true;
                 }
 
-                // Item Discovery and Logging
-                HF.MiscItemEquipLogic(_item, true);
+                if (doWarning == false || (doWarning == true && confirmEquipBadItem))
+                {
+                    switch (_item.itemData.slot)
+                    {
+                        case ItemSlot.Power:
+                            InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>().inv_power);
 
-                // Play a sound
-                PlayEquipSound();
-                // Play an animation
+                            break;
+                        case ItemSlot.Propulsion:
+                            InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>().inv_propulsion);
+                            PlayerData.inst.maxWeight += _item.itemData.propulsion[0].support;
 
-                showFloatingName = false;
-                _highlight.SetActive(false);
-                // Remove this item from the ground
-                TryDisableConnectedPopup();
-                _tile._partOnTop = null;
-                InventoryControl.inst.worldItems.Remove(new Vector2Int(_tile.locX, _tile.locY));
-                Destroy(this.gameObject);
+                            break;
+                        case ItemSlot.Utilities:
+                            InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>().inv_utility);
+
+                            break;
+                        case ItemSlot.Weapons:
+                            InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>().inv_weapon);
+
+                            break;
+                        case ItemSlot.Other: // This one goes into inventory instead
+                            InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>()._inventory);
+
+                            break;
+                        case ItemSlot.Inventory: // This one goes into inventory instead
+                            InventoryControl.inst.AddItemToPlayer(this, PlayerData.inst.GetComponent<PartInventory>()._inventory);
+
+                            break;
+                        default:
+                            Debug.LogError("ERROR: Item slot type not set!");
+                            break;
+                    }
+
+                    // Item Discovery and Logging
+                    HF.MiscItemEquipLogic(_item, true);
+
+                    // Play a sound
+                    PlayEquipSound();
+                    // Play an animation
+
+                    showFloatingName = false;
+                    _highlight.SetActive(false);
+                    // Remove this item from the ground
+                    TryDisableConnectedPopup();
+                    _tile._partOnTop = null;
+                    InventoryControl.inst.worldItems.Remove(new Vector2Int(_tile.locX, _tile.locY));
+                    Destroy(this.gameObject);
+                }
+                else
+                {
+                    BadItemEquipWarning(_item);
+                }
             }
             else // No slot available
             {
@@ -584,6 +598,46 @@ public class Part : MonoBehaviour
 
     }
 
+    #endregion
+
+
+    #region Equip-warning
+    // !! We need to give the player a warning if they are about to knowingly and willingly equip a faulty or corrupted item. !!
+    [SerializeField] private bool confirmEquipBadItem = false;
+    [SerializeField] private float equipBadItemCooldown = 5f;
+    private void BadItemEquipWarning(Item item)
+    {
+        string qualifier = "";
+        string hideoutCase = "attach";
+
+        if (item.isFaulty)
+        {
+            qualifier = "faulty";
+        }
+        else if (item.corrupted > 0)
+        {
+            qualifier = "corrupted";
+        }
+
+        if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.customType == CustomTerminalType.HideoutCache)
+        {
+            hideoutCase = "store";
+        }
+
+        // Player a warning message
+        UIManager.inst.ShowCenterMessageTop($"Will {hideoutCase} {qualifier} part, repeat to confirm", UIManager.inst.dangerRed, Color.black);
+        // Start the timer
+        StartCoroutine(ConfirmEquipBadItemCooldown());
+    }
+
+    private IEnumerator ConfirmEquipBadItemCooldown()
+    {
+        confirmEquipBadItem = true;
+
+        yield return new WaitForSeconds(equipBadItemCooldown);
+
+        confirmEquipBadItem = false;
+    }
     #endregion
 
 

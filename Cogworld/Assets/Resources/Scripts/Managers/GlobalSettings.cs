@@ -1047,7 +1047,7 @@ public class GlobalSettings : MonoBehaviour
                 break;
             case "corrupted":
                 // Get an item
-                ItemObject corrItem = HF.FindItemOfTier(Random.Range(2, 9), false);
+                ItemObject corrItem = HF.FindItemOfTier(3, false);
 
                 // Spawn it in as corrupted
                 if (corrItem != null)

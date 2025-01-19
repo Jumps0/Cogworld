@@ -5835,24 +5835,11 @@ public static class HF
         if (!item.itemData.knowByPlayer)
             item.itemData.knowByPlayer = true;
 
-        // If the item is faulty or broken we should use a different text color
-        Color a = UIManager.inst.activeGreen, b = UIManager.inst.dullGreen;
-        if (item.isFaulty || item.isBroken)
-        {
-            a = UIManager.inst.dangerRed;
-            b = UIManager.inst.highSecRed;
-        }
-
-        // Update Interface
-        if(doInterfaceUpdate)
-            InventoryControl.inst.UpdateInterfaceInventories();
-
-        // Display log message
-        if (displayMessage)
-            UIManager.inst.CreateNewLogMessage("Aquired " + fullName + ".", a, b, false, true);
+        bool DO_CORRUPTION = item.corrupted > 0 && !item.doneCorruptionFeedback;
+        bool DO_FAULTY = item.isFaulty && !item.doneFaultyFailure;
 
         // -- Faulty item consequences --
-        if (item.isFaulty && !item.doneFaultyFailure)
+        if (DO_FAULTY)
         {
             item.doneFaultyFailure = true;
 
@@ -5884,22 +5871,58 @@ public static class HF
 
         // -- Corrupted item consequences --
         // see (https://noemica.github.io/cog-minder/wiki/Corruption)
-        if (item.corrupted > 0 && !item.doneCorruptionFeedback)
+        int corruption = 0;
+        if (DO_CORRUPTION)
         {
             item.doneCorruptionFeedback = true;
 
-            // Play the 'Broken' sound
-            AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PT_LOST"], 1);
-
             // -- Consequences --
+            // When attaching a corrupted part, you will suffer some amount of corruption, and then
+            // the corrupted item becomes "integrated", and is no longer corrupted.
             // 1% and [corruption % on death / 10] corruption, capped at 15%
-            int corruption = Random.Range(1, item.corrupted); // (not doing the division here because its already low)
+            corruption = Random.Range(1, item.corrupted); // (not doing the division here because its already low)
             if(corruption > 15)
             {
                 corruption = 15;
             }
 
-            // TODO
+            // Modify the player's corruption
+            Action.ModifyPlayerCorruption(corruption);
+
+            // Un-corrupt the item.
+            item.corrupted = 0;
+
+            // Display a message
+        }
+
+        // If the item is faulty or broken we should use a different text color
+        Color a = UIManager.inst.activeGreen, b = UIManager.inst.dullGreen;
+        if (item.isFaulty || item.isBroken)
+        {
+            a = UIManager.inst.dangerRed;
+            b = UIManager.inst.highSecRed;
+        }
+
+        // Update Interface
+        if (doInterfaceUpdate)
+            InventoryControl.inst.UpdateInterfaceInventories();
+
+        // Display log message
+        if (displayMessage)
+        {
+            UIManager.inst.CreateNewLogMessage("Aquired " + fullName + ".", a, b, false, true);
+        }
+
+        // Other messages
+        if (DO_CORRUPTION)
+        {
+            a = UIManager.inst.dangerRed;
+            b = UIManager.inst.highSecRed;
+            UIManager.inst.CreateNewLogMessage($"Integrated {fullName} (+{corruption}).", a, b, false, true);
+        }
+        else if (DO_FAULTY)
+        {
+            // unsure if there is a special one for this
         }
     }
     #endregion
