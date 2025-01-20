@@ -7669,9 +7669,7 @@ public class UIManager : MonoBehaviour
                     }
                     else if (item.itemData.destroyOnRemove) // Fragile (pear green)
                     {
-                        string hex = "86B200";
-                        Color pearGreen = Color.white;
-                        if (ColorUtility.TryParseHtmlString(hex, out pearGreen)) {}
+                        Color pearGreen = new Color(134f / 255f, 178f / 255f, 0f); // #86B200
 
                         extra = "Fragile parts are destroyed if removed after attaching them for use. While attached, these are also marked with a colon next to their letter in the parts list, as a reminder.";
                         iState.Setup(true, true, false, "State", pearGreen, extra, "", false, "", false, "FRAGILE");
