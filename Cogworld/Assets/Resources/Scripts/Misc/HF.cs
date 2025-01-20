@@ -6336,5 +6336,36 @@ public static class HF
         return null;
     }
 
+    /// <summary>
+    /// Given an actor, returns all other Actors within this actor's Field-Of-View as a list.
+    /// </summary>
+    /// <param name="viewer">The Actor we are checking the FOV of.</param>
+    /// <param name="onlyFoes">If true, returns only HOSTILE bots in the FOV.</param>
+    /// <returns>A list of all Actors that are within the Field Of View of the specified actor.</returns>
+    public static List<Actor> BotsInActorFOV(Actor viewer, bool onlyFoes = false)
+    {
+        List<Actor> inFOV = new List<Actor>();
+
+        foreach (var E in GameManager.inst.Entities) // This is a bit rough (could this function be done better?)
+        {
+            Actor a = E.GetComponent<Actor>();
+            if (viewer != a && ActorInBotFOV(viewer, a))
+            {
+                if (onlyFoes)
+                {
+                    if(viewer.allegances.GetRelation(a.myFaction) == BotRelation.Hostile)
+                    {
+                        inFOV.Add(a);
+                    }
+                }
+                else
+                {
+                    inFOV.Add(a);
+                }
+            }
+        }
+
+        return inFOV;
+    }
     #endregion
 }

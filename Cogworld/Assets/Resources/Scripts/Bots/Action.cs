@@ -6566,8 +6566,103 @@ public static class Action
          */
 
         #endregion
+        // What are the odds of these events? I don't know! Lets just guess.
+        // 1.  Message Error       - HIGH   (3)
+        // 2.  !Matter Fused       - MEDIUM (2)
+        // 3.  Heat Flow Error     - MEDIUM (2)
+        // 4.  !Energy Discharge   - MEDIUM (2)
+        // 5.  !Part Rejected      - LOW    (1)
+        // 6.  Part Fused          - LOW    (1)
+        // 7.  Data Loss (Minor)   - LOW    (1)
+        // 8.  Data Loss (Major)   - LOW    (1)
+        // 9.  Misfire             - LOW    (1)
+        // 10. IFF Burst           - LOW    (1)
+        // 11. !Misdirection       - LOW    (1)
 
+        // The Non-conditional ones start in the list.
+        List<int> odds = new List<int>() { 1, 1, 1, 3, 3, 6, 7, 8, 9, 10 };
 
+        // -- CONDITIONAL --
+        // Matter Fused - Only occurs if Cogmind has > 0 matter
+        if(PlayerData.inst.currentMatter > 0)
+        {
+            odds.Add(2);
+            odds.Add(2);
+        }
+        // Energy Discharge - Only occurs if Cogmind has > 0 energy
+        if (PlayerData.inst.currentEnergy > 0)
+        {
+            odds.Add(4);
+            odds.Add(4);
+        }
+        // Part Rejected & Misdirection - Only occurs while hostile bots are nearby
+        List<Actor> inFOV = HF.BotsInActorFOV(PlayerData.inst.GetComponent<Actor>(), true); // This sucks to call every corruption tick. OPTIMIZE THIS
+        if(inFOV.Count > 0)
+        {
+            odds.Add(5);
+            odds.Add(11);
+        }
+
+        // Roll for what we do!
+        int outcome = odds[Random.Range(0, odds.Count - 1)];
+
+        switch (outcome)
+        {
+            case 1:
+                // Message Error - Garbled messages appear in the game log.
+
+                break;
+            case 2:
+                // Matter Fused - Loss of between 5-10 Matter, with the log message System corrupted: Matter fused (-x).
+
+                break;
+            case 3:
+                // Heat Flow Error - Large spike in Heat, between 100 and 300, with log message System corrupted: Heat flow error (+x).
+
+                break;
+            case 4:
+                // Energy Discharge - Loss of stored Energy, between 20-40% of current storage capacity, with log message System corrupted: Energy discharge (-x).
+
+                break;
+            case 5:
+                // Part Rejected - A random part is detached, not including fragile parts like processors, with log message
+                //                 System corrupted: [part name] rejected.  
+
+                break;
+            case 6:
+                // Part Fused - A random part that isn't fragile or fused already becomes fused and is unable to be detached without destruction,
+                //              with log message System corrupted: [part name] fused.
+
+                break;
+            case 7:
+                // Data Loss (Minor) - A minor data loss will lose 1-3 component part ID with the log message System corrupted: Component data lost.
+
+                break;
+            case 8:
+                // Data Loss (Major) - A major data loss will lose 3-5 component part IDs with the log message System corrupted: Substantial component data lost.
+
+                break;
+            case 9:
+                // Misfire - A random weapon will be attempted to be fired. Fails if the weapon does not have enough resources to fire (matter/energy).
+                //           This effect doesn't affect melee weapons, special weapons, or guided weapons.
+                //           Also has the log message System corrupted: FCS attempts to trigger [part name].
+                //           If the misfire is successful, there is an additional log message System corrupted: [part name] misfires.
+
+                break;
+            case 10:
+                // IFF Burst - An IFF burst comes from Cogmind, alerting hostiles within a 15 tile radius.
+                //             Bots will head to investigate the location of the IFF burst but do not gain active tracking on Cogmind.
+                //             Also has the log message IFF burst signal emitted.
+
+                break;
+            case 11:
+                // Misdirection - Cogmind may move in a random direction other than the one commanded,
+                //                with game popup message (not log message) System corrupted: Misdirected.
+                //                On flight, may come with an additional penalty of slamming into a wall.
+                //                If this occurs, Cogmind will take minor impact damage, with the log message Slammed into [ceiling/wall].
+
+                break;
+        }
     }
     #endregion
 
