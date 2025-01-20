@@ -512,7 +512,7 @@ public class Part : MonoBehaviour
                 InventoryControl.inst.UpdateInterfaceInventories();
                 // Full here too, give up
                 // Display a message(
-                UIManager.inst.ShowCenterMessageTop("No free slot", UIManager.inst.dangerRed, Color.black);
+                UIManager.inst.ShowCenterMessageTop($"Insufficent inventory capacity ({size})", UIManager.inst.dangerRed, Color.black);
                 return;
             }
         }

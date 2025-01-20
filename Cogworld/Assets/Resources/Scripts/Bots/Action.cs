@@ -3340,6 +3340,22 @@ public static class Action
         return (hasHackware, hackware);
     }
 
+    public static List<Item> FindBotEngines(Actor actor)
+    {
+        List<Item> engines = new List<Item>();
+
+        List<Item> allItems = Action.CollectAllBotItems(actor);
+
+        foreach (var I in allItems)
+        {
+            if(I.itemData.slot == ItemSlot.Power)
+            {
+                engines.Add(I);
+            }
+        }
+
+        return engines;
+    }
 
     public static Vector2Int V3_to_V2I(Vector3 v)
     {
@@ -6628,7 +6644,7 @@ public static class Action
             case 1:
                 // Message Error - Garbled messages appear in the game log.
 
-                string allChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%&,. ";
+                string allChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%&,. /><|";
                 string garbled = "";
                 for (int i = 0; i < 25; i++) // 25 Characters long
                 {
@@ -6683,6 +6699,8 @@ public static class Action
                 //             Bots will head to investigate the location of the IFF burst but do not gain active tracking on Cogmind.
                 //             Also has the log message IFF burst signal emitted.
 
+                // Fancy little animation for this guy. see for example: https://youtu.be/89n0L64Dyvk?si=yi1ysBgj1JrQftIH&t=3193
+
                 break;
             case 11:
                 // Misdirection - Cogmind may move in a random direction other than the one commanded,
@@ -6693,6 +6711,72 @@ public static class Action
                 break;
         }
         #endregion
+    }
+    
+    public static void FaultyConsequences(Item item)
+    {
+        item.doneFaultyFailure = true;
+
+        // Play the 'Broken' sound
+        AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PT_LOST"], 1);
+
+        // -- Consequences --
+        float random = Random.Range(0f, 1f);
+
+        // Always need to display a message too
+        Color mColor = UIManager.inst.corruptOrange;
+        Color bColor = UIManager.inst.corruptOrange_faded;
+
+        // Note: These are guesses by me and aren't accurate to what truly happens in game.
+        /* == POSSIBLE CONSEQUENCES ==
+         * -[1] Nothing : Low chance for nothing to happen
+         * -[2] Power surge : Break a power item
+         * -[3] Matter loss : Lose some amount of matter
+         * -[4] Corruption : Gain some corruption
+         */
+
+        List<int> outcomes = new List<int>() { 1, 3, 3, 3, 4, 4 };
+
+        // - Conditional events -
+        List<Item> engines = Action.FindBotEngines(PlayerData.inst.GetComponent<Actor>());
+        if(engines.Count > 0)
+        {
+            outcomes.Add(2);
+            outcomes.Add(2);
+            outcomes.Add(2);
+        }
+
+        // Pick a random outcome
+        int outcome = outcomes[Random.Range(0, outcomes.Count - 1)];
+
+        switch (outcome)
+        {
+            case 0: // Nothing!
+
+                break;
+            case 1: // Power Surge - Forcefully break an engine
+                Item surgeTarget = engines[Random.Range(0, engines.Count - 1)];
+                HF.BreakPart(surgeTarget, HF.GetInvDisplayItemFromPart(surgeTarget));
+
+                UIManager.inst.CreateNewLogMessage($"Faulty integration triggers power surge.", mColor, bColor, false, false);
+                break;
+            case 2: // Matter Loss
+                AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PT_LOST"], 0.8f); // UI - PT_LOST
+
+                // Not that much, 40 - 80.
+                Action.ModifyPlayerMatter(-Random.Range(40, 80));
+
+                UIManager.inst.CreateNewLogMessage($"Faulty integration triggers matter storage failure.", mColor, bColor, false, false);
+                break;
+            case 3: // Corruption
+                AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PT_LOST"], 0.8f); // UI - PT_LOST
+
+                // Not that much, 3-7%
+                Action.ModifyPlayerCorruption(Random.Range(3, 7));
+
+                UIManager.inst.CreateNewLogMessage($"Faulty integration triggers core corruption.", mColor, bColor, false, false);
+                break;
+        }
     }
     #endregion
 

@@ -5847,62 +5847,7 @@ public static class HF
         // -- Faulty item consequences --
         if (DO_FAULTY)
         {
-            item.doneFaultyFailure = true;
-
-            // Play the 'Broken' sound
-            AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PT_LOST"], 1);
-
-            // -- Consequences --
-            float random = Random.Range(0f, 1f);
-
-            // Always need to display a message too
-            Color mColor = UIManager.inst.corruptOrange;
-            Color bColor = UIManager.inst.corruptOrange_faded;
-
-            // Note: These are guesses by me and aren't accurate to what truly happens in game.
-            /* == POSSIBLE CONSEQUENCES ==
-             * -[1] Nothing : Low chance for nothing to happen
-             * -[2] Power surge : Lose large amount of energy
-             * -[3] Matter loss : Lose some amount of matter
-             * -[4] Corruption : Gain some corruption
-             */
-
-            List<int> outcomes = new List<int>() { 1, 2, 2, 2, 3, 3, 3, 4, 4 };
-
-            // Pick a random outcome
-            int outcome = outcomes[Random.Range(0, outcomes.Count - 1)];
-
-            switch (outcome)
-            {
-                case 0: // Nothing!
-
-                    break;
-                case 1: // Power Surge
-                    AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PT_LOST"], 0.8f); // UI - PT_LOST
-
-                    // This should be a relatively large amount, lets say between 50-80%
-                    int e_removed = (int)(PlayerData.inst.maxEnergy * Random.Range(0.5f, 0.8f));
-                    Action.ModifyPlayerEnergy(-e_removed);
-
-                    UIManager.inst.CreateNewLogMessage($"Faulty integration triggers power surge.", mColor, bColor, false, false);
-                    break;
-                case 2: // Matter Loss
-                    AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PT_LOST"], 0.8f); // UI - PT_LOST
-
-                    // Not that much, 40 - 80.
-                    Action.ModifyPlayerMatter(-Random.Range(40,80));
-
-                    UIManager.inst.CreateNewLogMessage($"Faulty integration triggers matter storage failure.", mColor, bColor, false, false);
-                    break;
-                case 3: // Corruption
-                    AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PT_LOST"], 0.8f); // UI - PT_LOST
-
-                    // Not that much, 3-7%
-                    Action.ModifyPlayerCorruption(Random.Range(3, 7));
-
-                    UIManager.inst.CreateNewLogMessage($"Faulty integration triggers core corruption.", mColor, bColor, false, false);
-                    break;
-            }
+            Action.FaultyConsequences(item);
         }
 
         // -- Corrupted item consequences --
