@@ -584,6 +584,10 @@ public class ItemEffect
     [Header("View Range Bonuses")]
     public ItemViewRangeEffect viewRangeBonus;
 
+    [Header("SLAYER Effect")]
+    [Tooltip("Used in the Behemoth slayer item(s). Intentionally not displayed.")]
+    public ItemSlayerEffect slayerEffect;
+
     [Header("Authchips")]
     public ItemAuthChip authchipDetails;
 
@@ -1347,6 +1351,14 @@ public class ItemViewRangeEffect
     public bool stacks = false;
 }
 
+[System.Serializable]
+[Tooltip("Used in the Behemoth slayer item(s). Intentionally not displayed.")]
+public class ItemSlayerEffect
+{
+    public bool hasEffect = false;
+    [Tooltip("List of Bot Classes this effect applies to.")]
+    public List<BotClass> slayerClasses = new List<BotClass>();
+}
 
 
 #endregion

@@ -11,7 +11,6 @@ using Transform = UnityEngine.Transform;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 using Random = UnityEngine.Random;
-using static UnityEditor.Progress;
 
 public static class Action
 {
@@ -4675,20 +4674,18 @@ public static class Action
                     // "Entropic reaction triggered in %1."
                     // "%1 blocked entropic reaction in %2." (shielding power, player only)
 
-                    // TODO: Rewrite this to reflect the new info above ^
-                    /*
                     Item shield = HF.DoesBotHaveSheild(target);
-                    Item itemTarget = Action.FindRandomItemOfSlot(target, ItemSlot.Utilities);
+                    Item itemTarget = Action.FindRandomItemOfSlot(target, ItemSlot.Power);
                     if (!target.botInfo && shield != null)
                     {
-                        UIManager.inst.CreateNewCalcMessage(shield.Name + " blocked entropic reaction in " + itemTarget.Name + ".", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                        UIManager.inst.CreateNewCalcMessage(HF.GetFullItemName(shield) + " blocked entropic reaction in " + HF.GetFullItemName(itemTarget) + ".", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
                     }
                     else
                     {
                         Action.DestoyItem(target, itemTarget);
-                        UIManager.inst.CreateNewCalcMessage("Entropic reaction triggered in " + itemTarget.Name + ".", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                        UIManager.inst.CreateNewCalcMessage("Entropic reaction triggered in " + HF.GetFullItemName(itemTarget) + ".", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
                     }
-                    */
+                    
 
                     break;
                 case CritType.Sunder: // BFG-9k Vortex Edition, Vortex Driver, Vortex Lancer & Vortex Cannon has this
@@ -4697,26 +4694,44 @@ public static class Action
                     // All parts are dropped between 1/3 and 2/3 integrity. Affected by the Dismemberment immunity.
                     // The log message [target] is sundered. will appear when this happens.
 
-                    // TODO: Rewrite this to reflect the new info above ^
-                    /*
-                    Item item4 = Action.FindRandomItemOfSlot(target, ItemSlot.Propulsion);
-                    item4 = Action.DamageBot(target, damage, weapon, source, false);
-                    if (item4 != null)
-                    {
-                        // If the 2nd part survives, forcefully drop it.
+                    // Collect all the bot's parts
+                    List<Item> allItems = CollectAllBotItems(target);
+
+                    // Reduce all of their integrity between the fractions above & then drop the part
+                    foreach (var I in allItems)
+                    { // We aren't going to actually destroy the part or use any of the functions related to part damage.
+                        int start = I.integrityCurrent;
+
+                        float math = start * (Random.Range(1f, 2f) / 3f);
+
+                        I.integrityCurrent = Mathf.CeilToInt(math); // Round up, we don't actually want to destroy the part
+
                         if (target.botInfo)
                         {
-                            Action.RemovePartFromBotInventory(target, item4);
-                            InventoryControl.inst.DropItemOnFloor(item4, target, null, Vector2Int.zero);
+                            Action.RemovePartFromBotInventory(target, I);
+                            InventoryControl.inst.DropItemOnFloor(I, target, null, Vector2Int.zero);
                         }
                         else
                         {
-                            InventoryControl.inst.DropItemOnFloor(item4, target, HF.FindPlayerInventoryFromItem(item4), Vector2Int.zero);
+                            InventoryControl.inst.DropItemOnFloor(I, target, HF.FindPlayerInventoryFromItem(I), Vector2Int.zero);
                         }
 
-                        UIManager.inst.CreateNewCalcMessage(item4.Name + " was ripped off.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                        // This is gonna be a lot of messages
+                        UIManager.inst.CreateNewCalcMessage(HF.GetFullItemName(I) + " was ripped off.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
                     }
-                    */
+
+
+                    if (target.botInfo)
+                    {
+                        UIManager.inst.CreateNewLogMessage($"{target.botInfo.botName} is sundered.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                        UIManager.inst.CreateNewCalcMessage($"{target.botInfo.botName} is sundered.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                    }
+                    else
+                    {
+                        UIManager.inst.CreateNewLogMessage($"Cogmind was sundered.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                        UIManager.inst.CreateNewCalcMessage($"Cogmind was sundered.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                    }
+
                     break;
                 case CritType.Intensify: // Zio. Phaser-S/M/H have this
                     // (Assumption): Double Damage
@@ -4740,44 +4755,70 @@ public static class Action
                 case CritType.Phase: // L-Cannon, Drained L-Cannon, Zio. Alpha-Cannon & Zio. Alpha-Cannon MK.2 has this
                     // "Damage phase-mirrored to [name] %1." | [name] enveloped in phasic energy. see: https://youtu.be/0I_-Tuuv4Ww?si=MfiJZ4VfZbAkKsKX&t=9715
                     // Chance for this weapon to cause an equal amount of damage to target's core. 
-                    // On a direct core hit, instead damagess a random part by the same amount.
-
-                    // TODO: Rewrite this to reflect the new info above ^
-                    /*
-                    Actor neighbor = Action.FindNewNeighboringEnemy(target);
-                    DamageBot(neighbor, damage, weapon, source, false);
-                    string botName2 = "";
-                    if (target.botInfo)
-                    {
-                        botName2 = target.botInfo.botName;
-                    }
-                    else
-                    {
-                        botName2 = "Cogmind";
-                    }
-
-                    UIManager.inst.CreateNewCalcMessage("Damage phase-mirrored to " + botName2 + " [" + damage + "].", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                    // On a direct core hit, instead damages a random part by the same amount.
                     
-                    */
+                    if (!hitPart) // Hit the core
+                    {
+                        // Collect all the bot's parts
+                        List<Item> allItems2 = CollectAllBotItems(target);
+
+                        // Pick a random one
+                        Item targetPart = allItems2[Random.Range(0, allItems2.Count - 1)];
+
+                        // Message
+                        UIManager.inst.CreateNewCalcMessage($"Damage phase-mirrored to {HF.GetFullItemName(targetPart)}.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+
+                        // Reflect the damage
+                        Action.DamageItem(target, targetPart, damage, true);
+                    }
+
+                    // TODO: Figure how to tell if a bot dies to this, and if so have a special blue bottom message saying it was enveloped.
 
                     break;
                 case CritType.Impale: // CR-A16's Behemoth Slayer & A bunch of other piercing weapons have this
                     // Chance for this weapon to inflcit twice as much damage and further delay both attacker and target's next opporunity to act by 1 turn.
                     // The attacker is not delayed if this effect is a property of a non-melee weapon.
 
-                    // TODO: Rewrite this to reflect the new info above ^
-                    /*
-                    // Destroy the core
-                    if (target.botInfo)
+                    // !! Special case. Slayer weapons !!
+                    bool slayer = false;
+                    if (target.botInfo) // Only for bots
                     {
-                        UIManager.inst.CreateNewCalcMessage("Critical on " + target.botInfo.botName + "'s core.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
-                        target.Die(target.botInfo.botName + "'s core has impaled by " + weapon + ", destroying it completely.");
+                        foreach (var E in weapon.itemData.itemEffects)
+                        {
+                            if (E.slayerEffect.hasEffect)
+                            {
+                                if (E.slayerEffect.slayerClasses.Contains(target.botInfo._class))
+                                {
+                                    slayer = true;
+                                }
+                            }
+                        }
                     }
-                    else
+
+                    if (slayer) // SLAYER TIME!!!
                     {
-                        PlayerData.inst.currentHealth = 0;
+                        target.Die($"{target.botInfo.botName} suddendly blasts apart at the seams.");
                     }
-                    */
+                    else // Normal
+                    {
+                        if (Random.Range(0f, 1f) < 0.5f) // No idea what the chances should be here
+                        {
+                            // Message
+                            UIManager.inst.CreateNewCalcMessage($"Critical strike on {HF.GetFullItemName(hitItem)}.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+
+                            if (hitItem != null && hitItem.integrityCurrent > 0)
+                            {
+                                // Damage it again!
+                                Action.DamageItem(target, hitItem, damage, true); // Same damage amount, twice ;)
+                            }
+
+                            // TOOD: DELAY STUFF
+                            if (IsMeleeWeapon(weapon))
+                            {
+
+                            }
+                        }
+                    }
                     break;
             }
 
@@ -5018,6 +5059,14 @@ public static class Action
         }
     }
 
+    /// <summary>
+    /// Deal damage to a specific item, owned by a specific bot.
+    /// </summary>
+    /// <param name="target">The [Actor] target who owns this item.</param>
+    /// <param name="item">The [Item] part we are going to damage.</param>
+    /// <param name="damage">How much damage is going to be dealt to this item.</param>
+    /// <param name="crit">If this item gets destroyed will display a slightly different log message.</param>
+    /// <returns>Returns a tuple of (int, bool) of any overflow "overkill" damage and if the item was actually destroyed.</returns>
     public static (int, bool) DamageItem(Actor target, Item item, int damage, bool crit = false)
     {
         int overflow = 0;
