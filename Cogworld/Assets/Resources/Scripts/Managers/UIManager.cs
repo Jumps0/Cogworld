@@ -5137,7 +5137,7 @@ public class UIManager : MonoBehaviour
                     // The square is green
                     scanSubImage.color = activeGreen;
                     // The text is grayed out (## Matter)
-                    scanSubTextA.text = focusObj.GetComponent<Part>()._item.amount + " " + focusObj.GetComponent<Part>()._item.Name;
+                    scanSubTextA.text = focusObj.GetComponent<Part>()._item.amount + " " + HF.GetFullItemName(focusObj.GetComponent<Part>()._item);
                     scanSubTextA.color = inactiveGray;
 
                     scanSubTextB.enabled = false;
@@ -7461,7 +7461,7 @@ public class UIManager : MonoBehaviour
             {
                 // Alter the title to include the amount (if it has any)
                 if(item.amount > 1)
-                    dataMenu.data_mainTitle.text = item.amount + " " + item.Name;
+                    dataMenu.data_mainTitle.text = item.amount + " " + HF.GetFullItemName(item);
                 if (item.itemData.type == ItemType.Alien && !item.itemData.knowByPlayer) // Unknown alien artifact
                     dataMenu.data_mainTitle.text = "Alien Artifact";
 

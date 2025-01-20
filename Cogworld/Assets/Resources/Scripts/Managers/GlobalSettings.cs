@@ -536,12 +536,17 @@ public class GlobalSettings : MonoBehaviour
                 else if (command.Contains("faulty"))
                 {
                     db_textaid.gameObject.SetActive(true);
-                    db_textaid.text = "> faulty [Spawns in a random FAULTY prototype beneath the player.]";
+                    db_textaid.text = "> faultyitem [Spawns in a random FAULTY prototype beneath the player.]";
                 }
                 else if (command.Contains("corrupted"))
                 {
                     db_textaid.gameObject.SetActive(true);
-                    db_textaid.text = "> corrupted [Spawns in a random CORRUPTED item beneath the player.]";
+                    db_textaid.text = "> corrupteditem [Spawns in a random CORRUPTED item beneath the player.]";
+                }
+                else if (command.Contains("corruptme"))
+                {
+                    db_textaid.gameObject.SetActive(true);
+                    db_textaid.text = "> corruptme \"value\" [Runs a corruption event on the player. (#1-11)]";
                 }
                 // Expand this as needed
             }
@@ -587,10 +592,12 @@ public class GlobalSettings : MonoBehaviour
          *    -If a terminal is open, forces it into the fail state
          *  > break "item"
          *    -Breaks an equipped item. Use 'random' for a random item.
-         *  > faulty
+         *  > faultyitem
          *    -Spawns in a random FAULTY prototype beneath the player.
-         *  > corrupted
+         *  > corrupteditem
          *    -Spawns in a random CORRUPTED item beneath the player.
+         *  > corruptme "value"
+         *    -Runs a corruption event on the player (#1-11).
          * ================================
          */
         #endregion
@@ -1025,7 +1032,7 @@ public class GlobalSettings : MonoBehaviour
                     }
                 }
                 break;
-            case "faulty":
+            case "faultyitem":
                 // Get a prototype item
                 ItemObject toSpawn = HF.FindItemOfTier(Random.Range(4, 9), true);
 
@@ -1040,12 +1047,12 @@ public class GlobalSettings : MonoBehaviour
                 }
                 else
                 {
-                    DebugBarHelper("[faulty] failed to find an item to spawn. Please try again.");
+                    DebugBarHelper("[faultyitem] failed to find an item to spawn. Please try again.");
                     return;
                 }
 
                 break;
-            case "corrupted":
+            case "corrupteditem":
                 // Get an item
                 ItemObject corrItem = HF.FindItemOfTier(3, false);
 
@@ -1060,11 +1067,51 @@ public class GlobalSettings : MonoBehaviour
                 }
                 else
                 {
-                    DebugBarHelper("[corrupted] failed to find an item to spawn. Please try again.");
+                    DebugBarHelper("[corrupteditem] failed to find an item to spawn. Please try again.");
                     return;
                 }
 
                 break;
+            case "corruptme":
+                int eventID = 0;
+
+                // Second word
+                if (bits.Length == 1) // There is no second word
+                {
+                    DebugBarHelper("[corruptme] Must specify an event value (Any number from 1 to 11)");
+                    return;
+                }
+                else
+                {
+                    // Safety parse
+                    bool good_parse = int.TryParse(bits[1], out int ignored);
+
+                    if (good_parse)
+                    {
+                        eventID = int.Parse(bits[1]);
+                    }
+                    else
+                    {
+                        DebugBarHelper($"[corruptme] Failed to parse \"{eventID}\". Please try again.");
+                    }
+
+                    // Valid option chosen?
+                    if (eventID < 1 || eventID > 11)
+                    {
+                        DebugBarHelper("[corruptme] Must be a value from 1 to 11.");
+                        return;
+                    }
+                    else // Do the thing
+                    {
+                        Action.CorruptionConsequences(eventID);
+
+                        DebugBarHelper($"Ran corruption event with ID = {eventID}.");
+
+                        success = true;
+                        break;
+                    }
+
+                }
             default: // Unknown command
                 DebugBarHelper("Unknown command...");
                 return;

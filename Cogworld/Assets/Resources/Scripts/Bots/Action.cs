@@ -4574,7 +4574,7 @@ public static class Action
                         {
                             InventoryControl.inst.DropItemOnFloor(part, target, HF.FindPlayerInventoryFromItem(part), Vector2Int.zero);
                         }
-                        UIManager.inst.CreateNewCalcMessage(part.Name + " was blasted off.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                        UIManager.inst.CreateNewCalcMessage($"{HF.GetFullItemName(part)} was blasted off.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
                     }
 
                     break;
@@ -4605,7 +4605,7 @@ public static class Action
                             InventoryControl.inst.DropItemOnFloor(part2, target, HF.FindPlayerInventoryFromItem(part2), Vector2Int.zero);
                         }
 
-                        UIManager.inst.CreateNewCalcMessage(part2.Name + " was smashed off.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                        UIManager.inst.CreateNewCalcMessage($"{HF.GetFullItemName(part2)} was smashed off.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
                     }
                     break;
                 case CritType.Sever:
@@ -4633,7 +4633,7 @@ public static class Action
                             InventoryControl.inst.DropItemOnFloor(dropItem, target, HF.FindPlayerInventoryFromItem(dropItem), Vector2Int.zero);
                         }
 
-                        UIManager.inst.CreateNewCalcMessage(dropItem.Name + " was severed.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
+                        UIManager.inst.CreateNewCalcMessage($"{HF.GetFullItemName(dropItem)} was severed.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
                         
                     }
                     else // Hit part
@@ -6509,8 +6509,9 @@ public static class Action
 
     /// <summary>
     /// Corruption consequences for the player.
+    /// <param name="forcedEvent">(Optional) If not 0, will force a specific corruption event.</param>
     /// </summary>
-    public static void CorruptionConsequences()
+    public static void CorruptionConsequences(int forcedEvent = 0)
     {
         // https://noemica.github.io/cog-minder/wiki/Corruption
         int currentCorruption = PlayerData.inst.currentCorruption;
@@ -6566,6 +6567,8 @@ public static class Action
          */
 
         #endregion
+
+        #region Event Rolling
         // What are the odds of these events? I don't know! Lets just guess.
         // 1.  Message Error       - HIGH   (3)
         // 2.  !Matter Fused       - MEDIUM (2)
@@ -6606,11 +6609,34 @@ public static class Action
         // Roll for what we do!
         int outcome = odds[Random.Range(0, odds.Count - 1)];
 
+        // Unless an event has been pre-specified
+        if(forcedEvent != 0)
+        {
+            outcome = forcedEvent;
+        }
+        #endregion
+
+        #region Outcome Effects
+        Color printoutMain = UIManager.inst.corruptOrange;
+        Color printoutBack = UIManager.inst.corruptOrange_faded;
+
         switch (outcome)
         {
             case 1:
                 // Message Error - Garbled messages appear in the game log.
 
+                string allChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%&,. ";
+                string garbled = "";
+                for (int i = 0; i < 25; i++) // 25 Characters long
+                {
+                    garbled += allChars[Random.Range(0, allChars.Length - 1)];
+                }
+
+                // Redtext
+                printoutMain = UIManager.inst.highSecRed;
+                printoutBack = UIManager.inst.dangerRed;
+
+                UIManager.inst.CreateNewLogMessage($"{garbled}", printoutMain, printoutBack, false, true);
                 break;
             case 2:
                 // Matter Fused - Loss of between 5-10 Matter, with the log message System corrupted: Matter fused (-x).
@@ -6663,6 +6689,7 @@ public static class Action
 
                 break;
         }
+        #endregion
     }
     #endregion
 
