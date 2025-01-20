@@ -3853,8 +3853,8 @@ public static class Action
                 }
             }
         }
-        int damageA = damage; // Saved for later (Heat transfer)
-        int damageB = 0;
+        int damageA = damage; // Saved for later (Heat transfer) [Base Damage]
+        int damageB = 0; // [Altered Damage]
         bool firstSheild = false;
 
         // Shields
@@ -4517,14 +4517,7 @@ public static class Action
                     break;
                 case CritType.Burn:
                     burnCrit = true;
-                    if (target.botInfo)
-                    {
-                        UIManager.inst.CreateNewCalcMessage(target.botInfo.botName + " suffers critical burn.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
-                    }
-                    else
-                    {
-                        UIManager.inst.CreateNewCalcMessage("Critical heat increase detected.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
-                    }
+                    // The rest is handled inside `DealHeatTransfer()`
                     break;
                 case CritType.Meltdown:
                     if (target.botInfo)
@@ -6019,6 +6012,13 @@ public static class Action
         }
     }
 
+    /// <summary>
+    /// Handle the "Heat Transfer" part of attacking a bot.
+    /// </summary>
+    /// <param name="victim">The bot being attacked.</param>
+    /// <param name="weapon">The weapon used to attack the bot.</param>
+    /// <param name="damage">A Vertor2Int damage value, where x is the unmodified damage, and y is the modified damage.</param>
+    /// <param name="burnCrit">If this also includes the "Burn" critical attack. False by default.</param>
     public static void DealHeatTransfer(Actor victim, Item weapon, Vector2Int damage, bool burnCrit = false)
     {
         /*  Thermal weapons attempt to transfer ([damageForHeatTransfer] / [originalDamage])% of the maximum heat transfer rating, 
@@ -6106,6 +6106,9 @@ public static class Action
         if (burnCrit)
         {
             heat *= 2;
+
+            // Crit message goes here
+            UIManager.inst.CreateNewCalcMessage($"Critical hit (Burn+{heat})", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
         }
 
         // Deal the heat
