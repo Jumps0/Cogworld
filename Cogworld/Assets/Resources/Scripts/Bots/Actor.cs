@@ -678,6 +678,9 @@ public class Actor : Entity
                     }
                 }
 
+                // Change death message
+                overrideMessage = $"{this.botInfo.botName} system terminally corrupted.";
+
                 // TODO: There is probably some other corruption death stuff here but im not sure what it is
                 break;
             case DeathType.DTType.Critical:
@@ -735,7 +738,17 @@ public class Actor : Entity
             deathMessage = overrideMessage;
         }
 
-        UIManager.inst.CreateNewLogMessage(deathMessage, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
+        // Set message color based on relation to player
+        Color mcolorMain = UIManager.inst.activeGreen;
+        Color mcolorBack = UIManager.inst.dullGreen;
+
+        if(this.allegances.GetRelation(this.myFaction) == BotRelation.Hostile)
+        {
+            mcolorMain = UIManager.inst.highSecRed;
+            mcolorBack = UIManager.inst.dangerRed;
+        }
+
+        UIManager.inst.CreateNewLogMessage(deathMessage, mcolorMain, mcolorBack, false, false);
         #endregion
 
         #region Death Sound

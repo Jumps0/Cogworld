@@ -77,6 +77,8 @@ public class Item
     [Tooltip("Is this item currently losing HP because of an external reason (deteriorating)?")] // see: https://www.gridsagegames.com/blog/2013/12/burnout-momentum-em-disruption/
     public bool isDeteriorating = false;
     public bool isRigged = false;
+    [Tooltip("A fused item is unable to be removed while equpped.")]
+    public bool isFused = false; 
     [Tooltip("FAULTY PROTOTYPE. Faulty prototypes will almost always malfunction and have potentially serious side-effects when attached, and cannot be used or repaired, but may be scanned to obtain the schematic.")]
     public bool isFaulty = false; // TODO: Attempted attachment of a *known* Faulty part warns about that before most other potential issues 
     [Tooltip("Faulty items usually have a one time punishment for equipping them. If false this has not occurred yet.")]
@@ -127,6 +129,7 @@ public class Item
         unstable = item.unstable;
         disposable = item.disposable;
         chargable = item.chargable;
+        isFused = item.isFused;
         disabledTimer = item.disabledTimer;
         uniqueDetail = item.uniqueDetail;
 

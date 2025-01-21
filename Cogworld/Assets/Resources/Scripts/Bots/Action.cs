@@ -6647,6 +6647,8 @@ public static class Action
         Color printoutMain = UIManager.inst.corruptOrange;
         Color printoutBack = UIManager.inst.corruptOrange_faded;
 
+        Actor player = PlayerData.inst.GetComponent<Actor>();
+
         switch (outcome)
         {
             case 1:
@@ -6667,25 +6669,79 @@ public static class Action
                 break;
             case 2:
                 // Matter Fused - Loss of between 5-10 Matter, with the log message System corrupted: Matter fused (-x).
+                int matterLoss = Random.Range(5, 10);
 
+                Action.ModifyPlayerMatter(-matterLoss);
+                UIManager.inst.CreateNewLogMessage($"System corrupted: Matter fused (-{matterLoss})", printoutMain, printoutBack, false, true);
                 break;
             case 3:
                 // Heat Flow Error - Large spike in Heat, between 100 and 300, with log message System corrupted: Heat flow error (+x).
+                int heatFlow = Random.Range(100, 300);
 
+                ModifyPlayerHeat(heatFlow);
+
+                UIManager.inst.CreateNewLogMessage($"System corrupted: Heat flow error (+{heatFlow})", printoutMain, printoutBack, false, true);
                 break;
             case 4:
                 // Energy Discharge - Loss of stored Energy, between 20-40% of current storage capacity, with log message System corrupted: Energy discharge (-x).
+                int energyStorage = PlayerData.inst.maxEnergy + PlayerData.inst.maxInternalMatter;
 
+                int energyLoss = (int)(energyStorage * Random.Range(0.2f, 0.4f));
+
+                ModifyPlayerEnergy(-energyLoss);
+
+                UIManager.inst.CreateNewLogMessage($"System corrupted: Energy discharge (-{energyLoss})", printoutMain, printoutBack, false, true);
                 break;
             case 5:
                 // Part Rejected - A random part is detached, not including fragile parts like processors, with log message
                 //                 System corrupted: [part name] rejected.  
+                List<Item> partsR = Action.CollectAllBotItems(player);
+                List<Item> validR = new List<Item>();
+
+                foreach (var I in partsR)
+                {
+                    if(!I.isFused && !I.itemData.destroyOnRemove)
+                    {
+                        validR.Add(I);
+                    }
+                }
+
+                Item targetR = validR[Random.Range(0, validR.Count - 1)];
+                string rItemName = HF.GetFullItemName(targetR);
+                // Force drop the part
+                if(targetR != null)
+                {
+                    InventoryControl.inst.DropItemOnFloor(targetR, player, HF.FindPlayerInventoryFromItem(targetR), Vector2Int.zero);
+
+                    UIManager.inst.CreateNewLogMessage($"System corrupted: {rItemName} rejected.", printoutMain, printoutBack, false, true);
+                }
 
                 break;
             case 6:
                 // Part Fused - A random part that isn't fragile or fused already becomes fused and is unable to be detached without destruction,
                 //              with log message System corrupted: [part name] fused.
+                List<Item> partsF = Action.CollectAllBotItems(player);
+                List<Item> validF = new List<Item>();
 
+                foreach (var I in partsF)
+                {
+                    if (!I.isFused && !I.itemData.destroyOnRemove)
+                    {
+                        validF.Add(I);
+                    }
+                }
+
+                Item targetF = validF[Random.Range(0, validF.Count - 1)];
+                string fItemName = HF.GetFullItemName(targetF);
+
+                // Fuse the item
+                if(targetF != null)
+                {
+                    InvDisplayItem idi = HF.GetInvDisplayItemFromPart(targetF);
+                    idi.FuseItem();
+
+                    UIManager.inst.CreateNewLogMessage($"System corrupted: {fItemName} fused.", printoutMain, printoutBack, false, true);
+                }
                 break;
             case 7:
                 // Data Loss (Minor) - A minor data loss will lose 1-3 component part ID with the log message System corrupted: Component data lost.
@@ -7635,5 +7691,9 @@ public static class Action
         PlayerData.inst.currentCorruption += amount;
     }
 
+    public static void ModifyPlayerHeat(int amount)
+    {
+        PlayerData.inst.currentHeat += amount;
+    }
     #endregion
 }

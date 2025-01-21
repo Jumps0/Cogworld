@@ -1848,6 +1848,14 @@ public class InvDisplayItem : MonoBehaviour
     }
     #endregion
 
+    #region Fusing Items
+    public void FuseItem() // TODO
+    {
+        // Fused items cannot be removed, and display a special little 'f' indicator to the left of the indicator Letter similar to the ':' of fragile items.
+
+    }
+    #endregion
+
     #region Sorting
 
     public void Sort_StaggeredMove(Vector3 end, List<Vector3> positions, float delay = 0f)
