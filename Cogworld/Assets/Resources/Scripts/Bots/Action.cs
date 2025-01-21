@@ -3602,6 +3602,10 @@ public static class Action
     {
         ItemDamageType damageType = HF.GetDamageType(weapon.itemData);
 
+        // Log attackers
+        if(source != null)
+            target.previousAttackers.Add(source);
+
         #region Explanation
         /*
          * Coverage/Exposure
@@ -4538,7 +4542,8 @@ public static class Action
                 case CritType.Meltdown:
                     if (target.botInfo)
                     {
-                        target.Die(target.botInfo.botName + " suffers critical meltdown.");
+                        string meltdownMessage = $"{target.botInfo.botName} suffers critical meltdown.";
+                        target.Die(new DeathType(source, DeathType.DTType.Critical, CritType.Meltdown, meltdownMessage));
                     }
                     else
                     {
@@ -4551,7 +4556,8 @@ public static class Action
                         // Destroy the core
                         if (target.botInfo)
                         {
-                            target.Die(target.botInfo.botName + "'s core has been completely destroyed.");
+                            string destroyMessage = $"{target.botInfo.botName}'s core has been completely destroyed.";
+                            target.Die(new DeathType(source, DeathType.DTType.Critical, CritType.Destroy, destroyMessage));
                         }
                         else
                         {
@@ -4806,7 +4812,8 @@ public static class Action
 
                     if (slayer) // SLAYER TIME!!!
                     {
-                        target.Die($"{target.botInfo.botName} suddendly blasts apart at the seams.");
+                        string slayerMessage = $"{target.botInfo.botName} suddendly blasts apart at the seams.";
+                        target.Die(new DeathType(source, DeathType.DTType.Critical, CritType.Impale, slayerMessage));
                     }
                     else // Normal
                     {
@@ -4831,7 +4838,8 @@ public static class Action
                     break;
             }
 
-            if (!target.botInfo) // AI Only
+            // Short Combat Popup
+            if (target.botInfo) // AI Only
             {
                 if (critType == CritType.Burn) // Since Burn is so common, only show it if the bot is already extremely hot already.
                 {

@@ -458,12 +458,14 @@ public class Actor : Entity
     #endregion
 
     #region Combat
+    [Tooltip("List of bots who have attacked this bot. Used for kill logging.")]
+    public List<Actor> previousAttackers = new List<Actor>();
 
     public void HealthCheck()
     {
         if (this.GetComponent<PlayerData>())
         {
-            if (PlayerData.inst.currentHealth <= 0)
+            if (PlayerData.inst.currentHealth <= 0 || corruption >= 1f)
             {
                 // Die!
                 SceneManager.LoadScene(0);
@@ -471,9 +473,13 @@ public class Actor : Entity
         }
         else
         {
-            if (currentHealth <= 0 || corruption >= 1f)
+            if (currentHealth <= 0) // CORE death
             {
-                Die();
+                Die(new DeathType(previousAttackers[previousAttackers.Count - 1], DeathType.DTType.Core, CritType.Nothing));
+            }
+            else if (corruption >= 1f) // CORRUPTION death
+            {
+                Die(new DeathType(null, DeathType.DTType.Corruption, CritType.Nothing));
             }
 
             // Shoving this in here too
@@ -533,152 +539,206 @@ public class Actor : Entity
         }
     }
 
-    public void Die(string deathMessage = "")
+    /// <summary>
+    /// Kill this actor.
+    /// </summary>
+    /// <param name="deathInfo">Contains information regarding how this bot died.</param>
+    public void Die(DeathType deathInfo)
     {
-        PlayerData.inst.robotsKilled += 1; // TODO: CHANGE THIS LATER TO TELL IF THE PLAYER ACTUALLY GOT THE KILL (not killsteal)
-        PlayerData.inst.robotsKilledData.Add(this.botInfo);
-        PlayerData.inst.robotsKilledAlignment.Add(this.myFaction);
+        Actor killer = deathInfo.killer;
+        string overrideMessage = deathInfo.deathMessage;
 
-        if (corruption >= 1f) // This is a corruption death, its kinda different!
+        #region Kill Logging
+        if (killer != null && killer.GetComponent<PlayerData>())
         {
-            // Make a log message
-            string botName = this.botInfo.botName;
-            if (this.GetComponent<BotAI>().uniqueName != "")
-                botName = this.GetComponent<BotAI>().uniqueName;
-            string message = botName + " was utterly corrupted.";
-            if (deathMessage != "")
-            {
-                message = deathMessage;
-            }
+            PlayerData.inst.robotsKilled += 1;
+            PlayerData.inst.robotsKilledData.Add(this.botInfo);
+            PlayerData.inst.robotsKilledAlignment.Add(this.myFaction);
+        }
+        #endregion
 
-            UIManager.inst.CreateNewLogMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
+        #region Death Handling
+        // Create the default message
+        string botName = this.botInfo.botName;
+        if (this.GetComponent<BotAI>().uniqueName != "")
+            botName = this.GetComponent<BotAI>().uniqueName;
 
-            // == Drop any remaining parts (/w corruption consideration) == 
-            if (!wasFabricated)
-            {
-                List<Item> items = new List<Item>();
+        switch (deathInfo.type)
+        {
+            case DeathType.DTType.Core: // Normal death
 
-                foreach (var item in this.armament.Container.Items.ToList())
+                // == Drop any remaining parts ==
+                /* The chance for the robot's parts to survive, checked individually for each part, 
+                 * is ([percent_remaining_integrity / 2] + [salvage_modifier]), thus more damaged parts are more likely to be 
+                 * destroyed completely along with the robot. But even if that check succeeds, there are still two more possible 
+                 * factors that may prevent a given part from dropping. If the robot has any residual heat, parts can be melted, 
+                 * the chance of which is ([heat - max_integrity] / 4), so again less likely to affect large parts 
+                 * (though still possible, especially at very high heat levels). If the robot was corrupted, parts can be "fried," 
+                 * the chance of which is [system_corruption - max_integrity]; by the numbers, this will generally only affect 
+                 * small electronic components like processors, and sometimes devices. Each salvageable part left by a corrupted 
+                 * robot also has a corruption% chance to itself be corrupted, specifically by a random amount from 1 to (10*[corruption]/100), 
+                 * and when attached will increase Cogmind's system corruption by the same value as well as possibly cause another side effect.
+
+                   Note that robots built by a fabricator do not leave salvageable parts. 
+                   Also, anything in a robot's inventory (not attached) is always dropped to the ground, regardless of salvage modifiers or other factors.
+                 */
+                if (!wasFabricated)
                 {
-                    items.Add(item.item);
-                }
-                foreach (var item in this.components.Container.Items.ToList())
-                {
-                    items.Add(item.item);
-                }
+                    List<Item> items = new List<Item>();
 
-                foreach (var item in items)
-                {
-                    if (item.Id >= 0)
+                    foreach (var item in this.armament.Container.Items.ToList())
                     {
-                        // HP Check
-                        float percentHP = item.integrityCurrent / item.itemData.integrityMax;
-                        float chance = ((percentHP / 2) + salvageModifier);
+                        items.Add(item.item);
+                    }
+                    foreach (var item in this.components.Container.Items.ToList())
+                    {
+                        items.Add(item.item);
+                    }
 
-                        if (Random.Range(0f, 1f) < chance) // Continue to next check
+                    foreach (var item in items)
+                    {
+                        if (item.Id >= 0)
                         {
-                            // Heat check
-                            chance = ((currentHeat - item.itemData.integrityMax) / 4);
+                            // HP Check
+                            float percentHP = item.integrityCurrent / item.itemData.integrityMax;
+                            float chance = ((percentHP / 2) + salvageModifier);
 
                             if (Random.Range(0f, 1f) < chance) // Continue to next check
                             {
-                                // Corruption check
-                                /*
-                                 * One of the big changes to EM damage in Beta 11 was of course the potential to corrupt the victim’s salvage, 
-                                 * causing some amount of system corruption when attached. 
-                                 * This may cause players to shy away from corrupting targets with desirable salvage, 
-                                 * or avoid attaching quite as much of that salvage as they would before. 
-                                 * Still, sometimes you just have to put on that extra corrupted part to survive, or maybe just don’t care :)
-                                 */
-                                chance = ((100 * corruption) - item.itemData.integrityMax) / 100;
+                                // Heat check
+                                chance = ((currentHeat - item.itemData.integrityMax) / 4);
 
-                                if (Random.Range(0f, 1f) < chance) // Continue to next check
+                                if (Random.Range(0f, 1f) < chance) // Success! Drop the item.
                                 {
-                                    // Success! But will the item be corrupted?
-                                    if (Random.Range(0f, 1f) < corruption)
-                                    { // This should really be "1 to (10*[corruption]/100)" but I have no idea how that math works out
-                                      // Corrupted!
-                                        int calc = (10 * (int)(100 * corruption) / 100); // ex: This turns 60 -> 6
-                                        item.corrupted = Random.Range(1, calc);
-                                        InventoryControl.inst.DropItemOnFloor(item, this, null, Vector2Int.zero);
-                                    }
-
-                                    // Drop the item
                                     InventoryControl.inst.DropItemOnFloor(item, this, null, Vector2Int.zero);
                                 }
                             }
                         }
                     }
                 }
-            }
+                break;
+            case DeathType.DTType.Corruption:
 
-            // TODO: There is probably some other corruption death stuff here but im not sure what it is
-        }
-        else
-        {
-            // Make a log message
-            string botName = this.botInfo.botName;
-            if (this.GetComponent<BotAI>().uniqueName != "")
-                botName = this.GetComponent<BotAI>().uniqueName;
-            string message = botName + " destroyed.";
-            if (deathMessage != "")
-            {
-                message = deathMessage;
-            }
-
-            UIManager.inst.CreateNewLogMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
-
-            // == Drop any remaining parts ==
-            /* The chance for the robot's parts to survive, checked individually for each part, 
-             * is ([percent_remaining_integrity / 2] + [salvage_modifier]), thus more damaged parts are more likely to be 
-             * destroyed completely along with the robot. But even if that check succeeds, there are still two more possible 
-             * factors that may prevent a given part from dropping. If the robot has any residual heat, parts can be melted, 
-             * the chance of which is ([heat - max_integrity] / 4), so again less likely to affect large parts 
-             * (though still possible, especially at very high heat levels). If the robot was corrupted, parts can be "fried," 
-             * the chance of which is [system_corruption - max_integrity]; by the numbers, this will generally only affect 
-             * small electronic components like processors, and sometimes devices. Each salvageable part left by a corrupted 
-             * robot also has a corruption% chance to itself be corrupted, specifically by a random amount from 1 to (10*[corruption]/100), 
-             * and when attached will increase Cogmind's system corruption by the same value as well as possibly cause another side effect.
-
-               Note that robots built by a fabricator do not leave salvageable parts. 
-               Also, anything in a robot's inventory (not attached) is always dropped to the ground, regardless of salvage modifiers or other factors.
-             */
-            if (!wasFabricated)
-            {
-                List<Item> items = new List<Item>();
-
-                foreach (var item in this.armament.Container.Items.ToList())
+                // == Drop any remaining parts (/w corruption consideration) == 
+                if (!wasFabricated)
                 {
-                    items.Add(item.item);
-                }
-                foreach (var item in this.components.Container.Items.ToList())
-                {
-                    items.Add(item.item);
-                }
+                    List<Item> items = new List<Item>();
 
-                foreach (var item in items)
-                {
-                    if (item.Id >= 0)
+                    foreach (var item in this.armament.Container.Items.ToList())
                     {
-                        // HP Check
-                        float percentHP = item.integrityCurrent / item.itemData.integrityMax;
-                        float chance = ((percentHP / 2) + salvageModifier);
+                        items.Add(item.item);
+                    }
+                    foreach (var item in this.components.Container.Items.ToList())
+                    {
+                        items.Add(item.item);
+                    }
 
-                        if (Random.Range(0f, 1f) < chance) // Continue to next check
+                    foreach (var item in items)
+                    {
+                        if (item.Id >= 0)
                         {
-                            // Heat check
-                            chance = ((currentHeat - item.itemData.integrityMax) / 4);
+                            // HP Check
+                            float percentHP = item.integrityCurrent / item.itemData.integrityMax;
+                            float chance = ((percentHP / 2) + salvageModifier);
 
-                            if (Random.Range(0f, 1f) < chance) // Success! Drop the item.
+                            if (Random.Range(0f, 1f) < chance) // Continue to next check
                             {
-                                InventoryControl.inst.DropItemOnFloor(item, this, null, Vector2Int.zero);
+                                // Heat check
+                                chance = ((currentHeat - item.itemData.integrityMax) / 4);
+
+                                if (Random.Range(0f, 1f) < chance) // Continue to next check
+                                {
+                                    // Corruption check
+                                    /*
+                                     * One of the big changes to EM damage in Beta 11 was of course the potential to corrupt the victim’s salvage, 
+                                     * causing some amount of system corruption when attached. 
+                                     * This may cause players to shy away from corrupting targets with desirable salvage, 
+                                     * or avoid attaching quite as much of that salvage as they would before. 
+                                     * Still, sometimes you just have to put on that extra corrupted part to survive, or maybe just don’t care :)
+                                     */
+                                    chance = ((100 * corruption) - item.itemData.integrityMax) / 100;
+
+                                    if (Random.Range(0f, 1f) < chance) // Continue to next check
+                                    {
+                                        // Success! But will the item be corrupted?
+                                        if (Random.Range(0f, 1f) < corruption)
+                                        { // This should really be "1 to (10*[corruption]/100)" but I have no idea how that math works out
+                                          // Corrupted!
+                                            int calc = (10 * (int)(100 * corruption) / 100); // ex: This turns 60 -> 6
+                                            item.corrupted = Random.Range(1, calc);
+                                            InventoryControl.inst.DropItemOnFloor(item, this, null, Vector2Int.zero);
+                                        }
+
+                                        // Drop the item
+                                        InventoryControl.inst.DropItemOnFloor(item, this, null, Vector2Int.zero);
+                                    }
+                                }
                             }
                         }
                     }
                 }
-            }
+
+                // TODO: There is probably some other corruption death stuff here but im not sure what it is
+                break;
+            case DeathType.DTType.Critical:
+
+                // !! Copied from Core death, need to verify if anything different happens here. !!
+                if (!wasFabricated)
+                {
+                    List<Item> items = new List<Item>();
+
+                    foreach (var item in this.armament.Container.Items.ToList())
+                    {
+                        items.Add(item.item);
+                    }
+                    foreach (var item in this.components.Container.Items.ToList())
+                    {
+                        items.Add(item.item);
+                    }
+
+                    foreach (var item in items)
+                    {
+                        if (item.Id >= 0)
+                        {
+                            // HP Check
+                            float percentHP = item.integrityCurrent / item.itemData.integrityMax;
+                            float chance = ((percentHP / 2) + salvageModifier);
+
+                            if (Random.Range(0f, 1f) < chance) // Continue to next check
+                            {
+                                // Heat check
+                                chance = ((currentHeat - item.itemData.integrityMax) / 4);
+
+                                if (Random.Range(0f, 1f) < chance) // Success! Drop the item.
+                                {
+                                    InventoryControl.inst.DropItemOnFloor(item, this, null, Vector2Int.zero);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Play a unique critical death message
+                UIManager.inst.CreateNewLogMessage($"{botName} suffers critical hit ({deathInfo.crit.ToString()}).", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
+                break;
+            case DeathType.DTType.None:
+                Debug.LogError($"ERROR: {this.gameObject.name} has death type of none!");
+                break;
+        }
+        #endregion
+
+        #region Overall Death Message
+        string deathMessage = $"{this.botInfo.botName} destroyed.";
+        // Make a log message
+        if (overrideMessage != "")
+        {
+            deathMessage = overrideMessage;
         }
 
+        UIManager.inst.CreateNewLogMessage(deathMessage, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
+        #endregion
+
+        #region Death Sound
         // Play a death sound
         if (botInfo._size == BotSize.Tiny || botInfo._size == BotSize.Small)
         {
@@ -692,6 +752,7 @@ public class Actor : Entity
         {
             this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_robotdestruction[$"STATIC_LRG_0{Random.Range(1, 3)}"]); // STATIC_LRG_1/2/3/4/5/6/7/8
         }
+        #endregion
 
         // Drop all items in inventory
         foreach (var I in inventory.Container.Items)
@@ -1079,4 +1140,35 @@ public class Actor : Entity
 
     #endregion
 
+}
+
+[System.Serializable]
+[Tooltip("Contains information regarding a bot's death.")]
+public class DeathType
+{
+    [Tooltip("Who killed this bot?")]
+    public Actor killer;
+    public DTType type = DTType.Core;
+    public CritType crit;
+    [Tooltip("Set to override the default death message.")]
+    public string deathMessage = "";
+
+    public DeathType(Actor killer, DTType type, CritType crit, string deathMessage = "")
+    {
+        this.killer = killer;
+        this.type = type;
+        this.crit = crit;
+        this.deathMessage = deathMessage;
+    }
+
+    public enum DTType
+    {
+        [Tooltip("Core health reached 0. The normal death type.")]
+        Core,
+        [Tooltip("Corruption reached 100.")]
+        Corruption,
+        [Tooltip("Killed by a critical attack.")]
+        Critical,
+        None
+    }
 }
