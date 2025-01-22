@@ -1,5 +1,7 @@
 # Cogworld
 
+[![madeinunity](.github/images/badges/made-in-unity.svg)](https://unity.com/releases/editor/whats-new/2022.3.56)
+
 ## Hello! Welcome to the Cogworld Project!
 
 The goal of this project is to remake the game "Cogmind" in the Unity Engine. Cogmind is a roguelike indie game developed by Grid Sage Games. As a fan of this game I decided to start this project to add in a couple features of my own and to have greater control over the game. The only assets used from the original game are the Sprites and Audio as well as some text/lore pieces.
