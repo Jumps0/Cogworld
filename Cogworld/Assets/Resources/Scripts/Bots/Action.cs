@@ -11,6 +11,7 @@ using Transform = UnityEngine.Transform;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 using Random = UnityEngine.Random;
+using UnityEngine.InputSystem;
 
 public static class Action
 {
@@ -6746,16 +6747,152 @@ public static class Action
             case 7:
                 // Data Loss (Minor) - A minor data loss will lose 1-3 component part ID with the log message System corrupted: Component data lost.
 
+                // Go through all items and collect ones the player knows of (ignoring Tier 1)
+                List<ItemObject> allItemsMinor = new List<ItemObject>();
+
+                foreach (var I in MapManager.inst.itemDatabase.Items)
+                {
+                    if(I.knowByPlayer && I.rating > 1)
+                    {
+                        allItemsMinor.Add(I);
+                    }
+                }
+
+                // Data loss for 1-3 items
+                for (int i = 0; i < Random.Range(1,3); i++)
+                {
+                    allItemsMinor[Random.Range(0, allItemsMinor.Count - 1)].knowByPlayer = false;
+                }
+
+                // Message
+                UIManager.inst.CreateNewLogMessage($"System corrupted: Component data lost.", printoutMain, printoutBack, false, true);
+
                 break;
             case 8:
                 // Data Loss (Major) - A major data loss will lose 3-5 component part IDs with the log message System corrupted: Substantial component data lost.
 
+                // Go through all items and collect ones the player knows of (ignoring Tier 1)
+                List<ItemObject> allItemsMajor = new List<ItemObject>();
+
+                foreach (var I in MapManager.inst.itemDatabase.Items)
+                {
+                    if (I.knowByPlayer && I.rating > 1)
+                    {
+                        allItemsMajor.Add(I);
+                    }
+                }
+
+                // Data loss for 3-5 items
+                for (int i = 0; i < Random.Range(3, 5); i++)
+                {
+                    allItemsMajor[Random.Range(0, allItemsMajor.Count - 1)].knowByPlayer = false;
+                }
+
+                // Message
+                UIManager.inst.CreateNewLogMessage($"System corrupted: Substantial component data lost.", printoutMain, printoutBack, false, true);
                 break;
             case 9:
                 // Misfire - A random weapon will be attempted to be fired. Fails if the weapon does not have enough resources to fire (matter/energy).
                 //           This effect doesn't affect melee weapons, special weapons, or guided weapons.
                 //           Also has the log message System corrupted: FCS attempts to trigger [part name].
                 //           If the misfire is successful, there is an additional log message System corrupted: [part name] misfires.
+
+                if(FindActiveWeapon(player) != null)
+                {
+                    List<Item> botMisfireItems = Action.CollectAllBotItems(player);
+                    // Filter through the items
+                    foreach (var I in botMisfireItems.ToList())
+                    {
+                        ItemObject wepInfo = I.itemData;
+
+                        // - Only weapons
+                        if (wepInfo.slot != ItemSlot.Weapons)
+                        {
+                            botMisfireItems.Remove(I);
+                            break;
+                        }
+
+                        // - No melee
+                        if (wepInfo.meleeAttack.isMelee)
+                        {
+                            botMisfireItems.Remove(I);
+                            break;
+                        }
+
+                        // - No special attacks
+                        if (wepInfo.isSpecialAttack)
+                        {
+                            botMisfireItems.Remove(I);
+                            break;
+                        }
+
+                        // - No guided weapons
+                        if (wepInfo.projectile.guided.isGuided)
+                        {
+                            botMisfireItems.Remove(I);
+                            break;
+                        }
+                    }
+
+                    // Any valid items to shoot?
+                    if(botMisfireItems.Count > 0)
+                    {
+                        // Pick one
+                        Item misfireWeapon = botMisfireItems[Random.Range(0, botMisfireItems.Count - 1)];
+
+                        // Yellow FCS output
+                        UIManager.inst.CreateNewLogMessage($"System corrupted: FCS attempts to trigger {HF.GetFullItemName(misfireWeapon)}.", UIManager.inst.cautiousYellow, UIManager.inst.hotOrange, false, false);
+
+                        printoutMain = UIManager.inst.highSecRed;
+                        printoutBack = UIManager.inst.dangerRed;
+
+                        // - Check if this weapon can be fired
+                        int energyCost = misfireWeapon.itemData.shot.shotEnergy;
+                        int matterCost = misfireWeapon.itemData.shot.shotMatter;
+
+                        if(energyCost > 0) // Energy weapon
+                        {
+                            if(PlayerData.inst.currentEnergy >= energyCost) // Success
+                            {
+                                // Log message
+                                UIManager.inst.CreateNewLogMessage($"System corrupted: {HF.GetFullItemName(misfireWeapon)} misfires.", printoutMain, printoutBack, false, false);
+
+                                // Pick a random target tile within FOV
+                                List<Vector3Int> FOV = player.FieldofView;
+                                // Remove the player's current tile
+                                Vector3 pPos = HF.LocationOfPlayer();
+                                FOV.Remove(new Vector3Int((int)pPos.x, (int)pPos.y));
+                                Vector3 targetTile = FOV[Random.Range(0, FOV.Count - 1)];
+
+                                // FIRE!
+                                GameObject goTarget = HF.DetermineAttackTarget(player.gameObject, targetTile);
+
+                                Action.RangedAttackAction(player, goTarget, misfireWeapon);
+                            }
+                        }
+                        else if(matterCost > 0) // Matter weapon
+                        {
+                            if (PlayerData.inst.currentMatter >= matterCost) // Success
+                            {
+                                // Log message
+                                UIManager.inst.CreateNewLogMessage($"System corrupted: {HF.GetFullItemName(misfireWeapon)} misfires.", printoutMain, printoutBack, false, false);
+
+                                // Pick a random target tile within FOV
+                                List<Vector3Int> FOV = player.FieldofView;
+                                // Remove the player's current tile
+                                Vector3 pPos = HF.LocationOfPlayer();
+                                FOV.Remove(new Vector3Int((int)pPos.x, (int)pPos.y));
+                                Vector3 targetTile = FOV[Random.Range(0, FOV.Count - 1)];
+
+                                // FIRE!
+                                GameObject goTarget = HF.DetermineAttackTarget(player.gameObject, targetTile);
+
+                                Action.RangedAttackAction(player, goTarget, misfireWeapon);
+                            }
+                        }
+                    }
+                }
+                
 
                 break;
             case 10:

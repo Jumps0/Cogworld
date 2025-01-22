@@ -1883,7 +1883,7 @@ public class InvDisplayItem : MonoBehaviour
     #endregion
 
     #region Fusing Items
-    public void FuseItem() // TODO
+    public void FuseItem()
     {
         // Fused items cannot be removed without being destroyed, and display a special little 'f' indicator to the left of the indicator Letter similar to the ':' of fragile items.
 

@@ -15,10 +15,8 @@ public class PlayerData : MonoBehaviour
     public void Awake()
     {
         inst = this;
-        playerGameObject = this.gameObject;
     }
 
-    private GameObject playerGameObject;
     [SerializeField] private GameObject mouseTracker;
 
     [Header("Inventory")]
