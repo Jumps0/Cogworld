@@ -533,6 +533,11 @@ public class GlobalSettings : MonoBehaviour
                     db_textaid.gameObject.SetActive(true);
                     db_textaid.text = "> break \"item\" [Breaks an equipped item. Use 'random' for a random item.]";
                 }
+                else if (command.Contains("fuse"))
+                {
+                    db_textaid.gameObject.SetActive(true);
+                    db_textaid.text = "> fuse \"item\" [Fuses an equipped item. Use 'random' for a random item.]";
+                }
                 else if (command.Contains("faulty"))
                 {
                     db_textaid.gameObject.SetActive(true);
@@ -592,6 +597,8 @@ public class GlobalSettings : MonoBehaviour
          *    -If a terminal is open, forces it into the fail state
          *  > break "item"
          *    -Breaks an equipped item. Use 'random' for a random item.
+         *  > fuse "item"
+         *    -Fuses an equipped item. Use 'random' for a random item.
          *  > faultyitem
          *    -Spawns in a random FAULTY prototype beneath the player.
          *  > corrupteditem
@@ -1023,6 +1030,54 @@ public class GlobalSettings : MonoBehaviour
                             HF.BreakPart(idi.item, idi);
 
                             DebugBarHelper($"Broke {idi.nameUnmodified}.");
+                            success = true;
+                        }
+                        else
+                        {
+                            DebugBarHelper($"Failed to find item '{target}'.");
+                        }
+                    }
+                }
+                break;
+            case "fuse":
+                // Second word
+                if (bits.Length == 1) // There is no second word
+                {
+                    DebugBarHelper("[fuse] Must specify item name or 'random'");
+                    return;
+                }
+                else
+                {
+                    // Try to parse
+                    string target = bits[1];
+                    if (target.Contains("random"))
+                    {
+                        // Get random part
+                        InvDisplayItem idi = HF.GetRandomPlayerPart();
+
+                        if (idi != null && idi.item != null)
+                        {
+                            HF.FusePart(idi.item, idi);
+
+                            DebugBarHelper($"Fused {idi.nameUnmodified}.");
+                            success = true;
+                        }
+                        else
+                        {
+                            DebugBarHelper($"Failed to find an item to fuse.");
+                        }
+                    }
+                    else
+                    {
+                        // Try to find this item on the UI
+                        List<Item> items = Action.CollectAllBotItems(PlayerData.inst.GetComponent<Actor>());
+                        InvDisplayItem idi = HF.GetInvDisplayItemByName(target);
+
+                        if (idi != null)
+                        {
+                            HF.FusePart(idi.item, idi);
+
+                            DebugBarHelper($"Fused {idi.nameUnmodified}.");
                             success = true;
                         }
                         else

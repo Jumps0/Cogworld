@@ -215,8 +215,15 @@ public class InvDisplayItem : MonoBehaviour
                     assignedOrderText.color = emptyGray;
                 }
 
-                // Also add an ":" before the indicator if removing it will destroy the item
-                if (item.itemData.destroyOnRemove)
+                // NOTE: A part being fused or fragile is mutually exclusive
+                // add an 'f' before the letter if its fused
+                if (item.isFused)
+                {
+                    bonusAOS = "f";
+                    assignedOrderText.text = bonusAOS + _assignedChar.ToString();
+                    assignedOrderString = assignedOrderText.text;
+                }
+                else if (item.itemData.destroyOnRemove) // add an ":" before the indicator if removing it will destroy the item (Fragile)
                 {
                     bonusAOS = ":";
                     assignedOrderText.text = bonusAOS + _assignedChar.ToString();

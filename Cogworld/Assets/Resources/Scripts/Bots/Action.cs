@@ -6738,7 +6738,7 @@ public static class Action
                 if(targetF != null)
                 {
                     InvDisplayItem idi = HF.GetInvDisplayItemFromPart(targetF);
-                    idi.FuseItem();
+                    HF.FusePart(targetF, idi, false);
 
                     UIManager.inst.CreateNewLogMessage($"System corrupted: {fItemName} fused.", printoutMain, printoutBack, false, true);
                 }

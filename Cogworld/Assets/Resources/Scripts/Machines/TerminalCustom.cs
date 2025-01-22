@@ -17,7 +17,7 @@ public class TerminalCustom : InteractableMachine
     [Header("Door Control")]
     [Tooltip("Coordinates to the wall(s) that will dissapear if this *door* is opened.")]
     public List<Vector2Int> wallRevealCoordinates = new List<Vector2Int>();
-    public List<TileBlock> wallRevealObjs = new List<TileBlock>();
+    public List<TileBlock> linkedDoors = new List<TileBlock>();
     public AudioSource _doorSource;
     [SerializeField] private TileObject replaceTile;
 
@@ -55,7 +55,7 @@ public class TerminalCustom : InteractableMachine
         // - Play the door open "sliding" sound
         _doorSource.Play();
         // - Replace the walls with floor tiles (that have rubble texture).
-        foreach (TileBlock W in wallRevealObjs)
+        foreach (TileBlock W in linkedDoors)
         {
             // TODO
         }

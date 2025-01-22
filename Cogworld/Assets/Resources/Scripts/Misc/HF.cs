@@ -921,17 +921,33 @@ public static class HF
                 case TerminalCommandType.Manifests:
                     break;
                 case TerminalCommandType.Open:
-                    // Open the entrance to this garrison
+                    // !! This can be either opening a garrison or opening some scripted doors. We can easily differentiate which.
+                    if(command.hack.relatedMachine == MachineType.Garrison)
+                    {
+                        // Open the entrance to this garrison
 
-                    // 1. Play the sound
-                    AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_door["GARRISON_UNLOCK"]); // DOORS - GARRISON_UNLOCK
-                    // 2. Print out in info blue (time) "EXIT=UNLOCKED: GARRISON"
-                    UIManager.inst.CreateNewLogMessage("EXIT=UNLOCKED: GARRISON", UIManager.inst.infoBlue, UIManager.inst.dullGreen, true);
-                    // 3. Spawn an exit to garrison underneath the player, and ensure that the exit notification appears
-                    MapManager.inst.PlaceLevelExit(HF.V3_to_V2I(UIManager.inst.terminal_targetTerm.GetComponent<Garrison>().ejectionSpot.transform.position), true, 4);
-                    UIManager.inst.terminal_targetTerm.GetComponent<Garrison>().Open(); // Also let the garrison know
-                    // 4. Print out in deep info blue (no time) "Access door unlocked."
-                    return "Access door unlocked.";
+                        // 1. Play the sound
+                        AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_door["GARRISON_UNLOCK"]); // DOORS - GARRISON_UNLOCK
+                                                                                                                                              // 2. Print out in info blue (time) "EXIT=UNLOCKED: GARRISON"
+                        UIManager.inst.CreateNewLogMessage("EXIT=UNLOCKED: GARRISON", UIManager.inst.infoBlue, UIManager.inst.dullGreen, true);
+                        // 3. Spawn an exit to garrison underneath the player, and ensure that the exit notification appears
+                        MapManager.inst.PlaceLevelExit(HF.V3_to_V2I(UIManager.inst.terminal_targetTerm.GetComponent<Garrison>().ejectionSpot.transform.position), true, 4);
+                        UIManager.inst.terminal_targetTerm.GetComponent<Garrison>().Open(); // Also let the garrison know
+                                                                                            // 4. Print out in deep info blue (no time) "Access door unlocked."
+                        return "Access door unlocked.";
+                    }
+                    else if(command.hack.relatedMachine == MachineType.CustomTerminal)
+                    {
+                        // TODO
+                        // Open these scripted doors
+                        UIManager.inst.terminal_targetTerm.GetComponent<TerminalCustom>().OpenDoor();
+
+                        // Play door sound (or do this inside the above function? ^)
+
+                        // Replace this  v  v  v v  with the type of doors
+                        return $"Sealed Heavy Doors opened.";
+                    }
+                    break;
                 case TerminalCommandType.Prototypes:
                     break;
                 case TerminalCommandType.Query: // This already happens in "lore"
@@ -5825,6 +5841,22 @@ public static class HF
 
         // Update the UI
         display.BreakItem();
+    }
+
+    public static void FusePart(Item item, InvDisplayItem display, bool doMessage = true)
+    {
+        // May or may not want to do the message
+        if (doMessage)
+        {
+            string message = $"{HF.GetFullItemName(item)} broken.";
+            UIManager.inst.CreateNewLogMessage(message, display.dangerRed, UIManager.inst.alertRed, false, true);
+        }
+
+        // Change the internal variable
+        item.isFused = true;
+
+        // Update the UI
+        display.FuseItem();
     }
 
     /// <summary>
