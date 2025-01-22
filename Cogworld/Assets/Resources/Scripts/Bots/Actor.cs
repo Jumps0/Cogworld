@@ -721,8 +721,17 @@ public class Actor : Entity
                     }
                 }
 
+                Color critColorM = UIManager.inst.activeGreen;
+                Color critColorB = UIManager.inst.dullGreen;
+
+                if (deathInfo.useUniqueColors)
+                {
+                    critColorM = UIManager.inst.energyBlue;
+                    critColorB = UIManager.inst.deepInfoBlue;
+                }
+
                 // Play a unique critical death message
-                UIManager.inst.CreateNewLogMessage($"{botName} suffers critical hit ({deathInfo.crit.ToString()}).", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
+                UIManager.inst.CreateNewLogMessage($"{botName} suffers critical hit ({deathInfo.crit.ToString()}).", critColorM, critColorB, false, false);
                 break;
             case DeathType.DTType.None:
                 Debug.LogError($"ERROR: {this.gameObject.name} has death type of none!");
@@ -1165,13 +1174,16 @@ public class DeathType
     public CritType crit;
     [Tooltip("Set to override the default death message.")]
     public string deathMessage = "";
+    [Tooltip("If the bright blue colors should be used for the log message instead. Usually false.")]
+    public bool useUniqueColors = false;
 
-    public DeathType(Actor killer, DTType type, CritType crit, string deathMessage = "")
+    public DeathType(Actor killer, DTType type, CritType crit, string deathMessage = "", bool useUniqueColors = false)
     {
         this.killer = killer;
         this.type = type;
         this.crit = crit;
         this.deathMessage = deathMessage;
+        this.useUniqueColors = useUniqueColors;
     }
 
     public enum DTType

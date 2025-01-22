@@ -4813,7 +4813,7 @@ public static class Action
                     if (slayer) // SLAYER TIME!!!
                     {
                         string slayerMessage = $"{target.botInfo.botName} suddendly blasts apart at the seams.";
-                        target.Die(new DeathType(source, DeathType.DTType.Critical, CritType.Impale, slayerMessage));
+                        target.Die(new DeathType(source, DeathType.DTType.Critical, CritType.Impale, slayerMessage, true));
                     }
                     else // Normal
                     {

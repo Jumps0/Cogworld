@@ -778,15 +778,7 @@ public class MapManager : MonoBehaviour
                     InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Rocket Launcher", new Vector2Int(56, 57), 1, true)); // ONLY FOR TESTING. REMOVE LATER (Rocket Launcher)
                     InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Vibroblade", new Vector2Int(55, 57), 1, true)); // ONLY FOR TESTING. REMOVE LATER (Vibroblade)
                     InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Exp. Targeting Computer", new Vector2Int(54, 57), 1, true)); // ONLY FOR TESTING. REMOVE LATER (Exp. Targeting Computer)
-                    try
-                    {
-                        InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Hvy. Siege Treads", new Vector2Int(53, 57), 1, true)); // ONLY FOR TESTING. REMOVE LATER (Hvy. Siege Treads)
-                    }
-                    catch(System.Exception ex)
-                    { // Incredibly rare case which is still being investigated
-                        Debug.Log($"FAILED TO SPAWN: Hvy. Siege Treads || {itemDatabase.Items.Length}");
-                        Debug.Log(ex);
-                    }
+                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Hvy. Siege Treads", new Vector2Int(53, 57), 1, true)); // ONLY FOR TESTING. REMOVE LATER (Hvy. Siege Treads)
                     InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("EX Chip 1", new Vector2Int(52, 57), 1, true)); // ONLY FOR TESTING. REMOVE LATER (Ex. Chip 1)
                 }
 

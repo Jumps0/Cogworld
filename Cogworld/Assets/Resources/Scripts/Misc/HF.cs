@@ -5848,7 +5848,7 @@ public static class HF
         // May or may not want to do the message
         if (doMessage)
         {
-            string message = $"{HF.GetFullItemName(item)} broken.";
+            string message = $"{HF.GetFullItemName(item)} fused.";
             UIManager.inst.CreateNewLogMessage(message, display.dangerRed, UIManager.inst.alertRed, false, true);
         }
 

@@ -39,6 +39,9 @@ public class InvDisplayItem : MonoBehaviour
     [Header("Colors")]
     // -- Colors --
     //
+    private Color lastUsedColorM; // Main Color being used for text
+    private Color lastUsedColorH; // Highlight Color being used for text
+    //
     public Color activeGreen;
     public Color inActiveGreen;
     public Color wideBlue;
@@ -222,12 +225,16 @@ public class InvDisplayItem : MonoBehaviour
                     bonusAOS = "f";
                     assignedOrderText.text = bonusAOS + _assignedChar.ToString();
                     assignedOrderString = assignedOrderText.text;
+
+                    assignedOrderText.characterSpacing = -1.5f; // Adjust spacing so it looks nice
                 }
                 else if (item.itemData.destroyOnRemove) // add an ":" before the indicator if removing it will destroy the item (Fragile)
                 {
                     bonusAOS = ":";
                     assignedOrderText.text = bonusAOS + _assignedChar.ToString();
                     assignedOrderString = assignedOrderText.text;
+
+                    assignedOrderText.characterSpacing = -20f; // Adjust spacing so it looks nice
                 }
 
                 // We're gonna shove in the siege check here too since its convienient
@@ -612,7 +619,9 @@ public class InvDisplayItem : MonoBehaviour
 
         // Set the assigned letter to a color while we're a it
         assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(activeGreen)}>{assignedOrderString}</color>";
-        
+
+        lastUsedColorM = end;
+        lastUsedColorH = highlight;
 
         // Get the string list
         List<string> strings = HF.SteppedStringHighlightAnimation(text, highlight, start, end);
@@ -906,6 +915,9 @@ public class InvDisplayItem : MonoBehaviour
             assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(activeGreen)}>{assignedOrderString}</color>";
         }
 
+        lastUsedColorM = end;
+        lastUsedColorH = highlight;
+
         // Get the string list
         List<string> strings = HF.SteppedStringHighlightAnimation(text, highlight, start, end);
 
@@ -1019,7 +1031,7 @@ public class InvDisplayItem : MonoBehaviour
         TextTypeOutAnimation(true);
 
         // Play a sound
-        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_ui["PART_OFF"]); // UI - PART_OFF
+        AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_ui["PARTOFF"]); // UI - PARTOFF
 
         // Update the UI
         UIManager.inst.UpdateInventory();
@@ -1186,6 +1198,9 @@ public class InvDisplayItem : MonoBehaviour
         // Set the assigned letter to a color while we're at it
         assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(end)}>{assignedOrderString}</color>";
 
+        lastUsedColorM = end;
+        lastUsedColorH = highlight;
+
         // Get the string list
         List<string> strings = HF.SteppedStringHighlightAnimation(text, highlight, start, end);
 
@@ -1212,6 +1227,9 @@ public class InvDisplayItem : MonoBehaviour
 
         // Set the assigned letter to a color while we're at it
         assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(end)}>{assignedOrderString}</color>";
+
+        lastUsedColorM = end;
+        lastUsedColorH = highlight;
 
         // Get the string list
         List<string> strings = HF.SteppedStringHighlightAnimation(text, highlight, start, end);
@@ -1282,7 +1300,7 @@ public class InvDisplayItem : MonoBehaviour
             item.siege = true;
 
             // Play a sound
-            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_ui["PART_OFF"]); // PART_OFF
+            AudioManager.inst.PlayMiscSpecific2(AudioManager.inst.dict_ui["PARTOFF"]); // PARTOFF
         }
         else if (startState == 3 && endState == 4) // (end) -> Enabled
         {
@@ -1326,6 +1344,9 @@ public class InvDisplayItem : MonoBehaviour
                 // Set the assigned letter to a color while we're at it
                 assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(end)}>{assignedOrderString}</color>";
 
+                lastUsedColorM = end;
+                lastUsedColorH = highlight;
+
                 // Get the string list
                 strings = HF.SteppedStringHighlightAnimation(text, highlight, start, end);
 
@@ -1359,6 +1380,9 @@ public class InvDisplayItem : MonoBehaviour
 
                 // Set the assigned letter to a color while we're at it
                 assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(end)}>{assignedOrderString}</color>";
+
+                lastUsedColorM = end;
+                lastUsedColorH = highlight;
 
                 // Get the string list
                 strings = HF.SteppedStringHighlightAnimation(text, highlight, start, end);
@@ -1828,7 +1852,7 @@ public class InvDisplayItem : MonoBehaviour
         // 3. Do the typeout animation again (Black -> Red)
 
         // Sound
-        AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PARTOK"]);
+        AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PARTOK"]); // UI - PARTOK
 
         // Color change
         assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(dangerRed)}>{assignedOrderString}</color>";
@@ -1838,6 +1862,9 @@ public class InvDisplayItem : MonoBehaviour
         Color start = Color.black, end = dangerRed, highlight = dangerRed;
         nameUnmodified = HF.GetFullItemName(item); // Update the name
         string text = nameUnmodified; // (this also resets old mark & color tags)
+
+        lastUsedColorM = end;
+        lastUsedColorH = highlight;
 
         List<string> strings = HF.SteppedStringHighlightAnimation(text, highlight, start, end);
 
@@ -1858,8 +1885,32 @@ public class InvDisplayItem : MonoBehaviour
     #region Fusing Items
     public void FuseItem() // TODO
     {
-        // Fused items cannot be removed, and display a special little 'f' indicator to the left of the indicator Letter similar to the ':' of fragile items.
+        // Fused items cannot be removed without being destroyed, and display a special little 'f' indicator to the left of the indicator Letter similar to the ':' of fragile items.
 
+        // Update the display
+        SetLetter(_assignedChar, _assignedNumber);
+
+        // Sound
+        AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PARTOK"]); // UI - PARTOK
+
+        // Text animation
+        Color start = Color.black, end = lastUsedColorM, highlight = lastUsedColorH;
+        nameUnmodified = HF.GetFullItemName(item); // Update the name
+        string text = nameUnmodified; // (this also resets old mark & color tags)
+
+        List<string> strings = HF.SteppedStringHighlightAnimation(text, highlight, start, end);
+
+        float delay = 0f;
+        float perDelay = 0.35f / text.Length;
+
+        foreach (string s in strings)
+        {
+            StartCoroutine(HF.DelayedSetText(itemNameText, s, delay += perDelay));
+        }
+
+        // Update the UI
+        UIManager.inst.UpdateInventory();
+        UIManager.inst.UpdateParts();
     }
     #endregion
 

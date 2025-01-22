@@ -168,7 +168,7 @@ public abstract class UserInterface : MonoBehaviour
         {
             #region Item Dropping
             // Before we actually try to drop the item, we want to consider if attempting to do so would destroy it.
-            if ((obj.GetComponent<InvDisplayItem>().item.itemData.destroyOnRemove || obj.GetComponent<InvDisplayItem>().item.isFaulty) && obj.GetComponent<InvDisplayItem>().my_interface.GetComponent<DynamicInterface>()) // Also only do this in /PARTS/ menu
+            if ((obj.GetComponent<InvDisplayItem>().item.itemData.destroyOnRemove || obj.GetComponent<InvDisplayItem>().item.isFused) && obj.GetComponent<InvDisplayItem>().my_interface.GetComponent<DynamicInterface>()) // Also only do this in /PARTS/ menu
             {
                 // NOTE: Currently there exists no multi-slot force discardable items IN THE GAME. So we don't have to worry about it ;)
                 #region Item Force Discarding
@@ -178,7 +178,7 @@ public abstract class UserInterface : MonoBehaviour
                     obj.GetComponent<InvDisplayItem>().StartDiscardTimeout();
 
                     string discardWord = "discard";
-                    if (obj.GetComponent<InvDisplayItem>().item.isFaulty){ discardWord = "destroy"; }
+                    if (obj.GetComponent<InvDisplayItem>().item.isFused){ discardWord = "destroy"; }
 
                     UIManager.inst.ShowCenterMessageTop($"Will {discardWord} {HF.GetFullItemName(obj.GetComponent<InvDisplayItem>().item)}, repeat to confirm", UIManager.inst.dangerRed, Color.black);
                 }
