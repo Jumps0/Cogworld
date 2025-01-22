@@ -1,6 +1,6 @@
-# Cogworld
+## Cogworld
 
-[![madeinunity](.github/images/badges/made-in-unity.svg)](https://unity.com/releases/editor/whats-new/2022.3.56)
+[![madeinunity](.github/images/badges/made-in-unity.svg)](https://unity.com/releases/editor/whats-new/2022.3.56) [![containsspaghetti](.github/images/badges/contains-spaghetti.svg)](https://xkcd.com/844/)
 
 ## Hello! Welcome to the Cogworld Project!
 
