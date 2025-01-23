@@ -222,7 +222,7 @@ public class InvDisplayItem : MonoBehaviour
                 // add an 'f' before the letter if its fused
                 if (item.isFused)
                 {
-                    bonusAOS = "f";
+                    bonusAOS = "<color=#04540F>f</color>";
                     assignedOrderText.text = bonusAOS + _assignedChar.ToString();
                     assignedOrderString = assignedOrderText.text;
 
@@ -1481,6 +1481,16 @@ public class InvDisplayItem : MonoBehaviour
         discard_readyToDestroy = true;
         DiscardWaitingVisual();
 
+        // Tell children to do it too
+        if (!isSecondaryItem)
+        {
+            foreach (var S in secondaryChildren)
+            {
+                S.GetComponent<InvDisplayItem>().DiscardWaitingVisual();
+            }
+        }
+
+
         if (discardCoroutine != null)
         {
             StopCoroutine(discardCoroutine);
@@ -1694,7 +1704,6 @@ public class InvDisplayItem : MonoBehaviour
         #endregion
 
         // Now that we're done, set it back to its original state (aka Disabled or Enabled visuals).
-        Debug.Log("State: " + item.state);
         if (item.state)
         {
             itemNameText.color = activeGreen;
@@ -1854,6 +1863,20 @@ public class InvDisplayItem : MonoBehaviour
         // Sound
         AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PARTOK"]); // UI - PARTOK
 
+        BreakItemAnimation();
+    }
+
+    public void BreakItemAnimation()
+    {
+        // Tell children to do it too
+        if (!isSecondaryItem)
+        {
+            foreach (var S in secondaryChildren)
+            {
+                S.GetComponent<InvDisplayItem>().BreakItemAnimation();
+            }
+        }
+
         // Color change
         assignedOrderText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(dangerRed)}>{assignedOrderString}</color>";
         healthDisplay.color = dangerRed;
@@ -1893,20 +1916,47 @@ public class InvDisplayItem : MonoBehaviour
         // Sound
         AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PT_FUSE"]); // UI - PT_FUSE
 
-        // Text animation
-        Color start = Color.black, end = lastUsedColorM, highlight = lastUsedColorH;
-        nameUnmodified = HF.GetFullItemName(item); // Update the name
-        string text = nameUnmodified; // (this also resets old mark & color tags)
+        // Backer/Text animation
+        StartCoroutine(FuseAnimation());
+    }
 
-        List<string> strings = HF.SteppedStringHighlightAnimation(text, highlight, start, end);
-
-        float delay = 0f;
-        float perDelay = 0.35f / text.Length;
-
-        foreach (string s in strings)
+    public IEnumerator FuseAnimation()
+    {
+        // Tell children to do it too
+        if (!isSecondaryItem)
         {
-            StartCoroutine(HF.DelayedSetText(itemNameText, s, delay += perDelay));
+            foreach (var S in secondaryChildren)
+            {
+                StartCoroutine(S.GetComponent<InvDisplayItem>().FuseAnimation());
+            }
         }
+
+        // Set the backer to very white-ish gray, then animate it to 0% opacity
+        // Set the text to white, change it back when the above is done
+
+        Color previousHighlight = _highlight.color;
+        Color previousALC = assignedOrderText.color;
+
+        // Set text to white
+        assignedOrderText.color = letterWhite;
+        itemNameText.color = letterWhite;
+
+        _highlight.color = Color.white;
+
+        float elapsedTime = 0f;
+        float duration = 0.4f;
+        while (elapsedTime < duration) // White -> 0% Opactiy
+        {
+            _highlight.color = new Color(Color.white.r, Color.white.g, Color.white.b, Mathf.Lerp(1f, 0f, elapsedTime / duration));
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // Reset everything
+        _highlight.color = previousHighlight;
+        assignedOrderText.color = previousALC;
+        itemNameText.color = defaultTextColor;
 
         // Update the UI
         UIManager.inst.UpdateInventory();

@@ -159,10 +159,13 @@ public abstract class UserInterface : MonoBehaviour
     /// <param name="obj">The InventorySlot which holds the item we are currently dragging (aka Origin). Most data is inside the [InvDisplayItem] attached to it.</param>
     public void OnDragEnd(GameObject obj)
     {
-        if (obj.GetComponent<InvDisplayItem>().item == null || obj.GetComponent<InvDisplayItem>().isSecondaryItem || obj.GetComponent<InvDisplayItem>().item.disabledTimer > 0) // Don't drag empty, secondary items, or disabled items.
-            return;
-
         Destroy(MouseData.tempItemBeingDragged);
+
+        // Don't drag empty, secondary items, or disabled items.
+        if (obj.GetComponent<InvDisplayItem>().item == null || obj.GetComponent<InvDisplayItem>().isSecondaryItem || obj.GetComponent<InvDisplayItem>().item.disabledTimer > 0)
+        {
+            return;
+        }
 
         if(MouseData.interfaceMouseIsOver == null && obj.GetComponent<InvDisplayItem>().item != null) // If we're not over an inventory & we are dragging a real item
         {
@@ -170,7 +173,6 @@ public abstract class UserInterface : MonoBehaviour
             // Before we actually try to drop the item, we want to consider if attempting to do so would destroy it.
             if ((obj.GetComponent<InvDisplayItem>().item.itemData.destroyOnRemove || obj.GetComponent<InvDisplayItem>().item.isFused) && obj.GetComponent<InvDisplayItem>().my_interface.GetComponent<DynamicInterface>()) // Also only do this in /PARTS/ menu
             {
-                // NOTE: Currently there exists no multi-slot force discardable items IN THE GAME. So we don't have to worry about it ;)
                 #region Item Force Discarding
                 // First of all, if this is the first time we try to do this, we want to warn the player.
                 if (!obj.GetComponent<InvDisplayItem>().discard_readyToDestroy) // First time, give a warning, and start the reset time
@@ -213,6 +215,21 @@ public abstract class UserInterface : MonoBehaviour
                     UIManager.inst.UpdatePSUI();
                     UIManager.inst.UpdateInventory();
                     UIManager.inst.UpdateParts();
+
+                    // Destroy secondaries first
+                    List<GameObject> secondaries = obj.GetComponent<InvDisplayItem>().secondaryChildren;
+                    foreach (var S in secondaries)
+                    {
+                        // Stop the animation
+                        S.GetComponent<InvDisplayItem>().DiscardForceStop();
+
+                        // Remove item from inventory
+                        _inventory.RemoveItem(S.GetComponent<InvDisplayItem>().item);
+
+                        // Remove from other things
+                        slotsOnInterface[S].RemoveItem(); // Remove from slot
+                        InventoryControl.inst.animatedItems.Remove(slotsOnInterface[S]); // Remove from animation tracking HashSet
+                    }
 
                     slotsOnInterface[obj].RemoveItem(); // Remove from slot
                     InventoryControl.inst.animatedItems.Remove(slotsOnInterface[obj]); // Remove from animation tracking HashSet
