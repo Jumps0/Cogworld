@@ -5936,6 +5936,23 @@ public static class HF
         else if (DO_FAULTY) { /* Messages handled previously in this function. */ }
 
     }
+
+    /// <summary>
+    /// Given a list of `Item`s. Returns a list of ItemObjects without duplicates.
+    /// </summary>
+    /// <param name="items">The input list of type `Item`.</param>
+    /// <returns>A unique list of `ItemObject`s based on the input list.</returns>
+    public static List<ItemObject> ItemListToItemObjects(List<Item> items)
+    {
+        List<ItemObject> itemObjects = new List<ItemObject>();
+
+        foreach (var I in items)
+        {
+            itemObjects.Add(I.itemData);
+        }
+
+        return itemObjects.Distinct().ToList(); // Remove duplicates
+    }
     #endregion
 
     #region Spotting

@@ -1162,6 +1162,62 @@ public class Actor : Entity
 
     #endregion
 
+    #region IFF Burst
+    /*  Contains functions related to the "IFF Burst" corruption effect
+     *  which has a nice little animation. In practice only the player
+     *  will be doing this but it is here for possible future use.
+     */
+
+    public void IFFBurst()
+    {
+        // EXAMPLE: https://youtu.be/89n0L64Dyvk?si=yi1ysBgj1JrQftIH&t=3193, or https://youtu.be/xbYol_eMeAY?si=jrgtM2jpRMKQD823&t=1992
+        // IFF Burst - An IFF burst comes from Cogmind, alerting hostiles within a 15 tile radius.
+        //             Bots will head to investigate the location of the IFF burst but do not gain active tracking on Cogmind.
+        //             Also has the log message IFF burst signal emitted.
+
+        #region Message
+        Color printoutMain = UIManager.inst.corruptOrange;
+        Color printoutBack = UIManager.inst.corruptOrange_faded;
+        if (this.GetComponent<PlayerData>()) // -- PLAYER --
+        {
+            UIManager.inst.CreateNewLogMessage($"System corrupted: IFF burst signal emitted.", printoutMain, printoutBack, false, true);
+        }
+        else // -- BOT --
+        {
+            UIManager.inst.CreateNewLogMessage($"{uniqueName} emits IFF burst signal.", printoutMain, printoutBack, false, true);
+        }
+        #endregion
+
+        // Audio
+        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_traps["SEGREGATOR"]); // TRAPS - SEGREGATOR (May be wrong clip)
+
+        #region Animation
+        // This neat little animation will require spawning in short lived animated tiles centered on this bot and raditing outward like electricity.
+
+        // -We can make this a bit easier by raycasting out in a bunch of random (but semi-uniform) directions.
+
+        // -Create tiles in those locations
+
+        // -And have them perform their animations based on distance to the player
+
+
+        #endregion
+
+        #region Hostile Bot Interaction
+        List<Actor> nearbyHostiles = HF.FindBotsWithinRange(this, 15); // Get all nearby (15) bots
+        foreach (var A in nearbyHostiles.ToList()) // Filter out non-hostile bots
+        {
+            if(HF.DetermineRelation(this, A) != BotRelation.Hostile)
+            {
+                nearbyHostiles.Remove(A);
+            }
+        }
+
+        // TODO: Tell bots to investigate this
+        #endregion
+
+    }
+    #endregion
 }
 
 [System.Serializable]

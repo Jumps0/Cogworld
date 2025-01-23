@@ -6649,6 +6649,7 @@ public static class Action
         Color printoutBack = UIManager.inst.corruptOrange_faded;
 
         Actor player = PlayerData.inst.GetComponent<Actor>();
+        List<Item> playerItems = Action.CollectAllBotItems(player);
 
         switch (outcome)
         {
@@ -6696,10 +6697,9 @@ public static class Action
             case 5:
                 // Part Rejected - A random part is detached, not including fragile parts like processors, with log message
                 //                 System corrupted: [part name] rejected.  
-                List<Item> partsR = Action.CollectAllBotItems(player);
                 List<Item> validR = new List<Item>();
 
-                foreach (var I in partsR)
+                foreach (var I in playerItems)
                 {
                     if(!I.isFused && !I.itemData.destroyOnRemove)
                     {
@@ -6721,10 +6721,9 @@ public static class Action
             case 6:
                 // Part Fused - A random part that isn't fragile or fused already becomes fused and is unable to be detached without destruction,
                 //              with log message System corrupted: [part name] fused.
-                List<Item> partsF = Action.CollectAllBotItems(player);
                 List<Item> validF = new List<Item>();
 
-                foreach (var I in partsF)
+                foreach (var I in playerItems)
                 {
                     if (!I.isFused && !I.itemData.destroyOnRemove)
                     {
@@ -6758,6 +6757,10 @@ public static class Action
                     }
                 }
 
+                // Remove any items the player has equipped
+                HashSet<ItemObject> setM = new HashSet<ItemObject>(HF.ItemListToItemObjects(playerItems));
+                allItemsMinor.RemoveAll(item => setM.Contains(item));
+
                 // Data loss for 1-3 items
                 for (int i = 0; i < Random.Range(1,3); i++)
                 {
@@ -6781,6 +6784,10 @@ public static class Action
                         allItemsMajor.Add(I);
                     }
                 }
+
+                // Remove any items the player has equipped
+                HashSet<ItemObject> setJ = new HashSet<ItemObject>(HF.ItemListToItemObjects(playerItems));
+                allItemsMajor.RemoveAll(item => setJ.Contains(item));
 
                 // Data loss for 3-5 items
                 for (int i = 0; i < Random.Range(3, 5); i++)
@@ -6902,6 +6909,8 @@ public static class Action
 
                 // Fancy little animation for this guy. see for example: https://youtu.be/89n0L64Dyvk?si=yi1ysBgj1JrQftIH&t=3193
 
+                // This is all contained inside this script in `Actor.cs`
+                player.IFFBurst();
                 break;
             case 11:
                 // Misdirection - Cogmind may move in a random direction other than the one commanded,
