@@ -1891,7 +1891,7 @@ public class InvDisplayItem : MonoBehaviour
         SetLetter(_assignedChar, _assignedNumber);
 
         // Sound
-        AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PARTOK"]); // UI - PARTOK
+        AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PT_FUSE"]); // UI - PT_FUSE
 
         // Text animation
         Color start = Color.black, end = lastUsedColorM, highlight = lastUsedColorH;

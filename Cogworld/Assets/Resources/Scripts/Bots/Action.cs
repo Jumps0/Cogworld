@@ -6649,7 +6649,6 @@ public static class Action
         Color printoutBack = UIManager.inst.corruptOrange_faded;
 
         Actor player = PlayerData.inst.GetComponent<Actor>();
-        List<Item> playerItems = Action.CollectAllBotItems(player);
 
         switch (outcome)
         {
@@ -6699,7 +6698,7 @@ public static class Action
                 //                 System corrupted: [part name] rejected.  
                 List<Item> validR = new List<Item>();
 
-                foreach (var I in playerItems)
+                foreach (var I in Action.CollectAllBotItems(player))
                 {
                     if(!I.isFused && !I.itemData.destroyOnRemove)
                     {
@@ -6723,7 +6722,7 @@ public static class Action
                 //              with log message System corrupted: [part name] fused.
                 List<Item> validF = new List<Item>();
 
-                foreach (var I in playerItems)
+                foreach (var I in Action.CollectAllBotItems(player))
                 {
                     if (!I.isFused && !I.itemData.destroyOnRemove)
                     {
@@ -6757,8 +6756,10 @@ public static class Action
                     }
                 }
 
+                List<Item> allPlayerItemsM1 = Action.CollectAllBotItems(player, true);
+
                 // Remove any items the player has equipped
-                HashSet<ItemObject> setM = new HashSet<ItemObject>(HF.ItemListToItemObjects(playerItems));
+                HashSet<ItemObject> setM = new HashSet<ItemObject>(HF.ItemListToItemObjects(allPlayerItemsM1));
                 allItemsMinor.RemoveAll(item => setM.Contains(item));
 
                 // Data loss for 1-3 items
@@ -6785,8 +6786,10 @@ public static class Action
                     }
                 }
 
+                List<Item> allPlayerItemsM2 = Action.CollectAllBotItems(player, true);
+
                 // Remove any items the player has equipped
-                HashSet<ItemObject> setJ = new HashSet<ItemObject>(HF.ItemListToItemObjects(playerItems));
+                HashSet<ItemObject> setJ = new HashSet<ItemObject>(HF.ItemListToItemObjects(allPlayerItemsM2));
                 allItemsMajor.RemoveAll(item => setJ.Contains(item));
 
                 // Data loss for 3-5 items
@@ -6920,6 +6923,7 @@ public static class Action
 
                 break;
         }
+        // TODO: THERE IS ALSO ONE WHERE A WEAPON FAILS TO FIRE (DIFFERENT LOG MESSAGES BASED ON TYPE)
         #endregion
     }
     
