@@ -6847,8 +6847,8 @@ public static class Action
                         printoutBack = UIManager.inst.dangerRed;
 
                         // - Check if this weapon can be fired
-                        int energyCost = misfireWeapon.itemData.shot.shotEnergy;
-                        int matterCost = misfireWeapon.itemData.shot.shotMatter;
+                        int energyCost = -misfireWeapon.itemData.shot.shotEnergy;
+                        int matterCost = -misfireWeapon.itemData.shot.shotMatter;
 
                         if(energyCost > 0) // Energy weapon
                         {
