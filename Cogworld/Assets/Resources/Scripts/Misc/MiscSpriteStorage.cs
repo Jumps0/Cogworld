@@ -15,6 +15,9 @@ public class MiscSpriteStorage : MonoBehaviour
     [Tooltip("0-15, 0 is the sprite WITHOUT debris")]
     public List<Sprite> ASCII_debrisSprites = new List<Sprite>();
 
+    [Header("ASCII Character Sprites")]
+    public List<Sprite> ASCII_characters = new List<Sprite>();
+
     [Header("Access Sprites")]
     public List<Sprite> accessSprites = new List<Sprite>();
 

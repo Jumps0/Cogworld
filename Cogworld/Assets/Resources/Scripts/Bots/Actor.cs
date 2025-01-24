@@ -1,9 +1,11 @@
+using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using static UnityEditor.PlayerSettings;
 
 public class Actor : Entity
 {
@@ -1192,15 +1194,7 @@ public class Actor : Entity
         AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_traps["SEGREGATOR"]); // TRAPS - SEGREGATOR (May be wrong clip)
 
         #region Animation
-        // This neat little animation will require spawning in short lived animated tiles centered on this bot and raditing outward like electricity.
-
-        // -We can make this a bit easier by raycasting out in a bunch of random (but semi-uniform) directions.
-
-        // -Create tiles in those locations
-
-        // -And have them perform their animations based on distance to the player
-
-
+        IFFBurstAnimation();
         #endregion
 
         #region Hostile Bot Interaction
@@ -1216,6 +1210,84 @@ public class Actor : Entity
         // TODO: Tell bots to investigate this
         #endregion
 
+    }
+
+    private void IFFBurstAnimation()
+    {
+        // This neat little animation will require spawning in short lived animated tiles centered on this bot and raditing outward like electricity.
+
+        // -We can make this a bit easier by raycasting out in a bunch of random (but semi-uniform) directions.
+        // -8 to 10 rays
+        int rayCount = Random.Range(8, 10);
+        Vector2 center = this.transform.position;
+        
+        // The tiles we will spawn in the animating tiles on
+        List<Vector2Int> activeTiles = new List<Vector2Int>();
+
+        // Direction(s) - Like a flower's petals but with a bit of randomness
+        Vector2[] directions = new Vector2[rayCount];
+        float angleStep = 360f / rayCount; // Divide the circle into equal segments
+        float randomSpread = 10f;
+        for (int i = 0; i < rayCount; i++)
+        {
+            // Base angle of the ray (spread out evenly)
+            float baseAngle = i * angleStep;
+
+            // Add some randomness to the angle within the randomSpread range
+            float randomAngle = baseAngle + Random.Range(-randomSpread, randomSpread);
+
+            // Convert the angle to radians
+            float angleInRadians = randomAngle * Mathf.Deg2Rad;
+
+            // Calculate direction using trigonometry
+            directions[i] = new Vector2(Mathf.Cos(angleInRadians), Mathf.Sin(angleInRadians));
+        }
+
+        // Collect up the tiles by doing a raycast
+        for (int i = 0; i < rayCount; i++)
+        {
+            // Random ray distance between 6 and 11
+            float distance = Random.Range(6, 11);
+
+            // Raycast
+            RaycastHit2D[] hits = Physics2D.RaycastAll(center, directions[i], distance);
+
+            // Refine this into positions
+            foreach (var H in hits)
+            {
+                Vector2Int pos = new Vector2Int((int)H.transform.position.x, (int)H.transform.position.y);
+
+                if (!activeTiles.Contains(pos)) // Only add unique entries
+                {
+                    activeTiles.Add(pos);
+
+                    // ONLY FOR DEBUG+TESTING PURPOSES
+                    /*
+                    var spawnedTile = Instantiate(UIManager.inst.prefab_basicTile, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
+                    spawnedTile.name = $"IFF Tile: {pos.x},{pos.y}"; // Give grid based name
+                    spawnedTile.transform.parent = this.transform;
+                    spawnedTile.GetComponent<SpriteRenderer>().sortingOrder = 31;
+                    */
+                }
+            }
+        }
+
+        // Sort the positions by distance (closest -> furtherst)
+        activeTiles.Sort((v1, v2) => (v1 - center).sqrMagnitude.CompareTo((v2 - center).sqrMagnitude));
+
+        // -Create tiles in those locations
+        float stagger = 0f; // Stagger out the animations based on this.
+        foreach (var pos in activeTiles)
+        {
+            var spawnedTile = Instantiate(UIManager.inst.prefab_basicTile, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
+            spawnedTile.name = $"IFF Tile: {pos.x},{pos.y}"; // Give grid based name
+            spawnedTile.transform.parent = this.transform;
+            spawnedTile.GetComponent<SpriteRenderer>().sortingOrder = 31;
+
+            // -And have them perform their animations based on distance to the player
+            // NOTE: We don't really need to keep track of these or force delete them because they handle that themselves in this instance.
+            spawnedTile.GetComponent<SimpleTileAnimator>().InitIFF(stagger += 0.05f);
+        }
     }
     #endregion
 }

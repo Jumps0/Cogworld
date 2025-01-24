@@ -80,6 +80,8 @@ public class UIManager : MonoBehaviour
      *  29 - Exit Popups
      *  
      *  30 - Mouse Highlight
+     *  31 - IFF Burst animation
+     *  32 - Launcher targeting helpers
      *  40 - Perma Highlight
      *  41/42/43 - New Level AnimTileBlocks
      */

@@ -639,7 +639,7 @@ public class PlayerData : MonoBehaviour
                         var spawnedTile = Instantiate(UIManager.inst.prefab_basicTile, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
                         spawnedTile.name = $"LTH Tile: {pos.x},{pos.y}"; // Give grid based name
                         spawnedTile.transform.parent = this.transform;
-                        spawnedTile.GetComponent<SpriteRenderer>().sortingOrder = 31;
+                        spawnedTile.GetComponent<SpriteRenderer>().sortingOrder = 32;
                         lth_tiles.Add(spawnedTile);
                     }
                 }

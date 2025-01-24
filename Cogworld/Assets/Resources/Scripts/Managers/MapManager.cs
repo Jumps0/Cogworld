@@ -732,7 +732,7 @@ public class MapManager : MonoBehaviour
                 {
                     // We want to spawn the starting items centered in the first room
                     // All in all, we should spawn:
-                    // - 4 movement parts (2 Legs, 2 Treads)
+                    // - 6 movement parts (2 Legs, 2 Treads, 2 Wheels)
                     // - 2 armor parts
                     // - 2 engines
                     // - 1 storage (small/medium)
@@ -755,6 +755,8 @@ public class MapManager : MonoBehaviour
 
                     // Propulsion
                     List<ItemObject> propulsion = new List<ItemObject>();
+                    propulsion.Add(HF.FindItemOfTierAndType(1, ItemType.Wheels, false));
+                    propulsion.Add(HF.FindItemOfTierAndType(1, ItemType.Wheels, false));
                     propulsion.Add(HF.FindItemOfTierAndType(1, ItemType.Legs, false));
                     propulsion.Add(HF.FindItemOfTierAndType(1, ItemType.Legs, false));
                     propulsion.Add(HF.FindItemOfTierAndType(1, ItemType.Treads, false));
