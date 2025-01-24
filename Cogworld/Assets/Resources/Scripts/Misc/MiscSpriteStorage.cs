@@ -15,7 +15,7 @@ public class MiscSpriteStorage : MonoBehaviour
     [Tooltip("0-15, 0 is the sprite WITHOUT debris")]
     public List<Sprite> ASCII_debrisSprites = new List<Sprite>();
 
-    [Header("ASCII Character Sprites")]
+    [Header("ASCII Character Sprites")] // Pixel-perfect guide: https://medium.com/@dan.liberatore/pixel-perfect-text-and-ui-in-unity-2021-56d60ba9370f
     public List<Sprite> ASCII_characters = new List<Sprite>();
 
     [Header("Access Sprites")]
