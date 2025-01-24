@@ -19,7 +19,6 @@ public class TestMgr : MonoBehaviour
     private void Start()
     {
         //StartCoroutine(Delay(2.5f));
-
     }
 
     private IEnumerator Delay(float delay = 0f)
