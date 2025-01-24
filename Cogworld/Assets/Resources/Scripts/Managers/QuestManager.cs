@@ -5,14 +5,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using UnityEngine.UI;
 using UnityEngine;
-using ColorUtility = UnityEngine.ColorUtility;
-using static System.Net.Mime.MediaTypeNames;
-using Image = UnityEngine.UI.Image;
-using static Unity.VisualScripting.Member;
-using static UnityEditor.Progress;
-using UnityEditor.Experimental.GraphView;
+using UnityEngine.UI;
 
 /// <summary>
 /// Manages all things quest.

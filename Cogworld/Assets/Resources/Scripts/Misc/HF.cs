@@ -14,14 +14,9 @@ using Vector3 = UnityEngine.Vector3;
 using Transform = UnityEngine.Transform;
 using System.Text;
 using Color = UnityEngine.Color;
-using static Unity.VisualScripting.Member;
-using static UnityEngine.GraphicsBuffer;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
-using static UnityEngine.Rendering.CoreUtils;
-using Unity.VisualScripting;
 using ColorUtility = UnityEngine.ColorUtility;
-using static UnityEditor.Progress;
 
 /// <summary>
 /// Contains helper functions to be used globally.

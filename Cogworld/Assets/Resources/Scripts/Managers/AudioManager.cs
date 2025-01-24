@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.FilePathAttribute;
-
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager inst;

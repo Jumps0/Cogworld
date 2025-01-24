@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Unity.VisualScripting;
-using ColorUtility = UnityEngine.ColorUtility;
-using static UnityEditor.Progress;
 
 /// <summary>
 /// Used on the "Cycle" buttons in the inventory UI.
