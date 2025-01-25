@@ -45,6 +45,8 @@ public class MachinePart : MonoBehaviour
     public bool isVisible = false;
     public GameObject indicator = null;
     private SpriteRenderer sr;
+    private Sprite sprite_destroyed = null;
+    private Sprite sprite_ascii = null;
 
     // Future note:
     // -How to handle Machine audio: https://www.gridsagegames.com/blog/2020/06/building-cogminds-ambient-soundscape/
@@ -64,6 +66,8 @@ public class MachinePart : MonoBehaviour
             {
                 // Auto-assign sprite
                 sr.sprite = info.displaySprite;
+                sprite_ascii = info.asciiRep;
+                sprite_destroyed = info.destroyedSprite;
             }
 
             // Set up the other values while we're here
@@ -77,8 +81,22 @@ public class MachinePart : MonoBehaviour
     {
         if (initializeRandom)
         {
+            // Get a random sprite (Normal, Ascii, Destroyed)
+            List<(Sprite, Sprite, Sprite)> validS = new List<(Sprite, Sprite, Sprite)>();
+            foreach (var T in MapManager.inst.tileDatabase.Tiles)
+            {
+                if(T.type == TileType.Machine)
+                {
+                    // Filter out interactable machines!!!
+                    if (!T.displaySprite.name.Contains("interact"))
+                    {
+                        validS.Add((T.displaySprite, T.asciiRep, T.destroyedSprite));
+                    }
+                }
+            }
+
             this.transform.Rotate(new Vector3(0f, 0f, 90f * Random.Range(0, 4))); // Random Rotation
-            this.GetComponent<SpriteRenderer>().sprite = MiscSpriteStorage.inst.machinePartSprites[Random.Range(0, MiscSpriteStorage.inst.machinePartSprites.Count - 1)]; // Random sprite
+            (sr.sprite, sprite_ascii, sprite_destroyed) = validS[Random.Range(0, validS.Count - 1)];
         }
 
         if (isSealedDoor)

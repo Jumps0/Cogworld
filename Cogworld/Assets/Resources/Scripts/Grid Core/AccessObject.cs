@@ -33,15 +33,17 @@ public class AccessObject : MonoBehaviour
 
         if (branch)
         {
-            this.GetComponent<SpriteRenderer>().sprite = MiscSpriteStorage.inst.accessSprites[1];
+            this.GetComponent<SpriteRenderer>().sprite = MapManager.inst.tileDatabase.dict["Branch Access"].displaySprite;
         }
         else
         {
-            this.GetComponent<SpriteRenderer>().sprite = MiscSpriteStorage.inst.accessSprites[0];
+            this.GetComponent<SpriteRenderer>().sprite = MapManager.inst.tileDatabase.dict["Main Access"].displaySprite;
         }
         if (target == 3 || target == 4) // DSF or GARRISON
         {
-            this.GetComponent<SpriteRenderer>().sprite = MiscSpriteStorage.inst.accessSprites[2];
+            // Same sprite, different color
+            this.GetComponent<SpriteRenderer>().sprite = MapManager.inst.tileDatabase.dict["Branch Access"].displaySprite;
+            this.GetComponent<SpriteRenderer>().color = new Color(0 / 255f, 216f / 255f, 255f / 255f);
         }
 
         QueryName();

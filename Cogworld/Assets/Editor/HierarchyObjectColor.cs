@@ -97,6 +97,10 @@ public class HierarchyObjectColor
                     backgroundColor = new Color(0.9f, 0.6f, 0.1f);
                     textColor = new Color(0.9f, 0.9f, 0.9f);
                     break;
+                case "GlobalSettings":
+                    backgroundColor = new Color(0.2f, 0.6f, 0.1f);
+                    textColor = new Color(0.9f, 0.9f, 0.9f);
+                    break;
 
                 // Testing
                 case "MainControl": // PathfindingTest

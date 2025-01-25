@@ -1,3 +1,5 @@
+// Created by: Cody Jackson | cody@krselectric.com
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +10,10 @@ using System.Text;
 using Image = UnityEngine.UI.Image;
 using Color = UnityEngine.Color;
 using UnityEngine.InputSystem;
+
+/*  MISC USEFUL LINKS
+ *  -Pixel-perfect guide: https://medium.com/@dan.liberatore/pixel-perfect-text-and-ui-in-unity-2021-56d60ba9370f
+ */
 
 public class UIManager : MonoBehaviour
 {

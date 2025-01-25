@@ -6943,13 +6943,15 @@ public static class Action
 
         // Note: These are guesses by me and aren't accurate to what truly happens in game.
         /* == POSSIBLE CONSEQUENCES ==
-         * -[1] Nothing : Low chance for nothing to happen
-         * -[2] Power surge : Break a power item
+         * -[0] Nothing : Low chance for nothing to happen
+         * -[1] Power surge : Break a power item
+         * -[2] Energy drain : Lose 30-50% of current energy
+         * ????
          * -[3] Matter loss : Lose some amount of matter
          * -[4] Corruption : Gain some corruption
          */
 
-        List<int> outcomes = new List<int>() { 1, 3, 3, 3, 4, 4 };
+        List<int> outcomes = new List<int>() { 0, 1, 3, 3, 3, 4, 4 };
 
         // - Conditional events -
         List<Item> engines = Action.FindBotEngines(PlayerData.inst.GetComponent<Actor>());
@@ -6974,7 +6976,17 @@ public static class Action
 
                 UIManager.inst.CreateNewLogMessage($"Faulty integration triggers power surge.", mColor, bColor, false, false);
                 break;
-            case 2: // Matter Loss
+            case 2: // Energy drain : Lose 30-50% of current energy
+                AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PT_LOST"], 0.8f); // UI - PT_LOST
+
+                // Between 30-50%
+                int cEnergy = PlayerData.inst.currentEnergy;
+                int loss = (int)(cEnergy * Random.Range(0.3f, 0.5f));
+                Action.ModifyPlayerMatter(-loss);
+
+                UIManager.inst.CreateNewLogMessage($"Faulty integration triggers matter energy drain (-{loss}).", mColor, bColor, false, false);
+                break;
+            case 3: // Matter Loss
                 AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PT_LOST"], 0.8f); // UI - PT_LOST
 
                 // Not that much, 40 - 80.
@@ -6982,7 +6994,7 @@ public static class Action
 
                 UIManager.inst.CreateNewLogMessage($"Faulty integration triggers matter storage failure.", mColor, bColor, false, false);
                 break;
-            case 3: // Corruption
+            case 4: // Corruption
                 AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PT_LOST"], 0.8f); // UI - PT_LOST
 
                 // Not that much, 3-7%

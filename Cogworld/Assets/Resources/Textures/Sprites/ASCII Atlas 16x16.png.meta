@@ -362,7 +362,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ASCII Atlas 16x16_12
+      name: doublequotes
       rect:
         serializedVersion: 2
         x: 144
@@ -2224,7 +2224,6 @@ TextureImporter:
       =: 663164746
       '@': 461997052
       A: 277497930
-      ASCII Atlas 16x16_12: -354099373
       ASCII Atlas 16x16_40: 504133149
       B: -2115795686
       C: -1326156670
@@ -2265,6 +2264,7 @@ TextureImporter:
       dots1: 1381644944
       dots2: 1702693665
       dots3: -478540469
+      doublequotes: -354099373
       e: -446366971
       emptysquare: 1142541948
       f: -696555580
