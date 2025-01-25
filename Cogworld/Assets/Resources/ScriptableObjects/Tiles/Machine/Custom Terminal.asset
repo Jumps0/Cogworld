@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caf3c7381c065f640ad97b10eeab224e, type: 3}
   m_Name: Custom Terminal
   m_EditorClassIdentifier: 
-  Id: 41
+  Id: 31
   displaySprite: {fileID: -864200448, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   tileName: Custom Terminal
   type: 3
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}
-  asciiRep: {fileID: 1568299622, guid: 11c48a8f38663be4997fdfa1689cb530, type: 3}
+  asciiRep: {fileID: 1039914336, guid: 128a1eddcba3fdd4997d85244d8bc329, type: 3}
   asciiColor: {r: 0.69411767, g: 0.33333334, b: 0, a: 1}
   isDirty: 0
   impassable: 0

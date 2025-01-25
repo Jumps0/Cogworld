@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Architect Wall
   m_EditorClassIdentifier: 
   Id: 20
-  displaySprite: {fileID: 1653356756, guid: fb10cc78639952642858fbe0ed0250dd, type: 3}
+  displaySprite: {fileID: 1442719478, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
   tileName: Architect Wall
   type: 1
   altSprite: {fileID: 0}
-  destroyedSprite: {fileID: -1365252575, guid: fb10cc78639952642858fbe0ed0250dd, type: 3}
-  asciiRep: {fileID: 1342612219, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
+  destroyedSprite: {fileID: -1889050255, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
+  asciiRep: {fileID: 252757115, guid: 128a1eddcba3fdd4997d85244d8bc329, type: 3}
   asciiColor: {r: 1, g: 1, b: 1, a: 1}
   isDirty: 0
   impassable: 0

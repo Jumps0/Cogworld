@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Pipes Corner 2 to 1
   m_EditorClassIdentifier: 
   Id: 37
-  displaySprite: {fileID: -145754225, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
+  displaySprite: {fileID: 1001428530, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   tileName: Pipes Corner Split
   type: 3
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}
-  asciiRep: {fileID: 443667707, guid: bbf1a054510493147ace67589225c41a, type: 3}
+  asciiRep: {fileID: 699131108, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   asciiColor: {r: 0.45098042, g: 0.45098042, b: 0.45098042, a: 1}
   isDirty: 0
   impassable: 0

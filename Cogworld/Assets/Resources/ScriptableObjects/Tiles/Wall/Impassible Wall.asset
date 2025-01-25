@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Impassible Wall
   m_EditorClassIdentifier: 
   Id: 0
-  displaySprite: {fileID: 2124430664, guid: fb10cc78639952642858fbe0ed0250dd, type: 3}
+  displaySprite: {fileID: 1850148893, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
   tileName: Impassive Wall
   type: 1
   altSprite: {fileID: 0}
-  destroyedSprite: {fileID: -1365252575, guid: fb10cc78639952642858fbe0ed0250dd, type: 3}
-  asciiRep: {fileID: 1342612219, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
-  asciiColor: {r: 0.61960787, g: 0.5254902, b: 0.3921569, a: 1}
+  destroyedSprite: {fileID: -1889050255, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
+  asciiRep: {fileID: 252757115, guid: 128a1eddcba3fdd4997d85244d8bc329, type: 3}
+  asciiColor: {r: 0.37647063, g: 0.3019608, b: 0.18823531, a: 1}
   isDirty: 0
   impassable: 1
   health: {x: 10000, y: 10000}

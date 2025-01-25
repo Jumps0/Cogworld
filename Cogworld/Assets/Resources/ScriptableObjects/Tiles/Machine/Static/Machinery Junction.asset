@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Machinery Junction
   m_EditorClassIdentifier: 
   Id: 45
-  displaySprite: {fileID: 337426554, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
+  displaySprite: {fileID: 1199986374, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   tileName: Machinery Junction
   type: 3
-  altSprite: {fileID: 686718923, guid: bbf1a054510493147ace67589225c41a, type: 3}
+  altSprite: {fileID: -124849826, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   destroyedSprite: {fileID: 0}
-  asciiRep: {fileID: -279944297, guid: 0f98ae4f61612184ab250349db1b02ec, type: 3}
+  asciiRep: {fileID: -124849826, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   asciiColor: {r: 0.45098042, g: 0.45098042, b: 0.45098042, a: 1}
   isDirty: 0
   impassable: 0

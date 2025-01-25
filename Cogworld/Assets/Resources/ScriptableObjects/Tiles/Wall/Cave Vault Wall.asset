@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6ec149692851794295060569572dd78, type: 3}
   m_Name: Cave Vault Wall
   m_EditorClassIdentifier: 
-  Id: 18
-  displaySprite: {fileID: -1425296427, guid: fb10cc78639952642858fbe0ed0250dd, type: 3}
+  Id: 21
+  displaySprite: {fileID: 1313785553, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
   tileName: Reinforced Wall
   type: 1
   altSprite: {fileID: 0}
-  destroyedSprite: {fileID: -1365252575, guid: fb10cc78639952642858fbe0ed0250dd, type: 3}
-  asciiRep: {fileID: 1342612219, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
-  asciiColor: {r: 1, g: 0.59478545, b: 0, a: 1}
+  destroyedSprite: {fileID: -1889050255, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
+  asciiRep: {fileID: 252757115, guid: 128a1eddcba3fdd4997d85244d8bc329, type: 3}
+  asciiColor: {r: 0.37647063, g: 0.3019608, b: 0.18823531, a: 1}
   isDirty: 0
   impassable: 0
   health: {x: 10, y: 10}

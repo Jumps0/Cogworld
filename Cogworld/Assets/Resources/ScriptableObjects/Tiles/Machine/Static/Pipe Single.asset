@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Pipe Single
   m_EditorClassIdentifier: 
   Id: 34
-  displaySprite: {fileID: -299661096, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
+  displaySprite: {fileID: -423410463, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   tileName: Pipes Single
   type: 3
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}
-  asciiRep: {fileID: 1568299622, guid: 11c48a8f38663be4997fdfa1689cb530, type: 3}
+  asciiRep: {fileID: -2065967556, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   asciiColor: {r: 0.45098042, g: 0.45098042, b: 0.45098042, a: 1}
   isDirty: 0
   impassable: 0

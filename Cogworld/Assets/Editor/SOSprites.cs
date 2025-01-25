@@ -30,6 +30,7 @@ public class SOSPrites : Editor
         GUILayout.Label("", GUILayout.Height(80), GUILayout.Width(80));
 
         // Draws the texture where we have defined our Label (empty space)
-        GUI.DrawTexture(GUILayoutUtility.GetLastRect(), texture);
+        // NOTE: All the extra variables are here because the only constructor(s) that allow a color change vvv require them.
+        GUI.DrawTexture(GUILayoutUtility.GetLastRect(), texture, ScaleMode.ScaleToFit, true, 0, tile.asciiColor, 0, 0);
     }
 }
