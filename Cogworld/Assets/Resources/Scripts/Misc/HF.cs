@@ -5539,6 +5539,12 @@ public static class HF
         return clips[Random.Range(0, clips.Count - 1)];
     }
 
+    /// <summary>
+    /// Given an input color and a percentage value, will "darken" the color by the given percentage.
+    /// </summary>
+    /// <param name="originalColor">A color to darken.</param>
+    /// <param name="percentage">A float percentage value (0.##f).</param>
+    /// <returns>A color that is darker than the input color.</returns>
     public static Color GetDarkerColor(Color originalColor, float percentage)
     {
         // Adjust color

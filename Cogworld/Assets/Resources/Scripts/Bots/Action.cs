@@ -3358,6 +3358,23 @@ public static class Action
         return engines;
     }
 
+    public static List<Item> FindBotPropulsion(Actor actor)
+    {
+        List<Item> prop = new List<Item>();
+
+        List<Item> allItems = Action.CollectAllBotItems(actor);
+
+        foreach (var I in allItems)
+        {
+            if (I.itemData.slot == ItemSlot.Propulsion)
+            {
+                prop.Add(I);
+            }
+        }
+
+        return prop;
+    }
+
     public static Vector2Int V3_to_V2I(Vector3 v)
     {
         return new Vector2Int((int)v.x, (int)v.y);
@@ -6946,20 +6963,28 @@ public static class Action
          * -[0] Nothing : Low chance for nothing to happen
          * -[1] Power surge : Break a power item
          * -[2] Energy drain : Lose 30-50% of current energy
+         * -[3] Damage propulsion : A propulsion part loses 30-50% integrity.
          * ????
-         * -[3] Matter loss : Lose some amount of matter
-         * -[4] Corruption : Gain some corruption
+         * -[4] Matter loss : Lose some amount of matter
+         * -[5] Corruption : Gain some corruption
          */
 
-        List<int> outcomes = new List<int>() { 0, 1, 3, 3, 3, 4, 4 };
+        List<int> outcomes = new List<int>() { 0, 1, 4, 4, 4, 5, 5 };
 
         // - Conditional events -
-        List<Item> engines = Action.FindBotEngines(PlayerData.inst.GetComponent<Actor>());
+        Actor player = PlayerData.inst.GetComponent<Actor>();
+        List<Item> engines = Action.FindBotEngines(player);
         if(engines.Count > 0)
         {
             outcomes.Add(2);
             outcomes.Add(2);
-            outcomes.Add(2);
+        }
+        List<Item> propulsion = Action.FindBotPropulsion(player);
+        if (propulsion.Count > 0)
+        {
+            outcomes.Add(3);
+            outcomes.Add(3);
+            outcomes.Add(3);
         }
 
         // Pick a random outcome
@@ -6971,13 +6996,15 @@ public static class Action
 
                 break;
             case 1: // Power Surge - Forcefully break an engine
+                AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["ALARM_FAULTY"], 0.8f); // UI - ALARM_FAULTY
+
                 Item surgeTarget = engines[Random.Range(0, engines.Count - 1)];
                 HF.BreakPart(surgeTarget, HF.GetInvDisplayItemFromPart(surgeTarget));
 
                 UIManager.inst.CreateNewLogMessage($"Faulty integration triggers power surge.", mColor, bColor, false, false);
                 break;
             case 2: // Energy drain : Lose 30-50% of current energy
-                AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PT_LOST"], 0.8f); // UI - PT_LOST
+                AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["ALARM_FAULTY"], 0.8f); // UI - ALARM_FAULTY
 
                 // Between 30-50%
                 int cEnergy = PlayerData.inst.currentEnergy;
@@ -6986,16 +7013,26 @@ public static class Action
 
                 UIManager.inst.CreateNewLogMessage($"Faulty integration triggers matter energy drain (-{loss}).", mColor, bColor, false, false);
                 break;
-            case 3: // Matter Loss
-                AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PT_LOST"], 0.8f); // UI - PT_LOST
+            case 3: // Damage propulsion : A propulsion part loses 30-50% integrity.
+                AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["ALARM_FAULTY"], 0.8f); // UI - ALARM_FAULTY
+
+                Item propTarget = propulsion[Random.Range(0, propulsion.Count - 1)];
+                string propTargetName = HF.GetFullItemName(propTarget);
+                int damage = (int)(propTarget.integrityCurrent * Random.Range(0.3f, 0.5f));
+
+                Action.DamageItem(player, propTarget, damage);
+                UIManager.inst.CreateNewLogMessage($"Faulty integration damages {propTargetName} (-{damage}).", mColor, bColor, false, false);
+                break;
+            case 4: // Matter Loss
+                AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["ALARM_FAULTY"], 0.8f); // UI - ALARM_FAULTY
 
                 // Not that much, 40 - 80.
                 Action.ModifyPlayerMatter(-Random.Range(40, 80));
 
                 UIManager.inst.CreateNewLogMessage($"Faulty integration triggers matter storage failure.", mColor, bColor, false, false);
                 break;
-            case 4: // Corruption
-                AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PT_LOST"], 0.8f); // UI - PT_LOST
+            case 5: // Corruption
+                AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["ALARM_FAULTY"], 0.8f); // UI - ALARM_FAULTY
 
                 // Not that much, 3-7%
                 Action.ModifyPlayerCorruption(Random.Range(3, 7));
