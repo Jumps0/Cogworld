@@ -1184,7 +1184,7 @@ public class GlobalSettings : MonoBehaviour
             db_ifield.text = "";
 
             // Play a sound so the player knows its a success
-            AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_ui["CASH_REGISTER"], 0.75f);
+            AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_ui["CASH_REGISTER"], 0.35f);
 
             // Unfocus
             DebugBarChangeFocus(false);

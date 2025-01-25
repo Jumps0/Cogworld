@@ -1449,6 +1449,8 @@ public class GameManager : MonoBehaviour
             bot.schematicDetails.hasSchematic = true;
         }
     }
+
+    public ColorPallet colors;
 }
 
 #region Global Actions
@@ -1473,3 +1475,17 @@ public class GlobalActions
     }
 }
 #endregion
+
+[System.Serializable]
+public class ColorPallet
+{
+    [Header("Machine Colors")]
+    public Color machine_terminal;
+    public Color machine_garrison;
+    public Color machine_recycler;
+    public Color machine_fabricator;
+    public Color machine_scanalyzer;
+    public Color machine_repairbay;
+    public Color machine_customterminal;
+    public Color machine_static;
+}

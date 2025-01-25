@@ -26,13 +26,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 240689221471730947}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 1, w: 0.0000028461218}
   m_LocalPosition: {x: -1, y: -2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 894120197535800149}
-  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
 --- !u!212 &2261186685758329285
 SpriteRenderer:
@@ -75,7 +75,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 448263914, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
+  m_Sprite: {fileID: 308738488, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   m_Color: {r: 0, g: 1, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -96,6 +96,25 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -181,7 +200,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 1, b: 0, a: 1}
+  activeColor: {r: 0.45098042, g: 0.45098042, b: 0.45098042, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts: []
   parentPart: {fileID: 457395203926888844}
@@ -214,13 +233,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2437682090712717721}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.0000000745058, w: 1}
   m_LocalPosition: {x: -1, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 894120197535800149}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2534098707084474164
 SpriteRenderer:
@@ -263,7 +282,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: -145754225, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
+  m_Sprite: {fileID: 1001428530, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   m_Color: {r: 0, g: 1, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -284,6 +303,25 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -369,7 +407,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 1, b: 0, a: 1}
+  activeColor: {r: 0.45098042, g: 0.45098042, b: 0.45098042, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts: []
   parentPart: {fileID: 457395203926888844}
@@ -402,13 +440,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2468441806668267871}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.9999998, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 894120197535800149}
-  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4430108834598003466
 SpriteRenderer:
@@ -451,7 +489,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: -17570632, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
+  m_Sprite: {fileID: 239690055, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   m_Color: {r: 0, g: 1, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -472,6 +510,25 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -557,7 +614,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 1, b: 0, a: 1}
+  activeColor: {r: 0.45098042, g: 0.45098042, b: 0.45098042, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts: []
   parentPart: {fileID: 457395203926888844}
@@ -590,13 +647,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3085404003195400800}
+  serializedVersion: 2
   m_LocalRotation: {x: -1, y: -0.000000044703476, z: -0, w: 0}
   m_LocalPosition: {x: 2, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 894120197535800149}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: -180}
 --- !u!212 &7755867553879313364
 SpriteRenderer:
@@ -639,7 +696,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: -529204860, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
+  m_Sprite: {fileID: -2006059973, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   m_Color: {r: 0, g: 1, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -660,6 +717,25 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -745,7 +821,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 1, b: 0, a: 1}
+  activeColor: {r: 0.45098042, g: 0.45098042, b: 0.45098042, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts: []
   parentPart: {fileID: 457395203926888844}
@@ -778,13 +854,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3708682592410311501}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0.7071057, w: 0.7071079}
   m_LocalPosition: {x: 1, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 894120197535800149}
-  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
 --- !u!212 &3112311861231243773
 SpriteRenderer:
@@ -827,7 +903,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 448263914, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
+  m_Sprite: {fileID: 308738488, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   m_Color: {r: 0, g: 1, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -848,6 +924,25 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -933,7 +1028,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 1, b: 0, a: 1}
+  activeColor: {r: 0.45098042, g: 0.45098042, b: 0.45098042, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts: []
   parentPart: {fileID: 457395203926888844}
@@ -966,13 +1061,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5028878831562046993}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0.70710796, w: -0.7071057}
   m_LocalPosition: {x: 0, y: -2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 894120197535800149}
-  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -270}
 --- !u!212 &8143924012210811834
 SpriteRenderer:
@@ -1015,7 +1110,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 745981837, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
+  m_Sprite: {fileID: -364493266, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   m_Color: {r: 0, g: 1, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1036,6 +1131,25 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -1121,7 +1235,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 1, b: 0, a: 1}
+  activeColor: {r: 0.45098042, g: 0.45098042, b: 0.45098042, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts: []
   parentPart: {fileID: 457395203926888844}
@@ -1154,13 +1268,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5551797854799475715}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0.7071057, w: 0.7071079}
   m_LocalPosition: {x: 2, y: -2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 894120197535800149}
-  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
 --- !u!212 &5680662861817141299
 SpriteRenderer:
@@ -1203,7 +1317,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 448263914, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
+  m_Sprite: {fileID: 308738488, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   m_Color: {r: 0, g: 1, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1224,6 +1338,25 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -1309,7 +1442,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 1, b: 0, a: 1}
+  activeColor: {r: 0.45098042, g: 0.45098042, b: 0.45098042, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts: []
   parentPart: {fileID: 457395203926888844}
@@ -1342,14 +1475,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5799227047678470943}
-  m_LocalRotation: {x: -0, y: -0, z: -0.00000032782552, w: 1}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
   m_LocalPosition: {x: -1.0000001, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 894120197535800149}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
 --- !u!212 &843533441166064072
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1391,7 +1524,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 1363776105, guid: 3d4246bf28dd1e64b8800d326cd1c606, type: 3}
+  m_Sprite: {fileID: 239690055, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   m_Color: {r: 0, g: 1, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1412,6 +1545,25 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -1440,10 +1592,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a8faf6a83c7344aa46b6f652dd1f95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  info: {fileID: 0}
+  info: {fileID: 11400000, guid: 2a4c1b80a8ebfbe4ca4fbadd789a3dd4, type: 2}
   displayName: Terminal
   type: 5
-  armor: {x: 0, y: 0}
+  armor: {x: 15, y: 15}
   state: 1
   explodes: 0
   heatTransfer: 0
@@ -1468,7 +1620,28 @@ MonoBehaviour:
   explosivePotential:
     explosionSounds: []
     explosionGFX: 0
-  resistances: []
+  resistances:
+  - damageType: 0
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 1
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 2
+    resistanceAmount: 0.5
+    immune: 0
+  - damageType: 3
+    resistanceAmount: -0.5
+    immune: 0
+  - damageType: 6
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 7
+    resistanceAmount: 0
+    immune: 0
+  - damageType: 8
+    resistanceAmount: 0
+    immune: 0
   initializeRandom: 0
   walkable: 0
   isSealedDoor: 0
@@ -1509,13 +1682,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7430618634675708821}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -1, w: 0.0000016093252}
   m_LocalPosition: {x: 1, y: -2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 894120197535800149}
-  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -180}
 --- !u!212 &3066308128382995184
 SpriteRenderer:
@@ -1558,7 +1731,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 448263914, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
+  m_Sprite: {fileID: 308738488, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   m_Color: {r: 0, g: 1, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1579,6 +1752,25 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -1664,7 +1856,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 1, b: 0, a: 1}
+  activeColor: {r: 0.45098042, g: 0.45098042, b: 0.45098042, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts: []
   parentPart: {fileID: 457395203926888844}
@@ -1694,6 +1886,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7456691822352536937}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -1701,7 +1894,6 @@ Transform:
   m_Children:
   - {fileID: 894120197535800149}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8088961576517149522
 GameObject:
@@ -1731,6 +1923,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8088961576517149522}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.000000059604638, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -1747,7 +1940,6 @@ Transform:
   - {fileID: 974886456833124640}
   - {fileID: 2203370876401449948}
   m_Father: {fileID: 9163113434371694507}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7403240108286977041
 SpriteRenderer:
@@ -1811,6 +2003,25 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -1839,29 +2050,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8795d0be115cca4fb6970dc25a5624c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  centerLoc: {x: 0, y: 0}
   _size: {x: 4, y: 3}
-  securityLevel: 0
-  accessLevel: 0
-  limited: 0
-  locked: 0
-  zone:
-    assignedTerminal: {fileID: 0}
-    assignedArea: []
-    trapList: []
-    emergencyAccessDoors: []
-  avaiableCommands: []
-  customCodes: []
-  storedObjects: []
   fullName: 
-  systemType: 
+  specialName: 
+  type: 0
+  avaiableCommands: []
   restrictedAccess: 1
   secLvl: 1
   detectionChance: 0
   traceProgress: 0
   detected: 0
+  locked: 0
+  timesAccessed: 0
+  trojans: []
+  centerLoc: {x: 0, y: 0}
+  zone:
+    assignedTerminal: {fileID: 0}
+    assignedArea: []
+    trapList: []
+    emergencyAccessDoors: []
+  assignedBot: {fileID: 0}
+  customCodes: []
+  storedObjects: []
   databaseLockout: 0
-  trojans: 
   _source: {fileID: 8875991750360203089}
   _ambient: {fileID: 8300000, guid: 9073141b07e0da340a41ea0074427d09, type: 3}
 --- !u!114 &457395203926888844
@@ -1933,7 +2144,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 1, g: 1, b: 1, a: 1}
+  activeColor: {r: 0.007843138, g: 0.5411765, b: 0, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts:
   - {fileID: 4406303226917338365}
@@ -2072,13 +2283,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8386060919956580954}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.0000015497205, w: 1}
   m_LocalPosition: {x: 0, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 894120197535800149}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7725606183137944610
 SpriteRenderer:
@@ -2121,7 +2332,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: -17570632, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
+  m_Sprite: {fileID: 239690055, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   m_Color: {r: 0, g: 1, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2142,6 +2353,25 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -2227,7 +2457,7 @@ MonoBehaviour:
   sealedDoorOrange: {r: 1, g: 0.5019608, b: 0, a: 1}
   sealedStorageBlue: {r: 0.78039217, g: 0.91764706, b: 1, a: 1}
   destroyed: 0
-  activeColor: {r: 0, g: 1, b: 0, a: 1}
+  activeColor: {r: 0.45098042, g: 0.45098042, b: 0.45098042, a: 1}
   disabledColor: {r: 0.48235297, g: 0.48235297, b: 0.48235297, a: 1}
   connectedParts: []
   parentPart: {fileID: 457395203926888844}

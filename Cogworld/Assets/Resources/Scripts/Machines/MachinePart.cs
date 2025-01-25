@@ -33,8 +33,10 @@ public class MachinePart : MonoBehaviour
     public bool destroyed = false;
 
     [Header("Colors")]
-    public Color activeColor;
-    public Color disabledColor;
+    [SerializeField] private Color activeColor;
+    [SerializeField] private Color dimColor;
+    [SerializeField] private Color disabledColor;
+    [SerializeField] private Color dimDisabledColor;
 
     [Header("Components")]
     public List<MachinePart> connectedParts;
@@ -51,18 +53,14 @@ public class MachinePart : MonoBehaviour
     // Future note:
     // -How to handle Machine audio: https://www.gridsagegames.com/blog/2020/06/building-cogminds-ambient-soundscape/
 
-    #region Pre-setup
-    private void OnValidate()
+    private void Start()
     {
-        if(info != null)
-        {
-            // Get sprite renderer
-            if(sr == null)
-            {
-                sr = this.GetComponent<SpriteRenderer>();
-            }
+        // Get sprite renderer
+        sr = this.gameObject.GetComponent<SpriteRenderer>();
 
-            if(sr != null && info.displaySprite != null)
+        if (info != null)
+        {
+            if (sr != null && info.displaySprite != null)
             {
                 // Auto-assign sprite
                 sr.sprite = info.displaySprite;
@@ -73,12 +71,8 @@ public class MachinePart : MonoBehaviour
             // Set up the other values while we're here
             armor = info.health;
             resistances = info.resistances;
-        }   
-    }
-    #endregion
+        }
 
-    private void Start()
-    {
         if (initializeRandom)
         {
             // Get a random sprite (Normal, Ascii, Destroyed)
@@ -101,17 +95,27 @@ public class MachinePart : MonoBehaviour
 
         if (isSealedDoor)
         {
-            this.GetComponent<SpriteRenderer>().color = sealedDoorOrange;
+            sr.color = sealedDoorOrange;
         }
         if (isSealedStorage)
         {
-            this.GetComponent<SpriteRenderer>().color = sealedStorageBlue;
+            sr.color = sealedStorageBlue;
         }
 
         // Set the name
         SetName();
 
-        activeColor = this.GetComponent<SpriteRenderer>().color;
+        // Set color
+        if(parentPart != null && parentPart != this)
+        {
+            activeColor = parentPart.activeColor;
+        }
+        else
+        {
+            activeColor = info.asciiColor;
+        }
+        dimColor = HF.GetDarkerColor(activeColor, 0.3f);
+        dimDisabledColor = HF.GetDarkerColor(disabledColor, 0.3f);
     }
 
     private void SetName()
@@ -178,6 +182,8 @@ public class MachinePart : MonoBehaviour
     #region Visibility
     public void UpdateVis(byte update)
     {
+        if (sr == null) { return; }
+
         if (update == 0) // UNSEEN/UNKNOWN
         {
             isExplored = false;
@@ -194,49 +200,42 @@ public class MachinePart : MonoBehaviour
             isVisible = true;
         }
 
-        Color actiColor = activeColor;
-        if(parentPart == null || parentPart == this)
-        {
-            actiColor = Color.white;
-        }
-
-
         if (parentPart && parentPart.state)
         {
             if (isVisible)
             {
-                this.GetComponent<SpriteRenderer>().color = actiColor;
+                sr.color = activeColor;
             }
             else if (isExplored && isVisible)
             {
-                this.GetComponent<SpriteRenderer>().color = actiColor;
+                sr.color = activeColor;
             }
             else if (isExplored && !isVisible)
             {
-                this.GetComponent<SpriteRenderer>().color = new Color(actiColor.r, actiColor.g, actiColor.b, 0.7f);
+                sr.color = dimColor;
             }
             else if (!isExplored)
             {
-                this.GetComponent<SpriteRenderer>().color = Color.black;
+                sr.color = Color.black;
             }
         }
         else
         {
             if (isVisible)
             {
-                this.GetComponent<SpriteRenderer>().color = disabledColor;
+                sr.color = disabledColor;
             }
             else if (isExplored && isVisible)
             {
-                this.GetComponent<SpriteRenderer>().color = disabledColor;
+                sr.color = disabledColor;
             }
             else if (isExplored && !isVisible)
             {
-                this.GetComponent<SpriteRenderer>().color = new Color(disabledColor.r, disabledColor.g, disabledColor.b, 0.9f);
+                sr.color = dimDisabledColor;
             }
             else if (!isExplored)
             {
-                this.GetComponent<SpriteRenderer>().color = Color.black;
+                sr.color = Color.black;
             }
         }
 

@@ -50,6 +50,8 @@ public class TileBlock : MonoBehaviour
     public bool isVisible;
     [Tooltip("If true, this tile won't block LOS like normal. Used for open doors.")]
     public bool specialNoBlockVis = false;
+    [SerializeField] private Color visc_white;
+    [SerializeField] private Color visc_gray;
 
     [Header("Colors")]
     public Color intel_green;
@@ -100,6 +102,10 @@ public class TileBlock : MonoBehaviour
         SetHighlightPerma(this.tileInfo.impassable); // Set perma highlight
 
         TurnManager.inst.turnEvents.onTurnTick += TurnTick; // Begin listening to this event
+
+        // Set sprite vis colors
+        visc_white = tileInfo.asciiColor;
+        visc_gray = HF.GetDarkerColor(visc_white, 0.3f);
     }
 
     public TileVisibility vis;
@@ -144,28 +150,28 @@ public class TileBlock : MonoBehaviour
 
         if (isVisible)
         {
-            this.GetComponent<SpriteRenderer>().color = Color.white;
+            this.GetComponent<SpriteRenderer>().color = visc_white;
             if (isDirty)
             {
-                _debrisSprite.GetComponent<SpriteRenderer>().color = Color.white;
+                _debrisSprite.GetComponent<SpriteRenderer>().color = visc_white;
             }
             recentlyRevealedViaIntel = false;
         }
         else if (isExplored && isVisible)
         {
-            this.GetComponent<SpriteRenderer>().color = Color.white;
+            this.GetComponent<SpriteRenderer>().color = visc_white;
             if (isDirty)
             {
-                _debrisSprite.GetComponent<SpriteRenderer>().color = Color.white;
+                _debrisSprite.GetComponent<SpriteRenderer>().color = visc_white;
             }
             recentlyRevealedViaIntel = false;
         }
         else if (isExplored && !isVisible)
         {
-            this.GetComponent<SpriteRenderer>().color = Color.gray;
+            this.GetComponent<SpriteRenderer>().color = visc_gray;
             if (isDirty)
             {
-                _debrisSprite.GetComponent<SpriteRenderer>().color = Color.gray;
+                _debrisSprite.GetComponent<SpriteRenderer>().color = visc_gray;
             }
             if (this.GetComponent<Animator>().enabled) // Stop animating!
             {

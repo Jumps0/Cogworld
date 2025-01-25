@@ -2002,6 +2002,37 @@ public static class HF
         return hackName;
     }
 
+    /// <summary>
+    /// Given a machine type, returns what color that machine and its parts should be colored. Color pallet is inside `GameManager.cs` at the bottom.
+    /// </summary>
+    /// <param name="type">The type of machine this is.</param>
+    /// <returns>A color this machine should appear as (with a base color of white).</returns>
+    public static Color MachineColor(MachineType type)
+    {
+        switch (type)
+        {
+            case MachineType.Fabricator:
+                return GameManager.inst.colors.machine_fabricator;
+            case MachineType.Garrison:
+                return GameManager.inst.colors.machine_garrison;
+            case MachineType.Recycling:
+                return GameManager.inst.colors.machine_recycler;
+            case MachineType.RepairStation:
+                return GameManager.inst.colors.machine_repairbay;
+            case MachineType.Scanalyzer:
+                return GameManager.inst.colors.machine_scanalyzer;
+            case MachineType.Terminal:
+                return GameManager.inst.colors.machine_terminal;
+            case MachineType.CustomTerminal:
+                return GameManager.inst.colors.machine_customterminal;
+            case MachineType.DoorTerminal:
+                return GameManager.inst.colors.machine_customterminal;
+            case MachineType.Misc:
+                return GameManager.inst.colors.machine_static;
+            default:
+                return GameManager.inst.colors.machine_static;
+        }
+    }
     #endregion
 
     #region Find & Get
@@ -5510,10 +5541,7 @@ public static class HF
 
     public static Color GetDarkerColor(Color originalColor, float percentage)
     {
-        // Make sure the percentage is within the range [0, 100].
-        percentage = Mathf.Clamp(percentage, 0f, 100f) / 100f;
-
-        // Calculate the darker color components.
+        // Adjust color
         float r = originalColor.r - originalColor.r * percentage;
         float g = originalColor.g - originalColor.g * percentage;
         float b = originalColor.b - originalColor.b * percentage;
