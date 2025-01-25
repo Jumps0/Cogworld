@@ -6948,8 +6948,8 @@ public static class Action
     {
         item.doneFaultyFailure = true;
 
-        // Play the 'Broken' sound
-        AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["PT_LOST"], 1);
+        // Play the 'Faulty' sound
+        AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["ALARM_FAULTY"], 1f); // UI - ALARM_FAULTY
 
         // -- Consequences --
         float random = Random.Range(0f, 1f);
@@ -6996,16 +6996,12 @@ public static class Action
 
                 break;
             case 1: // Power Surge - Forcefully break an engine
-                AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["ALARM_FAULTY"], 0.8f); // UI - ALARM_FAULTY
-
                 Item surgeTarget = engines[Random.Range(0, engines.Count - 1)];
                 HF.BreakPart(surgeTarget, HF.GetInvDisplayItemFromPart(surgeTarget));
 
                 UIManager.inst.CreateNewLogMessage($"Faulty integration triggers power surge.", mColor, bColor, false, false);
                 break;
             case 2: // Energy drain : Lose 30-50% of current energy
-                AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["ALARM_FAULTY"], 0.8f); // UI - ALARM_FAULTY
-
                 // Between 30-50%
                 int cEnergy = PlayerData.inst.currentEnergy;
                 int loss = (int)(cEnergy * Random.Range(0.3f, 0.5f));
@@ -7014,8 +7010,6 @@ public static class Action
                 UIManager.inst.CreateNewLogMessage($"Faulty integration triggers matter energy drain (-{loss}).", mColor, bColor, false, false);
                 break;
             case 3: // Damage propulsion : A propulsion part loses 30-50% integrity.
-                AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["ALARM_FAULTY"], 0.8f); // UI - ALARM_FAULTY
-
                 Item propTarget = propulsion[Random.Range(0, propulsion.Count - 1)];
                 string propTargetName = HF.GetFullItemName(propTarget);
                 int damage = (int)(propTarget.integrityCurrent * Random.Range(0.3f, 0.5f));
@@ -7024,16 +7018,12 @@ public static class Action
                 UIManager.inst.CreateNewLogMessage($"Faulty integration damages {propTargetName} (-{damage}).", mColor, bColor, false, false);
                 break;
             case 4: // Matter Loss
-                AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["ALARM_FAULTY"], 0.8f); // UI - ALARM_FAULTY
-
                 // Not that much, 40 - 80.
                 Action.ModifyPlayerMatter(-Random.Range(40, 80));
 
                 UIManager.inst.CreateNewLogMessage($"Faulty integration triggers matter storage failure.", mColor, bColor, false, false);
                 break;
             case 5: // Corruption
-                AudioManager.inst.CreateTempClip(HF.LocationOfPlayer(), AudioManager.inst.dict_ui["ALARM_FAULTY"], 0.8f); // UI - ALARM_FAULTY
-
                 // Not that much, 3-7%
                 Action.ModifyPlayerCorruption(Random.Range(3, 7));
 
