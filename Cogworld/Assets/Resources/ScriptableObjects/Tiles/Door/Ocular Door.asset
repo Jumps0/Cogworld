@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9bf959f1c2ce52248b62ff453abcc06c, type: 3}
-  m_Name: Research Door
+  m_Name: Ocular Door
   m_EditorClassIdentifier: 
-  Id: 16
-  displaySprite: {fileID: -833905593, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
-  tileName: Research Door
+  Id: 17
+  displaySprite: {fileID: 361985936, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
+  tileName: Ocular Door
   type: 2
-  altSprite: {fileID: -1085998231, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
+  altSprite: {fileID: -199068303, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
   destroyedSprite: {fileID: 26118361, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
   asciiRep: {fileID: 878618907, guid: 128a1eddcba3fdd4997d85244d8bc329, type: 3}
   asciiColor: {r: 1, g: 0.5019608, b: 0, a: 1}
