@@ -39,7 +39,7 @@ public class GridCore<TGridObject> : MonoBehaviour
                 spawnedTile.name = $"Tile {x} {y}";
 
                 var isOffset = (x % 2 == 0 && y % 2 != 0) || (x % 2 != 0 && y % 2 == 0);
-                spawnedTile.Init(isOffset);
+                spawnedTile.GInit(isOffset);
 
                 _tiles[new Vector2(x, y)] = spawnedTile;
                 gridArray[x, y] = createGridObject(this, x, y);

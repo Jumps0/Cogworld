@@ -67,17 +67,17 @@ public class TileBlock : MonoBehaviour
     [Tooltip("Does the player know this tile is actually a phase wall?")]
     public bool phaseWall_revealed = false;
 
-    public void Init(bool isOffset)
+    public void GInit(bool isOffset)
     {
         _renderer.color = isOffset ? _offsetColor : _baseColor;
     }
 
     public void Start()
     {
-        StartCheck();
+        Init();
     }
 
-    public void StartCheck()
+    public void Init()
     {
         if (_renderer == null)
         {

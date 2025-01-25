@@ -11,6 +11,7 @@ using static UnityEngine.GraphicsBuffer;
 /// </summary>
 public class BotAI : MonoBehaviour
 {
+    private Actor _actor;
 
     [Header("Squad")]
     [Tooltip("List of all squad members")]
@@ -26,19 +27,14 @@ public class BotAI : MonoBehaviour
     public int memory = 0;
     public bool canSeePlayer = false;
     public BotRelation relationToPlayer = BotRelation.Neutral;
+    public Vector2Int lastKnowEnemyLocation = new Vector2Int(-1, -1);
 
     [Header("Pathing")]
     public List<Vector2Int> pointsOfInterest = new List<Vector2Int>(); // Bot will visit these
 
     private void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        _actor = this.GetComponent<Actor>();
     }
 
     #region General Turn-taking
@@ -173,7 +169,7 @@ public class BotAI : MonoBehaviour
                         if(HF.V3_to_V2I(this.transform.position) != locationOfInterest)
                         {
                             state = BotAIState.Returning;
-
+                            /*
                             // Move back to the position
                             if (pathing.path.Count < 0)
                             {
@@ -181,7 +177,7 @@ public class BotAI : MonoBehaviour
                                 SetNewAStar();
                                 CreateAStarPath(locationOfInterest);
                             }
-
+                            */
                             NavigateToPOI(locationOfInterest);
                         }
                         else
@@ -282,9 +278,57 @@ public class BotAI : MonoBehaviour
     int timeOnTask = 0;
     [Tooltip("A location of importance, used in decisionmaking.")]
     Vector2Int locationOfInterest = Vector2Int.zero;
+    Astar pathing;
 
     #endregion
 
+    #region Enemy Hunting
+
+    /// <summary>
+    /// Provides this bot the location of an enemy. The bot will act on this if an enemy is not already within line of sight.
+    /// </summary>
+    /// <param name="pos"></param>
+    public void ProvideEnemyLocation(Vector2 pos)
+    {
+        List<Actor> targetsInFOV = HF.BotsInActorFOV(_actor, true);
+
+        // Can we see any enemies right now?
+        if (targetsInFOV.Count > 0) { return; } // If yes, ignore this intel update.
+        else // We can't see anything
+        {
+            // How close is this location to our current location?
+            Vector2 botPos = this.transform.position;
+            float newDist = (pos - botPos).sqrMagnitude;
+
+            // And is that CLOSER than the last know position of an enemy bot (if we have one)
+            if (lastKnowEnemyLocation == new Vector2Int(-1, -1))
+            {
+                // No last known location? Set it as new point!
+                NewInvestigationPoint(pos);
+            }
+            else if(lastKnowEnemyLocation != new Vector2Int(-1, -1))
+            {
+                // Check if this new point is closer than the old one
+                float oldDist = (lastKnowEnemyLocation - botPos).sqrMagnitude;
+
+                if (newDist < oldDist) // It is closer
+                {
+                    // We have a new target!
+                    NewInvestigationPoint(pos);
+                }
+            }
+        }
+    }
+
+    private void NewInvestigationPoint(Vector2 pos)
+    {
+        memory = _actor.botInfo.memory; // Set memory to max
+        lastKnowEnemyLocation = new Vector2Int((int)pos.x, (int)pos.y);
+
+        // TODO
+    }
+
+    #endregion
 
     #region Loitering
     /// <summary>
@@ -404,7 +448,7 @@ public class BotAI : MonoBehaviour
 
     #region A* & Fun!
     [Header("A* & Pathing")]
-    public Astar pathing;
+    //public Astar pathing;
     bool destinationReached = false;
     int timeOnPath = 0;
 
@@ -419,12 +463,12 @@ public class BotAI : MonoBehaviour
 
     public void SetNewAStar()
     {
-        pathing = new Astar(GridManager.inst.grid); // Set up the A*
+        //pathing = new Astar(GridManager.inst.grid); // Set up the A*
     }
 
     public void CreateAStarPath(Vector2Int point)
     {
-        pathing.CreatePath(GridManager.inst.grid, (int)this.transform.position.x, (int)this.transform.position.y, point.x, point.y);
+        //pathing.CreatePath(GridManager.inst.grid, (int)this.transform.position.x, (int)this.transform.position.y, point.x, point.y);
     }
 
     public void NavigateToPOI(Vector2Int poi)
@@ -433,6 +477,7 @@ public class BotAI : MonoBehaviour
 
         if (distanceToPoi > 3) // Navigate to it
         {
+            /*
             destinationReached = false;
             int index = pathing.path.Count - timeOnPath;
             if (index < 0)
@@ -474,6 +519,7 @@ public class BotAI : MonoBehaviour
             }
 
             state = BotAIState.Working;
+            */
         }
         else // We are done
         {

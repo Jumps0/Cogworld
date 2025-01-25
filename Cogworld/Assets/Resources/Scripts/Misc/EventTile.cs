@@ -94,7 +94,7 @@ public class EventTile : MonoBehaviour
                 if (MapManager.inst._allTilesRealized.ContainsKey(loc))
                 {
                     MapManager.inst._allTilesRealized[loc].bottom.tileInfo = MapManager.inst.tileDatabase.Tiles[4]; // Replace type with floor tile
-                    MapManager.inst._allTilesRealized[loc].bottom.StartCheck(); // Force the tile to update
+                    MapManager.inst._allTilesRealized[loc].bottom.Init(); // Force the tile to update
                     MapManager.inst._allTilesRealized[loc].bottom.SecretDoorReveal(); // Make it play its reveal animation
                 }
             }

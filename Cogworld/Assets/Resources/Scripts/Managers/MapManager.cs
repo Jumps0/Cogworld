@@ -1294,7 +1294,7 @@ public class MapManager : MonoBehaviour
                     T.bottom.tileInfo = MapManager.inst.tileDatabase.Tiles[_tileID];
                     T.bottom.gameObject.name = $"Tile {pos.x} {pos.y} - " + spawnedTile.tileInfo.type.ToString();
                     T.bottom.tileInfo.currentVis = TileVisibility.Unknown;
-                    T.bottom.StartCheck();
+                    T.bottom.Init();
 
                     _allTilesRealized[posi] = T;
                 }
@@ -1360,7 +1360,7 @@ public class MapManager : MonoBehaviour
                         TT.bottom.gameObject.name = $"Tile {pos.x} {pos.y} - "; // Give grid based name
                         TT.bottom.tileInfo = MapManager.inst.tileDatabase.Tiles[id]; // Assign tile data from database by ID
                         TT.bottom.gameObject.name += _allTilesRealized[posi].bottom.tileInfo.type.ToString(); // Modify name with type
-                        TT.bottom.StartCheck();
+                        TT.bottom.Init();
 
                         _allTilesRealized[posi] = TT;
 

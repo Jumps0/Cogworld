@@ -1195,16 +1195,14 @@ public class Actor : Entity
         #endregion
 
         #region Hostile Bot Interaction
-        List<Actor> nearbyHostiles = HF.FindBotsWithinRange(this, 15); // Get all nearby (15) bots
-        foreach (var A in nearbyHostiles.ToList()) // Filter out non-hostile bots
+        List<Actor> nearbyBots = HF.FindBotsWithinRange(this, 15); // Get all nearby (15) bots
+        foreach (var A in nearbyBots)
         {
-            if(HF.DetermineRelation(this, A) != BotRelation.Hostile)
+            if(HF.DetermineRelation(this, A) == BotRelation.Hostile) // Only hostiles
             {
-                nearbyHostiles.Remove(A);
+                A.GetComponent<BotAI>().ProvideEnemyLocation(this.transform.position); // Provide new location
             }
         }
-
-        // TODO: Tell bots to investigate this
         #endregion
 
     }
