@@ -1274,6 +1274,7 @@ public class Actor : Entity
 
         // -Create tiles in those locations
         float stagger = 0f; // Stagger out the animations based on this.
+        float staggerIncrement = 0.002f;
         foreach (var pos in activeTiles)
         {
             var spawnedTile = Instantiate(UIManager.inst.prefab_basicTile, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
@@ -1283,7 +1284,7 @@ public class Actor : Entity
 
             // -And have them perform their animations based on distance to the player
             // NOTE: We don't really need to keep track of these or force delete them because they handle that themselves in this instance.
-            spawnedTile.GetComponent<SimpleTileAnimator>().InitIFF(stagger += 0.05f);
+            spawnedTile.GetComponent<SimpleTileAnimator>().InitIFF(stagger += staggerIncrement);
         }
     }
     #endregion
