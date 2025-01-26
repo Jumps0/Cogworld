@@ -7108,7 +7108,7 @@ public static class Action
             // Normal (nothing to do)
 
             // Message
-            List<Color> colors = new List<Color>() { UIManager.inst.dangerRed, UIManager.inst.highSecRed, UIManager.inst.alertRed };
+            List<Color> colors = new List<Color>() { GameManager.inst.colors.bm_red_dark, GameManager.inst.colors.bm_red_norm, GameManager.inst.colors.bm_red_text };
             UIManager.inst.CreateBottomMessage($"System corrupted: Misdirected.", colors);
         }
 

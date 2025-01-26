@@ -1488,4 +1488,17 @@ public class ColorPallet
     public Color machine_repairbay;
     public Color machine_customterminal;
     public Color machine_static;
+
+    [Header("Bottom Message Colors")]
+    public Color bm_blue_dark;
+    public Color bm_blue_norm;
+    public Color bm_blue_text;
+    //
+    public Color bm_green_dark;
+    public Color bm_green_norm;
+    public Color bm_green_text;
+    //
+    public Color bm_red_dark;
+    public Color bm_red_norm;
+    public Color bm_red_text;
 }

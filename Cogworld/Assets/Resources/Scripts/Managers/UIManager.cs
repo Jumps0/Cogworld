@@ -1013,13 +1013,13 @@ public class UIManager : MonoBehaviour
     public GameObject bottomMessageArea;
     public List<GameObject> bottomMessages;
 
-    public void CreateBottomMessage(string message, List<Color> colors, string colorOverride = "", float displayTime = 10f)
+    public void CreateBottomMessage(string message, List<Color> colors, float displayTime = 10f)
     {
         // ~ This type of message doesn't play a sound
-        StartCoroutine(DoCreateBottomMessage(message, colors, colorOverride, displayTime));
+        StartCoroutine(DoCreateBottomMessage(message, colors, displayTime));
     }
 
-    IEnumerator DoCreateBottomMessage(string message, List<Color> colors, string colorOverride = "", float displayTime = 10f)
+    IEnumerator DoCreateBottomMessage(string message, List<Color> colors, float displayTime = 10f)
     {
         // Instantiate it & Assign it to left area
         GameObject newBottomMessage = Instantiate(bottomMessage_prefab, bottomMessageArea.transform.position, Quaternion.identity);
@@ -1028,7 +1028,7 @@ public class UIManager : MonoBehaviour
         // Add it to list
         bottomMessages.Add(newBottomMessage);
         // Assign Details
-        newBottomMessage.GetComponent<UIBottomMessage>().Setup(message, colors, colorOverride);
+        newBottomMessage.GetComponent<UIBottomMessage>().Setup(message, colors);
         newBottomMessage.GetComponent<UIBottomMessage>().AppearAnim();
 
         yield return new WaitForSeconds(displayTime);

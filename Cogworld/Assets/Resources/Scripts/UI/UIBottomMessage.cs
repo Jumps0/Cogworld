@@ -13,59 +13,18 @@ public class UIBottomMessage : MonoBehaviour
 
     public Animator animator;
 
-    [Header("Colors")]
-    [SerializeField] private Color blueDark;
-    [SerializeField] private Color blueNorm;
-    [SerializeField] private Color blueText;
-    //
-    [SerializeField] private Color greenDark;
-    [SerializeField] private Color greenNorm;
-    [SerializeField] private Color greenText;
-    //
-    [SerializeField] private Color redDark;
-    [SerializeField] private Color redNorm;
-    [SerializeField] private Color redText;
-    //
     private Color setDark;
     private Color setNorm;
     private Color setText;
     
 
-    public void Setup(string text, List<Color> colors, string colorOverride = "")
+    public void Setup(string text, List<Color> colors)
     {
         _text.text = text;
 
-        if(colorOverride != "")
-        {
-            switch (colorOverride)
-            {
-                case "Red":
-                    setDark = redDark;
-                    setNorm = redNorm;
-                    setText = redText;
-                    break;
-                case "Green":
-                    setDark = greenDark;
-                    setNorm = greenNorm;
-                    setText = greenText;
-                    break;
-                case "Blue":
-                    setDark = blueDark;
-                    setNorm = blueNorm;
-                    setText = blueText;
-                    break;
-
-                default:
-                    break;
-            }
-        }
-        else
-        {
-            setDark = colors[0];
-            setNorm = colors[1];
-            setText = colors[2];
-        }
-        
+        setDark = colors[0];
+        setNorm = colors[1];
+        setText = colors[2];
     }
 
     public void DoAnimationLoop()

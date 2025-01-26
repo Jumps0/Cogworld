@@ -945,7 +945,7 @@ public class GlobalSettings : MonoBehaviour
                         DebugBarHelper("Broadcasting alert message...");
                         break;
                     case 1:
-                        UIManager.inst.CreateBottomMessage(broadcast_message, null, "Blue", 10);
+                        UIManager.inst.CreateBottomMessage(broadcast_message, new List<Color>() {GameManager.inst.colors.bm_blue_dark, GameManager.inst.colors.bm_blue_norm, GameManager.inst.colors.bm_blue_text }, 10);
                         DebugBarHelper("Broadcasting info message...");
                         break;
                     case 2:
