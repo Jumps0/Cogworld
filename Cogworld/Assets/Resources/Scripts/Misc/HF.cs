@@ -17,6 +17,7 @@ using Color = UnityEngine.Color;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using ColorUtility = UnityEngine.ColorUtility;
+using static UnityEditor.PlayerSettings;
 
 /// <summary>
 /// Contains helper functions to be used globally.
@@ -4236,6 +4237,64 @@ public static class HF
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Given a specific location, will attempt to return a list of valid locations (Vector2) to move to.
+    /// </summary>
+    /// <param name="pos">A position on the grid we want to move FROM.</param>
+    /// <returns>A list of neighboring positions where it is valid to move to.</returns>
+    public static List<Vector2> GetValidMovementLocations(Vector2 pos)
+    {
+        List<Vector2> valids = new List<Vector2>();
+
+        // Get neighbors
+        List<GameObject> neighbors = HF.FindNeighbors((int)pos.x, (int)pos.y);
+
+        foreach (var N in neighbors)
+        {
+            if (HF.IsUnoccupiedTile(N.GetComponent<TileBlock>()))
+            {
+                valids.Add(N.transform.position);
+            }
+        }
+
+        return valids;
+    }
+
+    /// <summary>
+    /// Checks to see if a specified tile is unoccupied.
+    /// </summary>
+    /// <param name="tile">The specified tile to check.</param>
+    /// <returns></returns>
+    public static bool IsUnoccupiedTile(TileBlock tile)
+    {
+        if (tile.tileInfo.type == TileType.Wall)
+        {
+            return false;
+        }
+
+        if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(tile.locX, tile.locY)))
+        {
+            TData T = MapManager.inst._allTilesRealized[new Vector2Int(tile.locX, tile.locY)];
+            if (T.bottom.GetComponent<DoorLogic>()) // This is a door
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        if (GameManager.inst.GetBlockingActorAtLocation(tile.transform.position))
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
     #endregion
 

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Drawing;
+using Color = UnityEngine.Color;
 
 public class UIBottomMessage : MonoBehaviour
 {
@@ -29,31 +31,41 @@ public class UIBottomMessage : MonoBehaviour
     private Color setText;
     
 
-    public void Setup(string text, string color)
+    public void Setup(string text, List<Color> colors, string colorOverride = "")
     {
         _text.text = text;
 
-        switch (color)
+        if(colorOverride != "")
         {
-            case "Red":
-                setDark = redDark;
-                setNorm = redNorm;
-                setText = redText;
-                break;
-            case "Green":
-                setDark = greenDark;
-                setNorm = greenNorm;
-                setText = greenText;
-                break;
-            case "Blue":
-                setDark = blueDark;
-                setNorm = blueNorm;
-                setText = blueText;
-                break;
+            switch (colorOverride)
+            {
+                case "Red":
+                    setDark = redDark;
+                    setNorm = redNorm;
+                    setText = redText;
+                    break;
+                case "Green":
+                    setDark = greenDark;
+                    setNorm = greenNorm;
+                    setText = greenText;
+                    break;
+                case "Blue":
+                    setDark = blueDark;
+                    setNorm = blueNorm;
+                    setText = blueText;
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
+            }
         }
+        else
+        {
+            setDark = colors[0];
+            setNorm = colors[1];
+            setText = colors[2];
+        }
+        
     }
 
     public void DoAnimationLoop()

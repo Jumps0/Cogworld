@@ -945,7 +945,7 @@ public class GlobalSettings : MonoBehaviour
                         DebugBarHelper("Broadcasting alert message...");
                         break;
                     case 1:
-                        UIManager.inst.CreateBottomMessage(broadcast_message, "Blue", 10);
+                        UIManager.inst.CreateBottomMessage(broadcast_message, null, "Blue", 10);
                         DebugBarHelper("Broadcasting info message...");
                         break;
                     case 2:

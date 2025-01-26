@@ -354,7 +354,7 @@ public class BotAI : MonoBehaviour
             for (int i = 0; i < 3; i++)
             {
                 // Try moving here
-                if (this.GetComponent<Actor>().IsUnoccupiedTile(neighbors[i].GetComponent<TileBlock>()))
+                if (HF.IsUnoccupiedTile(neighbors[i].GetComponent<TileBlock>()))
                 {
                     Vector2 direction = HF.V3_to_V2I(neighbors[i].transform.position) - myPos;
                     Action.MovementAction(this.GetComponent<Actor>(), direction);
@@ -381,7 +381,7 @@ public class BotAI : MonoBehaviour
 
                 foreach (var T in neighbors)
                 {
-                    if (this.GetComponent<Actor>().IsUnoccupiedTile(T.GetComponent<TileBlock>()))
+                    if (HF.IsUnoccupiedTile(T.GetComponent<TileBlock>()))
                     {
                         validMoveLocations.Add(T);
                     }
@@ -427,7 +427,7 @@ public class BotAI : MonoBehaviour
                 if (MapManager.inst._allTilesRealized.ContainsKey(currentTile))
                 {
                     // Check if the tile exists and is unoccupied.
-                    if (this.GetComponent<Actor>().IsUnoccupiedTile(MapManager.inst._allTilesRealized[new Vector2Int(x, y)].bottom))
+                    if (HF.IsUnoccupiedTile(MapManager.inst._allTilesRealized[new Vector2Int(x, y)].bottom))
                     {
                         validPositions.Add(currentTile); // Add to valid positions
                     }
@@ -566,7 +566,7 @@ public class BotAI : MonoBehaviour
 
                 foreach (var T in neighbors)
                 {
-                    if (this.GetComponent<Actor>().IsUnoccupiedTile(T.GetComponent<TileBlock>()))
+                    if (HF.IsUnoccupiedTile(T.GetComponent<TileBlock>()))
                     {
                         validMoveLocations.Add(T);
                     }

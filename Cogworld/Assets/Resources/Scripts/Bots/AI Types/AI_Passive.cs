@@ -71,7 +71,7 @@ public class AI_Passive : MonoBehaviour
             }
             // Only move to valid tiles!
             if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int((int)destination.x, (int)destination.y)) 
-                && this.GetComponent<Actor>().IsUnoccupiedTile(MapManager.inst._allTilesRealized[new Vector2Int((int)destination.x, (int)destination.y)].bottom))
+                && HF.IsUnoccupiedTile(MapManager.inst._allTilesRealized[new Vector2Int((int)destination.x, (int)destination.y)].bottom))
             {
                 Action.MovementAction(this.GetComponent<Actor>(), moveDir); // Move
             }
@@ -244,7 +244,7 @@ public class AI_Passive : MonoBehaviour
 
                 foreach (var T in neighbors)
                 {
-                    if (this.GetComponent<Actor>().IsUnoccupiedTile(T.GetComponent<TileBlock>()))
+                    if (HF.IsUnoccupiedTile(T.GetComponent<TileBlock>()))
                     {
                         validMoveLocations.Add(T);
                     }

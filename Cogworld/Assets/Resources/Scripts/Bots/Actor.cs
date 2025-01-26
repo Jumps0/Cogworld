@@ -281,7 +281,7 @@ public class Actor : Entity
         GameObject tile = null;
         foreach (GameObject neighbor in neighbors)
         {
-            if (IsUnoccupiedTile(neighbor.GetComponent<TileBlock>()))
+            if (HF.IsUnoccupiedTile(neighbor.GetComponent<TileBlock>()))
             {
                 tile = neighbor;
             }
@@ -340,7 +340,7 @@ public class Actor : Entity
         Vector2Int moveToLocation = Action.NormalizeMovement(this.gameObject.transform, this.GetComponent<OrientedPhysics>().desiredPostion);
         Vector2Int realPos = Action.V3_to_V2I(this.GetComponent<OrientedPhysics>().desiredPostion);
 
-        if (MapManager.inst._allTilesRealized.ContainsKey(realPos) && this.GetComponent<Actor>().IsUnoccupiedTile(MapManager.inst._allTilesRealized[realPos].bottom))
+        if (MapManager.inst._allTilesRealized.ContainsKey(realPos) && HF.IsUnoccupiedTile(MapManager.inst._allTilesRealized[realPos].bottom))
         {
             Debug.Log("Move successful");
             Action.MovementAction(this, moveToLocation);
@@ -376,48 +376,13 @@ public class Actor : Entity
         Vector2Int moveToLocation = Action.NormalizeMovement(this.gameObject.transform, this.GetComponent<OrientedPhysics>().desiredPostion);
         Vector2Int realPos = Action.V3_to_V2I(this.GetComponent<OrientedPhysics>().desiredPostion);
 
-        if (MapManager.inst._allTilesRealized.ContainsKey(realPos) && this.GetComponent<Actor>().IsUnoccupiedTile(MapManager.inst._allTilesRealized[realPos].bottom))
+        if (MapManager.inst._allTilesRealized.ContainsKey(realPos) && HF.IsUnoccupiedTile(MapManager.inst._allTilesRealized[realPos].bottom))
         {
             Action.MovementAction(this.GetComponent<Actor>(), moveToLocation);
         }
         else
         {
             Action.SkipAction(this.GetComponent<Actor>());
-        }
-    }
-
-    /// <summary>
-    /// Checks to see if a specified tile is unoccupied.
-    /// </summary>
-    /// <param name="tile">The specified tile to check.</param>
-    /// <returns></returns>
-    public bool IsUnoccupiedTile(TileBlock tile)
-    {
-        if (tile.tileInfo.type == TileType.Wall)
-        {
-            return false;
-        }
-
-        if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(tile.locX, tile.locY)))
-        {
-            TData T = MapManager.inst._allTilesRealized[new Vector2Int(tile.locX, tile.locY)];
-            if (T.bottom.GetComponent<DoorLogic>()) // This is a door
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        if (GameManager.inst.GetBlockingActorAtLocation(tile.transform.position))
-        {
-            return false;
-        }
-        else
-        {
-            return true;
         }
     }
 

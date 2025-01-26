@@ -1075,14 +1075,11 @@ public static class Action
 
     public static void MovementAction(Actor actor, Vector2 direction)
     {
-        actor.noMovementFor = 0;
-        actor.Move(direction); // Actually move the actor
-
         // Incurr costs for moving
         float tomove_energy = 0, tomove_heat = 0;
-        foreach (var I in Action.CollectAllBotItems(actor))
+        foreach (var I in Action.FindBotPropulsion(actor))
         {
-            if (Action.IsItemActionable(I) && I.itemData.slot == ItemSlot.Propulsion)
+            if (Action.IsItemActionable(I))
             {
                 tomove_energy = I.itemData.propulsion[0].propEnergy;
                 tomove_heat = I.itemData.propulsion[0].propHeat;
@@ -1093,6 +1090,18 @@ public static class Action
         {
             PlayerData.inst.currentHeat += (int)tomove_heat;
             ModifyPlayerEnergy((int)tomove_energy);
+
+            // -- Other stuff while we're here
+            // - Volley
+            if (UIManager.inst.volleyMode)
+            {
+                UIManager.inst.Evasion_VolleyNonAnimation(); // Re-draw volley visuals if its active
+            }
+            // - Corruption Misdirection
+            if (Random.Range(0f, 1f) < (float)(PlayerData.inst.currentCorruption / 100))
+            {
+                direction = Action.CorruptionMisdrection(actor, direction);
+            }
         }
         else
         {
@@ -1100,16 +1109,12 @@ public static class Action
             actor.currentEnergy += (int)tomove_energy;
         }
 
-        // -- Misc stuff --
-        if (actor == PlayerData.inst.GetComponent<Actor>() && UIManager.inst.volleyMode)
-        {
-            UIManager.inst.Evasion_VolleyNonAnimation(); // Re-draw volley visuals if its active
-        }
-        // --           --
+        // -- Movement -- //
+        actor.noMovementFor = 0;
+        actor.Move(direction); // Actually move the actor
 
         // End the actor's turn
         TurnManager.inst.EndTurn(actor);
-
     }
 
     public static void SkipAction(Actor actor)
@@ -1161,7 +1166,7 @@ public static class Action
 
         foreach (var T in neighbors)
         {
-            if (target.GetComponent<Actor>().IsUnoccupiedTile(T.GetComponent<TileBlock>()))
+            if (HF.IsUnoccupiedTile(T.GetComponent<TileBlock>()))
             {
                 validMoveLocations.Add(T);
             }
@@ -1238,7 +1243,7 @@ public static class Action
         TileBlock firstAttemptTile = MapManager.inst._allTilesRealized[pos].bottom.GetComponent<TileBlock>();
 
         // Is the tile where we want to send the target unoccupied?
-        if (target.GetComponent<Actor>().IsUnoccupiedTile(firstAttemptTile))
+        if (HF.IsUnoccupiedTile(firstAttemptTile))
         {
             // Yes!
             MovementAction(target, direction); // Force them to move
@@ -6647,7 +6652,6 @@ public static class Action
         if(inFOV.Count > 0)
         {
             odds.Add(5);
-            odds.Add(11);
         }
 
         // Roll for what we do!
@@ -6931,13 +6935,6 @@ public static class Action
                 // This is all contained inside this script in `Actor.cs`
                 player.IFFBurst();
                 break;
-            case 11:
-                // Misdirection - Cogmind may move in a random direction other than the one commanded,
-                //                with game popup message (not log message) System corrupted: Misdirected.
-                //                On flight, may come with an additional penalty of slamming into a wall.
-                //                If this occurs, Cogmind will take minor impact damage, with the log message Slammed into [ceiling/wall].
-
-                break;
         }
         // TODO: THERE IS ALSO ONE WHERE A WEAPON FAILS TO FIRE (DIFFERENT LOG MESSAGES BASED ON TYPE)
         #endregion
@@ -7029,6 +7026,100 @@ public static class Action
                 UIManager.inst.CreateNewLogMessage($"Faulty integration triggers core corruption.", mColor, bColor, false, false);
                 break;
         }
+    }
+
+    /// <summary>
+    /// Handles the corruption "Misdirection" effect.
+    /// </summary>
+    /// <returns>A direction (Vector2) of where the bot should move to.</returns>
+    public static Vector2 CorruptionMisdrection(Actor actor, Vector2 intendedDirection)
+    {
+        // Misdirection - Cogmind may move in a random direction other than the one commanded,
+        //                with game popup message (not log message) System corrupted: Misdirected.
+        //                On flight, may come with an additional penalty of slamming into a wall.
+        //                If this occurs, Cogmind will take minor impact damage, with the log message Slammed into [ceiling/wall].
+
+        Vector2 actorPos = HF.V3_to_V2I(actor.transform.position);
+
+        // We could go complex here with position checking but i'm just gonna keep it simple and make it random.
+        List<Vector2Int> directions = new List<Vector2Int>() 
+            { 
+                new Vector2Int(1, 1), new Vector2Int(1, 0), new Vector2Int(0, 1), new Vector2Int(-1, 1), 
+                new Vector2Int(-1, 0), new Vector2Int(-1, -1), new Vector2Int(0, -1), new Vector2Int(1, -1), 
+            };
+
+        // Pick a direction
+        Vector2Int loc = directions[Random.Range(0, directions.Count - 1)];
+
+        // Flight check
+        bool doFlightVariant = false;
+        if (Action.HasFlight(actor) && Random.Range(0f, 1f) < 0.3f) // "may" is putting in a lot of work here. Lets just say 30% chance.
+        {
+            doFlightVariant = true;
+        }
+
+        Color printoutMain = UIManager.inst.corruptOrange;
+        Color printoutBack = UIManager.inst.corruptOrange_faded;
+
+        if (doFlightVariant)
+        {
+            // We can safely use any direction, we just need to do a little interpretation.
+            GameObject thing = HF.GetTargetAtPosition(loc);
+
+            string printString = "";
+
+            if(thing.GetComponent<TileBlock>() && !thing.GetComponent<TileBlock>().occupied)
+            {
+                // Just a floor? We consider it a ceiling
+                printString = "ceiling";
+            }
+            else if (thing.GetComponent<Actor>())
+            {
+                // A bot, use its name
+                printString = thing.GetComponent<Actor>().uniqueName;
+            }
+            else if (thing.GetComponent<MachinePart>())
+            {
+                // A machine, use its name
+                printString = thing.GetComponent<MachinePart>().parentPart.displayName;
+            }
+            else
+            {
+                // A wall
+                printString = "wall";
+            }
+
+            // Deal a bit of damage
+            int damage = Random.Range(25, 50);
+            if (actor.GetComponent<PlayerData>())
+            {
+                ModifyPlayerCore(-damage);
+            }
+            else
+            {
+                actor.currentHealth -= damage;
+            }
+
+            // Message
+            UIManager.inst.CreateNewLogMessage($"Slammed into {printString}.", printoutMain, printoutBack, false, true);
+        }
+        else
+        {
+            // Normal (nothing to do)
+
+            // Message
+            List<Color> colors = new List<Color>() { UIManager.inst.dangerRed, UIManager.inst.highSecRed, UIManager.inst.alertRed };
+            UIManager.inst.CreateBottomMessage($"System corrupted: Misdirected.", colors);
+        }
+
+        // Lastly, if we can't legally move into that tile, just don't move
+        Vector2 finalDirect = actorPos - loc;
+        if (HF.IsUnoccupiedTile(MapManager.inst._allTilesRealized[new Vector2Int((int)finalDirect.x, (int)finalDirect.y)].bottom))
+        {
+            finalDirect = Vector2.zero;
+        }
+
+        return finalDirect;
     }
     #endregion
 
