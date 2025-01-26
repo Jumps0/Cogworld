@@ -18,12 +18,57 @@ public class FogOfWar : MonoBehaviour
 
     public void UpdateFogMap(List<Vector3Int> playerFOV) // TODO: This is better, but find a way to not have to do two vision updates
     {
+        // Lets fundamentally break this down into how it works
+        /*  0. The player has just moved to a new location, and their field of view has just been updated.
+         *     We have access to this list of locations in the form of the variable `playerFOV`.
+         *     More importantly however, the fog map has yet to be updated, and is still showing what the
+         *     map looks like from the player's old position. This is what we need to change.
+         *  
+         *  1. Before we reveal any previously unseen tiles (explored/unexplored by NOT visible), we need
+         *     to make any tiles the player can no longer see NOT visible. Where this is any tiles in the
+         *     old `visibileTiles` list that are NOT in the `playerFOV` list.
+         * 
+         *  2. After being updated the no-longer-visible tiles need to be removed from `visibleTiles`,
+         *     and the new tiles need to be set as visibile.
+         *  
+         *  3. The new tiles (if it is their first time being explored) need to do their reveal animation.
+         *  
+         *  
+         */
+
+        // We will create a "Union" list which contains ALL the unique tiles between both lists so we can interact with everything at once.
+        List<Vector3Int> allTiles = visibleTiles.Union<Vector3Int>(playerFOV).ToList<Vector3Int>();
+
+        // Go through all the tiles
         foreach (Vector3Int pos in visibleTiles)
         {
             // Ensure that this tile is actually in the world dictionary
-            if (MapManager.inst._allTilesRealized.ContainsKey((Vector2Int)pos))
+            bool tileInDict = MapManager.inst._allTilesRealized.ContainsKey((Vector2Int)pos);
+
+            if (tileInDict)
+            {
+                // Variables
+                TData data = MapManager.inst._allTilesRealized[(Vector2Int)pos];
+                TileBlock bottom = MapManager.inst._allTilesRealized[(Vector2Int)pos].bottom;
+                GameObject top = MapManager.inst._allTilesRealized[(Vector2Int)pos].top;
+
+                // TODO
+
+            }
+        }
+
+
+        foreach (Vector3Int pos in visibleTiles)
+        {
+            // Ensure that this tile is actually in the world dictionary
+            bool tileInDict = MapManager.inst._allTilesRealized.ContainsKey((Vector2Int)pos);
+
+            if (tileInDict)
             {
                 TData T = MapManager.inst._allTilesRealized[(Vector2Int)pos];
+
+                TileBlock TB = MapManager.inst._allTilesRealized[(Vector2Int)pos].bottom;
+                GameObject TT = MapManager.inst._allTilesRealized[(Vector2Int)pos].top;
 
                 if (debug_nofog)
                 {
@@ -38,7 +83,6 @@ public class FogOfWar : MonoBehaviour
                         T.vis = 1; // Make it explored, but not visible
 
                         // Do the reveal animation if needed
-                        TileBlock TB = MapManager.inst._allTilesRealized[(Vector2Int)pos].bottom;
                         if(!TB.firstTimeRevealed)
                             TB.FirstTimeReveal();
                     }
@@ -49,9 +93,9 @@ public class FogOfWar : MonoBehaviour
 
                 // Now that the vis has been decided, we will actually update the objects
                 byte final_vis = MapManager.inst._allTilesRealized[(Vector2Int)pos].vis;
-                MapManager.inst._allTilesRealized[(Vector2Int)pos].bottom.UpdateVis(final_vis); // Update the vis for the bottom
-                if (MapManager.inst._allTilesRealized[(Vector2Int)pos].top != null) // And if it exists, update the vis for the top
-                    HF.SetGenericTileVis(MapManager.inst._allTilesRealized[(Vector2Int)pos].top, final_vis);
+                TB.UpdateVis(final_vis); // Update the vis for the bottom
+                if (TT != null) // And if it exists, update the vis for the top
+                    HF.SetGenericTileVis(TT, final_vis);
             }
         }
 
