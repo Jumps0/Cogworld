@@ -1077,7 +1077,6 @@ public static class Action
     {
         actor.noMovementFor = 0;
         actor.Move(direction); // Actually move the actor
-        actor.UpdateFieldOfView(); // Update their FOV
 
         // Incurr costs for moving
         float tomove_energy = 0, tomove_heat = 0;

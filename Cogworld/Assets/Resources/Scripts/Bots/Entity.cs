@@ -82,6 +82,8 @@ public class Entity : MonoBehaviour
         {
             SpecialPickupCheck(newLocation);
         }
+
+        this.GetComponent<Actor>().UpdateFieldOfView(); // Update their FOV
     }
 
     public void AddToGameManager()

@@ -37,7 +37,10 @@ public class FogOfWar : MonoBehaviour
                     {
                         T.vis = 1; // Make it explored, but not visible
 
-                        StartCoroutine(MapManager.inst._allTilesRealized[(Vector2Int)pos].bottom.RevealAnim());
+                        // Do the reveal animation if needed
+                        TileBlock TB = MapManager.inst._allTilesRealized[(Vector2Int)pos].bottom;
+                        if(!TB.firstTimeRevealed)
+                            TB.FirstTimeReveal();
                     }
                 }
 

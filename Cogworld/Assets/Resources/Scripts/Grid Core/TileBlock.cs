@@ -173,10 +173,6 @@ public class TileBlock : MonoBehaviour
             {
                 _debrisSprite.GetComponent<SpriteRenderer>().color = visc_gray;
             }
-            if (this.GetComponent<Animator>().enabled) // Stop animating!
-            {
-                this.GetComponent<Animator>().enabled = false;
-            }
         }
         else if (!isExplored)
         {
@@ -184,10 +180,6 @@ public class TileBlock : MonoBehaviour
             if (isDirty)
             {
                 _debrisSprite.GetComponent<SpriteRenderer>().color = Color.black;
-            }
-            if (this.GetComponent<Animator>().enabled) // Stop animating!
-            {
-                this.GetComponent<Animator>().enabled = false;
             }
         }
 
@@ -198,22 +190,42 @@ public class TileBlock : MonoBehaviour
         }
     }
 
+    private Coroutine firstTimeReveal = null;
+    public bool firstTimeRevealed = false;
+    public void FirstTimeReveal()
+    {
+        if (firstTimeReveal != null)
+        {
+            StopCoroutine(firstTimeReveal);
+        }
+        firstTimeReveal = StartCoroutine(RevealAnim());
+    }
+
     public IEnumerator RevealAnim()
     {
-        /*
-         *  NOTE: The animator being enabled breaks the lighting (Fog of War).
-         *  So we only want it to be on when needed.
-         */
-        
-        this.GetComponent<Animator>().enabled = true;
-        this.GetComponent<Animator>().Play("TileRevealGreen");
+        // The animator method doesn't work anymore so we're doing this instead.
 
-        yield return new WaitForSeconds(0.1f);
+        // We will just hijack the highlight object and breifly flash it from green -> green 0% opacity
+        Color start = UIManager.inst.dullGreen;
+        Color end = new Color(UIManager.inst.dullGreen.r, UIManager.inst.dullGreen.g, UIManager.inst.dullGreen.b, 0f);
 
-        if(this != null) // contingency
+        _highlight.SetActive(true);
+        _highlight.GetComponent<SpriteRenderer>().color = start;
+
+        float elapsedTime = 0f;
+        float duration = 0.25f;
+        while (elapsedTime < duration)
         {
-            this.GetComponent<Animator>().enabled = false;
+            _highlight.GetComponent<SpriteRenderer>().color = new Color(start.r, start.g, start.b, Mathf.Lerp(1f, 0f, elapsedTime / duration));
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
         }
+
+        _highlight.GetComponent<SpriteRenderer>().color = end;
+        _highlight.SetActive(false);
+
+        firstTimeRevealed = true;
     }
 
     bool recentlyRevealedViaIntel = false;
