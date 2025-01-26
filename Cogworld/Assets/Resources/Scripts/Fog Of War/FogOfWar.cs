@@ -16,7 +16,7 @@ public class FogOfWar : MonoBehaviour
     public List<TileBlock> knownTiles = new List<TileBlock>();
 
 
-    public void UpdateFogMap(List<Vector3Int> playerFOV) // TODO: This is better, but find a way to not have to do two vision updates
+    public void UpdateFogMap(List<Vector3Int> playerFOV)
     {
         // Lets fundamentally break this down into how it works
         /*  0. The player has just moved to a new location, and their field of view has just been updated.
@@ -32,15 +32,13 @@ public class FogOfWar : MonoBehaviour
          *     and the new tiles need to be set as visibile.
          *  
          *  3. The new tiles (if it is their first time being explored) need to do their reveal animation.
-         *  
-         *  
          */
 
         // We will create a "Union" list which contains ALL the unique tiles between both lists so we can interact with everything at once.
         List<Vector3Int> allTiles = visibleTiles.Union<Vector3Int>(playerFOV).ToList<Vector3Int>();
 
         // Go through all the tiles
-        foreach (Vector3Int pos in visibleTiles)
+        foreach (Vector3Int pos in allTiles.ToList())
         {
             // Ensure that this tile is actually in the world dictionary
             bool tileInDict = MapManager.inst._allTilesRealized.ContainsKey((Vector2Int)pos);
@@ -52,79 +50,59 @@ public class FogOfWar : MonoBehaviour
                 TileBlock bottom = MapManager.inst._allTilesRealized[(Vector2Int)pos].bottom;
                 GameObject top = MapManager.inst._allTilesRealized[(Vector2Int)pos].top;
 
-                // TODO
+                // Is this tile no longer visible?
+                bool tileNoLongerVisible = visibleTiles.Contains(pos) && !playerFOV.Contains(pos);
+                if (tileNoLongerVisible)
+                {
+                    data.vis = 1; // UNSEEN & EXPLORED
+                }
 
-            }
-        }
+                // Is this tile in both lists? (No vis change)
+                bool tileStillVisible = visibleTiles.Contains(pos) && playerFOV.Contains(pos);
+                if (tileStillVisible)
+                {
+                    data.vis = 2; // SEEN & EXPLORED
+                }
 
+                // We just saw this tile
+                bool tileNewlyVisible = !visibleTiles.Contains(pos) && playerFOV.Contains(pos);
+                if (tileNewlyVisible)
+                {
+                    data.vis = 2; // SEEN & EXPLORED
 
-        foreach (Vector3Int pos in visibleTiles)
-        {
-            // Ensure that this tile is actually in the world dictionary
-            bool tileInDict = MapManager.inst._allTilesRealized.ContainsKey((Vector2Int)pos);
+                    // Do the reveal animation if needed
+                    if (!bottom.firstTimeRevealed)
+                        bottom.FirstTimeReveal();
+                }
 
-            if (tileInDict)
-            {
-                TData T = MapManager.inst._allTilesRealized[(Vector2Int)pos];
-
-                TileBlock TB = MapManager.inst._allTilesRealized[(Vector2Int)pos].bottom;
-                GameObject TT = MapManager.inst._allTilesRealized[(Vector2Int)pos].top;
-
+                // !! DEBUG - NO FOG !!
                 if (debug_nofog)
                 {
                     // For full vision
-                    T.vis = 2;
+                    data.vis = 2;
                 }
-                else
+
+                // -- VISION UPDATE --
+                // Update the vis since all changes has been made
+                MapManager.inst._allTilesRealized[(Vector2Int)pos] = data;
+
+                // Update the objects
+                byte final_vis = data.vis;
+                bottom.UpdateVis(final_vis); // Update the vis for the bottom
+
+                if (top != null) // And if it exists, update the vis for the top
+                    HF.SetGenericTileVis(top, final_vis);
+
+                // Last step: Remove unseen tiles
+                if (tileNoLongerVisible)
                 {
-                    // -- isExplored Check
-                    if (T.vis == 0 || T.vis == 2)
-                    {
-                        T.vis = 1; // Make it explored, but not visible
-
-                        // Do the reveal animation if needed
-                        if(!TB.firstTimeRevealed)
-                            TB.FirstTimeReveal();
-                    }
+                    allTiles.Remove(pos);
                 }
-
-                // Update the vis since all changes has been made
-                MapManager.inst._allTilesRealized[(Vector2Int)pos] = T;
-
-                // Now that the vis has been decided, we will actually update the objects
-                byte final_vis = MapManager.inst._allTilesRealized[(Vector2Int)pos].vis;
-                TB.UpdateVis(final_vis); // Update the vis for the bottom
-                if (TT != null) // And if it exists, update the vis for the top
-                    HF.SetGenericTileVis(TT, final_vis);
             }
         }
 
-        visibleTiles.Clear();
-
-        foreach(Vector3Int pos in playerFOV)
-        {
-            // Make sure the tile actually exists in the world dictionary
-            if (MapManager.inst._allTilesRealized.ContainsKey((Vector2Int)pos))
-            {
-                TData T = MapManager.inst._allTilesRealized[(Vector2Int)pos];
-
-                // Set it to visible seen its now within our FOV
-                T.vis = 2;
-
-                // Update the vis since all changes has been made
-                MapManager.inst._allTilesRealized[(Vector2Int)pos] = T;
-
-                // Now that the vis has been decided, we will actually update the objects
-                byte final_vis = MapManager.inst._allTilesRealized[(Vector2Int)pos].vis;
-                MapManager.inst._allTilesRealized[(Vector2Int)pos].bottom.UpdateVis(final_vis); // Update the vis for the bottom
-                if (MapManager.inst._allTilesRealized[(Vector2Int)pos].top != null) // And if it exists, update the vis for the top
-                    HF.SetGenericTileVis(MapManager.inst._allTilesRealized[(Vector2Int)pos].top, final_vis);
-            }
-
-            visibleTiles.Add(pos);
-        }
-
-        visibleTiles.Sort((a, b) => a.x.CompareTo(b.x));
+        // Update visibleTiles
+        visibleTiles = allTiles;
     }
 
     public void SetEntityVisibility()

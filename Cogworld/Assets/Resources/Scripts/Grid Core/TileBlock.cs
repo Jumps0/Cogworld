@@ -206,7 +206,8 @@ public class TileBlock : MonoBehaviour
         // The animator method doesn't work anymore so we're doing this instead.
 
         // We will just hijack the highlight object and breifly flash it from green -> green 0% opacity
-        Color start = UIManager.inst.dullGreen;
+        float startPercent = 0.3f;
+        Color start = new Color(UIManager.inst.dullGreen.r, UIManager.inst.dullGreen.g, UIManager.inst.dullGreen.b, startPercent);
         Color end = new Color(UIManager.inst.dullGreen.r, UIManager.inst.dullGreen.g, UIManager.inst.dullGreen.b, 0f);
 
         _highlight.SetActive(true);
@@ -216,7 +217,7 @@ public class TileBlock : MonoBehaviour
         float duration = 0.25f;
         while (elapsedTime < duration)
         {
-            _highlight.GetComponent<SpriteRenderer>().color = new Color(start.r, start.g, start.b, Mathf.Lerp(1f, 0f, elapsedTime / duration));
+            _highlight.GetComponent<SpriteRenderer>().color = new Color(start.r, start.g, start.b, Mathf.Lerp(startPercent, 0f, elapsedTime / duration));
 
             elapsedTime += Time.deltaTime;
             yield return null;

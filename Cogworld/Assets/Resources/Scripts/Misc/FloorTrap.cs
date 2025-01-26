@@ -192,7 +192,7 @@ public class FloorTrap : MonoBehaviour
         }
 
         // Play trap triggered sound
-        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_traps["TRAP_TRIGGER"]); // TRAPS - TRAP_TRIGGER
+        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_game["TRAPTRIGGER"]); // GAME - TRAPTRIGGER
 
         // Log a message
         UIManager.inst.CreateNewLogMessage("Triggered " + fullName, UIManager.inst.warningOrange, UIManager.inst.corruptOrange_faded, false, true);
