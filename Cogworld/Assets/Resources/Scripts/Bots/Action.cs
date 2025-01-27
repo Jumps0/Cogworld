@@ -781,6 +781,33 @@ public static class Action
             return;
         }
 
+        #region Corruption Failed To Fire
+        if((source.GetComponent<PlayerData>() && source.GetComponent<PlayerData>().currentCorruption > 0) || (source.corruption > 0))
+        {
+            // Get corruption
+            float corruption = 0;
+            if (source.GetComponent<PlayerData>())
+            {
+                corruption = (float)(source.GetComponent<PlayerData>().currentCorruption / 100);
+            }
+            else
+            {
+                corruption = source.corruption;
+            }
+
+            // Do the roll
+            if(Random.Range(0f, 1f) < corruption)
+            {
+                // Failed to fire!
+                Action.CorruptionFailedToFire(source, weapon);
+
+                // End turn early
+                Action.SkipAction(source);
+                return;
+            }
+        }
+        #endregion
+
         ItemShot shotData = weapon.itemData.shot;
 
         if (weapon.itemData.explosionDetails.radius > 0) // AOE Attacks
@@ -6629,7 +6656,6 @@ public static class Action
         // 8.  Data Loss (Major)   - LOW    (1)
         // 9.  Misfire             - LOW    (1)
         // 10. IFF Burst           - LOW    (1)
-        // 11. !Misdirection       - LOW    (1)
 
         // The Non-conditional ones start in the list.
         List<int> odds = new List<int>() { 1, 1, 1, 3, 3, 6, 7, 8, 9, 10 };
@@ -6936,7 +6962,6 @@ public static class Action
                 player.IFFBurst();
                 break;
         }
-        // TODO: THERE IS ALSO ONE WHERE A WEAPON FAILS TO FIRE (DIFFERENT LOG MESSAGES BASED ON TYPE)
         #endregion
     }
     
@@ -6960,12 +6985,13 @@ public static class Action
          * -[1] Power surge : Break a power item
          * -[2] Energy drain : Lose 30-50% of current energy
          * -[3] Damage propulsion : A propulsion part loses 30-50% integrity.
+         * -[4] Heat surge : Recieve +250-400 heat.
          * ????
-         * -[4] Matter loss : Lose some amount of matter
-         * -[5] Corruption : Gain some corruption
+         * -[5] Matter loss : Lose some amount of matter
+         * -[6] Corruption : Gain some corruption
          */
 
-        List<int> outcomes = new List<int>() { 0, 1, 4, 4, 4, 5, 5 };
+        List<int> outcomes = new List<int>() { 0, 1, 4, 4, 5, 5, 5, 6, 6 };
 
         // - Conditional events -
         Actor player = PlayerData.inst.GetComponent<Actor>();
@@ -7013,13 +7039,19 @@ public static class Action
                 Action.DamageItem(player, propTarget, damage);
                 UIManager.inst.CreateNewLogMessage($"Faulty integration damages {propTargetName} (-{damage}).", mColor, bColor, false, false);
                 break;
-            case 4: // Matter Loss
+            case 4: // Heat surge : Recieve +250-400 heat.
+                int heatSurge = Random.Range(250, 400);
+                ModifyPlayerHeat(heatSurge);
+
+                UIManager.inst.CreateNewLogMessage($"Faulty integration triggers heat surge (+{heatSurge}).", mColor, bColor, false, false);
+                break;
+            case 5: // Matter Loss
                 // Not that much, 40 - 80.
                 Action.ModifyPlayerMatter(-Random.Range(40, 80));
 
                 UIManager.inst.CreateNewLogMessage($"Faulty integration triggers matter storage failure.", mColor, bColor, false, false);
                 break;
-            case 5: // Corruption
+            case 6: // Corruption
                 // Not that much, 3-7%
                 Action.ModifyPlayerCorruption(Random.Range(3, 7));
 
@@ -7120,6 +7152,43 @@ public static class Action
         }
 
         return finalDirect;
+    }
+
+    public static void CorruptionFailedToFire(Actor actor, Item weapon)
+    {
+        // There are different log messages based on type
+        string message = "";
+        string weaponName = HF.GetFullItemName(weapon);
+
+        ItemType type = weapon.itemData.type;
+        switch (type)
+        {
+            case ItemType.Gun:
+                message = "jammed.";
+                break;
+            case ItemType.EnergyGun:
+                message = "failed to cycle.";
+                break;
+            case ItemType.Cannon:
+                message = "jammed.";
+                break;
+            case ItemType.EnergyCannon:
+                message = "failed to cycle.";
+                break;
+            case ItemType.Launcher:
+                message = "failed to launch.";
+                break;
+            default:
+                // Generic message
+                break;
+        }
+
+        Color printoutMain = UIManager.inst.corruptOrange;
+        Color printoutBack = UIManager.inst.corruptOrange_faded;
+
+        // Log message
+        UIManager.inst.CreateNewLogMessage($"System corrupted: {weaponName} {message}", printoutMain, printoutBack, false, true);
+
     }
     #endregion
 
