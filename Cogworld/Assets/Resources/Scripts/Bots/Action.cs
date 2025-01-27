@@ -6769,17 +6769,19 @@ public static class Action
                         validF.Add(I);
                     }
                 }
-
-                Item targetF = validF[Random.Range(0, validF.Count - 1)];
-                string fItemName = HF.GetFullItemName(targetF);
-
-                // Fuse the item
-                if(targetF != null)
+                if(validF.Count > 0)
                 {
-                    InvDisplayItem idi = HF.GetInvDisplayItemFromPart(targetF);
-                    HF.FusePart(targetF, idi, false);
+                    Item targetF = validF[Random.Range(0, validF.Count - 1)];
+                    string fItemName = HF.GetFullItemName(targetF);
 
-                    UIManager.inst.CreateNewLogMessage($"System corrupted: {fItemName} fused.", printoutMain, printoutBack, false, true);
+                    // Fuse the item
+                    if (targetF != null)
+                    {
+                        InvDisplayItem idi = HF.GetInvDisplayItemFromPart(targetF);
+                        HF.FusePart(targetF, idi, false);
+
+                        UIManager.inst.CreateNewLogMessage($"System corrupted: {fItemName} fused.", printoutMain, printoutBack, false, true);
+                    }
                 }
                 break;
             case 7:
