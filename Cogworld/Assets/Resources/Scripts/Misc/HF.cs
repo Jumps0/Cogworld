@@ -6041,6 +6041,67 @@ public static class HF
 
         return itemObjects.Distinct().ToList(); // Remove duplicates
     }
+
+    /// <summary>
+    /// Does this bot (the player) have the sufficient energy & matter to equip an item? Will remove the amount if true. Displays a message and returns a bool.
+    /// </summary>
+    /// <param name="actor">The bot trying to equip (the player).</param>
+    /// <returns>True/False if they can attach this part.</returns>
+    public static bool HasResourcesToAttach(Actor actor)
+    {
+        // "Attaching a part requires 20 energy and 10 matter. Detaching a part expends 10 energy."
+        // (This can change depending on what `GlobalSettings.cs` says
+        int eCost = GlobalSettings.inst.partEnergyAttachmentCost;
+        int mCost = GlobalSettings.inst.partMatterAttachmentCost;
+
+        bool isPlayer = actor.GetComponent<PlayerData>();
+
+        int energy = 0, matter = 0;
+
+        string qualifier = "";
+        if (isPlayer)
+        {
+            energy = actor.GetComponent<PlayerData>().currentEnergy;
+            matter = actor.GetComponent<PlayerData>().currentMatter;
+            qualifier = "Insufficient";
+        }
+        else
+        {
+            energy = actor.currentEnergy;
+            matter = 100; //actor.currentMatter; // Bots don't have matter
+            qualifier = $"{actor.uniqueName} has insufficient";
+        }
+
+        bool canAttach = true;
+
+        if (matter < mCost)
+        {
+            UIManager.inst.ShowCenterMessageTop($"{qualifier} matter stored to equip item ({10 - PlayerData.inst.currentMatter})", UIManager.inst.dangerRed, Color.black);
+            canAttach = false;
+        }
+        else if (energy < eCost)
+        {
+            UIManager.inst.ShowCenterMessageTop($"{qualifier} energy stored to equip item ({20 - PlayerData.inst.currentEnergy})", UIManager.inst.dangerRed, Color.black);
+            canAttach = false;
+        }
+
+        if (canAttach)
+        {
+            // Remove the amount
+            if (isPlayer)
+            {
+                actor.GetComponent<PlayerData>().currentEnergy -= eCost;
+                actor.GetComponent<PlayerData>().currentMatter -= mCost;
+            }
+            else
+            {
+                actor.currentEnergy -= eCost;
+                //actor.currentMatter -= mCost; // Bots don't have matter
+            }
+        }
+
+        return canAttach;
+    }
     #endregion
 
     #region Spotting

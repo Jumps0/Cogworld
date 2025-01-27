@@ -204,8 +204,8 @@ public abstract class UserInterface : MonoBehaviour
                         PlayerData.inst.maxWeight -= obj.GetComponent<InvDisplayItem>().item.itemData.propulsion[0].support;
                     }
 
-                    // Subtract 10 energy
-                    PlayerData.inst.currentEnergy -= 10;
+                    // Subtract the specified amount of energy
+                    PlayerData.inst.currentEnergy -= GlobalSettings.inst.partEnergyDetachLoss;
                     PlayerData.inst.currentEnergy = Mathf.Clamp(PlayerData.inst.currentEnergy, 0, PlayerData.inst.maxEnergy);
 
                     // Update UI
@@ -234,6 +234,9 @@ public abstract class UserInterface : MonoBehaviour
 
                     // Lastly, have the reference object do a little animation to show the item is gone.
                     obj.GetComponent<InvDisplayItem>().DiscardedAnimation(key, name);
+
+                    // End the player's turn
+                    Action.SkipAction(PlayerData.inst.GetComponent<Actor>());
                 }
 
                 // We also want to turn off any other warnings that may be on right now (we want to focus on this).
@@ -277,8 +280,8 @@ public abstract class UserInterface : MonoBehaviour
                     PlayerData.inst.maxWeight -= obj.GetComponent<InvDisplayItem>().item.itemData.propulsion[0].support;
                 }
 
-                // Subtract 10 energy
-                PlayerData.inst.currentEnergy -= 10;
+                // Subtract the specified amount of energy
+                PlayerData.inst.currentEnergy -= GlobalSettings.inst.partEnergyDetachLoss;
                 PlayerData.inst.currentEnergy = Mathf.Clamp(PlayerData.inst.currentEnergy, 0, PlayerData.inst.maxEnergy);
 
                 // Update UI
@@ -289,6 +292,9 @@ public abstract class UserInterface : MonoBehaviour
                 InventoryControl.inst.animatedItems.Remove(slotsOnInterface[obj]); // Remove from animation tracking HashSet
                 slotsOnInterface[obj].RemoveItem(); // Remove from slots
                 InventoryControl.inst.UpdateInterfaceInventories(); // Update UI
+
+                // End the player's turn
+                Action.SkipAction(PlayerData.inst.GetComponent<Actor>());
             }
             return;
             #endregion
@@ -445,6 +451,12 @@ public abstract class UserInterface : MonoBehaviour
 
             if (canSwap) // We can swap the items!
             {
+                // Can the player afford to attach this item?
+                if (!HF.HasResourcesToAttach(PlayerData.inst.GetComponent<Actor>()))
+                {
+                    return;
+                }
+
                 // !! Before we do this, we need to give the player a warning if they are about to knowingly and willingly equip a faulty or corrupted item. !!
                 bool doWarning = false;
                 if ((originItem.isFaulty && originItem.itemData.knowByPlayer) || originItem.corrupted > 0)
@@ -696,6 +708,9 @@ public abstract class UserInterface : MonoBehaviour
 
                     UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(originItem), UIManager.inst.highlightGreen, Color.black);
                     UIManager.inst.CreateNewLogMessage("Attached " + HF.GetFullItemName(originItem), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
+
+                    // End the player's turn
+                    Action.SkipAction(PlayerData.inst.GetComponent<Actor>());
                 }
                 else
                 {
@@ -844,6 +859,12 @@ public abstract class UserInterface : MonoBehaviour
                 List<KeyValuePair<GameObject, InventorySlot>> slots_destination = new List<KeyValuePair<GameObject, InventorySlot>>();
 
                 // vvvv Things start happening down here vvvv
+                // Can the player afford to attach this item?
+                if (!HF.HasResourcesToAttach(PlayerData.inst.GetComponent<Actor>()))
+                {
+                    return;
+                }
+
                 // !! Before we do this, we need to give the player a warning if they are about to knowingly and willingly equip a faulty or corrupted item. !!
                 bool doWarning = false;
                 if (((originItem.isFaulty && originItem.itemData.knowByPlayer) || originItem.corrupted > 0) && destinationSlot.parent.GetComponent<DynamicInterface>()) // <-- Moving to /PARTS/
@@ -961,6 +982,9 @@ public abstract class UserInterface : MonoBehaviour
                         slots_origin[i].Key.GetComponent<InvDisplayItem>().FlashItemDisplay(); // [ORIGIN]
                         slots_destination[i].Key.GetComponent<InvDisplayItem>().FlashItemDisplay(); // [DESTINATION]
                     }
+
+                    // End the player's turn
+                    Action.SkipAction(PlayerData.inst.GetComponent<Actor>());
                 }
                 else
                 {
@@ -1065,6 +1089,12 @@ public abstract class UserInterface : MonoBehaviour
         }
         else // Yes! Relocate the item.
         {
+            // - Check the part equip cost requirement -
+            if (!HF.HasResourcesToAttach(PlayerData.inst.GetComponent<Actor>()))
+            {
+                return;
+            }
+
             // !! Before we do this, we need to give the player a warning if they are about to knowingly and willingly equip a faulty or corrupted item. !!
             bool doWarning = false;
             if((item.isFaulty && item.itemData.knowByPlayer) || item.corrupted > 0)
@@ -1163,6 +1193,9 @@ public abstract class UserInterface : MonoBehaviour
                 UIManager.inst.UpdateInventory();
                 UIManager.inst.UpdateParts();
                 InventoryControl.inst.UpdateInterfaceInventories();
+
+                // End the player's turn
+                Action.SkipAction(PlayerData.inst.GetComponent<Actor>());
             }
             else
             {

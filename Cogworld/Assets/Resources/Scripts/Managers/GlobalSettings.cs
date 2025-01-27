@@ -68,6 +68,12 @@ public class GlobalSettings : MonoBehaviour
     public float hackingLevelOfFailureBaseBonus = 0.35f;
     [Tooltip("The chance for a prototype to spawn in as 'faulty'.")]
     public float faultyPrototypeChance = 0.10f;
+    [Tooltip("It costs a certain amount of matter and energy to be able to attach parts.")]
+    public int partMatterAttachmentCost = 10;
+    [Tooltip("It costs a certain amount of matter and energy to be able to attach parts.")]
+    public int partEnergyAttachmentCost = 20;
+    [Tooltip("De-equipping an item expends some amount of energy. (We won't make this a requirement but will remove the amount either way)")]
+    public int partEnergyDetachLoss = 10;
 
     [Header("UI")]
     public float itemPopupLifetime = 5;
