@@ -11,7 +11,6 @@ using Transform = UnityEngine.Transform;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 using Random = UnityEngine.Random;
-using UnityEngine.InputSystem;
 
 public static class Action
 {
@@ -780,33 +779,6 @@ public static class Action
             Action.SkipAction(source);
             return;
         }
-
-        #region Corruption Failed To Fire
-        if((source.GetComponent<PlayerData>() && source.GetComponent<PlayerData>().currentCorruption > 0) || (source.corruption > 0))
-        {
-            // Get corruption
-            float corruption = 0;
-            if (source.GetComponent<PlayerData>())
-            {
-                corruption = (float)(source.GetComponent<PlayerData>().currentCorruption / 100);
-            }
-            else
-            {
-                corruption = source.corruption;
-            }
-
-            // Do the roll
-            if(Random.Range(0f, 1f) < corruption)
-            {
-                // Failed to fire!
-                Action.CorruptionFailedToFire(source, weapon);
-
-                // End turn early
-                Action.SkipAction(source);
-                return;
-            }
-        }
-        #endregion
 
         ItemShot shotData = weapon.itemData.shot;
 
@@ -7154,41 +7126,70 @@ public static class Action
         return finalDirect;
     }
 
-    public static void CorruptionFailedToFire(Actor actor, Item weapon)
+    public static bool CorruptionFailedToFire(Actor actor, Item weapon)
     {
-        // There are different log messages based on type
-        string message = "";
-        string weaponName = HF.GetFullItemName(weapon);
+        // Determine if this should happen
+        bool failToFire = false;
+        bool isPlayer = false;
 
-        ItemType type = weapon.itemData.type;
-        switch (type)
+        float corruption = 0;
+        if (actor.GetComponent<PlayerData>())
         {
-            case ItemType.Gun:
-                message = "jammed.";
-                break;
-            case ItemType.EnergyGun:
-                message = "failed to cycle.";
-                break;
-            case ItemType.Cannon:
-                message = "jammed.";
-                break;
-            case ItemType.EnergyCannon:
-                message = "failed to cycle.";
-                break;
-            case ItemType.Launcher:
-                message = "failed to launch.";
-                break;
-            default:
-                // Generic message
-                break;
+            corruption = (float)(actor.GetComponent<PlayerData>().currentCorruption / 100);
+            isPlayer = true;
+        }
+        else
+        {
+            corruption = actor.corruption;
         }
 
-        Color printoutMain = UIManager.inst.corruptOrange;
-        Color printoutBack = UIManager.inst.corruptOrange_faded;
+        // Do the roll
+        if (Random.Range(0f, 1f) < corruption)
+        {
+            // Failed to fire!
+            failToFire = true;
 
-        // Log message
-        UIManager.inst.CreateNewLogMessage($"System corrupted: {weaponName} {message}", printoutMain, printoutBack, false, true);
+            // There are different log messages based on type
+            string message = "";
+            string weaponName = HF.GetFullItemName(weapon);
 
+            ItemType type = weapon.itemData.type;
+            switch (type)
+            {
+                case ItemType.Gun:
+                    message = "jammed.";
+                    break;
+                case ItemType.EnergyGun:
+                    message = "failed to cycle.";
+                    break;
+                case ItemType.Cannon:
+                    message = "jammed.";
+                    break;
+                case ItemType.EnergyCannon:
+                    message = "failed to cycle.";
+                    break;
+                case ItemType.Launcher:
+                    message = "failed to launch.";
+                    break;
+                default:
+                    // Generic message
+                    break;
+            }
+
+            Color printoutMain = UIManager.inst.corruptOrange;
+            Color printoutBack = UIManager.inst.corruptOrange_faded;
+
+            // Log message
+            string qualifier = "System corrupted:";
+            if (!isPlayer)
+            {
+                qualifier = $"{actor.uniqueName} corrupted:s";
+            }
+
+            UIManager.inst.CreateNewLogMessage($"{qualifier} {weaponName} {message}", printoutMain, printoutBack, false, true);
+        }
+
+        return failToFire;
     }
     #endregion
 
