@@ -11,6 +11,7 @@ using Transform = UnityEngine.Transform;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 using Random = UnityEngine.Random;
+using UnityEditor.Experimental.GraphView;
 
 public static class Action
 {
@@ -3392,7 +3393,7 @@ public static class Action
         {
             foreach (var item in actor.armament.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item != null && item.item != null && item.item.Id >= 0)
                 {
                     totalMass += item.item.itemData.mass;
                 }
@@ -3400,7 +3401,7 @@ public static class Action
 
             foreach (var item in actor.components.Container.Items)
             {
-                if (item.item.itemData.data.Id >= 0)
+                if (item != null && item.item != null && item.item.Id >= 0)
                 {
                     totalMass += item.item.itemData.mass;
                 }
@@ -3410,28 +3411,28 @@ public static class Action
         {
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_power.Container.Items.ToList())
             {
-                if (item.item.Id >= 0)
+                if (item != null && item.item != null && item.item.Id >= 0)
                 {
                     totalMass += item.item.itemData.mass;
                 }
             }
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_propulsion.Container.Items.ToList())
             {
-                if (item.item.Id >= 0)
+                if (item != null && item.item != null && item.item.Id >= 0)
                 {
                     totalMass += item.item.itemData.mass;
                 }
             }
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_utility.Container.Items.ToList())
             {
-                if (item.item.Id >= 0)
+                if (item != null && item.item != null && item.item.Id >= 0)
                 {
                     totalMass += item.item.itemData.mass;
                 }
             }
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_weapon.Container.Items.ToList())
             {
-                if (item.item.Id >= 0)
+                if (item != null && item.item != null && item.item.Id >= 0)
                 {
                     totalMass += item.item.itemData.mass;
                 }
@@ -4609,6 +4610,8 @@ public static class Action
                         else
                         {
                             InventoryControl.inst.DropItemOnFloor(part, target, HF.FindPlayerInventoryFromItem(part), Vector2Int.zero);
+
+                            InventoryControl.inst.DropItemResiduals(InventoryControl.inst.interfaceDynamic.GetComponent<UserInterface>(), HF.GetInvDisplayItemFromPart(part).gameObject, true, true);
                         }
                         UIManager.inst.CreateNewCalcMessage($"{HF.GetFullItemName(part)} was blasted off.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
                     }
@@ -4639,6 +4642,8 @@ public static class Action
                         else
                         {
                             InventoryControl.inst.DropItemOnFloor(part2, target, HF.FindPlayerInventoryFromItem(part2), Vector2Int.zero);
+
+                            InventoryControl.inst.DropItemResiduals(InventoryControl.inst.interfaceDynamic.GetComponent<UserInterface>(), HF.GetInvDisplayItemFromPart(part2).gameObject, true, true);
                         }
 
                         UIManager.inst.CreateNewCalcMessage($"{HF.GetFullItemName(part2)} was smashed off.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
@@ -4667,6 +4672,8 @@ public static class Action
                         else
                         {
                             InventoryControl.inst.DropItemOnFloor(dropItem, target, HF.FindPlayerInventoryFromItem(dropItem), Vector2Int.zero);
+
+                            InventoryControl.inst.DropItemResiduals(InventoryControl.inst.interfaceDynamic.GetComponent<UserInterface>(), HF.GetInvDisplayItemFromPart(dropItem).gameObject, true, true);
                         }
 
                         UIManager.inst.CreateNewCalcMessage($"{HF.GetFullItemName(dropItem)} was severed.", UIManager.inst.corruptOrange, UIManager.inst.corruptOrange_faded, false, true);
@@ -4685,6 +4692,8 @@ public static class Action
                             else
                             {
                                 InventoryControl.inst.DropItemOnFloor(hitItem, target, HF.FindPlayerInventoryFromItem(hitItem), Vector2Int.zero);
+
+                                InventoryControl.inst.DropItemResiduals(InventoryControl.inst.interfaceDynamic.GetComponent<UserInterface>(), HF.GetInvDisplayItemFromPart(hitItem).gameObject, true, true);
                             }
                         }
                     }
@@ -4750,6 +4759,8 @@ public static class Action
                         else
                         {
                             InventoryControl.inst.DropItemOnFloor(I, target, HF.FindPlayerInventoryFromItem(I), Vector2Int.zero);
+
+                            InventoryControl.inst.DropItemResiduals(InventoryControl.inst.interfaceDynamic.GetComponent<UserInterface>(), HF.GetInvDisplayItemFromPart(I).gameObject, true, true);
                         }
 
                         // This is gonna be a lot of messages
@@ -5727,7 +5738,7 @@ public static class Action
             bool phasingStack = true;
             foreach (InventorySlot item in actor.GetComponent<PartInventory>().inv_utility.Container.Items)
             {
-                if(item.item.Id > 0)
+                if(Action.IsItemActionable(item.item))
                 {
                     if (item.item.itemData.type == ItemType.Device)
                     {
@@ -6552,7 +6563,7 @@ public static class Action
 
     public static bool IsItemActionable(Item item)
     {
-        return item.Id >= 0 && item.state && !item.isDuplicate && item.disabledTimer <= 0 && !item.isBroken && !item.isFaulty;
+        return item != null && item.Id >= 0 && item.state && !item.isDuplicate && item.disabledTimer <= 0 && !item.isBroken && !item.isFaulty;
     }
 
     /// <summary>
@@ -6726,12 +6737,23 @@ public static class Action
 
                 Item targetR = validR[Random.Range(0, validR.Count - 1)];
                 string rItemName = HF.GetFullItemName(targetR);
+
                 // Force drop the part
                 if(targetR != null)
                 {
                     InventoryControl.inst.DropItemOnFloor(targetR, player, HF.FindPlayerInventoryFromItem(targetR), Vector2Int.zero);
 
+                    InventoryControl.inst.DropItemResiduals(InventoryControl.inst.interfaceDynamic.GetComponent<UserInterface>(), HF.GetInvDisplayItemFromPart(targetR).gameObject, true, true);
+
                     UIManager.inst.CreateNewLogMessage($"System corrupted: {rItemName} rejected.", printoutMain, printoutBack, false, true);
+
+                    // might need to force unset item gameobjects/slots like in `UserInterface` too
+                    // NOTE: YES WE DO
+
+                    // Update UI
+                    UIManager.inst.UpdatePSUI();
+                    UIManager.inst.UpdateInventory();
+                    UIManager.inst.UpdateParts();
                 }
 
                 break;

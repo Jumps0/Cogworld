@@ -29415,6 +29415,9 @@ MonoBehaviour:
   defaultHackingDetectionChance: 0.1
   hackingLevelOfFailureBaseBonus: 0.35
   faultyPrototypeChance: 0.1
+  partMatterAttachmentCost: 10
+  partEnergyAttachmentCost: 20
+  partEnergyDetachLoss: 10
   itemPopupLifetime: 5
   globalTextSpeed: 0.35
   defaultItemDataMode: 3
@@ -65457,6 +65460,8 @@ MonoBehaviour:
   partArea: {fileID: 122043779}
   partWeightText: {fileID: 519625146}
   uuids: 0
+  interfaceDynamic: {fileID: 122043779}
+  interfaceStatic: {fileID: 1957215090}
   interfaces:
   - {fileID: 1957215093}
   - {fileID: 122043782}

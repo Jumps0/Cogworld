@@ -261,37 +261,7 @@ public abstract class UserInterface : MonoBehaviour
                 // Drop the item on the floor
                 InventoryControl.inst.DropItemOnFloor(obj.GetComponent<InvDisplayItem>().item, PlayerData.inst.GetComponent<Actor>(), _inventory, Vector2Int.zero);
 
-                #region Multi-Slot items
-                if (obj.GetComponent<InvDisplayItem>().item.itemData.slotsRequired > 1)
-                {
-                    foreach (var C in obj.GetComponent<InvDisplayItem>().secondaryChildren.ToList())
-                    {
-                        InventoryControl.inst.DropItemOnFloor(C.GetComponent<InvDisplayItem>().item, PlayerData.inst.GetComponent<Actor>(), _inventory, Vector2Int.zero);
-                        InventoryControl.inst.animatedItems.Remove(slotsOnInterface[C]); // Remove from animation tracking HashSet
-                        slotsOnInterface[C].RemoveItem(); // Remove from slots
-                    }
-                }
-                #endregion
-
-                // Update player mass
-                PlayerData.inst.currentWeight -= obj.GetComponent<InvDisplayItem>().item.itemData.mass;
-                if (obj.GetComponent<InvDisplayItem>().item.itemData.propulsion.Count > 0)
-                {
-                    PlayerData.inst.maxWeight -= obj.GetComponent<InvDisplayItem>().item.itemData.propulsion[0].support;
-                }
-
-                // Subtract the specified amount of energy
-                PlayerData.inst.currentEnergy -= GlobalSettings.inst.partEnergyDetachLoss;
-                PlayerData.inst.currentEnergy = Mathf.Clamp(PlayerData.inst.currentEnergy, 0, PlayerData.inst.maxEnergy);
-
-                // Update UI
-                UIManager.inst.UpdatePSUI();
-                UIManager.inst.UpdateInventory();
-                UIManager.inst.UpdateParts();
-
-                InventoryControl.inst.animatedItems.Remove(slotsOnInterface[obj]); // Remove from animation tracking HashSet
-                slotsOnInterface[obj].RemoveItem(); // Remove from slots
-                InventoryControl.inst.UpdateInterfaceInventories(); // Update UI
+                InventoryControl.inst.DropItemResiduals(this, obj, true, false);
 
                 // End the player's turn
                 Action.SkipAction(PlayerData.inst.GetComponent<Actor>());

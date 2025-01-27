@@ -61,6 +61,10 @@ public class InventoryControl : MonoBehaviour
     public Dictionary<GameObject, InventorySlot> itemsDisplayed = new Dictionary<GameObject, InventorySlot>();
 
     public HashSet<InventorySlot> animatedItems = new HashSet<InventorySlot>(); // For tracking InitialAnimation on the InvDisplayObjects
+    [Tooltip("Used by the /PARTS/ UI (changes upon every evolution)")]
+    public GameObject interfaceDynamic;
+    [Tooltip("Used by the /INVENTORY/ UI (changes often based on storage parts)")]
+    public GameObject interfaceStatic;
 
     public void InitBasicKnownItems()
     {
@@ -450,6 +454,48 @@ public class InventoryControl : MonoBehaviour
         PlaceItemIntoWorld(_item, new Vector2Int(dropTile.locX, dropTile.locY), dropTile);
 
         return;
+    }
+
+    public void DropItemResiduals(UserInterface itf, GameObject invSlot, bool isPlayer, bool forceful = false)
+    {
+        if (isPlayer)
+        {
+            #region Multi-Slot items
+            if (invSlot.GetComponent<InvDisplayItem>().item.itemData.slotsRequired > 1)
+            {
+                foreach (var C in invSlot.GetComponent<InvDisplayItem>().secondaryChildren.ToList())
+                {
+                    // - DropItemOnFloor doesn't do duplicates!
+                    //InventoryControl.inst.DropItemOnFloor(C.GetComponent<InvDisplayItem>().item, PlayerData.inst.GetComponent<Actor>(), _inventory, Vector2Int.zero);
+                    InventoryControl.inst.animatedItems.Remove(itf.slotsOnInterface[C]); // Remove from animation tracking HashSet
+                    itf.slotsOnInterface[C].RemoveItem(); // Remove from slots
+                }
+            }
+            #endregion
+
+            // Update player mass
+            PlayerData.inst.currentWeight -= invSlot.GetComponent<InvDisplayItem>().item.itemData.mass;
+            if (invSlot.GetComponent<InvDisplayItem>().item.itemData.propulsion.Count > 0)
+            {
+                PlayerData.inst.maxWeight -= invSlot.GetComponent<InvDisplayItem>().item.itemData.propulsion[0].support;
+            }
+
+            // Subtract the specified amount of energy
+            if (!forceful)
+            {
+                PlayerData.inst.currentEnergy -= GlobalSettings.inst.partEnergyDetachLoss;
+                PlayerData.inst.currentEnergy = Mathf.Clamp(PlayerData.inst.currentEnergy, 0, PlayerData.inst.maxEnergy);
+            }
+
+            // Update UI
+            UIManager.inst.UpdatePSUI();
+            UIManager.inst.UpdateInventory();
+            UIManager.inst.UpdateParts();
+
+            InventoryControl.inst.animatedItems.Remove(itf.slotsOnInterface[invSlot]); // Remove from animation tracking HashSet
+            itf.slotsOnInterface[invSlot].RemoveItem(); // Remove from slots
+            InventoryControl.inst.UpdateInterfaceInventories(); // Update UI
+        }
     }
 
     public void PlayDropSound(string iName)

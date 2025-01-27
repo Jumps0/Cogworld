@@ -4021,11 +4021,16 @@ public static class HF
         return adjacentPositions;
     }
 
+    /// <summary>
+    /// Given an item, will attempt to find that specific item within one of the separate player Inventories. Will return that inventory when found.
+    /// </summary>
+    /// <param name="item">An item to search for that is held by the player.</param>
+    /// <returns>An InventoryObject which the item being searched for is inside of.</returns>
     public static InventoryObject FindPlayerInventoryFromItem(Item item)
     {
         foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>().inv_power.Container.Items.ToList())
         {
-            if (I.item.itemData.data.Id >= 0 && !I.item.isDuplicate)
+            if (I != null && I.item != null && I.item.Id >= 0 && !I.item.isDuplicate)
             {
                 if (I.item == item)
                 {
@@ -4036,7 +4041,7 @@ public static class HF
 
         foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>().inv_propulsion.Container.Items.ToList())
         {
-            if (I.item.itemData.data.Id >= 0 && !I.item.isDuplicate)
+            if (I != null && I.item != null && I.item.Id >= 0 && !I.item.isDuplicate)
             {
                 if (I.item == item)
                 {
@@ -4047,7 +4052,7 @@ public static class HF
 
         foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>().inv_utility.Container.Items.ToList())
         {
-            if (I.item.itemData.data.Id >= 0 && !I.item.isDuplicate)
+            if (I != null && I.item != null && I.item.Id >= 0 && !I.item.isDuplicate)
             {
                 if (I.item == item)
                 {
@@ -4058,7 +4063,7 @@ public static class HF
 
         foreach (InventorySlot I in PlayerData.inst.GetComponent<PartInventory>().inv_weapon.Container.Items.ToList())
         {
-            if (I.item.itemData.data.Id >= 0 && !I.item.isDuplicate)
+            if (I != null && I.item != null && I.item.Id >= 0 && !I.item.isDuplicate)
             {
                 if (I.item == item)
                 {
