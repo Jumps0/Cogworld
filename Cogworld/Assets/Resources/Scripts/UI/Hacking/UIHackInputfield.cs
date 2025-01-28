@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 using System.Linq;
 using UnityEngine.UIElements;
 using UnityEngine.InputSystem;
+using Unity.Collections;
 
 /// <summary>
 /// Used for directly typing out commands during hacking.
@@ -17,6 +18,7 @@ public class UIHackInputfield : MonoBehaviour
     public TextMeshProUGUI primaryText;
     public TextMeshProUGUI backerText; // The black highlight
     public TextMeshProUGUI main_backerText; // The black highlight
+    [Tooltip("The gray-er text which auto-updates to the closest possible command to what is being typed.")]
     public TextMeshProUGUI suggestionText;
     public TMP_InputField field;
 
@@ -34,6 +36,7 @@ public class UIHackInputfield : MonoBehaviour
     public GameObject box_main;
     public GameObject box_area;
     public GameObject box_AC_prefab;
+    [Tooltip("The counterpart to the ordinary suggestion text. Only active when the Suggestions Box is open.")]
     public TextMeshProUGUI box_suggestionText;
     public GameObject box_small;
 
@@ -363,16 +366,17 @@ public class UIHackInputfield : MonoBehaviour
             return;
         }
 
-        string closestMatch = GetClosestMatch(value);
+        // Suggestion text update
+        string closestMatch = GetClosestMatch(value, AC_list);
         suggestionText.text = closestMatch;
     }
 
-    private string GetClosestMatch(string value)
+    private string GetClosestMatch(string value, List<string> options)
     {
         string closestMatch = string.Empty;
         int closestDistance = int.MaxValue;
 
-        foreach (string command in AC_list)
+        foreach (string command in options)
         {
             if (command.StartsWith(value))
             {
@@ -431,6 +435,7 @@ public class UIHackInputfield : MonoBehaviour
         string fieldString = field.text;
 
         // -- Micro Suggestions Check --
+        #region Micro-suggestions (non-box)
         List<string> microSuggestions = new List<string>();
 
         foreach (HackObject hack in validHacks)
@@ -449,12 +454,13 @@ public class UIHackInputfield : MonoBehaviour
         {
             ClearSuggestions();
         }
+        #endregion
         else // Not that many suggestions, use the window
         {
             if (field.text.Length > 0 && field.text.Contains("(") && field.text[field.text.Length - 1].ToString() != ")")
             {
                 // Check here if the hack has a parenthesis in it. If it doesn't we dont want to suggest anything.
-                string closestString = GetClosestMatch(fieldString);
+                string closestString = GetClosestMatch(fieldString, AC_list);
                 bool HACK_HAS_PARENTHESIS = false;
 
                 foreach (string s in microSuggestions)
@@ -626,12 +632,21 @@ public class UIHackInputfield : MonoBehaviour
         // Set current suggestion as first one
         suggestionID = 0;
         currentSuggestion = suggestions[suggestionID];
-        box_suggestionText.text = currentSuggestion + ")";
+        //currentSuggestion = GetClosestMatch(field.text.Split("(")[1], suggestions); // Set closest suggestion as the current one
+        box_suggestionText.text = Capitalize(currentSuggestion) + ")";
 
         // Highlight the first suggestion in the list
         IndicateSelectedSuggestion(suggestionID);
 
         filled = true;
+    }
+
+    private string Capitalize(string s)
+    {
+        string head = s[0].ToString().ToUpper();
+        string tail = s.Split(head)[1];
+
+        return head + tail;
     }
 
     private void ClearSuggestions()
