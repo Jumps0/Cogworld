@@ -154,6 +154,15 @@ public class UIHackInputfield : MonoBehaviour
             backerText.text = "<mark=#000000>>>" + suggestionText.text + "</mark>"; // Mark highlights it as pure black
             main_backerText.text = "<mark=#000000>" + field.text + "</mark>"; // Mark highlights it as pure black
             ForceMeshUpdates();
+
+            // Previous Suggestions check
+            bool EMPTYFIELD = field.text.Length == 0;
+            if ((EMPTYFIELD || !box_main.gameObject.activeInHierarchy) && UIManager.inst.terminal_manualBuffer.Count > 0)
+            {
+                if (EMPTYFIELD) { suggID = -1; }
+
+                BufferSuggestions();
+            }
         }
 
         // Suggestion box navigation
@@ -163,30 +172,10 @@ public class UIHackInputfield : MonoBehaviour
         field.caretPosition = field.text.Length;
     }
 
-    int suggID = -1;
-    private void BufferSuggestions()
-    {
-        if (Keyboard.current.downArrowKey.wasPressedThisFrame)
-        {
-            if (suggID > 0)
-            {
-                suggID--;
-                field.text = UIManager.inst.terminal_manualBuffer[suggID].Key;
-            }
-        }
-        else if (Keyboard.current.upArrowKey.wasPressedThisFrame)
-        {
-            if(suggID < (UIManager.inst.terminal_manualBuffer.Count - 1))
-            {
-                suggID++;
-                field.text = UIManager.inst.terminal_manualBuffer[suggID].Key;
-            }
-        }
-    }
-
     public void TrySubmit(string input)
     {
         field.caretPosition = field.text.Length;
+        suggID = -1;
         // Check if the current string is a valid code
         string attempt = field.text;
         TerminalCommand command;
@@ -306,7 +295,7 @@ public class UIHackInputfield : MonoBehaviour
         }
         else // This hack cannot be ran on this specific machine. Give a special warning.
         {
-            UIManager.inst.Terminal_CreateResult("Command unavailable on this system.", highDetColor, (">>" + HF.HackToPrintout(hack, printoutFill)), true, 0.4f);
+            UIManager.inst.Terminal_CreateResult("Command unavailable on this system.", highDetColor, (">>" + HF.HackToPrintout(hack, printoutFill).ToLower()), true, 0.4f);
         }
 
         
@@ -361,12 +350,6 @@ public class UIHackInputfield : MonoBehaviour
 
     private void OnInputFieldValueChanged(string value) // Place a sound every time a character is altered
     {
-        // Suggestions check
-        if (field.text.Length == 0 && UIManager.inst.terminal_manualBuffer.Count > 0)
-        {
-            BufferSuggestions();
-        }
-
         SuggestionBoxCheck();
 
         // Sounds
@@ -403,6 +386,39 @@ public class UIHackInputfield : MonoBehaviour
         }
 
         return closestMatch;
+    }
+
+    int suggID = -1;
+    /// <summary>
+    /// Allows the user to cycle through the suggestions in the terminal buffer (previous commands).
+    /// </summary>
+    private void BufferSuggestions()
+    {
+        List<KeyValuePair<string, TerminalCommand>> _suggestions = UIManager.inst.terminal_manualBuffer;
+
+        if (Keyboard.current.downArrowKey.wasPressedThisFrame) // We want to go from older -> newer
+        {
+
+            if (suggID > 0) // current ID isn't 0 (we can still go lower, aka newer)
+            {
+                if (_suggestions[0].Value == UIManager.inst.terminal_manualBuffer[0].Value) // Need to make sure the list is reversed
+                    _suggestions.Reverse();
+
+                suggID--; // Go down an ID (--> newer)
+                field.text = _suggestions[suggID].Key; // Update field
+            }
+        }
+        else if (Keyboard.current.upArrowKey.wasPressedThisFrame) // We want to go from newer -> older
+        {
+            if (suggID < (_suggestions.Count - 1)) // There are still older commands than the current (suggested) one
+            {
+                if (_suggestions[0].Value == UIManager.inst.terminal_manualBuffer[0].Value) // Need to make sure the list is reversed
+                    _suggestions.Reverse();
+
+                suggID++; // Go up an ID (--> older)
+                field.text = _suggestions[suggID].Key; // Update field
+            }
+        }
     }
 
     [SerializeField] private List<GameObject> activeSuggestions = new List<GameObject>();

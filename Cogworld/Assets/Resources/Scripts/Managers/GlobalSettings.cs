@@ -365,7 +365,7 @@ public class GlobalSettings : MonoBehaviour
     [SerializeField] private TextMeshProUGUI db_playerPosition;
     [SerializeField] private bool db_helper_override = false;
     private Coroutine db_helperCooldown;
-    private List<string> db_commandHistory = new List<string>(); // Tracks past commands which can be re-used
+    [SerializeField] private List<string> db_commandHistory = new List<string>(); // Tracks past commands which can be re-used
 
     private void DebugBarLoop()
     {
@@ -423,16 +423,23 @@ public class GlobalSettings : MonoBehaviour
     private int db_commandHistoryIndex = -1;
     private void DebugBarHistoryCheck()
     {
+        if(db_ifield.text.Length == 0){ db_commandHistoryIndex = -1; }
+        List<string> history = db_commandHistory;
+
         // Load previous command from history
         if (db_ifield.isFocused && db_commandHistory.Count > 0)
         {
             // ^ Arrow (Previous Command)
             if (Keyboard.current.upArrowKey.wasPressedThisFrame)
             {
+                // NOTE: Since strings cannot be unique, this has potential to scramble the command history on the chance that two duplicate commands are in the list.
+                if (history[0] == db_commandHistory[0]) // Need to make sure the list is reversed
+                    history.Reverse();
+
                 if (db_commandHistoryIndex < db_commandHistory.Count - 1)
                 {
                     db_commandHistoryIndex++;
-                    db_ifield.text = db_commandHistory[db_commandHistoryIndex];
+                    db_ifield.text = history[db_commandHistoryIndex];
                 }
                 else if (db_commandHistoryIndex == db_commandHistory.Count - 1)
                 {
@@ -442,15 +449,17 @@ public class GlobalSettings : MonoBehaviour
                     // Or set to last command
                     //db_ifield.text = db_commandHistory[0];
                 }
-            }
-
-            // v Down Arrow (Next Command)
+            } // v Down Arrow (Next Command)
             else if (Keyboard.current.downArrowKey.wasPressedThisFrame)
             {
+                // NOTE: Since strings cannot be unique, this has potential to scramble the command history on the chance that two duplicate commands are in the list.
+                if (history[0] == db_commandHistory[0]) // Need to make sure the list is reversed
+                    history.Reverse();
+
                 if (db_commandHistoryIndex > 0)
                 {
                     db_commandHistoryIndex--;
-                    db_ifield.text = db_commandHistory[db_commandHistoryIndex];
+                    db_ifield.text = history[db_commandHistoryIndex];
                 }
             }
 
