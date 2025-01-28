@@ -6987,15 +6987,15 @@ public static class Action
          * -[6] Corruption : Gain some corruption
          */
 
-        List<int> outcomes = new List<int>() { 0, 1, 4, 4, 5, 5, 5, 6, 6 };
+        List<int> outcomes = new List<int>() { 0, 2, 2, 4, 4, 5, 5, 5, 6, 6 };
 
         // - Conditional events -
         Actor player = PlayerData.inst.GetComponent<Actor>();
         List<Item> engines = Action.FindBotEngines(player);
         if(engines.Count > 0)
         {
-            outcomes.Add(2);
-            outcomes.Add(2);
+            outcomes.Add(1);
+            outcomes.Add(1);
         }
         List<Item> propulsion = Action.FindBotPropulsion(player);
         if (propulsion.Count > 0)

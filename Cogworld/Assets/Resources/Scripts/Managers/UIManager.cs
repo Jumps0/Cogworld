@@ -7569,7 +7569,8 @@ public class UIManager : MonoBehaviour
                     // -And potentially more
                     if (item.isFaulty)
                     {
-                        iRating.Setup(true, true, false, "Faulty Prototype", highSecRed, extra, rText, false, "", false, "Faulty Prototype");
+                        extra = "Faulty prototypes will almost always malfunction and have potentially serious side-effects when attached, and cannot be used or repaired, but may be scanned to obtain the schematic.";
+                        iRating.Setup(true, true, false, "Rating", highSecRed, extra, rText, false, "", false, "Faulty Prototype");
                     }
                     else
                     {
@@ -7582,9 +7583,11 @@ public class UIManager : MonoBehaviour
                                 iRating.Setup(true, true, false, "Rating", highlightGreen, extra, rText, false, "", false, "Prototype");
                                 break;
                             case ItemRatingType.Alien: // Bright green vBox "Alien"
+                                extra = "TODO";
                                 iRating.Setup(true, true, false, "Rating", highlightGreen, extra, rText, false, "", false, "Alien");
                                 break;
                             case ItemRatingType.Construct:
+                                extra = "TODO";
                                 iRating.Setup(true, true, false, "Construct", highlightGreen, extra, "?", false, "", false, "Construct");
                                 break;
                             default:

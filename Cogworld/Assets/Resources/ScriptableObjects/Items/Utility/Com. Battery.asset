@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   amount: 1
   data:
-    Name: Med. Matter Pod
+    Name: Com. Battery
     Id: 40
     stackable: 0
     amount: 1
@@ -35,11 +35,16 @@ MonoBehaviour:
     isOverloaded: 0
     isDeteriorating: 0
     isRigged: 0
+    isFused: 0
+    isFaulty: 0
+    doneFaultyFailure: 0
     isBroken: 0
     corrupted: 0
+    doneCorruptionFeedback: 0
     disabledTimer: 0
     unstable: -1
     disposable: -1
+    chargable: -1
     siege: 0
     isDuplicate: 0
     duplicate_uuid: -1
