@@ -147,6 +147,35 @@ public class UIHackInputfield : MonoBehaviour
         ForceMeshUpdates();
     }
 
+    private void ChooseBoxSuggestions()
+    {
+        if (box_main.activeInHierarchy)
+        {
+            if (Keyboard.current.downArrowKey.wasPressedThisFrame)
+            {
+                if (suggestionID < (activeSuggestions.Count - 1))
+                {
+                    // Navigate down
+                    suggestionID++;
+                    currentSuggestion = suggestions[suggestionID];
+                    box_suggestionText.text = currentSuggestion + ")";
+                    IndicateSelectedSuggestion(suggestionID);
+                }
+            }
+            else if (Keyboard.current.upArrowKey.wasPressedThisFrame)
+            {
+                if (suggestionID != 0)
+                {
+                    // Navigate up
+                    suggestionID--;
+                    currentSuggestion = suggestions[suggestionID];
+                    box_suggestionText.text = currentSuggestion + ")";
+                    IndicateSelectedSuggestion(suggestionID);
+                }
+            }
+        }
+    }
+
     private void Update()
     {
         SetFocus(true);
@@ -457,57 +486,89 @@ public class UIHackInputfield : MonoBehaviour
         #endregion
         else // Not that many suggestions, use the window
         {
-            if (field.text.Length > 0 && field.text.Contains("(") && field.text[field.text.Length - 1].ToString() != ")")
-            {
-                // Check here if the hack has a parenthesis in it. If it doesn't we dont want to suggest anything.
-                string closestString = GetClosestMatch(fieldString, AC_list);
-                bool HACK_HAS_PARENTHESIS = false;
+            // TODO: This section needs to be redesigned.
+            /*  -- How the Suggestion Box works --
+             * At the bare minimum, the suggestions box should only be open if:
+             *  1. There is text on the field
+             *  2. The "(" character is on the field
+             *  3. The ")" character is NOT on the field
+             *  
+             * The box, its suggestion text, and options needs to be updated dynamically on every input change.
+             *  -We should only should the box if there are more than 1 suggestion to show
+             *  -If the box is open, the nearest valid command should come first in the list and be highlighted in green.
+             *  -The suggestion text needs to auto-update to the nearest valid command
+             *  
+             * 
+             * 
+             *  
+             *  
+             */
 
-                foreach (string s in microSuggestions)
+            bool CANSHOWBOX = field.text.Length > 0 && field.text.Contains("(") && field.text[field.text.Length - 1].ToString() != ")";
+            if (CANSHOWBOX)
+            {
+                // Reset the suggestions list
+                suggestions.Clear();
+
+                // Fill it
+                LoadBoxSuggestions();
+
+                // NOTE: The main elements of interest here are `suggestionText` and `box_suggestionText`
+                //                                             >>primary_suggestion___(box_suggestion
+
+                // More than 1?
+                if (suggestions.Count > 1) // We need to show the box
                 {
-                    if(s.Contains(closestString) && s.Contains("("))
+                    // Open the window
+                    box_main.SetActive(true);
+                    box_small.SetActive(true);
+
+                    // Set the positions correctly (we are basing it off of the top right corner of the field.textComponent
+                    Vector3[] v = new Vector3[4];
+                    backerText.GetComponent<RectTransform>().GetWorldCorners(v);
+                    float currentX = v[2].x;
+
+                    box_main.transform.position = new Vector3(currentX, box_main.transform.position.y, 0);
+                    box_small.transform.position = new Vector3(currentX, box_small.transform.position.y, 0);
+
+                    // -- put closest suggestion at start of list?
+
+                    // Now instantiate a list of them
+                    foreach (string command in suggestions)
                     {
-                        HACK_HAS_PARENTHESIS = true;
-                        break;
+                        GameObject code = Instantiate(box_AC_prefab, box_area.transform.position, Quaternion.identity);
+                        code.transform.SetParent(box_area.transform);
+                        code.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+                        // Add it to list
+                        activeSuggestions.Add(code);
+                        // Assign Details
+                        TextMeshProUGUI[] textUGUIs = code.GetComponentsInChildren<TextMeshProUGUI>();
+                        textUGUIs[1].text = command; // We don't want the fill text
                     }
+
+                    // Set current suggestion as first one
+                    suggestionID = 0;
+                    currentSuggestion = suggestions[suggestionID];
+                    //currentSuggestion = GetClosestMatch(field.text.Split("(")[1], suggestions); // Set closest suggestion as the current one
+                    box_suggestionText.text = currentSuggestion + ")";
+
+                    // Highlight the first suggestion in the list
+                    IndicateSelectedSuggestion(suggestionID);
+                }
+                else // One or none
+                {
+                    // Remove the box
+                    ClearSuggestions();
+
+
                 }
 
-                if (!filled && HACK_HAS_PARENTHESIS)
-                    FillSuggestions();
+
             }
             else
             {
-                if (filled)
-                    ClearSuggestions();
-            }
-        }
-    }
-
-    private void ChooseBoxSuggestions()
-    {
-        if (box_main.activeInHierarchy)
-        {
-            if (Keyboard.current.downArrowKey.wasPressedThisFrame)
-            {
-                if (suggestionID < (activeSuggestions.Count - 1))
-                {
-                    // Navigate down
-                    suggestionID++;
-                    currentSuggestion = suggestions[suggestionID];
-                    box_suggestionText.text = currentSuggestion + ")";
-                    IndicateSelectedSuggestion(suggestionID);
-                }
-            }
-            else if (Keyboard.current.upArrowKey.wasPressedThisFrame)
-            {
-                if (suggestionID != 0)
-                {
-                    // Navigate up
-                    suggestionID--;
-                    currentSuggestion = suggestions[suggestionID];
-                    box_suggestionText.text = currentSuggestion + ")";
-                    IndicateSelectedSuggestion(suggestionID);
-                }
+                // Remove the box
+                ClearSuggestions();
             }
         }
     }
@@ -515,7 +576,7 @@ public class UIHackInputfield : MonoBehaviour
     private void IndicateSelectedSuggestion(int id)
     {
         // Gray (dark green) them all out.
-        foreach(GameObject item in activeSuggestions.ToList())
+        foreach (GameObject item in activeSuggestions.ToList())
         {
             TextMeshProUGUI[] textUGUIs2 = item.GetComponentsInChildren<TextMeshProUGUI>();
             textUGUIs2[1].color = darkGreenColor; // We don't want the fill text
@@ -527,126 +588,83 @@ public class UIHackInputfield : MonoBehaviour
         textUGUIs[1].color = lowDetColor; // We don't want the fill text
     }
 
-    private void FillSuggestions()
+    private void LoadBoxSuggestions()
     {
-        // Open the window
-        box_main.SetActive(true);
-        box_small.SetActive(true);
-
-        // Set the positions correctly (we are basing it off of the top right corner of the field.textComponent
-        Vector3[] v = new Vector3[4];
-        backerText.GetComponent<RectTransform>().GetWorldCorners(v);
-        float currentX = v[2].x;
-
-        box_main.transform.position = new Vector3(currentX, box_main.transform.position.y, 0);
-        box_small.transform.position = new Vector3(currentX, box_small.transform.position.y, 0);
-
-        // Create list of suggestions
-        suggestions.Clear();
         int floorRating = MapManager.inst.currentLevel + 11; // ex: -10 + 11 = 1
         foreach (HackObject hack in validHacks)
         {
-            if (!hack.doNotSuggest && hack.name.ToLower().Contains(HF.GetLeftSubstring(field.text))) // If this command is a variant of what the player is currently attempting to type
+            if (hack.name.Contains("(")) // Hacks must have ( in them to be in the suggestions box.
             {
-                // We also want to fill the (inside) if its a certain type that grants knowledge like:
-                // -Query(Knowledge), Analysis(Bot), Schematic(Item), Schematic(Bot)
-                if (hack.hackType == TerminalCommandType.Query)
+                if (!hack.doNotSuggest && hack.name.ToLower().Contains(HF.GetLeftSubstring(field.text))) // If this command is a variant of what the player is currently attempting to type
                 {
-                    // No suggestions for lore!
-                    /*
-                    foreach (KnowledgeObject lore in MapManager.inst.knowledgeDatabase.Data)
+                    // We also want to fill the (inside) if its a certain type that grants knowledge like:
+                    // -Query(Knowledge), Analysis(Bot), Schematic(Item), Schematic(Bot)
+                    if (hack.hackType == TerminalCommandType.Query)
                     {
-                        if (!lore.knowByPlayer)
+                        // No suggestions for lore!
+                        /*
+                        foreach (KnowledgeObject lore in MapManager.inst.knowledgeDatabase.Data)
                         {
-                            newCom = lore.name;
+                            if (!lore.knowByPlayer)
+                            {
+                                newCom = lore.name;
+                            }
                         }
+                        */
                     }
-                    */
-                }
-                else if (hack.hackType == TerminalCommandType.Analysis) // Bots
-                {
-                    // Want to make sure its the same tier (and player doesn't have data on it)
-                    int rating = -1;
-                    bool p = false;
-                    (rating, p) = HF.GetTierAndP(hack.name);
+                    else if (hack.hackType == TerminalCommandType.Analysis) // Bots
+                    {
+                        // Want to make sure its the same tier (and player doesn't have data on it)
+                        int rating = -1;
+                        bool p = false;
+                        (rating, p) = HF.GetTierAndP(hack.name);
 
-                    foreach (BotObject bot in MapManager.inst.botDatabase.Bots)
-                    {
-                        if(bot.tier == rating && !bot.playerHasAnalysisData && bot.tier >= floorRating)
+                        foreach (BotObject bot in MapManager.inst.botDatabase.Bots)
                         {
-                            suggestions.Add(bot.name);
-                            // We remove duplicates later so this shouldn't be an issue
+                            if (bot.tier == rating && !bot.playerHasAnalysisData && bot.tier >= floorRating)
+                            {
+                                suggestions.Add(bot.name);
+                                // We remove duplicates later so this shouldn't be an issue
+                            }
                         }
                     }
-                }
-                else if (hack.hackType == TerminalCommandType.Schematic)
-                {
-                    // Bots
-                    // Want to make sure its the same tier (and player doesn't have data on it)
-                    int rating = -1;
-                    bool p = false;
-                    (rating, p) = HF.GetTierAndP(hack.name);
+                    else if (hack.hackType == TerminalCommandType.Schematic)
+                    {
+                        // Bots
+                        // Want to make sure its the same tier (and player doesn't have data on it)
+                        int rating = -1;
+                        bool p = false;
+                        (rating, p) = HF.GetTierAndP(hack.name);
 
-                    foreach (BotObject bot in MapManager.inst.botDatabase.Bots)
-                    {
-                        if (bot.tier == rating && !bot.playerHasAnalysisData && bot.tier >= floorRating)
+                        foreach (BotObject bot in MapManager.inst.botDatabase.Bots)
                         {
-                            suggestions.Add(bot.name);
-                            // We remove duplicates later so this shouldn't be an issue
+                            if (bot.tier == rating && !bot.playerHasAnalysisData && bot.tier >= floorRating)
+                            {
+                                suggestions.Add(bot.name);
+                                // We remove duplicates later so this shouldn't be an issue
+                            }
                         }
-                    }
 
-                    // Items
-                    foreach (ItemObject item in MapManager.inst.itemDatabase.Items)
-                    {
-                        if (item.rating == rating && !item.knowByPlayer && item.star == p && item.rating >= floorRating)
+                        // Items
+                        foreach (ItemObject item in MapManager.inst.itemDatabase.Items)
                         {
-                            suggestions.Add(item.itemName);
-                            // We remove duplicates later so this shouldn't be an issue
+                            if (item.rating == rating && !item.knowByPlayer && item.star == p && item.rating >= floorRating)
+                            {
+                                suggestions.Add(item.itemName);
+                                // We remove duplicates later so this shouldn't be an issue
+                            }
                         }
                     }
-                }
-                else
-                {
-                    string newCom = HF.ExtractText(hack.name);
-                    suggestions.Add(newCom);
+                    else
+                    {
+                        string newCom = HF.ExtractText(hack.name);
+                        suggestions.Add(newCom);
+                    }
                 }
             }
         }
 
         suggestions = suggestions.Distinct().ToList(); // Remove duplicates
-
-        // Now instantiate a list of them
-        foreach (string command in suggestions)
-        {
-            GameObject code = Instantiate(box_AC_prefab, box_area.transform.position, Quaternion.identity);
-            code.transform.SetParent(box_area.transform);
-            code.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
-            // Add it to list
-            activeSuggestions.Add(code);
-            // Assign Details
-            TextMeshProUGUI[] textUGUIs = code.GetComponentsInChildren<TextMeshProUGUI>();
-            textUGUIs[1].text = command; // We don't want the fill text
-        }
-
-        // Set current suggestion as first one
-        suggestionID = 0;
-        currentSuggestion = suggestions[suggestionID];
-        //currentSuggestion = GetClosestMatch(field.text.Split("(")[1], suggestions); // Set closest suggestion as the current one
-        box_suggestionText.text = Capitalize(currentSuggestion) + ")";
-
-        // Highlight the first suggestion in the list
-        IndicateSelectedSuggestion(suggestionID);
-
-        filled = true;
-    }
-
-    private string Capitalize(string s)
-    {
-        string head = s[0].ToString().ToUpper();
-        string tail = s.Split(head)[1];
-
-        return head + tail;
     }
 
     private void ClearSuggestions()
