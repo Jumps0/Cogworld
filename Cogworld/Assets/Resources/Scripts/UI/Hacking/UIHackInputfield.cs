@@ -196,10 +196,10 @@ public class UIHackInputfield : MonoBehaviour
                 BufferSuggestions();
             }
         }
-
+        
         // Suggestion box navigation
         ChooseBoxSuggestions();
-
+        Debug.Log("Suggestions count: " + suggestions.Count);
         SetFocus(true);
         field.caretPosition = field.text.Length;
     }
@@ -396,8 +396,11 @@ public class UIHackInputfield : MonoBehaviour
         }
 
         // Suggestion text update
-        string closestMatch = GetClosestMatch(value, AC_list);
-        suggestionText.text = closestMatch;
+        if (!field.text.Contains("("))
+        {
+            string closestMatch = GetClosestMatch(value, AC_list);
+            suggestionText.text = closestMatch;
+        }
     }
 
     private string GetClosestMatch(string value, List<string> options)
@@ -510,6 +513,10 @@ public class UIHackInputfield : MonoBehaviour
                 // Reset the suggestions list
                 suggestions.Clear();
 
+                // Clean up the box window to remove duplicates
+                HideSuggestionsBox();
+                ClearSuggestions();
+
                 // Fill it
                 LoadBoxSuggestions();
 
@@ -520,16 +527,7 @@ public class UIHackInputfield : MonoBehaviour
                 if (suggestions.Count > 1) // We need to show the box
                 {
                     // Open the window
-                    box_main.SetActive(true);
-                    box_small.SetActive(true);
-
-                    // Set the positions correctly (we are basing it off of the top right corner of the field.textComponent
-                    Vector3[] v = new Vector3[4];
-                    backerText.GetComponent<RectTransform>().GetWorldCorners(v);
-                    float currentX = v[2].x;
-
-                    box_main.transform.position = new Vector3(currentX, box_main.transform.position.y, 0);
-                    box_small.transform.position = new Vector3(currentX, box_small.transform.position.y, 0);
+                    ShowSuggestionsBox();
 
                     // -- put closest suggestion at start of list?
 
@@ -546,31 +544,60 @@ public class UIHackInputfield : MonoBehaviour
                         textUGUIs[1].text = command; // We don't want the fill text
                     }
 
-                    // Set current suggestion as first one
-                    suggestionID = 0;
-                    currentSuggestion = suggestions[suggestionID];
-                    //currentSuggestion = GetClosestMatch(field.text.Split("(")[1], suggestions); // Set closest suggestion as the current one
+                    // Is there anything beyond the "(" character?
+                    string[] inputsplit = field.text.Split("(");
+                    if(inputsplit.Length > 1 && inputsplit[1] != null && inputsplit[1] != "") // There is, we should suggest the closest matching one
+                    {
+                        string bestMatch = GetClosestMatch(inputsplit[1], suggestions);
+                        suggestionID = suggestions.IndexOf(bestMatch);
+
+                        // Failsafe
+                        if(suggestionID == -1)
+                        {
+                            suggestionID = 0;
+                        }
+
+                        currentSuggestion = suggestions[suggestionID];
+                    }
+                    else // There isn't, we should just suggest the first one
+                    {
+                        suggestionID = 0;
+                        currentSuggestion = suggestions[suggestionID];
+                    }
+
                     box_suggestionText.text = currentSuggestion + ")";
+                    suggestionText.text = inputsplit[0] + "(";
 
                     // Highlight the first suggestion in the list
                     IndicateSelectedSuggestion(suggestionID);
                 }
-                else // One or none
+                else if (suggestions.Count == 1) // One
                 {
                     // Remove the box
-                    ClearSuggestions();
+                    HideSuggestionsBox();
 
-
+                    // Just rely on `suggestionText`
+                    currentSuggestion = suggestions[0];
+                    suggestionText.text = field.text.Split("(")[0] + "(" + currentSuggestion + ")";
                 }
+                else // No suggestions
+                {
+                    // Remove the box
+                    HideSuggestionsBox();
 
+                    // Just set suggestions to current text
+                    suggestionText.text = field.text; //field.text.Split("(")[0];
+                }
 
             }
             else
             {
                 // Remove the box
-                ClearSuggestions();
+                HideSuggestionsBox();
             }
         }
+
+        ForceMeshUpdates();
     }
 
     private void IndicateSelectedSuggestion(int id)
@@ -595,70 +622,78 @@ public class UIHackInputfield : MonoBehaviour
         {
             if (hack.name.Contains("(")) // Hacks must have ( in them to be in the suggestions box.
             {
-                if (!hack.doNotSuggest && hack.name.ToLower().Contains(HF.GetLeftSubstring(field.text))) // If this command is a variant of what the player is currently attempting to type
+                if (!hack.doNotSuggest)
                 {
-                    // We also want to fill the (inside) if its a certain type that grants knowledge like:
-                    // -Query(Knowledge), Analysis(Bot), Schematic(Item), Schematic(Bot)
-                    if (hack.hackType == TerminalCommandType.Query)
-                    {
-                        // No suggestions for lore!
-                        /*
-                        foreach (KnowledgeObject lore in MapManager.inst.knowledgeDatabase.Data)
-                        {
-                            if (!lore.knowByPlayer)
-                            {
-                                newCom = lore.name;
-                            }
-                        }
-                        */
-                    }
-                    else if (hack.hackType == TerminalCommandType.Analysis) // Bots
-                    {
-                        // Want to make sure its the same tier (and player doesn't have data on it)
-                        int rating = -1;
-                        bool p = false;
-                        (rating, p) = HF.GetTierAndP(hack.name);
+                    string hackName = hack.name.ToLower();
+                    string[] split = field.text.ToLower().Split("(");
+                    bool additional = split.Length > 1 && split[1] != null && split[1] != ""; // We want to parse to include beyond the "("
 
-                        foreach (BotObject bot in MapManager.inst.botDatabase.Bots)
-                        {
-                            if (bot.tier == rating && !bot.playerHasAnalysisData && bot.tier >= floorRating)
-                            {
-                                suggestions.Add(bot.name);
-                                // We remove duplicates later so this shouldn't be an issue
-                            }
-                        }
-                    }
-                    else if (hack.hackType == TerminalCommandType.Schematic)
+                    // If this command is a variant of what the player is currently attempting to type
+                    if ((additional && hackName.Contains(split[0]) && hackName.Contains(split[1])) || (!additional && hackName.Contains(split[0])))
                     {
-                        // Bots
-                        // Want to make sure its the same tier (and player doesn't have data on it)
-                        int rating = -1;
-                        bool p = false;
-                        (rating, p) = HF.GetTierAndP(hack.name);
-
-                        foreach (BotObject bot in MapManager.inst.botDatabase.Bots)
+                        // We also want to fill the (inside) if its a certain type that grants knowledge like:
+                        // -Query(Knowledge), Analysis(Bot), Schematic(Item), Schematic(Bot)
+                        if (hack.hackType == TerminalCommandType.Query)
                         {
-                            if (bot.tier == rating && !bot.playerHasAnalysisData && bot.tier >= floorRating)
+                            // No suggestions for lore!
+                            /*
+                            foreach (KnowledgeObject lore in MapManager.inst.knowledgeDatabase.Data)
                             {
-                                suggestions.Add(bot.name);
-                                // We remove duplicates later so this shouldn't be an issue
+                                if (!lore.knowByPlayer)
+                                {
+                                    newCom = lore.name;
+                                }
+                            }
+                            */
+                        }
+                        else if (hack.hackType == TerminalCommandType.Analysis) // Bots
+                        {
+                            // Want to make sure its the same tier (and player doesn't have data on it)
+                            int rating = -1;
+                            bool p = false;
+                            (rating, p) = HF.GetTierAndP(hack.name);
+
+                            foreach (BotObject bot in MapManager.inst.botDatabase.Bots)
+                            {
+                                if (bot.tier == rating && !bot.playerHasAnalysisData && bot.tier >= floorRating)
+                                {
+                                    suggestions.Add(bot.name);
+                                    // We remove duplicates later so this shouldn't be an issue
+                                }
                             }
                         }
-
-                        // Items
-                        foreach (ItemObject item in MapManager.inst.itemDatabase.Items)
+                        else if (hack.hackType == TerminalCommandType.Schematic)
                         {
-                            if (item.rating == rating && !item.knowByPlayer && item.star == p && item.rating >= floorRating)
+                            // Bots
+                            // Want to make sure its the same tier (and player doesn't have data on it)
+                            int rating = -1;
+                            bool p = false;
+                            (rating, p) = HF.GetTierAndP(hack.name);
+
+                            foreach (BotObject bot in MapManager.inst.botDatabase.Bots)
                             {
-                                suggestions.Add(item.itemName);
-                                // We remove duplicates later so this shouldn't be an issue
+                                if (bot.tier == rating && !bot.playerHasAnalysisData && bot.tier >= floorRating)
+                                {
+                                    suggestions.Add(bot.name);
+                                    // We remove duplicates later so this shouldn't be an issue
+                                }
+                            }
+
+                            // Items
+                            foreach (ItemObject item in MapManager.inst.itemDatabase.Items)
+                            {
+                                if (item.rating == rating && !item.knowByPlayer && item.star == p && item.rating >= floorRating)
+                                {
+                                    suggestions.Add(item.itemName);
+                                    // We remove duplicates later so this shouldn't be an issue
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        string newCom = HF.ExtractText(hack.name);
-                        suggestions.Add(newCom);
+                        else
+                        {
+                            string newCom = HF.ExtractText(hack.name);
+                            suggestions.Add(newCom);
+                        }
                     }
                 }
             }
@@ -667,7 +702,21 @@ public class UIHackInputfield : MonoBehaviour
         suggestions = suggestions.Distinct().ToList(); // Remove duplicates
     }
 
-    private void ClearSuggestions()
+    private void ShowSuggestionsBox()
+    {
+        box_main.SetActive(true);
+        box_small.SetActive(true);
+
+        // Set the positions correctly (we are basing it off of the top right corner of the field.textComponent black backer
+        Vector3[] v = new Vector3[4];
+        backerText.GetComponent<RectTransform>().GetWorldCorners(v);
+        float currentX = v[2].x;
+        Debug.Log(currentX);
+        box_main.transform.position = new Vector3(currentX, box_main.transform.position.y, 0);
+        box_small.transform.position = new Vector3(currentX, box_small.transform.position.y, 0);
+    }
+
+    private void HideSuggestionsBox()
     {
         // Clear active suggestions
         foreach (GameObject item in activeSuggestions.ToList())
@@ -676,15 +725,16 @@ public class UIHackInputfield : MonoBehaviour
         }
         activeSuggestions.Clear();
 
-        currentSuggestion = "";
-        box_suggestionText.text = "";
-        suggestionID = -1;
-
         // Close the window
         box_main.SetActive(false);
         box_small.SetActive(false);
+    }
 
-        filled = false;
+    private void ClearSuggestions()
+    {
+        currentSuggestion = "";
+        box_suggestionText.text = "";
+        suggestionID = -1;
     }
 
     #endregion
