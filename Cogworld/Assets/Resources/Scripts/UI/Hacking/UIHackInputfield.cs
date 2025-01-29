@@ -183,8 +183,7 @@ public class UIHackInputfield : MonoBehaviour
 
         if (field.isFocused)
         {
-            backerText.text = "<mark=#000000>>>" + suggestionText.text + "</mark>"; // Mark highlights it as pure black
-            main_backerText.text = "<mark=#000000>" + field.text + "</mark>"; // Mark highlights it as pure black
+            BackerTextUpdate();
             ForceMeshUpdates();
 
             // Previous Suggestions check
@@ -199,7 +198,7 @@ public class UIHackInputfield : MonoBehaviour
         
         // Suggestion box navigation
         ChooseBoxSuggestions();
-        Debug.Log("Suggestions count: " + suggestions.Count);
+
         SetFocus(true);
         field.caretPosition = field.text.Length;
     }
@@ -489,7 +488,6 @@ public class UIHackInputfield : MonoBehaviour
         #endregion
         else // Not that many suggestions, use the window
         {
-            // TODO: This section needs to be redesigned.
             /*  -- How the Suggestion Box works --
              * At the bare minimum, the suggestions box should only be open if:
              *  1. There is text on the field
@@ -500,11 +498,6 @@ public class UIHackInputfield : MonoBehaviour
              *  -We should only should the box if there are more than 1 suggestion to show
              *  -If the box is open, the nearest valid command should come first in the list and be highlighted in green.
              *  -The suggestion text needs to auto-update to the nearest valid command
-             *  
-             * 
-             * 
-             *  
-             *  
              */
 
             bool CANSHOWBOX = field.text.Length > 0 && field.text.Contains("(") && field.text[field.text.Length - 1].ToString() != ")";
@@ -526,24 +519,6 @@ public class UIHackInputfield : MonoBehaviour
                 // More than 1?
                 if (suggestions.Count > 1) // We need to show the box
                 {
-                    // Open the window
-                    ShowSuggestionsBox();
-
-                    // -- put closest suggestion at start of list?
-
-                    // Now instantiate a list of them
-                    foreach (string command in suggestions)
-                    {
-                        GameObject code = Instantiate(box_AC_prefab, box_area.transform.position, Quaternion.identity);
-                        code.transform.SetParent(box_area.transform);
-                        code.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
-                        // Add it to list
-                        activeSuggestions.Add(code);
-                        // Assign Details
-                        TextMeshProUGUI[] textUGUIs = code.GetComponentsInChildren<TextMeshProUGUI>();
-                        textUGUIs[1].text = command; // We don't want the fill text
-                    }
-
                     // Is there anything beyond the "(" character?
                     string[] inputsplit = field.text.Split("(");
                     if(inputsplit.Length > 1 && inputsplit[1] != null && inputsplit[1] != "") // There is, we should suggest the closest matching one
@@ -568,8 +543,28 @@ public class UIHackInputfield : MonoBehaviour
                     box_suggestionText.text = currentSuggestion + ")";
                     suggestionText.text = inputsplit[0] + "(";
 
+                    #region Suggestions Box
+                    // Open the window
+                    ShowSuggestionsBox();
+
+                    // Now instantiate a list of them
+                    foreach (string command in suggestions)
+                    {
+                        GameObject code = Instantiate(box_AC_prefab, box_area.transform.position, Quaternion.identity);
+                        code.transform.SetParent(box_area.transform);
+                        code.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+                        // Add it to list
+                        activeSuggestions.Add(code);
+                        // Assign Details
+                        TextMeshProUGUI[] textUGUIs = code.GetComponentsInChildren<TextMeshProUGUI>();
+                        textUGUIs[1].text = command; // We don't want the fill text
+                    }
+
                     // Highlight the first suggestion in the list
                     IndicateSelectedSuggestion(suggestionID);
+
+                    StartCoroutine(SBoxPositionLateUpdate());
+                    #endregion
                 }
                 else if (suggestions.Count == 1) // One
                 {
@@ -707,13 +702,43 @@ public class UIHackInputfield : MonoBehaviour
         box_main.SetActive(true);
         box_small.SetActive(true);
 
-        // Set the positions correctly (we are basing it off of the top right corner of the field.textComponent black backer
-        Vector3[] v = new Vector3[4];
-        backerText.GetComponent<RectTransform>().GetWorldCorners(v);
-        float currentX = v[2].x;
-        Debug.Log(currentX);
-        box_main.transform.position = new Vector3(currentX, box_main.transform.position.y, 0);
-        box_small.transform.position = new Vector3(currentX, box_small.transform.position.y, 0);
+        BackerTextUpdate();
+
+        SBoxPositionUpdate();
+    }
+
+    private void SBoxPositionUpdate()
+    {
+        if (box_main.gameObject.activeInHierarchy)
+        {
+            // Set the positions correctly (we are basing it off of the top right corner of the field.textComponent black backer
+            Vector3[] v = new Vector3[4];
+            backerText.GetComponent<RectTransform>().GetWorldCorners(v);
+            float currentX = v[2].x - sbox_offset;
+
+            box_main.transform.position = new Vector3(currentX, box_main.transform.position.y, 0);
+            box_small.transform.position = new Vector3(currentX, box_small.transform.position.y, 0);
+        }
+    }
+
+    private IEnumerator SBoxPositionLateUpdate()
+    {
+        // I truly do dislike having to do this, but its better than throwing it in Update i guess.
+        // The reason this is required is because (it seems) the forceful mesh updates aren't as "instant" as they claim.
+
+        yield return null;
+
+        SBoxPositionUpdate();
+    }
+
+    [SerializeField] private float sbox_offset = 4.5f;
+    private void BackerTextUpdate()
+    {
+        backerText.text = "<mark=#000000>>>" + suggestionText.text + "</mark>"; // Mark highlights it as pure black
+        main_backerText.text = "<mark=#000000>" + field.text + "</mark>"; // Mark highlights it as pure black
+
+        backerText.ForceMeshUpdate();
+        main_backerText.ForceMeshUpdate();
     }
 
     private void HideSuggestionsBox()
