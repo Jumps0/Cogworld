@@ -116,7 +116,7 @@ public class MainMenuManager : MonoBehaviour
     [Header("Ambient Sprites")]
     public BotDatabaseObject bots;
     public GameObject spritefall_prefab;
-    private float spritefall_time = 20f;
+    private float spritefall_time = 35f;
     private Coroutine spritefall_co = null;
     [SerializeField] private Vector2 spritefall_start;
     [SerializeField] private Vector2 spritefall_end;
@@ -137,9 +137,10 @@ public class MainMenuManager : MonoBehaviour
         var obj = Instantiate(spritefall_prefab, start, Quaternion.identity, spritefall_area); // Instantiate
 
         // Randomly set the sprite
-        obj.GetComponent<Image>().sprite = bots.Bots[Random.Range(0, bots.Bots.Length)].displaySprite;
+        int random = Random.Range(0, bots.Bots.Length);
+        obj.GetComponent<Image>().sprite = bots.Bots[random].displaySprite;
 
-        // and color (random from yellow to pink-ish red)
+        // and color (this should be changed later to be dependent on bot class)
         obj.GetComponent<Image>().color = new Color(spritefall_color.r, Random.Range(0, 255f) / 255f, 0f);
 
         // Set it to the top of the move area
