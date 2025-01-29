@@ -2095,7 +2095,7 @@ public class MapManager : MonoBehaviour
         List<char> alphabet = alpha.ToList(); // Fill alphabet list
 
         // We do terminals here, all other machines will self load
-        foreach (GameObject obj in machines_terminals) // TODO, MOVE THIS TO INSIDE THE TERMINAL SCRIPT
+        foreach (GameObject obj in machines_terminals)
         {
             obj.GetComponentInChildren<Terminal>().Init();
         }

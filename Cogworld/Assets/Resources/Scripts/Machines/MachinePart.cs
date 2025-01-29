@@ -120,7 +120,7 @@ public class MachinePart : MonoBehaviour
 
     private void SetName()
     {
-        // -- TODO: This will need to be expanded later if/when new machines are added --
+        // -- This will need to be expanded later if/when new machines are added --
 
         // First check if this is an interactable machine
         if(this.GetComponent<Terminal>() || (parentPart && parentPart.GetComponent<Terminal>()))

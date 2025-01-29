@@ -80,7 +80,7 @@ public class Item
     [Tooltip("A fused item is unable to be removed while equipped (without destroying it).")]
     public bool isFused = false; 
     [Tooltip("FAULTY PROTOTYPE. Faulty prototypes will almost always malfunction and have potentially serious side-effects when attached, and cannot be used or repaired, but may be scanned to obtain the schematic.")]
-    public bool isFaulty = false; // TODO: Attempted attachment of a *known* Faulty part warns about that before most other potential issues 
+    public bool isFaulty = false;
     [Tooltip("Faulty items usually have a one time punishment for equipping them. If false this has not occurred yet.")]
     public bool doneFaultyFailure = false;
     public bool isBroken = false;
@@ -427,7 +427,7 @@ public abstract class ItemObject : ScriptableObject
     public int disposable = -1; // TODO: Functionality for this
     public int unstable = -1; // TODO: Functionality for this
     [Tooltip("Certain items (like processors), will destroy themselves when they are removed. Items like this give a warning to the player if they attempt to remove it.")]
-    public bool destroyOnRemove = false; // TODO: Functionality for this
+    public bool destroyOnRemove = false;
     [Tooltip("Certain items (like storage units), can't be disabled. This is pretty rare actually.")]
     public bool canBeDisabled = true; // TODO: Functionality for this
 
