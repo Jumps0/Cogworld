@@ -113,6 +113,7 @@ public abstract class BotObject : ScriptableObject
 
     [Header("Overview")]
     public BotClass _class;
+    public BotClassRefined _refinedClass;
     public BotSize _size;
     [Tooltip("Targeting is actually tested on a finer grid than is visible onscreen. " +
         "Each map space is divided into a 9x9 grid of squares, and as robot sizes vary (S/M/L), they may take up more or fewer of these squares. " +
