@@ -33,6 +33,11 @@ public class MMButton : MonoBehaviour
 
         text_main.text = display;
 
+        if(myNumber == 8 || myNumber == 7) // - CREDITS, QUIT
+        {
+            fill_forbid = true;
+        }
+
         // Play a little reveal animation
         StartCoroutine(RevealAnimation());
     }
@@ -104,6 +109,7 @@ public class MMButton : MonoBehaviour
     public void Click()
     {
         MainMenuManager.inst.UnSelectButtons(this.gameObject);
+        MainMenuManager.inst.ButtonAction(myNumber);
 
         selected = true;
         Select(selected);
@@ -165,8 +171,11 @@ public class MMButton : MonoBehaviour
     #region Fill Line
     private float fill_speed = 0.25f;
     private Coroutine fill_co;
+    private bool fill_forbid = false;
     private void Fill(bool extend)
     {
+        if (fill_forbid) { return; }
+
         if(fill_co != null)
         {
             StopCoroutine(fill_co);

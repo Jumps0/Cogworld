@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -35,6 +36,12 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private Transform buttons_area;
     [SerializeField] private GameObject button_prefab;
     private List<string> button_titles = new List<string>() { "CONTINUE", "NEW GAME", "LOAD GAME", "JOIN GAME", "RECORDS", "SETTINGS", "CREDITS", "QUIT" };
+
+    [Header("Colors")]
+    [SerializeField] private Color color_main;
+    [SerializeField] private Color color_bright;
+    [SerializeField] private Color color_dull;
+
     #region Buttons
     private void SetupMainButtons()
     {
@@ -64,18 +71,127 @@ public class MainMenuManager : MonoBehaviour
     }
     #endregion
 
-    public void SwitchGameScene()
+    #region Main Window
+    [Header("Main Window")]
+    [SerializeField] private GameObject main_window;
+    private Coroutine main_borders_co;
+    [SerializeField] private Image main_border;
+    [SerializeField] private GameObject main_area;
+
+    public void ButtonAction(int instruction)
     {
-        SceneManager.LoadScene("GameplayScene");
+
+        switch (instruction)
+        {
+            case 1: // - CONTINUE
+                ToggleMainWindow(true); // Open the window
+
+                break;
+            case 2: // - NEW GAME
+                ToggleMainWindow(true); // Open the window
+
+                break;
+            case 3: // - LOAD GAME
+                ToggleMainWindow(true); // Open the window
+
+                break;
+            case 4: // - JOIN GAME
+                ToggleMainWindow(true); // Open the window
+
+                break;
+            case 5: // - RECORDS
+                // ? Might be a different window
+                ToggleMainWindow(false); // Close the window
+
+                break;
+            case 6: // - SETTINGS
+                ToggleMainWindow(true); // Open the window
+
+                break;
+            case 7: // - CREDITS
+                // ? Might be a different window
+                ToggleMainWindow(false); // Close the window
+
+                break;
+            case 8: // - QUIT
+                ToggleMainWindow(false); // Close the window
+                QuitGame();
+                break;
+            default:
+                break;
+        }
     }
 
-    //
-    // -----------------------
-
-    public void QuitGame()
+    private void ToggleMainWindow(bool state)
     {
-        Application.Quit();
+        main_window.SetActive(state);
+
+        if(main_borders_co != null)
+        {
+            StopCoroutine(main_borders_co);
+        }
+        StartCoroutine(MainWindowAnimation(state));
     }
+
+    private IEnumerator MainWindowAnimation(bool state)
+    {
+
+        if (state) // Open is more complex
+        {
+            float delay = 0.1f;
+
+            Color color = color_main;
+
+            main_border.color = new Color(color.r, color.g, color.b, 0f);
+            //headertext.color = new Color(color.r, color.g, color.b, 0.25f);
+
+            yield return new WaitForSeconds(delay);
+
+            main_border.color = new Color(color.r, color.g, color.b, 0.4f);
+            //headertext.color = new Color(color.r, color.g, color.b, 0.75f);
+
+            yield return new WaitForSeconds(delay);
+
+            main_border.color = new Color(color.r, color.g, color.b, 0.2f);
+            //headertext.color = new Color(color.r, color.g, color.b, 1f);
+
+            yield return new WaitForSeconds(delay);
+
+            main_border.color = new Color(color.r, color.g, color.b, 0.6f);
+            //headertext.color = new Color(color.r, color.g, color.b, 0.75f);
+
+            yield return new WaitForSeconds(delay);
+
+            main_border.color = new Color(color.r, color.g, color.b, 0.4f);
+            //headertext.color = new Color(color.r, color.g, color.b, 0.25f);
+
+            yield return new WaitForSeconds(delay);
+
+            main_border.color = new Color(color.r, color.g, color.b, 1f);
+            //headertext.color = new Color(color.r, color.g, color.b, 0f);
+        }
+        else // Close is pretty simple
+        {
+            Color start = color_main;
+            Color end = Color.black;
+
+            main_border.color = start;
+
+            float elapsedTime = 0f;
+            float duration = 0.45f;
+            while (elapsedTime < duration)
+            {
+                main_border.color = Color.Lerp(start, end, elapsedTime / duration);
+
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            main_border.color = end;
+        }
+    }
+
+    #endregion
 
     #region Settings
     [Header("Settings")]
@@ -136,4 +252,17 @@ public class MainMenuManager : MonoBehaviour
         spritefall_co = null;
     }
     #endregion
+
+    public void SwitchGameScene()
+    {
+        SceneManager.LoadScene("GameplayScene");
+    }
+
+    //
+    // -----------------------
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 }
