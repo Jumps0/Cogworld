@@ -2047,14 +2047,7 @@ MonoBehaviour:
   buttons_main: []
   buttons_area: {fileID: 1002566452}
   button_prefab: {fileID: 3308090358177970210, guid: 4b6133e5f0b4c4c44815e09b0fe9f4af, type: 3}
-  button_titles:
-  - CONTINUE
-  - NEW GAME
-  - LOAD GAME
-  - RECORDS
-  - SETTINGS
-  - CREDITS
-  - QUIT
+  settingsObject: {fileID: 11400000, guid: d6d7956b90cc1594b8efcf2c17aea030, type: 2}
   bots: {fileID: 11400000, guid: 2251835abf9330c468579ac04a343743, type: 2}
   spritefall_prefab: {fileID: 9212561821996581299, guid: 79462b4649053df4492f61490ce4c035, type: 3}
   spritefall_start: {x: 0, y: 0}

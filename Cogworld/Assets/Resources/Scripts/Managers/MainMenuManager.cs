@@ -35,7 +35,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private Transform buttons_area;
     [SerializeField] private GameObject button_prefab;
     private List<string> button_titles = new List<string>() { "CONTINUE", "NEW GAME", "LOAD GAME", "JOIN GAME", "RECORDS", "SETTINGS", "CREDITS", "QUIT" };
-
+    #region Buttons
     private void SetupMainButtons()
     {
         // Create & Setup the buttons
@@ -62,6 +62,7 @@ public class MainMenuManager : MonoBehaviour
             }
         }
     }
+    #endregion
 
     public void SwitchGameScene()
     {
@@ -76,7 +77,15 @@ public class MainMenuManager : MonoBehaviour
         Application.Quit();
     }
 
+    #region Settings
+    [Header("Settings")]
+    public ScriptableSettings settingsObject;
 
+    // ?
+
+    #endregion
+
+    #region (Ambient) Spritefall
     [Header("Ambient Sprites")]
     public BotDatabaseObject bots;
     public GameObject spritefall_prefab;
@@ -126,4 +135,5 @@ public class MainMenuManager : MonoBehaviour
         Destroy(obj);
         spritefall_co = null;
     }
+    #endregion
 }
