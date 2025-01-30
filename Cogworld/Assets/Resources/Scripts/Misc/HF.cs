@@ -17,7 +17,6 @@ using Color = UnityEngine.Color;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using ColorUtility = UnityEngine.ColorUtility;
-using static UnityEditor.PlayerSettings;
 
 /// <summary>
 /// Contains helper functions to be used globally.

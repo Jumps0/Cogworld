@@ -21,6 +21,8 @@ public class MainMenuManager : MonoBehaviour
 
         spritefall_start = new Vector2(width * 0.9f, height + 100f);
         spritefall_end = new Vector2(width * 0.9f, 0 - 100f);
+
+        SetupMainButtons();
     }
 
     private void Update()
@@ -29,43 +31,36 @@ public class MainMenuManager : MonoBehaviour
     }
 
     [Header("References")]
-    public GameObject titleRef;
-    public GameObject helpRef;
-    public GameObject buttonsRef;
+    [SerializeField] private List<GameObject> buttons_main = new List<GameObject>();
+    [SerializeField] private Transform buttons_area;
+    [SerializeField] private GameObject button_prefab;
+    private List<string> button_titles = new List<string>() { "CONTINUE", "NEW GAME", "LOAD GAME", "JOIN GAME", "RECORDS", "SETTINGS", "CREDITS", "QUIT" };
 
-    public GameObject saveDataRef;
-    public GameObject saveDataAreaRef;
-    public TextMeshProUGUI saveText;
-
-
-    // ~~~ Level Loading ~~~
-    //
-
-    public void ResumePreviousSave()
+    private void SetupMainButtons()
     {
+        // Create & Setup the buttons
+        for (int i = 0; i < button_titles.Count; i++)
+        {
+            GameObject newButton = Instantiate(button_prefab, Vector2.zero, Quaternion.identity, buttons_area);
+            buttons_main.Add(newButton);
 
+            MMButton button = newButton.GetComponent<MMButton>();
 
-
-
-        SwitchGameScene();
+            button.Setup(button_titles[i], i + 1);
+        }
     }
 
-    public void StartNewGame()
+    public void UnSelectButtons(GameObject exception)
     {
+        foreach (var B in buttons_main)
+        {
+            if(B != exception)
+            {
+                MMButton button = B.GetComponent<MMButton>();
 
-
-
-        SwitchGameScene();
-    }
-
-    public void ShowSaveData()
-    {
-
-    }
-
-    public void HideSaveData()
-    {
-
+                button.Select(false);
+            }
+        }
     }
 
     public void SwitchGameScene()
@@ -79,37 +74,6 @@ public class MainMenuManager : MonoBehaviour
     public void QuitGame()
     {
         Application.Quit();
-    }
-
-
-    public void ShowTitle()
-    {
-        titleRef.SetActive(true);
-    }
-
-    public void HideTitle()
-    {
-        titleRef.SetActive(false);
-    }
-
-    public void ShowHelp() 
-    { 
-        helpRef.SetActive(true);
-    }
-
-    public void HideHelp()
-    {
-        helpRef.SetActive(false);
-    }
-
-    public void OpenOptions()
-    {
-
-    }
-
-    public void CloseOptions()
-    {
-
     }
 
 
