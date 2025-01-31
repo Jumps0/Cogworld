@@ -7,6 +7,7 @@ using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Image = UnityEngine.UI.Image;
 
 
 public class MainMenuManager : MonoBehaviour
@@ -343,7 +344,31 @@ public class MainMenuManager : MonoBehaviour
 
             if (toggle)
             {
-                StartCoroutine(CreditsAnimateReveal());
+                foreach (var NP in credits_nameplates)
+                {
+                    if (NP.gameObject.activeInHierarchy)
+                        StartCoroutine(CreditsRevealBacker(NP));
+                }
+                foreach (var PT in credits_primaryNames)
+                {
+                    if (PT.gameObject.activeInHierarchy)
+                        StartCoroutine(CreditsRevealNames(PT));
+                }
+                foreach (var FT in credits_flairText)
+                {
+                    if (FT.gameObject.activeInHierarchy)
+                    {
+                        List<string> strings = HF.RandomHighlightStringAnimation(FT.text, color_main);
+                        // Animate the strings via our delay trick
+                        float delay = 0f;
+                        float perDelay = 0.25f / (FT.text.Length);
+
+                        foreach (string s in strings)
+                        {
+                            StartCoroutine(HF.DelayedSetText(FT, s, delay += perDelay));
+                        }
+                    }
+                }
             }
         }
     }
@@ -382,6 +407,48 @@ public class MainMenuManager : MonoBehaviour
         }
 
         yield return null;
+    }
+
+    private IEnumerator CreditsRevealBacker(Image I)
+    {
+        // Real simple: Black -> Bright Green
+        Color start = Color.black;
+        Color end = color_bright;
+
+        I.color = start;
+
+        float elapsedTime = 0f;
+        float duration = 0.35f;
+        while (elapsedTime < duration)
+        {
+            I.color = Color.Lerp(start, end, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        I.color = end;
+    }
+
+    private IEnumerator CreditsRevealNames(TextMeshProUGUI T)
+    {
+        // Bright Green -> Black
+        Color start = color_bright;
+        Color end = Color.black;
+
+        T.color = start;
+
+        float elapsedTime = 0f;
+        float duration = 0.35f;
+        while (elapsedTime < duration)
+        {
+            T.color = Color.Lerp(start, end, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        T.color = end;
     }
     #endregion
 
@@ -424,14 +491,14 @@ public class MainMenuManager : MonoBehaviour
     {
         UnSelectButtons(null);
 
-        this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["CLOSE"], 0.7f); // UI - CLOSE
+        this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["CLOSE"], 0.5f); // UI - CLOSE
 
         ToggleQuitWindow(false);
     }
 
     public void QuitGame()
     {
-        Application.Quit();
+        UnityEngine.Application.Quit();
     }
     #endregion
 
