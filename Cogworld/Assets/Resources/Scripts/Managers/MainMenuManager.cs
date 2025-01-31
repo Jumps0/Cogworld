@@ -319,6 +319,9 @@ public class MainMenuManager : MonoBehaviour
     [Header("Credits")]
     [SerializeField] private GameObject credits_main;
     [SerializeField] private Image credits_borders;
+    [SerializeField] private List<Image> credits_nameplates = new List<Image>();
+    [SerializeField] private List<TextMeshProUGUI> credits_primaryNames = new List<TextMeshProUGUI>();
+    [SerializeField] private List<TextMeshProUGUI> credits_flairText = new List<TextMeshProUGUI>();
     private Coroutine credits_co;
 
     private void ToggleCreditsWindow(bool toggle, bool quickClose = false)
@@ -337,7 +340,48 @@ public class MainMenuManager : MonoBehaviour
         else
         {
             StartCoroutine(GenericWindowAnimation(credits_borders, toggle));
+
+            if (toggle)
+            {
+                StartCoroutine(CreditsAnimateReveal());
+            }
         }
+    }
+
+    private IEnumerator CreditsAnimateReveal()
+    {
+        // We have to animate the:
+        // -Bright green "name plate" backer images
+        // -Black name text
+        // -Green flair text & main top text
+
+        // 1. Set all elements to their starting state
+
+
+        // ?
+
+
+        // ?. Set all elements to their final state 
+        foreach (var NP in credits_nameplates)
+        {
+            // Bright color for backers
+            if(NP.gameObject.activeInHierarchy)
+                NP.color = color_bright;
+        }
+        foreach (var PT in credits_primaryNames)
+        {
+            // Black color for primary names
+            if (PT.gameObject.activeInHierarchy)
+                PT.color = Color.black;
+        }
+        foreach (var FT in credits_flairText)
+        {
+            // Green color for flair text
+            if (FT.gameObject.activeInHierarchy)
+                FT.color = color_main;
+        }
+
+        yield return null;
     }
     #endregion
 
