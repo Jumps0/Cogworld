@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
-/// Script containing logic for the buttons on the Main Menu
+/// Script containing logic for the PRIMARY buttons on the Main Menu (Continue, Load Game, Quit, etc.)
 /// </summary>
 public class MMButton : MonoBehaviour
 {
@@ -33,18 +33,60 @@ public class MMButton : MonoBehaviour
 
         text_main.text = display;
 
-        if(myNumber == 8) // -  QUIT
-        {
-            fill_forbid = true;
-        }
-
         // Play a little reveal animation
         StartCoroutine(RevealAnimation());
     }
 
     private IEnumerator RevealAnimation()
     {
+        float delay = 0.1f;
+
+        Color usedColor = color_bright;
+
+        float headerValue = 0.25f;
+
+        image_back1.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        image_back2.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+
+        yield return new WaitForSeconds(delay);
+
+        headerValue = 0.75f;
+
+        image_back1.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        image_back2.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+
+        yield return new WaitForSeconds(delay);
+
+        headerValue = 1f;
+
+        image_back1.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        image_back2.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+
+        yield return new WaitForSeconds(delay);
+
+        headerValue = 0.75f;
+
+        image_back1.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        image_back2.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+
+        yield return new WaitForSeconds(delay);
+
+        headerValue = 0.25f;
+
+        image_back1.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        image_back2.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+
+        yield return new WaitForSeconds(delay);
+
+        headerValue = 0f;
+
+        image_back1.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        image_back2.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+
         yield return null;
+
+        image_back1.color = Color.black;
+        image_back2.color = Color.black;
     }
 
     #region Hover
@@ -58,7 +100,7 @@ public class MMButton : MonoBehaviour
         hover_co = StartCoroutine(HoverAnimation(true));
 
         // Play the hover UI sound
-        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.dict_ui["HOVER"]); // UI - HOVER
+        MainMenuManager.inst.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["HOVER"], 0.7f); // UI - HOVER
     }
 
     public void HoverEnd()

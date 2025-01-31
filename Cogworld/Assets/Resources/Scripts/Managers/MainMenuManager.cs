@@ -41,6 +41,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private Color color_main;
     [SerializeField] private Color color_bright;
     [SerializeField] private Color color_dull;
+    [SerializeField] private Color color_white;
 
     #region Buttons
     private void SetupMainButtons()
@@ -80,12 +81,14 @@ public class MainMenuManager : MonoBehaviour
 
     public void ButtonAction(int instruction)
     {
+        this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["OPEN_1"], 0.7f); // UI - OPEN_1
 
         switch (instruction)
         {
             case 1: // - CONTINUE
                 ToggleRecordsWindow(false, true); // Force close any other windows
                 ToggleCreditsWindow(false, true);
+                ToggleQuitWindow(false, true);
 
                 ToggleMainWindow(true); // Open the window
 
@@ -93,6 +96,7 @@ public class MainMenuManager : MonoBehaviour
             case 2: // - NEW GAME
                 ToggleRecordsWindow(false, true); // Force close any other windows
                 ToggleCreditsWindow(false, true);
+                ToggleQuitWindow(false, true);
 
                 ToggleMainWindow(true); // Open the window
 
@@ -100,6 +104,7 @@ public class MainMenuManager : MonoBehaviour
             case 3: // - LOAD GAME
                 ToggleRecordsWindow(false, true); // Force close any other windows
                 ToggleCreditsWindow(false, true);
+                ToggleQuitWindow(false, true);
 
                 ToggleMainWindow(true); // Open the window
 
@@ -107,6 +112,7 @@ public class MainMenuManager : MonoBehaviour
             case 4: // - JOIN GAME
                 ToggleRecordsWindow(false, true); // Force close any other windows
                 ToggleCreditsWindow(false, true);
+                ToggleQuitWindow(false, true);
 
                 ToggleMainWindow(true); // Open the window
 
@@ -115,6 +121,7 @@ public class MainMenuManager : MonoBehaviour
                 // Unique window
                 ToggleMainWindow(false, true); // Close the window
                 ToggleCreditsWindow(false, true);
+                ToggleQuitWindow(false, true);
 
                 ToggleRecordsWindow(true);
 
@@ -122,6 +129,7 @@ public class MainMenuManager : MonoBehaviour
             case 6: // - SETTINGS
                 ToggleRecordsWindow(false, true); // Force close any other windows
                 ToggleCreditsWindow(false, true);
+                ToggleQuitWindow(false, true);
 
                 ToggleMainWindow(true); // Open the window
 
@@ -130,13 +138,17 @@ public class MainMenuManager : MonoBehaviour
                 // Unique window
                 ToggleRecordsWindow(false, true);
                 ToggleMainWindow(false, true); // Close the window
+                ToggleQuitWindow(false, true);
 
                 ToggleCreditsWindow(true); // Open the credits window
 
                 break;
             case 8: // - QUIT
-                ToggleMainWindow(false); // Close the window
-                QuitGame();
+                ToggleMainWindow(false, true); // Close the window
+                ToggleRecordsWindow(false, true);
+                ToggleCreditsWindow(false, true);
+
+                ToggleQuitWindow(true); // Open quit window
                 break;
             default:
                 break;
@@ -158,11 +170,11 @@ public class MainMenuManager : MonoBehaviour
         }
         else
         {
-            StartCoroutine(GenericAnimationWindowAnimation(main_border, state));
+            StartCoroutine(GenericWindowAnimation(main_border, state));
         }
     }
 
-    private IEnumerator GenericAnimationWindowAnimation(Image borders, bool state)
+    private IEnumerator GenericWindowAnimation(Image borders, bool state)
     {
 
         if (state) // Open is more complex
@@ -220,6 +232,58 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
+    private IEnumerator GenericTextFlashAnimation(TextMeshProUGUI text, bool state)
+    {
+
+        if (state) // Open is more complex
+        {
+            float delay = 0.1f;
+
+            Color color = color_white;
+
+            text.color = new Color(color.r, color.g, color.b, 0.25f);
+
+            yield return new WaitForSeconds(delay);
+
+            text.color = new Color(color.r, color.g, color.b, 0.75f);
+
+            yield return new WaitForSeconds(delay);
+
+            text.color = new Color(color.r, color.g, color.b, 1f);
+
+            yield return new WaitForSeconds(delay);
+
+            text.color = new Color(color.r, color.g, color.b, 0.75f);
+
+            yield return new WaitForSeconds(delay);
+
+            text.color = new Color(color.r, color.g, color.b, 0.25f);
+
+            yield return new WaitForSeconds(delay);
+
+            text.color = new Color(color.r, color.g, color.b, 1f);
+        }
+        else // Close is pretty simple
+        {
+            Color start = color_main;
+            Color end = Color.black;
+
+            text.color = start;
+
+            float elapsedTime = 0f;
+            float duration = 0.45f;
+            while (elapsedTime < duration)
+            {
+                text.color = Color.Lerp(start, end, elapsedTime / duration);
+
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            text.color = end;
+        }
+    }
+
     #endregion
 
     #region Records
@@ -243,7 +307,7 @@ public class MainMenuManager : MonoBehaviour
         }
         else
         {
-            StartCoroutine(GenericAnimationWindowAnimation(records_borders, toggle));
+            StartCoroutine(GenericWindowAnimation(records_borders, toggle));
         }
     }
     #endregion
@@ -256,7 +320,7 @@ public class MainMenuManager : MonoBehaviour
 
     private void ToggleCreditsWindow(bool toggle, bool quickClose = false)
     {
-        records_main.SetActive(toggle);
+        credits_main.SetActive(toggle);
 
         if (credits_co != null)
         {
@@ -269,8 +333,58 @@ public class MainMenuManager : MonoBehaviour
         }
         else
         {
-            StartCoroutine(GenericAnimationWindowAnimation(credits_borders, toggle));
+            StartCoroutine(GenericWindowAnimation(credits_borders, toggle));
         }
+    }
+    #endregion
+
+    #region Quit
+    [Header("Quit")]
+    [SerializeField] private GameObject quit_main;
+    [SerializeField] private Image quit_borders;
+    [SerializeField] private TextMeshProUGUI quit_text;
+    [SerializeField] private MMButtonSimple quit_yes;
+    [SerializeField] private MMButtonSimple quit_no;
+    private Coroutine quit_co;
+
+    private void ToggleQuitWindow(bool toggle, bool quickClose = false)
+    {
+        quit_main.SetActive(toggle);
+
+        if (quit_co != null)
+        {
+            StopCoroutine(quit_co);
+        }
+
+        if (!toggle && quickClose)
+        {
+            quit_main.SetActive(false);
+        }
+        else
+        {
+            if (toggle)
+            {
+                quit_yes.Setup("Yes");
+                quit_no.Setup("No");
+            }
+
+            StartCoroutine(GenericWindowAnimation(quit_borders, toggle));
+            StartCoroutine(GenericTextFlashAnimation(quit_text, toggle));
+        }
+    }
+
+    public void CancelQuitGame()
+    {
+        UnSelectButtons(null);
+
+        this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["CLOSE"], 0.7f); // UI - CLOSE
+
+        ToggleQuitWindow(false);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
     #endregion
 
@@ -342,8 +456,4 @@ public class MainMenuManager : MonoBehaviour
     //
     // -----------------------
 
-    public void QuitGame()
-    {
-        Application.Quit();
-    }
 }
