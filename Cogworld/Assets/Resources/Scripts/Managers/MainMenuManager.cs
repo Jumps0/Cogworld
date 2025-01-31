@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem.Controls;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -28,6 +30,7 @@ public class MainMenuManager : MonoBehaviour
 
     private void Update()
     {
+        KeyboardInputDetection();
         RunSpritefall();
     }
 
@@ -394,6 +397,34 @@ public class MainMenuManager : MonoBehaviour
 
     // ?
 
+    #endregion
+
+    #region Keyboard Input Detection
+    private void KeyboardInputDetection()
+    {
+        // Check for player input
+        if (Keyboard.current.anyKey.wasPressedThisFrame) // FUTURE TODO: Check if player is typing in an inputfield
+        {
+            // Go through the primary buttons
+            foreach (var O in button_titles)
+            {
+                int value = button_titles.IndexOf(O);
+                value++; // Since the index does not equal what we are actually displaying (0 to 7 vs 1 to 8), we go up by 1
+                string parsed = value.ToString();
+
+                // Convert assigned character to KeyControl
+                var keyControl = Keyboard.current[parsed.ToLower()] as KeyControl;
+
+                if (keyControl != null && keyControl.wasPressedThisFrame)
+                {
+                    // Click!
+                    value--; // Step it back down again
+                    buttons_main[value].GetComponent<MMButton>().Click();
+                    return;
+                }
+            }
+        }
+    }
     #endregion
 
     #region (Ambient) Spritefall
