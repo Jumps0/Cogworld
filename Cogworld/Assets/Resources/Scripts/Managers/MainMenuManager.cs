@@ -84,33 +84,54 @@ public class MainMenuManager : MonoBehaviour
         switch (instruction)
         {
             case 1: // - CONTINUE
+                ToggleRecordsWindow(false, true); // Force close any other windows
+                ToggleCreditsWindow(false, true);
+
                 ToggleMainWindow(true); // Open the window
 
                 break;
             case 2: // - NEW GAME
+                ToggleRecordsWindow(false, true); // Force close any other windows
+                ToggleCreditsWindow(false, true);
+
                 ToggleMainWindow(true); // Open the window
 
                 break;
             case 3: // - LOAD GAME
+                ToggleRecordsWindow(false, true); // Force close any other windows
+                ToggleCreditsWindow(false, true);
+
                 ToggleMainWindow(true); // Open the window
 
                 break;
             case 4: // - JOIN GAME
+                ToggleRecordsWindow(false, true); // Force close any other windows
+                ToggleCreditsWindow(false, true);
+
                 ToggleMainWindow(true); // Open the window
 
                 break;
             case 5: // - RECORDS
-                // ? Might be a different window
-                ToggleMainWindow(false); // Close the window
+                // Unique window
+                ToggleMainWindow(false, true); // Close the window
+                ToggleCreditsWindow(false, true);
+
+                ToggleRecordsWindow(true);
 
                 break;
             case 6: // - SETTINGS
+                ToggleRecordsWindow(false, true); // Force close any other windows
+                ToggleCreditsWindow(false, true);
+
                 ToggleMainWindow(true); // Open the window
 
                 break;
             case 7: // - CREDITS
-                // ? Might be a different window
-                ToggleMainWindow(false); // Close the window
+                // Unique window
+                ToggleRecordsWindow(false, true);
+                ToggleMainWindow(false, true); // Close the window
+
+                ToggleCreditsWindow(true); // Open the credits window
 
                 break;
             case 8: // - QUIT
@@ -122,7 +143,7 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
-    private void ToggleMainWindow(bool state)
+    private void ToggleMainWindow(bool state, bool quickClose = false)
     {
         main_window.SetActive(state);
 
@@ -130,10 +151,18 @@ public class MainMenuManager : MonoBehaviour
         {
             StopCoroutine(main_borders_co);
         }
-        StartCoroutine(MainWindowAnimation(state));
+
+        if(!state && quickClose)
+        {
+            main_window.SetActive(false);
+        }
+        else
+        {
+            StartCoroutine(GenericAnimationWindowAnimation(main_border, state));
+        }
     }
 
-    private IEnumerator MainWindowAnimation(bool state)
+    private IEnumerator GenericAnimationWindowAnimation(Image borders, bool state)
     {
 
         if (state) // Open is more complex
@@ -142,32 +171,32 @@ public class MainMenuManager : MonoBehaviour
 
             Color color = color_main;
 
-            main_border.color = new Color(color.r, color.g, color.b, 0f);
+            borders.color = new Color(color.r, color.g, color.b, 0f);
             //headertext.color = new Color(color.r, color.g, color.b, 0.25f);
 
             yield return new WaitForSeconds(delay);
 
-            main_border.color = new Color(color.r, color.g, color.b, 0.4f);
+            borders.color = new Color(color.r, color.g, color.b, 0.4f);
             //headertext.color = new Color(color.r, color.g, color.b, 0.75f);
 
             yield return new WaitForSeconds(delay);
 
-            main_border.color = new Color(color.r, color.g, color.b, 0.2f);
+            borders.color = new Color(color.r, color.g, color.b, 0.2f);
             //headertext.color = new Color(color.r, color.g, color.b, 1f);
 
             yield return new WaitForSeconds(delay);
 
-            main_border.color = new Color(color.r, color.g, color.b, 0.6f);
+            borders.color = new Color(color.r, color.g, color.b, 0.6f);
             //headertext.color = new Color(color.r, color.g, color.b, 0.75f);
 
             yield return new WaitForSeconds(delay);
 
-            main_border.color = new Color(color.r, color.g, color.b, 0.4f);
+            borders.color = new Color(color.r, color.g, color.b, 0.4f);
             //headertext.color = new Color(color.r, color.g, color.b, 0.25f);
 
             yield return new WaitForSeconds(delay);
 
-            main_border.color = new Color(color.r, color.g, color.b, 1f);
+            borders.color = new Color(color.r, color.g, color.b, 1f);
             //headertext.color = new Color(color.r, color.g, color.b, 0f);
         }
         else // Close is pretty simple
@@ -175,22 +204,74 @@ public class MainMenuManager : MonoBehaviour
             Color start = color_main;
             Color end = Color.black;
 
-            main_border.color = start;
+            borders.color = start;
 
             float elapsedTime = 0f;
             float duration = 0.45f;
             while (elapsedTime < duration)
             {
-                main_border.color = Color.Lerp(start, end, elapsedTime / duration);
+                borders.color = Color.Lerp(start, end, elapsedTime / duration);
 
                 elapsedTime += Time.deltaTime;
                 yield return null;
             }
 
-            main_border.color = end;
+            borders.color = end;
         }
     }
 
+    #endregion
+
+    #region Records
+    [Header("Records")]
+    [SerializeField] private GameObject records_main;
+    [SerializeField] private Image records_borders;
+    private Coroutine records_co;
+
+    public void ToggleRecordsWindow(bool toggle, bool quickClose = false)
+    {
+        records_main.SetActive(toggle);
+
+        if (records_co != null)
+        {
+            StopCoroutine(records_co);
+        }
+
+        if (!toggle && quickClose)
+        {
+            records_main.SetActive(false);
+        }
+        else
+        {
+            StartCoroutine(GenericAnimationWindowAnimation(records_borders, toggle));
+        }
+    }
+    #endregion
+
+    #region Credits
+    [Header("Credits")]
+    [SerializeField] private GameObject credits_main;
+    [SerializeField] private Image credits_borders;
+    private Coroutine credits_co;
+
+    private void ToggleCreditsWindow(bool toggle, bool quickClose = false)
+    {
+        records_main.SetActive(toggle);
+
+        if (credits_co != null)
+        {
+            StopCoroutine(credits_co);
+        }
+
+        if (!toggle && quickClose)
+        {
+            credits_main.SetActive(false);
+        }
+        else
+        {
+            StartCoroutine(GenericAnimationWindowAnimation(credits_borders, toggle));
+        }
+    }
     #endregion
 
     #region Settings

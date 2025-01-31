@@ -33,7 +33,7 @@ public class MMButton : MonoBehaviour
 
         text_main.text = display;
 
-        if(myNumber == 8 || myNumber == 7) // - CREDITS, QUIT
+        if(myNumber == 8) // -  QUIT
         {
             fill_forbid = true;
         }
