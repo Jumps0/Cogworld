@@ -33,7 +33,7 @@ public class MainMenuManager : MonoBehaviour
     private void Update()
     {
         KeyboardInputDetection();
-        RunSpritefall();
+        //RunSpritefall();
     }
 
     [Header("References")]
@@ -596,12 +596,78 @@ public class MainMenuManager : MonoBehaviour
     [Header("Spritewheel")]
     [SerializeField] private Transform spritewheel_orbit;
     [SerializeField] private int spritewheel_max = 10;
+    [SerializeField] private float spritewheel_speed = 5f;
+    [SerializeField] private float spritewheel_radius = 290f;
+    [SerializeField] private List<GameObject> spritewheel_objects = new List<GameObject>();
+    [SerializeField] private List<(Sprite, Color)> spritewheel_sprites = new List<(Sprite, Color)>();
+    [SerializeField] private GameObject spritewheel_prefab;
 
     private void SetupSpritewheel()
     {
         // We need to spawn in and pick X amount of bots to spawn in
+        spritewheel_sprites.Clear();
 
+        // Randomly pick sprites
+        while(spritewheel_sprites.Count < spritewheel_max && spritewheel_sprites.Count <= bots.Bots.Length)
+        {
+            BotObject botInfo = bots.Bots[Random.Range(0, bots.Bots.Length)];
+            Sprite botSprite = botInfo.displaySprite;
+            Color botColor = botInfo.idealColor;
 
+            if (!spritewheel_sprites.Contains((botSprite, botColor)))
+            {
+                spritewheel_sprites.Add((botSprite, botColor));
+            }
+        }
+
+        // Create the objects
+
+        // Clean up any pre-existing
+        foreach (var S in spritewheel_objects)
+        {
+            Destroy(S.gameObject);
+        }
+        spritewheel_objects.Clear();
+
+        // Evenly space out the objects in a circle
+        float angleStep = 360f / spritewheel_sprites.Count;
+
+        for (int i = 0; i < spritewheel_sprites.Count; i++)
+        {
+            // Create new object and set up its values
+            GameObject newSprite = Instantiate(spritewheel_prefab, Vector3.zero, Quaternion.identity, spritewheel_orbit);
+            Image sr = newSprite.GetComponent<Image>();
+            sr.sprite = spritewheel_sprites[i].Item1;
+            sr.color = spritewheel_sprites[i].Item2;
+
+            // Position the sprite in a circular orbit
+            float angle = i * angleStep;
+            Vector3 offset = new Vector3(Mathf.Cos(Mathf.Deg2Rad * angle) * spritewheel_radius, Mathf.Sin(Mathf.Deg2Rad * angle) * spritewheel_radius, 0);
+            newSprite.transform.position = spritewheel_orbit.position + offset;
+
+            // Add it to the list
+            spritewheel_objects.Add(newSprite);
+        }
+
+        StartCoroutine(SpritewheelOrbit());
+    }
+
+    private IEnumerator SpritewheelOrbit()
+    {
+        while (true)
+        {
+            for (int i = 0; i < spritewheel_objects.Count; i++)
+            {
+                // Calculate the new angle based on time and orbit speed
+                float angle = Time.time * spritewheel_speed + i * (360f / spritewheel_sprites.Count);
+                Vector3 offset = new Vector3(Mathf.Cos(Mathf.Deg2Rad * angle) * spritewheel_radius, Mathf.Sin(Mathf.Deg2Rad * angle) * spritewheel_radius, 0);
+
+                // Update the position of each sprite
+                spritewheel_objects[i].transform.position = spritewheel_orbit.position + offset;
+            }
+
+            yield return null; // Wait until the next frame
+        }
     }
 
     #endregion

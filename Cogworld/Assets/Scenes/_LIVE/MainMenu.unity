@@ -6656,6 +6656,12 @@ MonoBehaviour:
   spritefall_end: {x: 0, y: 0}
   spritefall_area: {fileID: 1139156815}
   spritefall_color: {r: 1, g: 1, b: 0, a: 1}
+  spritewheel_orbit: {fileID: 1674074543}
+  spritewheel_max: 10
+  spritewheel_speed: -5
+  spritewheel_radius: 290
+  spritewheel_objects: []
+  spritewheel_prefab: {fileID: 6932262309354595994, guid: 8be7b2f043681084b956dcbc6c2f1f67, type: 3}
 --- !u!114 &1323264077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8711,6 +8717,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1668619614}
   m_CullTransparentMesh: 1
+--- !u!1 &1674074542
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1674074543}
+  m_Layer: 5
+  m_Name: '*Spritewheel Centerpoint*'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1674074543
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1674074542}
+  m_LocalRotation: {x: 0.20461929, y: -0, z: -0, w: 0.97884166}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1946173355}
+  m_LocalEulerAnglesHint: {x: 23.614, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -788, y: -186}
+  m_SizeDelta: {x: 1, y: 1}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1699205182
 GameObject:
   m_ObjectHideFlags: 0
@@ -9541,6 +9582,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 702097299}
+  - {fileID: 1674074543}
   - {fileID: 1110808239}
   - {fileID: 508331122}
   - {fileID: 2121782785}
