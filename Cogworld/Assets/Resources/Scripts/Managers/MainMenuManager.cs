@@ -505,6 +505,7 @@ public class MainMenuManager : MonoBehaviour
     #region Settings
     [Header("Settings")]
     public ScriptableSettings settingsObject;
+    public ScriptablePreferences preferencesObject;
 
     // ?
 
