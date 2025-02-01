@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Image = UnityEngine.UI.Image;
+using static System.Net.Mime.MediaTypeNames;
 
 
 public class MainMenuManager : MonoBehaviour
@@ -88,6 +89,8 @@ public class MainMenuManager : MonoBehaviour
     {
         this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["OPEN_1"], 0.7f); // UI - OPEN_1
 
+        settings_parent.SetActive(false);
+
         switch (instruction)
         {
             case 1: // - CONTINUE
@@ -137,6 +140,7 @@ public class MainMenuManager : MonoBehaviour
                 ToggleQuitWindow(false, true);
 
                 ToggleMainWindow(true); // Open the window
+                SettingsOpen();
 
                 break;
             case 7: // - CREDITS
@@ -505,8 +509,38 @@ public class MainMenuManager : MonoBehaviour
 
     #region Settings
     [Header("Settings")]
+    [SerializeField] private GameObject settings_parent;
+    [SerializeField] private TextMeshProUGUI settings_explainerText;
+    [SerializeField] private List<GameObject> settings_gameObjects = new List<GameObject>();
+    //
     public ScriptableSettings settingsObject;
     public ScriptablePreferences preferencesObject;
+
+    private void SettingsOpen()
+    {
+        settings_parent.SetActive(true);
+
+        // Have to animate ALL the text elements
+
+    }
+
+
+    public void SettingsRevealExplainerText(string text)
+    {
+        // No animation! Just update the text.
+
+        settings_explainerText.gameObject.SetActive(true);
+
+        settings_explainerText.text = text;
+    }
+
+    public void SettingsHideExplainer()
+    {
+        settings_explainerText.gameObject.SetActive(false);
+
+        settings_explainerText.text = "";
+
+    }
 
     // ?
 
