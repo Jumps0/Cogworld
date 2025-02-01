@@ -110,6 +110,7 @@ public abstract class BotObject : ScriptableObject
     public int Id;
     public Sprite displaySprite;
     public Sprite asciiRep;
+    public Color idealColor = Color.white;
 
     [Header("Overview")]
     public BotClass _class;

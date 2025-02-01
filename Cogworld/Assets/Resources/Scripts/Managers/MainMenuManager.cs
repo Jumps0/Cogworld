@@ -27,6 +27,7 @@ public class MainMenuManager : MonoBehaviour
         spritefall_end = new Vector2(width * 0.9f, 0 - 100f);
 
         SetupMainButtons();
+        SetupSpritewheel();
     }
 
     private void Update()
@@ -589,6 +590,20 @@ public class MainMenuManager : MonoBehaviour
         Destroy(obj);
         spritefall_co = null;
     }
+    #endregion
+
+    #region (Ambient) Spritewheel
+    [Header("Spritewheel")]
+    [SerializeField] private Transform spritewheel_orbit;
+    [SerializeField] private int spritewheel_max = 10;
+
+    private void SetupSpritewheel()
+    {
+        // We need to spawn in and pick X amount of bots to spawn in
+
+
+    }
+
     #endregion
 
     public void SwitchGameScene()

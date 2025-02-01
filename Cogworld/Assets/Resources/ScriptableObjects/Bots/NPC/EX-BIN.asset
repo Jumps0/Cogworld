@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 17
   displaySprite: {fileID: 21300000, guid: 15eeb0e92d91da948ab5ca3b737cdb8c, type: 3}
-  asciiRep: {fileID: 0}
+  asciiRep: {fileID: 1167735630, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
+  idealColor: {r: 1, g: 0, b: 0.7490196, a: 1}
   _class: 62
   _size: 2
   _profile:
@@ -70,11 +71,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -104,11 +110,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -138,11 +149,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -172,11 +188,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -206,11 +227,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -240,11 +266,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -274,11 +305,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -308,11 +344,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -342,11 +383,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -376,11 +422,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -410,11 +461,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -444,11 +500,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -478,11 +539,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -512,11 +578,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -546,11 +617,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -580,11 +656,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -614,11 +695,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -648,11 +734,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -682,11 +773,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -716,11 +812,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -750,11 +851,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -784,11 +890,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -818,11 +929,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -852,11 +968,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1
@@ -886,11 +1007,16 @@ MonoBehaviour:
       isOverloaded: 0
       isDeteriorating: 0
       isRigged: 0
+      isFused: 0
+      isFaulty: 0
+      doneFaultyFailure: 0
       isBroken: 0
       corrupted: 0
+      doneCorruptionFeedback: 0
       disabledTimer: 0
       unstable: -1
       disposable: -1
+      chargable: -1
       siege: 0
       isDuplicate: 0
       duplicate_uuid: -1

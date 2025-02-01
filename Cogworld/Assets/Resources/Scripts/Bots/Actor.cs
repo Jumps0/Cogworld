@@ -84,7 +84,15 @@ public class Actor : Entity
 
     private void Awake()
     {
-        baseColor = _sprite.color;
+        if (botInfo)
+        {
+            baseColor = botInfo.idealColor;
+        }
+        else
+        {
+            baseColor = _sprite.color;
+        }
+        _sprite.color = baseColor;
 
         if (GameManager.inst)
         {

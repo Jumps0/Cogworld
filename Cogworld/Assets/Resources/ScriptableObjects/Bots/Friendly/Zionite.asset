@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 13
   displaySprite: {fileID: 21300000, guid: 10993c8bf10db5843834d2b49336363d, type: 3}
-  asciiRep: {fileID: 0}
+  asciiRep: {fileID: 43537944, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
+  idealColor: {r: 1, g: 1, b: 1, a: 1}
   _class: 84
   _size: 2
   _profile:
