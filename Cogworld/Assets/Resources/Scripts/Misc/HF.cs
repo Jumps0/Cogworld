@@ -6106,6 +6106,199 @@ public static class HF
 
         return canAttach;
     }
+
+    /// <summary>
+    /// Attempt to parse a settings option based on an ID. Will return all important data about that setting so it can be visualized.
+    /// </summary>
+    /// <param name="id">An int ID refering to a single settings option.</param>
+    /// <returns>?</returns>
+    public static (ScriptableSettingShort, string, List<ScriptableSettingShort>) ParseSettingsOption(int id)
+    {
+        // Not too pleased with this but unsure of how else to approach it.
+
+        ScriptableSettingShort value = new ScriptableSettingShort();
+        string display = "";
+        List<ScriptableSettingShort> options = new List<ScriptableSettingShort>();
+
+        ScriptableSettings settings = null;
+
+        if (MainMenuManager.inst)
+        {
+            settings = MainMenuManager.inst.settingsObject;
+        }
+        else if (GlobalSettings.inst)
+        {
+            settings = GlobalSettings.inst.settings;
+        }
+
+        if(settings == null)
+        {
+            Debug.LogError("ERROR: No settings object detected. Settings menu will break!");
+        }
+
+        // This is going to be very ugly.
+        switch (id)
+        {
+            case 0: // Modal Layout (NOT IMPLEMENTED)
+                value.enum_modal = settings.uiLayout;
+                display = "UI Layout (NOT IMPLEMENTED)";
+                options.Add(new ScriptableSettingShort(v_s: "Non-modal (smaller text/tiles, widest map area, all windows visibile)"));
+                options.Add(new ScriptableSettingShort(v_s: "Semi-modal (large text/tiles, medium map area, inventory eventually modal"));
+                options.Add(new ScriptableSettingShort(v_s: "Modal (large text/tiles, large map area, multiple windows hidden)"));
+                break;
+            case 1: // Font
+                value.value_string = settings.font;
+                display = "Font Set/Size (NOT IMPLEMENTED)";
+                options.Add(new ScriptableSettingShort(v_s: "18/TerminusBold"));
+                break;
+            case 2: // Fullscreen Mode
+                value.enum_fullscreen = settings.fullScreenMode;
+                display = "Fullscreen";
+                
+                break;
+            case 3: // Show Intro
+
+                break;
+            case 4: // Tutorial
+
+                break;
+            case 5: // Difficulty
+
+                break;
+            case 6: // Log Output
+
+                break;
+            case 7: // Volume - Master
+
+                break;
+            case 8: // Volume - Interface
+
+                break;
+            case 9: // Volume - Game
+
+                break;
+            case 10: // Volume - Props
+
+                break;
+            case 11: // Volume - Ambient
+
+                break;
+            case 12: // Tactical HUD
+
+                break;
+            case 13: // Combat Log Detail
+
+                break;
+            case 14: // Part Auto Sorting
+
+                break;
+            case 15: // Inventory Auto Sorting
+
+                break;
+            case 16: // Edge Panning Speed
+
+                break;
+            case 17: // Click Walls To Target
+
+                break;
+            case 18: // Label Supporter Items (NOT IMPLEMENTED)
+
+                break;
+            case 19: // Keyboard Mode
+
+                break;
+            case 20: // Colorblind Adjustment
+
+                break;
+            case 21: // Auto-activate Parts
+
+                break;
+            case 22: // Stop on Threats Only
+
+                break;
+            case 23: // Move Block Duration
+
+                break;
+            case 24: // Playername
+
+                break;
+            case 25: // Upload Scores (NOT IMPLEMENTED)
+
+                break;
+            case 26: // Seed
+
+                break;
+            case 27: // News Updates (NOT IMPLEMENTED)
+
+                break;
+            case 28: // Report Errors
+
+                break;
+            case 29: // Achievements Anywhere
+
+                break;
+            case 30: // ASCII Mode
+
+                break;
+            case 31: // Show Path
+
+                break;
+            case 32: // Explosion Predictions
+
+                break;
+            case 33: // Hit Chance Delay
+
+                break;
+            case 34: // Combat Indicators
+
+                break;
+            case 35: // Auto-label Threats
+
+                break;
+            case 36: // Auto-label Items
+
+                break;
+            case 37: // Auto-label on Examine
+
+                break;
+            case 38: // Color Item Labels
+
+                break;
+            case 39: // Motion Trail Duration
+
+                break;
+            case 40: // Floor Gamma
+
+                break;
+            case 41: // FOV Handling
+
+                break;
+            case 42: // Corruption Glitches
+
+                break;
+            case 43: // Screenshake
+
+                break;
+            case 44: // Alert (Heat)
+
+                break;
+            case 45: // Alert (Core)
+
+                break;
+            case 46: // Alert (Energy)
+
+                break;
+            case 47: // Alert (Matter)
+
+                break;
+            case 48: // Alert Popups
+
+                break;
+        }
+
+
+        return (value, display, options);
+    }
     #endregion
 
     #region Spotting

@@ -13,10 +13,14 @@ public class MMButtonSettings : MonoBehaviour
     [Header("References")]
     [SerializeField] private Image image_backer;
     [SerializeField] private TextMeshProUGUI text_main;
+    [SerializeField] private TextMeshProUGUI text_keybind;
+    [SerializeField] private TextMeshProUGUI text_rightbracket;
     [SerializeField] private TextMeshProUGUI text_setting;
 
     [Header("Values")]
     public char character;
+    public bool isGrayedOut = false; // TODO: How to determine this?
+    public string explainer = "";
 
     [Header("Colors")]
     [SerializeField] private Color color_main;
@@ -24,7 +28,7 @@ public class MMButtonSettings : MonoBehaviour
     [SerializeField] private Color color_bright;
     [SerializeField] private Color color_gray;
 
-    public void Setup(string display, char character)
+    public void Setup(string main, string setting, char character)
     {
         this.character = character;
 
@@ -33,9 +37,9 @@ public class MMButtonSettings : MonoBehaviour
         //        ^ scramble text animation from black
         //                         ^  black to light green OR gray depending on the setting
 
-        //text_number.text = $"[<color=#00CC00>{myNumber}</color>]";
-
-        text_main.text = display;
+        text_keybind.text = $"{this.character} - [";
+        text_main.text = main;
+        text_setting.text = setting;
 
         // Play the reveal animation
         StartCoroutine(RevealAnimation());
@@ -43,57 +47,43 @@ public class MMButtonSettings : MonoBehaviour
 
     private IEnumerator RevealAnimation()
     {
-        /*
-        float delay = 0.1f;
+        // Heres how this animation works:
+        // ? - [ and ] do nothing (they start as they are)
+        text_keybind.color = color_main;
+        text_rightbracket.color = color_main;
 
-        Color usedColor = color_bright;
+        // The actual settings option starts black, and goes through the scramble animation
+        text_main.color = color_bright;
+        List<string> strings = HF.RandomHighlightStringAnimation(text_main.text, color_main);
+        // Animate the strings via our delay trick
+        float delay = 0f;
+        float perDelay = 0.25f / (text_main.text.Length);
 
-        float headerValue = 0.25f;
+        foreach (string s in strings)
+        {
+            StartCoroutine(HF.DelayedSetText(text_main, s, delay += perDelay));
+        }
 
-        image_back1.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-        image_back2.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        // and lastly, the actual option just goes from Black -> its set color
+        Color start = Color.black, end = color_bright;
 
-        yield return new WaitForSeconds(delay);
+        if (isGrayedOut)
+            end = color_gray;
 
-        headerValue = 0.75f;
+        float elapsedTime = 0f;
+        float duration = 0.45f;
 
-        image_back1.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-        image_back2.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        text_setting.color = start;
 
-        yield return new WaitForSeconds(delay);
+        while (elapsedTime < duration)
+        {
+            text_setting.color = Color.Lerp(start, end, elapsedTime / duration);
 
-        headerValue = 1f;
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
 
-        image_back1.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-        image_back2.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-
-        yield return new WaitForSeconds(delay);
-
-        headerValue = 0.75f;
-
-        image_back1.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-        image_back2.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-
-        yield return new WaitForSeconds(delay);
-
-        headerValue = 0.25f;
-
-        image_back1.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-        image_back2.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-
-        yield return new WaitForSeconds(delay);
-
-        headerValue = 0f;
-
-        image_back1.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-        image_back2.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-
-        yield return null;
-
-        image_back1.color = Color.black;
-        image_back2.color = Color.black;
-        */
-        yield return null;
+        text_setting.color = end;
     }
 
     #region Hover
@@ -108,6 +98,8 @@ public class MMButtonSettings : MonoBehaviour
 
         // Play the hover UI sound
         MainMenuManager.inst.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["HOVER"], 0.7f); // UI - HOVER
+
+        MainMenuManager.inst.SettingsRevealExplainerText(explainer); // Update below explainer
     }
 
     public void HoverEnd()
@@ -117,6 +109,7 @@ public class MMButtonSettings : MonoBehaviour
             StopCoroutine(hover_co);
         }
         hover_co = StartCoroutine(HoverAnimation(false));
+        MainMenuManager.inst.SettingsHideExplainer();
     }
 
     private IEnumerator HoverAnimation(bool fadeIn)
@@ -150,6 +143,7 @@ public class MMButtonSettings : MonoBehaviour
     #endregion
 
     #region Selection
+    // -- THIS PROBABLY NEEDS TO BE REDONE
     public bool selected = false;
 
     public void Click()
@@ -210,6 +204,23 @@ public class MMButtonSettings : MonoBehaviour
         text_main.color = end;
     }
 
+    #endregion
+
+    #region Detail Window
+    [Header("Detail Window")]
+    [SerializeField] private GameObject detail_main;
+    [SerializeField] private Image detail_borders;
+    [SerializeField] private GameObject detail_area;
+
+    public void DetailOpen()
+    {
+
+    }
+
+    public void DetailClose()
+    {
+
+    }
     #endregion
 
 }

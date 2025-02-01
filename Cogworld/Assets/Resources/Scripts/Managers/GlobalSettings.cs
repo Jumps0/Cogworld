@@ -21,6 +21,10 @@ public class GlobalSettings : MonoBehaviour
 #endif
     }
 
+    [Header("Data Objects")]
+    public ScriptableSettings settings;
+    public ScriptablePreferences preferences;
+
     #region Defaults
     [Header("Defaults")]
         [Header("Player")]

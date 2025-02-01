@@ -9,7 +9,7 @@ using UnityEngine;
 public class ScriptableSettings : ScriptableObject
 {
     [Header("General")]
-    //public ModalUILayout uiLayout = ModalUILayout.NonModal; // Modal & Non-modal layouts are probably never happening. Here for posterity
+    public ModalUILayout uiLayout = ModalUILayout.NonModal; // Modal & Non-modal layouts are probably never happening. Here for posterity
     public string font = "TerminusBold"; // Would require a painful refactor of fonts since currently everything relys on it being one font. Here for posterity
     public FullScreenMode fullScreenMode = FullScreenMode.FullScreenWindow;
     public bool showIntro = false;
@@ -38,7 +38,7 @@ public class ScriptableSettings : ScriptableObject
     [Range(0, 20)] // 0, 5, 10, 15, 20
     public int edgePanningSpeed = 0;
     public bool clickWallsToTarget = false;
-    //public bool labelSupporterItems = false; // No idea how I would implement this. Here for posterity
+    public bool labelSupporterItems = false; // No idea how I would implement this. Here for posterity
     public bool keyBoardMode = false;
     public bool colorblindAdjustment = false;
 
@@ -50,11 +50,11 @@ public class ScriptableSettings : ScriptableObject
 
     [Header("Player")]
     public string playerName = "Player";
-    //public bool uploadScores = false; // Probably will never happen. Here for posterity
+    public bool uploadScores = false; // Probably will never happen. Here for posterity
     [Tooltip("0 = Random")]
     public int seed = 0;
-    //public bool newsUpdates = false; // Probably will never happen. Here for posterity
-    //public bool reportErrors = false; // Probably will never happen. Here for posterity
+    public bool newsUpdates = false; // Probably will never happen. Here for posterity
+    public bool reportErrors = false; // Probably will never happen. Here for posterity
     public bool achievementsAnywhere = true;
 
     [Header("Visualization")]
@@ -86,6 +86,37 @@ public class ScriptableSettings : ScriptableObject
     [Range(10, 100)] // 10, 20, 30, 40, 50, 60, 70, 80, 90, 100
     public float alert_matter = 0.1f;
     public bool alertPopups = true;
+}
+
+[System.Serializable]
+public class ScriptableSettingShort
+{
+    // Not too pleased with this but unsure of how else to approach it.
+
+    [Header("Basic")]
+    public int? value_int = null;
+    public float? value_float = null;
+    public bool? value_bool = null;
+    public string value_string = null;
+
+    [Header("Enums")]
+    public ModalUILayout? enum_modal = null;
+    public Difficulty? enum_difficulty = null;
+    public FOVHandling? enum_fov = null;
+    public FullScreenMode? enum_fullscreen = null;
+
+    public ScriptableSettingShort(int? v_i = null, float? v_f = null, bool? v_b = null, string v_s = null, ModalUILayout? e_m = null, Difficulty? e_d = null, FOVHandling? e_fov = null, FullScreenMode? e_fs = null)
+    {
+        this.value_int = v_i;
+        this.value_float = v_f;
+        this.value_bool = v_b;
+        this.value_string = v_s;
+
+        this.enum_modal = e_m;
+        this.enum_difficulty = e_d;
+        this.enum_fov = e_fov;
+        this.enum_fullscreen = e_fs;
+    }
 }
 
 [System.Serializable]
