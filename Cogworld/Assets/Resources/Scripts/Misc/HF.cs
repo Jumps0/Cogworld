@@ -6111,14 +6111,16 @@ public static class HF
     /// Attempt to parse a settings option based on an ID. Will return all important data about that setting so it can be visualized.
     /// </summary>
     /// <param name="id">An int ID refering to a single settings option.</param>
-    /// <returns>?</returns>
-    public static (ScriptableSettingShort, string, List<ScriptableSettingShort>) ParseSettingsOption(int id)
+    /// <returns>Currently active setting (SSShort), Name of Setting (string), Bottom display text (string), List<(string, SSShort) of options></returns>
+    public static (ScriptableSettingShort, string, string, List<(string, ScriptableSettingShort)>) ParseSettingsOption(int id)
     {
         // Not too pleased with this but unsure of how else to approach it.
 
         ScriptableSettingShort value = new ScriptableSettingShort();
         string display = "";
-        List<ScriptableSettingShort> options = new List<ScriptableSettingShort>();
+        string bottomText = "";
+        // (String to display on the box, what that option will change)
+        List<(string, ScriptableSettingShort)> options = new List<(string, ScriptableSettingShort)>();
 
         ScriptableSettings settings = null;
 
@@ -6142,162 +6144,482 @@ public static class HF
             case 0: // Modal Layout (NOT IMPLEMENTED)
                 value.enum_modal = settings.uiLayout;
                 display = "UI Layout (NOT IMPLEMENTED)";
-                options.Add(new ScriptableSettingShort(v_s: "Non-modal (smaller text/tiles, widest map area, all windows visibile)"));
-                options.Add(new ScriptableSettingShort(v_s: "Semi-modal (large text/tiles, medium map area, inventory eventually modal"));
-                options.Add(new ScriptableSettingShort(v_s: "Modal (large text/tiles, large map area, multiple windows hidden)"));
+                options.Add(("Non-modal (smaller text/tiles, widest map area, all windows visibile)", new ScriptableSettingShort(e_m: ModalUILayout.NonModal)));
+                options.Add(("Semi-modal (large text/tiles, medium map area, inventory eventually modal", new ScriptableSettingShort(e_m: ModalUILayout.SemiModal)));
+                options.Add(("Modal (large text/tiles, large map area, multiple windows hidden)", new ScriptableSettingShort(e_m: ModalUILayout.Modal)));
+                bottomText = "General UI layout, to adjust the balance between easy access to info vs text/tile size. Cogmind was originally design for the Full layout," +
+                    " but as that arrangement is only suitable for players with physically large displays, other options allow one to hide info in modal windows in exchange " +
+                    "for increased text size. Changing this requires manual restart to take effect.";
                 break;
             case 1: // Font
                 value.value_string = settings.font;
                 display = "Font Set/Size (NOT IMPLEMENTED)";
-                options.Add(new ScriptableSettingShort(v_s: "18/TerminusBold"));
+                options.Add(("18/TerminusBold", new ScriptableSettingShort(v_s: "18/TerminusBold")));
+                bottomText = "Current font set, which indirectly determines the default dimensions of the window/interface. (Note: The smallest size, 10, does not support " +
+                    "tilesets and is therefore only available in ASCII mode. Also in modal UI layouts, the minimum size is 14.)";
                 break;
             case 2: // Fullscreen Mode
                 value.enum_fullscreen = settings.fullScreenMode;
                 display = "Fullscreen";
-                
+                options.Add(("Borderless Fullscreen", new ScriptableSettingShort(e_fs: FullScreenMode.ExclusiveFullScreen)));
+                options.Add(("True Fullscreen", new ScriptableSettingShort(e_fs: FullScreenMode.FullScreenWindow)));
+                options.Add(("Windowed", new ScriptableSettingShort(e_fs: FullScreenMode.Windowed)));
+                bottomText = "Deactivate fullscreen mode to play in a window. In windowed mode you may want to select a smaller font, or reduce the map size as desired " +
+                    "(50x50 map recommended, though with the game closed /user/system.cfg can be edited to adjust the map size). " +
+                    "Use borderless fullscreen mode for better multimonitor support.";
                 break;
             case 3: // Show Intro
-
+                value.value_bool = settings.showIntro;
+                display = "Show Intro";
+                options.Add(("On", new ScriptableSettingShort(v_b:true)));
+                options.Add(("Off", new ScriptableSettingShort(v_b:false)));
+                bottomText = "Shows the intro before starting a new game.";
                 break;
             case 4: // Tutorial
-
+                value.value_bool = settings.tutorial;
+                display = "Show Intro";
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                bottomText = "Shows contextual tutorial messages in the log window. Each message is only shown once, but toggling this off and on again resets all message " +
+                    "records, in addition to causing the next three runs to start in the tutorial map layout.";
                 break;
             case 5: // Difficulty
-
+                value.enum_difficulty = settings.difficulty;
+                display = "Difficulty";
+                options.Add(("Explorer", new ScriptableSettingShort(e_d:Difficulty.Explorer)));
+                options.Add(("Adventurer", new ScriptableSettingShort(e_d:Difficulty.Adventurer)));
+                options.Add(("Rogue", new ScriptableSettingShort(e_d:Difficulty.Rogue)));
+                bottomText = "Explorer is relatively easy, Adventurer is fairly challenging, and Rogue is extremely hard (but is the mode Cogmind was designed for). " +
+                    "See the manual for details about each mode. Changes to this setting will not take effect until starting a new run.";
                 break;
             case 6: // Log Output
-
+                value.value_bool = settings.logOutput;
+                display = "Log Output";
+                options.Add(("None", new ScriptableSettingShort(v_b:false)));
+                options.Add(("Full", new ScriptableSettingShort(v_b:true)));
+                bottomText = "Format to which the message log is output when the game ends (has no impact on the stat summary output). Log contents are written to " +
+                    "the scores subdirectory. This setting also applies to mid-run stat dumps.";
                 break;
             case 7: // Volume - Master
-
+                value.value_float = settings.volume_master;
+                display = "Master Volume";
+                options.Add(("0%", new ScriptableSettingShort(v_f:0.0f)));
+                options.Add(("10%", new ScriptableSettingShort(v_f: 0.1f)));
+                options.Add(("20%", new ScriptableSettingShort(v_f: 0.2f)));
+                options.Add(("30%", new ScriptableSettingShort(v_f: 0.3f)));
+                options.Add(("40%", new ScriptableSettingShort(v_f: 0.4f)));
+                options.Add(("50%", new ScriptableSettingShort(v_f: 0.5f)));
+                options.Add(("60%", new ScriptableSettingShort(v_f: 0.6f)));
+                options.Add(("70%", new ScriptableSettingShort(v_f: 0.7f)));
+                options.Add(("80%", new ScriptableSettingShort(v_f: 0.8f)));
+                options.Add(("90%", new ScriptableSettingShort(v_f: 0.9f)));
+                options.Add(("100%", new ScriptableSettingShort(v_f: 1.0f)));
+                bottomText = "Overall volume level.";
                 break;
             case 8: // Volume - Interface
-
+                value.value_float = settings.volume_interface;
+                display = "  Interface";
+                options.Add(("0%", new ScriptableSettingShort(v_f: 0.0f)));
+                options.Add(("10%", new ScriptableSettingShort(v_f: 0.1f)));
+                options.Add(("20%", new ScriptableSettingShort(v_f: 0.2f)));
+                options.Add(("30%", new ScriptableSettingShort(v_f: 0.3f)));
+                options.Add(("40%", new ScriptableSettingShort(v_f: 0.4f)));
+                options.Add(("50%", new ScriptableSettingShort(v_f: 0.5f)));
+                options.Add(("60%", new ScriptableSettingShort(v_f: 0.6f)));
+                options.Add(("70%", new ScriptableSettingShort(v_f: 0.7f)));
+                options.Add(("80%", new ScriptableSettingShort(v_f: 0.8f)));
+                options.Add(("90%", new ScriptableSettingShort(v_f: 0.9f)));
+                options.Add(("100%", new ScriptableSettingShort(v_f: 1.0f)));
+                bottomText = "Relative volume of interface sounds.";
                 break;
             case 9: // Volume - Game
-
+                value.value_float = settings.volume_game;
+                display = "  Game";
+                options.Add(("0%", new ScriptableSettingShort(v_f: 0.0f)));
+                options.Add(("10%", new ScriptableSettingShort(v_f: 0.1f)));
+                options.Add(("20%", new ScriptableSettingShort(v_f: 0.2f)));
+                options.Add(("30%", new ScriptableSettingShort(v_f: 0.3f)));
+                options.Add(("40%", new ScriptableSettingShort(v_f: 0.4f)));
+                options.Add(("50%", new ScriptableSettingShort(v_f: 0.5f)));
+                options.Add(("60%", new ScriptableSettingShort(v_f: 0.6f)));
+                options.Add(("70%", new ScriptableSettingShort(v_f: 0.7f)));
+                options.Add(("80%", new ScriptableSettingShort(v_f: 0.8f)));
+                options.Add(("90%", new ScriptableSettingShort(v_f: 0.9f)));
+                options.Add(("100%", new ScriptableSettingShort(v_f: 1.0f)));
+                bottomText = "Relative volume of game sounds (weapons, robots, etc.).";
                 break;
             case 10: // Volume - Props
-
+                value.value_float = settings.volume_props;
+                display = "  Props";
+                options.Add(("0%", new ScriptableSettingShort(v_f: 0.0f)));
+                options.Add(("10%", new ScriptableSettingShort(v_f: 0.1f)));
+                options.Add(("20%", new ScriptableSettingShort(v_f: 0.2f)));
+                options.Add(("30%", new ScriptableSettingShort(v_f: 0.3f)));
+                options.Add(("40%", new ScriptableSettingShort(v_f: 0.4f)));
+                options.Add(("50%", new ScriptableSettingShort(v_f: 0.5f)));
+                options.Add(("60%", new ScriptableSettingShort(v_f: 0.6f)));
+                options.Add(("70%", new ScriptableSettingShort(v_f: 0.7f)));
+                options.Add(("80%", new ScriptableSettingShort(v_f: 0.8f)));
+                options.Add(("90%", new ScriptableSettingShort(v_f: 0.9f)));
+                options.Add(("100%", new ScriptableSettingShort(v_f: 1.0f)));
+                bottomText = "Relative volume of environment objects like machinens.";
                 break;
             case 11: // Volume - Ambient
-
+                value.value_float = settings.volume_ambient;
+                display = "  Ambient";
+                options.Add(("0%", new ScriptableSettingShort(v_f: 0.0f)));
+                options.Add(("10%", new ScriptableSettingShort(v_f: 0.1f)));
+                options.Add(("20%", new ScriptableSettingShort(v_f: 0.2f)));
+                options.Add(("30%", new ScriptableSettingShort(v_f: 0.3f)));
+                options.Add(("40%", new ScriptableSettingShort(v_f: 0.4f)));
+                options.Add(("50%", new ScriptableSettingShort(v_f: 0.5f)));
+                options.Add(("60%", new ScriptableSettingShort(v_f: 0.6f)));
+                options.Add(("70%", new ScriptableSettingShort(v_f: 0.7f)));
+                options.Add(("80%", new ScriptableSettingShort(v_f: 0.8f)));
+                options.Add(("90%", new ScriptableSettingShort(v_f: 0.9f)));
+                options.Add(("100%", new ScriptableSettingShort(v_f: 1.0f)));
+                bottomText = "Relative volume of mapwide ambience.";
                 break;
-            case 12: // Tactical HUD
-
+            case 12: // Audio Log
+                value.value_bool = settings.audioLog;
+                display = "Audio Log";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "Meant primarily as an accessibility feature akin to closed captions, this log lists sound effects at the top-right corner of the map view, allowing anyone " +
+                    "who keeps their volume low or muted to be able to retain access to important audio knowledge. See the manual's Audio Log section for more information.";
                 break;
-            case 13: // Combat Log Detail
-
+            case 13: // Tactical HUD
+                value.value_bool = settings.tacticalHud;
+                display = "Tactical HUD";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "HUD information is more detailed in tactical mode. Speed-related variables are shown in real time unit costs, energy and heat change predictions shown " +
+                    "for both stationary (per turn) and mobile (per move) circumstances (latter suffers short-term innacuracies due to averaging), items display rating as part of their " +
+                    "respective map labels, and more. For advanced players.";
                 break;
-            case 14: // Part Auto Sorting
-
+            case 14: // Combat Log Detail
+                value.value_bool = settings.combatLogDetail;
+                display = "Combat Log Detail";
+                options.Add(("High", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Max", new ScriptableSettingShort(v_b: true)));
+                bottomText = "Level of detail shown in the combat log. There are numerous related features available depending on your layout and detail settings. See the manual under Advanced" +
+                    " UI > Combat Log Window for these options.";
                 break;
-            case 15: // Inventory Auto Sorting
-
+            case 15: // Part Auto Sorting
+                value.value_bool = settings.partAutoSorting;
+                display = "Part Autosorting";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "Automatically sorts parts once moving again after changes to loadout. (This same effect can be handled manually via the ':' key.)";
                 break;
-            case 16: // Edge Panning Speed
-
+            case 16: // Inventory Auto Sorting
+                value.value_bool = settings.inventoryAutoSorting;
+                display = "Inventory Autosorting";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "Automatically sort inventory items by type once moving again after changes to inventory. (This same effect can be handled manually via the 't' key.)";
                 break;
-            case 17: // Click Walls To Target
-
+            case 17: // Edge Panning Speed
+                value.value_int = settings.edgePanningSpeed;
+                display = "Edge Panning Speed";
+                options.Add(("0", new ScriptableSettingShort(v_i: 0)));
+                options.Add(("5", new ScriptableSettingShort(v_i: 5)));
+                options.Add(("10", new ScriptableSettingShort(v_i: 10)));
+                options.Add(("15", new ScriptableSettingShort(v_i: 15)));
+                options.Add(("20", new ScriptableSettingShort(v_i: 20)));
+                bottomText = "Map panning speed when cursor is at the edge of the screen, measured in milliseconds/cell (therefore high numbers are slower). Set to 0 to " +
+                    "deactivate. Only campatible with True Fullscreen mode.";
                 break;
-            case 18: // Label Supporter Items (NOT IMPLEMENTED)
-
+            case 18: // Click Walls To Target
+                value.value_bool = settings.clickWallsToTarget;
+                display = "Click Walls to Target";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "Clicking on a wall currently in view enter targeting mode (no effect in Keyboard Mode).";
                 break;
-            case 19: // Keyboard Mode
-
+            case 19: // Label Supporter Items (NOT IMPLEMENTED)
+                value.value_bool = settings.labelSupporterItems;
+                display = "Label Supporter Items";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "Displays alpha supporter item attributions below the item info, and also whether you've attached that item to add it to your art gallery. Even without " +
+                    "this option on, labels for items not previously collected are marked with a '!' following the name.";
                 break;
-            case 20: // Colorblind Adjustment
-
+            case 20: // Keyboard Mode
+                value.value_bool = settings.keyBoardMode;
+                display = "Keyboard Mode";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "Hides the cursor and enables keyboard-controlled map look functionality. For hardcore keyboard-only players (playing this way is FAST). Note that in " +
+                    "Keyboard Mode, context help in the status/data windows is still avaiable via up/down arrows. Pressing F2 while on the main interface also swaps in and out of this mode for conveniece.";
                 break;
-            case 21: // Auto-activate Parts
-
+            case 21: // Colorblind Adjustment
+                value.value_bool = settings.colorblindAdjustment;
+                display = "Colorblind Adjustment";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "Makes color-based adjustments to the interface that may help some players. Neutral 0b10 bots show as light gray instead of green, most orange UI colors instead " +
+                    "appear azure blue, and most green is converted to light gray. Fully applying this option requires a manual restart. See the manual's Accessibility section for more info.";
                 break;
-            case 22: // Stop on Threats Only
-
+            case 22: // Auto-activate Parts
+                value.value_bool = settings.autoActivateParts;
+                display = "Auto-activate Parts";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "Automatically activates parts as they are attached (when possible). This option can be toggled in realtime with Ctrl-F10 if you need to temporarily change it for a specific action.";
                 break;
-            case 23: // Move Block Duration
-
+            case 23: // Stop on Threats Only
+                value.value_bool = settings.stopOnThreatsOnly;
+                display = "Stop on Threats Only";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "Stop running/auto-athing only on spotting combat-capable enemies, rather than any hostile.";
                 break;
-            case 24: // Playername
-
+            case 24: // Move Block Duration
+                value.value_int = settings.moveBlockDuration;
+                display = "";
+                options.Add(("0", new ScriptableSettingShort(v_i: 0)));
+                options.Add(("500", new ScriptableSettingShort(v_i: 500)));
+                options.Add(("750", new ScriptableSettingShort(v_i: 750)));
+                options.Add(("1000", new ScriptableSettingShort(v_i: 1000)));
+                options.Add(("1500", new ScriptableSettingShort(v_i: 1500)));
+                bottomText = "Number of milliseconds for which to block all movement commands after seeing a new enemy (or only non-disarmed threats if Stop on THreats Only is on). " +
+                    "Enemies that move in and out of view will not trigger the block until they haven't been seen for at least 10 turns.";
                 break;
-            case 25: // Upload Scores (NOT IMPLEMENTED)
-
+            case 25: // Playername
+                value.value_string = settings.playerName;
+                display = "Name";
+                options.Add(("Player", new ScriptableSettingShort(v_s: "Player")));
+                // This is an input field
+                bottomText = "Player name under which score sheets are saved and the core is named.";
                 break;
-            case 26: // Seed
-
+            case 26: // Upload Scores (NOT IMPLEMENTED)
+                value.value_bool = settings.uploadScores;
+                display = "Upload Scores";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "THIS FUNCTION IS NOT IMPLEMENTED.";
                 break;
-            case 27: // News Updates (NOT IMPLEMENTED)
-
+            case 27: // Seed
+                value.value_string = settings.playerName;
+                display = "Seed";
+                options.Add(("Random", new ScriptableSettingShort(v_s: "Random")));
+                // This is an input field
+                bottomText = "Enter any combination of numbers and/or letters to \"seed\" the game, making it possible to replay the same world, or play the same one as friends using the same seed. " +
+                    "(Setting this only affects future games.) Seeds are not case sensistive. Enter \"0\" or clear the seed to make it random, ensuring a new world every game. Random or not, each run's " +
+                    "score sheet contains its seed.";
                 break;
-            case 28: // Report Errors
-
+            case 28: // News Updates (NOT IMPLEMENTED)
+                value.value_bool = settings.newsUpdates;
+                display = "News/Updates";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "THIS FUNCTION IS NOT IMPLEMENTED.";
                 break;
-            case 29: // Achievements Anywhere
-
+            case 29: // Report Errors (NOT IMPLEMENTED)
+                value.value_bool = settings.reportErrors;
+                display = "Report Errors";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "THIS FUNCTION IS NOT IMPLEMENTED.";
                 break;
-            case 30: // ASCII Mode
-
+            case 30: // Achievements Anywhere
+                value.value_bool = settings.achievementsAnywhere;
+                display = "Achievements Anywhere";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "Allow achievements to be earned even in challenge modes and special modes. Some are much easier in these modes compared to the regular game, even " +
+                    "unintentionally, so a portion of players prefer to block them except when playing normally. (Setting does not affect achievements that can only be earned during challenge modes.)";
                 break;
-            case 31: // Show Path
-
+            case 31: // ASCII Mode
+                value.value_bool = settings.asciiMode;
+                display = "ASCII Mode";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "Replaces all sprites with ASCII keyboard characters. (Note that at the smallest font size, 10, only ASCII is supported.)";
                 break;
-            case 32: // Explosion Predictions
-
+            case 32: // Show Path
+                value.value_bool = settings.showPath;
+                display = "Show Path";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "Shows the path to the cursor (no effect in Keyboard Mode). Note that even with this feature off, you can still hold Ctrl-Alt " +
+                    "to highlight the path manually when necessary, and while on those keys can be used to brighten the path.";
                 break;
-            case 33: // Hit Chance Delay
-
+            case 33: // Explosion Predictions
+                value.value_bool = settings.explosionPredictions;
+                display = "Explosion Predictions";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "Displays the expected explosion radius/radii when aiming a volley that contains one or more explosive weapons.";
                 break;
-            case 34: // Combat Indicators
-
+            case 34: // Hit Chance Delay
+                value.value_int = settings.hitChanceDelay;
+                display = "Hit Chance Delay";
+                options.Add(("0", new ScriptableSettingShort(v_i: 0)));
+                options.Add(("1", new ScriptableSettingShort(v_i: 1)));
+                options.Add(("500", new ScriptableSettingShort(v_i: 500)));
+                options.Add(("1500", new ScriptableSettingShort(v_i: 1500)));
+                options.Add(("2000", new ScriptableSettingShort(v_i: 2000)));
+                options.Add(("3000", new ScriptableSettingShort(v_i: 3000)));
+                bottomText = "Number of milliseconds after entering targeting mode when hit chances automatically appear next to threats in view." +
+                    " Setting to zero deactivates hit chance displays.";
                 break;
-            case 35: // Auto-label Threats
-
+            case 35: // Combat Indicators
+                value.value_bool = settings.combatIndicators;
+                display = "Combat Indicators";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "Temporarily displays combat effects directly over the map, including indicators for remaining integrity percentage " +
+                    "(on core hit), lost parts, and EM disruption.";
                 break;
-            case 36: // Auto-label Items
-
+            case 36: // Auto-label Threats
+                value.value_bool = settings.autoLabelThreats;
+                display = "Auto-label Threats";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "Automatically labels newly identified threats on the map. (Newly encountered friendlies are also labeled.)";
                 break;
-            case 37: // Auto-label on Examine
-
+            case 37: // Auto-label Items
+                value.value_bool = settings.autoLabelItems;
+                display = "Auto-label Items";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "Automatically labels newly discovered items on the map.";
                 break;
-            case 38: // Color Item Labels
-
+            case 38: // Auto-label on Examine
+                value.value_bool = settings.autoLabelOnExamine;
+                display = "Auto-label on Examine";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "Automatically labels any robot or part under the examine mode cursor (in Keyboard Mode), or under the mouse cursor when not in Keyboard mode " +
+                    "(note that with the mouse cursor, holding Ctrl-Shift has the same effect even while this option is disabled).";
                 break;
-            case 39: // Motion Trail Duration
-
+            case 39: // Color Item Labels
+                value.value_bool = settings.colorItemLabels;
+                display = "Color Item Labels";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "Color item labels by their respective integrity. Labels for items currently out of view appear slightly darker. Note that even while this option is " +
+                    "inactive, the gray scheme's colors are darkened for those items with less than 75% integrity remaining.";
                 break;
-            case 40: // Floor Gamma
-
+            case 40: // Motion Trail Duration
+                value.value_int = settings.motionTrailDuration;
+                display = "Motion Trail Duration";
+                options.Add(("0", new ScriptableSettingShort(v_i: 0)));
+                options.Add(("500", new ScriptableSettingShort(v_i: 500)));
+                options.Add(("1000", new ScriptableSettingShort(v_i: 1000)));
+                options.Add(("1500", new ScriptableSettingShort(v_i: 1500)));
+                options.Add(("2000", new ScriptableSettingShort(v_i: 2000)));
+                bottomText = "Number of milliseconds for which to highlight each space previously occupied by a robot as part of their motion trail. While active, hostile robots " +
+                    "spotting you are indicated by exclamation points rather than glowing backgrounds to avoid color confusion.";
                 break;
-            case 41: // FOV Handling
-
+            case 41: // Floor Gamma
+                value.value_int = settings.floorGamma;
+                display = "Motion Trail Duration";
+                options.Add(("+0", new ScriptableSettingShort(v_i: 0)));
+                options.Add(("+1", new ScriptableSettingShort(v_i: 1)));
+                options.Add(("+2", new ScriptableSettingShort(v_i: 2)));
+                options.Add(("+3", new ScriptableSettingShort(v_i: 3)));
+                bottomText = "On certain monitors, tileset users might benefit from an increase in floor brightness to better differentiate current FOV from explored areas. Each " +
+                    "level slightly increases the brightness of floor and debris tiles. Note that while this feature is meant for use in tileset mode, increasing it also " +
+                    "adjusts the ASCII floor color (which doesn't really need it).";
                 break;
-            case 42: // Corruption Glitches
-
+            case 42: // FOV Handling
+                value.enum_fov = settings.fovHandling;
+                display = "FOV Handling";
+                options.Add(("Fade In", new ScriptableSettingShort(e_fov: FOVHandling.FadeIn)));
+                options.Add(("Delay", new ScriptableSettingShort(e_fov: FOVHandling.Delay)));
+                options.Add(("Instant", new ScriptableSettingShort(e_fov: FOVHandling.Instant)));
+                bottomText = "Determines how newly seen areas are added to the FOV. \"Delay\" waits until the end of an action. \"Instant\" updates every frame if obstacles were destroyed, " +
+                    "and \"Fade In\" behaves like instant but with a short animation for the transition from unseen to seen.";
                 break;
-            case 43: // Screenshake
-
+            case 43: // Corruption Glitches
+                value.value_bool = settings.corruptionGlitches;
+                display = "Corruption Glitches";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "Enables intermittent audiovisual glitch effects while system corrupted (the frequency of glitches is based on corruption level). This is inteded for " +
+                    "immersion and as a reminder of corruption, but you can turn it off if it's annoying. Disabling it also disables the window border animation when taking EM damage.";
                 break;
-            case 44: // Alert (Heat)
-
+            case 44: // Screenshake
+                value.value_bool = settings.screenShake;
+                display = "Screenshake";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "Enables screenshake effect when core damaged, and window shake due to nearby explosions based on their force and proximity.";
                 break;
-            case 45: // Alert (Core)
-
+            case 45: // Alert (Heat)
+                value.value_int = settings.alert_heat;
+                display = "Heat";
+                options.Add(("100", new ScriptableSettingShort(v_i: 100)));
+                options.Add(("200", new ScriptableSettingShort(v_i: 200)));
+                options.Add(("300", new ScriptableSettingShort(v_i: 300)));
+                options.Add(("400", new ScriptableSettingShort(v_i: 400)));
+                options.Add(("500", new ScriptableSettingShort(v_i: 500)));
+                options.Add(("600", new ScriptableSettingShort(v_i: 600)));
+                options.Add(("700", new ScriptableSettingShort(v_i: 700)));
+                options.Add(("800", new ScriptableSettingShort(v_i: 800)));
+                options.Add(("900", new ScriptableSettingShort(v_i: 900)));
+                options.Add(("1000", new ScriptableSettingShort(v_i: 1000)));
+                bottomText = "Minimum amount of heat required to trigger alarm sound.";
                 break;
-            case 46: // Alert (Energy)
-
+            case 46: // Alert (Core)
+                value.value_float = settings.alert_core;
+                display = "Core";
+                options.Add(("10%", new ScriptableSettingShort(v_f: 0.1f)));
+                options.Add(("20%", new ScriptableSettingShort(v_f: 0.2f)));
+                options.Add(("30%", new ScriptableSettingShort(v_f: 0.3f)));
+                options.Add(("40%", new ScriptableSettingShort(v_f: 0.4f)));
+                options.Add(("50%", new ScriptableSettingShort(v_f: 0.5f)));
+                options.Add(("60%", new ScriptableSettingShort(v_f: 0.6f)));
+                options.Add(("70%", new ScriptableSettingShort(v_f: 0.7f)));
+                options.Add(("80%", new ScriptableSettingShort(v_f: 0.8f)));
+                options.Add(("90%", new ScriptableSettingShort(v_f: 0.9f)));
+                options.Add(("100%", new ScriptableSettingShort(v_f: 1.0f)));
+                bottomText = "If core integrity drops to or below this level an alarm sound is triggered.";
                 break;
-            case 47: // Alert (Matter)
-
+            case 47: // Alert (Energy)
+                value.value_float = settings.alert_energy;
+                display = "Energy";
+                options.Add(("10%", new ScriptableSettingShort(v_f: 0.1f)));
+                options.Add(("20%", new ScriptableSettingShort(v_f: 0.2f)));
+                options.Add(("30%", new ScriptableSettingShort(v_f: 0.3f)));
+                options.Add(("40%", new ScriptableSettingShort(v_f: 0.4f)));
+                options.Add(("50%", new ScriptableSettingShort(v_f: 0.5f)));
+                options.Add(("60%", new ScriptableSettingShort(v_f: 0.6f)));
+                options.Add(("70%", new ScriptableSettingShort(v_f: 0.7f)));
+                options.Add(("80%", new ScriptableSettingShort(v_f: 0.8f)));
+                options.Add(("90%", new ScriptableSettingShort(v_f: 0.9f)));
+                options.Add(("100%", new ScriptableSettingShort(v_f: 1.0f)));
+                bottomText = "If remaining energy drops to or below this level an alarm sound is triggered.";
                 break;
-            case 48: // Alert Popups
-
+            case 48: // Alert (Matter)
+                value.value_float = settings.alert_matter;
+                display = "Matter";
+                options.Add(("10%", new ScriptableSettingShort(v_f: 0.1f)));
+                options.Add(("20%", new ScriptableSettingShort(v_f: 0.2f)));
+                options.Add(("30%", new ScriptableSettingShort(v_f: 0.3f)));
+                options.Add(("40%", new ScriptableSettingShort(v_f: 0.4f)));
+                options.Add(("50%", new ScriptableSettingShort(v_f: 0.5f)));
+                options.Add(("60%", new ScriptableSettingShort(v_f: 0.6f)));
+                options.Add(("70%", new ScriptableSettingShort(v_f: 0.7f)));
+                options.Add(("80%", new ScriptableSettingShort(v_f: 0.8f)));
+                options.Add(("90%", new ScriptableSettingShort(v_f: 0.9f)));
+                options.Add(("100%", new ScriptableSettingShort(v_f: 1.0f)));
+                bottomText = "If remaining matter drops to or below this level an alarm sound is triggered.";
+                break;
+            case 49: // Alert Popups
+                value.value_bool = settings.alertPopups;
+                display = "Alert Popups";
+                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                bottomText = "Flashes on-map warnings and alerts for low core integrity, energy, and matter.";
                 break;
         }
 
 
-        return (value, display, options);
+        return (value, bottomText, display, options);
     }
     #endregion
 

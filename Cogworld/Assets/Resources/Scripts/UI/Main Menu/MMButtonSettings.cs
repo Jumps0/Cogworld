@@ -20,7 +20,10 @@ public class MMButtonSettings : MonoBehaviour
     [Header("Values")]
     public char character;
     public bool isGrayedOut = false; // TODO: How to determine this?
+    public ScriptableSettingShort currentSetting;
+    public string title = "";
     public string explainer = "";
+    public List<(string, ScriptableSettingShort)> options = new List<(string, ScriptableSettingShort)>();
 
     [Header("Colors")]
     [SerializeField] private Color color_main;
@@ -28,18 +31,19 @@ public class MMButtonSettings : MonoBehaviour
     [SerializeField] private Color color_bright;
     [SerializeField] private Color color_gray;
 
-    public void Setup(string main, string setting, char character)
+    public void Setup(int id)
     {
-        this.character = character;
+        character = MainMenuManager.inst.alphabet[id];
+
+        (currentSetting, title, explainer, options) = HF.ParseSettingsOption(id);
 
         // Text layout is:
         // ? - [Option]         Current Setting
         //        ^ scramble text animation from black
         //                         ^  black to light green OR gray depending on the setting
 
-        text_keybind.text = $"{this.character} - [";
-        text_main.text = main;
-        text_setting.text = setting;
+        //text_keybind.text = $"{this.character} - [";
+
 
         // Play the reveal animation
         StartCoroutine(RevealAnimation());

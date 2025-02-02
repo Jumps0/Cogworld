@@ -21,6 +21,8 @@ public class MainMenuManager : MonoBehaviour
 
     private void Start()
     {
+        alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+
         float width = Screen.width;
         float height = Screen.height;
 
@@ -512,6 +514,13 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private GameObject settings_parent;
     [SerializeField] private TextMeshProUGUI settings_explainerText;
     [SerializeField] private List<GameObject> settings_gameObjects = new List<GameObject>();
+    [SerializeField] private Transform settings_areaA;
+    [SerializeField] private Transform settings_areaB;
+    //[SerializeField] private Transform settings_areaC;
+    [SerializeField] private GameObject settings_prefab;
+    [SerializeField] private GameObject settings_line_prefab;
+    [SerializeField] private int settings_amountOf = 50; // Not that fluid. Update this value based on the number of settings that exist
+    public char[] alphabet;
     //
     public ScriptableSettings settingsObject;
     public ScriptablePreferences preferencesObject;
@@ -519,6 +528,26 @@ public class MainMenuManager : MonoBehaviour
     private void SettingsOpen()
     {
         settings_parent.SetActive(true);
+
+        // Create all the prefabs
+        for (int i = 0; i < settings_amountOf; i++)
+        {
+            Transform parent = null;
+            // Decide parent based on amount
+            if(i < 25)
+            {
+                parent = settings_areaA.transform;
+            }
+            else if(i > 25 && i < 51)
+            {
+                parent = settings_areaB.transform;
+            }
+            // add third if needed
+
+            GameObject newSetting = Instantiate(settings_prefab, Vector2.zero, Quaternion.identity, parent);
+        }
+
+        // (They will internally set up their own values based on they ID)
 
         // Have to animate ALL the text elements
 
@@ -542,8 +571,21 @@ public class MainMenuManager : MonoBehaviour
 
     }
 
-    // ?
+    /// <summary>
+    /// Applies all current settings from the SObject. More basic since not much actually changes in the main menu.
+    /// Full effect is in GlobalSettings.cs
+    /// </summary>
+    public void ApplySettingsSimple()
+    {
+        // Not much here to do since this is just the main menu.
+        // - FONT -
 
+        // - FULLSCREEN -
+
+        // - AUDIO (5) -
+        
+
+    }
     #endregion
 
     #region Keyboard Input Detection

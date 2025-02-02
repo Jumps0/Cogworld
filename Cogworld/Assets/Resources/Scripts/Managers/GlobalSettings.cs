@@ -21,9 +21,19 @@ public class GlobalSettings : MonoBehaviour
 #endif
     }
 
+    #region Settings
     [Header("Data Objects")]
     public ScriptableSettings settings;
     public ScriptablePreferences preferences;
+
+    /// <summary>
+    /// Applies all current settings from the SObject.
+    /// </summary>
+    public void ApplySettingsSimple()
+    {
+        // TODO
+
+    }
 
     #region Defaults
     [Header("Defaults")]
@@ -100,6 +110,7 @@ public class GlobalSettings : MonoBehaviour
     public bool useAdvMoveDisNumbers = true;
     [Tooltip("When a sound and alert should be played if the player exceeds a certain heat level.")]
     public int heatWarningLevel = 300;
+    #endregion
 
     #region DebugUI
     [Header("DebugUI")]

@@ -28,6 +28,7 @@ public class ScriptableSettings : ScriptableObject
     public float volume_props = 1f;
     [Range(0f, 1f)]
     public float volume_ambient = 1f;
+    public bool audioLog = false;
 
     [Header("Interface")]
     public bool tacticalHud = true;
