@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.TextCore.Text;
 
 /// <summary>
 /// Script containing logic for the SETTINGS buttons in the settings menu on the main menu screen.
@@ -19,7 +20,7 @@ public class MMButtonSettings : MonoBehaviour
 
     [Header("Values")]
     public char character;
-    public bool isGrayedOut = false; // TODO: How to determine this?
+    public bool isGrayedOut = false;
     public ScriptableSettingShort currentSetting;
     public string title = "";
     public string explainer = "";
@@ -42,8 +43,18 @@ public class MMButtonSettings : MonoBehaviour
         //        ^ scramble text animation from black
         //                         ^  black to light green OR gray depending on the setting
 
-        //text_keybind.text = $"{this.character} - [";
+        // If its a bool and it's false it should be gray
+        if(currentSetting.value_bool != null)
+        {
+            isGrayedOut = !(bool)currentSetting.value_bool;
+        }
 
+        text_keybind.text = $"{this.character} - [";
+        text_main.text = title;
+
+        MainMenuManager.inst.SettingsRevealExplainerText(explainer);
+
+        text_setting.text = ValueToString(currentSetting);
 
         // Play the reveal animation
         StartCoroutine(RevealAnimation());
@@ -227,4 +238,124 @@ public class MMButtonSettings : MonoBehaviour
     }
     #endregion
 
+    #region Misc
+
+    /// <summary>
+    /// Given a ScriptableSettingShort, parses whatever its value is into a string that can be displayed.
+    /// </summary>
+    /// <param name="s">A ScriptableSettingShort with a single non-null value.</param>
+    /// <returns>A string representing what that value should display.</returns>
+    private string ValueToString(ScriptableSettingShort s)
+    {
+        string ret = "";
+
+        if(s.value_bool != null)
+        {
+            if(s.value_bool == true)
+            {
+                ret = "On";
+            }
+            else
+            {
+                ret = "Off";
+            }
+        }
+        else if(s.value_int != null)
+        {
+            // No change
+            ret = s.value_int.ToString();
+        }
+        else if (s.value_float != null)
+        {
+            // A bit of parsing
+            float f = (float)(s.value_float * 100f);
+            int fi = (int)f;
+            ret = fi.ToString();
+
+        }
+        else if (s.value_string != null)
+        {
+            // No change
+            ret = s.value_string;
+        }
+        else if (s.enum_fov != null)
+        {
+            switch (s.enum_fov)
+            {
+                case FOVHandling.Delay:
+                    ret = "Delay";
+                    break;
+                case FOVHandling.Instant:
+                    ret = "Instant";
+                    break;
+                case FOVHandling.FadeIn:
+                    ret = "Fade In";
+                    break;
+                case null:
+                    break;
+                default:
+                    break;
+            }
+        }
+        else if (s.enum_difficulty != null)
+        {
+            switch (s.enum_difficulty)
+            {
+                case Difficulty.Explorer:
+                    ret = "Explorer";
+                    break;
+                case Difficulty.Adventurer:
+                    ret = "Adventurer";
+                    break;
+                case Difficulty.Rogue:
+                    ret = "Rogue";
+                    break;
+                case null:
+                    break;
+                default:
+                    break;
+            }
+        }
+        else if (s.enum_fullscreen != null)
+        {
+            switch (s.enum_fullscreen)
+            {
+                case FullScreenMode.ExclusiveFullScreen:
+                    ret = "Borderless Fullscreen";
+                    break;
+                case FullScreenMode.FullScreenWindow:
+                    ret = "True Fullscreen";
+                    break;
+                case FullScreenMode.MaximizedWindow:
+                    ret = "Windowed";
+                    break;
+                case FullScreenMode.Windowed:
+                    ret = "Windowed";
+                    break;
+                case null:
+                    break;
+            }
+        }
+        else if (s.enum_modal != null)
+        {
+            switch (s.enum_modal)
+            {
+                case ModalUILayout.NonModal:
+                    ret = "Non-modal";
+                    break;
+                case ModalUILayout.SemiModal:
+                    ret = "Semi-modal";
+                    break;
+                case ModalUILayout.Modal:
+                    ret = "Modal";
+                    break;
+                case null:
+                    break;
+            }
+        }
+
+        return ret;
+    }
+
+    #endregion
 }

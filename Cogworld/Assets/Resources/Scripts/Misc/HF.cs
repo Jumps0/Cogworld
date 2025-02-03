@@ -6377,7 +6377,7 @@ public static class HF
                 break;
             case 24: // Move Block Duration
                 value.value_int = settings.moveBlockDuration;
-                display = "";
+                display = "Move Block Duration";
                 options.Add(("0", new ScriptableSettingShort(v_i: 0)));
                 options.Add(("500", new ScriptableSettingShort(v_i: 500)));
                 options.Add(("750", new ScriptableSettingShort(v_i: 750)));
@@ -6619,7 +6619,7 @@ public static class HF
         }
 
 
-        return (value, bottomText, display, options);
+        return (value, display, bottomText, options);
     }
     #endregion
 

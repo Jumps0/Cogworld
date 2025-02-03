@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Image = UnityEngine.UI.Image;
 using static System.Net.Mime.MediaTypeNames;
+using System.Linq;
 
 
 public class MainMenuManager : MonoBehaviour
@@ -91,6 +92,7 @@ public class MainMenuManager : MonoBehaviour
     {
         this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["OPEN_1"], 0.7f); // UI - OPEN_1
 
+        SettingsClose();
         settings_parent.SetActive(false);
 
         switch (instruction)
@@ -516,7 +518,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private List<GameObject> settings_gameObjects = new List<GameObject>();
     [SerializeField] private Transform settings_areaA;
     [SerializeField] private Transform settings_areaB;
-    //[SerializeField] private Transform settings_areaC;
+    [SerializeField] private Transform settings_areaC;
     [SerializeField] private GameObject settings_prefab;
     [SerializeField] private GameObject settings_line_prefab;
     [SerializeField] private int settings_amountOf = 50; // Not that fluid. Update this value based on the number of settings that exist
@@ -525,7 +527,7 @@ public class MainMenuManager : MonoBehaviour
     public ScriptableSettings settingsObject;
     public ScriptablePreferences preferencesObject;
 
-    private void SettingsOpen()
+    public void SettingsOpen()
     {
         settings_parent.SetActive(true);
 
@@ -538,19 +540,34 @@ public class MainMenuManager : MonoBehaviour
             {
                 parent = settings_areaA.transform;
             }
-            else if(i > 25 && i < 51)
+            else if(i > 25 && i < 35)
             {
                 parent = settings_areaB.transform;
             }
-            // add third if needed
+            else if (i > 35 && i < 51)
+            {
+                parent = settings_areaB.transform;
+            }
 
+            // New object
             GameObject newSetting = Instantiate(settings_prefab, Vector2.zero, Quaternion.identity, parent);
+
+            // Set them up and animate them
+            newSetting.GetComponent<MMButtonSettings>().Setup(i);
+
+            // Save it
+            settings_gameObjects.Add(newSetting);
         }
+    }
 
-        // (They will internally set up their own values based on they ID)
-
-        // Have to animate ALL the text elements
-
+    public void SettingsClose()
+    {
+        // Clear all the objects
+        foreach (var GO in settings_gameObjects.ToList())
+        {
+            Destroy(GO);
+        }
+        settings_gameObjects.Clear();
     }
 
 
