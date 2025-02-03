@@ -7026,7 +7026,7 @@ MonoBehaviour:
   settings_areaB: {fileID: 1576074926}
   settings_areaC: {fileID: 272574664}
   settings_prefab: {fileID: 3308090358177970210, guid: 84282023846530e4697a6d20be62f920, type: 3}
-  settings_line_prefab: {fileID: 0}
+  settings_line_prefab: {fileID: 3308090358177970210, guid: 55390ef0d06ba1f4bbf5cd3f70a2d2df, type: 3}
   settings_amountOf: 50
   alphabet: 
   settingsObject: {fileID: 11400000, guid: d6d7956b90cc1594b8efcf2c17aea030, type: 2}

@@ -10,6 +10,7 @@ using UnityEngine.UI;
 using Image = UnityEngine.UI.Image;
 using static System.Net.Mime.MediaTypeNames;
 using System.Linq;
+using Mono.Unix.Native;
 
 
 public class MainMenuManager : MonoBehaviour
@@ -549,6 +550,38 @@ public class MainMenuManager : MonoBehaviour
                 parent = settings_areaC.transform;
             }
 
+            // Spawn in the headers at specific intervals
+            #region Headers
+            if (i == 0)
+            {
+                SettingsCreateHeader("General", parent);
+            }
+            else if (i == 6)
+            {
+                SettingsCreateHeader("Audio", parent);
+            }
+            else if (i == 12)
+            {
+                SettingsCreateHeader("Interface", parent);
+            }
+            else if (i == 21)
+            {
+                SettingsCreateHeader("Behavior", parent);
+            }
+            else if (i == 24)
+            {
+                SettingsCreateHeader("Player", parent);
+            }
+            else if (i == 30)
+            {
+                SettingsCreateHeader("Visualization", parent);
+            }
+            else if (i == 46)
+            {
+                SettingsCreateHeader("Alarms", parent);
+            }
+            #endregion
+
             // New object
             GameObject newSetting = Instantiate(settings_prefab, Vector2.zero, Quaternion.identity, parent);
 
@@ -558,6 +591,18 @@ public class MainMenuManager : MonoBehaviour
             // Save it
             settings_gameObjects.Add(newSetting);
         }
+    }
+
+    private void SettingsCreateHeader(string title, Transform parent)
+    {
+        // New object
+        GameObject newHeader = Instantiate(settings_line_prefab, Vector2.zero, Quaternion.identity, parent);
+
+        // Set them up and animate them
+        newHeader.GetComponent<MMHeaderSimple>().Setup(title);
+
+        // Save it
+        settings_gameObjects.Add(newHeader);
     }
 
     public void SettingsClose()

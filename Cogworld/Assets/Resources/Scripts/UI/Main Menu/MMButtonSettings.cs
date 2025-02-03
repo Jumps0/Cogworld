@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.TextCore.Text;
 using UnityEngine.InputSystem;
+using System.Linq;
 
 /// <summary>
 /// Script containing logic for the SETTINGS buttons in the settings menu on the main menu screen.
@@ -262,16 +263,75 @@ public class MMButtonSettings : MonoBehaviour
     [Header("Detail Window")]
     [SerializeField] private GameObject detail_main;
     [SerializeField] private Image detail_borders;
-    [SerializeField] private GameObject detail_area;
+    [SerializeField] private Image detail_headerBack;
+    [SerializeField] private TextMeshProUGUI detail_header;
+    [SerializeField] private Transform detail_area;
+    [SerializeField] private GameObject detail_prefab;
+    [SerializeField] private List<GameObject> detail_objects = new List<GameObject>();
+    private Coroutine detail_co = null;
 
     public void DetailOpen()
     {
+        detail_main.SetActive(true);
 
+        // Populate the menu with the options we need
+        foreach(var O in options)
+        {
+            string text = O.Item1;
+            ScriptableSettingShort setting = O.Item2;
+
+            GameObject newOption = Instantiate(detail_prefab, Vector2.zero, Quaternion.identity, detail_area);
+
+
+        }
+
+        // Opener animation
+        if(detail_co != null)
+        {
+            StopCoroutine(detail_co);
+        }
+        detail_co = StartCoroutine(DetailOpenAnimation());
+    }
+
+    private IEnumerator DetailOpenAnimation()
+    {
+        // We need to:
+        // 1. Animate the header (and its backer)
+        // 2. Animate the borders
+        // 3. Do the random revealing highlights for every option's text element
+
+        // TODO
+        yield return null;
     }
 
     public void DetailClose()
     {
+        if (detail_co != null)
+        {
+            StopCoroutine(detail_co);
+        }
+        detail_co = StartCoroutine(DetailCloseAnimation());
+    }
 
+    private IEnumerator DetailCloseAnimation()
+    {
+        // TODO
+
+        yield return null;
+
+
+
+
+
+        // Destroy all the objects
+        foreach (GameObject obj in detail_objects.ToList())
+        {
+            Destroy(obj);
+        }
+        detail_objects.Clear();
+
+        // Disable the box (no animation)
+        detail_main.SetActive(false);
     }
     #endregion
 
