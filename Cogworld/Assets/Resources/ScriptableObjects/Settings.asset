@@ -12,30 +12,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2eb4bbfc6ed5f7f45b1ce2f2633848c8, type: 3}
   m_Name: Settings
   m_EditorClassIdentifier: 
-  font: 
-  fullScreenMode: 1
+  uiLayout: 0
+  font: 18/Terminus
+  fullScreenMode: 0
   showIntro: 0
   tutorial: 0
   difficulty: 0
   logOutput: 0
-  volume_master: 1
+  volume_master: 0.7
   volume_interface: 1
   volume_game: 1
   volume_props: 1
   volume_ambient: 1
+  audioLog: 0
   tacticalHud: 1
   combatLogDetail: 0
   partAutoSorting: 1
   inventoryAutoSorting: 1
   edgePanningSpeed: 0
   clickWallsToTarget: 0
+  labelSupporterItems: 0
   keyBoardMode: 0
   colorblindAdjustment: 0
   autoActivateParts: 1
   stopOnThreatsOnly: 1
   moveBlockDuration: 750
   playerName: Player
+  uploadScores: 0
   seed: 0
+  newsUpdates: 0
+  reportErrors: 0
   achievementsAnywhere: 1
   asciiMode: 0
   showPath: 1
@@ -52,7 +58,7 @@ MonoBehaviour:
   corruptionGlitches: 1
   screenShake: 1
   alert_heat: 300
-  alert_core: 10
-  alert_energy: 10
-  alert_matter: 10
+  alert_core: 0.2
+  alert_energy: 0.2
+  alert_matter: 0.2
   alertPopups: 1

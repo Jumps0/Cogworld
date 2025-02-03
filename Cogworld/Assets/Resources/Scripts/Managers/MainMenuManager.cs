@@ -536,17 +536,17 @@ public class MainMenuManager : MonoBehaviour
         {
             Transform parent = null;
             // Decide parent based on amount
-            if(i < 25)
+            if(i < 22)
             {
                 parent = settings_areaA.transform;
             }
-            else if(i > 25 && i < 35)
+            else if(i >= 22 && i < 35)
             {
                 parent = settings_areaB.transform;
             }
-            else if (i > 35 && i < 51)
+            else if (i >= 35 && i < 51)
             {
-                parent = settings_areaB.transform;
+                parent = settings_areaC.transform;
             }
 
             // New object

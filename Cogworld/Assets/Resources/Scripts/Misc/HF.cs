@@ -6143,7 +6143,7 @@ public static class HF
         {
             case 0: // Modal Layout (NOT IMPLEMENTED)
                 value.enum_modal = settings.uiLayout;
-                display = "UI Layout (NOT IMPLEMENTED)";
+                display = "UI Layout (X!)";
                 options.Add(("Non-modal (smaller text/tiles, widest map area, all windows visibile)", new ScriptableSettingShort(e_m: ModalUILayout.NonModal)));
                 options.Add(("Semi-modal (large text/tiles, medium map area, inventory eventually modal", new ScriptableSettingShort(e_m: ModalUILayout.SemiModal)));
                 options.Add(("Modal (large text/tiles, large map area, multiple windows hidden)", new ScriptableSettingShort(e_m: ModalUILayout.Modal)));
@@ -6153,7 +6153,7 @@ public static class HF
                 break;
             case 1: // Font
                 value.value_string = settings.font;
-                display = "Font Set/Size (NOT IMPLEMENTED)";
+                display = "Font Set/Size (X!)";
                 options.Add(("18/TerminusBold", new ScriptableSettingShort(v_s: "18/TerminusBold")));
                 bottomText = "Current font set, which indirectly determines the default dimensions of the window/interface. (Note: The smallest size, 10, does not support " +
                     "tilesets and is therefore only available in ASCII mode. Also in modal UI layouts, the minimum size is 14.)";
@@ -6170,16 +6170,18 @@ public static class HF
                 break;
             case 3: // Show Intro
                 value.value_bool = settings.showIntro;
+                value.canBeGrayedOut = true;
                 display = "Show Intro";
                 options.Add(("On", new ScriptableSettingShort(v_b:true)));
-                options.Add(("Off", new ScriptableSettingShort(v_b:false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b:false, grayedOut:true)));
                 bottomText = "Shows the intro before starting a new game.";
                 break;
             case 4: // Tutorial
                 value.value_bool = settings.tutorial;
+                value.canBeGrayedOut = true;
                 display = "Show Intro";
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 bottomText = "Shows contextual tutorial messages in the log window. Each message is only shown once, but toggling this off and on again resets all message " +
                     "records, in addition to causing the next three runs to start in the tutorial map layout.";
                 break;
@@ -6282,16 +6284,18 @@ public static class HF
                 break;
             case 12: // Audio Log
                 value.value_bool = settings.audioLog;
+                value.canBeGrayedOut = true;
                 display = "Audio Log";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "Meant primarily as an accessibility feature akin to closed captions, this log lists sound effects at the top-right corner of the map view, allowing anyone " +
                     "who keeps their volume low or muted to be able to retain access to important audio knowledge. See the manual's Audio Log section for more information.";
                 break;
             case 13: // Tactical HUD
                 value.value_bool = settings.tacticalHud;
+                value.canBeGrayedOut = true;
                 display = "Tactical HUD";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "HUD information is more detailed in tactical mode. Speed-related variables are shown in real time unit costs, energy and heat change predictions shown " +
                     "for both stationary (per turn) and mobile (per move) circumstances (latter suffers short-term innacuracies due to averaging), items display rating as part of their " +
@@ -6307,22 +6311,25 @@ public static class HF
                 break;
             case 15: // Part Auto Sorting
                 value.value_bool = settings.partAutoSorting;
+                value.canBeGrayedOut = true;
                 display = "Part Autosorting";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "Automatically sorts parts once moving again after changes to loadout. (This same effect can be handled manually via the ':' key.)";
                 break;
             case 16: // Inventory Auto Sorting
                 value.value_bool = settings.inventoryAutoSorting;
+                value.canBeGrayedOut = true;
                 display = "Inventory Autosorting";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "Automatically sort inventory items by type once moving again after changes to inventory. (This same effect can be handled manually via the 't' key.)";
                 break;
             case 17: // Edge Panning Speed
                 value.value_int = settings.edgePanningSpeed;
+                value.canBeGrayedOut = true;
                 display = "Edge Panning Speed";
-                options.Add(("0", new ScriptableSettingShort(v_i: 0)));
+                options.Add(("0", new ScriptableSettingShort(v_i: 0, grayedOut: true)));
                 options.Add(("5", new ScriptableSettingShort(v_i: 5)));
                 options.Add(("10", new ScriptableSettingShort(v_i: 10)));
                 options.Add(("15", new ScriptableSettingShort(v_i: 15)));
@@ -6332,46 +6339,52 @@ public static class HF
                 break;
             case 18: // Click Walls To Target
                 value.value_bool = settings.clickWallsToTarget;
+                value.canBeGrayedOut = true;
                 display = "Click Walls to Target";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "Clicking on a wall currently in view enter targeting mode (no effect in Keyboard Mode).";
                 break;
             case 19: // Label Supporter Items (NOT IMPLEMENTED)
                 value.value_bool = settings.labelSupporterItems;
+                value.canBeGrayedOut = true;
                 display = "Label Supporter Items";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "Displays alpha supporter item attributions below the item info, and also whether you've attached that item to add it to your art gallery. Even without " +
                     "this option on, labels for items not previously collected are marked with a '!' following the name.";
                 break;
             case 20: // Keyboard Mode
                 value.value_bool = settings.keyBoardMode;
+                value.canBeGrayedOut = true;
                 display = "Keyboard Mode";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "Hides the cursor and enables keyboard-controlled map look functionality. For hardcore keyboard-only players (playing this way is FAST). Note that in " +
                     "Keyboard Mode, context help in the status/data windows is still avaiable via up/down arrows. Pressing F2 while on the main interface also swaps in and out of this mode for conveniece.";
                 break;
             case 21: // Colorblind Adjustment
                 value.value_bool = settings.colorblindAdjustment;
+                value.canBeGrayedOut = true;
                 display = "Colorblind Adjustment";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "Makes color-based adjustments to the interface that may help some players. Neutral 0b10 bots show as light gray instead of green, most orange UI colors instead " +
                     "appear azure blue, and most green is converted to light gray. Fully applying this option requires a manual restart. See the manual's Accessibility section for more info.";
                 break;
             case 22: // Auto-activate Parts
                 value.value_bool = settings.autoActivateParts;
+                value.canBeGrayedOut = true;
                 display = "Auto-activate Parts";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "Automatically activates parts as they are attached (when possible). This option can be toggled in realtime with Ctrl-F10 if you need to temporarily change it for a specific action.";
                 break;
             case 23: // Stop on Threats Only
                 value.value_bool = settings.stopOnThreatsOnly;
+                value.canBeGrayedOut = true;
                 display = "Stop on Threats Only";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "Stop running/auto-athing only on spotting combat-capable enemies, rather than any hostile.";
                 break;
@@ -6388,6 +6401,7 @@ public static class HF
                 break;
             case 25: // Playername
                 value.value_string = settings.playerName;
+                value.inputfield = true;
                 display = "Name";
                 options.Add(("Player", new ScriptableSettingShort(v_s: "Player")));
                 // This is an input field
@@ -6395,15 +6409,18 @@ public static class HF
                 break;
             case 26: // Upload Scores (NOT IMPLEMENTED)
                 value.value_bool = settings.uploadScores;
+                value.canBeGrayedOut = true;
                 display = "Upload Scores";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "THIS FUNCTION IS NOT IMPLEMENTED.";
                 break;
             case 27: // Seed
                 value.value_string = settings.playerName;
+                value.inputfield = true;
+                value.canBeGrayedOut = true;
                 display = "Seed";
-                options.Add(("Random", new ScriptableSettingShort(v_s: "Random")));
+                options.Add(("Random", new ScriptableSettingShort(v_s: "Random", grayedOut: true)));
                 // This is an input field
                 bottomText = "Enter any combination of numbers and/or letters to \"seed\" the game, making it possible to replay the same world, or play the same one as friends using the same seed. " +
                     "(Setting this only affects future games.) Seeds are not case sensistive. Enter \"0\" or clear the seed to make it random, ensuring a new world every game. Random or not, each run's " +
@@ -6411,45 +6428,51 @@ public static class HF
                 break;
             case 28: // News Updates (NOT IMPLEMENTED)
                 value.value_bool = settings.newsUpdates;
+                value.canBeGrayedOut = true;
                 display = "News/Updates";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "THIS FUNCTION IS NOT IMPLEMENTED.";
                 break;
             case 29: // Report Errors (NOT IMPLEMENTED)
                 value.value_bool = settings.reportErrors;
+                value.canBeGrayedOut = true;
                 display = "Report Errors";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "THIS FUNCTION IS NOT IMPLEMENTED.";
                 break;
             case 30: // Achievements Anywhere
                 value.value_bool = settings.achievementsAnywhere;
+                value.canBeGrayedOut = true;
                 display = "Achievements Anywhere";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "Allow achievements to be earned even in challenge modes and special modes. Some are much easier in these modes compared to the regular game, even " +
                     "unintentionally, so a portion of players prefer to block them except when playing normally. (Setting does not affect achievements that can only be earned during challenge modes.)";
                 break;
             case 31: // ASCII Mode
                 value.value_bool = settings.asciiMode;
+                value.canBeGrayedOut = true;
                 display = "ASCII Mode";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "Replaces all sprites with ASCII keyboard characters. (Note that at the smallest font size, 10, only ASCII is supported.)";
                 break;
             case 32: // Show Path
                 value.value_bool = settings.showPath;
+                value.canBeGrayedOut = true;
                 display = "Show Path";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "Shows the path to the cursor (no effect in Keyboard Mode). Note that even with this feature off, you can still hold Ctrl-Alt " +
                     "to highlight the path manually when necessary, and while on those keys can be used to brighten the path.";
                 break;
             case 33: // Explosion Predictions
                 value.value_bool = settings.explosionPredictions;
+                value.canBeGrayedOut = true;
                 display = "Explosion Predictions";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "Displays the expected explosion radius/radii when aiming a volley that contains one or more explosive weapons.";
                 break;
@@ -6467,38 +6490,43 @@ public static class HF
                 break;
             case 35: // Combat Indicators
                 value.value_bool = settings.combatIndicators;
+                value.canBeGrayedOut = true;
                 display = "Combat Indicators";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "Temporarily displays combat effects directly over the map, including indicators for remaining integrity percentage " +
                     "(on core hit), lost parts, and EM disruption.";
                 break;
             case 36: // Auto-label Threats
                 value.value_bool = settings.autoLabelThreats;
+                value.canBeGrayedOut = true;
                 display = "Auto-label Threats";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "Automatically labels newly identified threats on the map. (Newly encountered friendlies are also labeled.)";
                 break;
             case 37: // Auto-label Items
                 value.value_bool = settings.autoLabelItems;
+                value.canBeGrayedOut = true;
                 display = "Auto-label Items";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "Automatically labels newly discovered items on the map.";
                 break;
             case 38: // Auto-label on Examine
                 value.value_bool = settings.autoLabelOnExamine;
+                value.canBeGrayedOut = true;
                 display = "Auto-label on Examine";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "Automatically labels any robot or part under the examine mode cursor (in Keyboard Mode), or under the mouse cursor when not in Keyboard mode " +
                     "(note that with the mouse cursor, holding Ctrl-Shift has the same effect even while this option is disabled).";
                 break;
             case 39: // Color Item Labels
                 value.value_bool = settings.colorItemLabels;
+                value.canBeGrayedOut = true;
                 display = "Color Item Labels";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "Color item labels by their respective integrity. Labels for items currently out of view appear slightly darker. Note that even while this option is " +
                     "inactive, the gray scheme's colors are darkened for those items with less than 75% integrity remaining.";
@@ -6516,8 +6544,9 @@ public static class HF
                 break;
             case 41: // Floor Gamma
                 value.value_int = settings.floorGamma;
-                display = "Motion Trail Duration";
-                options.Add(("+0", new ScriptableSettingShort(v_i: 0)));
+                value.canBeGrayedOut = true;
+                display = "Floor Gamma";
+                options.Add(("+0", new ScriptableSettingShort(v_i: 0, grayedOut: true)));
                 options.Add(("+1", new ScriptableSettingShort(v_i: 1)));
                 options.Add(("+2", new ScriptableSettingShort(v_i: 2)));
                 options.Add(("+3", new ScriptableSettingShort(v_i: 3)));
@@ -6536,16 +6565,18 @@ public static class HF
                 break;
             case 43: // Corruption Glitches
                 value.value_bool = settings.corruptionGlitches;
+                value.canBeGrayedOut = true;
                 display = "Corruption Glitches";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "Enables intermittent audiovisual glitch effects while system corrupted (the frequency of glitches is based on corruption level). This is inteded for " +
                     "immersion and as a reminder of corruption, but you can turn it off if it's annoying. Disabling it also disables the window border animation when taking EM damage.";
                 break;
             case 44: // Screenshake
                 value.value_bool = settings.screenShake;
+                value.canBeGrayedOut = true;
                 display = "Screenshake";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "Enables screenshake effect when core damaged, and window shake due to nearby explosions based on their force and proximity.";
                 break;
@@ -6611,8 +6642,9 @@ public static class HF
                 break;
             case 49: // Alert Popups
                 value.value_bool = settings.alertPopups;
+                value.canBeGrayedOut = true;
                 display = "Alert Popups";
-                options.Add(("Off", new ScriptableSettingShort(v_b: false)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 bottomText = "Flashes on-map warnings and alerts for low core integrity, energy, and matter.";
                 break;

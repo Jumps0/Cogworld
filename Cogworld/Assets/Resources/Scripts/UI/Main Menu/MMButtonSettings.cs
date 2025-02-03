@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.TextCore.Text;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// Script containing logic for the SETTINGS buttons in the settings menu on the main menu screen.
@@ -20,7 +21,8 @@ public class MMButtonSettings : MonoBehaviour
 
     [Header("Values")]
     public char character;
-    public bool isGrayedOut = false;
+    public bool canBeGray = false;
+    public bool inputfield = false;
     public ScriptableSettingShort currentSetting;
     public string title = "";
     public string explainer = "";
@@ -44,10 +46,12 @@ public class MMButtonSettings : MonoBehaviour
         //                         ^  black to light green OR gray depending on the setting
 
         // If its a bool and it's false it should be gray
-        if(currentSetting.value_bool != null)
+        if(currentSetting.canBeGrayedOut)
         {
-            isGrayedOut = !(bool)currentSetting.value_bool;
+            canBeGray = currentSetting.canBeGrayedOut;
         }
+
+        inputfield = currentSetting.inputfield;
 
         text_keybind.text = $"{this.character} - [";
         text_main.text = title;
@@ -82,8 +86,18 @@ public class MMButtonSettings : MonoBehaviour
         // and lastly, the actual option just goes from Black -> its set color
         Color start = Color.black, end = color_bright;
 
-        if (isGrayedOut)
-            end = color_gray;
+        // Check if the current option needs to be gray instead
+        if (canBeGray)
+        {
+            foreach(var O in options) // <- Shouldn't be too bad performance wise
+            {
+                if(CompareSSO(currentSetting, O.Item2) && O.Item2.canBeGrayedOut) // Is the current setting the one that appears gray?
+                {
+                    end = color_gray;
+                    break;
+                }
+            }
+        }
 
         float elapsedTime = 0f;
         float duration = 0.45f;
@@ -163,8 +177,25 @@ public class MMButtonSettings : MonoBehaviour
 
     public void Click()
     {
-        MainMenuManager.inst.UnSelectButtons(this.gameObject);
-        //MainMenuManager.inst.ButtonAction(myNumber);
+        // Inputfield?
+        if (inputfield)
+        {
+            // Open the input field box
+            // TODO
+        }
+        else
+        {
+            if (options.Count > 2)
+            {
+                // Open the Detail Window Box
+                // TODO
+            }
+            else
+            {
+                // Swap the option
+                // TODO
+            }
+        }
 
         selected = true;
         Select(selected);
@@ -219,6 +250,12 @@ public class MMButtonSettings : MonoBehaviour
         text_main.color = end;
     }
 
+    public void OnLeftClick(InputValue value)
+    {
+        // Close any open boxes (Input Field or Detail Window)
+        // TODO
+    }
+
     #endregion
 
     #region Detail Window
@@ -247,6 +284,7 @@ public class MMButtonSettings : MonoBehaviour
     /// <returns>A string representing what that value should display.</returns>
     private string ValueToString(ScriptableSettingShort s)
     {
+        bool potentialOverride = true;
         string ret = "";
 
         if(s.value_bool != null)
@@ -277,6 +315,7 @@ public class MMButtonSettings : MonoBehaviour
         {
             // No change
             ret = s.value_string;
+            potentialOverride = false;
         }
         else if (s.enum_fov != null)
         {
@@ -296,6 +335,7 @@ public class MMButtonSettings : MonoBehaviour
                 default:
                     break;
             }
+            potentialOverride = false;
         }
         else if (s.enum_difficulty != null)
         {
@@ -315,6 +355,7 @@ public class MMButtonSettings : MonoBehaviour
                 default:
                     break;
             }
+            potentialOverride = false;
         }
         else if (s.enum_fullscreen != null)
         {
@@ -335,6 +376,7 @@ public class MMButtonSettings : MonoBehaviour
                 case null:
                     break;
             }
+            potentialOverride = false;
         }
         else if (s.enum_modal != null)
         {
@@ -352,6 +394,59 @@ public class MMButtonSettings : MonoBehaviour
                 case null:
                     break;
             }
+            potentialOverride = false;
+        }
+
+        // Might need to override the display string if the option specifies not only a value but ALSO a string.
+        if (potentialOverride && s.value_string != null)
+        {
+            ret = s.value_string;
+        }
+
+        return ret;
+    }
+
+    /// <summary>
+    /// Given two ScriptableSettingShort(s) from the same setting, returns True/False if these are the same setting (based on their internal value).
+    /// </summary>
+    /// <param name="A">A ScriptableSettingShort</param>
+    /// <param name="B">A ScriptableSettingShort</param>
+    /// <returns>True/False if these are the "same" setting.</returns>
+    private bool CompareSSO(ScriptableSettingShort A,  ScriptableSettingShort B)
+    {
+        bool ret = false;
+
+        if (A.value_bool != null && B.value_bool != null)
+        {
+            ret = A.value_bool == B.value_bool;
+        }
+        else if (A.value_int != null && B.value_int != null)
+        {
+            ret = A.value_int == B.value_int;
+        }
+        else if (A.value_float != null && B.value_float != null)
+        {
+            ret = A.value_float == B.value_float;
+        }
+        else if (A.value_string != null && B.value_string != null)
+        {
+            ret = A.value_string == B.value_string;
+        }
+        else if (A.enum_fov != null && B.enum_fov != null)
+        {
+            ret = A.enum_fov == B.enum_fov;
+        }
+        else if (A.enum_difficulty != null && B.enum_difficulty != null)
+        {
+            ret = A.enum_difficulty == B.enum_difficulty;
+        }
+        else if (A.enum_fullscreen != null && B.enum_fullscreen != null)
+        {
+            ret = A.enum_fullscreen == B.enum_fullscreen;
+        }
+        else if (A.enum_modal != null && B.enum_modal != null)
+        {
+            ret = A.enum_modal == B.enum_modal;
         }
 
         return ret;

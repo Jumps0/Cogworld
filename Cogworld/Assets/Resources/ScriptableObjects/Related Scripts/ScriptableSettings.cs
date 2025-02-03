@@ -80,11 +80,11 @@ public class ScriptableSettings : ScriptableObject
     [Header("Alerts")]
     [Range(100, 1000)] // 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000
     public int alert_heat = 300;
-    [Range(10, 100)] // 10, 20, 30, 40, 50, 60, 70, 80, 90, 100
+    [Range(0.1f, 1f)] // 10, 20, 30, 40, 50, 60, 70, 80, 90, 100
     public float alert_core = 0.2f;
-    [Range(10, 100)] // 10, 20, 30, 40, 50, 60, 70, 80, 90, 100
+    [Range(0.1f, 1f)] // 10, 20, 30, 40, 50, 60, 70, 80, 90, 100
     public float alert_energy = 0.2f;
-    [Range(10, 100)] // 10, 20, 30, 40, 50, 60, 70, 80, 90, 100
+    [Range(0.1f, 1f)] // 10, 20, 30, 40, 50, 60, 70, 80, 90, 100
     public float alert_matter = 0.1f;
     public bool alertPopups = true;
 }
@@ -106,7 +106,11 @@ public class ScriptableSettingShort
     public FOVHandling? enum_fov = null;
     public FullScreenMode? enum_fullscreen = null;
 
-    public ScriptableSettingShort(int? v_i = null, float? v_f = null, bool? v_b = null, string v_s = null, ModalUILayout? e_m = null, Difficulty? e_d = null, FOVHandling? e_fov = null, FullScreenMode? e_fs = null)
+    public bool canBeGrayedOut = false;
+    public bool inputfield = false;
+    
+    // The Great Wall of Optional Variables
+    public ScriptableSettingShort(bool grayedOut = false, bool inputfield = false, int? v_i = null, float? v_f = null, bool? v_b = null, string v_s = null, ModalUILayout? e_m = null, Difficulty? e_d = null, FOVHandling? e_fov = null, FullScreenMode? e_fs = null)
     {
         this.value_int = v_i;
         this.value_float = v_f;
@@ -117,6 +121,8 @@ public class ScriptableSettingShort
         this.enum_difficulty = e_d;
         this.enum_fov = e_fov;
         this.enum_fullscreen = e_fs;
+
+        this.canBeGrayedOut = grayedOut;
     }
 }
 
