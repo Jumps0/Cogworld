@@ -14,62 +14,71 @@ public class MMOptionSimple : MonoBehaviour
     [SerializeField] private Image image_back;
     [SerializeField] private TextMeshProUGUI text_main;
 
+    [Header("Value")]
+    private ScriptableSettingShort setting;
+    private MMButtonSettings parent;
+
     [Header("Colors")]
     [SerializeField] private Color color_main;
     [SerializeField] private Color color_hover;
     [SerializeField] private Color color_bright;
 
-    public void Setup(string display)
+    public void Setup(string display, ScriptableSettingShort setting, MMButtonSettings parent)
     {
+        this.parent = parent;
+        this.setting = setting;
         text_main.text = display;
 
         // Play a little reveal animation
-        StartCoroutine(RevealAnimation());
+        RevealAnimation();
     }
 
-    private IEnumerator RevealAnimation()
+    private void RevealAnimation()
     {
-        float delay = 0.1f;
+        List<string> strings = HF.RandomHighlightStringAnimation(text_main.text, color_bright);
+        // Animate the strings via our delay trick
+        float delay = 0f;
+        float perDelay = 0.25f / (text_main.text.Length);
 
-        Color usedColor = color_bright;
+        foreach (string s in strings)
+        {
+            StartCoroutine(HF.DelayedSetText(text_main, s, delay += perDelay));
+        }
+    }
 
-        float headerValue = 0.25f;
+    public void RemoveMe()
+    {
+        StartCoroutine(CloseAnimation());
+    }
 
-        image_back.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+    private IEnumerator CloseAnimation()
+    {
+        float elapsedTime = 0f;
+        float duration = 0.25f;
 
-        yield return new WaitForSeconds(delay);
+        Color start = Color.black, end = color_hover;
 
-        headerValue = 0.75f;
+        string black = ColorUtility.ToHtmlStringRGB(Color.black);
 
-        image_back.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        text_main.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(start)}aa><color=#{black}>{"["}</color></mark>";
+        
+        while (elapsedTime < duration) // Empty -> Green
+        {
+            Color lerp = Color.Lerp(start, end, elapsedTime / duration);
 
-        yield return new WaitForSeconds(delay);
+            string html = ColorUtility.ToHtmlStringRGB(lerp);
 
-        headerValue = 1f;
+            text_main.text = $"<mark=#{html}aa><color=#{black}>{"["}</color></mark>";
 
-        image_back.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
 
-        yield return new WaitForSeconds(delay);
-
-        headerValue = 0.75f;
-
-        image_back.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-
-        yield return new WaitForSeconds(delay);
-
-        headerValue = 0.25f;
-
-        image_back.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-
-        yield return new WaitForSeconds(delay);
-
-        headerValue = 0f;
-
-        image_back.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        text_main.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(end)}aa><color=#{ColorUtility.ToHtmlStringRGB(Color.black)}>{"["}</color></mark>";
 
         yield return null;
 
-        image_back.color = Color.black;
+        Destroy(this.gameObject);
     }
 
     #region Hover
@@ -129,10 +138,13 @@ public class MMOptionSimple : MonoBehaviour
     public void Click()
     {
         // Tell the option to change
-
-        // Close the extra detail menu
+        parent.ClickFromDetailBox(this);
 
         // Play a sound
+        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.dict_ui["OPTION"]); // UI - OPTION
+
+        // Close the extra detail menu
+        RemoveMe();
 
     }
     #endregion

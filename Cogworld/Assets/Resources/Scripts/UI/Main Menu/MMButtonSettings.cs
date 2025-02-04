@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine.TextCore.Text;
 using UnityEngine.InputSystem;
 using System.Linq;
+using Unity.VisualScripting;
 
 /// <summary>
 /// Script containing logic for the SETTINGS buttons in the settings menu on the main menu screen.
@@ -202,6 +203,14 @@ public class MMButtonSettings : MonoBehaviour
         Select(selected);
     }
 
+    public void ClickFromDetailBox(MMOptionSimple option)
+    {
+        // Change the setting
+
+        // Tell the box to close
+        DetailClose();
+    }
+
     public void Select(bool select)
     {
         selected = select;
@@ -254,7 +263,16 @@ public class MMButtonSettings : MonoBehaviour
     public void OnLeftClick(InputValue value)
     {
         // Close any open boxes (Input Field or Detail Window)
+        // Maybe change this later? Race condition /w the detail box selections?
         // TODO
+        if (detail_main.activeInHierarchy)
+        {
+            DetailClose();
+        }
+        else if (inputfield_main.activeInHierarchy)
+        {
+            IFClose();
+        }
     }
 
     #endregion
@@ -274,6 +292,9 @@ public class MMButtonSettings : MonoBehaviour
     {
         detail_main.SetActive(true);
 
+        // Set the title (header) based on this option's name
+        detail_header.text = $"\\{title}\\";
+
         // Populate the menu with the options we need
         foreach(var O in options)
         {
@@ -282,7 +303,7 @@ public class MMButtonSettings : MonoBehaviour
 
             GameObject newOption = Instantiate(detail_prefab, Vector2.zero, Quaternion.identity, detail_area);
 
-
+            newOption.GetComponent<MMOptionSimple>().Setup(text, setting, this);
         }
 
         // Opener animation
@@ -291,21 +312,94 @@ public class MMButtonSettings : MonoBehaviour
             StopCoroutine(detail_co);
         }
         detail_co = StartCoroutine(DetailOpenAnimation());
+
+        // Play sound
+        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.dict_ui["MODEON"]); // UI - MODEON
     }
 
     private IEnumerator DetailOpenAnimation()
     {
         // We need to:
-        // 1. Animate the header (and its backer)
-        // 2. Animate the borders
-        // 3. Do the random revealing highlights for every option's text element
+        // 1. Animate the header (and its backer) (Dark Green -> Bright Green (100% Transparency) -> Black (0% Transparency)
+        // 2. Animate the borders (Black -> Bright)
 
-        // TODO
-        yield return null;
+        // (First reset all these)
+        detail_main.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
+        detail_area.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
+        detail_headerBack.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
+        detail_header.GetComponent<Image>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 1f);
+        detail_borders.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
+
+        if (DOAH_co != null)
+        {
+            StopCoroutine(DOAH_co);
+        }
+        DOAH_co = StartCoroutine(DOA_Header()); // Split off because its tricky to put all this in one loop
+
+        float elapsedTime = 0f;
+        float duration = 0.45f;
+
+        Color start = color_hover, end = color_bright;
+
+        detail_borders.color = start;
+        while (elapsedTime < duration) // Empty -> Green
+        {
+            Color lerp = Color.Lerp(start, end, elapsedTime / duration);
+
+            detail_borders.color = lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        detail_borders.color = end;
+    }
+
+    private Coroutine DOAH_co;
+    private IEnumerator DOA_Header()
+    {
+        // Animate the header (and its backer) (Dark Green -> Bright Green (100% Transparency) -> Black (0% Transparency)
+        detail_header.color = color_bright; // NO CHANGE
+
+        // Dark Green -> Bright Green
+        float elapsedTime = 0f;
+        float duration = 0.25f;
+
+        Color start = color_hover, end = color_bright;
+
+        detail_headerBack.color = start;
+        while (elapsedTime < duration)
+        {
+            Color lerp = Color.Lerp(start, end, elapsedTime / duration);
+
+            detail_headerBack.color = lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        detail_headerBack.color = end;
+
+        // Bright Green (100%) -> Black (0%)
+        elapsedTime = 0f;
+        duration = 0.25f;
+
+        detail_headerBack.color = start;
+        while (elapsedTime < duration) // Empty -> Green
+        {
+            float lerp = Mathf.Lerp(1f, 0f, elapsedTime / duration);
+
+            detail_headerBack.color = new Color(color_bright.r, color_bright.g, color_bright.b, lerp);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        detail_headerBack.color = new Color(0f, 0f, 0f, 0f);
     }
 
     public void DetailClose()
     {
+        // Play sound
+        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.dict_ui["CLOSE"]); // UI - CLOSE
+
         if (detail_co != null)
         {
             StopCoroutine(detail_co);
@@ -315,25 +409,73 @@ public class MMButtonSettings : MonoBehaviour
 
     private IEnumerator DetailCloseAnimation()
     {
-        // TODO
-
-        yield return null;
-
-
-
-
-
         // Destroy all the objects
         foreach (GameObject obj in detail_objects.ToList())
         {
-            Destroy(obj);
+            obj.GetComponent<MMOptionSimple>().RemoveMe();
         }
         detail_objects.Clear();
+
+        // Quick border animation
+        // - Quickly change ALL transparency to 0%
+        float elapsedTime = 0f;
+        float duration = 0.25f;
+
+        detail_main.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, 1f);
+        detail_area.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, 1f);
+        detail_headerBack.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, 1f);
+        detail_header.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, 1f);
+        detail_borders.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, 1f);
+
+        while (elapsedTime < duration)
+        {
+            float lerp = Mathf.Lerp(1f, 0f, elapsedTime / duration);
+
+            detail_main.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, lerp);
+            detail_area.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, lerp);
+            detail_headerBack.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, lerp);
+            detail_header.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, lerp);
+            detail_borders.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, lerp);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        detail_main.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, 0f);
+        detail_area.GetComponent<Image>().color = new Color(0f,0f,0f, 0f);
+        detail_headerBack.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, 0f);
+        detail_header.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, 0f);
+        detail_borders.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, 0f);
+
+        yield return null;
 
         // Disable the box (no animation)
         detail_main.SetActive(false);
     }
     #endregion
+
+    #region InputField
+    [SerializeField] private GameObject inputfield_main;
+
+    public void IFOpen()
+    {
+
+    }
+
+    private IEnumerator IFOpenAnimation()
+    {
+        yield return null;
+    }
+
+    public void IFClose()
+    {
+
+    }
+
+    private IEnumerator IFCloseAnimation()
+    {
+        yield return null;
+    }
 
     #region Misc
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 /// <summary>
 /// Script containing logic for the simple headers seen in the settings menu.
@@ -11,7 +12,7 @@ using TMPro;
 public class MMHeaderSimple : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Image image_back;
+    [SerializeField] private Image image_line;
     [SerializeField] private TextMeshProUGUI text_main;
 
     [Header("Colors")]
@@ -29,111 +30,30 @@ public class MMHeaderSimple : MonoBehaviour
 
     private IEnumerator RevealAnimation()
     {
-        float delay = 0.1f;
+        // This is relatively simple
+        // 1. Display text goes from Black -> Dark Green
+        // 2. Line goes from Bright Green -> Dark Green
 
-        Color usedColor = color_bright;
-
-        float headerValue = 0.25f;
-
-        image_back.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-
-        yield return new WaitForSeconds(delay);
-
-        headerValue = 0.75f;
-
-        image_back.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-
-        yield return new WaitForSeconds(delay);
-
-        headerValue = 1f;
-
-        image_back.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-
-        yield return new WaitForSeconds(delay);
-
-        headerValue = 0.75f;
-
-        image_back.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-
-        yield return new WaitForSeconds(delay);
-
-        headerValue = 0.25f;
-
-        image_back.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-
-        yield return new WaitForSeconds(delay);
-
-        headerValue = 0f;
-
-        image_back.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-
-        yield return null;
-
-        image_back.color = Color.black;
-    }
-
-    #region Hover
-    private Coroutine hover_co;
-    public void HoverBegin()
-    {
-        if (hover_co != null)
-        {
-            StopCoroutine(hover_co);
-        }
-        hover_co = StartCoroutine(HoverAnimation(true));
-
-        // Play the hover UI sound
-        MainMenuManager.inst.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["HOVER"], 0.7f); // UI - HOVER
-    }
-
-    public void HoverEnd()
-    {
-        if (hover_co != null)
-        {
-            StopCoroutine(hover_co);
-        }
-        hover_co = StartCoroutine(HoverAnimation(false));
-    }
-
-    private IEnumerator HoverAnimation(bool fadeIn)
-    {
         float elapsedTime = 0f;
         float duration = 0.45f;
 
-        Color start = Color.black, end = Color.black;
+        Color startL = color_bright, startT = Color.black, end = color_hover;
 
-        if (fadeIn)
-        {
-            end = color_hover;
-        }
-        else
-        {
-            start = color_hover;
-        }
+        image_line.color = startL;
+        text_main.color = startT;
 
-        image_back.color = start;
         while (elapsedTime < duration) // Empty -> Green
         {
-            Color lerp = Color.Lerp(start, end, elapsedTime / duration);
+            Color lerpL = Color.Lerp(startL, end, elapsedTime / duration);
+            Color lerpT = Color.Lerp(startT, end, elapsedTime / duration);
 
-            image_back.color = lerp;
+            image_line.color = lerpL;
+            text_main.color = lerpT;
 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        image_back.color = end;
+        image_line.color = end;
+        text_main.color = end;
     }
-    #endregion
-
-    #region Click
-    public void Click()
-    {
-        // Tell the option to change
-
-        // Close the extra detail menu
-
-        // Play a sound
-
-    }
-    #endregion
 }

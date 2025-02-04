@@ -564,19 +564,19 @@ public class MainMenuManager : MonoBehaviour
             {
                 SettingsCreateHeader("Interface", parent);
             }
-            else if (i == 21)
+            else if (i == 22)
             {
                 SettingsCreateHeader("Behavior", parent);
             }
-            else if (i == 24)
+            else if (i == 25)
             {
                 SettingsCreateHeader("Player", parent);
             }
-            else if (i == 30)
+            else if (i == 31)
             {
                 SettingsCreateHeader("Visualization", parent);
             }
-            else if (i == 46)
+            else if (i == 45)
             {
                 SettingsCreateHeader("Alarms", parent);
             }
