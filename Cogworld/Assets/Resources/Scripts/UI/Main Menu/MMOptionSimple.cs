@@ -16,7 +16,7 @@ public class MMOptionSimple : MonoBehaviour
 
     [Header("Value")]
     public ScriptableSettingShort setting;
-    private MMButtonSettings parent;
+    private MMButtonSettings owner;
 
     [Header("Colors")]
     [SerializeField] private Color color_main;
@@ -25,9 +25,11 @@ public class MMOptionSimple : MonoBehaviour
 
     public void Setup(string display, ScriptableSettingShort setting, MMButtonSettings parent)
     {
-        this.parent = parent;
+        this.owner = parent;
         this.setting = setting;
         text_main.text = display;
+
+        this.gameObject.name = $"Simple - {display}";
 
         // Play a little reveal animation
         RevealAnimation();
@@ -46,21 +48,22 @@ public class MMOptionSimple : MonoBehaviour
         }
     }
 
-    public void RemoveMe()
+    public void RemoveMe(bool wasChosen = false)
     {
-        StartCoroutine(CloseAnimation());
+        StartCoroutine(CloseAnimation(wasChosen));
     }
 
-    private IEnumerator CloseAnimation()
+    private IEnumerator CloseAnimation(bool wasChosen = false)
     {
         float elapsedTime = 0f;
-        float duration = 0.25f;
+        float duration = 0.2f;
+        string display = text_main.text;
 
         Color start = Color.black, end = color_hover;
 
         string black = ColorUtility.ToHtmlStringRGB(Color.black);
 
-        text_main.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(start)}aa><color=#{black}>{"["}</color></mark>";
+        text_main.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(start)}aa><color=#{black}>{display}</color></mark>";
         
         while (elapsedTime < duration) // Empty -> Green
         {
@@ -68,16 +71,21 @@ public class MMOptionSimple : MonoBehaviour
 
             string html = ColorUtility.ToHtmlStringRGB(lerp);
 
-            text_main.text = $"<mark=#{html}aa><color=#{black}>{"["}</color></mark>";
+            text_main.text = $"<mark=#{html}aa><color=#{black}>{display}</color></mark>";
 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        text_main.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(end)}aa><color=#{ColorUtility.ToHtmlStringRGB(Color.black)}>{"["}</color></mark>";
+        text_main.text = $"<mark=#{ColorUtility.ToHtmlStringRGB(end)}aa><color=#{ColorUtility.ToHtmlStringRGB(Color.black)}>{display}</color></mark>";
 
         yield return null;
 
+        // Tell the option to change
+        if(wasChosen)
+            owner.ClickFromDetailBox(this);
+
+        // Destroy this object
         Destroy(this.gameObject);
     }
 
@@ -137,12 +145,8 @@ public class MMOptionSimple : MonoBehaviour
     #region Click
     public void Click()
     {
-        // Tell the option to change
-        parent.ClickFromDetailBox(this);
-
-        // Close the extra detail menu
-        RemoveMe();
-
+        // Tell MainMenuMgr to close all the options and that this one was clicked
+        MainMenuManager.inst.DetailShutterAllOptions(this);
     }
     #endregion
 }

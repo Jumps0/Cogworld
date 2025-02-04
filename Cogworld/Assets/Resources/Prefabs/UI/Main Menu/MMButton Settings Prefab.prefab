@@ -1260,14 +1260,6 @@ MonoBehaviour:
   color_hover: {r: 0.011764707, g: 0.18431373, b: 0.003921569, a: 1}
   color_bright: {r: 0, g: 0.8000001, b: 0, a: 1}
   color_gray: {r: 0.2509804, g: 0.2509804, b: 0.2509804, a: 1}
-  detail_main: {fileID: 5906413118905531662}
-  detail_mainborders: {fileID: 215172767479981130}
-  detail_borders: {fileID: 6824068019503093163}
-  detail_headerBack: {fileID: 3641932767198791604}
-  detail_header: {fileID: 30744287832925399}
-  detail_area: {fileID: 4972443434618770451}
-  detail_prefab: {fileID: 3308090358177970210, guid: f9d67614fad438744b4365a1d4c3bca2, type: 3}
-  detail_objects: []
   inputfield_main: {fileID: 0}
   ifield: {fileID: 0}
 --- !u!114 &6780614655061956079

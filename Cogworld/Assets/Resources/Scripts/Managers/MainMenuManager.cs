@@ -537,15 +537,15 @@ public class MainMenuManager : MonoBehaviour
         {
             Transform parent = null;
             // Decide parent based on amount
-            if(i < 22)
+            if(i < 12)
             {
                 parent = settings_areaA.transform;
             }
-            else if(i >= 22 && i < 35)
+            else if(i >= 12 && i < 31)
             {
                 parent = settings_areaB.transform;
             }
-            else if (i >= 35 && i < 51)
+            else if (i >= 31 && i < 51)
             {
                 parent = settings_areaC.transform;
             }
@@ -615,7 +615,6 @@ public class MainMenuManager : MonoBehaviour
         settings_gameObjects.Clear();
     }
 
-
     public void SettingsRevealExplainerText(string text)
     {
         // No animation! Just update the text.
@@ -632,6 +631,220 @@ public class MainMenuManager : MonoBehaviour
         settings_explainerText.text = "";
 
     }
+
+    [Header("Settings Detail Box")]
+    public GameObject detail_main;
+    [SerializeField] private Image detail_mainbacker; // The primary black image just below the main parent
+    [SerializeField] private Image detail_borders; // The main GREEN borders of the window
+    [SerializeField] private Image detail_headerBack; // Image behind the \HEADER\
+    [SerializeField] private TextMeshProUGUI detail_header; // text for the \HEADER\
+    [SerializeField] private Transform detail_area; // The area (black image) where objects are spawned under
+    [SerializeField] private GameObject detail_prefab; // Prefabs spawned as options in the Detail Box
+    [SerializeField] private List<GameObject> detail_objects = new List<GameObject>(); // List of all prefabs spawned in the Detail Box
+    private Coroutine detail_co = null;
+
+    #region Detail Window
+    public void DetailOpen(List<(string, ScriptableSettingShort)> options, string title, MMButtonSettings caller)
+    {
+        detail_main.SetActive(true);
+
+        // Position the window based on who called to open it
+        Vector3[] v = new Vector3[4];
+        caller.image_backer.GetComponent<RectTransform>().GetWorldCorners(v);
+
+        float yValue = v[1].y;
+
+        v = new Vector3[4];
+        detail_main.GetComponent<RectTransform>().GetWorldCorners(v);
+        float currentY = v[1].y;
+        float otherAdj = 10f;
+
+        Vector3 pos = detail_main.transform.position;
+        float adjustment = Mathf.Abs(currentY - yValue);
+        if (yValue > currentY) // The input field is higher up than the codes window
+        {
+            pos = new Vector3(pos.x, pos.y + adjustment + otherAdj, pos.z);
+            detail_main.transform.position = pos;
+        }
+        else // The input field is below the codes window
+        {
+            pos = new Vector3(pos.x, pos.y - adjustment + otherAdj, pos.z);
+            detail_main.transform.position = pos;
+        }
+
+        // Set the title (header) based on this option's name
+        detail_header.text = $"\\{title}\\";
+
+        // Populate the menu with the options we need
+        foreach (var O in options)
+        {
+            string text = O.Item1;
+            ScriptableSettingShort setting = O.Item2;
+
+            GameObject newOption = Instantiate(detail_prefab, Vector2.zero, Quaternion.identity, detail_area);
+
+            newOption.GetComponent<MMOptionSimple>().Setup(text, setting, caller);
+
+            detail_objects.Add(newOption);
+        }
+
+        // Opener animation
+        if (detail_co != null)
+        {
+            StopCoroutine(detail_co);
+        }
+        detail_co = StartCoroutine(DetailOpenAnimation());
+
+        // Play sound
+        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.dict_ui["MODEON"]); // UI - MODEON
+    }
+
+    private IEnumerator DetailOpenAnimation()
+    {
+        // We need to:
+        // 1. Animate the header (and its backer) (Dark Green -> Bright Green (100% Transparency) -> Black (0% Transparency)
+        // 2. Animate the borders (Black -> Bright)
+
+        // (First reset all these)
+        detail_mainbacker.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
+        detail_area.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
+        detail_headerBack.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
+        detail_header.color = new Color(color_bright.r, color_bright.g, color_bright.b, 1f);
+        detail_borders.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
+
+        if (DOAH_co != null)
+        {
+            StopCoroutine(DOAH_co);
+        }
+        DOAH_co = StartCoroutine(DOA_Header()); // Split off because its tricky to put all this in one loop
+
+        float elapsedTime = 0f;
+        float duration = 0.45f;
+
+        Color start = color_dull, end = color_bright;
+
+        detail_borders.color = start;
+        while (elapsedTime < duration) // Empty -> Green
+        {
+            Color lerp = Color.Lerp(start, end, elapsedTime / duration);
+
+            detail_borders.color = lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        detail_borders.color = end;
+    }
+
+    private Coroutine DOAH_co;
+    private IEnumerator DOA_Header()
+    {
+        // Animate the header (and its backer) (Dark Green -> Bright Green (100% Transparency) -> Black (0% Transparency)
+        detail_header.color = color_bright; // NO CHANGE
+
+        // Dark Green -> Bright Green
+        float elapsedTime = 0f;
+        float duration = 0.25f;
+
+        Color start = color_dull, end = color_bright;
+
+        detail_headerBack.color = start;
+        while (elapsedTime < duration)
+        {
+            Color lerp = Color.Lerp(start, end, elapsedTime / duration);
+
+            detail_headerBack.color = lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        detail_headerBack.color = end;
+
+        // Bright Green (100%) -> Black (0%)
+        elapsedTime = 0f;
+        duration = 0.25f;
+
+        detail_headerBack.color = start;
+        while (elapsedTime < duration) // Empty -> Green
+        {
+            float lerp = Mathf.Lerp(1f, 0f, elapsedTime / duration);
+
+            detail_headerBack.color = new Color(color_bright.r, color_bright.g, color_bright.b, lerp);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        detail_headerBack.color = new Color(0f, 0f, 0f, 0f);
+    }
+
+    public void DetailShutterAllOptions(MMOptionSimple picked)
+    {
+        foreach (var DO in detail_objects)
+        {
+            MMOptionSimple mmos = DO.GetComponent<MMOptionSimple>();
+
+            mmos.RemoveMe(mmos == picked);
+        }
+    }
+
+    public void DetailClose()
+    {
+        // Play sound
+        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.dict_ui["CLOSE"]); // UI - CLOSE
+
+        if (detail_co != null)
+        {
+            StopCoroutine(detail_co);
+        }
+        detail_co = StartCoroutine(DetailCloseAnimation());
+    }
+
+    private IEnumerator DetailCloseAnimation()
+    {
+        // Destroy all the objects
+        foreach (GameObject obj in detail_objects.ToList())
+        {
+            obj.GetComponent<MMOptionSimple>().RemoveMe();
+        }
+        detail_objects.Clear();
+
+        // Quick border animation
+        // - Quickly change ALL transparency to 0%
+        float elapsedTime = 0f;
+        float duration = 0.25f;
+
+        detail_mainbacker.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
+        detail_area.GetComponent<Image>().color = new Color(color_dull.r, color_dull.g, color_dull.b, 1f);
+        detail_headerBack.GetComponent<Image>().color = new Color(color_dull.r, color_dull.g, color_dull.b, 1f);
+        detail_header.color = new Color(color_dull.r, color_dull.g, color_dull.b, 1f);
+        detail_borders.GetComponent<Image>().color = new Color(color_dull.r, color_dull.g, color_dull.b, 1f);
+
+        while (elapsedTime < duration)
+        {
+            float lerp = Mathf.Lerp(1f, 0f, elapsedTime / duration);
+
+            detail_mainbacker.GetComponent<Image>().color = new Color(0f, 0f, 0f, lerp);
+            detail_area.GetComponent<Image>().color = new Color(color_dull.r, color_dull.g, color_dull.b, lerp);
+            detail_headerBack.GetComponent<Image>().color = new Color(color_dull.r, color_dull.g, color_dull.b, lerp);
+            detail_header.color = new Color(color_dull.r, color_dull.g, color_dull.b, lerp);
+            detail_borders.GetComponent<Image>().color = new Color(color_dull.r, color_dull.g, color_dull.b, lerp);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        detail_mainbacker.GetComponent<Image>().color = new Color(0f, 0f, 0f, 0f);
+        detail_area.GetComponent<Image>().color = new Color(0f, 0f, 0f, 0f);
+        detail_headerBack.GetComponent<Image>().color = new Color(color_dull.r, color_dull.g, color_dull.b, 0f);
+        detail_header.color = new Color(color_dull.r, color_dull.g, color_dull.b, 0f);
+        detail_borders.GetComponent<Image>().color = new Color(color_dull.r, color_dull.g, color_dull.b, 0f);
+
+        yield return null;
+
+        // Disable the box (no animation)
+        detail_main.SetActive(false);
+    }
+    #endregion
 
     /// <summary>
     /// Applies all current settings from the SObject. More basic since not much actually changes in the main menu.
