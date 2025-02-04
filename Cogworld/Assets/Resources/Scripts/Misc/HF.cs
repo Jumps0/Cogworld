@@ -17,6 +17,7 @@ using Color = UnityEngine.Color;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using ColorUtility = UnityEngine.ColorUtility;
+using static UnityEngine.Rendering.DebugUI;
 
 /// <summary>
 /// Contains helper functions to be used globally.
@@ -6155,6 +6156,7 @@ public static class HF
                 value.value_string = settings.font;
                 display = "Font Set/Size (X!)";
                 options.Add(("18/TerminusBold", new ScriptableSettingShort(v_s: "18/TerminusBold")));
+                options.Add(("18/Cogmind", new ScriptableSettingShort(v_s: "18/Cogmind")));
                 bottomText = "Current font set, which indirectly determines the default dimensions of the window/interface. (Note: The smallest size, 10, does not support " +
                     "tilesets and is therefore only available in ASCII mode. Also in modal UI layouts, the minimum size is 14.)";
                 break;
@@ -6652,6 +6654,190 @@ public static class HF
 
 
         return (value, display, bottomText, options);
+    }
+
+    /// <summary>
+    /// A (very clumbsy) method that updating a specific setting given its ID and what to set the new value as.
+    /// </summary>
+    /// <param name="id">The ID of the setting (see switch statement).</param>
+    /// <param name="s">The value to update the setting with (in the form of ScriptableSettingShort).</param>
+    public static void UpdateSetting(int id, ScriptableSettingShort s)
+    {
+        ScriptableSettings settings = MainMenuManager.inst ? MainMenuManager.inst.settingsObject : GlobalSettings.inst.settings;
+
+        // This is going to be very ugly.
+        switch (id)
+        {
+            case 0: // Modal Layout (NOT IMPLEMENTED)
+                settings.uiLayout = (ModalUILayout)s.enum_modal;
+                break;
+            case 1: // Font
+                settings.font = s.value_string;
+                break;
+            case 2: // Fullscreen Mode
+                settings.fullScreenMode = (FullScreenMode)s.enum_fullscreen;
+                break;
+            case 3: // Show Intro
+                settings.showIntro = (bool)s.value_bool;
+                break;
+            case 4: // Tutorial
+                settings.tutorial = (bool)s.value_bool;
+                break;
+            case 5: // Difficulty
+                settings.difficulty = (Difficulty)s.enum_difficulty;
+                break;
+            case 6: // Log Output
+                settings.logOutput = (bool)s.value_bool;
+                break;
+            case 7: // Volume - Master
+                settings.volume_master = (float)s.value_float;
+
+                break;
+            case 8: // Volume - Interface
+                settings.volume_interface = (float)s.value_float;
+
+                break;
+            case 9: // Volume - Game
+                settings.volume_game = (float)s.value_float;
+
+                break;
+            case 10: // Volume - Props
+                settings.volume_props = (float)s.value_float;
+
+                break;
+            case 11: // Volume - Ambient
+                settings.volume_ambient = (float)s.value_float;
+
+                break;
+            case 12: // Audio Log
+                settings.audioLog = (bool)s.value_bool;
+
+                break;
+            case 13: // Tactical HUD
+                settings.tacticalHud = (bool)s.value_bool;
+
+                break;
+            case 14: // Combat Log Detail
+                settings.combatLogDetail = (bool)s.value_bool;
+
+                break;
+            case 15: // Part Auto Sorting
+                settings.partAutoSorting = (bool)s.value_bool;
+
+                break;
+            case 16: // Inventory Auto Sorting
+                settings.inventoryAutoSorting = (bool)s.value_bool;
+
+                break;
+            case 17: // Edge Panning Speed
+                settings.edgePanningSpeed = (int)s.value_int;
+
+                break;
+            case 18: // Click Walls To Target
+                settings.clickWallsToTarget = (bool)s.value_bool;
+
+                break;
+            case 19: // Label Supporter Items (NOT IMPLEMENTED)
+                settings.labelSupporterItems = (bool)s.value_bool;
+
+                break;
+            case 20: // Keyboard Mode
+                settings.keyBoardMode = (bool)s.value_bool;
+
+                break;
+            case 21: // Colorblind Adjustment
+                settings.colorblindAdjustment = (bool)s.value_bool;
+                break;
+            case 22: // Auto-activate Parts
+                settings.autoActivateParts = (bool)s.value_bool;
+                break;
+            case 23: // Stop on Threats Only
+                settings.stopOnThreatsOnly = (bool)s.value_bool;
+                break;
+            case 24: // Move Block Duration
+                settings.moveBlockDuration = (int)s.value_int;
+                break;
+            case 25: // Playername
+                settings.playerName = s.value_string;
+
+                break;
+            case 26: // Upload Scores (NOT IMPLEMENTED)
+                settings.uploadScores = (bool)s.value_bool;
+
+                break;
+            case 27: // Seed
+                settings.playerName = s.value_string;
+
+                break;
+            case 28: // News Updates (NOT IMPLEMENTED)
+                settings.newsUpdates = (bool)s.value_bool;
+
+                break;
+            case 29: // Report Errors (NOT IMPLEMENTED)
+                settings.reportErrors = (bool)s.value_bool;
+
+                break;
+            case 30: // Achievements Anywhere
+                settings.achievementsAnywhere = (bool)s.value_bool;
+                break;
+            case 31: // ASCII Mode
+                settings.asciiMode = (bool)s.value_bool;
+                break;
+            case 32: // Show Path
+                settings.showPath = (bool)s.value_bool;
+                break;
+            case 33: // Explosion Predictions
+                settings.explosionPredictions = (bool)s.value_bool;
+                break;
+            case 34: // Hit Chance Delay
+                settings.hitChanceDelay = (int)s.value_int;
+                break;
+            case 35: // Combat Indicators
+                settings.combatIndicators = (bool)s.value_bool;
+                break;
+            case 36: // Auto-label Threats
+                settings.autoLabelThreats = (bool)s.value_bool;
+                break;
+            case 37: // Auto-label Items
+                settings.autoLabelItems = (bool)s.value_bool;
+                break;
+            case 38: // Auto-label on Examine
+                settings.autoLabelOnExamine = (bool)s.value_bool;
+                break;
+            case 39: // Color Item Labels
+                settings.colorItemLabels = (bool)s.value_bool;
+                break;
+            case 40: // Motion Trail Duration
+                settings.motionTrailDuration = (int)s.value_int;
+                break;
+            case 41: // Floor Gamma
+                settings.floorGamma = (int)s.value_int;
+                break;
+            case 42: // FOV Handling
+                settings.fovHandling = (FOVHandling)s.enum_fov;
+                break;
+            case 43: // Corruption Glitches
+                settings.corruptionGlitches = (bool)s.value_bool;
+                break;
+            case 44: // Screenshake
+                settings.screenShake = (bool)s.value_bool;
+                break;
+            case 45: // Alert (Heat)
+                settings.alert_heat = (int)s.value_int;
+                break;
+            case 46: // Alert (Core)
+                settings.alert_core = (float)s.value_float;
+                break;
+            case 47: // Alert (Energy)
+                settings.alert_energy = (float)s.value_float;
+                break;
+            case 48: // Alert (Matter)
+                settings.alert_matter = (float)s.value_float;
+                break;
+            case 49: // Alert Popups
+                settings.alertPopups = (bool)s.value_bool;
+                break;
+        }
     }
     #endregion
 

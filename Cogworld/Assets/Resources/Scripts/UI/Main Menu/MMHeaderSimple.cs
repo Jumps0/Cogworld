@@ -24,6 +24,8 @@ public class MMHeaderSimple : MonoBehaviour
     {
         text_main.text = display;
 
+        this.gameObject.name = $"- {display} -";
+
         // Play a little reveal animation
         StartCoroutine(RevealAnimation());
     }

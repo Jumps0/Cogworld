@@ -23,6 +23,7 @@ public class MMButtonSettings : MonoBehaviour
 
     [Header("Values")]
     public char character;
+    private int myID;
     public bool canBeGray = false;
     public bool inputfield = false;
     public ScriptableSettingShort currentSetting;
@@ -38,9 +39,12 @@ public class MMButtonSettings : MonoBehaviour
 
     public void Setup(int id)
     {
-        character = MainMenuManager.inst.alphabet[id];
+        myID = id;
+        character = MainMenuManager.inst.alphabet[myID];
 
-        (currentSetting, title, explainer, options) = HF.ParseSettingsOption(id);
+        (currentSetting, title, explainer, options) = HF.ParseSettingsOption(myID);
+
+        this.gameObject.name = $"{character} - {title}";
 
         // Text layout is:
         // ? - [Option]         Current Setting
@@ -174,90 +178,101 @@ public class MMButtonSettings : MonoBehaviour
     #endregion
 
     #region Selection
-    // -- THIS PROBABLY NEEDS TO BE REDONE
-    public bool selected = false;
-
     public void Click()
     {
         // Inputfield?
         if (inputfield)
         {
             // Open the input field box
-            // TODO
+            IFOpen();
         }
         else
         {
             if (options.Count > 2)
             {
                 // Open the Detail Window Box
-                // TODO
+                DetailOpen();
             }
             else
             {
                 // Swap the option
-                // TODO
+                foreach (var O in options)
+                {
+                    if(!CompareSSO(currentSetting, O.Item2))
+                    {
+                        AssignNewOption(O.Item2);
+                        return;
+                    }
+                }
             }
         }
+    }
 
-        selected = true;
-        Select(selected);
+    private Coroutine ano_co;
+    private void AssignNewOption(ScriptableSettingShort option)
+    {
+        // Re-assign the current option
+        currentSetting = option;
+
+        // Replace the text
+        text_setting.text = ValueToString(currentSetting);
+
+        // Play a sound
+        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.dict_ui["OPTION"]); // UI - OPTION
+
+        // Update the setting
+        HF.UpdateSetting(myID, currentSetting);
+        if(MainMenuManager.inst != null)
+        {
+            MainMenuManager.inst.ApplySettingsSimple();
+        }
+        else if (GlobalSettings.inst != null)
+        {
+            GlobalSettings.inst.ApplySettings();
+        }
+
+        // Do the animation
+        if (ano_co != null)
+        {
+            StopCoroutine(ano_co);
+        }
+        ano_co = StartCoroutine(ANO_Animation());
+    }
+
+    private IEnumerator ANO_Animation()
+    {
+        // Relatively Simple [Black -> Bright Green]
+        float elapsedTime = 0f;
+        float duration = 0.45f;
+
+        Color start = Color.black, end = color_bright;
+
+        // Exception for grayed out
+        if (currentSetting.canBeGrayedOut)
+        {
+            end = color_gray;
+        }
+
+        text_setting.color = start;
+        while (elapsedTime < duration)
+        {
+            Color lerp = Color.Lerp(start, end, elapsedTime / duration);
+
+            text_setting.color = lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        text_setting.color = end;
     }
 
     public void ClickFromDetailBox(MMOptionSimple option)
     {
         // Change the setting
+        AssignNewOption(option.setting);
 
         // Tell the box to close
         DetailClose();
-    }
-
-    public void Select(bool select)
-    {
-        selected = select;
-
-        // Animation
-        StartCoroutine(SelectionAnimation(selected));
-    }
-
-    private IEnumerator SelectionAnimation(bool select)
-    {
-        float elapsedTime = 0f;
-        float duration = 0.45f;
-        Color start = Color.white, end = Color.white;
-
-        // Pretty simple here. Just change the color of the main text
-        if (select) // This button needs to go from Normal Color -> Bright Color
-        {
-            start = color_main;
-            end = color_bright;
-
-            if(text_main.color == end) // Break out early if no change is needed
-            {
-                yield break;
-            }
-        }
-        else // This button need to go from Bright Color -> Normal Color
-        {
-            start = color_bright;
-            end = color_main;
-
-            if (text_main.color == end) // Break out early if no change is needed
-            {
-                yield break;
-            }
-        }
-
-        text_main.color = start;
-
-        while (elapsedTime < duration)
-        {
-            text_main.color = Color.Lerp(start, end, elapsedTime / duration);
-
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        text_main.color = end;
     }
 
     public void OnLeftClick(InputValue value)
@@ -267,11 +282,11 @@ public class MMButtonSettings : MonoBehaviour
         // TODO
         if (detail_main.activeInHierarchy)
         {
-            DetailClose();
+            //DetailClose();
         }
         else if (inputfield_main.activeInHierarchy)
         {
-            IFClose();
+            //IFClose();
         }
     }
 
@@ -280,6 +295,7 @@ public class MMButtonSettings : MonoBehaviour
     #region Detail Window
     [Header("Detail Window")]
     [SerializeField] private GameObject detail_main;
+    [SerializeField] private Image detail_mainborders;
     [SerializeField] private Image detail_borders;
     [SerializeField] private Image detail_headerBack;
     [SerializeField] private TextMeshProUGUI detail_header;
@@ -324,10 +340,10 @@ public class MMButtonSettings : MonoBehaviour
         // 2. Animate the borders (Black -> Bright)
 
         // (First reset all these)
-        detail_main.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
+        detail_mainborders.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
         detail_area.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
         detail_headerBack.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
-        detail_header.GetComponent<Image>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 1f);
+        detail_header.color = new Color(color_bright.r, color_bright.g, color_bright.b, 1f);
         detail_borders.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
 
         if (DOAH_co != null)
@@ -421,30 +437,30 @@ public class MMButtonSettings : MonoBehaviour
         float elapsedTime = 0f;
         float duration = 0.25f;
 
-        detail_main.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, 1f);
+        detail_mainborders.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, 1f);
         detail_area.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, 1f);
         detail_headerBack.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, 1f);
-        detail_header.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, 1f);
+        detail_header.color = new Color(color_hover.r, color_hover.g, color_hover.b, 1f);
         detail_borders.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, 1f);
 
         while (elapsedTime < duration)
         {
             float lerp = Mathf.Lerp(1f, 0f, elapsedTime / duration);
 
-            detail_main.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, lerp);
+            detail_mainborders.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, lerp);
             detail_area.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, lerp);
             detail_headerBack.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, lerp);
-            detail_header.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, lerp);
+            detail_header.color = new Color(color_hover.r, color_hover.g, color_hover.b, lerp);
             detail_borders.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, lerp);
 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        detail_main.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, 0f);
+        detail_mainborders.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, 0f);
         detail_area.GetComponent<Image>().color = new Color(0f,0f,0f, 0f);
         detail_headerBack.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, 0f);
-        detail_header.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, 0f);
+        detail_header.color = new Color(color_hover.r, color_hover.g, color_hover.b, 0f);
         detail_borders.GetComponent<Image>().color = new Color(color_hover.r, color_hover.g, color_hover.b, 0f);
 
         yield return null;
@@ -456,10 +472,32 @@ public class MMButtonSettings : MonoBehaviour
 
     #region InputField
     [SerializeField] private GameObject inputfield_main;
+    [SerializeField] private TMP_InputField ifield;
+    private Coroutine inputfield_co = null;
+
+    public void OnEnter(InputValue value)
+    {
+        if (!inputfield_main.activeInHierarchy) { return; }
+
+        // Save whatever is in the field (as long as it isn't empty)
+        if(ifield.text != "")
+        {
+
+        }
+
+        // Close the inputfield
+        IFClose();
+    }
 
     public void IFOpen()
     {
+        inputfield_main.SetActive(true);
 
+        if (inputfield_co != null)
+        {
+            StopCoroutine(inputfield_co);
+        }
+        inputfield_co = StartCoroutine(IFOpenAnimation());
     }
 
     private IEnumerator IFOpenAnimation()
@@ -469,140 +507,45 @@ public class MMButtonSettings : MonoBehaviour
 
     public void IFClose()
     {
+        inputfield_main.SetActive(false);
 
+        if (inputfield_co != null)
+        {
+            StopCoroutine(inputfield_co);
+        }
+        inputfield_co = StartCoroutine(IFCloseAnimation());
     }
 
     private IEnumerator IFCloseAnimation()
     {
         yield return null;
     }
+    #endregion
 
     #region Misc
 
     /// <summary>
-    /// Given a ScriptableSettingShort, parses whatever its value is into a string that can be displayed.
+    /// Given a ScriptableSettingShort, finds its matching display string in the options list.
     /// </summary>
     /// <param name="s">A ScriptableSettingShort with a single non-null value.</param>
     /// <returns>A string representing what that value should display.</returns>
     private string ValueToString(ScriptableSettingShort s)
     {
-        bool potentialOverride = true;
         string ret = "";
 
-        if(s.value_bool != null)
+        foreach (var O in options)
         {
-            if(s.value_bool == true)
+            if(CompareSSO(s, O.Item2))
             {
-                ret = "On";
+                ret = O.Item1;
+                break;
             }
-            else
-            {
-                ret = "Off";
-            }
-        }
-        else if(s.value_int != null)
-        {
-            // No change
-            ret = s.value_int.ToString();
-        }
-        else if (s.value_float != null)
-        {
-            // A bit of parsing
-            float f = (float)(s.value_float * 100f);
-            int fi = (int)f;
-            ret = fi.ToString();
-
-        }
-        else if (s.value_string != null)
-        {
-            // No change
-            ret = s.value_string;
-            potentialOverride = false;
-        }
-        else if (s.enum_fov != null)
-        {
-            switch (s.enum_fov)
-            {
-                case FOVHandling.Delay:
-                    ret = "Delay";
-                    break;
-                case FOVHandling.Instant:
-                    ret = "Instant";
-                    break;
-                case FOVHandling.FadeIn:
-                    ret = "Fade In";
-                    break;
-                case null:
-                    break;
-                default:
-                    break;
-            }
-            potentialOverride = false;
-        }
-        else if (s.enum_difficulty != null)
-        {
-            switch (s.enum_difficulty)
-            {
-                case Difficulty.Explorer:
-                    ret = "Explorer";
-                    break;
-                case Difficulty.Adventurer:
-                    ret = "Adventurer";
-                    break;
-                case Difficulty.Rogue:
-                    ret = "Rogue";
-                    break;
-                case null:
-                    break;
-                default:
-                    break;
-            }
-            potentialOverride = false;
-        }
-        else if (s.enum_fullscreen != null)
-        {
-            switch (s.enum_fullscreen)
-            {
-                case FullScreenMode.ExclusiveFullScreen:
-                    ret = "Borderless Fullscreen";
-                    break;
-                case FullScreenMode.FullScreenWindow:
-                    ret = "True Fullscreen";
-                    break;
-                case FullScreenMode.MaximizedWindow:
-                    ret = "Windowed";
-                    break;
-                case FullScreenMode.Windowed:
-                    ret = "Windowed";
-                    break;
-                case null:
-                    break;
-            }
-            potentialOverride = false;
-        }
-        else if (s.enum_modal != null)
-        {
-            switch (s.enum_modal)
-            {
-                case ModalUILayout.NonModal:
-                    ret = "Non-modal";
-                    break;
-                case ModalUILayout.SemiModal:
-                    ret = "Semi-modal";
-                    break;
-                case ModalUILayout.Modal:
-                    ret = "Modal";
-                    break;
-                case null:
-                    break;
-            }
-            potentialOverride = false;
         }
 
-        // Might need to override the display string if the option specifies not only a value but ALSO a string.
-        if (potentialOverride && s.value_string != null)
+        // If string is longer than 12 characters, shorten it by replacing the further characters with "..."
+        if(ret.Length > 12)
         {
-            ret = s.value_string;
+            ret = ret.Substring(0, 12) + "...";
         }
 
         return ret;

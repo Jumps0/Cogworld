@@ -15,7 +15,7 @@ public class MMOptionSimple : MonoBehaviour
     [SerializeField] private TextMeshProUGUI text_main;
 
     [Header("Value")]
-    private ScriptableSettingShort setting;
+    public ScriptableSettingShort setting;
     private MMButtonSettings parent;
 
     [Header("Colors")]
@@ -139,9 +139,6 @@ public class MMOptionSimple : MonoBehaviour
     {
         // Tell the option to change
         parent.ClickFromDetailBox(this);
-
-        // Play a sound
-        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.dict_ui["OPTION"]); // UI - OPTION
 
         // Close the extra detail menu
         RemoveMe();

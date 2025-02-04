@@ -29,7 +29,7 @@ public class GlobalSettings : MonoBehaviour
     /// <summary>
     /// Applies all current settings from the SObject.
     /// </summary>
-    public void ApplySettingsSimple()
+    public void ApplySettings()
     {
         // TODO
 
