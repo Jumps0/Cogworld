@@ -8,9 +8,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Image = UnityEngine.UI.Image;
-using static System.Net.Mime.MediaTypeNames;
 using System.Linq;
-using Mono.Unix.Native;
 
 
 public class MainMenuManager : MonoBehaviour
@@ -38,6 +36,7 @@ public class MainMenuManager : MonoBehaviour
     private void Update()
     {
         KeyboardInputDetection();
+        ArrowNavigation();
         //RunSpritefall();
     }
 
@@ -517,11 +516,16 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private GameObject settings_parent;
     [SerializeField] private TextMeshProUGUI settings_explainerText;
     [SerializeField] private List<GameObject> settings_gameObjects = new List<GameObject>();
-    [SerializeField] private Transform settings_areaA;
-    [SerializeField] private Transform settings_areaB;
-    [SerializeField] private Transform settings_areaC;
+    [SerializeField] private Transform settings_area;
     [SerializeField] private GameObject settings_prefab;
     [SerializeField] private GameObject settings_line_prefab;
+    //
+    [SerializeField] private GameObject settings_header_prefab;
+    [SerializeField] private Transform settings_header_area;
+    [SerializeField] private List<string> settings_header_names = new List<string>() { "GAMEPLAY", "DISPLAY", "GRAPHICS", "AUDIO", "CONTROLS" };
+    [SerializeField] private string settings_header_current = "GAMEPLAY";
+    [SerializeField] private List<GameObject> settings_header_objects = new List<GameObject>();
+    //
     [SerializeField] private int settings_amountOf = 50; // Not that fluid. Update this value based on the number of settings that exist
     public char[] alphabet;
     //
@@ -532,65 +536,112 @@ public class MainMenuManager : MonoBehaviour
     {
         settings_parent.SetActive(true);
 
-        // Create all the prefabs
-        for (int i = 0; i < settings_amountOf; i++)
+        // Play sound
+        this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["OPEN_1"], 0.7f); // UI - OPEN_1
+
+        // Create the headers (the are currently 5)
+        bool once = true;
+        foreach (var H in settings_header_names)
         {
-            Transform parent = null;
-            // Decide parent based on amount
-            if(i < 12)
-            {
-                parent = settings_areaA.transform;
-            }
-            else if(i >= 12 && i < 31)
-            {
-                parent = settings_areaB.transform;
-            }
-            else if (i >= 31 && i < 51)
-            {
-                parent = settings_areaC.transform;
-            }
-
-            // Spawn in the headers at specific intervals
-            #region Headers
-            if (i == 0)
-            {
-                SettingsCreateHeader("General", parent);
-            }
-            else if (i == 6)
-            {
-                SettingsCreateHeader("Audio", parent);
-            }
-            else if (i == 12)
-            {
-                SettingsCreateHeader("Interface", parent);
-            }
-            else if (i == 22)
-            {
-                SettingsCreateHeader("Behavior", parent);
-            }
-            else if (i == 25)
-            {
-                SettingsCreateHeader("Player", parent);
-            }
-            else if (i == 31)
-            {
-                SettingsCreateHeader("Visualization", parent);
-            }
-            else if (i == 45)
-            {
-                SettingsCreateHeader("Alarms", parent);
-            }
-            #endregion
-
             // New object
-            GameObject newSetting = Instantiate(settings_prefab, Vector2.zero, Quaternion.identity, parent);
+            GameObject newHeader = Instantiate(settings_header_prefab, Vector2.zero, Quaternion.identity, settings_header_area);
 
             // Set them up and animate them
-            newSetting.GetComponent<MMButtonSettings>().Setup(i);
+            newHeader.GetComponent<MMOptionBig>().Setup(H, once); // (Set "GAMEPLAY" as the active one by default)
+
+            // Save it
+            settings_header_objects.Add(newHeader);
+
+            once = false;
+        }
+
+        // Fill based on the first one
+        settings_header_current = "GAMEPLAY";
+        SettingsFill(settings_header_current);
+
+    }
+
+    private void SettingsFill(string header)
+    {
+        // Destroy any existing objects
+        foreach (var GO in settings_gameObjects.ToList())
+        {
+            Destroy(GO);
+        }
+        settings_gameObjects.Clear();
+
+        // Specify setting IDs to spawn
+        List<int> ids = new List<int>();
+        switch (header)
+        {
+            case "GAMEPLAY":
+
+                break;
+            case "DISPLAY":
+
+                break;
+            case "GRAPHICS":
+
+                break;
+            case "AUDIO":
+
+                break;
+            case "CONTROLS":
+
+                break;
+
+            default:
+                break;
+        }
+
+        // Create the settings options based on the IDs
+        foreach (int ID in ids)
+        {
+            // New object
+            GameObject newSetting = Instantiate(settings_prefab, Vector2.zero, Quaternion.identity, settings_area);
+
+            // Set them up and animate them
+            newSetting.GetComponent<MMButtonSettings>().Setup(ID);
 
             // Save it
             settings_gameObjects.Add(newSetting);
         }
+    }
+
+    public void SettingsBigOptionClicked(MMOptionBig caller)
+    {
+        // Is this option the same as the current one we are displaying?
+        if(caller.display == settings_header_current) { return; }
+
+        // Play sound
+        this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["OPEN_1"], 0.7f); // UI - OPEN_1
+
+        // Destroy all existing options
+        foreach (var GO in settings_gameObjects.ToList())
+        {
+            Destroy(GO);
+        }
+        settings_gameObjects.Clear();
+
+        // Refill based on caller
+        SettingsFill(caller.display);
+
+        // Change visuals of all headers
+        foreach (var H in settings_header_objects)
+        {
+            MMOptionBig mmob = H.GetComponent<MMOptionBig>();
+
+            if(caller == mmob)
+            {
+                mmob.SetAsChosen();
+            }
+            else
+            {
+                mmob.SetAsUnchosen();
+            }
+        }
+
+        settings_header_current = caller.display;
     }
 
     private void SettingsCreateHeader(string title, Transform parent)
@@ -613,6 +664,12 @@ public class MainMenuManager : MonoBehaviour
             Destroy(GO);
         }
         settings_gameObjects.Clear();
+
+        foreach (var GO in settings_header_objects.ToList())
+        {
+            Destroy(GO);
+        }
+        settings_header_objects.Clear();
     }
 
     public void SettingsRevealExplainerText(string text)
@@ -839,6 +896,7 @@ public class MainMenuManager : MonoBehaviour
         // Disable the box (no animation)
         detail_main.SetActive(false);
     }
+
     #endregion
 
     /// <summary>
@@ -880,6 +938,47 @@ public class MainMenuManager : MonoBehaviour
                     value--; // Step it back down again
                     buttons_main[value].GetComponent<MMButton>().Click();
                     return;
+                }
+            }
+        }
+    }
+
+    private void ArrowNavigation()
+    {
+        if (settings_area.gameObject.activeInHierarchy)
+        {
+            if (Keyboard.current.leftArrowKey.wasPressedThisFrame)
+            {
+                // What is the current index of the selected header?
+                int index = settings_header_names.IndexOf(settings_header_current);
+
+                // We want to go left (decrease)
+                // Are we at 0 now? (If so loop around to the top)
+                if(index == 0)
+                {
+                    // Goto highest in the list
+                    SettingsBigOptionClicked(settings_header_objects[settings_header_objects.Count - 1].GetComponent<MMOptionBig>());
+                }
+                else // We can still go down more
+                {
+                    SettingsBigOptionClicked(settings_header_objects[index - 1].GetComponent<MMOptionBig>());
+                }
+            }
+            else if (Keyboard.current.rightArrowKey.wasPressedThisFrame)
+            {
+                // What is the current index of the selected header?
+                int index = settings_header_names.IndexOf(settings_header_current);
+
+                // We want to go right (increase)
+                // Are we at the top now? (If so loop around to the bottom)
+                if (index == settings_header_objects.Count - 1)
+                {
+                    // Goto lowest in the list
+                    SettingsBigOptionClicked(settings_header_objects[0].GetComponent<MMOptionBig>());
+                }
+                else // We can still go up more
+                {
+                    SettingsBigOptionClicked(settings_header_objects[index + 1].GetComponent<MMOptionBig>());
                 }
             }
         }

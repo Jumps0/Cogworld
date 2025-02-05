@@ -504,6 +504,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   image_back: {fileID: 7867793196799272945}
   text_main: {fileID: 4660839529161822921}
+  setting:
+    value_string: 
+    canBeGrayedOut: 0
+    inputfield: 0
   color_main: {r: 0.078431375, g: 0.49411768, b: 0.098039225, a: 1}
   color_hover: {r: 0.011764707, g: 0.18431373, b: 0.003921569, a: 1}
   color_bright: {r: 0, g: 0.8000001, b: 0, a: 1}
@@ -613,7 +617,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: -10}
-  m_SizeDelta: {x: 114.01, y: 20}
+  m_SizeDelta: {x: 0, y: 20}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &6916663022249731773
 MonoBehaviour:
