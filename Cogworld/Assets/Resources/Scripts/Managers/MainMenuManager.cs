@@ -527,7 +527,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private string settings_header_current = "GAMEPLAY";
     [SerializeField] private List<GameObject> settings_header_objects = new List<GameObject>();
     //
-    [SerializeField] private int settings_amountOf = 50; // Not that fluid. Update this value based on the number of settings that exist
+    [SerializeField] private int settings_maxperlane = 20;
     public char[] alphabet;
     //
     public ScriptableSettings settingsObject;
@@ -603,7 +603,7 @@ public class MainMenuManager : MonoBehaviour
         // Create the settings options based on the IDs
         Transform parent = settings_area;
         Transform parent_b = settings_area;
-        if(ids.Count > 15)
+        if(ids.Count > settings_maxperlane)
         {
             settings_area_alt.gameObject.SetActive(true);
             parent_b = settings_area_alt;
@@ -616,7 +616,7 @@ public class MainMenuManager : MonoBehaviour
         for (int i = 0; i < ids.Count; i++)
         {
             // Overflow check
-            if(i > 15)
+            if(i > settings_maxperlane)
             {
                 parent = parent_b;
             }
@@ -763,17 +763,6 @@ public class MainMenuManager : MonoBehaviour
             detail_objects.Add(newOption);
         }
 
-        // -- Now that the window size (and position) has changed --
-        // Then position the 'X' button to be at the bottom right (based on the window itself)
-        v = new Vector3[4];
-        detail_mainbacker.GetComponent<RectTransform>().GetWorldCorners(v);
-        float x = v[3].x, y = v[3].y;
-        Vector3 pos = new Vector3(x - 15f, y + 10f, 0); // Offset it a bit so its still on the window
-        detail_xbutton.transform.position = pos;
-
-        // Shift the header up y+10 so its actually ontop of the window
-        detail_headerParent.position = new Vector3(detail_headerParent.position.x, detail_headerParent.position.y, 0);
-
         // Opener animation
         if (detail_co != null)
         {
@@ -787,6 +776,15 @@ public class MainMenuManager : MonoBehaviour
 
     private IEnumerator DetailOpenAnimation()
     {
+        yield return null;
+        // -- Now that the window size (and position) has changed --
+        // Then position the 'X' button to be at the bottom right (based on the window itself)
+        Vector3[] v = new Vector3[4];
+        detail_mainbacker.GetComponent<RectTransform>().GetWorldCorners(v);
+        float x = v[3].x, y = v[3].y;
+        Vector3 pos = new Vector3(x - 15f, y + 3f, 0); // Offset it a bit so its still on the window
+        detail_xbutton.transform.position = pos;
+
         // We need to:
         // 1. Animate the header (and its backer) (Dark Green -> Bright Green (100% Transparency) -> Black (0% Transparency)
         // 2. Animate the borders (Black -> Bright)
@@ -825,7 +823,7 @@ public class MainMenuManager : MonoBehaviour
     private Coroutine DOAH_co;
     private IEnumerator DOA_Header()
     {
-        // Animate the header (and its backer) (Dark Green -> Bright Green (100% Transparency) -> Black (0% Transparency)
+        // Animate the header (and its backer) (Dark Green -> Bright Green -> Black
         detail_header.color = color_bright; // NO CHANGE
 
         // Dark Green -> Bright Green
@@ -846,21 +844,21 @@ public class MainMenuManager : MonoBehaviour
         }
         detail_headerBack.color = end;
 
-        // Bright Green (100%) -> Black (0%)
+        // Bright Green -> Black
         elapsedTime = 0f;
         duration = 0.25f;
 
         detail_headerBack.color = start;
         while (elapsedTime < duration) // Empty -> Green
         {
-            float lerp = Mathf.Lerp(1f, 0f, elapsedTime / duration);
+            Color lerp = Color.Lerp(color_bright, Color.black, elapsedTime / duration);
 
-            detail_headerBack.color = new Color(color_bright.r, color_bright.g, color_bright.b, lerp);
+            detail_headerBack.color = lerp;
 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        detail_headerBack.color = new Color(0f, 0f, 0f, 0f);
+        detail_headerBack.color = Color.black;
     }
 
     public void DetailShutterAllOptions(MMOptionSimple picked)
