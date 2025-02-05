@@ -517,6 +517,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI settings_explainerText;
     [SerializeField] private List<GameObject> settings_gameObjects = new List<GameObject>();
     [SerializeField] private Transform settings_area;
+    [SerializeField] private Transform settings_area_alt; // If there are too many settings to display, this will be enabled to put half into.
     [SerializeField] private GameObject settings_prefab;
     [SerializeField] private GameObject settings_line_prefab;
     //
@@ -575,19 +576,24 @@ public class MainMenuManager : MonoBehaviour
         switch (header)
         {
             case "GAMEPLAY":
-
+                ids = new List<int>() { 
+                    3, 4, 5, 6, 13, 14, 15, 16, 17, 18, 19, 20, 
+                    21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 
+                    33, 34, 35, 36, 37, 38, 39, 40, 42, 43, 44,
+                    45, 46, 47, 48, 49
+                };
                 break;
             case "DISPLAY":
-
+                ids = new List<int>() { 0, 1, 2 };
                 break;
             case "GRAPHICS":
-
+                ids = new List<int>() { 31, 41 };
                 break;
             case "AUDIO":
-
+                ids = new List<int>() { 7, 8, 9, 10, 11, 12 };
                 break;
             case "CONTROLS":
-
+                // TODO: Different menu?
                 break;
 
             default:
@@ -595,13 +601,31 @@ public class MainMenuManager : MonoBehaviour
         }
 
         // Create the settings options based on the IDs
-        foreach (int ID in ids)
+        Transform parent = settings_area;
+        Transform parent_b = settings_area;
+        if(ids.Count > 15)
         {
+            settings_area_alt.gameObject.SetActive(true);
+            parent_b = settings_area_alt;
+        }
+        else
+        {
+            settings_area_alt.gameObject.SetActive(false);
+        }
+
+        for (int i = 0; i < ids.Count; i++)
+        {
+            // Overflow check
+            if(i > 15)
+            {
+                parent = parent_b;
+            }
+
             // New object
-            GameObject newSetting = Instantiate(settings_prefab, Vector2.zero, Quaternion.identity, settings_area);
+            GameObject newSetting = Instantiate(settings_prefab, Vector2.zero, Quaternion.identity, parent);
 
             // Set them up and animate them
-            newSetting.GetComponent<MMButtonSettings>().Setup(ID);
+            newSetting.GetComponent<MMButtonSettings>().Setup(ids[i], alphabet[i]);
 
             // Save it
             settings_gameObjects.Add(newSetting);
@@ -699,6 +723,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private Transform detail_area; // The area (black image) where objects are spawned under
     [SerializeField] private GameObject detail_prefab; // Prefabs spawned as options in the Detail Box
     [SerializeField] private GameObject detail_xbutton; // The 'X' button which needs to be at the bottom right of the window
+    [SerializeField] private TextMeshProUGUI detail_headerfill; // Secret hidden text which sets the size of the detail box
     [SerializeField] private List<GameObject> detail_objects = new List<GameObject>(); // List of all prefabs spawned in the Detail Box
     private Coroutine detail_co = null;
 
@@ -707,6 +732,13 @@ public class MainMenuManager : MonoBehaviour
     {
         detail_main.SetActive(true);
 
+        // Clear any pre-existing options
+        foreach (var O in detail_objects.ToList())
+        {
+            Destroy(O);
+        }
+        detail_objects.Clear();
+
         // We need to position the `Detail Window` at the `Bottom Right` corner of the owner's image backer.
         Vector3[] v = new Vector3[4];
         caller.image_backer.GetComponent<RectTransform>().GetWorldCorners(v);
@@ -714,7 +746,9 @@ public class MainMenuManager : MonoBehaviour
         detail_main.transform.position = v[3]; // Reposition it
 
         // Set the title (header) based on this option's name
-        detail_header.text = $"\\{title}\\";
+        string header = $"\\{title}\\";
+        detail_header.text = header;
+        detail_headerfill.text = header;
 
         // Populate the menu with the options we need
         foreach (var O in options)
@@ -734,11 +768,11 @@ public class MainMenuManager : MonoBehaviour
         v = new Vector3[4];
         detail_mainbacker.GetComponent<RectTransform>().GetWorldCorners(v);
         float x = v[3].x, y = v[3].y;
-        Vector3 pos = new Vector3(x - 5f, y + 10f, 0); // Offset it a bit so its still on the window
+        Vector3 pos = new Vector3(x - 15f, y + 10f, 0); // Offset it a bit so its still on the window
         detail_xbutton.transform.position = pos;
 
         // Shift the header up y+10 so its actually ontop of the window
-        detail_headerParent.position = new Vector3(detail_headerParent.position.x, detail_headerParent.position.y + 10, 0);
+        detail_headerParent.position = new Vector3(detail_headerParent.position.x, detail_headerParent.position.y, 0);
 
         // Opener animation
         if (detail_co != null)
@@ -991,7 +1025,10 @@ public class MainMenuManager : MonoBehaviour
     public void OnQuit(InputValue value)
     {
         // TODO, check to close various menus/submenus
-
+        if (detail_main.gameObject.activeInHierarchy)
+        {
+            DetailClose();
+        }
     }
     #endregion
 

@@ -37,10 +37,10 @@ public class MMButtonSettings : MonoBehaviour
     [SerializeField] private Color color_bright;
     [SerializeField] private Color color_gray;
 
-    public void Setup(int id)
+    public void Setup(int id, char character)
     {
         myID = id;
-        character = MainMenuManager.inst.alphabet[myID];
+        this.character = character;
 
         (currentSetting, title, explainer, options) = HF.ParseSettingsOption(myID);
 
