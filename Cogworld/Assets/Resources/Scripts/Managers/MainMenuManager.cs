@@ -636,10 +636,12 @@ public class MainMenuManager : MonoBehaviour
     public GameObject detail_main;
     [SerializeField] private Image detail_mainbacker; // The primary black image just below the main parent
     [SerializeField] private Image detail_borders; // The main GREEN borders of the window
+    [SerializeField] private Transform detail_headerParent; // The parent transform holding all of the \HEADER\ objects.
     [SerializeField] private Image detail_headerBack; // Image behind the \HEADER\
     [SerializeField] private TextMeshProUGUI detail_header; // text for the \HEADER\
     [SerializeField] private Transform detail_area; // The area (black image) where objects are spawned under
     [SerializeField] private GameObject detail_prefab; // Prefabs spawned as options in the Detail Box
+    [SerializeField] private GameObject detail_xbutton; // The 'X' button which needs to be at the bottom right of the window
     [SerializeField] private List<GameObject> detail_objects = new List<GameObject>(); // List of all prefabs spawned in the Detail Box
     private Coroutine detail_co = null;
 
@@ -648,29 +650,11 @@ public class MainMenuManager : MonoBehaviour
     {
         detail_main.SetActive(true);
 
-        // Position the window based on who called to open it
+        // We need to position the `Detail Window` at the `Bottom Right` corner of the owner's image backer.
         Vector3[] v = new Vector3[4];
         caller.image_backer.GetComponent<RectTransform>().GetWorldCorners(v);
-
-        float yValue = v[1].y;
-
-        v = new Vector3[4];
-        detail_main.GetComponent<RectTransform>().GetWorldCorners(v);
-        float currentY = v[1].y;
-        float otherAdj = 10f;
-
-        Vector3 pos = detail_main.transform.position;
-        float adjustment = Mathf.Abs(currentY - yValue);
-        if (yValue > currentY) // The input field is higher up than the codes window
-        {
-            pos = new Vector3(pos.x, pos.y + adjustment + otherAdj, pos.z);
-            detail_main.transform.position = pos;
-        }
-        else // The input field is below the codes window
-        {
-            pos = new Vector3(pos.x, pos.y - adjustment + otherAdj, pos.z);
-            detail_main.transform.position = pos;
-        }
+        // We care about v[3] (This is the bottom right corner)
+        detail_main.transform.position = v[3]; // Reposition it
 
         // Set the title (header) based on this option's name
         detail_header.text = $"\\{title}\\";
@@ -687,6 +671,17 @@ public class MainMenuManager : MonoBehaviour
 
             detail_objects.Add(newOption);
         }
+
+        // -- Now that the window size (and position) has changed --
+        // Then position the 'X' button to be at the bottom right (based on the window itself)
+        v = new Vector3[4];
+        detail_mainbacker.GetComponent<RectTransform>().GetWorldCorners(v);
+        float x = v[3].x, y = v[3].y;
+        Vector3 pos = new Vector3(x - 5f, y + 10f, 0); // Offset it a bit so its still on the window
+        detail_xbutton.transform.position = pos;
+
+        // Shift the header up y+10 so its actually ontop of the window
+        detail_headerParent.position = new Vector3(detail_headerParent.position.x, detail_headerParent.position.y + 10, 0);
 
         // Opener animation
         if (detail_co != null)
@@ -888,6 +883,16 @@ public class MainMenuManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// aka the ESCAPE key
+    /// </summary>
+    /// <param name="value"></param>
+    public void OnQuit(InputValue value)
+    {
+        // TODO, check to close various menus/submenus
+
     }
     #endregion
 
