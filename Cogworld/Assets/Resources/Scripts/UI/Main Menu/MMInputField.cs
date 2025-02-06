@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using static Unity.VisualScripting.Member;
+using Unity.VisualScripting;
 
 /// <summary>
 /// Script containing logic for the input fields on the main menu
@@ -12,17 +14,26 @@ public class MMInputField : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private TMP_InputField field;
+    [SerializeField] private AudioSource source;
     public MMButtonSettings setting;
 
     [Header("Values")]
     private string startString = "";
+    private AudioClip clip;
     private int myID = -1;
+    [SerializeField] private Vector2 pitchRange = new Vector2(0.95f, 1f);
 
     [Header("Colors")]
     [SerializeField] private Color color_main;
     [SerializeField] private Color color_hover;
     [SerializeField] private Color color_bright;
     [SerializeField] private Color color_text;
+
+    private void Start()
+    {
+        MainMenuManager.inst.settings_ifield.onValueChanged.AddListener(OnInputFieldValueChanged);
+        clip = AudioManager.inst.dict_ui["KEYIN"]; // UI - KEYIN
+    }
 
     private void Update()
     {
@@ -84,6 +95,25 @@ public class MMInputField : MonoBehaviour
         }
 
         // (MainMenuMgr will close the window directly after this)
+    }
+
+    private void OnInputFieldValueChanged(string value) // Place a sound every time a character is altered
+    {
+        // Sounds
+        source.pitch = Random.Range(pitchRange.x, pitchRange.y); // Randomize pitch so it sounds distinct each time
+        source.PlayOneShot(clip, 1f);
+
+        // Prevent from going over a certain amount of characters
+        if(field.text.Length > 18)
+        {
+            field.text = field.text.Substring(0, 18);
+        }
+
+        // Update the secret filler text
+        if(field.text.Length > 8)
+        {
+            MainMenuManager.inst.settings_if_headerfill.text = field.text;
+        }
     }
 
     #region Misc Helpers

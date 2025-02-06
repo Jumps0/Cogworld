@@ -943,34 +943,24 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI settings_if_header; // text for the \HEADER\
     [SerializeField] private Transform settings_if_area; // The area (black image) where objects are spawned under
     [SerializeField] private GameObject settings_if_xbutton; // The 'X' button which needs to be at the bottom right of the window
-    [SerializeField] private TextMeshProUGUI settings_if_headerfill; // Secret hidden text which sets the size of the detail box
+    public TextMeshProUGUI settings_if_headerfill; // Secret hidden text which sets the size of the detail box
     private Coroutine settings_inputfield_co = null;
-
-    public void OnEnter(InputValue value)
-    {
-        if (!settings_inputfield_main.activeInHierarchy) { return; }
-
-        // Shift logic to inside the script
-        settings_inputfield_main.GetComponent<MMInputField>().Enter();
-
-        // Close the inputfield
-        IFClose();
-    }
 
     public void IFOpen(string title, MMButtonSettings caller)
     {
         settings_inputfield_main.SetActive(true);
 
-        // We need to position the `Detail Window` at the `Bottom Right` corner of the owner's image backer.
+        // We need to position the `Input Field Window` at the `Bottom Right` corner of the owner's image backer.
         Vector3[] v = new Vector3[4];
         caller.image_backer.GetComponent<RectTransform>().GetWorldCorners(v);
         // We care about v[3] (This is the bottom right corner)
-        detail_main.transform.position = v[3]; // Reposition it
+        settings_inputfield_main.transform.position = v[3]; // Reposition it
 
         // Set the title (header) based on this option's name
         string header = $"\\{title}\\";
-        detail_header.text = header;
-        detail_headerfill.text = header;
+        settings_if_header.text = header;
+        if(header.Length > settings_if_headerfill.text.Length)
+            settings_if_headerfill.text = header;
 
         // (Input field will automatically set focus to itself since its enabled)
         // Setup the field with the current setting and the caller
@@ -1209,6 +1199,17 @@ public class MainMenuManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void OnEnter(InputValue value)
+    {
+        if (!settings_inputfield_main.activeInHierarchy) { return; }
+        
+        // Shift logic to inside the script
+        settings_inputfield_main.GetComponent<MMInputField>().Enter();
+
+        // Close the inputfield
+        IFClose();
     }
 
     public void OnLeftClick(InputValue value)
