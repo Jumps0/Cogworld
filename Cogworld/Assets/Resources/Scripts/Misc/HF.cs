@@ -6181,7 +6181,7 @@ public static class HF
             case 4: // Tutorial
                 value.value_bool = settings.tutorial;
                 value.canBeGrayedOut = true;
-                display = "Show Intro";
+                display = "Tutorial";
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
                 bottomText = "Shows contextual tutorial messages in the log window. Each message is only shown once, but toggling this off and on again resets all message " +

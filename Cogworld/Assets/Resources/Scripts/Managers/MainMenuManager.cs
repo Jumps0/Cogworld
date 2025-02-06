@@ -782,7 +782,7 @@ public class MainMenuManager : MonoBehaviour
         Vector3[] v = new Vector3[4];
         detail_mainbacker.GetComponent<RectTransform>().GetWorldCorners(v);
         float x = v[3].x, y = v[3].y;
-        Vector3 pos = new Vector3(x - 15f, y + 3f, 0); // Offset it a bit so its still on the window
+        Vector3 pos = new Vector3(x - 15f, y + 3.5f, 0); // Offset it a bit so its still on the window
         detail_xbutton.transform.position = pos;
 
         // We need to:
