@@ -11,9 +11,12 @@ using TMPro;
 public class MMInputField : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Image image_back;
-    [SerializeField] private TextMeshProUGUI text_main;
     [SerializeField] private TMP_InputField field;
+    public MMButtonSettings setting;
+
+    [Header("Values")]
+    private string startString = "";
+    private int myID = -1;
 
     [Header("Colors")]
     [SerializeField] private Color color_main;
@@ -23,7 +26,7 @@ public class MMInputField : MonoBehaviour
 
     private void Update()
     {
-        if (this.gameObject.activeInHierarchy)
+        if (this.gameObject.activeInHierarchy && field != null)
         {
             SetFocus(true);
             field.caretPosition = field.text.Length;
@@ -36,6 +39,51 @@ public class MMInputField : MonoBehaviour
             SetFocus(true);
             field.caretPosition = field.text.Length;
         }
+    }
+
+    public void Open(MMButtonSettings caller, string start)
+    {
+        field = MainMenuManager.inst.settings_ifield;
+
+        setting = caller;
+        myID = caller.myID;
+
+        startString = start;
+        field.text = startString;
+    }
+
+    public void Enter()
+    {
+        string text = field.text;
+
+        // Save whatever is in the field (as long as it isn't empty)
+        if (text != "")
+        {
+            setting.currentSetting.value_string = text;
+
+            // Conditional, if this is the <SEED> setting (currently ID 27), setting it to 0 should set it to be blank instead.
+            if(text == "0")
+            {
+                setting.currentSetting.value_string = "";
+            }
+        }
+        else // Invalid? Don't change anything
+        {
+            text = startString;
+        }
+
+        // Update the setting
+        HF.UpdateSetting(myID, setting.currentSetting);
+        if (MainMenuManager.inst != null)
+        {
+            MainMenuManager.inst.ApplySettingsSimple();
+        }
+        else if (GlobalSettings.inst != null)
+        {
+            GlobalSettings.inst.ApplySettings();
+        }
+
+        // (MainMenuMgr will close the window directly after this)
     }
 
     #region Misc Helpers

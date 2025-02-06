@@ -6422,7 +6422,7 @@ public static class HF
                 value.inputfield = true;
                 value.canBeGrayedOut = true;
                 display = "Seed";
-                options.Add(("Random", new ScriptableSettingShort(v_s: "Random", grayedOut: true)));
+                options.Add(("Random", new ScriptableSettingShort(v_s: "", grayedOut: true)));
                 // This is an input field
                 bottomText = "Enter any combination of numbers and/or letters to \"seed\" the game, making it possible to replay the same world, or play the same one as friends using the same seed. " +
                     "(Setting this only affects future games.) Seeds are not case sensistive. Enter \"0\" or clear the seed to make it random, ensuring a new world every game. Random or not, each run's " +

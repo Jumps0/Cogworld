@@ -935,7 +935,7 @@ public class MainMenuManager : MonoBehaviour
     #region Settings InputField
     [Header("Settings Input Field")]
     public GameObject settings_inputfield_main;
-    [SerializeField] private TMP_InputField settings_ifield;
+    public TMP_InputField settings_ifield;
     [SerializeField] private Image settings_if_mainbacker; // The primary black image just below the main parent
     [SerializeField] private Image settings_if_borders; // The main GREEN borders of the window
     [SerializeField] private Transform settings_if_headerParent; // The parent transform holding all of the \HEADER\ objects.
@@ -950,11 +950,8 @@ public class MainMenuManager : MonoBehaviour
     {
         if (!settings_inputfield_main.activeInHierarchy) { return; }
 
-        // Save whatever is in the field (as long as it isn't empty)
-        if (settings_ifield.text != "")
-        {
-
-        }
+        // Shift logic to inside the script
+        settings_inputfield_main.GetComponent<MMInputField>().Enter();
 
         // Close the inputfield
         IFClose();
@@ -976,8 +973,8 @@ public class MainMenuManager : MonoBehaviour
         detail_headerfill.text = header;
 
         // (Input field will automatically set focus to itself since its enabled)
-        // Set the input field's starting text to whatever it currently is
-        // TODO
+        // Setup the field with the current setting and the caller
+        settings_inputfield_main.GetComponent<MMInputField>().Open(caller, caller.currentSetting.value_string);
 
         // Play sound
         AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.dict_ui["MODEON"]); // UI - MODEON

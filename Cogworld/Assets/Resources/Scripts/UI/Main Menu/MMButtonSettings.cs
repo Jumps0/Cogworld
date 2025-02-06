@@ -23,7 +23,7 @@ public class MMButtonSettings : MonoBehaviour
 
     [Header("Values")]
     public char character;
-    private int myID;
+    public int myID;
     public bool canBeGray = false;
     public bool inputfield = false;
     public ScriptableSettingShort currentSetting;
