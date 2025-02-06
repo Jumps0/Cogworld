@@ -184,7 +184,7 @@ public class MMButtonSettings : MonoBehaviour
         if (inputfield)
         {
             // Open the input field box
-            IFOpen();
+            MainMenuManager.inst.IFOpen(title, this);
         }
         else
         {
@@ -274,76 +274,8 @@ public class MMButtonSettings : MonoBehaviour
         // Tell the box to close
         MainMenuManager.inst.DetailClose();
     }
-
-    public void OnLeftClick(InputValue value)
-    {
-        // Close any open boxes (Input Field or Detail Window)
-        // Maybe change this later? Race condition /w the detail box selections?
-        // TODO
-        if (MainMenuManager.inst.detail_main.activeInHierarchy)
-        {
-            //DetailClose();
-        }
-        else if (inputfield_main.activeInHierarchy)
-        {
-            //IFClose();
-        }
-    }
-
     #endregion
 
-    #region InputField
-    [Header("Input Field")]
-    [SerializeField] private GameObject inputfield_main;
-    [SerializeField] private TMP_InputField ifield;
-    private Coroutine inputfield_co = null;
-
-    public void OnEnter(InputValue value)
-    {
-        if (!inputfield_main.activeInHierarchy) { return; }
-
-        // Save whatever is in the field (as long as it isn't empty)
-        if(ifield.text != "")
-        {
-
-        }
-
-        // Close the inputfield
-        IFClose();
-    }
-
-    public void IFOpen()
-    {
-        inputfield_main.SetActive(true);
-
-        if (inputfield_co != null)
-        {
-            StopCoroutine(inputfield_co);
-        }
-        inputfield_co = StartCoroutine(IFOpenAnimation());
-    }
-
-    private IEnumerator IFOpenAnimation()
-    {
-        yield return null;
-    }
-
-    public void IFClose()
-    {
-        inputfield_main.SetActive(false);
-
-        if (inputfield_co != null)
-        {
-            StopCoroutine(inputfield_co);
-        }
-        inputfield_co = StartCoroutine(IFCloseAnimation());
-    }
-
-    private IEnumerator IFCloseAnimation()
-    {
-        yield return null;
-    }
-    #endregion
 
     #region Misc
 

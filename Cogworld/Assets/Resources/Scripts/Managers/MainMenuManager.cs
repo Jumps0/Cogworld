@@ -713,6 +713,7 @@ public class MainMenuManager : MonoBehaviour
 
     }
 
+    #region Detail Window
     [Header("Settings Detail Box")]
     public GameObject detail_main;
     [SerializeField] private Image detail_mainbacker; // The primary black image just below the main parent
@@ -727,7 +728,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private List<GameObject> detail_objects = new List<GameObject>(); // List of all prefabs spawned in the Detail Box
     private Coroutine detail_co = null;
 
-    #region Detail Window
+    
     public void DetailOpen(List<(string, ScriptableSettingShort)> options, string title, MMButtonSettings caller)
     {
         detail_main.SetActive(true);
@@ -931,6 +932,202 @@ public class MainMenuManager : MonoBehaviour
 
     #endregion
 
+    #region Settings InputField
+    [Header("Settings Input Field")]
+    public GameObject settings_inputfield_main;
+    [SerializeField] private TMP_InputField settings_ifield;
+    [SerializeField] private Image settings_if_mainbacker; // The primary black image just below the main parent
+    [SerializeField] private Image settings_if_borders; // The main GREEN borders of the window
+    [SerializeField] private Transform settings_if_headerParent; // The parent transform holding all of the \HEADER\ objects.
+    [SerializeField] private Image settings_if_headerBack; // Image behind the \HEADER\
+    [SerializeField] private TextMeshProUGUI settings_if_header; // text for the \HEADER\
+    [SerializeField] private Transform settings_if_area; // The area (black image) where objects are spawned under
+    [SerializeField] private GameObject settings_if_prefab; // Prefabs spawned as options in the Detail Box
+    [SerializeField] private GameObject settings_if_xbutton; // The 'X' button which needs to be at the bottom right of the window
+    [SerializeField] private TextMeshProUGUI settings_if_headerfill; // Secret hidden text which sets the size of the detail box
+    private Coroutine settings_inputfield_co = null;
+
+    public void OnEnter(InputValue value)
+    {
+        if (!settings_inputfield_main.activeInHierarchy) { return; }
+
+        // Save whatever is in the field (as long as it isn't empty)
+        if (settings_ifield.text != "")
+        {
+
+        }
+
+        // Close the inputfield
+        IFClose();
+    }
+
+    public void IFOpen(string title, MMButtonSettings caller)
+    {
+        settings_inputfield_main.SetActive(true);
+
+        // We need to position the `Detail Window` at the `Bottom Right` corner of the owner's image backer.
+        Vector3[] v = new Vector3[4];
+        caller.image_backer.GetComponent<RectTransform>().GetWorldCorners(v);
+        // We care about v[3] (This is the bottom right corner)
+        detail_main.transform.position = v[3]; // Reposition it
+
+        // Set the title (header) based on this option's name
+        string header = $"\\{title}\\";
+        detail_header.text = header;
+        detail_headerfill.text = header;
+
+        // TODO: Set focus on the input field
+
+        // Play sound
+        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.dict_ui["MODEON"]); // UI - MODEON
+
+        // Opener animation
+        if (settings_inputfield_co != null)
+        {
+            StopCoroutine(settings_inputfield_co);
+        }
+        settings_inputfield_co = StartCoroutine(IFOpenAnimation());
+    }
+
+    private Coroutine SIFH_co;
+    private IEnumerator SIF_Header()
+    {
+        // Animate the header (and its backer) (Dark Green -> Bright Green -> Black
+        detail_header.color = color_bright; // NO CHANGE
+
+        // Dark Green -> Bright Green
+        float elapsedTime = 0f;
+        float duration = 0.25f;
+
+        Color start = color_dull, end = color_bright;
+
+        settings_if_headerBack.color = start;
+        while (elapsedTime < duration)
+        {
+            Color lerp = Color.Lerp(start, end, elapsedTime / duration);
+
+            settings_if_headerBack.color = lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        settings_if_headerBack.color = end;
+
+        // Bright Green -> Black
+        elapsedTime = 0f;
+        duration = 0.25f;
+
+        settings_if_headerBack.color = start;
+        while (elapsedTime < duration) // Empty -> Green
+        {
+            Color lerp = Color.Lerp(color_bright, Color.black, elapsedTime / duration);
+
+            settings_if_headerBack.color = lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        settings_if_headerBack.color = Color.black;
+    }
+
+    private IEnumerator IFOpenAnimation()
+    {
+        yield return null;
+        // -- Now that the window size (and position) has changed --
+        // Then position the 'X' button to be at the bottom right (based on the window itself)
+        Vector3[] v = new Vector3[4];
+        settings_if_mainbacker.GetComponent<RectTransform>().GetWorldCorners(v);
+        float x = v[3].x, y = v[3].y;
+        Vector3 pos = new Vector3(x - 15f, y + 3.5f, 0); // Offset it a bit so its still on the window
+        settings_if_xbutton.transform.position = pos;
+
+        // We need to:
+        // 1. Animate the header (and its backer) (Dark Green -> Bright Green (100% Transparency) -> Black (0% Transparency)
+        // 2. Animate the borders (Black -> Bright)
+
+        // (First reset all these)
+        settings_if_mainbacker.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
+        settings_if_area.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
+        settings_if_headerBack.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
+        settings_if_header.color = new Color(color_bright.r, color_bright.g, color_bright.b, 1f);
+        settings_if_borders.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
+
+        if (SIFH_co != null)
+        {
+            StopCoroutine(SIFH_co);
+        }
+        SIFH_co = StartCoroutine(SIF_Header()); // Split off because its tricky to put all this in one loop
+
+        float elapsedTime = 0f;
+        float duration = 0.45f;
+
+        Color start = color_dull, end = color_bright;
+
+        settings_if_borders.color = start;
+        while (elapsedTime < duration) // Empty -> Green
+        {
+            Color lerp = Color.Lerp(start, end, elapsedTime / duration);
+
+            settings_if_borders.color = lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        settings_if_borders.color = end;
+    }
+
+    public void IFClose()
+    {
+        // Play sound
+        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.dict_ui["CLOSE"]); // UI - CLOSE
+
+        if (settings_inputfield_co != null)
+        {
+            StopCoroutine(settings_inputfield_co);
+        }
+        settings_inputfield_co = StartCoroutine(IFCloseAnimation());
+    }
+
+    private IEnumerator IFCloseAnimation()
+    {
+        // Quick border animation
+        // - Quickly change ALL transparency to 0%
+        float elapsedTime = 0f;
+        float duration = 0.25f;
+
+        settings_if_mainbacker.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
+        settings_if_area.GetComponent<Image>().color = new Color(color_dull.r, color_dull.g, color_dull.b, 1f);
+        settings_if_headerBack.GetComponent<Image>().color = new Color(color_dull.r, color_dull.g, color_dull.b, 1f);
+        settings_if_header.color = new Color(color_dull.r, color_dull.g, color_dull.b, 1f);
+        settings_if_borders.GetComponent<Image>().color = new Color(color_dull.r, color_dull.g, color_dull.b, 1f);
+
+        while (elapsedTime < duration)
+        {
+            float lerp = Mathf.Lerp(1f, 0f, elapsedTime / duration);
+
+            settings_if_mainbacker.GetComponent<Image>().color = new Color(0f, 0f, 0f, lerp);
+            settings_if_area.GetComponent<Image>().color = new Color(color_dull.r, color_dull.g, color_dull.b, lerp);
+            settings_if_headerBack.GetComponent<Image>().color = new Color(color_dull.r, color_dull.g, color_dull.b, lerp);
+            settings_if_header.color = new Color(color_dull.r, color_dull.g, color_dull.b, lerp);
+            settings_if_borders.GetComponent<Image>().color = new Color(color_dull.r, color_dull.g, color_dull.b, lerp);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        settings_if_mainbacker.GetComponent<Image>().color = new Color(0f, 0f, 0f, 0f);
+        settings_if_area.GetComponent<Image>().color = new Color(0f, 0f, 0f, 0f);
+        settings_if_headerBack.GetComponent<Image>().color = new Color(color_dull.r, color_dull.g, color_dull.b, 0f);
+        settings_if_header.color = new Color(color_dull.r, color_dull.g, color_dull.b, 0f);
+        settings_if_borders.GetComponent<Image>().color = new Color(color_dull.r, color_dull.g, color_dull.b, 0f);
+
+        yield return null;
+
+        // Disable the box (no animation)
+        settings_inputfield_main.SetActive(false);
+    }
+    #endregion
+
     /// <summary>
     /// Applies all current settings from the SObject. More basic since not much actually changes in the main menu.
     /// Full effect is in GlobalSettings.cs
@@ -1014,6 +1211,12 @@ public class MainMenuManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void OnLeftClick(InputValue value)
+    {
+        // TODO: Clicking anywhere while in the settings menu should close the detail box or input field.
+        //       This will be a bit tricky because to select something in the detail box or use the X button you need to click.
     }
 
     /// <summary>
