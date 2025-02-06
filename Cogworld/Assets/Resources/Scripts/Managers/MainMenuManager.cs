@@ -942,7 +942,6 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private Image settings_if_headerBack; // Image behind the \HEADER\
     [SerializeField] private TextMeshProUGUI settings_if_header; // text for the \HEADER\
     [SerializeField] private Transform settings_if_area; // The area (black image) where objects are spawned under
-    [SerializeField] private GameObject settings_if_prefab; // Prefabs spawned as options in the Detail Box
     [SerializeField] private GameObject settings_if_xbutton; // The 'X' button which needs to be at the bottom right of the window
     [SerializeField] private TextMeshProUGUI settings_if_headerfill; // Secret hidden text which sets the size of the detail box
     private Coroutine settings_inputfield_co = null;
@@ -976,7 +975,9 @@ public class MainMenuManager : MonoBehaviour
         detail_header.text = header;
         detail_headerfill.text = header;
 
-        // TODO: Set focus on the input field
+        // (Input field will automatically set focus to itself since its enabled)
+        // Set the input field's starting text to whatever it currently is
+        // TODO
 
         // Play sound
         AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.dict_ui["MODEON"]); // UI - MODEON
