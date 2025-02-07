@@ -99,63 +99,59 @@ public class MainMenuManager : MonoBehaviour
         {
             case 1: // - CONTINUE
                 // Force close any other windows
-                NewGameClose();
-                LoadGameClose();
-                JoinGameClose();
+                NewGameToggle(false);
+                ContinueToggle(true);
+                LoadGameToggle(false);
+                JoinGameToggle(false);
                 ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
 
                 ToggleMainWindow(true); // Open the window
-                ContinueOpen();
-
                 break;
             case 2: // - NEW GAME
                 // Force close any other windows
-                ContinueClose();
-                LoadGameClose();
-                JoinGameClose();
+                NewGameToggle(true);
+                ContinueToggle(false);
+                LoadGameToggle(false);
+                JoinGameToggle(false);
                 ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
 
                 ToggleMainWindow(true); // Open the window
-                NewGameOpen();
-
                 break;
             case 3: // - LOAD GAME
                 // Force close any other windows
-                NewGameClose();
-                ContinueClose();
-                JoinGameClose();
+                NewGameToggle(false);
+                ContinueToggle(false);
+                LoadGameToggle(true);
+                JoinGameToggle(false);
                 ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
 
                 ToggleMainWindow(true); // Open the window
-                LoadGameOpen();
-
                 break;
             case 4: // - JOIN GAME
                 // Force close any other windows
-                NewGameClose();
-                ContinueClose();
-                LoadGameClose();
+                NewGameToggle(false);
+                ContinueToggle(false);
+                LoadGameToggle(false);
+                JoinGameToggle(true);
                 ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
 
                 ToggleMainWindow(true); // Open the window
-                JoinGameOpen();
-
                 break;
             case 5: // - RECORDS
                 // Unique window
                 // Force close any other windows
-                NewGameClose();
-                ContinueClose();
-                LoadGameClose();
-                JoinGameClose();
+                NewGameToggle(false);
+                ContinueToggle(false);
+                LoadGameToggle(false);
+                JoinGameToggle(false);
                 ToggleMainWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
@@ -165,10 +161,10 @@ public class MainMenuManager : MonoBehaviour
                 break;
             case 6: // - SETTINGS
                 // Force close any other windows
-                NewGameClose();
-                ContinueClose();
-                LoadGameClose();
-                JoinGameClose();
+                NewGameToggle(false);
+                ContinueToggle(false);
+                LoadGameToggle(false);
+                JoinGameToggle(false);
                 ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
@@ -180,10 +176,10 @@ public class MainMenuManager : MonoBehaviour
             case 7: // - CREDITS
                 // Unique window
                 // Force close any other windows
-                ContinueClose();
-                NewGameClose();
-                LoadGameClose();
-                JoinGameClose();
+                NewGameToggle(false);
+                ContinueToggle(false);
+                LoadGameToggle(false);
+                JoinGameToggle(false);
                 ToggleRecordsWindow(false, true);
                 ToggleMainWindow(false, true);
                 ToggleQuitWindow(false, true);
@@ -193,10 +189,10 @@ public class MainMenuManager : MonoBehaviour
                 break;
             case 8: // - QUIT
                 // Force close any other windows
-                NewGameClose();
-                ContinueClose();
-                LoadGameClose();
-                JoinGameClose();
+                NewGameToggle(false);
+                ContinueToggle(false);
+                LoadGameToggle(false);
+                JoinGameToggle(false);
                 ToggleMainWindow(false, true);
                 ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
@@ -343,18 +339,20 @@ public class MainMenuManager : MonoBehaviour
     [Header("Continue")] // TODO
     [SerializeField] private GameObject continue_window;
 
-    private void ContinueOpen()
+    private void ContinueToggle(bool open)
     {
-        if (continue_window.activeInHierarchy) { return; }
+        if (open)
+        {
+            continue_window.SetActive(true);
 
+            // continue logic
+        }
+        else
+        {
+            // begin logic
 
-    }
-
-    private void ContinueClose()
-    {
-        if (!continue_window.activeInHierarchy) { return; }
-
-
+            continue_window.SetActive(false);
+        }
     }
 
     #endregion
@@ -363,16 +361,20 @@ public class MainMenuManager : MonoBehaviour
     [Header("New Game")] // TODO
     [SerializeField] private GameObject newgame_window;
 
-    private void NewGameOpen()
+    private void NewGameToggle(bool open)
     {
-        if (newgame_window.activeInHierarchy) { return; }
+        if (open)
+        {
+            newgame_window.SetActive(true);
 
-    }
+            // continue logic
+        }
+        else
+        {
+            // begin logic
 
-    private void NewGameClose()
-    {
-        if (!newgame_window.activeInHierarchy) { return; }
-
+            newgame_window.SetActive(false);
+        }
     }
 
     #endregion
@@ -381,16 +383,20 @@ public class MainMenuManager : MonoBehaviour
     [Header("Load Game")] // TODO
     [SerializeField] private GameObject load_window;
 
-    private void LoadGameOpen()
+    private void LoadGameToggle(bool open)
     {
-        if (load_window.activeInHierarchy) { return; }
+        if (open)
+        {
+            load_window.SetActive(true);
 
-    }
+            // continue logic
+        }
+        else
+        {
+            // begin logic
 
-    private void LoadGameClose()
-    {
-        if (!load_window.activeInHierarchy) { return; }
-
+            load_window.SetActive(false);
+        }
     }
 
     #endregion
@@ -399,16 +405,20 @@ public class MainMenuManager : MonoBehaviour
     [Header("Join Game")] // TODO
     [SerializeField] private GameObject join_window;
 
-    private void JoinGameOpen()
+    private void JoinGameToggle(bool open)
     {
-        if (join_window.activeInHierarchy) { return; }
+        if (open)
+        {
+            join_window.SetActive(true);
 
-    }
+            // continue logic
+        }
+        else
+        {
+            // begin logic
 
-    private void JoinGameClose()
-    {
-        if (!join_window.activeInHierarchy) { return; }
-
+            join_window.SetActive(false);
+        }
     }
 
     #endregion
