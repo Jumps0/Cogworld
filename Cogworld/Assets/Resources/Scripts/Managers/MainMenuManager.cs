@@ -51,6 +51,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private Color color_bright;
     [SerializeField] private Color color_dull;
     [SerializeField] private Color color_white;
+    [SerializeField] private Color color_gray;
 
     #region Buttons
     private void SetupMainButtons()
@@ -936,13 +937,14 @@ public class MainMenuManager : MonoBehaviour
     [Header("Settings Input Field")]
     public GameObject settings_inputfield_main;
     public TMP_InputField settings_ifield;
-    [SerializeField] private Image settings_if_mainbacker; // The primary black image just below the main parent
+    [SerializeField] private TextMeshProUGUI settings_ifield_text; // Used for direct color alterations
+    public Image settings_if_mainbacker; // The primary black image just below the main parent
     [SerializeField] private Image settings_if_borders; // The main GREEN borders of the window
     [SerializeField] private Transform settings_if_headerParent; // The parent transform holding all of the \HEADER\ objects.
     [SerializeField] private Image settings_if_headerBack; // Image behind the \HEADER\
     [SerializeField] private TextMeshProUGUI settings_if_header; // text for the \HEADER\
     [SerializeField] private Transform settings_if_area; // The area (black image) where objects are spawned under
-    [SerializeField] private GameObject settings_if_xbutton; // The 'X' button which needs to be at the bottom right of the window
+    public GameObject settings_if_xbutton; // The 'X' button which needs to be at the bottom right of the window
     public TextMeshProUGUI settings_if_headerfill; // Secret hidden text which sets the size of the detail box
     private Coroutine settings_inputfield_co = null;
 
@@ -1039,6 +1041,7 @@ public class MainMenuManager : MonoBehaviour
         settings_if_headerBack.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
         settings_if_header.color = new Color(color_bright.r, color_bright.g, color_bright.b, 1f);
         settings_if_borders.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
+        settings_ifield_text.color = new Color(color_white.r, color_white.g, color_white.b, 1f);
 
         if (SIFH_co != null)
         {
@@ -1088,6 +1091,7 @@ public class MainMenuManager : MonoBehaviour
         settings_if_headerBack.GetComponent<Image>().color = new Color(color_dull.r, color_dull.g, color_dull.b, 1f);
         settings_if_header.color = new Color(color_dull.r, color_dull.g, color_dull.b, 1f);
         settings_if_borders.GetComponent<Image>().color = new Color(color_dull.r, color_dull.g, color_dull.b, 1f);
+        settings_ifield_text.color = new Color(color_white.r, color_white.g, color_white.b, 1f);
 
         while (elapsedTime < duration)
         {
@@ -1098,6 +1102,7 @@ public class MainMenuManager : MonoBehaviour
             settings_if_headerBack.GetComponent<Image>().color = new Color(color_dull.r, color_dull.g, color_dull.b, lerp);
             settings_if_header.color = new Color(color_dull.r, color_dull.g, color_dull.b, lerp);
             settings_if_borders.GetComponent<Image>().color = new Color(color_dull.r, color_dull.g, color_dull.b, lerp);
+            settings_ifield_text.color = new Color(color_white.r, color_white.g, color_white.b, 1f);
 
             elapsedTime += Time.deltaTime;
             yield return null;
@@ -1108,11 +1113,39 @@ public class MainMenuManager : MonoBehaviour
         settings_if_headerBack.GetComponent<Image>().color = new Color(color_dull.r, color_dull.g, color_dull.b, 0f);
         settings_if_header.color = new Color(color_dull.r, color_dull.g, color_dull.b, 0f);
         settings_if_borders.GetComponent<Image>().color = new Color(color_dull.r, color_dull.g, color_dull.b, 0f);
+        settings_ifield_text.color = new Color(color_white.r, color_white.g, color_white.b, 0f);
 
         yield return null;
 
         // Disable the box (no animation)
         settings_inputfield_main.SetActive(false);
+    }
+
+    private IEnumerator SettingsValueUpdate_Animation(MMButtonSettings setting)
+    {
+        // Relatively Simple [Black -> Bright Green]
+        float elapsedTime = 0f;
+        float duration = 0.45f;
+
+        Color start = Color.black, end = color_bright;
+
+        // Edge case for <SEED> (ID 27) where its gray if it is "Random"
+        if (setting.currentSetting.canBeGrayedOut && setting.myID == 27 && setting.text_setting.text.ToLower() == "random")
+        {
+            end = color_gray;
+        }
+
+        setting.text_setting.color = start;
+        while (elapsedTime < duration)
+        {
+            Color lerp = Color.Lerp(start, end, elapsedTime / duration);
+
+            setting.text_setting.color = lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        setting.text_setting.color = end;
     }
     #endregion
 
@@ -1136,6 +1169,9 @@ public class MainMenuManager : MonoBehaviour
     #region Keyboard Input Detection
     private void KeyboardInputDetection()
     {
+        // Don't do anything while in an inputfield!!!
+        if (settings_inputfield_main.activeInHierarchy) { return; }
+
         // Check for player input
         if (Keyboard.current.anyKey.wasPressedThisFrame) // FUTURE TODO: Check if player is typing in an inputfield
         {
@@ -1162,6 +1198,9 @@ public class MainMenuManager : MonoBehaviour
 
     private void ArrowNavigation()
     {
+        // Don't do anything while in an inputfield!!!
+        if (settings_inputfield_main.activeInHierarchy) { return; }
+
         if (settings_area.gameObject.activeInHierarchy)
         {
             if (Keyboard.current.leftArrowKey.wasPressedThisFrame)
@@ -1207,6 +1246,9 @@ public class MainMenuManager : MonoBehaviour
         
         // Shift logic to inside the script
         settings_inputfield_main.GetComponent<MMInputField>().Enter();
+
+        // Update the original value with an animation
+        StartCoroutine(SettingsValueUpdate_Animation(settings_inputfield_main.GetComponent<MMInputField>().setting));
 
         // Close the inputfield
         IFClose();

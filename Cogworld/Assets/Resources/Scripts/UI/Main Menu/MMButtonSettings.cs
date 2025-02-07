@@ -19,7 +19,7 @@ public class MMButtonSettings : MonoBehaviour
     [SerializeField] private TextMeshProUGUI text_main;
     [SerializeField] private TextMeshProUGUI text_keybind;
     [SerializeField] private TextMeshProUGUI text_rightbracket;
-    [SerializeField] private TextMeshProUGUI text_setting;
+    public TextMeshProUGUI text_setting;
 
     [Header("Values")]
     public char character;

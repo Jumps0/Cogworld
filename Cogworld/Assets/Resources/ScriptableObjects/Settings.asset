@@ -39,7 +39,7 @@ MonoBehaviour:
   moveBlockDuration: 750
   playerName: Player
   uploadScores: 0
-  seed: 0
+  seed: Random
   newsUpdates: 0
   reportErrors: 0
   achievementsAnywhere: 1

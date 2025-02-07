@@ -50,10 +50,11 @@ public class ScriptableSettings : ScriptableObject
     public int moveBlockDuration = 750;
 
     [Header("Player")]
+    [Tooltip("Default is `Player`")]
     public string playerName = "Player";
     public bool uploadScores = false; // Probably will never happen. Here for posterity
-    [Tooltip("0 = Random")]
-    public int seed = 0;
+    [Tooltip("0 = Random. Default is `Random`")]
+    public string seed = "Random";
     public bool newsUpdates = false; // Probably will never happen. Here for posterity
     public bool reportErrors = false; // Probably will never happen. Here for posterity
     public bool achievementsAnywhere = true;

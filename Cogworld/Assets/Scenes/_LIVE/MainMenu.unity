@@ -167,7 +167,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7059769}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
@@ -6500,7 +6500,7 @@ MonoBehaviour:
   m_ReadOnly: 0
   m_RichText: 1
   m_GlobalFontAsset: {fileID: 11400000, guid: 3f1bf64e23c81b149a75c74890c74f84, type: 2}
-  m_OnFocusSelectAll: 1
+  m_OnFocusSelectAll: 0
   m_ResetOnDeActivation: 0
   m_RestoreOriginalTextOnEscape: 1
   m_isRichTextEditingAllowed: 0
@@ -9164,7 +9164,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: SECRET FILL
+  m_text: SECRET FILL TEXT HERE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3f1bf64e23c81b149a75c74890c74f84, type: 2}
   m_sharedMaterial: {fileID: -6821579221814523707, guid: 3f1bf64e23c81b149a75c74890c74f84, type: 2}
@@ -9400,6 +9400,7 @@ MonoBehaviour:
   color_bright: {r: 0, g: 0.8, b: 0, a: 1}
   color_dull: {r: 0.011764706, g: 0.18431373, b: 0.003921569, a: 1}
   color_white: {r: 0.74509805, g: 0.74509805, b: 0.74509805, a: 1}
+  color_gray: {r: 0.2509804, g: 0.2509804, b: 0.2509804, a: 1}
   main_window: {fileID: 1099466826}
   main_border: {fileID: 682403590}
   main_area: {fileID: 158698213}
@@ -9486,6 +9487,7 @@ MonoBehaviour:
   detail_objects: []
   settings_inputfield_main: {fileID: 705492631}
   settings_ifield: {fileID: 944424264}
+  settings_ifield_text: {fileID: 1963067049}
   settings_if_mainbacker: {fileID: 246669458}
   settings_if_borders: {fileID: 1550571119}
   settings_if_headerParent: {fileID: 1357930320}
@@ -15291,7 +15293,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1323264076}
         m_TargetAssemblyTypeName: MainMenuManager, Assembly-CSharp
-        m_MethodName: DetailClose
+        m_MethodName: IFClose
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

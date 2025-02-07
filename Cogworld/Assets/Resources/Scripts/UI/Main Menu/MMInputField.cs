@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 using static Unity.VisualScripting.Member;
 using Unity.VisualScripting;
+using UnityEngine.TextCore.Text;
 
 /// <summary>
 /// Script containing logic for the input fields on the main menu
@@ -42,13 +43,14 @@ public class MMInputField : MonoBehaviour
             SetFocus(true);
             field.caretPosition = field.text.Length;
 
-            if (field.isFocused)
-            {
-                ForceMeshUpdates();
-            }
+            ForceMeshUpdates();
 
-            SetFocus(true);
-            field.caretPosition = field.text.Length;
+            // Update the X position
+            Vector3[] v = new Vector3[4];
+            MainMenuManager.inst.settings_if_mainbacker.GetComponent<RectTransform>().GetWorldCorners(v);
+            float x = v[3].x, y = v[3].y;
+            Vector3 pos = new Vector3(x - 15f, y + 3.5f, 0); // Offset it a bit so its still on the window
+            MainMenuManager.inst.settings_if_xbutton.transform.position = pos;
         }
     }
 
@@ -73,9 +75,10 @@ public class MMInputField : MonoBehaviour
             setting.currentSetting.value_string = text;
 
             // Conditional, if this is the <SEED> setting (currently ID 27), setting it to 0 should set it to be blank instead.
-            if(text == "0")
+            if(myID == 27 && text == "0")
             {
-                setting.currentSetting.value_string = "";
+                text = "Random";
+                setting.currentSetting.value_string = "Random";
             }
         }
         else // Invalid? Don't change anything
@@ -84,6 +87,7 @@ public class MMInputField : MonoBehaviour
         }
 
         // Update the setting
+        setting.text_setting.text = text;
         HF.UpdateSetting(myID, setting.currentSetting);
         if (MainMenuManager.inst != null)
         {
@@ -119,7 +123,6 @@ public class MMInputField : MonoBehaviour
     #region Misc Helpers
     public void SetFocus(bool active)
     {
-
         if (active)
         {
             field.Select();
@@ -130,7 +133,6 @@ public class MMInputField : MonoBehaviour
             field.ReleaseSelection();
             field.DeactivateInputField();
         }
-
     }
 
     public void ForceMeshUpdates()
