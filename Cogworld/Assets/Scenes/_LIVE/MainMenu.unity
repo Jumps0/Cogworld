@@ -3684,7 +3684,7 @@ GameObject:
   - component: {fileID: 509142320}
   - component: {fileID: 509142321}
   m_Layer: 5
-  m_Name: '? (1)'
+  m_Name: ~New Game~
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7714,7 +7714,7 @@ GameObject:
   - component: {fileID: 1074901769}
   - component: {fileID: 1074901770}
   m_Layer: 5
-  m_Name: '? (2)'
+  m_Name: ~Load Game~
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8451,7 +8451,7 @@ GameObject:
   - component: {fileID: 1231822130}
   - component: {fileID: 1231822131}
   m_Layer: 5
-  m_Name: '?'
+  m_Name: ~Continue~
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9403,7 +9403,10 @@ MonoBehaviour:
   color_gray: {r: 0.2509804, g: 0.2509804, b: 0.2509804, a: 1}
   main_window: {fileID: 1099466826}
   main_border: {fileID: 682403590}
-  main_area: {fileID: 158698213}
+  continue_window: {fileID: 1231822129}
+  newgame_window: {fileID: 509142319}
+  load_window: {fileID: 1074901768}
+  join_window: {fileID: 1860519305}
   records_main: {fileID: 1264351492}
   records_borders: {fileID: 1940214533}
   credits_main: {fileID: 1259433405}
@@ -13460,7 +13463,7 @@ GameObject:
   - component: {fileID: 1860519306}
   - component: {fileID: 1860519307}
   m_Layer: 5
-  m_Name: '? (3)'
+  m_Name: ~Join Game~
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

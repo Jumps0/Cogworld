@@ -87,7 +87,6 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private GameObject main_window;
     private Coroutine main_borders_co;
     [SerializeField] private Image main_border;
-    [SerializeField] private GameObject main_area;
 
     public void ButtonAction(int instruction)
     {
@@ -99,40 +98,65 @@ public class MainMenuManager : MonoBehaviour
         switch (instruction)
         {
             case 1: // - CONTINUE
-                ToggleRecordsWindow(false, true); // Force close any other windows
+                // Force close any other windows
+                NewGameClose();
+                LoadGameClose();
+                JoinGameClose();
+                ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
 
                 ToggleMainWindow(true); // Open the window
+                ContinueOpen();
 
                 break;
             case 2: // - NEW GAME
-                ToggleRecordsWindow(false, true); // Force close any other windows
+                // Force close any other windows
+                ContinueClose();
+                LoadGameClose();
+                JoinGameClose();
+                ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
 
                 ToggleMainWindow(true); // Open the window
+                NewGameOpen();
 
                 break;
             case 3: // - LOAD GAME
-                ToggleRecordsWindow(false, true); // Force close any other windows
+                // Force close any other windows
+                NewGameClose();
+                ContinueClose();
+                JoinGameClose();
+                ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
 
                 ToggleMainWindow(true); // Open the window
+                LoadGameOpen();
 
                 break;
             case 4: // - JOIN GAME
-                ToggleRecordsWindow(false, true); // Force close any other windows
+                // Force close any other windows
+                NewGameClose();
+                ContinueClose();
+                LoadGameClose();
+                ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
 
                 ToggleMainWindow(true); // Open the window
+                JoinGameOpen();
 
                 break;
             case 5: // - RECORDS
                 // Unique window
-                ToggleMainWindow(false, true); // Close the window
+                // Force close any other windows
+                NewGameClose();
+                ContinueClose();
+                LoadGameClose();
+                JoinGameClose();
+                ToggleMainWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
 
@@ -140,7 +164,12 @@ public class MainMenuManager : MonoBehaviour
 
                 break;
             case 6: // - SETTINGS
-                ToggleRecordsWindow(false, true); // Force close any other windows
+                // Force close any other windows
+                NewGameClose();
+                ContinueClose();
+                LoadGameClose();
+                JoinGameClose();
+                ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
 
@@ -150,15 +179,25 @@ public class MainMenuManager : MonoBehaviour
                 break;
             case 7: // - CREDITS
                 // Unique window
+                // Force close any other windows
+                ContinueClose();
+                NewGameClose();
+                LoadGameClose();
+                JoinGameClose();
                 ToggleRecordsWindow(false, true);
-                ToggleMainWindow(false, true); // Close the window
+                ToggleMainWindow(false, true);
                 ToggleQuitWindow(false, true);
 
                 ToggleCreditsWindow(true); // Open the credits window
 
                 break;
             case 8: // - QUIT
-                ToggleMainWindow(false, true); // Close the window
+                // Force close any other windows
+                NewGameClose();
+                ContinueClose();
+                LoadGameClose();
+                JoinGameClose();
+                ToggleMainWindow(false, true);
                 ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
 
@@ -296,6 +335,80 @@ public class MainMenuManager : MonoBehaviour
 
             text.color = end;
         }
+    }
+
+    #endregion
+
+    #region Continue
+    [Header("Continue")] // TODO
+    [SerializeField] private GameObject continue_window;
+
+    private void ContinueOpen()
+    {
+        if (continue_window.activeInHierarchy) { return; }
+
+
+    }
+
+    private void ContinueClose()
+    {
+        if (!continue_window.activeInHierarchy) { return; }
+
+
+    }
+
+    #endregion
+
+    #region New Game
+    [Header("New Game")] // TODO
+    [SerializeField] private GameObject newgame_window;
+
+    private void NewGameOpen()
+    {
+        if (newgame_window.activeInHierarchy) { return; }
+
+    }
+
+    private void NewGameClose()
+    {
+        if (!newgame_window.activeInHierarchy) { return; }
+
+    }
+
+    #endregion
+
+    #region Load Game
+    [Header("Load Game")] // TODO
+    [SerializeField] private GameObject load_window;
+
+    private void LoadGameOpen()
+    {
+        if (load_window.activeInHierarchy) { return; }
+
+    }
+
+    private void LoadGameClose()
+    {
+        if (!load_window.activeInHierarchy) { return; }
+
+    }
+
+    #endregion
+
+    #region Join Game
+    [Header("Join Game")] // TODO
+    [SerializeField] private GameObject join_window;
+
+    private void JoinGameOpen()
+    {
+        if (join_window.activeInHierarchy) { return; }
+
+    }
+
+    private void JoinGameClose()
+    {
+        if (!join_window.activeInHierarchy) { return; }
+
     }
 
     #endregion
