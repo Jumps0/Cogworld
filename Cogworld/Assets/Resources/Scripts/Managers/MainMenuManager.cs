@@ -9,6 +9,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Image = UnityEngine.UI.Image;
 using System.Linq;
+using Mono.Unix.Native;
+using static System.Net.Mime.MediaTypeNames;
 
 
 public class MainMenuManager : MonoBehaviour
@@ -98,6 +100,8 @@ public class MainMenuManager : MonoBehaviour
         switch (instruction)
         {
             case 1: // - CONTINUE
+                ToggleMainWindow(true); // Open the window
+
                 // Force close any other windows
                 NewGameToggle(false);
                 ContinueToggle(true);
@@ -106,10 +110,10 @@ public class MainMenuManager : MonoBehaviour
                 ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
-
-                ToggleMainWindow(true); // Open the window
                 break;
             case 2: // - NEW GAME
+                ToggleMainWindow(true); // Open the window
+
                 // Force close any other windows
                 NewGameToggle(true);
                 ContinueToggle(false);
@@ -118,10 +122,10 @@ public class MainMenuManager : MonoBehaviour
                 ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
-
-                ToggleMainWindow(true); // Open the window
                 break;
             case 3: // - LOAD GAME
+                ToggleMainWindow(true); // Open the window
+
                 // Force close any other windows
                 NewGameToggle(false);
                 ContinueToggle(false);
@@ -130,10 +134,10 @@ public class MainMenuManager : MonoBehaviour
                 ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
-
-                ToggleMainWindow(true); // Open the window
                 break;
             case 4: // - JOIN GAME
+                ToggleMainWindow(true); // Open the window
+
                 // Force close any other windows
                 NewGameToggle(false);
                 ContinueToggle(false);
@@ -142,8 +146,6 @@ public class MainMenuManager : MonoBehaviour
                 ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
-
-                ToggleMainWindow(true); // Open the window
                 break;
             case 5: // - RECORDS
                 // Unique window
@@ -360,6 +362,10 @@ public class MainMenuManager : MonoBehaviour
     #region New Game
     [Header("New Game")] // TODO
     [SerializeField] private GameObject newgame_window;
+    [SerializeField] private Transform newgame_preferences_area;
+    [SerializeField] private TextMeshProUGUI newgame_explainer_text;
+    [SerializeField] private int newgame_preferences_count = 9; // Annoying static value that needs to be updated when new preferences are added
+    [SerializeField] private List<GameObject> newgame_objects = new List<GameObject>();
 
     private void NewGameToggle(bool open)
     {
@@ -367,10 +373,60 @@ public class MainMenuManager : MonoBehaviour
         {
             newgame_window.SetActive(true);
 
+            #region Preferences
+            // Fill up the preferences area with the options & headers
+
+            // Destroy any existing objects
+            foreach (var O in newgame_objects.ToList())
+            {
+                Destroy(O);
+            }
+            newgame_objects.Clear();
+
+            Transform parent = newgame_preferences_area;
+            for (int i = 0; i < newgame_preferences_count; i++)
+            {
+                // -- Headers --
+                if(i == 0) // 0, 1, 2
+                {
+                    SettingsCreateHeader("Enemies", parent);
+                }
+                else if (i == 3) // 3
+                {
+                    SettingsCreateHeader("Hacking", parent);
+                }
+                else if (i == 4) // 4, 5, 6
+                {
+                    SettingsCreateHeader("Evolution", parent);
+                }
+                else if (i == 7) // 7, 8
+                {
+                    SettingsCreateHeader("Corruption", parent);
+                }
+
+                // New object
+                GameObject newSetting = Instantiate(settings_prefab, Vector2.zero, Quaternion.identity, parent);
+
+                // Set them up and animate them
+                newSetting.GetComponent<MMButtonSettings>().Setup(i, alphabet[i], false);
+
+                // Save it
+                newgame_objects.Add(newSetting);
+            }
+
+            #endregion
+
             // continue logic
         }
         else
         {
+            // Clear preferences objects
+            foreach (var O in newgame_objects.ToList())
+            {
+                Destroy(O);
+            }
+            newgame_objects.Clear();
+
             // begin logic
 
             newgame_window.SetActive(false);
@@ -585,56 +641,6 @@ public class MainMenuManager : MonoBehaviour
     }
     #endregion
 
-    #region Quit
-    [Header("Quit")]
-    [SerializeField] private GameObject quit_main;
-    [SerializeField] private Image quit_borders;
-    [SerializeField] private TextMeshProUGUI quit_text;
-    [SerializeField] private MMButtonSimple quit_yes;
-    [SerializeField] private MMButtonSimple quit_no;
-    private Coroutine quit_co;
-
-    private void ToggleQuitWindow(bool toggle, bool quickClose = false)
-    {
-        quit_main.SetActive(toggle);
-
-        if (quit_co != null)
-        {
-            StopCoroutine(quit_co);
-        }
-
-        if (!toggle && quickClose)
-        {
-            quit_main.SetActive(false);
-        }
-        else
-        {
-            if (toggle)
-            {
-                quit_yes.Setup("Yes");
-                quit_no.Setup("No");
-            }
-
-            StartCoroutine(GenericWindowAnimation(quit_borders, toggle));
-            StartCoroutine(GenericTextFlashAnimation(quit_text, toggle));
-        }
-    }
-
-    public void CancelQuitGame()
-    {
-        UnSelectButtons(null);
-
-        this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["CLOSE"], 0.5f); // UI - CLOSE
-
-        ToggleQuitWindow(false);
-    }
-
-    public void QuitGame()
-    {
-        UnityEngine.Application.Quit();
-    }
-    #endregion
-
     #region Settings
     [Header("Settings")]
     [SerializeField] private GameObject settings_parent;
@@ -820,21 +826,38 @@ public class MainMenuManager : MonoBehaviour
         settings_header_objects.Clear();
     }
 
-    public void SettingsRevealExplainerText(string text)
+    public void SetRevealExplainerText(string text)
     {
         // No animation! Just update the text.
 
-        settings_explainerText.gameObject.SetActive(true);
+        if (settings_area.gameObject.activeInHierarchy)
+        {
+            settings_explainerText.gameObject.SetActive(true);
 
-        settings_explainerText.text = text;
+            settings_explainerText.text = text;
+        }
+        else if (newgame_window.gameObject.activeInHierarchy)
+        {
+            newgame_explainer_text.gameObject.SetActive(true);
+
+            newgame_explainer_text.text = text;
+        }
     }
 
     public void SettingsHideExplainer()
     {
-        settings_explainerText.gameObject.SetActive(false);
+        if (settings_area.gameObject.activeInHierarchy)
+        {
+            settings_explainerText.gameObject.SetActive(false);
 
-        settings_explainerText.text = "";
+            settings_explainerText.text = "";
+        }
+        else if (newgame_window.gameObject.activeInHierarchy)
+        {
+            newgame_explainer_text.gameObject.SetActive(false);
 
+            newgame_explainer_text.text = "";
+        }
     }
 
     #region Detail Window
@@ -1286,6 +1309,61 @@ public class MainMenuManager : MonoBehaviour
         // - AUDIO (5) -
         
 
+    }
+
+    public void ApplyPreferencesSimple()
+    {
+        // Does anything actually change here? I don't believe so. Here just in case.
+    }
+    #endregion
+
+    #region Quit
+    [Header("Quit")]
+    [SerializeField] private GameObject quit_main;
+    [SerializeField] private Image quit_borders;
+    [SerializeField] private TextMeshProUGUI quit_text;
+    [SerializeField] private MMButtonSimple quit_yes;
+    [SerializeField] private MMButtonSimple quit_no;
+    private Coroutine quit_co;
+
+    private void ToggleQuitWindow(bool toggle, bool quickClose = false)
+    {
+        quit_main.SetActive(toggle);
+
+        if (quit_co != null)
+        {
+            StopCoroutine(quit_co);
+        }
+
+        if (!toggle && quickClose)
+        {
+            quit_main.SetActive(false);
+        }
+        else
+        {
+            if (toggle)
+            {
+                quit_yes.Setup("Yes");
+                quit_no.Setup("No");
+            }
+
+            StartCoroutine(GenericWindowAnimation(quit_borders, toggle));
+            StartCoroutine(GenericTextFlashAnimation(quit_text, toggle));
+        }
+    }
+
+    public void CancelQuitGame()
+    {
+        UnSelectButtons(null);
+
+        this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["CLOSE"], 0.5f); // UI - CLOSE
+
+        ToggleQuitWindow(false);
+    }
+
+    public void QuitGame()
+    {
+        UnityEngine.Application.Quit();
     }
     #endregion
 

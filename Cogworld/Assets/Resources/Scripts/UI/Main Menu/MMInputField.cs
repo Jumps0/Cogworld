@@ -86,16 +86,31 @@ public class MMInputField : MonoBehaviour
             text = startString;
         }
 
-        // Update the setting
+        // Update the setting OR preference
         setting.text_setting.text = text;
-        HF.UpdateSetting(myID, setting.currentSetting);
-        if (MainMenuManager.inst != null)
+        if (setting.isSetting)
         {
-            MainMenuManager.inst.ApplySettingsSimple();
+            HF.UpdateSetting(myID, setting.currentSetting);
+            if (MainMenuManager.inst != null)
+            {
+                MainMenuManager.inst.ApplySettingsSimple();
+            }
+            else if (GlobalSettings.inst != null)
+            {
+                GlobalSettings.inst.ApplySettings();
+            }
         }
-        else if (GlobalSettings.inst != null)
+        else
         {
-            GlobalSettings.inst.ApplySettings();
+            HF.UpdatePreferences(myID, setting.currentSetting);
+            if (MainMenuManager.inst != null)
+            {
+                MainMenuManager.inst.ApplyPreferencesSimple();
+            }
+            else if (GlobalSettings.inst != null)
+            {
+                GlobalSettings.inst.ApplyPreferences();
+            }
         }
 
         // (MainMenuMgr will close the window directly after this)

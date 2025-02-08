@@ -29,6 +29,8 @@ public class MMButtonSettings : MonoBehaviour
     public ScriptableSettingShort currentSetting;
     public string title = "";
     public string explainer = "";
+    [Tooltip("Is this option related to `SETTINGS` or `PREFERENCES`?")]
+    public bool isSetting = true;
     public List<(string, ScriptableSettingShort)> options = new List<(string, ScriptableSettingShort)>();
 
     [Header("Colors")]
@@ -37,12 +39,20 @@ public class MMButtonSettings : MonoBehaviour
     [SerializeField] private Color color_bright;
     [SerializeField] private Color color_gray;
 
-    public void Setup(int id, char character)
+    public void Setup(int id, char character, bool isSetting = true)
     {
         myID = id;
         this.character = character;
+        this.isSetting = isSetting;
 
-        (currentSetting, title, explainer, options) = HF.ParseSettingsOption(myID);
+        if (isSetting)
+        {
+            (currentSetting, title, explainer, options) = HF.ParseSettingsOption(myID);
+        }
+        else
+        {
+            (currentSetting, title, explainer, options) = HF.ParsePreferencesOption(myID);
+        }
 
         this.gameObject.name = $"{character} - {title}";
 
@@ -62,7 +72,7 @@ public class MMButtonSettings : MonoBehaviour
         text_keybind.text = $"{this.character} - [";
         text_main.text = title;
 
-        MainMenuManager.inst.SettingsRevealExplainerText(explainer);
+        MainMenuManager.inst.SetRevealExplainerText(explainer);
 
         text_setting.text = ValueToString(currentSetting);
 
@@ -134,7 +144,7 @@ public class MMButtonSettings : MonoBehaviour
         // Play the hover UI sound
         MainMenuManager.inst.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["HOVER"], 0.7f); // UI - HOVER
 
-        MainMenuManager.inst.SettingsRevealExplainerText(explainer); // Update below explainer
+        MainMenuManager.inst.SetRevealExplainerText(explainer); // Update below explainer
     }
 
     public void HoverEnd()
@@ -220,15 +230,30 @@ public class MMButtonSettings : MonoBehaviour
         // Play a sound
         AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.dict_ui["OPTION"]); // UI - OPTION
 
-        // Update the setting
-        HF.UpdateSetting(myID, currentSetting);
-        if(MainMenuManager.inst != null)
+        // Update the setting OR preference
+        if (isSetting)
         {
-            MainMenuManager.inst.ApplySettingsSimple();
+            HF.UpdateSetting(myID, currentSetting);
+            if (MainMenuManager.inst != null)
+            {
+                MainMenuManager.inst.ApplySettingsSimple();
+            }
+            else if (GlobalSettings.inst != null)
+            {
+                GlobalSettings.inst.ApplySettings();
+            }
         }
-        else if (GlobalSettings.inst != null)
+        else
         {
-            GlobalSettings.inst.ApplySettings();
+            HF.UpdatePreferences(myID, currentSetting);
+            if (MainMenuManager.inst != null)
+            {
+                MainMenuManager.inst.ApplyPreferencesSimple();
+            }
+            else if (GlobalSettings.inst != null)
+            {
+                GlobalSettings.inst.ApplyPreferences();
+            }
         }
 
         // Do the animation

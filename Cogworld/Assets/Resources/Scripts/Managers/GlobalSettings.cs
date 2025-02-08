@@ -35,6 +35,14 @@ public class GlobalSettings : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Applies all current preferences from the SObject.
+    /// </summary>
+    public void ApplyPreferences()
+    {
+        // TODO
+    }
+
     #region Defaults
     [Header("Defaults")]
         [Header("Player")]
