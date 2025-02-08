@@ -6934,16 +6934,17 @@ public static class HF
             case 5: // Evolve - Clear Corruption
                 value.value_bool = preferences.evolve_clearCorruption;
                 value.canBeGrayedOut = true;
-                display = "Clear Corruption Between Floors";
+                display = "Clear Corruption";
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
-                bottomText = "Enables or disables the clearing of corruption between floors.";
+                bottomText = "Enables or disables the clearing of corruption between floors, where the player's corruption level is set to 0.";
                 break;
             case 6: // Evolve - New Health Per Level
                 value.value_int = preferences.evolve_newHealthPerLevel;
                 display = "New Health Per Level";
                 options.Add(("50", new ScriptableSettingShort(v_i: 50)));
                 options.Add(("100", new ScriptableSettingShort(v_i: 100)));
+                options.Add(("150", new ScriptableSettingShort(v_i: 150)));
                 options.Add(("200", new ScriptableSettingShort(v_i: 200)));
                 options.Add(("300", new ScriptableSettingShort(v_i: 300)));
                 options.Add(("400", new ScriptableSettingShort(v_i: 400)));
@@ -6956,7 +6957,7 @@ public static class HF
                 display = "Corruption";
                 options.Add(("On", new ScriptableSettingShort(v_b: true)));
                 options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
-                bottomText = "Enables or Disabled the Corruption mechanic. WARNING: Corruption is a key aspect of the game, and doing so will make it less complex.";
+                bottomText = "Enables or Disabled the Corruption mechanic. WARNING: Corruption is a key aspect of the game, and disabling it will make the game less complex.";
                 break;
             case 8: // Corruption - Do Effects
                 value.value_bool = preferences.corruption_effects;

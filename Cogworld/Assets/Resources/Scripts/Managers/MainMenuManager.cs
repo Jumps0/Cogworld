@@ -384,6 +384,18 @@ public class MainMenuManager : MonoBehaviour
             newgame_objects.Clear();
 
             Transform parent = newgame_preferences_area;
+            // -- Difficulty option (from settings) --
+            SettingsCreateHeader("Difficulty", parent);
+            // New object
+            GameObject diffSetting = Instantiate(settings_prefab, Vector2.zero, Quaternion.identity, parent);
+
+            // Set them up and animate them
+            diffSetting.GetComponent<MMButtonSettings>().Setup(5, alphabet[0], true); // Difficulty -> i = 5
+
+            // Save it
+            newgame_objects.Add(diffSetting);
+
+            // -- Preference Object spawning --
             for (int i = 0; i < newgame_preferences_count; i++)
             {
                 // -- Headers --
@@ -408,7 +420,7 @@ public class MainMenuManager : MonoBehaviour
                 GameObject newSetting = Instantiate(settings_prefab, Vector2.zero, Quaternion.identity, parent);
 
                 // Set them up and animate them
-                newSetting.GetComponent<MMButtonSettings>().Setup(i, alphabet[i], false);
+                newSetting.GetComponent<MMButtonSettings>().Setup(i, alphabet[i + 1], false); // alphabet[i + 1] because difficulty uses i = 0
 
                 // Save it
                 newgame_objects.Add(newSetting);

@@ -12,3 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18405eb47c04bf24a9b35a11584eaba0, type: 3}
   m_Name: Preferences
   m_EditorClassIdentifier: 
+  squads_investigation: 1
+  squads_extermination: 1
+  extermination_mtth: 500
+  hacking_baseDetectionChance: 0.1
+  evolve_healBetweenFloors: 1
+  evolve_clearCorruption: 1
+  evolve_newHealthPerLevel: 150
+  corruption_enabled: 1
+  corruption_effects: 1
