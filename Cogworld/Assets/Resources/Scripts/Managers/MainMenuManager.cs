@@ -46,6 +46,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private List<GameObject> buttons_main = new List<GameObject>();
     [SerializeField] private Transform buttons_area;
     [SerializeField] private GameObject button_prefab;
+    [SerializeField] private GameObject button_big_prefab;
     private List<string> button_titles = new List<string>() { "CONTINUE", "NEW GAME", "LOAD GAME", "JOIN GAME", "RECORDS", "SETTINGS", "CREDITS", "QUIT" };
 
     [Header("Colors")]
