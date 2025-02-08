@@ -836,7 +836,7 @@ public class GameManager : MonoBehaviour
         MapManager.inst.evoChanges.Add(pWep_new - pWep_d);
 
         // Also apply evo boosts to player
-        PlayerData.inst.maxHealth += 150;
+        PlayerData.inst.maxHealth += GlobalSettings.inst.preferences.evolve_newHealthPerLevel;
         PlayerData.inst.naturalHeatDissipation += 3;
         // And refresh their core values
         PlayerData.inst.NewLevelRestore();

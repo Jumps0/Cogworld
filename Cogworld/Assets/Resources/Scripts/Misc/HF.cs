@@ -6841,6 +6841,179 @@ public static class HF
                 break;
         }
     }
+
+    /// <summary>
+    /// Attempt to parse a preferences option based on an ID. Will return all important data about that preference so it can be visualized.
+    /// </summary>
+    /// <param name="id">An int ID refering to a single preference option.</param>
+    /// <returns>Currently active preference (SSShort), Name of Preference (string), Bottom display text (string), List<(string, SSShort) of options></returns>
+    public static (ScriptableSettingShort, string, string, List<(string, ScriptableSettingShort)>) ParsePreferencesOption(int id)
+    {
+        // Not too pleased with this but unsure of how else to approach it.
+
+        ScriptableSettingShort value = new ScriptableSettingShort();
+        string display = "";
+        string bottomText = "";
+        // (String to display on the box, what that option will change)
+        List<(string, ScriptableSettingShort)> options = new List<(string, ScriptableSettingShort)>();
+
+        ScriptablePreferences preferences = null;
+
+        if (MainMenuManager.inst)
+        {
+            preferences = MainMenuManager.inst.preferencesObject;
+        }
+        else if (GlobalSettings.inst)
+        {
+            preferences = GlobalSettings.inst.preferences;
+        }
+
+        if (preferences == null)
+        {
+            Debug.LogError("ERROR: No preferences object detected. Preferences menu will break!");
+        }
+
+        // This is going to be very ugly.
+        switch (id)
+        {
+            case 0: // Squads - Investigation
+                value.value_bool = preferences.squads_investigation;
+                value.canBeGrayedOut = true;
+                display = "Investigation Squads";
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
+                bottomText = "Enables or disables investigation squads entirely.";
+                break;
+            case 1: // Squads - Extermination
+                value.value_bool = preferences.squads_extermination;
+                value.canBeGrayedOut = true;
+                display = "Extermination Squads";
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
+                bottomText = "Enables or disables investigation squads entirely.";
+                break;
+            case 2: // Squads - Extermination MTTH
+                value.value_int = preferences.extermination_mtth;
+                display = "Extermination Squad MTTM";
+                options.Add(("100", new ScriptableSettingShort(v_i: 100)));
+                options.Add(("200", new ScriptableSettingShort(v_i: 200)));
+                options.Add(("300", new ScriptableSettingShort(v_i: 300)));
+                options.Add(("400", new ScriptableSettingShort(v_i: 400)));
+                options.Add(("500", new ScriptableSettingShort(v_i: 500)));
+                options.Add(("600", new ScriptableSettingShort(v_i: 600)));
+                options.Add(("700", new ScriptableSettingShort(v_i: 700)));
+                options.Add(("800", new ScriptableSettingShort(v_i: 800)));
+                options.Add(("900", new ScriptableSettingShort(v_i: 900)));
+                options.Add(("1000", new ScriptableSettingShort(v_i: 1000)));
+                bottomText = "The 'mean-time-to-happen' of extermination squad deployments. In practice this value will be the AVERAGE time between extermination squad dispatches.";
+                break;
+            case 3: // Hacking - Base Detection Chance
+                value.value_float = preferences.hacking_baseDetectionChance;
+                display = "Base Detection Chance";
+                options.Add(("5%", new ScriptableSettingShort(v_f: 0.05f)));
+                options.Add(("10%", new ScriptableSettingShort(v_f: 0.1f)));
+                options.Add(("20%", new ScriptableSettingShort(v_f: 0.2f)));
+                options.Add(("30%", new ScriptableSettingShort(v_f: 0.3f)));
+                options.Add(("40%", new ScriptableSettingShort(v_f: 0.4f)));
+                options.Add(("50%", new ScriptableSettingShort(v_f: 0.5f)));
+                options.Add(("60%", new ScriptableSettingShort(v_f: 0.6f)));
+                options.Add(("70%", new ScriptableSettingShort(v_f: 0.7f)));
+                options.Add(("80%", new ScriptableSettingShort(v_f: 0.8f)));
+                options.Add(("90%", new ScriptableSettingShort(v_f: 0.9f)));
+                options.Add(("100%", new ScriptableSettingShort(v_f: 1.0f)));
+                bottomText = "The base detection chance while hacking. Increasing this value will make hacking SIGNIFICANTLY more difficult.";
+                break;
+            case 4: // Evolve - Heal Between Floors
+                value.value_bool = preferences.evolve_healBetweenFloors;
+                value.canBeGrayedOut = true;
+                display = "Heal Between Floors";
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
+                bottomText = "Enables or disables the full health restoration effect between floors. Disabling this feature will make gameplay SIGNIFICANTLY more challenging.";
+                break;
+            case 5: // Evolve - Clear Corruption
+                value.value_bool = preferences.evolve_clearCorruption;
+                value.canBeGrayedOut = true;
+                display = "Clear Corruption Between Floors";
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
+                bottomText = "Enables or disables the clearing of corruption between floors.";
+                break;
+            case 6: // Evolve - New Health Per Level
+                value.value_int = preferences.evolve_newHealthPerLevel;
+                display = "New Health Per Level";
+                options.Add(("50", new ScriptableSettingShort(v_i: 50)));
+                options.Add(("100", new ScriptableSettingShort(v_i: 100)));
+                options.Add(("200", new ScriptableSettingShort(v_i: 200)));
+                options.Add(("300", new ScriptableSettingShort(v_i: 300)));
+                options.Add(("400", new ScriptableSettingShort(v_i: 400)));
+                options.Add(("500", new ScriptableSettingShort(v_i: 500)));
+                bottomText = "The amount of new max health recieved per evolution.";
+                break;
+            case 7: // Corruption - Enabled
+                value.value_bool = preferences.corruption_enabled;
+                value.canBeGrayedOut = true;
+                display = "Corruption";
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
+                bottomText = "Enables or Disabled the Corruption mechanic. WARNING: Corruption is a key aspect of the game, and doing so will make it less complex.";
+                break;
+            case 8: // Corruption - Do Effects
+                value.value_bool = preferences.corruption_effects;
+                value.canBeGrayedOut = true;
+                display = "Corruption Effects";
+                options.Add(("On", new ScriptableSettingShort(v_b: true)));
+                options.Add(("Off", new ScriptableSettingShort(v_b: false, grayedOut: true)));
+                bottomText = "Enables or Disabled the random effects that trigger from having certain levels of corruption. Does not disable corruption outright, but will make the game less interesting.";
+                break;
+        }
+
+
+        return (value, display, bottomText, options);
+    }
+
+    /// <summary>
+    /// A (very clumbsy) method that updating a specific preference given its ID and what to set the new value as.
+    /// </summary>
+    /// <param name="id">The ID of the preference (see switch statement).</param>
+    /// <param name="s">The value to update the preference with (in the form of ScriptableSettingShort).</param>
+    public static void UpdatePreferences(int id, ScriptableSettingShort s)
+    {
+        ScriptablePreferences preferences = MainMenuManager.inst ? MainMenuManager.inst.preferencesObject : GlobalSettings.inst.preferences;
+
+        // This is going to be very ugly.
+        switch (id)
+        {
+            case 0: // Squads - Investigation
+                preferences.squads_investigation = (bool)s.value_bool;
+                break;
+            case 1: // Squads - Extermination
+                preferences.squads_extermination = (bool)s.value_bool;
+                break;
+            case 2: // Squads - Extermination MTTH
+                preferences.extermination_mtth = (int)s.value_int;
+                break;
+            case 3: // Hacking - Base Detection Chance
+                preferences.hacking_baseDetectionChance = (float)s.value_float;
+                break;
+            case 4: // Evolve - Heal Between Floors
+                preferences.evolve_healBetweenFloors = (bool)s.value_bool;
+                break;
+            case 5: // Evolve - Clear Corruption
+                preferences.evolve_clearCorruption = (bool)s.value_bool;
+                break;
+            case 6: // Evolve - New Health Per Level
+                preferences.evolve_newHealthPerLevel = (int)s.value_int;
+                break;
+            case 7: // Corruption - Enabled
+                preferences.corruption_enabled = (bool)s.value_bool;
+                break;
+            case 8: // Corruption - Do Effects
+                preferences.corruption_effects = (bool)s.value_bool;
+                break;
+        }
+    }
+
     #endregion
 
     #region Spotting

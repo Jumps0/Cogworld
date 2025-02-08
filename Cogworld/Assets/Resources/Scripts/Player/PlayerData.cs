@@ -279,8 +279,12 @@ public class PlayerData : MonoBehaviour
 
     public void NewLevelRestore()
     {
-        currentHealth = maxHealth;
-        currentCorruption = 0;
+        if(GlobalSettings.inst.preferences.evolve_healBetweenFloors)
+            currentHealth = maxHealth;
+
+        if (GlobalSettings.inst.preferences.evolve_clearCorruption)
+            currentCorruption = 0;
+
         currentEnergy = maxEnergy;
         currentHeat = 0;
     }

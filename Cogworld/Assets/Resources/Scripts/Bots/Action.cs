@@ -1097,7 +1097,7 @@ public static class Action
                 UIManager.inst.Evasion_VolleyNonAnimation(); // Re-draw volley visuals if its active
             }
             // - Corruption Misdirection
-            if (Random.Range(0f, 1f) < (float)(PlayerData.inst.currentCorruption / 100))
+            if (PlayerData.inst.currentCorruption > 0 && Random.Range(0f, 1f) < (float)(PlayerData.inst.currentCorruption / 100))
             {
                 direction = Action.CorruptionMisdrection(actor, direction);
             }
@@ -6571,6 +6571,8 @@ public static class Action
     /// </summary>
     public static void CorruptionConsequences(int forcedEvent = 0)
     {
+        if (!GlobalSettings.inst.preferences.corruption_enabled || !GlobalSettings.inst.preferences.corruption_effects) { return; }
+
         // https://noemica.github.io/cog-minder/wiki/Corruption
         int currentCorruption = PlayerData.inst.currentCorruption;
 
@@ -8043,6 +8045,8 @@ public static class Action
     /// <param name="amount">The amount to change the player's corruption by.</param>
     public static void ModifyPlayerCorruption(int amount)
     {
+        if (!GlobalSettings.inst.preferences.corruption_enabled) { return; }
+
         if(amount == 0)
         {
 
