@@ -17,18 +17,27 @@ public class MMButtonBig : MonoBehaviour
     [SerializeField] private TextMeshProUGUI text_number;
 
     [Header("Values")]
-    public char character;
+    public string character;
+    [Tooltip("What happens when this button is actually clicked? Tells MainMenuMgr what to do.")]
+    private string specification;
+    [Tooltip("Instead is the multiplayer host button.")]
+    private bool asMulti = false;
 
     [Header("Colors")]
     [SerializeField] private Color color_main;
     [SerializeField] private Color color_hover;
     [SerializeField] private Color color_bright;
+    [SerializeField] private Color color_main_b;
+    [SerializeField] private Color color_hover_b;
+    [SerializeField] private Color color_bright_b;
 
-    public void Setup(string display, char character)
+    public void Setup(string display, string character, string specification, bool asMulti = false)
     {
         this.character = character;
+        this.specification = specification;
+        this.asMulti = asMulti;
 
-        text_number.text = $"[{character}]";//$"[<color=#00CC00>{character}</color>]";
+        text_number.text = $"[{character}]";
 
         text_main.text = display;
 
@@ -38,54 +47,46 @@ public class MMButtonBig : MonoBehaviour
 
     private IEnumerator RevealAnimation()
     {
-        float delay = 0.1f;
+        // We will animate the backer AND the text (random reveal)
 
-        Color usedColor = color_bright;
+        List<string> strings = HF.RandomHighlightStringAnimation(text_main.text, Color.black);
+        // Animate the strings via our delay trick
+        float delay = 0f;
+        float perDelay = 0.25f / (text_main.text.Length);
 
-        float headerValue = 0.25f;
+        foreach (string s in strings)
+        {
+            StartCoroutine(HF.DelayedSetText(text_main, s, delay += perDelay));
+        }
 
-        image_back1.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-        image_back2.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        // Dark Green -> Final Color
+        Color start = color_hover, end = color_main;
 
-        yield return new WaitForSeconds(delay);
+        if (asMulti)
+        {
+            start = color_hover_b;
+            end = color_main_b;
+        }
 
-        headerValue = 0.75f;
+        float elapsedTime = 0f;
+        float duration = 0.45f;
 
-        image_back1.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-        image_back2.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        image_back1.color = start;
+        image_back2.color = start;
 
-        yield return new WaitForSeconds(delay);
+        while (elapsedTime < duration)
+        {
+            Color lerp = Color.Lerp(start, end, elapsedTime / duration);
 
-        headerValue = 1f;
+            image_back1.color = lerp;
+            image_back2.color = lerp;
 
-        image_back1.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-        image_back2.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
 
-        yield return new WaitForSeconds(delay);
-
-        headerValue = 0.75f;
-
-        image_back1.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-        image_back2.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-
-        yield return new WaitForSeconds(delay);
-
-        headerValue = 0.25f;
-
-        image_back1.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-        image_back2.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-
-        yield return new WaitForSeconds(delay);
-
-        headerValue = 0f;
-
-        image_back1.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-        image_back2.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-
-        yield return null;
-
-        image_back1.color = Color.black;
-        image_back2.color = Color.black;
+        image_back1.color = end;
+        image_back2.color = end;
     }
 
     #region Hover
@@ -114,17 +115,30 @@ public class MMButtonBig : MonoBehaviour
     private IEnumerator HoverAnimation(bool fadeIn)
     {
         float elapsedTime = 0f;
-        float duration = 0.45f;
+        float duration = 0.25f;
 
-        Color start = Color.black, end = Color.black;
+        Color start = color_main, end = color_main;
+        if (asMulti)
+        {
+            start = color_main_b;
+            end = color_main_b;
+        }
 
         if (fadeIn)
         {
-            end = color_hover;
+            end = color_bright;
+            if (asMulti)
+            {
+                end = color_bright_b;
+            }
         }
         else
         {
-            start = color_hover;
+            start = color_bright;
+            if (asMulti)
+            {
+                start = color_bright_b;
+            }
         }
 
         image_back1.color = start;
@@ -147,7 +161,14 @@ public class MMButtonBig : MonoBehaviour
     #region Click
     public void Click()
     {
-        // TODO
+        if (asMulti)
+        {
+            MainMenuManager.inst.StartGameMultiplayer(specification);
+        }
+        else
+        {
+            MainMenuManager.inst.StartGame(specification);
+        }
     }
     #endregion
 

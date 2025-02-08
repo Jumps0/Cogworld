@@ -102,10 +102,11 @@ public class MainMenuManager : MonoBehaviour
         {
             case 1: // - CONTINUE
                 ToggleMainWindow(true); // Open the window
+                start_buttons_holder.gameObject.SetActive(true);
+                ContinueToggle(true);
 
                 // Force close any other windows
                 NewGameToggle(false);
-                ContinueToggle(true);
                 LoadGameToggle(false);
                 JoinGameToggle(false);
                 ToggleRecordsWindow(false, true);
@@ -114,9 +115,10 @@ public class MainMenuManager : MonoBehaviour
                 break;
             case 2: // - NEW GAME
                 ToggleMainWindow(true); // Open the window
+                start_buttons_holder.gameObject.SetActive(true);
+                NewGameToggle(true);
 
                 // Force close any other windows
-                NewGameToggle(true);
                 ContinueToggle(false);
                 LoadGameToggle(false);
                 JoinGameToggle(false);
@@ -126,11 +128,12 @@ public class MainMenuManager : MonoBehaviour
                 break;
             case 3: // - LOAD GAME
                 ToggleMainWindow(true); // Open the window
+                start_buttons_holder.gameObject.SetActive(true);
+                LoadGameToggle(true);
 
                 // Force close any other windows
                 NewGameToggle(false);
                 ContinueToggle(false);
-                LoadGameToggle(true);
                 JoinGameToggle(false);
                 ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
@@ -138,12 +141,13 @@ public class MainMenuManager : MonoBehaviour
                 break;
             case 4: // - JOIN GAME
                 ToggleMainWindow(true); // Open the window
+                start_buttons_holder.gameObject.SetActive(true);
+                JoinGameToggle(true);
 
                 // Force close any other windows
                 NewGameToggle(false);
                 ContinueToggle(false);
                 LoadGameToggle(false);
-                JoinGameToggle(true);
                 ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
@@ -374,6 +378,10 @@ public class MainMenuManager : MonoBehaviour
         {
             newgame_window.SetActive(true);
 
+            // Start Game button
+            startbutton.Setup("START GAME", "ENTER", "NEW");
+            startbuttonmultiplayer.gameObject.SetActive(false);
+
             #region Preferences
             // Fill up the preferences area with the options & headers
 
@@ -445,7 +453,6 @@ public class MainMenuManager : MonoBehaviour
             newgame_window.SetActive(false);
         }
     }
-
     #endregion
 
     #region Load Game
@@ -1380,6 +1387,78 @@ public class MainMenuManager : MonoBehaviour
     }
     #endregion
 
+    #region START GAME
+    [Header("START GAME")]
+    [SerializeField] private Transform start_buttons_holder;
+    [SerializeField] private MMButtonBig startbutton;
+    [SerializeField] private MMButtonBig startbuttonmultiplayer;
+    /// <summary>
+    /// The function that handles IMPORTANT things that occur whenever a "Start Game" button is pressed. Varies based on `specification` input, because there are 4 places it appears in (CONTINUE, NEW, LOAD, & JOIN).
+    /// </summary>
+    /// <param name="specification">What this action should do, options are: CONTINUE, NEW, LOAD, & JOIN.</param>
+    public void StartGame(string specification)
+    {
+        // TODO
+        Debug.Log($"HELLO! Start game with spec {specification}...");
+        if (specification == "CONTINUE")
+        {
+
+        }
+        else if (specification == "NEW")
+        {
+
+        }
+        else if (specification == "LOAD")
+        {
+
+        }
+        else if (specification == "JOIN")
+        {
+
+        }
+    }
+
+    #region MULTIPLAYER
+    // NOTE: This will probably be moved to its own manager in the future
+
+    public void ToggleMultiplayerStartButton(bool toggle, string spec)
+    {
+        if (toggle)
+        {
+            startbuttonmultiplayer.gameObject.SetActive(true);
+            startbuttonmultiplayer.Setup("START MULTIPLAYER", "TAB", spec, true);
+        }
+        else
+        {
+            startbuttonmultiplayer.gameObject.SetActive(false);
+        }
+    }
+
+    public void StartGameMultiplayer(string specification)
+    {
+        // TODO
+        Debug.Log($"HELLO! Start multiplayer game with spec {specification}...");
+        if (specification == "CONTINUE")
+        {
+
+        }
+        else if (specification == "NEW")
+        {
+
+        }
+        else if (specification == "LOAD")
+        {
+
+        }
+        else if (specification == "JOIN")
+        {
+
+        }
+    }
+    #endregion
+    #endregion
+
+
     #region Keyboard Input Detection
     private void KeyboardInputDetection()
     {
@@ -1457,15 +1536,31 @@ public class MainMenuManager : MonoBehaviour
     public void OnEnter(InputValue value)
     {
         if (!settings_inputfield_main.activeInHierarchy) { return; }
-        
-        // Shift logic to inside the script
-        settings_inputfield_main.GetComponent<MMInputField>().Enter();
 
-        // Update the original value with an animation
-        StartCoroutine(SettingsValueUpdate_Animation(settings_inputfield_main.GetComponent<MMInputField>().setting));
+        if (settings_inputfield_main.activeInHierarchy) // -- Settings Inputfield --
+        {
+            // Shift logic to inside the script
+            settings_inputfield_main.GetComponent<MMInputField>().Enter();
 
-        // Close the inputfield
-        IFClose();
+            // Update the original value with an animation
+            StartCoroutine(SettingsValueUpdate_Animation(settings_inputfield_main.GetComponent<MMInputField>().setting));
+
+            // Close the inputfield
+            IFClose();
+        }
+        else if (startbutton.gameObject.activeInHierarchy) // -- Start Button
+        {
+            startbutton.Click();
+        }
+    }
+
+    // TAB
+    public void OnAutocomplete(InputValue value)
+    {
+        if (startbuttonmultiplayer.gameObject.activeInHierarchy) // -- Multiplayer Start Button
+        {
+            startbuttonmultiplayer.Click();
+        }
     }
 
     public void OnLeftClick(InputValue value)

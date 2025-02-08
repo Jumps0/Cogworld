@@ -358,7 +358,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 8
+    m_Left: 10
     m_Right: 4
     m_Top: 8
     m_Bottom: 8
@@ -438,10 +438,13 @@ MonoBehaviour:
   image_back2: {fileID: 5303822105497508332}
   text_main: {fileID: 4669208251894306527}
   text_number: {fileID: 5047824102381159517}
-  character: 431
+  character: ENTER
   color_main: {r: 0.078431375, g: 0.49411768, b: 0.098039225, a: 1}
   color_hover: {r: 0.011764707, g: 0.18431373, b: 0.003921569, a: 1}
   color_bright: {r: 0, g: 0.8000001, b: 0, a: 1}
+  color_main_b: {r: 0.06051977, g: 0.46097997, b: 0.754717, a: 1}
+  color_hover_b: {r: 0.04903879, g: 0.33891162, b: 0.5471698, a: 1}
+  color_bright_b: {r: 0.23740657, g: 0.6312458, b: 0.9150943, a: 1}
 --- !u!114 &1209553242304286917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -548,7 +551,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: -22.5}
-  m_SizeDelta: {x: 64.509995, y: 45}
+  m_SizeDelta: {x: 66.509995, y: 45}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &8827839962048240090
 MonoBehaviour:
@@ -681,7 +684,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding:
     m_Left: 4
-    m_Right: 8
+    m_Right: 10
     m_Top: 8
     m_Bottom: 8
   m_ChildAlignment: 4
@@ -728,8 +731,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 64.509995, y: -22.5}
-  m_SizeDelta: {x: 239.51, y: 45}
+  m_AnchoredPosition: {x: 66.509995, y: -22.5}
+  m_SizeDelta: {x: 241.51, y: 45}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &5816376101238487042
 MonoBehaviour:
