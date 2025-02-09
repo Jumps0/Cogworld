@@ -27,4 +27,5 @@ public class ScriptablePreferences : ScriptableObject
     [Header("Corruption")]
     public bool corruption_enabled = true; // Disabling this makes player immune to corruption
     public bool corruption_effects = true; // Enable corruption effects
+
 }

@@ -240,32 +240,56 @@ public class MainMenuManager : MonoBehaviour
             Color color = color_main;
 
             borders.color = new Color(color.r, color.g, color.b, 0f);
-            //headertext.color = new Color(color.r, color.g, color.b, 0.25f);
+            if (load_faux_border.gameObject.activeInHierarchy)
+            {
+                load_faux_border.color = new Color(color.r, color.g, color.b, 0f);
+                load_prevsaves_borders.color = new Color(color.r, color.g, color.b, 0f);
+            }
 
             yield return new WaitForSeconds(delay);
 
             borders.color = new Color(color.r, color.g, color.b, 0.4f);
-            //headertext.color = new Color(color.r, color.g, color.b, 0.75f);
+            if (load_faux_border.gameObject.activeInHierarchy)
+            {
+                load_faux_border.color = new Color(color.r, color.g, color.b, 0.4f);
+                load_prevsaves_borders.color = new Color(color.r, color.g, color.b, 0.4f);
+            }
 
             yield return new WaitForSeconds(delay);
 
             borders.color = new Color(color.r, color.g, color.b, 0.2f);
-            //headertext.color = new Color(color.r, color.g, color.b, 1f);
+            if (load_faux_border.gameObject.activeInHierarchy)
+            {
+                load_faux_border.color = new Color(color.r, color.g, color.b, 0.2f);
+                load_prevsaves_borders.color = new Color(color.r, color.g, color.b, 0.2f);
+            }
 
             yield return new WaitForSeconds(delay);
 
             borders.color = new Color(color.r, color.g, color.b, 0.6f);
-            //headertext.color = new Color(color.r, color.g, color.b, 0.75f);
+            if (load_faux_border.gameObject.activeInHierarchy)
+            {
+                load_faux_border.color = new Color(color.r, color.g, color.b, 0.6f);
+                load_prevsaves_borders.color = new Color(color.r, color.g, color.b, 0.6f);
+            }
 
             yield return new WaitForSeconds(delay);
 
             borders.color = new Color(color.r, color.g, color.b, 0.4f);
-            //headertext.color = new Color(color.r, color.g, color.b, 0.25f);
+            if (load_faux_border.gameObject.activeInHierarchy)
+            {
+                load_faux_border.color = new Color(color.r, color.g, color.b, 0.4f);
+                load_prevsaves_borders.color = new Color(color.r, color.g, color.b, 0.4f);
+            }
 
             yield return new WaitForSeconds(delay);
 
             borders.color = new Color(color.r, color.g, color.b, 1f);
-            //headertext.color = new Color(color.r, color.g, color.b, 0f);
+            if (load_faux_border.gameObject.activeInHierarchy)
+            {
+                load_faux_border.color = new Color(color.r, color.g, color.b, 1f);
+                load_prevsaves_borders.color = new Color(color.r, color.g, color.b, 1f);
+            }
         }
         else // Close is pretty simple
         {
@@ -381,7 +405,7 @@ public class MainMenuManager : MonoBehaviour
             // Start Game button
             startbutton.Setup("START GAME", "ENTER", "NEW");
             startbuttonmultiplayer.gameObject.SetActive(false);
-
+            ToggleMultiplayerStartButton(true, "NEW");
             #region Preferences
             // Fill up the preferences area with the options & headers
 
@@ -457,7 +481,14 @@ public class MainMenuManager : MonoBehaviour
 
     #region Load Game
     [Header("Load Game")] // TODO
-    [SerializeField] private GameObject load_window;
+    [SerializeField] private GameObject load_window; // GameObject of the entire window
+    [SerializeField] private Transform load_prevsaves_area; // Area where previous game saves should be spawned into
+    [SerializeField] private Image load_prevsaves_borders; // Green borders image of the saved games window
+    [SerializeField] private Image load_faux_border; // The fake center-left green line which fakes a gap between the two main windows, needs to be animated with the entire window in mind.
+    [SerializeField] private GameObject load_save_prefab; // Prefab that represents saved games
+    [SerializeField] private List<GameObject> load_save_objects; // List of spawned in prefabs representing saved games
+    [SerializeField] private Image load_sheader_backer; // Backer image for the \SAVED GAMES\ header
+    [SerializeField] private TextMeshProUGUI load_sheader_text; // Text element of the \SAVED GAMES\ header
 
     private void LoadGameToggle(bool open)
     {
