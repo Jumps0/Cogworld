@@ -489,9 +489,11 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private List<GameObject> load_save_objects; // List of spawned in prefabs representing saved games
     [SerializeField] private Image load_sheader_backer; // Backer image for the \SAVED GAMES\ header
     [SerializeField] private TextMeshProUGUI load_sheader_text; // Text element of the \SAVED GAMES\ header
+    [SerializeField] private GameObject load_nosaves_text; // Text telling the player they have no saved games if none are found
 
     private void LoadGameToggle(bool open)
     {
+        // TODO
         if (open)
         {
             load_window.SetActive(true);
@@ -503,6 +505,22 @@ public class MainMenuManager : MonoBehaviour
             // begin logic
 
             load_window.SetActive(false);
+        }
+    }
+
+    public void LSelectSave(MMSavegame save)
+    {
+        // Update the additional info text with info from the save
+
+        // Deselect all other saves (except the one we got)
+        foreach (var S in load_save_objects)
+        {
+            MMSavegame sg = S.GetComponent<MMSavegame>();
+
+            if(save != sg)
+            {
+                // TODO
+            }
         }
     }
 

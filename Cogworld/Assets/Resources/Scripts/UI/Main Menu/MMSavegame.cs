@@ -41,42 +41,9 @@ public class MMSavegame : MonoBehaviour
     [SerializeField] private Color color_bright;
     [SerializeField] private Color color_gray;
 
-    public void Setup(int id, char character, bool isSetting = true)
+    public void Setup()
     {
-        myID = id;
-        this.character = character;
-        this.isSetting = isSetting;
 
-        if (isSetting)
-        {
-            (currentSetting, title, explainer, options) = HF.ParseSettingsOption(myID);
-        }
-        else
-        {
-            (currentSetting, title, explainer, options) = HF.ParsePreferencesOption(myID);
-        }
-
-        this.gameObject.name = $"{character} - {title}";
-
-        // Text layout is:
-        // ? - [Option]         Current Setting
-        //        ^ scramble text animation from black
-        //                         ^  black to light green OR gray depending on the setting
-
-        // If its a bool and it's false it should be gray
-        if(currentSetting.canBeGrayedOut)
-        {
-            canBeGray = currentSetting.canBeGrayedOut;
-        }
-
-        inputfield = currentSetting.inputfield;
-
-        text_keybind.text = $"{this.character} - [";
-        text_main.text = title;
-
-        MainMenuManager.inst.SetRevealExplainerText(explainer);
-
-        text_setting.text = ValueToString(currentSetting);
 
         // Play the reveal animation
         StartCoroutine(RevealAnimation());
@@ -84,53 +51,7 @@ public class MMSavegame : MonoBehaviour
 
     private IEnumerator RevealAnimation()
     {
-        // Heres how this animation works:
-        // ? - [ and ] do nothing (they start as they are)
-        text_keybind.color = color_main;
-        text_rightbracket.color = color_main;
-
-        // The actual settings option starts black, and goes through the scramble animation
-        text_main.color = color_bright;
-        List<string> strings = HF.RandomHighlightStringAnimation(text_main.text, color_main);
-        // Animate the strings via our delay trick
-        float delay = 0f;
-        float perDelay = 0.25f / (text_main.text.Length);
-
-        foreach (string s in strings)
-        {
-            StartCoroutine(HF.DelayedSetText(text_main, s, delay += perDelay));
-        }
-
-        // and lastly, the actual option just goes from Black -> its set color
-        Color start = Color.black, end = color_bright;
-
-        // Check if the current option needs to be gray instead
-        if (canBeGray)
-        {
-            foreach(var O in options) // <- Shouldn't be too bad performance wise
-            {
-                if(CompareSSO(currentSetting, O.Item2) && O.Item2.canBeGrayedOut) // Is the current setting the one that appears gray?
-                {
-                    end = color_gray;
-                    break;
-                }
-            }
-        }
-
-        float elapsedTime = 0f;
-        float duration = 0.45f;
-
-        text_setting.color = start;
-
-        while (elapsedTime < duration)
-        {
-            text_setting.color = Color.Lerp(start, end, elapsedTime / duration);
-
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        text_setting.color = end;
+        yield return null;
     }
 
     #region Hover
@@ -190,169 +111,31 @@ public class MMSavegame : MonoBehaviour
     #endregion
 
     #region Selection
+    public bool isSelected = false;
+
     public void Click()
     {
-        
+        // Select this option
+
+        // Change the borders
+
+        // Indicate to MainMenuMgr that this option is selected
+        // (It will update all the other text stuff to the right of the \SAVED GAMES\ window
+
+        // Also tell MainMenuMgr to deselect any other selected options
     }
 
-    private Coroutine ano_co;
-    private void AssignNewOption(ScriptableSettingShort option)
+    public void Select()
     {
-        // Re-assign the current option
-        currentSetting = option;
 
-        // Replace the text
-        text_setting.text = ValueToString(currentSetting);
 
-        // Play a sound
-        AudioManager.inst.CreateTempClip(Vector3.zero, AudioManager.inst.dict_ui["OPTION"]); // UI - OPTION
 
-        // Update the setting OR preference
-        if (isSetting)
-        {
-            HF.UpdateSetting(myID, currentSetting);
-            if (MainMenuManager.inst != null)
-            {
-                MainMenuManager.inst.ApplySettingsSimple();
-            }
-            else if (GlobalSettings.inst != null)
-            {
-                GlobalSettings.inst.ApplySettings();
-            }
-        }
-        else
-        {
-            HF.UpdatePreferences(myID, currentSetting);
-            if (MainMenuManager.inst != null)
-            {
-                MainMenuManager.inst.ApplyPreferencesSimple();
-            }
-            else if (GlobalSettings.inst != null)
-            {
-                GlobalSettings.inst.ApplyPreferences();
-            }
-        }
-
-        // Do the animation
-        if (ano_co != null)
-        {
-            StopCoroutine(ano_co);
-        }
-        ano_co = StartCoroutine(ANO_Animation());
     }
 
-    private IEnumerator ANO_Animation()
+    public void DeSelect()
     {
-        // Relatively Simple [Black -> Bright Green]
-        float elapsedTime = 0f;
-        float duration = 0.45f;
 
-        Color start = Color.black, end = color_bright;
-
-        // Exception for grayed out
-        if (currentSetting.canBeGrayedOut)
-        {
-            end = color_gray;
-        }
-
-        text_setting.color = start;
-        while (elapsedTime < duration)
-        {
-            Color lerp = Color.Lerp(start, end, elapsedTime / duration);
-
-            text_setting.color = lerp;
-
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-        text_setting.color = end;
-    }
-
-    public void ClickFromDetailBox(MMOptionSimple option)
-    {
-        // Change the setting
-        AssignNewOption(option.setting);
-
-        // Tell the box to close
-        MainMenuManager.inst.DetailClose();
     }
     #endregion
 
-
-    #region Misc
-
-    /// <summary>
-    /// Given a ScriptableSettingShort, finds its matching display string in the options list.
-    /// </summary>
-    /// <param name="s">A ScriptableSettingShort with a single non-null value.</param>
-    /// <returns>A string representing what that value should display.</returns>
-    private string ValueToString(ScriptableSettingShort s)
-    {
-        string ret = "";
-
-        foreach (var O in options)
-        {
-            if(CompareSSO(s, O.Item2))
-            {
-                ret = O.Item1;
-                break;
-            }
-        }
-
-        // If string is longer than 12 characters, shorten it by replacing the further characters with "..."
-        if(ret.Length > 12)
-        {
-            ret = ret.Substring(0, 12) + "...";
-        }
-
-        return ret;
-    }
-
-    /// <summary>
-    /// Given two ScriptableSettingShort(s) from the same setting, returns True/False if these are the same setting (based on their internal value).
-    /// </summary>
-    /// <param name="A">A ScriptableSettingShort</param>
-    /// <param name="B">A ScriptableSettingShort</param>
-    /// <returns>True/False if these are the "same" setting.</returns>
-    private bool CompareSSO(ScriptableSettingShort A,  ScriptableSettingShort B)
-    {
-        bool ret = false;
-
-        if (A.value_bool != null && B.value_bool != null)
-        {
-            ret = A.value_bool == B.value_bool;
-        }
-        else if (A.value_int != null && B.value_int != null)
-        {
-            ret = A.value_int == B.value_int;
-        }
-        else if (A.value_float != null && B.value_float != null)
-        {
-            ret = A.value_float == B.value_float;
-        }
-        else if (A.value_string != null && B.value_string != null)
-        {
-            ret = A.value_string == B.value_string;
-        }
-        else if (A.enum_fov != null && B.enum_fov != null)
-        {
-            ret = A.enum_fov == B.enum_fov;
-        }
-        else if (A.enum_difficulty != null && B.enum_difficulty != null)
-        {
-            ret = A.enum_difficulty == B.enum_difficulty;
-        }
-        else if (A.enum_fullscreen != null && B.enum_fullscreen != null)
-        {
-            ret = A.enum_fullscreen == B.enum_fullscreen;
-        }
-        else if (A.enum_modal != null && B.enum_modal != null)
-        {
-            ret = A.enum_modal == B.enum_modal;
-        }
-
-        return ret;
-    }
-
-    #endregion
 }
