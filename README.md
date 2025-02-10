@@ -14,6 +14,12 @@ There is currently no release build available due to the overall state of the pr
 
 To play/test the game, install the Unity Editor version 2022.3.56 and open a new project with the files in this repository.
 
+## Issues
+
+What's with all the open issues? This is essentially my TODO list. Though not comprehensive, it is a way of me organizing my thoughts and priorities, you can see this a bit better if you look in the `Projects` tab.
+
+If you have an issue of your own, feel free to make one and I will take note of it. Appropriate tagging/labeling is greatly appreciated.
+
 ## External Resources
 
 * Sprites, Audio, and Lore/Text from the game Cogmind. [(steam-page)](https://store.steampowered.com/app/722730/Cogmind/)
