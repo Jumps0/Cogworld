@@ -507,10 +507,35 @@ public class MainMenuManager : MonoBehaviour
             load_greaterinfo_header.gameObject.SetActive(false);
 
             // -- LOAD ALL SAVES --
+            #region Pre-loading the Saves
             List<GameObject> saves = new List<GameObject>(); // change this type later (temp)
 
+            // TEMP FOR TESTING
+            saves.Add(load_window);
+
+            // Destroy any existing objects
+            foreach (var O in load_save_objects.ToList())
+            {
+                Destroy(O);
+            }
+            load_save_objects.Clear();
+
+            Transform parent = load_prevsaves_area;
+
+            foreach (var S in saves)
+            {
+                // New object
+                GameObject savePrefab = Instantiate(load_save_prefab, Vector2.zero, Quaternion.identity, parent);
+
+                // Set them up and animate them
+                savePrefab.GetComponent<MMSavegame>().Setup(); // TODO: Pass in save data
+                // Save it
+                load_save_objects.Add(savePrefab);
+            }
+            #endregion
+
             // Are there any saves?
-            if(saves.Count == 0)
+            if (saves.Count == 0)
             {
                 // No saves, just show the no saves text
                 load_nosaves_text.SetActive(true);
@@ -570,6 +595,7 @@ public class MainMenuManager : MonoBehaviour
         load_nosaves_text.GetComponent<TextMeshProUGUI>().color = end;
     }
 
+    [SerializeField] private List<GameObject> load_info_elements = new List<GameObject>();
     public void LSelectSave(MMSavegame save, (string, string, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, List<ItemObject>, List<string>, int) data)
     {
         // Update the additional info text with info from the save
@@ -578,69 +604,74 @@ public class MainMenuManager : MonoBehaviour
         // ?
 
         #region Display-string Setup
+        /*
+        Name: (Save Name)
+
+        Location: (Location)
+
+        State: Core####/#### Energy ####/####
+           Matter ####/#### Corruption###/###
+
+        Slots: Power($$/$$) Propulsion($$/$$)
+                Utility($$/$$) Weapons($$/$$)
+
+        Special Conditions: (FARCOM, RIF, IMPRINTED, NEM, CRM, ETC)
+
+        Kills: ### 
+
+        Items($$/$$): (List of names of all items)
+         */
         // - Set the new string
-        string saveinfo = "";
-        // - Set specific colors based on the value
-        string color_bright = "<color=#00CC00>";
-        string color_dull = "<color=#FFFFFF>"; // set this properly
-        string color_gray = "<color=#FFFFFF>"; // set this properly
-        string color_green = "<color=#FFFFFF>"; // set this properly
-        string color_purple = "<color=#FFFFFF>"; // set this properly
-        string color_purpledull = "<color=#FFFFFF>"; // set this properly
-        string color_blue = "<color=#FFFFFF>"; // set this properly
-        string color_bluedull = "<color=#FFFFFF>"; // set this properly
-        string color_white = "<color=#FFFFFF>"; // set this properly
-        string color_whitedull = "<color=#FFFFFF>"; // set this properly
-        string cap = "</color>";
 
         // Save Name & Current Location
-        saveinfo += $"NAME:{data.Item1}\n";
-        saveinfo += $"LOCATION:{data.Item2}\n";
 
         // Core
-
+        Vector2Int core = data.Item3;
         // Energy
-
+        Vector2Int energy = data.Item4;
         // Matter
-
+        Vector2Int matter = data.Item5;
         // Corruption
-
+        Vector2Int corruption = data.Item6;
         // Power slots
+        Vector2Int power = data.Item7;
 
         // Propulsion slots
+        Vector2Int prop = data.Item8;
 
         // Utility slots
+        Vector2Int util = data.Item9;
 
         // Weapon slots
+        Vector2Int wep = data.Item10;
 
         // Inventory
 
         // Items
+        List<ItemObject> items = data.Item11;
 
         // Conditions
+        List<string> conditions = data.Item12;
 
         // Kills
-        
+        int kills = data.Item13;
+
         #endregion
-        
+
         // - Do the random text reveal
         #region Text Reveal Animation
-        // NOTE: THIS MAY NOT WORK DUE TO ALL THE COLOR OVERRIDES ABOVE. REPLACE THIS
-        List<string> strings = HF.RandomHighlightStringAnimation(load_greaterinfo_text.text, color_main);
+        // Basic transparency flash for the save data
+        if (lsgi_co != null)
+        {
+            StopCoroutine(lsgi_co);
+        }
+        lsgi_co = StartCoroutine(LSGI_Animation());
+
+        // Text reveal for the header
+        List<string> strings = HF.RandomHighlightStringAnimation(load_greaterinfo_header.text, color_main);
         // Animate the strings via our delay trick
         float delay = 0f;
-        float perDelay = 0.25f / (load_greaterinfo_text.text.Length);
-
-        foreach (string s in strings)
-        {
-            StartCoroutine(HF.DelayedSetText(load_greaterinfo_text, s, delay += perDelay));
-        }
-
-        // And the header too
-        strings = HF.RandomHighlightStringAnimation(load_greaterinfo_header.text, color_main);
-        // Animate the strings via our delay trick
-        delay = 0f;
-        perDelay = 0.25f / (load_greaterinfo_header.text.Length);
+        float perDelay = 0.25f / (load_greaterinfo_header.text.Length);
 
         foreach (string s in strings)
         {
@@ -652,10 +683,9 @@ public class MainMenuManager : MonoBehaviour
         foreach (var S in load_save_objects)
         {
             MMSavegame sg = S.GetComponent<MMSavegame>();
-
-            if(save != sg)
+            Debug.Log($"?{save.gameObject != sg.gameObject}");
+            if (save.gameObject != sg.gameObject)
             {
-                // TODO
                 sg.DeSelect();
             }
         }
@@ -670,6 +700,25 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
+    private Coroutine lsgi_co = null;
+    private IEnumerator LSGI_Animation()
+    {
+        // Simple transparency change
+        float elapsedTime = 0f;
+        float duration = 0.45f;
+
+        load_greaterinfo_text.GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 0f);
+        while (elapsedTime < duration) // Empty -> Green
+        {
+            float lerp = Mathf.Lerp(0f, 1f, elapsedTime / duration);
+
+            load_nosaves_text.GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, lerp);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        load_greaterinfo_text.GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 1f);
+    }
     #endregion
 
     #region Join Game

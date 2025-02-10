@@ -1047,7 +1047,7 @@ GameObject:
   - component: {fileID: 1215170463393571399}
   - component: {fileID: 7318497751705387897}
   m_Layer: 5
-  m_Name: '*Image Indicator*'
+  m_Name: '*Preview Image*'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1192,11 +1192,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67d02e5f1183cfe4393bb8818c52c501, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  image_backer: {fileID: 0}
-  text_main: {fileID: 297832753296471848}
-  text_keybind: {fileID: 4660839529161822921}
-  text_rightbracket: {fileID: 8612172711179169728}
-  text_setting: {fileID: 2002228057288211384}
+  preview_image: {fileID: 1215170463393571399}
+  borders: {fileID: 6780614655061956079}
+  text_name: {fileID: 2002228057288211384}
+  text_location: {fileID: 4409996045099807548}
+  text_status: {fileID: 2453641493992819346}
+  text_slots: {fileID: 396766313959650471}
   character: 114
   myID: 0
   canBeGray: 0
@@ -1212,6 +1213,7 @@ MonoBehaviour:
   color_hover: {r: 0.011764707, g: 0.18431373, b: 0.003921569, a: 1}
   color_bright: {r: 0, g: 0.8000001, b: 0, a: 1}
   color_gray: {r: 0.2509804, g: 0.2509804, b: 0.2509804, a: 1}
+  isSelected: 0
 --- !u!114 &6780614655061956079
 MonoBehaviour:
   m_ObjectHideFlags: 0

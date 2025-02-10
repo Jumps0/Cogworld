@@ -18,6 +18,8 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using ColorUtility = UnityEngine.ColorUtility;
 using static UnityEngine.Rendering.DebugUI;
+using static Setup;
+using System.Drawing;
 
 /// <summary>
 /// Contains helper functions to be used globally.
@@ -5066,6 +5068,33 @@ public static class HF
         return new string('|', barLength);
     }
 
+    /// <summary>
+    /// Given a value and its cap, along with two colors, will return a color between the original two colors based on the value, in the form of a hex code.
+    /// </summary>
+    /// <param name="a">Color A</param>
+    /// <param name="b">Color B</param>
+    /// <param name="cap">The *low* and *high* limits of the value.</param>
+    /// <param name="value">The value which determines the color.</param>
+    /// <returns>A hex code in the form of a string.</returns>
+    public static string ColorGradientByValue(Color a, Color b, Vector2 cap, float value)
+    {
+        // Clamp the value
+        value = Mathf.Clamp(value, cap.x, cap.y);
+
+        // Normalize the value between 0 and 1
+        float normalizedValue = (value - cap.x) / (cap.y - cap.x);
+
+        // Interpolate between colorA and colorB based on the normalized value
+        Color resultColor = Color.Lerp(a, b, normalizedValue);
+
+        // Convert the color to hex code
+        int _r = Mathf.RoundToInt(resultColor.r * 255);
+        int _g = Mathf.RoundToInt(resultColor.g * 255);
+        int _b = Mathf.RoundToInt(resultColor.b * 255);
+
+        // Return hex string
+        return $"#{_r:X2}{_g:X2}{_b:X2}";
+    }
     #endregion
 
     #region Highlighted Path Pruning

@@ -17,23 +17,12 @@ public class MMSavegame : MonoBehaviour
     // !!!!!!!!!!!!!!!!!!!!!!! TODO !!!!!!!!!!!!!!!!!!!
 
     [Header("References")]
-    public Image image_backer;
-    [SerializeField] private TextMeshProUGUI text_main;
-    [SerializeField] private TextMeshProUGUI text_keybind;
-    [SerializeField] private TextMeshProUGUI text_rightbracket;
-    public TextMeshProUGUI text_setting;
-
-    [Header("Values")]
-    public char character;
-    public int myID;
-    public bool canBeGray = false;
-    public bool inputfield = false;
-    public ScriptableSettingShort currentSetting;
-    public string title = "";
-    public string explainer = "";
-    [Tooltip("Is this option related to `SETTINGS` or `PREFERENCES`?")]
-    public bool isSetting = true;
-    public List<(string, ScriptableSettingShort)> options = new List<(string, ScriptableSettingShort)>();
+    [SerializeField] private Image preview_image;
+    [SerializeField] private Image borders;
+    [SerializeField] private TextMeshProUGUI text_name;
+    [SerializeField] private TextMeshProUGUI text_location;
+    [SerializeField] private TextMeshProUGUI text_status;
+    [SerializeField] private TextMeshProUGUI text_slots;
 
     [Header("Colors")]
     [SerializeField] private Color color_main;
@@ -71,7 +60,43 @@ public class MMSavegame : MonoBehaviour
 
     private IEnumerator RevealAnimation()
     {
-        yield return null;
+        // !! Start with grayed out borders !!
+        float elapsedTime = 0f;
+        float duration = 0.45f;
+
+        Color start = Color.black, end = color_gray;
+        // Text starts out as Black -> Bright
+        Color endT = color_bright;
+
+        borders.color = start;
+        text_name.color = start;
+        text_location.color = start;
+        text_status.color = start;
+        text_slots.color = start;
+        preview_image.color = new Color(1f, 1f, 1f, 0f); // Preview image will do transparency instead
+
+        while (elapsedTime < duration) // Empty -> Green
+        {
+            Color lerp = Color.Lerp(start, end, elapsedTime / duration);
+            float lerpF = Mathf.Lerp(0f, 1f, elapsedTime / duration);
+
+            borders.color = lerp;
+            text_name.color = lerp;
+            text_location.color = lerp;
+            text_status.color = lerp;
+            text_slots.color = lerp;
+            preview_image.color = new Color(1f, 1f, 1f, lerpF);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        borders.color = end;
+        text_name.color = endT;
+        text_location.color = endT;
+        text_status.color = endT;
+        text_slots.color = endT;
+        preview_image.color = new Color(1f, 1f, 1f, 1f);
     }
 
     #region Hover
@@ -86,8 +111,6 @@ public class MMSavegame : MonoBehaviour
 
         // Play the hover UI sound
         MainMenuManager.inst.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["HOVER"], 0.7f); // UI - HOVER
-
-        MainMenuManager.inst.SetRevealExplainerText(explainer); // Update below explainer
     }
 
     public void HoverEnd()
@@ -109,24 +132,46 @@ public class MMSavegame : MonoBehaviour
 
         if (fadeIn)
         {
-            end = color_hover;
+            if (isSelected)
+            {
+                // Bright -> Hover
+                start = color_bright;
+                end = color_hover;
+            }
+            else
+            {
+                // Gray -> Main
+                start = color_gray;
+                end = color_main;
+            }
         }
         else
         {
-            start = color_hover;
+            if (isSelected)
+            {
+                // Hover -> Main
+                start = color_gray;
+                end = color_main;
+            }
+            else
+            {
+                // Main -> Gray
+                start = color_main;
+                end = color_gray;
+            }
         }
 
-        image_backer.color = start;
+        borders.color = start;
         while (elapsedTime < duration) // Empty -> Green
         {
             Color lerp = Color.Lerp(start, end, elapsedTime / duration);
 
-            image_backer.color = lerp;
+            borders.color = lerp;
 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        image_backer.color = end;
+        borders.color = end;
     }
     #endregion
 
@@ -136,26 +181,29 @@ public class MMSavegame : MonoBehaviour
     public void Click()
     {
         // Select this option
-
-        // Change the borders
-
-        // Indicate to MainMenuMgr that this option is selected
-        // (It will update all the other text stuff to the right of the \SAVED GAMES\ window
-        MainMenuManager.inst.LSelectSave(this, (data_name, data_location, data_core, data_energy, data_matter, data_corruption, data_powerslots, data_propslots, data_utilslots, data_wepslots, data_items, data_conditions, data_kills));
-
-        // Also tell MainMenuMgr to deselect any other selected options
+        Select();
     }
 
     public void Select()
     {
+        isSelected = true;
 
+        // Change the borders
+        borders.color = color_bright;
 
+        // Indicate to MainMenuMgr that this option is selected
+        // (It will update all the other text stuff to the right of the \SAVED GAMES\ window
+        // Also tell MainMenuMgr to deselect any other selected options
+        MainMenuManager.inst.LSelectSave(this, (data_name, data_location, data_core, data_energy, data_matter, data_corruption, data_powerslots, data_propslots, data_utilslots, data_wepslots, data_items, data_conditions, data_kills));
 
     }
 
     public void DeSelect()
     {
+        isSelected = false;
 
+        // Change the borders
+        borders.color = color_gray;
     }
     #endregion
 
