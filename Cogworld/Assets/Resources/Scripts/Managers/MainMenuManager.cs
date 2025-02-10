@@ -42,6 +42,8 @@ public class MainMenuManager : MonoBehaviour
         //RunSpritefall();
     }
 
+    public ItemDatabaseObject itemDatabase;
+
     [Header("References")]
     [SerializeField] private List<GameObject> buttons_main = new List<GameObject>();
     [SerializeField] private Transform buttons_area;
@@ -568,7 +570,7 @@ public class MainMenuManager : MonoBehaviour
         load_nosaves_text.GetComponent<TextMeshProUGUI>().color = end;
     }
 
-    public void LSelectSave(MMSavegame save)
+    public void LSelectSave(MMSavegame save, (string, string, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, List<ItemObject>, List<string>, int))
     {
         // Update the additional info text with info from the save
         load_greaterinfo_text.gameObject.SetActive(true);
@@ -1594,7 +1596,7 @@ public class MainMenuManager : MonoBehaviour
         }
         else if (specification == "NEW")
         {
-
+            SwitchGameScene(); // Don't think there's any more to this?
         }
         else if (specification == "LOAD")
         {

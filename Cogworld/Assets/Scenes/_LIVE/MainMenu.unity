@@ -11216,6 +11216,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1cde8c51d5a7794a830aea03c570047, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemDatabase: {fileID: 11400000, guid: de7b8b5ccd57e8f4bab9ca053bc6cdcc, type: 2}
   buttons_main: []
   buttons_area: {fileID: 1002566452}
   button_prefab: {fileID: 3308090358177970210, guid: 4b6133e5f0b4c4c44815e09b0fe9f4af, type: 3}
@@ -16243,7 +16244,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Name: (Save Name)\n\nLocation: (Location)\n\nState: Core####/#### Energy
     ####/####\n   Matter ####/#### Corruption###/###\n\nSlots: Power($$/$$) Propulsion($$/$$)\n       
-    Utility($$/$$) Weapons($$/$$)\n\nItems: (List of names of all items)\n\nSpecial
+    Utility($$/$$) Weapons($$/$$)\n\nItems($$/$$): (List of names of all items)\n\nSpecial
     Conditions: (FARCOM, RIF, IMPRINTED, NEM, CRM, ETC)\n\nKills: ### \n\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3f1bf64e23c81b149a75c74890c74f84, type: 2}

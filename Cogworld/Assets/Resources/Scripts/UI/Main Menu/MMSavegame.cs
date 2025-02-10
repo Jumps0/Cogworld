@@ -41,9 +41,29 @@ public class MMSavegame : MonoBehaviour
     [SerializeField] private Color color_bright;
     [SerializeField] private Color color_gray;
 
+    [Header("TEMP!!! Save Data")] // TODO: Replace this later with the single data object!!!
+    private string data_name;
+    private string data_location;
+    //
+    private Vector2Int data_core;
+    private Vector2Int data_energy;
+    private Vector2Int data_matter;
+    private Vector2Int data_corruption;
+    //
+    private Vector2Int data_powerslots;
+    private Vector2Int data_propslots;
+    private Vector2Int data_utilslots;
+    private Vector2Int data_wepslots;
+    //
+    private List<ItemObject> data_items;
+    private List<string> data_conditions;
+    //
+    private int data_kills;
+
     public void Setup()
     {
-
+        // TODO: Replace this with actual save data that will get loaded (and fed through this setup function)
+        (data_name, data_location, data_core, data_energy, data_matter, data_corruption, data_powerslots, data_propslots, data_utilslots, data_wepslots, data_items, data_conditions, data_kills) = HF.DummyPlayerSaveData();
 
         // Play the reveal animation
         StartCoroutine(RevealAnimation());
@@ -121,6 +141,7 @@ public class MMSavegame : MonoBehaviour
 
         // Indicate to MainMenuMgr that this option is selected
         // (It will update all the other text stuff to the right of the \SAVED GAMES\ window
+        MainMenuManager.inst.LSelectSave(this, (data_name, data_location, data_core, data_energy, data_matter, data_corruption, data_powerslots, data_propslots, data_utilslots, data_wepslots, data_items, data_conditions, data_kills));
 
         // Also tell MainMenuMgr to deselect any other selected options
     }

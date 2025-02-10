@@ -7015,6 +7015,66 @@ public static class HF
         }
     }
 
+    /// <summary>
+    /// Generates some dummy (random) player save data for use in testing LOAD/SAVE game UI.
+    /// </summary>
+    public static (string, string, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, List<ItemObject>, List<string>, int) DummyPlayerSaveData()
+    {
+        // Name
+        char[] alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+        char[] nums = "0123456789".ToCharArray();
+        string name = $"GAMESAVE{alphabet[Random.Range(0, alphabet.Length - 1)]}{nums[Random.Range(0, nums.Length - 1)]}{alphabet[Random.Range(0, alphabet.Length - 1)]}{nums[Random.Range(0, nums.Length - 1)]}{alphabet[Random.Range(0, alphabet.Length - 1)]}";
+        // Location
+        string location = $"-{nums[Random.Range(0, nums.Length - 1)]} STORAGE";
+        // State
+        int core = 0, energy = 0, matter = 0, corruption = 0;
+        int core_max = Random.Range(300, 600), energy_max = Random.Range(300, 600), matter_max = Random.Range(300, 600), corruption_max = 100;
+        core = Random.Range(0, core_max);
+        energy = Random.Range(0, energy_max);
+        matter = Random.Range(0, matter_max);
+        corruption = Random.Range(0, corruption_max);
+
+        // Slots
+        int sPower = 0, sProp = 0, sUtil = 0, sWep = 0;
+        int sPowerM = Random.Range(1, 5), sPropM = Random.Range(2, 6), sUtilM = Random.Range(2, 8), sWepM = Random.Range(2, 5);
+        sPower = Random.Range(1, sPowerM);
+        sProp = Random.Range(2, sPropM);
+        sUtil = Random.Range(2, sUtilM);
+        sWep = Random.Range(2, sWepM);
+
+        // Items
+        List<ItemObject> items = new List<ItemObject>();
+        ItemDatabaseObject database = null;
+        if (MainMenuManager.inst)
+        {
+            database = MainMenuManager.inst.itemDatabase;
+        }
+        else if (MapManager.inst)
+        {
+            database = MapManager.inst.itemDatabase;
+        }
+
+        for (int i = 0; i < Random.Range(1, 15); i++)
+        {
+            items.Add(database.Items[Random.Range(0, database.Items.Length - 1)]);
+        }
+
+        // Special Conditions
+        List<string> conditionOptions = new List<string>() { "FARCOM", "RIF", "IMPRINTED", "NEM", "CRM", "", "", "", "" };
+        List<string> conditions = new List<string>();
+        conditions.Add(conditionOptions[Random.Range(0, conditionOptions.Count - 1)]);
+
+        // Kills
+        int kills = Random.Range(0, 100);
+
+        // Return it all
+        return (
+            name, location, 
+            new Vector2Int(core, core_max), new Vector2Int(energy, energy_max), new Vector2Int(matter, matter_max), new Vector2Int(corruption, corruption_max), 
+            new Vector2Int(sPower, sPowerM), new Vector2Int(sProp, sPropM), new Vector2Int(sUtil, sUtilM), new Vector2Int(sWep, sWepM), 
+            items, conditions, kills
+            );
+    }
     #endregion
 
     #region Spotting
