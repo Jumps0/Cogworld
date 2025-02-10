@@ -492,6 +492,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private Image load_sheader_backer; // Backer image for the \SAVED GAMES\ header
     [SerializeField] private TextMeshProUGUI load_sheader_text; // Text element of the \SAVED GAMES\ header
     [SerializeField] private GameObject load_nosaves_text; // Text telling the player they have no saved games if none are found
+    [SerializeField] private GameObject load_greaterinfo_area; // Parent which holds all the greater save info
     [SerializeField] private TextMeshProUGUI load_greaterinfo_text; // The center text element which displays more info about the selected save.
     [SerializeField] private TextMeshProUGUI load_greaterinfo_header; // The "header" text for the greater save info
 
@@ -505,6 +506,7 @@ public class MainMenuManager : MonoBehaviour
             // Start off with the center info disabled.
             load_greaterinfo_text.gameObject.SetActive(false);
             load_greaterinfo_header.gameObject.SetActive(false);
+            load_greaterinfo_area.SetActive(false);
 
             // -- LOAD ALL SAVES --
             #region Pre-loading the Saves
@@ -565,6 +567,7 @@ public class MainMenuManager : MonoBehaviour
             // Disable the center info text
             load_greaterinfo_text.gameObject.SetActive(false);
             load_greaterinfo_header.gameObject.SetActive(false);
+            load_greaterinfo_area.SetActive(false);
 
             // Disable start game buttons
             start_buttons_holder.gameObject.SetActive(false);
@@ -595,12 +598,14 @@ public class MainMenuManager : MonoBehaviour
         load_nosaves_text.GetComponent<TextMeshProUGUI>().color = end;
     }
 
+    [Tooltip("Contains all relevant elements for displaying key save game info on the /LOAD/ window.")]
     [SerializeField] private List<GameObject> load_info_elements = new List<GameObject>();
     public void LSelectSave(MMSavegame save, (string, string, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, List<ItemObject>, List<string>, int) data)
     {
         // Update the additional info text with info from the save
         load_greaterinfo_text.gameObject.SetActive(true);
         load_greaterinfo_header.gameObject.SetActive(true);
+        load_greaterinfo_area.SetActive(true);
         // ?
 
         #region Display-string Setup
@@ -621,40 +626,76 @@ public class MainMenuManager : MonoBehaviour
 
         Items($$/$$): (List of names of all items)
          */
-        // - Set the new string
 
         // Save Name & Current Location
+        load_info_elements[0].GetComponent<TextMeshProUGUI>().text = $"Name: {data.Item1}";
+        load_info_elements[1].GetComponent<TextMeshProUGUI>().text = $"Location: {data.Item2}";
 
-        // Core
+        // Core, Energy, Matter, Corruption
         Vector2Int core = data.Item3;
-        // Energy
         Vector2Int energy = data.Item4;
-        // Matter
         Vector2Int matter = data.Item5;
-        // Corruption
         Vector2Int corruption = data.Item6;
-        // Power slots
+        // Set the values (5 10 15 19)
+        load_info_elements[5].GetComponent<TextMeshProUGUI>().text = $"{core.x}/{core.y}";
+        load_info_elements[10].GetComponent<TextMeshProUGUI>().text = $"{energy.x}/{energy.y}";
+        load_info_elements[15].GetComponent<TextMeshProUGUI>().text = $"{matter.x}/{matter.y}";
+        load_info_elements[19].GetComponent<TextMeshProUGUI>().text = $"{corruption.x}/{corruption.y}";
+        // Animate the bars
+        if (lsgb_co != null)
+        {
+            StopCoroutine(lsgb_co);
+        }
+        lsgi_co = StartCoroutine(LSGB_Animation(core, energy, matter, corruption));
+        // Also consider if we want to display the `WARNING` indicators for each (6, 11, 16)
+        load_info_elements[6].SetActive(core.x <= settingsObject.alert_core);
+        load_info_elements[11].SetActive(energy.x <= settingsObject.alert_energy);
+        load_info_elements[16].SetActive(matter.x <= settingsObject.alert_matter);
+
+        // Slots
         Vector2Int power = data.Item7;
-
-        // Propulsion slots
         Vector2Int prop = data.Item8;
-
-        // Utility slots
         Vector2Int util = data.Item9;
-
-        // Weapon slots
         Vector2Int wep = data.Item10;
-
-        // Inventory
-
-        // Items
-        List<ItemObject> items = data.Item11;
+        load_info_elements[20].GetComponent<TextMeshProUGUI>().text = $"Slots: Power({power.x}/{power.y}) Propulsion({prop.x}/{prop.y})\n   Utility({util.x}/{util.y}) Weapons({wep.x}/{wep.y})";
 
         // Conditions
         List<string> conditions = data.Item12;
+        string conds = "Special Conditions: ";
+        if(conditions.Count > 0)
+        {
+            foreach (var C in conditions)
+            {
+                conds += $"{C}, ";
+            }
+        }
+        else
+        {
+            conds += "NONE";
+        }
+
+        load_info_elements[21].GetComponent<TextMeshProUGUI>().text = conds;
 
         // Kills
         int kills = data.Item13;
+        load_info_elements[22].GetComponent<TextMeshProUGUI>().text = kills.ToString();
+
+        // Inventory & Items
+        List<ItemObject> items = data.Item11;
+        load_info_elements[22].GetComponent<TextMeshProUGUI>().text = $"Items({items.Count}): ";
+        string itemstring = "";
+        if (items.Count > 0)
+        {
+            foreach (var I in items)
+            {
+                itemstring += $"{I.itemName}, ";
+            }
+        }
+        else
+        {
+            itemstring += "NONE";
+        }
+        load_info_elements[23].GetComponent<TextMeshProUGUI>().text = itemstring;
 
         #endregion
 
@@ -683,7 +724,7 @@ public class MainMenuManager : MonoBehaviour
         foreach (var S in load_save_objects)
         {
             MMSavegame sg = S.GetComponent<MMSavegame>();
-            Debug.Log($"?{save.gameObject != sg.gameObject}");
+
             if (save.gameObject != sg.gameObject)
             {
                 sg.DeSelect();
@@ -701,6 +742,7 @@ public class MainMenuManager : MonoBehaviour
     }
 
     private Coroutine lsgi_co = null;
+    private Coroutine lsgb_co = null;
     private IEnumerator LSGI_Animation()
     {
         // Simple transparency change
@@ -718,6 +760,47 @@ public class MainMenuManager : MonoBehaviour
             yield return null;
         }
         load_greaterinfo_text.GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 1f);
+    }
+
+    // For animating the reveal of the CORE/ENERGY/MATTER/CORRUPTION bars on the /LOAD/ window for save data
+    private IEnumerator LSGB_Animation(Vector2Int core, Vector2Int energy, Vector2Int matter, Vector2Int corruption)
+    {
+        // These are the sliders
+        Slider core_s = load_info_elements[2].GetComponent<Slider>();
+        Slider energy_s = load_info_elements[7].GetComponent<Slider>();
+        Slider matter_s = load_info_elements[12].GetComponent<Slider>();
+        Slider corruption_s = load_info_elements[17].GetComponent<Slider>();
+
+        // Animate smoothly from 0 to their current value (x)
+        float elapsedTime = 0f;
+        float duration = 0.5f;
+
+        float core_end = (float)core.x / (float)core.y, energy_end = (float)energy.x / (float)energy.y, matter_end = (float)matter.x / (float)matter.y, corruption_end = (float)corruption.x / (float)corruption.y;
+
+        core_s.value = 0f;
+        energy_s.value = 0f;
+        matter_s.value = 0f;
+        corruption_s.value = 0f;
+        while (elapsedTime < duration) // Empty -> Green
+        {
+            float core_lerp = Mathf.Lerp(0f, core_end, elapsedTime / duration);
+            float energy_lerp = Mathf.Lerp(0f, energy_end, elapsedTime / duration);
+            float matter_lerp = Mathf.Lerp(0f, matter_end, elapsedTime / duration);
+            float corruption_lerp = Mathf.Lerp(0f, corruption_end, elapsedTime / duration);
+
+            core_s.value = core_lerp;
+            energy_s.value = energy_lerp;
+            matter_s.value = matter_lerp;
+            corruption_s.value = corruption_lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        core_s.value = core_end;
+        energy_s.value = energy_end;
+        matter_s.value = matter_end;
+        corruption_s.value = corruption_end;
+
     }
     #endregion
 
