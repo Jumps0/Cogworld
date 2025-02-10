@@ -570,19 +570,62 @@ public class MainMenuManager : MonoBehaviour
         load_nosaves_text.GetComponent<TextMeshProUGUI>().color = end;
     }
 
-    public void LSelectSave(MMSavegame save, (string, string, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, List<ItemObject>, List<string>, int))
+    public void LSelectSave(MMSavegame save, (string, string, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, List<ItemObject>, List<string>, int) data)
     {
         // Update the additional info text with info from the save
         load_greaterinfo_text.gameObject.SetActive(true);
         load_greaterinfo_header.gameObject.SetActive(true);
         // ?
 
+        #region Display-string Setup
         // - Set the new string
         string saveinfo = "";
         // - Set specific colors based on the value
+        string color_bright = "<color=#00CC00>";
+        string color_dull = "<color=#FFFFFF>"; // set this properly
+        string color_gray = "<color=#FFFFFF>"; // set this properly
+        string color_green = "<color=#FFFFFF>"; // set this properly
+        string color_purple = "<color=#FFFFFF>"; // set this properly
+        string color_purpledull = "<color=#FFFFFF>"; // set this properly
+        string color_blue = "<color=#FFFFFF>"; // set this properly
+        string color_bluedull = "<color=#FFFFFF>"; // set this properly
+        string color_white = "<color=#FFFFFF>"; // set this properly
+        string color_whitedull = "<color=#FFFFFF>"; // set this properly
+        string cap = "</color>";
 
+        // Save Name & Current Location
+        saveinfo += $"NAME:{data.Item1}\n";
+        saveinfo += $"LOCATION:{data.Item2}\n";
+
+        // Core
+
+        // Energy
+
+        // Matter
+
+        // Corruption
+
+        // Power slots
+
+        // Propulsion slots
+
+        // Utility slots
+
+        // Weapon slots
+
+        // Inventory
+
+        // Items
+
+        // Conditions
+
+        // Kills
+        
+        #endregion
+        
         // - Do the random text reveal
         #region Text Reveal Animation
+        // NOTE: THIS MAY NOT WORK DUE TO ALL THE COLOR OVERRIDES ABOVE. REPLACE THIS
         List<string> strings = HF.RandomHighlightStringAnimation(load_greaterinfo_text.text, color_main);
         // Animate the strings via our delay trick
         float delay = 0f;
