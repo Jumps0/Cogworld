@@ -490,6 +490,8 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private Image load_sheader_backer; // Backer image for the \SAVED GAMES\ header
     [SerializeField] private TextMeshProUGUI load_sheader_text; // Text element of the \SAVED GAMES\ header
     [SerializeField] private GameObject load_nosaves_text; // Text telling the player they have no saved games if none are found
+    [SerializeField] private TextMeshProUGUI load_greaterinfo_text; // The center text element which displays more info about the selected save.
+    [SerializeField] private TextMeshProUGUI load_greaterinfo_header; // The "header" text for the greater save info
 
     private void LoadGameToggle(bool open)
     {
@@ -498,19 +500,108 @@ public class MainMenuManager : MonoBehaviour
         {
             load_window.SetActive(true);
 
-            // continue logic
+            // Start off with the center info disabled.
+            load_greaterinfo_text.gameObject.SetActive(false);
+            load_greaterinfo_header.gameObject.SetActive(false);
+
+            // -- LOAD ALL SAVES --
+            List<GameObject> saves = new List<GameObject>(); // change this type later (temp)
+
+            // Are there any saves?
+            if(saves.Count == 0)
+            {
+                // No saves, just show the no saves text
+                load_nosaves_text.SetActive(true);
+
+                // Reveal animation for that text
+                if(loadnosaves != null)
+                {
+                    StopCoroutine(loadnosaves);
+                }
+                loadnosaves = StartCoroutine(LoadNoSavesAnim());
+
+                // Disable the option to start the game
+                start_buttons_holder.gameObject.SetActive(false);
+            }
+            else
+            {
+                // There are saves! Continue.
+                load_nosaves_text.SetActive(false);
+
+                // continue logic
+            }
         }
         else
         {
             // begin logic
 
+            // Disable the center info text
+            load_greaterinfo_text.gameObject.SetActive(false);
+            load_greaterinfo_header.gameObject.SetActive(false);
+
+            // Disable start game buttons
+            start_buttons_holder.gameObject.SetActive(false);
+
             load_window.SetActive(false);
         }
+    }
+
+    private Coroutine loadnosaves = null;
+    private IEnumerator LoadNoSavesAnim()
+    {
+        // Black -> Bright Green
+        float elapsedTime = 0f;
+        float duration = 0.45f;
+
+        Color start = Color.black, end = color_bright;
+
+        load_nosaves_text.GetComponent<TextMeshProUGUI>().color = start;
+        while (elapsedTime < duration) // Empty -> Green
+        {
+            Color lerp = Color.Lerp(start, end, elapsedTime / duration);
+
+            load_nosaves_text.GetComponent<TextMeshProUGUI>().color = lerp;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        load_nosaves_text.GetComponent<TextMeshProUGUI>().color = end;
     }
 
     public void LSelectSave(MMSavegame save)
     {
         // Update the additional info text with info from the save
+        load_greaterinfo_text.gameObject.SetActive(true);
+        load_greaterinfo_header.gameObject.SetActive(true);
+        // ?
+
+        // - Set the new string
+        string saveinfo = "";
+        // - Set specific colors based on the value
+
+        // - Do the random text reveal
+        #region Text Reveal Animation
+        List<string> strings = HF.RandomHighlightStringAnimation(load_greaterinfo_text.text, color_main);
+        // Animate the strings via our delay trick
+        float delay = 0f;
+        float perDelay = 0.25f / (load_greaterinfo_text.text.Length);
+
+        foreach (string s in strings)
+        {
+            StartCoroutine(HF.DelayedSetText(load_greaterinfo_text, s, delay += perDelay));
+        }
+
+        // And the header too
+        strings = HF.RandomHighlightStringAnimation(load_greaterinfo_header.text, color_main);
+        // Animate the strings via our delay trick
+        delay = 0f;
+        perDelay = 0.25f / (load_greaterinfo_header.text.Length);
+
+        foreach (string s in strings)
+        {
+            StartCoroutine(HF.DelayedSetText(load_greaterinfo_header, s, delay += perDelay));
+        }
+        #endregion
 
         // Deselect all other saves (except the one we got)
         foreach (var S in load_save_objects)
@@ -520,7 +611,17 @@ public class MainMenuManager : MonoBehaviour
             if(save != sg)
             {
                 // TODO
+                sg.DeSelect();
             }
+        }
+
+        // Enable the start game buttons if they aren't already there
+        if (!start_buttons_holder.gameObject.activeInHierarchy)
+        {
+            start_buttons_holder.gameObject.SetActive(true);
+            startbutton.Setup("START GAME", "ENTER", "LOAD");
+            startbuttonmultiplayer.gameObject.SetActive(false);
+            ToggleMultiplayerStartButton(true, "LOAD");
         }
     }
 
