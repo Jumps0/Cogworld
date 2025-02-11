@@ -495,6 +495,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private GameObject load_greaterinfo_area; // Parent which holds all the greater save info
     [SerializeField] private TextMeshProUGUI load_greaterinfo_text; // The center text element which displays more info about the selected save.
     [SerializeField] private TextMeshProUGUI load_greaterinfo_header; // The "header" text for the greater save info
+    [SerializeField] private Image load_greaterinfo_image; // The large preview image
 
     private void LoadGameToggle(bool open)
     {
@@ -506,6 +507,7 @@ public class MainMenuManager : MonoBehaviour
             // Start off with the center info disabled.
             load_greaterinfo_text.gameObject.SetActive(false);
             load_greaterinfo_header.gameObject.SetActive(false);
+            load_greaterinfo_image.gameObject.SetActive(false);
             load_greaterinfo_area.SetActive(false);
 
             // Disable the option to start the game
@@ -570,6 +572,7 @@ public class MainMenuManager : MonoBehaviour
             // Disable the center info text
             load_greaterinfo_text.gameObject.SetActive(false);
             load_greaterinfo_header.gameObject.SetActive(false);
+            load_greaterinfo_image.gameObject.SetActive(false);
             load_greaterinfo_area.SetActive(false);
 
             // Disable start game buttons
@@ -603,7 +606,7 @@ public class MainMenuManager : MonoBehaviour
 
     [Tooltip("Contains all relevant elements for displaying key save game info on the /LOAD/ window.")]
     [SerializeField] private List<GameObject> load_info_elements = new List<GameObject>();
-    public void LSelectSave(MMSavegame save, (string, string, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, (List<ItemObject>, int), List<string>, int) data)
+    public void LSelectSave(MMSavegame save, (string, string, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, (List<ItemObject>, int), List<string>, int, Sprite) data)
     {
         // Play sound
         this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["BLIPS_1"], 0.7f); // UI - BLIPS_1
@@ -612,6 +615,7 @@ public class MainMenuManager : MonoBehaviour
         load_greaterinfo_text.gameObject.SetActive(true);
         load_greaterinfo_header.gameObject.SetActive(true);
         load_greaterinfo_area.SetActive(true);
+        load_greaterinfo_image.gameObject.SetActive(true);
 
         // Enable the option to start the game
         start_buttons_holder.gameObject.SetActive(true);
@@ -701,6 +705,9 @@ public class MainMenuManager : MonoBehaviour
         load_info_elements[24].GetComponent<TextMeshProUGUI>().text = itemstring;
 
         #endregion
+
+        // Set the large preview image
+        load_greaterinfo_image.sprite = data.Item14;
 
         // - Do the random text reveal
         #region Text Reveal Animation

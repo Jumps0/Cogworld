@@ -7047,7 +7047,7 @@ public static class HF
     /// <summary>
     /// Generates some dummy (random) player save data for use in testing LOAD/SAVE game UI.
     /// </summary>
-    public static (string, string, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, (List<ItemObject>, int), List<string>, int) DummyPlayerSaveData()
+    public static (string, string, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, (List<ItemObject>, int), List<string>, int, Sprite) DummyPlayerSaveData()
     {
         // Name
         char[] alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
@@ -7098,12 +7098,15 @@ public static class HF
         // Kills
         int kills = Random.Range(0, 100);
 
+        // Preview Image
+        Sprite sprite = null;
+
         // Return it all
         return (
             name, location, 
             new Vector2Int(core, core_max), new Vector2Int(energy, energy_max), new Vector2Int(matter, matter_max), new Vector2Int(corruption, corruption_max), 
             new Vector2Int(sPower, sPowerM), new Vector2Int(sProp, sPropM), new Vector2Int(sUtil, sUtilM), new Vector2Int(sWep, sWepM), 
-            (items, maxInv), conditions, kills
+            (items, maxInv), conditions, kills, sprite
             );
     }
     #endregion
