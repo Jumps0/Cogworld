@@ -369,8 +369,9 @@ public class MainMenuManager : MonoBehaviour
     #endregion
 
     #region Continue
-    [Header("Continue")] // TODO
+    [Header("Continue")]
     [SerializeField] private GameObject continue_window;
+    [SerializeField] private GameObject continue_nosavedata;
 
     private void ContinueToggle(bool open)
     {
@@ -378,12 +379,154 @@ public class MainMenuManager : MonoBehaviour
         {
             continue_window.SetActive(true);
 
-            // continue logic
+            // TODO: Check if the player has atleast 1 valid savegame
+            if (true)
+            {
+                continue_nosavedata.gameObject.SetActive(false); // We have data, don't show this
+
+                // Update the additional info text with info from the save
+                load_greaterinfo_text.gameObject.SetActive(true);
+                load_greaterinfo_header.gameObject.SetActive(true);
+                load_greaterinfo_area.SetActive(true);
+                load_greaterinfo_image.gameObject.SetActive(true);
+
+                // Enable the option to start the game
+                start_buttons_holder.gameObject.SetActive(true);
+                startbutton.Setup("START GAME", "ENTER", "CONTINUE");
+                ToggleMultiplayerStartButton(true, "CONTINUE");
+
+                // - Get save data from the latest save in the list -
+                #region Save Data Info Visualizer
+                // THIS IS TEMP STUFF FOR TESTING. REPLACE IT LATER
+                var data = HF.DummyPlayerSaveData();
+
+                // (Copied from `LSelectSave()`
+
+                // Save Name & Current Location
+                load_info_elements[0].GetComponent<TextMeshProUGUI>().text = $"Name: {data.Item1}";
+                load_info_elements[1].GetComponent<TextMeshProUGUI>().text = $"Location: {data.Item2}";
+
+                // Core, Energy, Matter, Corruption
+                Vector2Int core = data.Item3;
+                Vector2Int energy = data.Item4;
+                Vector2Int matter = data.Item5;
+                Vector2Int corruption = data.Item6;
+                // Set the values (5 10 15 19)
+                load_info_elements[5].GetComponent<TextMeshProUGUI>().text = $"{core.x}/{core.y}";
+                load_info_elements[10].GetComponent<TextMeshProUGUI>().text = $"{energy.x}/{energy.y}";
+                load_info_elements[15].GetComponent<TextMeshProUGUI>().text = $"{matter.x}/{matter.y}";
+                load_info_elements[19].GetComponent<TextMeshProUGUI>().text = $"{corruption.x}%";
+                // Animate the bars
+                if (lsgb_co != null)
+                {
+                    StopCoroutine(lsgb_co);
+                }
+                lsgb_co = StartCoroutine(LSGB_Animation(core, energy, matter, corruption));
+                // Also consider if we want to display the `WARNING` indicators for each (6, 11, 16)
+                load_info_elements[6].SetActive((float)core.x / (float)core.y <= settingsObject.alert_core);
+                load_info_elements[11].SetActive((float)energy.x / (float)energy.y <= settingsObject.alert_energy);
+                load_info_elements[16].SetActive((float)matter.x / (float)matter.y <= settingsObject.alert_matter);
+
+                // Slots
+                Vector2Int power = data.Item7;
+                Vector2Int prop = data.Item8;
+                Vector2Int util = data.Item9;
+                Vector2Int wep = data.Item10;
+                load_info_elements[20].GetComponent<TextMeshProUGUI>().text = $"Slots: Power({power.x}/{power.y}) Propulsion({prop.x}/{prop.y})\n       Utility({util.x}/{util.y}) Weapons({wep.x}/{wep.y})";
+
+                // Conditions
+                List<string> conditions = data.Item12;
+                string conds = "Special Conditions: ";
+                if (conditions.Count > 0)
+                {
+                    foreach (var C in conditions)
+                    {
+                        if (C != "")
+                            conds += $"{C}, ";
+                    }
+                    // Remove the last ,
+                    conds = conds.Substring(0, conds.Length - 2);
+                }
+                else
+                {
+                    conds += "NONE";
+                }
+
+                load_info_elements[21].GetComponent<TextMeshProUGUI>().text = conds;
+
+                // Kills
+                int kills = data.Item13;
+                load_info_elements[22].GetComponent<TextMeshProUGUI>().text = $"Kills: {kills.ToString()}";
+
+                // Inventory & Items
+                List<ItemObject> items = data.Item11.Item1;
+                load_info_elements[23].GetComponent<TextMeshProUGUI>().text = $"Items({items.Count}/{data.Item11.Item2}): ";
+                string itemstring = "";
+                if (items.Count > 0)
+                {
+                    foreach (var I in items)
+                    {
+                        itemstring += $"{I.itemName}, ";
+                    }
+                    // Remove the last ,
+                    itemstring = itemstring.Substring(0, itemstring.Length - 2);
+
+                    if (itemstring.Length > 490) // Cap the length
+                    {
+                        itemstring = itemstring.Substring(0, itemstring.Length - 4) + "...";
+                    }
+                }
+                else
+                {
+                    itemstring += "NONE";
+                }
+                load_info_elements[24].GetComponent<TextMeshProUGUI>().text = itemstring;
+
+                #endregion
+
+                // Set the large preview image
+                load_greaterinfo_image.sprite = data.Item14;
+
+                // - Do the random text reveal
+                #region Text Reveal Animation
+                // Basic transparency flash for the save data
+                if (lsgi_co != null)
+                {
+                    StopCoroutine(lsgi_co);
+                }
+                lsgi_co = StartCoroutine(LSGI_Animation());
+
+                // Text reveal for the header
+                List<string> strings = HF.RandomHighlightStringAnimation(load_greaterinfo_header.text, color_main);
+                // Animate the strings via our delay trick
+                float delay = 0f;
+                float perDelay = 0.25f / (load_greaterinfo_header.text.Length);
+
+                foreach (string s in strings)
+                {
+                    StartCoroutine(HF.DelayedSetText(load_greaterinfo_header, s, delay += perDelay));
+                }
+                #endregion
+
+                // Enable the start game buttons if they aren't already there
+                if (!start_buttons_holder.gameObject.activeInHierarchy)
+                {
+                    start_buttons_holder.gameObject.SetActive(true);
+                    startbutton.Setup("START GAME", "ENTER", "CONTINUE");
+                    startbuttonmultiplayer.gameObject.SetActive(false);
+                    ToggleMultiplayerStartButton(true, "CONTINUE");
+                }
+            }
+            else
+            {
+                // Show the text indicating no save data
+                continue_nosavedata.gameObject.SetActive(true);
+                // Disable the start buttons
+                start_buttons_holder.gameObject.SetActive(false);
+            }
         }
         else
         {
-            // begin logic
-
             continue_window.SetActive(false);
         }
     }
@@ -462,8 +605,6 @@ public class MainMenuManager : MonoBehaviour
             }
 
             #endregion
-
-            // continue logic
         }
         else
         {
@@ -499,7 +640,6 @@ public class MainMenuManager : MonoBehaviour
 
     private void LoadGameToggle(bool open)
     {
-        // TODO
         if (open)
         {
             load_window.SetActive(true);
@@ -516,13 +656,7 @@ public class MainMenuManager : MonoBehaviour
             // -- LOAD ALL SAVES --
             #region Pre-loading the Saves
             List<GameObject> saves = new List<GameObject>(); // change this type later (temp)
-
-            // TEMP FOR TESTING
-            saves.Add(load_window);
-            saves.Add(load_window);
-            saves.Add(load_window);
-            saves.Add(load_window);
-
+            saves.Add(this.gameObject);
             // Destroy any existing objects
             foreach (var O in load_save_objects.ToList())
             {
@@ -562,21 +696,19 @@ public class MainMenuManager : MonoBehaviour
                 // There are saves! Continue.
                 load_nosaves_text.SetActive(false);
 
-                // continue logic
+                // Nothing else to do here?
             }
         }
         else
         {
-            // begin logic
-
             // Disable the center info text
-            load_greaterinfo_text.gameObject.SetActive(false);
-            load_greaterinfo_header.gameObject.SetActive(false);
-            load_greaterinfo_image.gameObject.SetActive(false);
-            load_greaterinfo_area.SetActive(false);
-
-            // Disable start game buttons
-            start_buttons_holder.gameObject.SetActive(false);
+            if (!continue_window.gameObject.activeInHierarchy)
+            {
+                load_greaterinfo_text.gameObject.SetActive(false);
+                load_greaterinfo_header.gameObject.SetActive(false);
+                load_greaterinfo_image.gameObject.SetActive(false);
+                load_greaterinfo_area.SetActive(false);
+            }
 
             load_window.SetActive(false);
         }
@@ -1744,8 +1876,8 @@ public class MainMenuManager : MonoBehaviour
         {
             if (toggle)
             {
-                quit_yes.Setup("Yes");
-                quit_no.Setup("No");
+                quit_yes.Setup("[Y]es");
+                quit_no.Setup("[N]o");
             }
 
             StartCoroutine(GenericWindowAnimation(quit_borders, toggle));
@@ -1847,7 +1979,7 @@ public class MainMenuManager : MonoBehaviour
         if (settings_inputfield_main.activeInHierarchy) { return; }
 
         // Check for player input
-        if (Keyboard.current.anyKey.wasPressedThisFrame) // FUTURE TODO: Check if player is typing in an inputfield
+        if (Keyboard.current.anyKey.wasPressedThisFrame)
         {
             // Go through the primary buttons
             foreach (var O in button_titles)
@@ -1865,6 +1997,19 @@ public class MainMenuManager : MonoBehaviour
                     value--; // Step it back down again
                     buttons_main[value].GetComponent<MMButton>().Click();
                     return;
+                }
+            }
+
+            // Checking for [Y]es [N]o in the Quit menu
+            if (quit_main.gameObject.activeInHierarchy)
+            {
+                if (Keyboard.current.yKey.wasPressedThisFrame)
+                {
+                    QuitGame();
+                }
+                else if (Keyboard.current.nKey.wasPressedThisFrame)
+                {
+                    CancelQuitGame();
                 }
             }
         }
