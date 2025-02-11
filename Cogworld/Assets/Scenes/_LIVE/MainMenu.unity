@@ -2767,7 +2767,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 1
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -4162,7 +4162,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 1
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -13809,18 +13809,18 @@ MonoBehaviour:
   load_info_elements:
   - {fileID: 478448124}
   - {fileID: 1871594297}
+  - {fileID: 1996902019}
   - {fileID: 411588887}
-  - {fileID: 239329921}
   - {fileID: 610729753}
   - {fileID: 329301929}
   - {fileID: 1992001154}
+  - {fileID: 1593270581}
   - {fileID: 1770947294}
-  - {fileID: 1642642399}
   - {fileID: 497126758}
   - {fileID: 2093572330}
   - {fileID: 133293031}
+  - {fileID: 1292294323}
   - {fileID: 262139377}
-  - {fileID: 614515893}
   - {fileID: 1738537727}
   - {fileID: 1319210830}
   - {fileID: 1947984377}
@@ -19426,7 +19426,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 1
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []

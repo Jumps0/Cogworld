@@ -7054,7 +7054,7 @@ public static class HF
         char[] nums = "0123456789".ToCharArray();
         string name = $"GAMESAVE{alphabet[Random.Range(0, alphabet.Length - 1)]}{nums[Random.Range(0, nums.Length - 1)]}{alphabet[Random.Range(0, alphabet.Length - 1)]}{nums[Random.Range(0, nums.Length - 1)]}{alphabet[Random.Range(0, alphabet.Length - 1)]}";
         // Location
-        string location = $"-{nums[Random.Range(0, nums.Length - 1)]} STORAGE";
+        string location = $"-{nums[Random.Range(0, nums.Length - 1)]}/STORAGE";
         // State
         int core = 0, energy = 0, matter = 0, corruption = 0;
         int core_max = Random.Range(300, 600), energy_max = Random.Range(300, 600), matter_max = Random.Range(300, 600), corruption_max = 100;

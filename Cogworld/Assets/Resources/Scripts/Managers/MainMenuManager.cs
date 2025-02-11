@@ -508,6 +508,9 @@ public class MainMenuManager : MonoBehaviour
             load_greaterinfo_header.gameObject.SetActive(false);
             load_greaterinfo_area.SetActive(false);
 
+            // Disable the option to start the game
+            start_buttons_holder.gameObject.SetActive(false);
+
             // -- LOAD ALL SAVES --
             #region Pre-loading the Saves
             List<GameObject> saves = new List<GameObject>(); // change this type later (temp)
@@ -548,9 +551,6 @@ public class MainMenuManager : MonoBehaviour
                     StopCoroutine(loadnosaves);
                 }
                 loadnosaves = StartCoroutine(LoadNoSavesAnim());
-
-                // Disable the option to start the game
-                start_buttons_holder.gameObject.SetActive(false);
             }
             else
             {
@@ -606,26 +606,13 @@ public class MainMenuManager : MonoBehaviour
         load_greaterinfo_text.gameObject.SetActive(true);
         load_greaterinfo_header.gameObject.SetActive(true);
         load_greaterinfo_area.SetActive(true);
-        // ?
+
+        // Enable the option to start the game
+        start_buttons_holder.gameObject.SetActive(true);
+        startbutton.Setup("START GAME", "ENTER", "LOAD");
+        ToggleMultiplayerStartButton(true, "LOAD");
 
         #region Display-string Setup
-        /*
-        Name: (Save Name)
-
-        Location: (Location)
-
-        State: Core####/#### Energy ####/####
-           Matter ####/#### Corruption###/###
-
-        Slots: Power($$/$$) Propulsion($$/$$)
-                Utility($$/$$) Weapons($$/$$)
-
-        Special Conditions: (FARCOM, RIF, IMPRINTED, NEM, CRM, ETC)
-
-        Kills: ### 
-
-        Items($$/$$): (List of names of all items)
-         */
 
         // Save Name & Current Location
         load_info_elements[0].GetComponent<TextMeshProUGUI>().text = $"Name: {data.Item1}";
@@ -640,24 +627,24 @@ public class MainMenuManager : MonoBehaviour
         load_info_elements[5].GetComponent<TextMeshProUGUI>().text = $"{core.x}/{core.y}";
         load_info_elements[10].GetComponent<TextMeshProUGUI>().text = $"{energy.x}/{energy.y}";
         load_info_elements[15].GetComponent<TextMeshProUGUI>().text = $"{matter.x}/{matter.y}";
-        load_info_elements[19].GetComponent<TextMeshProUGUI>().text = $"{corruption.x}/{corruption.y}";
+        load_info_elements[19].GetComponent<TextMeshProUGUI>().text = $"{corruption.x}%";
         // Animate the bars
         if (lsgb_co != null)
         {
             StopCoroutine(lsgb_co);
         }
-        lsgi_co = StartCoroutine(LSGB_Animation(core, energy, matter, corruption));
+        lsgb_co = StartCoroutine(LSGB_Animation(core, energy, matter, corruption));
         // Also consider if we want to display the `WARNING` indicators for each (6, 11, 16)
-        load_info_elements[6].SetActive(core.x <= settingsObject.alert_core);
-        load_info_elements[11].SetActive(energy.x <= settingsObject.alert_energy);
-        load_info_elements[16].SetActive(matter.x <= settingsObject.alert_matter);
+        load_info_elements[6].SetActive((float)core.x / (float)core.y <= settingsObject.alert_core);
+        load_info_elements[11].SetActive((float)energy.x / (float)energy.y <= settingsObject.alert_energy);
+        load_info_elements[16].SetActive((float)matter.x / (float)matter.y <= settingsObject.alert_matter);
 
         // Slots
         Vector2Int power = data.Item7;
         Vector2Int prop = data.Item8;
         Vector2Int util = data.Item9;
         Vector2Int wep = data.Item10;
-        load_info_elements[20].GetComponent<TextMeshProUGUI>().text = $"Slots: Power({power.x}/{power.y}) Propulsion({prop.x}/{prop.y})\n   Utility({util.x}/{util.y}) Weapons({wep.x}/{wep.y})";
+        load_info_elements[20].GetComponent<TextMeshProUGUI>().text = $"Slots: Power({power.x}/{power.y}) Propulsion({prop.x}/{prop.y})\n       Utility({util.x}/{util.y}) Weapons({wep.x}/{wep.y})";
 
         // Conditions
         List<string> conditions = data.Item12;
@@ -666,8 +653,11 @@ public class MainMenuManager : MonoBehaviour
         {
             foreach (var C in conditions)
             {
-                conds += $"{C}, ";
+                if(C != "")
+                    conds += $"{C}, ";
             }
+            // Remove the last ,
+            conds = conds.Substring(0, conds.Length - 2);
         }
         else
         {
@@ -678,11 +668,11 @@ public class MainMenuManager : MonoBehaviour
 
         // Kills
         int kills = data.Item13;
-        load_info_elements[22].GetComponent<TextMeshProUGUI>().text = kills.ToString();
+        load_info_elements[22].GetComponent<TextMeshProUGUI>().text = $"Kills: {kills.ToString()}";
 
         // Inventory & Items
         List<ItemObject> items = data.Item11;
-        load_info_elements[22].GetComponent<TextMeshProUGUI>().text = $"Items({items.Count}): ";
+        load_info_elements[23].GetComponent<TextMeshProUGUI>().text = $"Items({items.Count}): ";
         string itemstring = "";
         if (items.Count > 0)
         {
@@ -690,12 +680,14 @@ public class MainMenuManager : MonoBehaviour
             {
                 itemstring += $"{I.itemName}, ";
             }
+            // Remove the last ,
+            itemstring = itemstring.Substring(0, itemstring.Length - 2);
         }
         else
         {
             itemstring += "NONE";
         }
-        load_info_elements[23].GetComponent<TextMeshProUGUI>().text = itemstring;
+        load_info_elements[24].GetComponent<TextMeshProUGUI>().text = itemstring;
 
         #endregion
 
@@ -771,17 +763,23 @@ public class MainMenuManager : MonoBehaviour
         Slider matter_s = load_info_elements[12].GetComponent<Slider>();
         Slider corruption_s = load_info_elements[17].GetComponent<Slider>();
 
+        // Set their max value(s)
+        core_s.maxValue = core.y;
+        energy_s.maxValue = energy.y;
+        matter_s.maxValue = matter.y;
+        corruption_s.maxValue = corruption.y;
+
         // Animate smoothly from 0 to their current value (x)
         float elapsedTime = 0f;
-        float duration = 0.5f;
+        float duration = 0.45f;
 
-        float core_end = (float)core.x / (float)core.y, energy_end = (float)energy.x / (float)energy.y, matter_end = (float)matter.x / (float)matter.y, corruption_end = (float)corruption.x / (float)corruption.y;
+        float core_end = core.x, energy_end = energy.x, matter_end = matter.x, corruption_end = corruption.x;
 
         core_s.value = 0f;
         energy_s.value = 0f;
         matter_s.value = 0f;
         corruption_s.value = 0f;
-        while (elapsedTime < duration) // Empty -> Green
+        while (elapsedTime < duration)
         {
             float core_lerp = Mathf.Lerp(0f, core_end, elapsedTime / duration);
             float energy_lerp = Mathf.Lerp(0f, energy_end, elapsedTime / duration);
