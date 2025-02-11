@@ -517,6 +517,9 @@ public class MainMenuManager : MonoBehaviour
 
             // TEMP FOR TESTING
             saves.Add(load_window);
+            saves.Add(load_window);
+            saves.Add(load_window);
+            saves.Add(load_window);
 
             // Destroy any existing objects
             foreach (var O in load_save_objects.ToList())
@@ -600,8 +603,11 @@ public class MainMenuManager : MonoBehaviour
 
     [Tooltip("Contains all relevant elements for displaying key save game info on the /LOAD/ window.")]
     [SerializeField] private List<GameObject> load_info_elements = new List<GameObject>();
-    public void LSelectSave(MMSavegame save, (string, string, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, List<ItemObject>, List<string>, int) data)
+    public void LSelectSave(MMSavegame save, (string, string, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, (List<ItemObject>, int), List<string>, int) data)
     {
+        // Play sound
+        this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["BLIPS_1"], 0.7f); // UI - BLIPS_1
+
         // Update the additional info text with info from the save
         load_greaterinfo_text.gameObject.SetActive(true);
         load_greaterinfo_header.gameObject.SetActive(true);
@@ -671,8 +677,8 @@ public class MainMenuManager : MonoBehaviour
         load_info_elements[22].GetComponent<TextMeshProUGUI>().text = $"Kills: {kills.ToString()}";
 
         // Inventory & Items
-        List<ItemObject> items = data.Item11;
-        load_info_elements[23].GetComponent<TextMeshProUGUI>().text = $"Items({items.Count}): ";
+        List<ItemObject> items = data.Item11.Item1;
+        load_info_elements[23].GetComponent<TextMeshProUGUI>().text = $"Items({items.Count}/{data.Item11.Item2}): ";
         string itemstring = "";
         if (items.Count > 0)
         {
@@ -682,6 +688,11 @@ public class MainMenuManager : MonoBehaviour
             }
             // Remove the last ,
             itemstring = itemstring.Substring(0, itemstring.Length - 2);
+
+            if(itemstring.Length > 490) // Cap the length
+            { 
+                itemstring = itemstring.Substring(0, itemstring.Length - 4) + "...";
+            }
         }
         else
         {
@@ -742,16 +753,54 @@ public class MainMenuManager : MonoBehaviour
         float duration = 0.45f;
 
         load_greaterinfo_text.GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 0f);
+
+        Color blue = load_info_elements[10].GetComponent<TextMeshProUGUI>().color;
+        Color purple = load_info_elements[15].GetComponent<TextMeshProUGUI>().color;
+
+        load_info_elements[0].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 0f);
+        load_info_elements[1].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 0f);
+        load_info_elements[5].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 0f);
+        load_info_elements[10].GetComponent<TextMeshProUGUI>().color = new Color(blue.r, blue.g, blue.b, 0f);
+        load_info_elements[15].GetComponent<TextMeshProUGUI>().color = new Color(purple.r, purple.g, purple.b, 0f);
+        load_info_elements[19].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 0f);
+        load_info_elements[20].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 0f);
+        load_info_elements[21].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 0f);
+        load_info_elements[22].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 0f);
+        load_info_elements[23].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 0f);
+        load_info_elements[24].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 0f);
         while (elapsedTime < duration) // Empty -> Green
         {
             float lerp = Mathf.Lerp(0f, 1f, elapsedTime / duration);
 
             load_nosaves_text.GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, lerp);
+            load_info_elements[0].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, lerp);
+            load_info_elements[1].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, lerp);
+            load_info_elements[5].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, lerp);
+            load_info_elements[10].GetComponent<TextMeshProUGUI>().color = new Color(blue.r, blue.g, blue.b, lerp);
+            load_info_elements[15].GetComponent<TextMeshProUGUI>().color = new Color(purple.r, purple.g, purple.b, lerp);
+            load_info_elements[19].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, lerp);
+            load_info_elements[20].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, lerp);
+            load_info_elements[21].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, lerp);
+            load_info_elements[22].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, lerp);
+            load_info_elements[23].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, lerp);
+            load_info_elements[24].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, lerp);
 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
         load_greaterinfo_text.GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 1f);
+
+        load_info_elements[0].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 1f);
+        load_info_elements[1].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 1f);
+        load_info_elements[5].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 1f);
+        load_info_elements[10].GetComponent<TextMeshProUGUI>().color = new Color(blue.r, blue.g, blue.b, 1f);
+        load_info_elements[15].GetComponent<TextMeshProUGUI>().color = new Color(purple.r, purple.g, purple.b, 1f);
+        load_info_elements[19].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 1f);
+        load_info_elements[20].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 1f);
+        load_info_elements[21].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 1f);
+        load_info_elements[22].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 1f);
+        load_info_elements[23].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 1f);
+        load_info_elements[24].GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 1f);
     }
 
     // For animating the reveal of the CORE/ENERGY/MATTER/CORRUPTION bars on the /LOAD/ window for save data

@@ -7047,7 +7047,7 @@ public static class HF
     /// <summary>
     /// Generates some dummy (random) player save data for use in testing LOAD/SAVE game UI.
     /// </summary>
-    public static (string, string, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, List<ItemObject>, List<string>, int) DummyPlayerSaveData()
+    public static (string, string, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, Vector2Int, (List<ItemObject>, int), List<string>, int) DummyPlayerSaveData()
     {
         // Name
         char[] alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
@@ -7087,6 +7087,8 @@ public static class HF
         {
             items.Add(database.Items[Random.Range(0, database.Items.Length - 1)]);
         }
+        // and current max inventory size
+        int maxInv = Random.Range(3, 15);
 
         // Special Conditions
         List<string> conditionOptions = new List<string>() { "FARCOM", "RIF", "IMPRINTED", "NEM", "CRM", "", "", "", "" };
@@ -7101,7 +7103,7 @@ public static class HF
             name, location, 
             new Vector2Int(core, core_max), new Vector2Int(energy, energy_max), new Vector2Int(matter, matter_max), new Vector2Int(corruption, corruption_max), 
             new Vector2Int(sPower, sPowerM), new Vector2Int(sProp, sPropM), new Vector2Int(sUtil, sUtilM), new Vector2Int(sWep, sWepM), 
-            items, conditions, kills
+            (items, maxInv), conditions, kills
             );
     }
     #endregion
