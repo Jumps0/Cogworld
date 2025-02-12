@@ -39,7 +39,9 @@ public class MainMenuManager : MonoBehaviour
         //RunSpritefall();
     }
 
+    [Header("Databases")]
     public ItemDatabaseObject itemDatabase;
+    public BotDatabaseObject botDatabase;
 
     [Header("References")]
     [SerializeField] private List<GameObject> buttons_main = new List<GameObject>();
@@ -1083,10 +1085,11 @@ public class MainMenuManager : MonoBehaviour
                 ToggleMultiplayerStartButton(false, ""); // No MP in Hideout?
 
                 // == Read data from hideout save ==
+                var data = HF.DummyHideoutSaveData();
                 // - Set the preview image
                 hideout_imagepreview.sprite = null;
                 // - Update the hideout data info
-
+                // (int layerNumber, string layerName, int cached_matter List<ItemObject> cached_items, List<BotObject> bot_allies, int 0b10Awareness)
 
 
 
@@ -2242,7 +2245,6 @@ public class MainMenuManager : MonoBehaviour
 
     #region (Ambient) Spritefall
     [Header("Ambient Sprites")]
-    public BotDatabaseObject bots;
     public GameObject spritefall_prefab;
     private float spritefall_time = 35f;
     private Coroutine spritefall_co = null;
@@ -2265,8 +2267,8 @@ public class MainMenuManager : MonoBehaviour
         var obj = Instantiate(spritefall_prefab, start, Quaternion.identity, spritefall_area); // Instantiate
 
         // Randomly set the sprite
-        int random = Random.Range(0, bots.Bots.Length);
-        obj.GetComponent<Image>().sprite = bots.Bots[random].displaySprite;
+        int random = Random.Range(0, botDatabase.Bots.Length);
+        obj.GetComponent<Image>().sprite = botDatabase.Bots[random].displaySprite;
 
         // and color (this should be changed later to be dependent on bot class)
         obj.GetComponent<Image>().color = new Color(spritefall_color.r, Random.Range(0, 255f) / 255f, 0f);
@@ -2308,9 +2310,9 @@ public class MainMenuManager : MonoBehaviour
         spritewheel_sprites.Clear();
 
         // Randomly pick sprites
-        while(spritewheel_sprites.Count < spritewheel_max && spritewheel_sprites.Count <= bots.Bots.Length)
+        while(spritewheel_sprites.Count < spritewheel_max && spritewheel_sprites.Count <= botDatabase.Bots.Length)
         {
-            BotObject botInfo = bots.Bots[Random.Range(0, bots.Bots.Length)];
+            BotObject botInfo = botDatabase.Bots[Random.Range(0, botDatabase.Bots.Length)];
             Sprite botSprite = botInfo.displaySprite;
             Color botColor = botInfo.idealColor;
 

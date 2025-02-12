@@ -14142,7 +14142,7 @@ MonoBehaviour:
   start_buttons_holder: {fileID: 2091865368}
   startbutton: {fileID: 1736395254}
   startbuttonmultiplayer: {fileID: 1749948815}
-  bots: {fileID: 11400000, guid: 2251835abf9330c468579ac04a343743, type: 2}
+  botDatabase: {fileID: 11400000, guid: 2251835abf9330c468579ac04a343743, type: 2}
   spritefall_prefab: {fileID: 9212561821996581299, guid: 79462b4649053df4492f61490ce4c035, type: 3}
   spritefall_start: {x: 0, y: 0}
   spritefall_end: {x: 0, y: 0}

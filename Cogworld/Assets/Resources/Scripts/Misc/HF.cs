@@ -7109,6 +7109,44 @@ public static class HF
             (items, maxInv), conditions, kills, sprite
             );
     }
+    
+    /// <summary>
+    /// Generates some dummy (random) hideout save data for use in testing HIDEOUT game UI.
+    /// </summary>
+    public static (int, string, int, List<ItemObject>, List<BotObject>, int) DummyHideoutSaveData()
+    {
+        // What are important save values to display here?
+        /* -Hideout depth/level (Lower Caves/Upper Caves/Subcaves)
+         * -Cached Matter
+         * -Cached Items
+         * -Bot Allies
+         * -0b10 Awareness
+         */
+
+        int depth = Random.Range(-10, -4);
+        List<string> levels = new List<string>() { "Lower Caves", "Upper Caves", "Subcaves" };
+        string levelName = levels[Random.Range(0, levels.Count - 1)];
+
+        int cached_matter = Random.Range(0, 500);
+
+        List<ItemObject> cached_items = new List<ItemObject>();
+        ItemDatabaseObject itemDB = MainMenuManager.inst ? MainMenuManager.inst.itemDatabase : MapManager.inst.itemDatabase;
+        for (int i = 0; i < Random.Range(1, 8); i++)
+        {
+            cached_items.Add(itemDB.Items[Random.Range(0, itemDB.Items.Length - 1)]);
+        }
+
+        List<BotObject> bot_allies = new List<BotObject>();
+        BotDatabaseObject botDB = MainMenuManager.inst ? MainMenuManager.inst.botDatabase : MapManager.inst.botDatabase;
+        for (int i = 0; i < Random.Range(1, 8); i++)
+        {
+            bot_allies.Add(botDB.Bots[Random.Range(0, botDB.Bots.Length - 1)]);
+        }
+
+        int awareness = Random.Range(0, 100);
+
+        return (depth, levelName, cached_matter, cached_items, bot_allies, awareness);
+    }
     #endregion
 
     #region Spotting
