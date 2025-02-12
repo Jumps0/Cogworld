@@ -92,6 +92,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private GameObject main_window;
     private Coroutine main_borders_co;
     [SerializeField] private Image main_border;
+    [SerializeField] private Transform main_transform;
 
     public void ButtonAction(int instruction)
     {
@@ -100,10 +101,14 @@ public class MainMenuManager : MonoBehaviour
         SettingsClose();
         settings_parent.SetActive(false);
 
+        // Reset the save info & buttons
+        load_greaterinfo_image.transform.SetParent(load_saveinfo_area, false);
+        load_greaterinfo_area.transform.SetParent(load_saveinfo_area, false);
+        start_buttons_holder.transform.SetParent(load_saveinfo_area, false);
+
         switch (instruction)
         {
             case 1: // - CONTINUE
-                ToggleMainWindow(true); // Open the window
                 start_buttons_holder.gameObject.SetActive(true);
                 ContinueToggle(true);
 
@@ -111,6 +116,7 @@ public class MainMenuManager : MonoBehaviour
                 NewGameToggle(false);
                 LoadGameToggle(false);
                 JoinGameToggle(false);
+                ToggleMainWindow(false, true);
                 ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
@@ -372,12 +378,26 @@ public class MainMenuManager : MonoBehaviour
     [Header("Continue")]
     [SerializeField] private GameObject continue_window;
     [SerializeField] private GameObject continue_nosavedata;
+    [SerializeField] private Transform continue_area;
+    [SerializeField] private Image continue_borders;
 
     private void ContinueToggle(bool open)
     {
         if (open)
         {
             continue_window.SetActive(true);
+
+            if (main_borders_co != null)
+            {
+                StopCoroutine(main_borders_co);
+            }
+
+            StartCoroutine(GenericWindowAnimation(continue_borders, true));
+
+            // Re-parent the transforms
+            load_greaterinfo_image.transform.SetParent(continue_area, false);
+            load_greaterinfo_area.transform.SetParent(continue_area, false);
+            start_buttons_holder.transform.SetParent(continue_area, false);
 
             // TODO: Check if the player has atleast 1 valid savegame
             if (true)
@@ -637,6 +657,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI load_greaterinfo_text; // The center text element which displays more info about the selected save.
     [SerializeField] private TextMeshProUGUI load_greaterinfo_header; // The "header" text for the greater save info
     [SerializeField] private Image load_greaterinfo_image; // The large preview image
+    [SerializeField] private Transform load_saveinfo_area; // Transform where the Greater Info objects & start buttons need to be re-assigned to.
 
     private void LoadGameToggle(bool open)
     {
