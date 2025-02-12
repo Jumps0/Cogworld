@@ -1062,7 +1062,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private Transform hideout_infoarea; // Transform area which holds all info about the hideout save
     [SerializeField] private TextMeshProUGUI hideout_infoheader; // The header for the hideout info
     [SerializeField] private TextMeshProUGUI hideout_nodata; // No save data text
-    [SerializeField] private List<GameObject> hideout_infoelements = new List<GameObject>(); // List of gameObjects related to displaying hideout savegame info
+    [SerializeField] private TextMeshProUGUI hideout_infoelements; // Textwall that explains hideout save info
     private Coroutine hideout_co;
 
     private void ToggleHideout(bool toggle)
@@ -1092,9 +1092,52 @@ public class MainMenuManager : MonoBehaviour
                 // - Set the preview image
                 hideout_imagepreview.sprite = null;
                 // - Update the hideout data info
+                // !! We do this with a single big wall of text since A) We don't need to change the colors and B) The two lists mess up the text spacing
                 // (int layerNumber, string layerName, int cached_matter List<ItemObject> cached_items, List<BotObject> bot_allies, int 0b10Awareness)
+                string textwall = "";
+                // * Location *
+                textwall += $"Location: {data.Item1}/{data.Item2}\n\n";
+                // * Cached Matter *
+                textwall += $"Cached Matter:{data.Item3}\n\n";
+                // * Cached Items *
+                textwall += $"Cached Items({data.Item4.Count}): ";
+                string itemstring = "";
+                if(data.Item4.Count == 0)
+                {
+                    itemstring += "NONE";
+                }
+                else
+                {
+                    foreach (var I in data.Item4)
+                    {
+                        itemstring += I.itemName + ", ";
+                    }
+                    // Remove last ", "
+                    itemstring = itemstring.Substring(0, itemstring.Length - 2);
+                }
+                textwall += itemstring + "\n\n";
 
+                // * Local Allies *
+                textwall += $"Local Allies({data.Item5.Count}): ";
+                string botstring = "";
+                if (data.Item5.Count == 0)
+                {
+                    botstring += "NONE";
+                }
+                else
+                {
+                    foreach (var I in data.Item5)
+                    {
+                        botstring += I.botName + ", ";
+                    }
+                    // Remove last ", "
+                    botstring = botstring.Substring(0, botstring.Length - 2);
+                }
+                textwall += botstring + "\n\n";
+                // * 0b10 Awareness *
+                textwall += $"0b10 Awareness: {data.Item6}\n\n";
 
+                hideout_infoelements.text = textwall;
 
                 // Do the text animation
                 if (hideout_co != null)
@@ -1137,7 +1180,28 @@ public class MainMenuManager : MonoBehaviour
 
     private IEnumerator HideoutInfoAnimation()
     {
-        yield return null;
+        // Simple transparency change
+        float elapsedTime = 0f;
+        float duration = 0.45f;
+
+        hideout_infoheader.GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 0f);
+
+        hideout_infoelements.color = new Color(color_bright.r, color_bright.g, color_bright.b, 0f);
+
+        while (elapsedTime < duration) // Empty -> Green
+        {
+            float lerp = Mathf.Lerp(0f, 1f, elapsedTime / duration);
+
+            hideout_infoheader.GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, lerp);
+            hideout_infoelements.color = new Color(color_bright.r, color_bright.g, color_bright.b, lerp);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        hideout_infoheader.GetComponent<TextMeshProUGUI>().color = new Color(color_bright.r, color_bright.g, color_bright.b, 1f);
+        hideout_infoelements.color = new Color(color_bright.r, color_bright.g, color_bright.b, 1f);
+
     }
     #endregion
 
