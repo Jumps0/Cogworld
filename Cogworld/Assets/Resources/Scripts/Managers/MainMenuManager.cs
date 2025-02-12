@@ -30,6 +30,9 @@ public class MainMenuManager : MonoBehaviour
 
         SetupMainButtons();
         SetupSpritewheel();
+
+        // Play "DONE" sound
+        this.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_intro["DONE"], 0.25f); // INTRO - DONE
     }
 
     private void Update()
