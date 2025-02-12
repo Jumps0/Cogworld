@@ -49,7 +49,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private Transform buttons_area;
     [SerializeField] private GameObject button_prefab;
     [SerializeField] private GameObject button_big_prefab;
-    private List<string> button_titles = new List<string>() { "CONTINUE", "NEW GAME", "LOAD GAME", "JOIN GAME", "RECORDS", "SETTINGS", "CREDITS", "QUIT" };
+    private List<string> button_titles = new List<string>() { "CONTINUE", "NEW GAME", "LOAD GAME", "JOIN GAME", "HIDEOUT", "RECORDS", "SETTINGS", "CREDITS", "QUIT" };
 
     [Header("Colors")]
     [SerializeField] private Color color_main;
@@ -116,6 +116,7 @@ public class MainMenuManager : MonoBehaviour
                 NewGameToggle(false);
                 LoadGameToggle(false);
                 JoinGameToggle(false);
+                ToggleHideout(false);
                 ToggleMainWindow(false, true);
                 ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
@@ -130,6 +131,7 @@ public class MainMenuManager : MonoBehaviour
                 ContinueToggle(false);
                 LoadGameToggle(false);
                 JoinGameToggle(false);
+                ToggleHideout(false);
                 ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
@@ -143,6 +145,7 @@ public class MainMenuManager : MonoBehaviour
                 NewGameToggle(false);
                 ContinueToggle(false);
                 JoinGameToggle(false);
+                ToggleHideout(false);
                 ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
@@ -156,17 +159,33 @@ public class MainMenuManager : MonoBehaviour
                 NewGameToggle(false);
                 ContinueToggle(false);
                 LoadGameToggle(false);
+                ToggleHideout(false);
                 ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
                 break;
-            case 5: // - RECORDS
+            case 5: // - HIDEOUT
+                ToggleMainWindow(true); // Open the window
+                start_buttons_holder.gameObject.SetActive(true);
+                ToggleHideout(true);
+
+                // Force close any other windows
+                NewGameToggle(false);
+                ContinueToggle(false);
+                LoadGameToggle(false);
+                JoinGameToggle(false);
+                ToggleRecordsWindow(false, true);
+                ToggleCreditsWindow(false, true);
+                ToggleQuitWindow(false, true);
+                break;
+            case 6: // - RECORDS
                 // Unique window
                 // Force close any other windows
                 NewGameToggle(false);
                 ContinueToggle(false);
                 LoadGameToggle(false);
                 JoinGameToggle(false);
+                ToggleHideout(false);
                 ToggleMainWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
@@ -174,12 +193,13 @@ public class MainMenuManager : MonoBehaviour
                 ToggleRecordsWindow(true);
 
                 break;
-            case 6: // - SETTINGS
+            case 7: // - SETTINGS
                 // Force close any other windows
                 NewGameToggle(false);
                 ContinueToggle(false);
                 LoadGameToggle(false);
                 JoinGameToggle(false);
+                ToggleHideout(false);
                 ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
                 ToggleQuitWindow(false, true);
@@ -188,13 +208,14 @@ public class MainMenuManager : MonoBehaviour
                 SettingsOpen();
 
                 break;
-            case 7: // - CREDITS
+            case 8: // - CREDITS
                 // Unique window
                 // Force close any other windows
                 NewGameToggle(false);
                 ContinueToggle(false);
                 LoadGameToggle(false);
                 JoinGameToggle(false);
+                ToggleHideout(false);
                 ToggleRecordsWindow(false, true);
                 ToggleMainWindow(false, true);
                 ToggleQuitWindow(false, true);
@@ -202,12 +223,13 @@ public class MainMenuManager : MonoBehaviour
                 ToggleCreditsWindow(true); // Open the credits window
 
                 break;
-            case 8: // - QUIT
+            case 9: // - QUIT
                 // Force close any other windows
                 NewGameToggle(false);
                 ContinueToggle(false);
                 LoadGameToggle(false);
                 JoinGameToggle(false);
+                ToggleHideout(false);
                 ToggleMainWindow(false, true);
                 ToggleRecordsWindow(false, true);
                 ToggleCreditsWindow(false, true);
@@ -1017,20 +1039,103 @@ public class MainMenuManager : MonoBehaviour
 
     private void JoinGameToggle(bool open)
     {
+        join_window.SetActive(open);
+
         if (open)
         {
-            join_window.SetActive(true);
-
             // continue logic
         }
         else
         {
             // begin logic
-
-            join_window.SetActive(false);
         }
     }
 
+    #endregion
+
+    #region Hideout
+    [Header("HIDEOUT")]
+    [SerializeField] private Transform hideout_area; // The PRIMARY parent transform holding all the information
+    [SerializeField] private Image hideout_imagepreview; // The big preview image of the player's current hideout
+    [SerializeField] private Transform hideout_infoarea; // Transform area which holds all info about the hideout save
+    [SerializeField] private TextMeshProUGUI hideout_infoheader; // The header for the hideout info
+    [SerializeField] private TextMeshProUGUI hideout_nodata; // No save data text
+    [SerializeField] private List<GameObject> hideout_infoelements = new List<GameObject>(); // List of gameObjects related to displaying hideout savegame info
+    private Coroutine hideout_co;
+
+    private void ToggleHideout(bool toggle)
+    {
+        hideout_area.gameObject.SetActive(toggle);
+
+        if (toggle)
+        {
+            // TODO: UPDATE THIS WHEN SAVING IS IMPLEMENTED
+
+            // Is there any save data?
+            if (true)
+            {
+                hideout_nodata.gameObject.SetActive(false);
+
+                hideout_infoarea.gameObject.SetActive(true);
+                hideout_infoheader.gameObject.SetActive(true);
+                hideout_imagepreview.gameObject.SetActive(true);
+
+                // Set the buttons
+                start_buttons_holder.gameObject.SetActive(true);
+                startbutton.Setup("ENTER HIDEOUT", "ENTER", "HIDEOUT");
+                ToggleMultiplayerStartButton(false, ""); // No MP in Hideout?
+
+                // == Read data from hideout save ==
+                // - Set the preview image
+                hideout_imagepreview.sprite = null;
+                // - Update the hideout data info
+
+
+
+
+                // Do the text animation
+                if (hideout_co != null)
+                {
+                    StopCoroutine(hideout_co);
+                }
+                hideout_co = StartCoroutine(HideoutInfoAnimation());
+            }
+            else
+            {
+                // Show NO DATA text
+                hideout_nodata.gameObject.SetActive(true);
+                hideout_infoarea.gameObject.SetActive(false);
+                hideout_infoheader.gameObject.SetActive(false);
+                hideout_imagepreview.gameObject.SetActive(false);
+
+                // Set the buttons
+                start_buttons_holder.gameObject.SetActive(true);
+                startbutton.Setup("CREAE NEW HIDEOUT", "ENTER", "HIDEOUT");
+                ToggleMultiplayerStartButton(false, ""); // No MP in Hideout?
+            }
+        }
+        else
+        {
+            hideout_nodata.gameObject.SetActive(false);
+            hideout_infoarea.gameObject.SetActive(false);
+            hideout_infoheader.gameObject.SetActive(false);
+            hideout_imagepreview.gameObject.SetActive(false);
+
+            // Disable the center info text
+            if (!continue_window.gameObject.activeInHierarchy)
+            {
+                load_greaterinfo_text.gameObject.SetActive(false);
+                load_greaterinfo_header.gameObject.SetActive(false);
+                load_greaterinfo_image.gameObject.SetActive(false);
+                load_greaterinfo_area.SetActive(false);
+            }
+        }
+    }
+
+    private IEnumerator HideoutInfoAnimation()
+    {
+        yield return null;
+    }
     #endregion
 
     #region Records
@@ -1940,13 +2045,20 @@ public class MainMenuManager : MonoBehaviour
         }
         else if (specification == "NEW")
         {
-
+            /*  I don't think there's much more to this. The settings and preferences are saving inside ScriptableObjects
+             *  so that will be updated by the Managers in the Gameplay scene.
+             */
+            SwitchToGameScene();
         }
         else if (specification == "LOAD")
         {
 
         }
         else if (specification == "JOIN")
+        {
+
+        }
+        else if (specification == "HIDEOUT")
         {
 
         }
@@ -1978,7 +2090,7 @@ public class MainMenuManager : MonoBehaviour
         }
         else if (specification == "NEW")
         {
-            SwitchGameScene(); // Don't think there's any more to this?
+            SwitchToGameScene(); // Don't think there's any more to this?
         }
         else if (specification == "LOAD")
         {
@@ -2262,12 +2374,9 @@ public class MainMenuManager : MonoBehaviour
 
     #endregion
 
-    public void SwitchGameScene()
+    public void SwitchToGameScene()
     {
         SceneManager.LoadScene("GameplayScene");
     }
-
-    //
-    // -----------------------
 
 }
