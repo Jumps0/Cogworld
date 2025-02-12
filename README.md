@@ -10,9 +10,9 @@ This project has been in development on and off since January 12th, 2023. I work
 
 ## Getting Started
 
-There is currently no release build available due to the overall state of the project and file size issues. One may be published in the future.
+You can play the game by downloading the latest Demo Build in the `Releases` tab.
 
-To play/test the game, install the Unity Editor version 2022.3.56 and open a new project with the files in this repository.
+Newer builds will be released periodically, but to play the most up to date version of the game, you can download the project files and compile them with `Unity 2022.3.56`.
 
 ## Issues
 
