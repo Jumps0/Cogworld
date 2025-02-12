@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem;
@@ -9,8 +8,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Image = UnityEngine.UI.Image;
 using System.Linq;
-using Mono.Unix.Native;
-using static System.Net.Mime.MediaTypeNames;
 
 
 public class MainMenuManager : MonoBehaviour
@@ -2060,7 +2057,8 @@ public class MainMenuManager : MonoBehaviour
         }
         else if (specification == "HIDEOUT")
         {
-
+            // Is there anything else we need to deal with? Just make sure GlobalSettings does what it needs to do.
+            SwitchToHideoutScene();
         }
     }
 
@@ -2090,7 +2088,7 @@ public class MainMenuManager : MonoBehaviour
         }
         else if (specification == "NEW")
         {
-            SwitchToGameScene(); // Don't think there's any more to this?
+            
         }
         else if (specification == "LOAD")
         {
@@ -2374,9 +2372,15 @@ public class MainMenuManager : MonoBehaviour
 
     #endregion
 
+    #region SCENELOADING
     public void SwitchToGameScene()
     {
         SceneManager.LoadScene("GameplayScene");
     }
 
+    public void SwitchToHideoutScene()
+    {
+        SceneManager.LoadScene("HideoutScene");
+    }
+    #endregion
 }

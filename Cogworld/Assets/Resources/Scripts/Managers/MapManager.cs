@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static StructureCTR;
 using Random = UnityEngine.Random;
 
@@ -33,6 +34,36 @@ public class MapManager : MonoBehaviour
         itemDatabase.SetupDict();
         hackDatabase.SetupDict();
         knowledgeDatabase.SetupDict();
+    }
+
+    // !! THIS IS WHERE IT ALL STARTS !!
+    private void Start()
+    {
+        BEGIN();
+    }
+
+    /// <summary>
+    /// Where gameplay begins at its base level. The settings are applied and the map is loaded (based on scene).
+    /// </summary>
+    private void BEGIN()
+    {
+        // Apply all preferences & settings
+        GlobalSettings.inst.ApplySettings();
+        GlobalSettings.inst.ApplyPreferences();
+
+        // Auto-load into the game depending on scene (Normal Game or Hideout)
+
+        Scene current = SceneManager.GetActiveScene();
+        string sceneName = current.name;
+
+        if (sceneName == "GameplayScene")
+        {
+            StartCoroutine(MapManager.inst.InitNewLevel());
+        }
+        else if (sceneName == "HideoutScene")
+        {
+            StartCoroutine(MapManager.inst.InitNewHideout());
+        }
     }
 
     [Header("Prefabs")]

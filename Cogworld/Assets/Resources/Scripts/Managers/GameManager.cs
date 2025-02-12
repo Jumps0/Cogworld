@@ -311,7 +311,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         // - Startup Logic -
-        HandleStartup();
+        //HandleStartup(); // No more! We auto-load now. See `Start()` in MapManager.
 
         // - Button Listener Adding -
         confirm_button.onClick.AddListener(ConfirmExitEvolution);
