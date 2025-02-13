@@ -14,21 +14,22 @@ public class NetworkPlayer : NetworkBehaviour
     {
         if (IsOwner)
         {
-            Move();
+            Move(new Vector2(Random.Range(-1, 1), Random.Range(-1, 1)));
         }
     }
 
-    public void Move()
+    public void Move(Vector2 direction)
     {
-        SubmitPositionRequestRpc();
+        SubmitPositionRequestRpc(direction);
     }
 
     [Rpc(SendTo.Server)]
-    void SubmitPositionRequestRpc(RpcParams rpcParams = default)
+    void SubmitPositionRequestRpc(Vector2 direction, RpcParams rpcParams = default)
     {
-        var randomPosition = GetRandomPositionOnPlane();
-        transform.position = randomPosition;
-        Position.Value = randomPosition;
+        //var randomPosition = GetRandomPositionOnPlane();
+
+        transform.position += (Vector3)direction;
+        Position.Value = transform.position;
     }
 
     static Vector3 GetRandomPositionOnPlane()
