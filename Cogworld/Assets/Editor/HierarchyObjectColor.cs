@@ -101,7 +101,10 @@ public class HierarchyObjectColor
                     backgroundColor = new Color(0.2f, 0.6f, 0.1f);
                     textColor = new Color(0.9f, 0.9f, 0.9f);
                     break;
-
+                case "NetworkManager":
+                    backgroundColor = new Color(0.8f, 0.1f, 0.1f);
+                    textColor = new Color(0.9f, 0.9f, 0.9f);
+                    break;
                 // Testing
                 case "MainControl": // PathfindingTest
                     backgroundColor = new Color(0.5f, 0.48f, 0.05f);
