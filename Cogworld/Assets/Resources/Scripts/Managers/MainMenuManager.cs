@@ -2451,5 +2451,10 @@ public class MainMenuManager : MonoBehaviour
     {
         SceneManager.LoadScene("HideoutScene");
     }
+
+    public void SwitchToMultiplayerTest() // Will be removed when Multiplayer is fully implemented
+    {
+        SceneManager.LoadScene("MultiplayerTest");
+    }
     #endregion
 }
