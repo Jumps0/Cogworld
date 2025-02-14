@@ -18,15 +18,18 @@ public class NetworkPlayer : NetworkBehaviour
             inputActions = Resources.Load<InputActionsSO>("Inputs/InputActionsSO").InputActions;
 
             inputActions.Player.Move.performed += OnMovePerformed;
+            inputActions.Player.Move.canceled += OnMoveCanceled;
 
             Move(new Vector2(Random.Range(-1, 1), Random.Range(-1, 1)));
         }
     }
 
+    /*
     public override void OnNetworkDespawn()
     {
         inputActions.Player.Move.performed -= OnMovePerformed;
     }
+    */
 
     public void Move(Vector2 direction)
     {
@@ -40,9 +43,40 @@ public class NetworkPlayer : NetworkBehaviour
         Position.Value = transform.position;
     }
 
+    [Rpc(SendTo.Server)]
+    void SpawnObjectRequestRpc(Vector2 position, RpcParams rpcParams = default)
+    {
+        GameObject newObj = Instantiate(MultiplayerManager.inst.testno_prefab);
+        newObj.GetComponent<NetworkObject>().Spawn(true);
+
+        MultiplayerManager.inst.testno_ref = newObj.transform;
+
+        // (The position is de-synced because the object would need an internal network variable)
+        newObj.transform.position = position;
+    }
+
+    [Rpc(SendTo.Server)]
+    void DestroyTestObjectRequestRpc(RpcParams rpcParams = default)
+    {
+        Destroy(MultiplayerManager.inst.testno_ref.gameObject);
+        // Alternatively, you can do this (where the true/false destroys it or not):
+        //MultiplayerManager.inst.testno_ref.gameObject.GetComponent<NetworkObject>().Despawn(true);
+    }
+
     void Update()
     {
         transform.position = Position.Value;
+
+        if (!IsOwner) return;
+
+        if (Keyboard.current.yKey.wasPressedThisFrame)
+        {
+            SpawnObjectRequestRpc(new Vector2(Random.Range(-5f, 5f), Random.Range(-5f, 5f)));
+        }
+        if (Keyboard.current.nKey.wasPressedThisFrame)
+        {
+            DestroyTestObjectRequestRpc();
+        }
     }
 
     #region Movement
@@ -55,6 +89,23 @@ public class NetworkPlayer : NetworkBehaviour
 
         moveInput = context.ReadValue<Vector2>();
         Move(moveInput);
+    }
+
+    private void OnMoveCanceled(InputAction.CallbackContext context)
+    {
+        if (!IsOwner) return;
+
+        moveInput = Vector2.zero;
+    }
+    public void OnEnter(InputValue value)
+    {
+        if (!IsOwner) return;
+
+        // Player Input value not working. Inspect later
+
+        //GameObject newObj = Instantiate(MultiplayerManager.inst.testno_prefab);
+        //newObj.GetComponent<NetworkObject>().Spawn(true);
+
     }
     #endregion
 }

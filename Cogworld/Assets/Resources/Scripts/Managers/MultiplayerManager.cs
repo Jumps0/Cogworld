@@ -27,11 +27,12 @@ public class MultiplayerManager : MonoBehaviour
     [SerializeField] private GameObject testui_mainbox;
     [SerializeField] private TMP_InputField testui_inputfield;
     [SerializeField] private TextMeshProUGUI testui_clienttypetext;
+    public GameObject testno_prefab;
+    public Transform testno_ref;
 
     #region Test UI
     public void TEST_Host()
     {
-        Debug.Log("Click! HOST");
         //NetworkManager.Singleton.ConnectionApprovalCallback += ApprovalCheck;
         NetworkManager.Singleton.StartHost();
         testui_clienttypetext.text = "Client type: HOST";
@@ -39,7 +40,6 @@ public class MultiplayerManager : MonoBehaviour
 
     public void TEST_ClientJoin()
     {
-        Debug.Log("Click! Client");
         NetworkManager.Singleton.StartClient();
         testui_clienttypetext.text = "Client type: CLIENT";
     }
