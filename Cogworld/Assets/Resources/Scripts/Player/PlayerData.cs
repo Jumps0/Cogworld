@@ -2,13 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
 /// Stores all data related to the player.
 /// </summary>
-public class PlayerData : MonoBehaviour
+public class PlayerData : NetworkBehaviour
 {
     public static PlayerData inst;
     public void Awake()

@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 
-public class PlayerGridMovement : MonoBehaviour
+public class PlayerGridMovement : NetworkBehaviour
 {
     /// <summary>
     /// Is the player allowed to move?
@@ -23,33 +24,37 @@ public class PlayerGridMovement : MonoBehaviour
     public PlayerInputActions inputActions;
     private Vector2 moveInput;
 
-    private void OnEnable()
+    public override void OnNetworkSpawn()
     {
-        inputActions = Resources.Load<InputActionsSO>("Inputs/InputActionsSO").InputActions;
+        if (IsOwner)
+        {
+            inputActions = Resources.Load<InputActionsSO>("Inputs/InputActionsSO").InputActions;
 
-        inputActions.Player.Move.performed += OnMovePerformed;
-        inputActions.Player.Move.canceled += OnMoveCanceled;
-        //inputActions.Player.LeftClick.performed += OnLeftClick;
-        //inputActions.Player.RightClick.performed += OnRightClick;
+            inputActions.Player.Move.performed += OnMovePerformed;
+            inputActions.Player.Move.canceled += OnMoveCanceled;
+            inputActions.Player.LeftClick.performed += OnLeftClick;
+            inputActions.Player.RightClick.performed += OnRightClick;
+            inputActions.Player.Quit.performed += OnQuit;
+            inputActions.Player.Autocomplete.performed += OnAutocomplete;
+            inputActions.Player.Volley.performed += OnVolley;
+
+            // Random position for testing purposes
+            this.GetComponent<Actor>().Move(new Vector2Int(Random.Range(-1, 1), Random.Range(-1, 1)));
+        }
     }
 
     private void OnDisable()
     {
-        inputActions.Player.Move.performed -= OnMovePerformed;
-        inputActions.Player.Move.canceled -= OnMoveCanceled;
-        //inputActions.Player.LeftClick.performed -= OnLeftClick;
-        //inputActions.Player.RightClick.performed -= OnRightClick;
-    }
-
-    private void OnMovePerformed(InputAction.CallbackContext context)
-    {
-        moveInput = context.ReadValue<Vector2>();
-        HandleMovement(moveInput);
-    }
-
-    private void OnMoveCanceled(InputAction.CallbackContext context)
-    {
-        moveInput = Vector2.zero;
+        if (IsOwner)
+        {
+            inputActions.Player.Move.performed -= OnMovePerformed;
+            inputActions.Player.Move.canceled -= OnMoveCanceled;
+            inputActions.Player.LeftClick.performed -= OnLeftClick;
+            inputActions.Player.RightClick.performed -= OnRightClick;
+            inputActions.Player.Quit.performed -= OnQuit;
+            inputActions.Player.Autocomplete.performed -= OnAutocomplete;
+            inputActions.Player.Volley.performed -= OnVolley;
+        }
     }
 
     public void UpdateInterfacingMode(InterfacingMode mode)
@@ -107,7 +112,7 @@ public class PlayerGridMovement : MonoBehaviour
     #region Movement
     private void HandleMovement(Vector2 direction)
     {
-        if (isMoving || !playerMovementAllowed || inDialogueSequence || !GetComponent<Actor>().isAlive || interfacingMode != InterfacingMode.COMBAT) return;
+        //if (isMoving || !playerMovementAllowed || inDialogueSequence || !GetComponent<Actor>().isAlive || interfacingMode != InterfacingMode.COMBAT) return;
 
         int x = Mathf.RoundToInt(direction.x);
         int y = Mathf.RoundToInt(direction.y);
@@ -132,22 +137,28 @@ public class PlayerGridMovement : MonoBehaviour
     public void AttemptMovement(int X, int Y)
     {
         // Before we try anything, we need to make sure the player can *afford* to move since there is usually always a movement cost.
+        /* // !TEMP-REMOVE
         if (!HF.HasResourcesToMove(this.GetComponent<Actor>()))
         {
             return;
         }
-
+        */
         // Attempt to move in the *direction* described by X & Y
         // So we need to add that to our current position to obtain where we want to end up
 
         isMoving = true;
 
+        /* // !TEMP-REMOVE
         TileBlock currentTile = GetCurrentPlayerTile();
         int currentX = currentTile.locX;
         int currentY = currentTile.locY;
+        */
+        int currentX = (int)this.transform.position.x, currentY = (int)this.transform.position.y;
+        // v !TEMP-ADD
         Vector2Int moveTarget = new Vector2Int(currentX + X, currentY + Y); // This is where we want to move to
         //Debug.Log("Want to move from: (" + currentX + "," + currentY + ") to " + moveTarget);
 
+        /* // !TEMP-REMOVE
         // -- Machine interaction detection --
         InteractableMachine machineInteraction = null;
 
@@ -193,33 +204,36 @@ public class PlayerGridMovement : MonoBehaviour
             Debug.LogError("ERROR: Desired destination tile for movement is null! <PlayerGridMovement.cs>");
             return;
         }
+        */
 
-        if (desiredDestinationTile.GetComponent<TileBlock>())
-        {
-            if (!desiredDestinationTile.GetComponent<TileBlock>().occupied) // Space is Clear (Move!)
-            {
+        // !TEMP-REMOVE
+        //if (desiredDestinationTile.GetComponent<TileBlock>())
+        //{
+        //    if (!desiredDestinationTile.GetComponent<TileBlock>().occupied) // Space is Clear (Move!)
+        //    {
                 moveKeyHeld = Action.BumpAction(GetComponent<Actor>(), new Vector2(X, Y));
 
-                if (MapManager.inst._allTilesRealized.ContainsKey(moveTarget) && MapManager.inst._allTilesRealized[moveTarget].top != null && MapManager.inst._allTilesRealized[moveTarget].top.GetComponent<FloorTrap>())
-                {
-                    // There is a trap here!
-                    FloorTrap trap = MapManager.inst._allTilesRealized[moveTarget].top.GetComponent<FloorTrap>();
-                    if(HF.RelationToTrap(this.GetComponent<Actor>(), trap) != BotRelation.Friendly && trap.active && !trap.tripped)
-                    {
-                        HF.AttemptTriggerTrap(trap, PlayerData.inst.gameObject);
-                    }
-                }
-            }
-            else if (!desiredDestinationTile.GetComponent<TileBlock>().occupied && desiredDestinationTile.GetComponent<TileBlock>().GetBotOnTop() == null) // "Invalid Move" (Blocked)
-            {
-                UIManager.inst.ShowCenterMessageTop("Invalid move", Color.black, UIManager.inst.alertRed);
-            }
-        }
-        else if (desiredDestinationTile.GetComponent<AccessObject>()) // "About to Leave Area" (Walking into exit)
-        {
-            ConfirmLeaveArea(desiredDestinationTile.GetComponent<AccessObject>());
-        }
+        //        if (MapManager.inst._allTilesRealized.ContainsKey(moveTarget) && MapManager.inst._allTilesRealized[moveTarget].top != null && MapManager.inst._allTilesRealized[moveTarget].top.GetComponent<FloorTrap>())
+        //        {
+        //            // There is a trap here!
+        //            FloorTrap trap = MapManager.inst._allTilesRealized[moveTarget].top.GetComponent<FloorTrap>();
+        //            if(HF.RelationToTrap(this.GetComponent<Actor>(), trap) != BotRelation.Friendly && trap.active && !trap.tripped)
+        //            {
+        //                HF.AttemptTriggerTrap(trap, PlayerData.inst.gameObject);
+        //            }
+        //        }
+        //    }
+        //    else if (!desiredDestinationTile.GetComponent<TileBlock>().occupied && desiredDestinationTile.GetComponent<TileBlock>().GetBotOnTop() == null) // "Invalid Move" (Blocked)
+        //    {
+        //        UIManager.inst.ShowCenterMessageTop("Invalid move", Color.black, UIManager.inst.alertRed);
+        //    }
+        //}
+        //else if (desiredDestinationTile.GetComponent<AccessObject>()) // "About to Leave Area" (Walking into exit)
+        //{
+        //    ConfirmLeaveArea(desiredDestinationTile.GetComponent<AccessObject>());
+        //}
 
+        /* // !TEMP-REMOVE
         // -- Machine Interaction (Parsing) --
         if (machineInteraction != null && !machineInteraction.locked) // Can interact with this machine
         {
@@ -246,36 +260,13 @@ public class PlayerGridMovement : MonoBehaviour
             }
         }
         // -----------------------------------------
-
-        // Kick (Bot in way, kick it)
-
-        // Crush (Bot in way, run it over)
-
-
-        // <Some Kind of Attack>
-
-        // <Use Something>
+        */
 
         isMoving = false;
     }
 
     public TileBlock GetCurrentPlayerTile()
     {
-
-
-        // - Not gonna lie, raycasting to find this sucks, it has a lot of issues and isn't that versitle.
-        /*
-        int layerMask = ~(LayerMask.GetMask("Player")); // Ignore player Layer
-
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.TransformDirection(Vector3.zero), 10f, layerMask);
-
-        if (hit && hit.collider.tag == "Tile")
-        {
-            return hit.collider.gameObject.GetComponent<TileBlock>(); // Success
-        }
-        //Debug.LogError("Failed to get current player tile.");
-        */
-
         // - So we do this instead
         Vector2Int pLoc = HF.V3_to_V2I(PlayerData.inst.transform.position); // Get player's location (to V2I)
         if (MapManager.inst._allTilesRealized.ContainsKey(pLoc) && MapManager.inst._allTilesRealized[pLoc].bottom.GetComponent<TileBlock>())
@@ -321,10 +312,20 @@ public class PlayerGridMovement : MonoBehaviour
     #endregion
 
     #region Input Handling
-
-    public void OnEnter(InputValue value)
+    private void OnMovePerformed(InputAction.CallbackContext context)
     {
-        if (!GetComponent<Actor>().isAlive || interfacingMode != InterfacingMode.COMBAT) return;
+        moveInput = context.ReadValue<Vector2>();
+        HandleMovement(moveInput);
+    }
+
+    private void OnMoveCanceled(InputAction.CallbackContext context)
+    {
+        moveInput = Vector2.zero;
+    }
+
+    public void OnEnter(InputAction.CallbackContext context)
+    {
+        if (!IsOwner || !GetComponent<Actor>().isAlive || interfacingMode != InterfacingMode.COMBAT) return;
 
         // Player must be on top of a tile with an item on it to be able to interact with it
         TileBlock currentTile = GetCurrentPlayerTile();
@@ -346,9 +347,9 @@ public class PlayerGridMovement : MonoBehaviour
     }
 
     // -- Handle [LEFT] Clicks
-    public void OnLeftClick(InputValue value)
+    public void OnLeftClick(InputAction.CallbackContext context)
     {
-        if (!GetComponent<Actor>().isAlive) return;
+        if (!IsOwner || !GetComponent<Actor>().isAlive) return;
 
         // -- Combat --
         if(this.GetComponent<PlayerData>().doTargeting)
@@ -452,9 +453,9 @@ public class PlayerGridMovement : MonoBehaviour
     }
 
     // -- Handle [RIGHT] Clicks
-    public void OnRightClick(InputValue value)
+    public void OnRightClick(InputAction.CallbackContext context)
     {
-        if (!GetComponent<Actor>().isAlive) return;
+        if (!IsOwner || !GetComponent<Actor>().isAlive) return;
 
         // -- Combat Targeting --
         if (this.GetComponent<PlayerData>().canDoTargeting)
@@ -516,8 +517,10 @@ public class PlayerGridMovement : MonoBehaviour
     /// aka the ESCAPE key
     /// </summary>
     /// <param name="value"></param>
-    public void OnQuit(InputValue value)
+    public void OnQuit(InputAction.CallbackContext context)
     {
+        if (!IsOwner) return;
+
         // - Check to close Terminal window -
         if (UIManager.inst.terminal_targetTerm != null) // Window is open
         {
@@ -542,8 +545,10 @@ public class PlayerGridMovement : MonoBehaviour
     /// aka the V key. Used for EVASION - Volley mode switching. See `Evasion_VolleyModeFlip()` inside UIManager for more details.
     /// </summary>
     /// <param name="value"></param>
-    public void OnVolley(InputValue value)
+    public void OnVolley(InputAction.CallbackContext context)
     {
+        if (!IsOwner) return;
+
         // Here we are just checking if the player presses the "V" key or not. This activates a special visual, and also changes the color of the "V".
         if ((UIManager.inst.volleyMain.activeInHierarchy || UIManager.inst.volleyTiles.Count > 0) && !UIManager.inst.volleyAnimating)
         {
@@ -555,8 +560,10 @@ public class PlayerGridMovement : MonoBehaviour
     /// aka the TAB key. Used for Autocompleting text while hacking
     /// </summary>
     /// <param name="value"></param>
-    public void OnAutocomplete(InputValue value)
+    public void OnAutocomplete(InputAction.CallbackContext context)
     {
+        if (!IsOwner) return;
+
         if (UIManager.inst.terminal_targetTerm != null) // Window is open
         {
             if (UIManager.inst.terminal_activeIField != null) // And the player is in the input window
@@ -571,6 +578,8 @@ public class PlayerGridMovement : MonoBehaviour
     /// </summary>
     private void InventoryInputDetection()
     {
+        if (!IsOwner) return;
+
         // Check for player input
         if (Keyboard.current.anyKey.wasPressedThisFrame
             && !UIManager.inst.terminal_targetresultsAreaRef.gameObject.activeInHierarchy

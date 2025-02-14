@@ -104,6 +104,7 @@ public static class Action
     /// <returns>Returns true if the bot can (and will) move there. False if it can't (and won't).</returns>
     public static bool BumpAction(Actor actor, Vector2 direction)
     {
+        /* // !TEMP-REMOVE
         Actor target = GameManager.inst.GetBlockingActorAtLocation(actor.transform.position + (Vector3)direction);
 
         if (target)
@@ -128,10 +129,10 @@ public static class Action
             return false;
         }
         else
-        {
+        {*/
             MovementAction(actor, direction);
             return true;
-        }
+        //// !TEMP-REMOVE}
     }
 
     public static void MeleeAction(Actor source, GameObject target)
@@ -170,7 +171,7 @@ public static class Action
                  * The time cost to ram is the greater (slower) of 100 and your current move speed.
                  */
 
-                if (target.GetComponent<Actor>().botInfo) // Bot
+        if (target.GetComponent<Actor>().botInfo) // Bot
                 {
                     // TODO: Bot attacking!
                 }
@@ -1074,6 +1075,7 @@ public static class Action
 
     public static void MovementAction(Actor actor, Vector2 direction)
     {
+        /* // !TEMP-REMOVE
         // Incurr costs for moving
         float tomove_energy = 0, tomove_heat = 0;
         foreach (var I in Action.FindBotPropulsion(actor))
@@ -1107,13 +1109,13 @@ public static class Action
             actor.currentHeat += (int)tomove_heat;
             actor.currentEnergy += (int)tomove_energy;
         }
-
+        */
         // -- Movement -- //
         actor.noMovementFor = 0;
         actor.Move(direction); // Actually move the actor
 
         // End the actor's turn
-        TurnManager.inst.EndTurn(actor);
+        //// !TEMP-REMOVE TurnManager.inst.EndTurn(actor);
     }
 
     public static void SkipAction(Actor actor)

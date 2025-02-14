@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 6675150298254418791}
   - component: {fileID: 6501567707562085767}
   - component: {fileID: 6279222510902808834}
-  - component: {fileID: 7092136585455008219}
   - component: {fileID: 4468682718471403536}
+  - component: {fileID: -1530714836837590023}
+  - component: {fileID: 2943689785447992979}
   m_Layer: 0
   m_Name: MP Player
   m_TagString: Untagged
@@ -154,20 +155,6 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
---- !u!114 &7092136585455008219
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6343187939418057253}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb77a4641379e994ebd4b71f6ee0ab0b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Position:
-    m_InternalValue: {x: 0, y: 0, z: 0}
 --- !u!114 &4468682718471403536
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199,3 +186,84 @@ MonoBehaviour:
   InLocalSpace: 0
   Interpolate: 0
   SlerpPosition: 0
+--- !u!114 &-1530714836837590023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6343187939418057253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42c669c58753f064eb39321a8e32283d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerMovementAllowed: 1
+  inDialogueSequence: 0
+  isMoving: 0
+  doInstantMovement: 1
+  interfacingMode: 1
+  moveKeyHeld: 0
+  confirmLeaveLevel: 0
+  leaveLevelCooldown: 5
+--- !u!114 &2943689785447992979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6343187939418057253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  AI: {fileID: 0}
+  botInfo: {fileID: 0}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 6675150298254418791}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 0
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0

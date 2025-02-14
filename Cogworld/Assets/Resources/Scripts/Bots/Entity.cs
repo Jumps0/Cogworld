@@ -3,13 +3,18 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// A generic class to represent players, enemies, items, etc.
 /// </summary>
 public class Entity : MonoBehaviour
 {
+    [Header("Network Values")]
+    public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
+
     public bool blocksMovement;
     public bool BlocksMovement { get => blocksMovement; set => blocksMovement = value; }
 
@@ -54,10 +59,10 @@ public class Entity : MonoBehaviour
     public void Move(Vector2 direction)
     {
         // Move character
-        transform.position += (Vector3)direction;
+        SubmitPositionRequestRpc(direction);
 
         // Update momentum
-        if(lastDirection == direction)
+        if (lastDirection == direction)
         {
             momentum++;
         }
@@ -72,7 +77,7 @@ public class Entity : MonoBehaviour
             }
         }
         lastDirection = direction;
-
+        /* // !TEMP-REMOVE
         // Update any nearby doors
         Vector2Int newLocation = new Vector2Int((int)transform.position.x, (int)transform.position.y);
         GameManager.inst.LocalDoorUpdate(newLocation);
@@ -84,6 +89,14 @@ public class Entity : MonoBehaviour
         }
 
         this.GetComponent<Actor>().UpdateFieldOfView(); // Update their FOV
+        */
+    }
+
+    [Rpc(SendTo.Server)]
+    void SubmitPositionRequestRpc(Vector2 direction, RpcParams rpcParams = default)
+    {
+        transform.position += (Vector3)direction;
+        Position.Value = transform.position;
     }
 
     public void AddToGameManager()

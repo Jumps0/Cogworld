@@ -19,6 +19,7 @@ public class NetworkPlayer : NetworkBehaviour
 
             inputActions.Player.Move.performed += OnMovePerformed;
             inputActions.Player.Move.canceled += OnMoveCanceled;
+            inputActions.Player.Enter.performed += OnEnter;
 
             Move(new Vector2(Random.Range(-1, 1), Random.Range(-1, 1)));
         }
@@ -79,7 +80,7 @@ public class NetworkPlayer : NetworkBehaviour
         }
     }
 
-    #region Movement
+    #region Input
     public PlayerInputActions inputActions;
     private Vector2 moveInput;
 
@@ -97,15 +98,11 @@ public class NetworkPlayer : NetworkBehaviour
 
         moveInput = Vector2.zero;
     }
-    public void OnEnter(InputValue value)
+    public void OnEnter(InputAction.CallbackContext context)
     {
         if (!IsOwner) return;
 
-        // Player Input value not working. Inspect later
-
-        //GameObject newObj = Instantiate(MultiplayerManager.inst.testno_prefab);
-        //newObj.GetComponent<NetworkObject>().Spawn(true);
-
+        SpawnObjectRequestRpc(new Vector2(Random.Range(-5f, 5f), Random.Range(-5f, 5f)));
     }
     #endregion
 }
