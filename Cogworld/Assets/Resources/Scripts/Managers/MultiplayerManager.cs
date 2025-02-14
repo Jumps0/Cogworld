@@ -26,17 +26,22 @@ public class MultiplayerManager : MonoBehaviour
     [Header("Test UI")]
     [SerializeField] private GameObject testui_mainbox;
     [SerializeField] private TMP_InputField testui_inputfield;
+    [SerializeField] private TextMeshProUGUI testui_clienttypetext;
 
     #region Test UI
     public void TEST_Host()
     {
-        NetworkManager.Singleton.ConnectionApprovalCallback += ApprovalCheck;
+        Debug.Log("Click! HOST");
+        //NetworkManager.Singleton.ConnectionApprovalCallback += ApprovalCheck;
         NetworkManager.Singleton.StartHost();
+        testui_clienttypetext.text = "Client type: HOST";
     }
 
     public void TEST_ClientJoin()
     {
+        Debug.Log("Click! Client");
         NetworkManager.Singleton.StartClient();
+        testui_clienttypetext.text = "Client type: CLIENT";
     }
 
     public void Test_Disconnect()
@@ -49,56 +54,4 @@ public class MultiplayerManager : MonoBehaviour
         
     }
     #endregion
-
-    void OnGUI()
-    {
-        GUILayout.BeginArea(new Rect(10, 10, 300, 300));
-        if (!network.IsClient && !network.IsServer)
-        {
-            StartButtons();
-        }
-        else
-        {
-            StatusLabels();
-
-            SubmitNewPosition();
-        }
-
-        GUILayout.EndArea();
-    }
-
-    void StartButtons()
-    {
-        if (GUILayout.Button("Host")) network.StartHost();
-        if (GUILayout.Button("Client")) network.StartClient();
-        if (GUILayout.Button("Server")) network.StartServer();
-    }
-
-    void StatusLabels()
-    {
-        var mode = network.IsHost ?
-            "Host" : network.IsServer ? "Server" : "Client";
-
-        GUILayout.Label("Transport: " +
-            network.NetworkConfig.NetworkTransport.GetType().Name);
-        GUILayout.Label("Mode: " + mode);
-    }
-
-    void SubmitNewPosition()
-    {
-        if (GUILayout.Button(network.IsServer ? "Move" : "Request Position Change"))
-        {
-            if (network.IsServer && !network.IsClient)
-            {
-                foreach (ulong uid in network.ConnectedClientsIds)
-                    network.SpawnManager.GetPlayerNetworkObject(uid).GetComponent<NetworkPlayer>().Move(new Vector2(Random.Range(-1, 1), Random.Range(-1, 1)));
-            }
-            else
-            {
-                var playerObject = network.SpawnManager.GetLocalPlayerObject();
-                var player = playerObject.GetComponent<NetworkPlayer>();
-                player.Move(new Vector2(Random.Range(-1, 1), Random.Range(-1, 1)));
-            }
-        }
-    }
 }
