@@ -85,7 +85,7 @@ public class MapManager : MonoBehaviour
     public int _mapSizeX;
     public int _mapSizeY;
     [Header("Collected Map Data")]
-    public Dictionary<Vector2Int, TData> _allTilesRealized = new Dictionary<Vector2Int, TData>();         // ~ This stuff is VERY important
+    public Dictionary<Vector2Int, TData> _allTilesRealized = new Dictionary<Vector2Int, TData>(); // ~ This stuff is VERY important, but its coded poorly. Lets re-do it!
     //
     public List<GameObject> triggers = new List<GameObject>();
     public List<GameObject> events = new List<GameObject>();
