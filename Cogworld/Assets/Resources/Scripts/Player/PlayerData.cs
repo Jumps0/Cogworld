@@ -145,12 +145,14 @@ public class PlayerData : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        /* // !TEMP-REMOVE
         if (this.gameObject.GetComponent<PartInventory>())
         {
             CombatInputs();
             UpdateStats();
             HandleMouseHighlight();
         }
+        */
     }
 
 
@@ -1465,6 +1467,7 @@ public class PlayerData : NetworkBehaviour
 
     public void HandleMouseHighlight()
     {
+        /* // !TEMP-REMOVE
         // There are probably other cases where this shouldn't be enabled. Consider them here and add more when needed
         if(UIManager.inst.terminal_targetTerm == null)
         {
@@ -1488,6 +1491,7 @@ public class PlayerData : NetworkBehaviour
         {
             mouseTile.SetActive(false);
         }
+        */
     }
     #endregion
 

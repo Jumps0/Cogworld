@@ -34,6 +34,7 @@ public class PlayerGridMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /* // !TEMP-REMOVE
         if(Mouse.current.scroll.ReadValue().y != 0f)
         {
             TrySkipTurn();
@@ -43,6 +44,7 @@ public class PlayerGridMovement : MonoBehaviour
         {
             InventoryInputDetection();
         }
+        */
     }
 
     #region Turn Skipping

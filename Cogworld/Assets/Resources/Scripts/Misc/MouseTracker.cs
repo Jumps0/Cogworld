@@ -13,9 +13,11 @@ public class MouseTracker : MonoBehaviour
     {
         if (PlayerData.inst)
         {
+            /* // !TEMP-REMOVE
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
             mousePosition = new Vector3(Mathf.RoundToInt(mousePosition.x), Mathf.RoundToInt(mousePosition.y));
             this.transform.position = mousePosition;
+            */
         }
     }
 }
