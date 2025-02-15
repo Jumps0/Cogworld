@@ -29386,6 +29386,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24e0d5a6cbcbfd649818b44ce1b52476, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  settings: {fileID: 11400000, guid: d6d7956b90cc1594b8efcf2c17aea030, type: 2}
+  preferences: {fileID: 11400000, guid: 7e4e7e1dc42822a4c82d2d64b70e3b7a, type: 2}
   viewRange: 10
   startingPowerSlots: 1
   startingPropulsionSlots: 2
@@ -29454,6 +29456,7 @@ MonoBehaviour:
   db_textaid: {fileID: 1807259343}
   db_playerPosition: {fileID: 1864509533}
   db_helper_override: 0
+  db_commandHistory: []
 --- !u!114 &605101187
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60656,8 +60659,7 @@ MonoBehaviour:
   mapGenSpecifics:
   - {fileID: 11400000, guid: eb379394ad6a9054a860b16d444ed8cf, type: 2}
   - {fileID: 11400000, guid: 8c22a523bd4ae484b9d390b46f966e17, type: 2}
-  _mapSizeX: 0
-  _mapSizeY: 0
+  mapsize: {x: 0, y: 0}
   triggers: []
   events: []
   mapRelatedSounds:
@@ -60684,7 +60686,6 @@ MonoBehaviour:
   damagedStructures: []
   mapType: 3
   customMapType: -1
-  setMapSize: {x: 101, y: 101}
   loaded: 0
   logEvoChanges: 0
   evoChanges: 

@@ -932,9 +932,8 @@ public class MapManager : MonoBehaviour
     /// </summary>
     public void GenerateByCTR()
     {
-        int borderSizeX = DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().sizeX;
-        int borderSizeY = DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().sizeY;
-        GridManager.inst.grid = new GameObject[borderSizeX + 1, borderSizeY + 1];
+        Vector2Int bordersize = mapsize;
+        GridManager.inst.grid = new GameObject[bordersize.x + 1, bordersize.y + 1];
 
         // First the tiles
         foreach (KeyValuePair<Vector3, GameObject> tile in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().placedTiles)

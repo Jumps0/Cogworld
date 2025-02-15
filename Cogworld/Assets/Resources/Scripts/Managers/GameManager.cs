@@ -1120,7 +1120,7 @@ public class GameManager : MonoBehaviour
 
     public void EvoButtonSound()
     {
-        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_ui["MODE_ON"], 0.5f); // UI - MODE_ON
+        AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_ui["MODEON"], 0.5f); // UI - MODEON
     }
 
     public void EvoHoverSound()

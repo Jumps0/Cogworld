@@ -89,13 +89,15 @@ public class DungeonGeneratorCTR : MonoBehaviour {
     
     private int sizeUpGenDelay;
     #endregion
+
+    #region Setup & Map Params
     private List<Builder> dungeonBuilders;
     public List<RoomCTR> rooms;
     public List<Tunnel> tunnels;
     public List<AnteRoom> anteRooms;
     private int mutator;
     private int noHeadProb;
-   
+
     public void InitFromSetup(Setup setup, int seed = 0) {
         if (instance == null)
             instance = this;
@@ -259,6 +261,7 @@ public class DungeonGeneratorCTR : MonoBehaviour {
             }
             
         }
+
         //End map initialization
 
         //Miscellaneous
@@ -320,6 +323,7 @@ public class DungeonGeneratorCTR : MonoBehaviour {
 
         //Builders
         dungeonBuilders = new List<Builder>();
+
         foreach (CrawlerData c in setup.builders.Crawlers) 
             CreateCrawler(c.location, Directions.Transform(c.direction), -c.age, c.maxAge, c.generation, Directions.Transform(c.desiredDirection), c.stepLength, c.opening, c.corridorWidth, c.straightSingleSpawnProb, c.straightDoubleSpawnProb, c.turnSingleSpawnProb, c.turnDoubleSpawnProb, c.changeDirectionProb);
         
@@ -392,7 +396,9 @@ public class DungeonGeneratorCTR : MonoBehaviour {
             }
         }
     }
+    #endregion
 
+    #region Map Generation
     public void SetRect(int startX, int startY, int endX, int endY, SquareData type) {
         if (endX < startX || endY < startY) {
             Debug.Assert(false);
@@ -475,41 +481,6 @@ public class DungeonGeneratorCTR : MonoBehaviour {
 
     }
 
-    // Identifies if a door is an H_DOOR (true) or a V_DOOR (false)
-    private bool IdentifyHV_Door(Dictionary<Vector2Int, GameObject> objects, Vector2Int doorPos)
-    {
-        // We are just going to check each tile adjacent to the door's position (excluding corners)
-        // and if we don't find anything on one side, that is the exit, so we can use it to determine
-        // which way the door is facing.
-
-        //   H_DOOR (true)
-        //   *
-        //   |
-        //   *
-        //
-        //   V_DOOR (false)
-        //   *-*
-
-        if (!objects.ContainsKey(doorPos + new Vector2Int(0, 1))) // UP
-        {
-            return false;
-        }
-        else if (!objects.ContainsKey(doorPos + new Vector2Int(0, -1))) // Down
-        {
-            return false;
-        }
-        else if (!objects.ContainsKey(doorPos + new Vector2Int(1, 0))) // Right
-        {
-            return true;
-        }
-        else if (!objects.ContainsKey(doorPos + new Vector2Int(-1, 0))) // Left
-        {
-            return true;
-        }
-
-        return true;
-    }
-    
     public bool AdvanceGeneration() {
         bool thereAreBuilders = false;
         int highestNegativeAge = 0;
@@ -1007,6 +978,7 @@ public class DungeonGeneratorCTR : MonoBehaviour {
     public bool WantsMoreRoomsD(RoomSize sz) {if (sz == RoomSize.SMALL) return (numSmallRoomsD > currSmallRoomsD); else if (sz == RoomSize.MEDIUM) return (numMediumRoomsD > currMediumRoomsD); else if (sz == RoomSize.LARGE) return (numLargeRoomsD > currLargeRoomsD); else Debug.Assert(false); return false;}
     public bool WantsMoreRoomsD() {return (WantsMoreRoomsD(RoomSize.SMALL) || WantsMoreRoomsD(RoomSize.MEDIUM) || WantsMoreRoomsD(RoomSize.LARGE));}
     public void BuiltRoomD(RoomSize sz) {if(RoomSize.SMALL == sz) currSmallRoomsD++; else if(RoomSize.MEDIUM == sz) currMediumRoomsD++; else if(RoomSize.LARGE == sz) currLargeRoomsD++;}
+    #endregion
 
     [Header("Editor Special")]
     public bool doLocalRotation = false;
@@ -1015,11 +987,12 @@ public class DungeonGeneratorCTR : MonoBehaviour {
     public Dictionary<Vector3, GameObject> placedLights = new Dictionary<Vector3, GameObject>();
     public GameObject dungeonParent;
 
+    #region Map Realization
     public void PlaceStructure<T>(List<T> structures, string name) where T : StructureCTR {
         float scaling4 = 1f; // default 4f
         //float scaling2 = 1f; // default 2f
         //float scaling23 = 1f; // default 2.3
-
+        Debug.Log($"Call! {structures.Count}");
         foreach (T s in structures) {
             Transform structure = new GameObject(name).transform;
             structure.transform.position = new Vector3(s.Center.x, 0f, s.Center.y);
@@ -1118,46 +1091,15 @@ public class DungeonGeneratorCTR : MonoBehaviour {
 
         if (!called)
             StartCoroutine(InstWallsWait(placedTiles, wallObjs));
-
-        //PrintOutResults();
     }
 
     IEnumerator InstWallsWait(Dictionary<Vector3, GameObject> placedTiles, List<GameObject> wallObjs)
     {
         called = true;
 
-        //yield return new WaitForSeconds(1f);
         yield return null;
 
-        InstantiateWalls(placedTiles,wallObjs);
-
-        //yield return new WaitForSeconds(0.5f);
-        yield return null;
-
-        InstantiateCorners(placedTiles, wallObjs);
-
-        yield return null;
-
-        PlacePreGenerated();
-
-        yield return null;
-
-        if (!_isCustom)
-        {
-            // If this isn't a custom map, we should place our own spawn points.
-            PlaceSpawnPoints();
-        }
-
-        SanitizeObjectNames(); // Necessary due to how mapgen with prefabs works. Removes the word "(Clone)" if present in gameObjects.
-
-        mapGenComplete = true;
-    }
-
-    private bool called = false;
-
-    void InstantiateWalls(Dictionary<Vector3, GameObject> placedTiles, List<GameObject> wallObjs)
-    {
-
+        #region Instantiate Walls
         /*
          * This function will generate walls around all floor/door tiles,
          * however it will not do corners.
@@ -1178,11 +1120,11 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                 }
             }
         }
+        #endregion
 
-    }
+        yield return null;
 
-    void InstantiateCorners(Dictionary<Vector3, GameObject> placedTiles, List<GameObject> wallObjs)
-    {
+        #region Instantiate Corners
         /*
          * This function handles wall corners. It checks the diagonals of
          * every floor tile, and if no tile (of any type) exists there,
@@ -1192,7 +1134,7 @@ public class DungeonGeneratorCTR : MonoBehaviour {
         foreach (KeyValuePair<Vector3, GameObject> tile in placedTiles.ToList())
         {
             // We only want to check floor tiles
-            if(tile.Value.tag == "Floor")
+            if (tile.Value.tag == "Floor")
             {
                 Vector3 location = tile.Key;
 
@@ -1230,7 +1172,26 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                 }
             }
         }
+        #endregion
+
+        yield return null;
+
+        PlacePreGenerated();
+
+        yield return null;
+
+        if (!_isCustom)
+        {
+            // If this isn't a custom map, we should place our own spawn points.
+            PlaceSpawnPoints();
+        }
+
+        SanitizeObjectNames(); // Necessary due to how mapgen with prefabs works. Removes the word "(Clone)" if present in gameObjects.
+
+        mapGenComplete = true;
     }
+
+    private bool called = false;
 
     [Tooltip("DungeonGeneratorCTR has finished generating the map.")]
     public bool mapGenComplete = false;
@@ -1248,14 +1209,6 @@ public class DungeonGeneratorCTR : MonoBehaviour {
             RoomCTR spawnRoom = DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().rooms[_rand];
 
             validSpawnLocations.Add(new Vector2Int(spawnRoom.Edges[0].position.x, spawnRoom.Edges[0].position.y));
-        }
-    }
-
-    private void PrintOutResults()
-    {
-        foreach (var item in placedTiles)
-        {
-            Debug.Log("Placed: " + item.Value + "at [" + item.Key.x + "," + item.Key.y + "]");
         }
     }
 
@@ -1634,6 +1587,44 @@ public class DungeonGeneratorCTR : MonoBehaviour {
             }
         }
     }
+    #endregion
+
+    #region Helper Functions
+    // Identifies if a door is an H_DOOR (true) or a V_DOOR (false)
+    private bool IdentifyHV_Door(Dictionary<Vector2Int, GameObject> objects, Vector2Int doorPos)
+    {
+        // We are just going to check each tile adjacent to the door's position (excluding corners)
+        // and if we don't find anything on one side, that is the exit, so we can use it to determine
+        // which way the door is facing.
+
+        //   H_DOOR (true)
+        //   *
+        //   |
+        //   *
+        //
+        //   V_DOOR (false)
+        //   *-*
+
+        if (!objects.ContainsKey(doorPos + new Vector2Int(0, 1))) // UP
+        {
+            return false;
+        }
+        else if (!objects.ContainsKey(doorPos + new Vector2Int(0, -1))) // Down
+        {
+            return false;
+        }
+        else if (!objects.ContainsKey(doorPos + new Vector2Int(1, 0))) // Right
+        {
+            return true;
+        }
+        else if (!objects.ContainsKey(doorPos + new Vector2Int(-1, 0))) // Left
+        {
+            return true;
+        }
+
+        return true;
+    }
+
 
     /// <summary>
     /// Used in certain cases for naming pre-decided objects in level generation.
@@ -1816,4 +1807,5 @@ public class DungeonGeneratorCTR : MonoBehaviour {
             HF.RemoveWordFromName(child.gameObject, "(Clone)");
         }
     }
+    #endregion
 }
