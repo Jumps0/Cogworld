@@ -82,7 +82,7 @@ public class Entity : NetworkBehaviour
         }
     }
 
-    private void OnDisable()
+    public override void OnNetworkDespawn()
     {
         if (IsOwner && this.GetComponent<PlayerGridMovement>())
         {

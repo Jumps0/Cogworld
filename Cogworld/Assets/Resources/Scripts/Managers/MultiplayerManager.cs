@@ -46,7 +46,30 @@ public class MultiplayerManager : MonoBehaviour
 
     public void Test_Disconnect()
     {
+        Debug.Log("Test coroutine animation!");
+        StartCoroutine(TestCoroutineAnimation());
+    }
 
+    private IEnumerator TestCoroutineAnimation()
+    {
+        // Simple transparency change
+        float elapsedTime = 0f;
+        float duration = 5f;
+
+        Color color = testui_clienttypetext.GetComponent<TextMeshProUGUI>().color;
+        testui_clienttypetext.GetComponent<TextMeshProUGUI>().color = new Color(color.r, color.g, color.b, 0f);
+
+        while (elapsedTime < duration) // Empty -> Green
+        {
+            float lerp = Mathf.Lerp(0f, 1f, elapsedTime / duration);
+
+            testui_clienttypetext.GetComponent<TextMeshProUGUI>().color = new Color(color.r, color.g, color.b, lerp);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        testui_clienttypetext.GetComponent<TextMeshProUGUI>().color = new Color(color.r, color.g, color.b, 1f);
     }
 
     private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)

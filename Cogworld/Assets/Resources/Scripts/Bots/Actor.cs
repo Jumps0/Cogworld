@@ -96,6 +96,7 @@ public class Actor : Entity
 
         if (GameManager.inst)
         {
+            /* // !TEMP-REMOVE
             TurnManager.inst.turnEvents.onTurnTick += TurnTick; // Begin listening to the turn tick event
 
             AddToGameManager();
@@ -134,6 +135,7 @@ public class Actor : Entity
 
             algorithm = new AdamMilVisibility(this); // Set visual algo
             allegances = GlobalSettings.inst.GenerateDefaultAllengances(botInfo); // Set allegances
+            */
         }
         else
         {
@@ -145,6 +147,7 @@ public class Actor : Entity
     {
         if (GameManager.inst)
         {
+            /*
             if (GetComponent<PlayerData>())
             {
                 UpdateFieldOfView();
@@ -153,6 +156,7 @@ public class Actor : Entity
             {
                 this.GetComponent<BotAI>().relationToPlayer = HF.DetermineRelation(this, PlayerData.inst.GetComponent<Actor>()); // Set relation to player
             }
+            */
         }
     }
 
@@ -435,6 +439,7 @@ public class Actor : Entity
 
     public void HealthCheck()
     {
+        /*
         if (this.GetComponent<PlayerData>())
         {
             if (PlayerData.inst.currentHealth <= 0 || corruption >= 1f)
@@ -457,6 +462,7 @@ public class Actor : Entity
             // Shoving this in here too
             state_DISARMED = this.armament.Container.Items.Length <= 0;
         }
+        */
     }
 
     public void HealthColorCheck(Color originColor)

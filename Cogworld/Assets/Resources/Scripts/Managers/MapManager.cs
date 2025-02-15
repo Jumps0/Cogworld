@@ -146,6 +146,9 @@ public class MapManager : MonoBehaviour
     #region InitNewLevel
     public IEnumerator InitNewLevel()
     {
+        // !TEMP-REMOVE
+        yield break; // Don't do anything... yet.
+
         levelLoadCover.SetActive(true); // Enable the Level Load cover
         Vector2Int mapSize = Vector2Int.zero;
 
