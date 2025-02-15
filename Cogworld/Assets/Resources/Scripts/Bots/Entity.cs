@@ -16,7 +16,7 @@ using UnityEngine.UIElements;
 public class Entity : NetworkBehaviour
 {
     [Header("Network Values")]
-    public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
+    public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>(readPerm:NetworkVariableReadPermission.Everyone, writePerm:NetworkVariableWritePermission.Owner);
 
     public bool blocksMovement;
     public bool BlocksMovement { get => blocksMovement; set => blocksMovement = value; }
@@ -102,8 +102,10 @@ public class Entity : NetworkBehaviour
     public void Move(Vector2 direction)
     {
         // Move character
-        SubmitPositionRequestRpc(direction);
+        transform.position += (Vector3)direction;
+        Position.Value = transform.position;
 
+        /* // !TEMP-REMOVE
         // Update momentum
         if (lastDirection == direction)
         {
@@ -113,14 +115,14 @@ public class Entity : NetworkBehaviour
         {
             momentum = 0;
 
-            if (this.GetComponent<PlayerData>()) 
+            if (this.GetComponent<PlayerData>())
             {
                 InventoryControl.inst.PartsSortingCheck(); // Check to see if the inventory needs to be auto-sorted.
                 //GameManager.inst.UpdateNearbyVis(); // Update nearby vision on objects
             }
         }
         lastDirection = direction;
-        /* // !TEMP-REMOVE
+
         // Update any nearby doors
         Vector2Int newLocation = new Vector2Int((int)transform.position.x, (int)transform.position.y);
         GameManager.inst.LocalDoorUpdate(newLocation);
@@ -133,13 +135,6 @@ public class Entity : NetworkBehaviour
 
         this.GetComponent<Actor>().UpdateFieldOfView(); // Update their FOV
         */
-    }
-
-    [Rpc(SendTo.Server)]
-    void SubmitPositionRequestRpc(Vector2 direction, RpcParams rpcParams = default)
-    {
-        transform.position += (Vector3)direction;
-        Position.Value = transform.position;
     }
 
     public void AddToGameManager()

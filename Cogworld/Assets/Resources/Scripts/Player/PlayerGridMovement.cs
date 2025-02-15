@@ -282,12 +282,16 @@ public class PlayerGridMovement : MonoBehaviour
     #region Input Handling
     public void OnMovePerformed(InputAction.CallbackContext context)
     {
+        if (!ent.IsOwner) return;
+
         moveInput = context.ReadValue<Vector2>();
         HandleMovement(moveInput);
     }
 
     public void OnMoveCanceled(InputAction.CallbackContext context)
     {
+        if (!ent.IsOwner) return;
+
         moveInput = Vector2.zero;
     }
 
