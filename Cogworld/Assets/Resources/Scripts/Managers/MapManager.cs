@@ -81,11 +81,13 @@ public class MapManager : MonoBehaviour
 
     [Header("Auto Mapgen Settings")]
     public List<MapGen_DataCTR> mapGenSpecifics = new List<MapGen_DataCTR>();
-    // Global Size
-    public int _mapSizeX;
-    public int _mapSizeY;
+
     [Header("Collected Map Data")]
     public Dictionary<Vector2Int, TData> _allTilesRealized = new Dictionary<Vector2Int, TData>(); // ~ This stuff is VERY important, but its coded poorly. Lets re-do it!
+    [Tooltip("Contains all data related to the map.")]
+    public TData[,] mapdata;
+    [Tooltip("The official size of the generated map.")]
+    public Vector2Int mapsize;
     //
     public List<GameObject> triggers = new List<GameObject>();
     public List<GameObject> events = new List<GameObject>();
@@ -138,8 +140,6 @@ public class MapManager : MonoBehaviour
     public int mapType = 0;
     [Tooltip("-1 = Starting Cave | 0 = Exiles")]
     public int customMapType = -1;
-    [Tooltip("!! Must be an Odd number !!")]
-    public Vector2Int setMapSize = new Vector2Int(21, 21);
     Vector3 playerSpawnLocation = Vector3.zero;
     public bool loaded = false;
 
@@ -147,7 +147,6 @@ public class MapManager : MonoBehaviour
     public IEnumerator InitNewLevel()
     {
         levelLoadCover.SetActive(true); // Enable the Level Load cover
-        Vector2Int mapSize = Vector2Int.zero;
 
         playerIsInHideout = false;
 
@@ -159,26 +158,12 @@ public class MapManager : MonoBehaviour
         // - Generate the Level -
         //
 
-        /*
-        if(CreateHauberkDungeon && !CreatePerlinDungeon && !CreateCaveDungeon)
-        {
-            setMapSize = new Vector2Int((int)(setMapSize.x / 2) + 1, (int)(setMapSize.y / 2) + 1); // Halved cause it gets x2'd
-            DungeonGenerator.instance.GenerateHauberkDungeon(setMapSize.x, setMapSize.y);
-            mapType = 1;
-        }
-        else if (!CreateHauberkDungeon && CreatePerlinDungeon && !CreateCaveDungeon)
-        {
-            DungeonGenerator.instance.GeneratePerlinDungeon(setMapSize.x, setMapSize.y);
-            mapType = 2;
-        }
-        */
-
         if (mapType == 1) // Cave Dungeon
         {
-            DungeonGenerator.instance.GenerateCaveDungeon(setMapSize.x, setMapSize.y);
+            DungeonGenerator.instance.GenerateCaveDungeon(mapsize.x, mapsize.y);
             GenerateByGrid(DungeonGenerator._dungeon);
-            mapSize.x = DungeonGenerator._dungeon.GetLength(0);
-            mapSize.y = DungeonGenerator._dungeon.GetLength(1);
+            mapsize.x = DungeonGenerator._dungeon.GetLength(0);
+            mapsize.y = DungeonGenerator._dungeon.GetLength(1);
         }
         else if (mapType == 2) // Normal (0b10 Complex) Dungeon
         {
@@ -186,6 +171,9 @@ public class MapManager : MonoBehaviour
 
             while (!DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().mapGenComplete)
                 yield return null; // Wait for loading to finish...
+
+            // !! Initialize the mapdata array
+            mapdata = new TData[mapsize.x, mapsize.y];
 
             GenerateByCTR();
             yield return null;
@@ -236,28 +224,25 @@ public class MapManager : MonoBehaviour
         }
         else if (mapType == 2) // Complex
         {
-            mapSize = new Vector2Int(DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().sizeX, DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().sizeY);
-
-            FillWithRock(mapSize);
-
+            FillWithRock(mapsize);
         }
         else
         {
             switch (customMapType)
             {
                 case -1:
-                    mapSize = new Vector2Int(120, 120);
-                    GridManager.inst.grid = new GameObject[mapSize.x + 1, mapSize.y + 1];
+                    mapsize = new Vector2Int(120, 120);
+                    GridManager.inst.grid = new GameObject[mapsize.x + 1, mapsize.y + 1];
 
                     CustomMap_StartingCave(); // Overrides spawn position in here so we good
-                    FillWithRock(mapSize);
+                    FillWithRock(mapsize);
                     break;
 
                 case 0: // EXILEs cave
-                    mapSize = new Vector2Int(DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().sizeX, DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().sizeY);
-                    GridManager.inst.grid = new GameObject[mapSize.x + 1, mapSize.y + 1];
+                    mapsize = new Vector2Int(DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().sizeX, DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().sizeY);
+                    GridManager.inst.grid = new GameObject[mapsize.x + 1, mapsize.y + 1];
 
-                    FillWithRock(mapSize);
+                    FillWithRock(mapsize);
                     break;
                 default:
 
@@ -267,7 +252,7 @@ public class MapManager : MonoBehaviour
 
         PlaceBranchNExits(); // Place exits (map type logic handled inside)
 
-        DrawBorder(mapSize.x, mapSize.y); // Draw the border
+        DrawBorder(mapsize.x, mapsize.y); // Draw the border
 
         foreach (var door in _allTilesRealized) // Setup all the doors
         {
@@ -276,10 +261,6 @@ public class MapManager : MonoBehaviour
                 door.Value.top.GetComponent<DoorLogic>().LoadActivationTiles();
             }
         }
-
-        // Set mapSize var
-        _mapSizeX = mapSize.x;
-        _mapSizeY = mapSize.y;
 
         CreateRegions();
         TurnManager.inst.SetAllUnknown(); // Also fills the regions
@@ -340,8 +321,8 @@ public class MapManager : MonoBehaviour
 
         initialAISpawnPositions.Clear();
 
-        PlacePassiveBots(mapSize);
-        PlaceHostileBots(mapSize);
+        PlacePassiveBots(mapsize);
+        PlaceHostileBots(mapsize);
 
         AssignMachineNames(); // Assign names to all placed machines
         AssignMachineCommands(); // Assign commands (for terminal interaction) to all placed machines.
@@ -439,8 +420,6 @@ public class MapManager : MonoBehaviour
     #region Hideout Related
     public IEnumerator InitNewHideout()
     {
-        Vector2Int mapSize = Vector2Int.zero;
-
         GlobalSettings.inst.SetStartingValues();
         currentLevelName = BaseManager.inst.data.layerName.ToUpper();
 
@@ -449,11 +428,8 @@ public class MapManager : MonoBehaviour
         // Change this later !!!
         DungeonGenerator.instance.GenerateCaveDungeon(121, 121);
         GenerateByGrid(DungeonGenerator._dungeon);
-        mapSize.x = DungeonGenerator._dungeon.GetLength(0);
-        mapSize.y = DungeonGenerator._dungeon.GetLength(1);
-        // Set mapSize var
-        _mapSizeX = mapSize.x;
-        _mapSizeY = mapSize.y;
+        mapsize.x = DungeonGenerator._dungeon.GetLength(0);
+        mapsize.y = DungeonGenerator._dungeon.GetLength(1);
 
         yield return new WaitForSeconds(1f); // --- DELAY ---
 
@@ -471,8 +447,8 @@ public class MapManager : MonoBehaviour
             int minDistanceFromEdge = 12;
 
             // Check if the spawn point is at least 'minDistanceFromEdge' units away from the map border
-            if (spawnPoint.x >= minDistanceFromEdge && spawnPoint.x < mapSize.x - minDistanceFromEdge &&
-                spawnPoint.y >= minDistanceFromEdge && spawnPoint.y < mapSize.y - minDistanceFromEdge)
+            if (spawnPoint.x >= minDistanceFromEdge && spawnPoint.x < mapsize.x - minDistanceFromEdge &&
+                spawnPoint.y >= minDistanceFromEdge && spawnPoint.y < mapsize.y - minDistanceFromEdge)
             {
                 validSpawnPoints.Add(spawnPoint);
             }
@@ -492,7 +468,7 @@ public class MapManager : MonoBehaviour
         originalPlayerSpawnLocation = playerSpawnLocation;
 
         PlaceGenericOutpost(spawnLoc); // Place the outpost
-        FillWithRock(mapSize);
+        FillWithRock(mapsize);
 
         // Then dirty up the tiles a bit
         foreach (var floor in _allTilesRealized)
@@ -504,7 +480,7 @@ public class MapManager : MonoBehaviour
             }
         }
 
-        DrawBorder(mapSize.x, mapSize.y); // Draw the border
+        DrawBorder(mapsize.x, mapsize.y); // Draw the border
 
         CreateRegions();
         TurnManager.inst.SetAllUnknown(); // Also fills the regions
@@ -901,8 +877,8 @@ public class MapManager : MonoBehaviour
     public void CreateRegions()
     {
         // Calculate the number of regions in each axis
-        int numRegionsX = Mathf.CeilToInt((float)_mapSizeX / regionSize);
-        int numRegionsY = Mathf.CeilToInt((float)_mapSizeY / regionSize);
+        int numRegionsX = Mathf.CeilToInt((float)mapsize.x / regionSize);
+        int numRegionsY = Mathf.CeilToInt((float)mapsize.y / regionSize);
 
         // Iterate through each region
         for (int x = 0; x < numRegionsX; x++)
@@ -1619,7 +1595,7 @@ public class MapManager : MonoBehaviour
         // The spread of machines depends on the current layer
         List<RoomCTR> rooms = DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().rooms;
 
-        int toSpawn = ((_mapSizeX * _mapSizeX) / 100 / 4);
+        int toSpawn = ((mapsize.x * mapsize.y) / 100 / 4);
 
         for (int i = 0; i < toSpawn; i++)
         {
@@ -1693,7 +1669,7 @@ public class MapManager : MonoBehaviour
         // The spread of machines depends on the current layer
         List<RoomCTR> rooms = DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().rooms;
 
-        int toSpawn = ((_mapSizeX * _mapSizeX) / 100);
+        int toSpawn = ((mapsize.x * mapsize.y) / 100);
 
         for (int i = 0; i < toSpawn; i++)
         {

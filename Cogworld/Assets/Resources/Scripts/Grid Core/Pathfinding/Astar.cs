@@ -213,7 +213,7 @@ public class Astar
         Vector2Int mapSize = Vector2Int.zero;
         if (MapManager.inst)
         {
-            mapSize = new Vector2Int(MapManager.inst._mapSizeX, MapManager.inst._mapSizeY);
+            mapSize = MapManager.inst.mapsize;
         }
         else if (PathfindingTestControl.inst)
         {

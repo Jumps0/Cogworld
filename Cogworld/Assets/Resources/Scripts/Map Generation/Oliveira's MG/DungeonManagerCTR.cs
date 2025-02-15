@@ -122,8 +122,8 @@ public class DungeonManagerCTR : MonoBehaviour
         number = generator.SizeX * generator.SizeY;
         if (MapManager.inst)
         {
-            MapManager.inst._mapSizeX = generator.SizeX;
-            MapManager.inst._mapSizeX = generator.SizeY;
+            // Save the map size for MapManager to use later
+            MapManager.inst.mapsize = new Vector2Int(generator.SizeX, generator.SizeY);
         }
 
         runningGen = true;

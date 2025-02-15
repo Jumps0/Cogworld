@@ -501,7 +501,7 @@ public class PlayerData : MonoBehaviour
                 currentPos += direction;
 
                 // Check if current position is out of bounds, if so, break the loop
-                if (currentPos.x < 0 || currentPos.y < 0 || currentPos.x >= MapManager.inst._mapSizeX - 2 || currentPos.y >= MapManager.inst._mapSizeY - 2)
+                if (currentPos.x < 0 || currentPos.y < 0 || currentPos.x >= MapManager.inst.mapsize.x - 2 || currentPos.y >= MapManager.inst.mapsize.y - 2)
                     break;
 
                 // Update direction towards finish point

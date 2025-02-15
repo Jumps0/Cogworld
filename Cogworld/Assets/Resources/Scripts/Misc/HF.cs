@@ -3811,7 +3811,7 @@ public static class HF
         List<GameObject> neighbors = new List<GameObject>();
 
         // We want to include diagonals into this.
-        if (X < MapManager.inst._mapSizeX - 1) // [ RIGHT ]
+        if (X < MapManager.inst.mapsize.x - 1) // [ RIGHT ]
         {
             neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X + 1, Y)].bottom.gameObject);
         }
@@ -3819,7 +3819,7 @@ public static class HF
         {
             neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X - 1, Y)].bottom.gameObject);
         }
-        if (Y < MapManager.inst._mapSizeY - 1) // [ UP ]
+        if (Y < MapManager.inst.mapsize.y - 1) // [ UP ]
         {
             neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X, Y + 1)].bottom.gameObject);
         }
@@ -3830,11 +3830,11 @@ public static class HF
         // -- 
         // Diagonals
         // --
-        if (X < MapManager.inst._mapSizeX - 1 && Y < MapManager.inst._mapSizeY - 1) // [ UP-RIGHT ]
+        if (X < MapManager.inst.mapsize.x - 1 && Y < MapManager.inst.mapsize.y - 1) // [ UP-RIGHT ]
         {
             neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X + 1, Y + 1)].bottom.gameObject);
         }
-        if (Y < MapManager.inst._mapSizeY - 1 && X > 0) // [ UP-LEFT ]
+        if (Y < MapManager.inst.mapsize.y - 1 && X > 0) // [ UP-LEFT ]
         {
             neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X - 1, Y + 1)].bottom.gameObject);
         }
@@ -3842,7 +3842,7 @@ public static class HF
         {
             neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X - 1, Y - 1)].bottom.gameObject);
         }
-        if (Y > 0 && X < MapManager.inst._mapSizeX - 1) // [ DOWN-RIGHT ]
+        if (Y > 0 && X < MapManager.inst.mapsize.x - 1) // [ DOWN-RIGHT ]
         {
             neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X + 1, Y - 1)].bottom.gameObject);
         }
