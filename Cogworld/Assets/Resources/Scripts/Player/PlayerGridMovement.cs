@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 
-public class PlayerGridMovement : NetworkBehaviour
+public class PlayerGridMovement : MonoBehaviour
 {
     /// <summary>
     /// Is the player allowed to move?
@@ -15,6 +15,7 @@ public class PlayerGridMovement : NetworkBehaviour
     public bool isMoving;
     private Vector3 originPos, targetPos;
     private float timeToMove = 0.2f;
+    public Entity ent;
 
     [Tooltip("Use non-smooth \"instant\" tile movement.")]
     public bool doInstantMovement = true;
@@ -23,39 +24,6 @@ public class PlayerGridMovement : NetworkBehaviour
     public InterfacingMode interfacingMode = InterfacingMode.COMBAT;
     public PlayerInputActions inputActions;
     private Vector2 moveInput;
-
-    public override void OnNetworkSpawn()
-    {
-        if (IsOwner)
-        {
-            inputActions = Resources.Load<InputActionsSO>("Inputs/InputActionsSO").InputActions;
-
-            inputActions.Player.Move.performed += OnMovePerformed;
-            inputActions.Player.Move.canceled += OnMoveCanceled;
-            inputActions.Player.LeftClick.performed += OnLeftClick;
-            inputActions.Player.RightClick.performed += OnRightClick;
-            inputActions.Player.Quit.performed += OnQuit;
-            inputActions.Player.Autocomplete.performed += OnAutocomplete;
-            inputActions.Player.Volley.performed += OnVolley;
-
-            // Random position for testing purposes
-            this.GetComponent<Actor>().Move(new Vector2Int(Random.Range(-1, 1), Random.Range(-1, 1)));
-        }
-    }
-
-    private void OnDisable()
-    {
-        if (IsOwner)
-        {
-            inputActions.Player.Move.performed -= OnMovePerformed;
-            inputActions.Player.Move.canceled -= OnMoveCanceled;
-            inputActions.Player.LeftClick.performed -= OnLeftClick;
-            inputActions.Player.RightClick.performed -= OnRightClick;
-            inputActions.Player.Quit.performed -= OnQuit;
-            inputActions.Player.Autocomplete.performed -= OnAutocomplete;
-            inputActions.Player.Volley.performed -= OnVolley;
-        }
-    }
 
     public void UpdateInterfacingMode(InterfacingMode mode)
     {
@@ -312,20 +280,20 @@ public class PlayerGridMovement : NetworkBehaviour
     #endregion
 
     #region Input Handling
-    private void OnMovePerformed(InputAction.CallbackContext context)
+    public void OnMovePerformed(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
         HandleMovement(moveInput);
     }
 
-    private void OnMoveCanceled(InputAction.CallbackContext context)
+    public void OnMoveCanceled(InputAction.CallbackContext context)
     {
         moveInput = Vector2.zero;
     }
 
     public void OnEnter(InputAction.CallbackContext context)
     {
-        if (!IsOwner || !GetComponent<Actor>().isAlive || interfacingMode != InterfacingMode.COMBAT) return;
+        if (!ent.IsOwner || !GetComponent<Actor>().isAlive || interfacingMode != InterfacingMode.COMBAT) return;
 
         // Player must be on top of a tile with an item on it to be able to interact with it
         TileBlock currentTile = GetCurrentPlayerTile();
@@ -349,7 +317,7 @@ public class PlayerGridMovement : NetworkBehaviour
     // -- Handle [LEFT] Clicks
     public void OnLeftClick(InputAction.CallbackContext context)
     {
-        if (!IsOwner || !GetComponent<Actor>().isAlive) return;
+        if (!ent.IsOwner || !GetComponent<Actor>().isAlive) return;
 
         // -- Combat --
         if(this.GetComponent<PlayerData>().doTargeting)
@@ -455,7 +423,7 @@ public class PlayerGridMovement : NetworkBehaviour
     // -- Handle [RIGHT] Clicks
     public void OnRightClick(InputAction.CallbackContext context)
     {
-        if (!IsOwner || !GetComponent<Actor>().isAlive) return;
+        if (!ent.IsOwner || !GetComponent<Actor>().isAlive) return;
 
         // -- Combat Targeting --
         if (this.GetComponent<PlayerData>().canDoTargeting)
@@ -519,7 +487,7 @@ public class PlayerGridMovement : NetworkBehaviour
     /// <param name="value"></param>
     public void OnQuit(InputAction.CallbackContext context)
     {
-        if (!IsOwner) return;
+        if (!ent.IsOwner) return;
 
         // - Check to close Terminal window -
         if (UIManager.inst.terminal_targetTerm != null) // Window is open
@@ -547,7 +515,7 @@ public class PlayerGridMovement : NetworkBehaviour
     /// <param name="value"></param>
     public void OnVolley(InputAction.CallbackContext context)
     {
-        if (!IsOwner) return;
+        if (!ent.IsOwner) return;
 
         // Here we are just checking if the player presses the "V" key or not. This activates a special visual, and also changes the color of the "V".
         if ((UIManager.inst.volleyMain.activeInHierarchy || UIManager.inst.volleyTiles.Count > 0) && !UIManager.inst.volleyAnimating)
@@ -562,7 +530,7 @@ public class PlayerGridMovement : NetworkBehaviour
     /// <param name="value"></param>
     public void OnAutocomplete(InputAction.CallbackContext context)
     {
-        if (!IsOwner) return;
+        if (!ent.IsOwner) return;
 
         if (UIManager.inst.terminal_targetTerm != null) // Window is open
         {
@@ -578,7 +546,7 @@ public class PlayerGridMovement : NetworkBehaviour
     /// </summary>
     private void InventoryInputDetection()
     {
-        if (!IsOwner) return;
+        if (!ent.IsOwner) return;
 
         // Check for player input
         if (Keyboard.current.anyKey.wasPressedThisFrame

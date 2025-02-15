@@ -1,16 +1,19 @@
 // Origionally made by: Chizaruu @ https://github.com/Chizaruu/Unity-RL-Tutorial/blob/part-4-field-of-view/Assets/Scripts/Entity/Entity.cs
 // Expanded & Modified by: Cody Jackson @ codyj@nevada.unr.edu
 
+using NUnit;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 /// <summary>
-/// A generic class to represent players, enemies, items, etc.
+/// A generic class to represent players, enemies, items, etc. Contains the NetworkBehavior
 /// </summary>
-public class Entity : MonoBehaviour
+public class Entity : NetworkBehaviour
 {
     [Header("Network Values")]
     public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
@@ -55,6 +58,46 @@ public class Entity : MonoBehaviour
     public InventoryObject armament;
     public InventoryObject components;
     public InventoryObject inventory;
+
+    #region Network Setup
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner && this.GetComponent<PlayerGridMovement>())
+        {
+            PlayerGridMovement pgm = this.GetComponent<PlayerGridMovement>();
+            pgm.ent = this;
+
+            pgm.inputActions = Resources.Load<InputActionsSO>("Inputs/InputActionsSO").InputActions;
+
+            pgm.inputActions.Player.Move.performed += pgm.OnMovePerformed;
+            pgm.inputActions.Player.Move.canceled += pgm.OnMoveCanceled;
+            pgm.inputActions.Player.LeftClick.performed += pgm.OnLeftClick;
+            pgm.inputActions.Player.RightClick.performed += pgm.OnRightClick;
+            pgm.inputActions.Player.Quit.performed += pgm.OnQuit;
+            pgm.inputActions.Player.Autocomplete.performed += pgm.OnAutocomplete;
+            pgm.inputActions.Player.Volley.performed += pgm.OnVolley;
+
+            // Random position for testing purposes
+            Move(new Vector2Int(Random.Range(-1, 1), Random.Range(-1, 1)));
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (IsOwner && this.GetComponent<PlayerGridMovement>())
+        {
+            PlayerGridMovement pgm = this.GetComponent<PlayerGridMovement>();
+
+            pgm.inputActions.Player.Move.performed -= pgm.OnMovePerformed;
+            pgm.inputActions.Player.Move.canceled -= pgm.OnMoveCanceled;
+            pgm.inputActions.Player.LeftClick.performed -= pgm.OnLeftClick;
+            pgm.inputActions.Player.RightClick.performed -= pgm.OnRightClick;
+            pgm.inputActions.Player.Quit.performed -= pgm.OnQuit;
+            pgm.inputActions.Player.Autocomplete.performed -= pgm.OnAutocomplete;
+            pgm.inputActions.Player.Volley.performed -= pgm.OnVolley;
+        }
+    }
+    #endregion
 
     public void Move(Vector2 direction)
     {
