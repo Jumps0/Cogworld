@@ -73,8 +73,8 @@ public class GridManager : MonoBehaviour
                 spawnedTile.tileInfo.currentVis = TileVisibility.Unknown; // All tiles start hidden
                 FogOfWar.inst.unseenTiles.Add(spawnedTile); // Add to unseen tiles
 
-                spawnedTile.locX = x;
-                spawnedTile.locY = y;
+                spawnedTile.location.x = x;
+                spawnedTile.location.y = y;
 
                 _tiles[new Vector2(x, y)] = spawnedTile; // Add to Dictionary
                 grid[x, y] = spawnedTile.gameObject; // Add to Grid Array
@@ -161,7 +161,7 @@ public class GridManager : MonoBehaviour
             // Create a path from the current player tile to the mouse target tile
             RegenerateAstar();
 
-            astar.CreatePath(grid, currentPlayerTile.locX, currentPlayerTile.locY, mouseTargetTile.locX, mouseTargetTile.locY);
+            astar.CreatePath(grid, currentPlayerTile.location.x, currentPlayerTile.location.y, mouseTargetTile.location.x, mouseTargetTile.location.y);
 
             if (astar.searchStatus == AStarSearchStatus.Failure)
             {
@@ -217,7 +217,7 @@ public class GridManager : MonoBehaviour
                 // - Current player tile (X, Y)
                 // - Mouse target tile (X, Y)
                 RegenerateAstar(); // May be performance heavy (Here to prevent old bad Spot arrays)
-                astar.CreatePath(grid, currentPlayerTile.locX, currentPlayerTile.locY, mouseTargetTile.locX, mouseTargetTile.locY);
+                astar.CreatePath(grid, currentPlayerTile.location.x, currentPlayerTile.location.y, mouseTargetTile.location.x, mouseTargetTile.location.y);
 
             }
 

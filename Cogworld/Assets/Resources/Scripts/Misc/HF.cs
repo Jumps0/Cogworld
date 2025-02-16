@@ -4281,9 +4281,9 @@ public static class HF
             return false;
         }
 
-        if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(tile.locX, tile.locY)))
+        if (MapManager.inst._allTilesRealized.ContainsKey(tile.location))
         {
-            TData T = MapManager.inst._allTilesRealized[new Vector2Int(tile.locX, tile.locY)];
+            TData T = MapManager.inst._allTilesRealized[tile.location];
             if (T.bottom.GetComponent<DoorLogic>()) // This is a door
             {
                 return true;

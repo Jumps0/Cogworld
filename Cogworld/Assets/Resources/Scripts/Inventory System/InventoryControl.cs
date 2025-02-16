@@ -451,7 +451,7 @@ public class InventoryControl : MonoBehaviour
             sourceInventory.RemoveItem(_item);
 
         // Place the item
-        PlaceItemIntoWorld(_item, new Vector2Int(dropTile.locX, dropTile.locY), dropTile);
+        PlaceItemIntoWorld(_item, dropTile.location, dropTile);
 
         return;
     }

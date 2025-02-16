@@ -297,7 +297,7 @@ public class Actor : Entity
 
         if (tile != null)
         {
-            NewGoal(new Vector2Int(tile.GetComponent<TileBlock>().locX, tile.GetComponent<TileBlock>().locY));
+            NewGoal(new Vector2Int(tile.GetComponent<TileBlock>().location.x, tile.GetComponent<TileBlock>().location.y));
         }
         else
         {

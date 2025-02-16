@@ -42,8 +42,7 @@ public class TileBlock : MonoBehaviour
     public bool walkable;
     [Tooltip("Is something currently occupying this space?")]
     public bool occupied = false;
-    public int locX;
-    public int locY;
+    public Vector2Int location;
 
     [Header("Visibility")]
     public bool isExplored;
@@ -389,7 +388,7 @@ public class TileBlock : MonoBehaviour
     {
         foreach (var E in GameManager.inst.entities) // A bit more performance heavy but raycasting wasn't working
         {
-            if (HF.V3_to_V2I(E.transform.position) == new Vector2Int(locX, locY))
+            if (HF.V3_to_V2I(E.transform.position) == location)
             {
                 return E.GetComponent<Actor>();
             }

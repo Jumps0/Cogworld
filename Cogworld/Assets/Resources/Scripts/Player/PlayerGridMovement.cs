@@ -143,9 +143,8 @@ public class PlayerGridMovement : MonoBehaviour
         isMoving = true;
 
         TileBlock currentTile = GetCurrentPlayerTile();
-        int currentX = currentTile.locX;
-        int currentY = currentTile.locY;
-        Vector2Int moveTarget = new Vector2Int(currentX + X, currentY + Y); // This is where we want to move to
+        Vector2Int currentPos = currentTile.location;
+        Vector2Int moveTarget = new Vector2Int(currentTile.location.x + X, currentTile.location.y + Y); // This is where we want to move to
         //Debug.Log("Want to move from: (" + currentX + "," + currentY + ") to " + moveTarget);
 
         // -- Machine interaction detection --
@@ -163,7 +162,7 @@ public class PlayerGridMovement : MonoBehaviour
 
         // -- Ordinary Movement to tiles / exits detection --
 
-        List<GameObject> neighbors = HF.FindNeighbors(currentX, currentY);
+        List<GameObject> neighbors = HF.FindNeighbors(currentPos.x, currentPos.y);
 
         GameObject desiredDestinationTile = null;
 
@@ -178,7 +177,7 @@ public class PlayerGridMovement : MonoBehaviour
             }
             else if (t.GetComponent<TileBlock>())
             {
-                if ((t.GetComponent<TileBlock>().locX == moveTarget.x) && (t.GetComponent<TileBlock>().locY == moveTarget.y)) // This tile is the one we want to move to
+                if (t.GetComponent<TileBlock>().location == moveTarget) // This tile is the one we want to move to
                 {
                     desiredDestinationTile = t; // This is the one
                     break; // Stop looking
@@ -443,8 +442,8 @@ public class PlayerGridMovement : MonoBehaviour
         {
             TileBlock currentTile = GetCurrentPlayerTile();
             int lastItem = GridManager.inst.astar.path.Count - 2;
-            int targetX = GridManager.inst.astar.path[lastItem].X - currentTile.locX;
-            int targetY = GridManager.inst.astar.path[lastItem].Y - currentTile.locY;
+            int targetX = GridManager.inst.astar.path[lastItem].X - currentTile.location.x;
+            int targetY = GridManager.inst.astar.path[lastItem].Y - currentTile.location.y;
 
             AttemptMovement(targetX, targetY);
             GridManager.inst.ClearGridOfHighlightColor(UIManager.inst.dullGreen);

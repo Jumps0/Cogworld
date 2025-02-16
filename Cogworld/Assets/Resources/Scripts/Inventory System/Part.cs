@@ -426,7 +426,7 @@ public class Part : MonoBehaviour
                 // Remove this item from the ground
                 TryDisableConnectedPopup();
                 _tile._partOnTop = null;
-                InventoryControl.inst.worldItems.Remove(new Vector2Int(_tile.locX, _tile.locY));
+                InventoryControl.inst.worldItems.Remove(_tile.location);
                 Destroy(this.gameObject);
             }
             else if(slotAvailable) // If no space in inventory, then we try to add it to the slots
@@ -490,7 +490,7 @@ public class Part : MonoBehaviour
                     // Remove this item from the ground
                     TryDisableConnectedPopup();
                     _tile._partOnTop = null;
-                    InventoryControl.inst.worldItems.Remove(new Vector2Int(_tile.locX, _tile.locY));
+                    InventoryControl.inst.worldItems.Remove(_tile.location);
                     Destroy(this.gameObject);
                 }
                 else
@@ -584,7 +584,7 @@ public class Part : MonoBehaviour
         // Remove this item from the ground
         TryDisableConnectedPopup();
         _tile._partOnTop = null;
-        InventoryControl.inst.worldItems.Remove(new Vector2Int(_tile.locX, _tile.locY));
+        InventoryControl.inst.worldItems.Remove(_tile.location);
         Destroy(this.gameObject);
 
     }

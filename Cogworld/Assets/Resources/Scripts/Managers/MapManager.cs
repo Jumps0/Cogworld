@@ -161,9 +161,15 @@ public class MapManager : MonoBehaviour
         if (mapType == 1) // Cave Dungeon
         {
             DungeonGenerator.instance.GenerateCaveDungeon(mapsize.x, mapsize.y);
-            GenerateByGrid(DungeonGenerator._dungeon);
+
             mapsize.x = DungeonGenerator._dungeon.GetLength(0);
             mapsize.y = DungeonGenerator._dungeon.GetLength(1);
+
+            // !! Initialize the mapdata array
+            mapdata = new TData[mapsize.x, mapsize.y];
+
+            GenerateByGrid(DungeonGenerator._dungeon);
+            
         }
         else if (mapType == 2) // Normal (0b10 Complex) Dungeon
         {
@@ -182,14 +188,19 @@ public class MapManager : MonoBehaviour
         {
             switch (customMapType)
             {
-                case -1: // Starting cave, nothing to do here
-
+                case -1: // Starting cave
+                    // !! Initialize the mapdata array
+                    mapsize = new Vector2Int(120, 120);
+                    mapdata = new TData[mapsize.x, mapsize.y];
                     break;
                 case 0: // EXILEs cave
                     DungeonManagerCTR.instance.doDungeonGen = true;
 
                     while (!DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().mapGenComplete)
                         yield return null; // Wait for loading to finish...
+
+                    // !! Initialize the mapdata array
+                    mapdata = new TData[mapsize.x, mapsize.y];
 
                     GenerateByCTR();
                     yield return null;
@@ -231,7 +242,6 @@ public class MapManager : MonoBehaviour
             switch (customMapType)
             {
                 case -1:
-                    mapsize = new Vector2Int(120, 120);
                     GridManager.inst.grid = new GameObject[mapsize.x + 1, mapsize.y + 1];
 
                     CustomMap_StartingCave(); // Overrides spawn position in here so we good
@@ -1262,6 +1272,12 @@ public class MapManager : MonoBehaviour
 
         int _tileID = type;
 
+        // Create the new tile
+        TileBlock newTile = new TileBlock();
+
+        // Assign it information
+        newTile.location = new Vector2Int((int)pos.x, (int)pos.y);
+
         var spawnedTile = Instantiate(_tilePrefab, new Vector3(pos.x * GridManager.inst.globalScale, pos.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
         spawnedTile.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
         spawnedTile.name = $"Tile {pos.x} {pos.y} - "; // Give grid based name
@@ -1280,10 +1296,6 @@ public class MapManager : MonoBehaviour
         FogOfWar.inst.unseenTiles.Add(spawnedTile); // Add to unseen tiles
 
         spawnedTile._highlightPerm.GetComponent<SpriteRenderer>().color = Color.white;
-
-        spawnedTile.locX = (int)pos.x; // Assign X location
-        spawnedTile.locY = (int)pos.y; // Assign Y location
-
 
         if (_tileID != 0)
         {  // Don't add impassible tiles
@@ -1384,34 +1396,6 @@ public class MapManager : MonoBehaviour
 
         //spawnedTile.gameObject.transform.SetParent(GridManager.inst.floorParent.transform); // Set parent
         spawnedTile.transform.parent = mapParent;
-    }
-
-    public void CreateTileHere(int x, int y, int _tileID)
-    {
-
-        var spawnedTile = Instantiate(_tilePrefab, new Vector3(x * GridManager.inst.globalScale, y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
-        spawnedTile.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
-        spawnedTile.name = $"Tile {x} {y} - "; // Give grid based name
-
-        spawnedTile.tileInfo = MapManager.inst.tileDatabase.Tiles[_tileID]; // Assign tile data from database by ID
-
-        spawnedTile.name += spawnedTile.tileInfo.type.ToString(); // Modify name with type
-
-        spawnedTile.tileInfo.currentVis = TileVisibility.Unknown; // All tiles start hidden
-        //FogOfWar.inst.unseenTiles.Add(spawnedTile); // Add to unseen tiles
-
-        spawnedTile._highlightPerm.GetComponent<SpriteRenderer>().color = Color.white;
-
-        spawnedTile.locX = x; // Assign X location
-        spawnedTile.locY = y; // Assign Y location
-
-        TData T = _allTilesRealized[new Vector2Int(x, y)];
-        
-        spawnedTile.gameObject.transform.SetParent(mapParent.transform); // Set parent
-        T.bottom = spawnedTile; // Add to Dictionary
-
-
-        _allTilesRealized[new Vector2Int(x, y)] = T;
     }
 
     public void FillWithRock(Vector2Int size)
@@ -2465,13 +2449,15 @@ public class MapManager : MonoBehaviour
         // by a 2x5 shaft. (To the right)
 
         Vector2Int offset = new Vector2Int(50, 50); // Start in the middle
+        Vector2Int pos = Vector2Int.zero;
 
         // Start with the 8x8 Area
         for (int x = 0; x < 8; x++)
         {
             for (int y = 0; y < 8; y++)
             {
-                CreateBlock(new Vector2(x + offset.x, y + offset.y), 4);
+                pos = new Vector2Int(x + offset.x, y + offset.y);
+                mapdata[pos.x, pos.y] = new TData(); // 4
             }
         }
 
