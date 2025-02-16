@@ -21,10 +21,10 @@ public class SOSPrites : Editor
             return;
 
         // Display the sprite's name above the preview
-        GUILayout.Label($"Sprite: {tile.displaySprite.name}");
+        GUILayout.Label($"Sprite: {tile.displaySprite.sprite.name}");
 
         // Convert the tileSprite (see SO script) to Texture
-        Texture2D texture = AssetPreview.GetAssetPreview(tile.displaySprite);
+        Texture2D texture = AssetPreview.GetAssetPreview(tile.displaySprite.sprite);
 
         // Create an empty space for the sprite preview (you may tweak dimensions)
         GUILayout.Label("", GUILayout.Height(80), GUILayout.Width(80));

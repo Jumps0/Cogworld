@@ -22000,19 +22000,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debrisSprites:
-  - {fileID: -1243261769, guid: 311b5e3b124ce8e4580fc71a29719e27, type: 3}
-  - {fileID: 2066811165, guid: 311b5e3b124ce8e4580fc71a29719e27, type: 3}
-  - {fileID: 89823330, guid: 311b5e3b124ce8e4580fc71a29719e27, type: 3}
-  - {fileID: -1247893498, guid: 311b5e3b124ce8e4580fc71a29719e27, type: 3}
-  - {fileID: 190842681, guid: 311b5e3b124ce8e4580fc71a29719e27, type: 3}
-  - {fileID: -347143096, guid: 311b5e3b124ce8e4580fc71a29719e27, type: 3}
-  - {fileID: -35824622, guid: 311b5e3b124ce8e4580fc71a29719e27, type: 3}
-  - {fileID: -1470798618, guid: 311b5e3b124ce8e4580fc71a29719e27, type: 3}
-  - {fileID: 1851227947, guid: 311b5e3b124ce8e4580fc71a29719e27, type: 3}
-  - {fileID: -1015765233, guid: 311b5e3b124ce8e4580fc71a29719e27, type: 3}
-  - {fileID: 2021157764, guid: 311b5e3b124ce8e4580fc71a29719e27, type: 3}
-  - {fileID: -1001038700, guid: 311b5e3b124ce8e4580fc71a29719e27, type: 3}
-  - {fileID: 1438144634, guid: 311b5e3b124ce8e4580fc71a29719e27, type: 3}
+  - {fileID: 11400000, guid: e88c81a551cbe1f4c81174bf2bb24a6b, type: 2}
+  - {fileID: 11400000, guid: b28257fcbeee8c7449a9dfc613ba1fee, type: 2}
+  - {fileID: 11400000, guid: aa2d997e766ce00419ce6bb26f9d12cd, type: 2}
+  - {fileID: 11400000, guid: 9be169c07fa9879458243fd3c5044129, type: 2}
+  - {fileID: 11400000, guid: 64d598753475f864484e6d503088d2f6, type: 2}
+  - {fileID: 11400000, guid: 6038b5a1f23f24843ab97b0b03a1f8f2, type: 2}
+  - {fileID: 11400000, guid: 1fc5f6bdefdcbb34288cc79f30eaa6fc, type: 2}
+  - {fileID: 11400000, guid: fcfeec7641eff6c42b20cc0627ed3ca9, type: 2}
+  - {fileID: 11400000, guid: af5d8792fcbe37b48a9c2968b8bfb257, type: 2}
+  - {fileID: 11400000, guid: 310a72a52273b5740bf4265331dd1bae, type: 2}
+  - {fileID: 11400000, guid: 229a8f6dcc0e9424081cd133ca3bbdba, type: 2}
+  - {fileID: 11400000, guid: 826527f42c5cb0e408a13bc0e8ce3cfc, type: 2}
+  - {fileID: 11400000, guid: 3c767006e1035e44681cc3bdfdf27720, type: 2}
+  - {fileID: 11400000, guid: 5530c20050c2ca64a9bf3bf263e83304, type: 2}
+  - {fileID: 11400000, guid: e023c1fe83125c442b412439b2d59cc8, type: 2}
+  - {fileID: 11400000, guid: 4d6b6b2699607fd44ab2a118a37eb6ff, type: 2}
+  - {fileID: 11400000, guid: c1865a1ded9af9a4592f984b0af26425, type: 2}
   ASCII_debrisSprites:
   - {fileID: -2119270750, guid: 128a1eddcba3fdd4997d85244d8bc329, type: 3}
   - {fileID: -242605518, guid: 128a1eddcba3fdd4997d85244d8bc329, type: 3}

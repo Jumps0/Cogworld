@@ -276,7 +276,7 @@ public class TileBlock : MonoBehaviour
         // Activate the debris and set it to a random sprite
         this.isDirty = true;
         this._debrisSprite.SetActive(true);
-        _debrisSprite.GetComponent<SpriteRenderer>().sprite = MiscSpriteStorage.inst.debrisSprites[Random.Range(0, MiscSpriteStorage.inst.debrisSprites.Count)];
+        _debrisSprite.GetComponent<SpriteRenderer>().sprite = MiscSpriteStorage.inst.debrisSprites[Random.Range(0, MiscSpriteStorage.inst.debrisSprites.Count)].sprite;
     }
 
     public void CleanSpriteDebris()
