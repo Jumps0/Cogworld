@@ -59,15 +59,15 @@ public static class HF
     #endregion
 
     #region ID Lookup
-    public static TileType Tile_to_TileType(Tile type)
+    public static TileType Tile_to_TileType(TileCTR type)
     {
         switch (type)
         {
-            case Tile.Wall:
+            case TileCTR.Wall:
                 return TileType.Wall;
-            case Tile.Floor:
+            case TileCTR.Floor:
                 return TileType.Floor;
-            case Tile.Door:
+            case TileCTR.Door:
                 return TileType.Door;
             default:
                 return TileType.Floor;

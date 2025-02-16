@@ -902,7 +902,7 @@ public class MapManager : MonoBehaviour
 
     [SerializeField] private Transform mapParent;
     [SerializeField] private Transform botParent;
-    public void GenerateByGrid(Tile[,] grid)
+    public void GenerateByGrid(TileCTR[,] grid)
     {
 
         int xSize = grid.GetLength(0);
