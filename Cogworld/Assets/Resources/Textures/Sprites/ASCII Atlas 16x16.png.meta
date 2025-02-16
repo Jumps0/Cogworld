@@ -152,7 +152,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: )
+      name: parenthesis_right
       rect:
         serializedVersion: 2
         x: 48
@@ -173,7 +173,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ~
+      name: tilde
       rect:
         serializedVersion: 2
         x: 72
@@ -194,7 +194,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: '!'
+      name: exclamation
       rect:
         serializedVersion: 2
         x: 96
@@ -215,7 +215,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: $
+      name: money
       rect:
         serializedVersion: 2
         x: 120
@@ -236,7 +236,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: '['
+      name: bracket_left
       rect:
         serializedVersion: 2
         x: 0
@@ -278,7 +278,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: F
+      name: F_
       rect:
         serializedVersion: 2
         x: 48
@@ -299,7 +299,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: E
+      name: E_
       rect:
         serializedVersion: 2
         x: 72
@@ -341,7 +341,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: '}'
+      name: fullbracket_right
       rect:
         serializedVersion: 2
         x: 120
@@ -383,7 +383,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ''''
+      name: quote
       rect:
         serializedVersion: 2
         x: 168
@@ -404,7 +404,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: '&'
+      name: and
       rect:
         serializedVersion: 2
         x: 192
@@ -446,7 +446,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: '@'
+      name: at
       rect:
         serializedVersion: 2
         x: 24
@@ -593,7 +593,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: (
+      name: parenthesis_left
       rect:
         serializedVersion: 2
         x: 192
@@ -614,7 +614,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: C
+      name: C_
       rect:
         serializedVersion: 2
         x: 0
@@ -635,7 +635,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: =
+      name: equals
       rect:
         serializedVersion: 2
         x: 24
@@ -698,7 +698,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ']'
+      name: bracket_right
       rect:
         serializedVersion: 2
         x: 96
@@ -719,7 +719,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: S
+      name: S_
       rect:
         serializedVersion: 2
         x: 120
@@ -740,7 +740,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: _
+      name: underscore
       rect:
         serializedVersion: 2
         x: 144
@@ -803,7 +803,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: '%'
+      name: percent
       rect:
         serializedVersion: 2
         x: 216
@@ -824,7 +824,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: '`'
+      name: smalltilde
       rect:
         serializedVersion: 2
         x: 0
@@ -908,7 +908,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: B
+      name: B_
       rect:
         serializedVersion: 2
         x: 96
@@ -929,7 +929,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: A
+      name: A_
       rect:
         serializedVersion: 2
         x: 120
@@ -950,7 +950,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ASCII Atlas 16x16_40
+      name: arrow_right
       rect:
         serializedVersion: 2
         x: 144
@@ -1013,7 +1013,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: '#'
+      name: hashtag
       rect:
         serializedVersion: 2
         x: 216
@@ -1034,7 +1034,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Q
+      name: Q_
       rect:
         serializedVersion: 2
         x: 0
@@ -1181,7 +1181,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: '-'
+      name: dash
       rect:
         serializedVersion: 2
         x: 168
@@ -1223,7 +1223,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: +
+      name: plus
       rect:
         serializedVersion: 2
         x: 216
@@ -1265,7 +1265,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: P
+      name: P_
       rect:
         serializedVersion: 2
         x: 0
@@ -1328,7 +1328,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: T
+      name: T_
       rect:
         serializedVersion: 2
         x: 72
@@ -1412,7 +1412,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: W
+      name: W_
       rect:
         serializedVersion: 2
         x: 168
@@ -1433,7 +1433,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ','
+      name: comma
       rect:
         serializedVersion: 2
         x: 192
@@ -1496,7 +1496,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Z
+      name: Z_
       rect:
         serializedVersion: 2
         x: 0
@@ -1517,7 +1517,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: H
+      name: H_
       rect:
         serializedVersion: 2
         x: 24
@@ -1538,7 +1538,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: I
+      name: I_
       rect:
         serializedVersion: 2
         x: 48
@@ -1580,7 +1580,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: R
+      name: R_
       rect:
         serializedVersion: 2
         x: 96
@@ -1664,7 +1664,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: .
+      name: dot
       rect:
         serializedVersion: 2
         x: 192
@@ -1706,7 +1706,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: D
+      name: D_
       rect:
         serializedVersion: 2
         x: 240
@@ -1727,7 +1727,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: N
+      name: N_
       rect:
         serializedVersion: 2
         x: 0
@@ -1748,7 +1748,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: G
+      name: G_
       rect:
         serializedVersion: 2
         x: 24
@@ -1769,7 +1769,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Y
+      name: Y_
       rect:
         serializedVersion: 2
         x: 48
@@ -1832,7 +1832,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: V
+      name: V_
       rect:
         serializedVersion: 2
         x: 120
@@ -1853,7 +1853,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: O
+      name: O_
       rect:
         serializedVersion: 2
         x: 144
@@ -1874,7 +1874,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: X
+      name: X_
       rect:
         serializedVersion: 2
         x: 168
@@ -1958,7 +1958,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: K
+      name: K_
       rect:
         serializedVersion: 2
         x: 0
@@ -1979,7 +1979,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: L
+      name: L_
       rect:
         serializedVersion: 2
         x: 24
@@ -2000,7 +2000,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: M
+      name: M_
       rect:
         serializedVersion: 2
         x: 48
@@ -2021,7 +2021,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: J
+      name: J_
       rect:
         serializedVersion: 2
         x: 72
@@ -2126,7 +2126,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: U
+      name: U_
       rect:
         serializedVersion: 2
         x: 192
@@ -2199,18 +2199,6 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      '!': 1593197293
-      '#': 252757115
-      $: 902608017
-      '%': -2119270750
-      '&': -242605518
-      '''': 117771775
-      (: 27253771
-      ): 873280392
-      +: 878618907
-      ',': -1592147645
-      '-': -1879890607
-      .: 602842183
       0: 663878649
       1: 477211624
       2: -68071482
@@ -2221,74 +2209,88 @@ TextureImporter:
       7: -838596314
       8: -1616986463
       9: -604054309
-      =: 663164746
-      '@': 461997052
-      A: 277497930
-      ASCII Atlas 16x16_40: 504133149
-      B: -2115795686
-      C: -1326156670
-      D: -1917747481
-      E: 827475040
-      F: 162860512
-      G: 1772813992
-      H: -1965956897
-      I: 1583979712
-      J: -508063645
-      K: 2047778760
-      L: -899656779
-      M: 68926909
-      N: 1593572691
-      O: 377427754
-      P: 652477040
-      Q: -313619424
-      R: -194451685
-      S: -495236632
-      T: -2132041739
-      U: -1200325425
-      V: 264313886
-      W: -812752891
-      X: 1039914336
-      Y: -806669935
-      Z: -1275420185
-      '[': -1620949117
-      ']': 437599789
-      _: -1789134987
-      '`': -915664141
+      A_: 277497930
+      B_: -2115795686
+      C_: -1326156670
+      D_: -1917747481
+      E_: 827475040
+      F_: 162860512
+      G_: 1772813992
+      H_: -1965956897
+      I_: 1583979712
+      J_: -508063645
+      K_: 2047778760
+      L_: -899656779
+      M_: 68926909
+      N_: 1593572691
+      O_: 377427754
+      P_: 652477040
+      Q_: -313619424
+      R_: -194451685
+      S_: -495236632
+      T_: -2132041739
+      U_: -1200325425
+      V_: 264313886
+      W_: -812752891
+      X_: 1039914336
+      Y_: -806669935
+      Z_: -1275420185
       a: 671171607
+      and: -242605518
+      arrow_right: 504133149
+      at: 461997052
       b: -540054365
       backslash: 1915629820
       bar: 1857588914
+      bracket_left: -1620949117
+      bracket_right: 437599789
       c: -1821909110
       colon: 463067193
+      comma: -1592147645
       d: -1351007308
+      dash: -1879890607
+      dot: 602842183
       dots1: 1381644944
       dots2: 1702693665
       dots3: -478540469
       doublequotes: -354099373
       e: -446366971
       emptysquare: 1142541948
+      equals: 663164746
+      exclamation: 1593197293
       f: -696555580
+      fullbracket_right: 1893507403
       g: -2034476066
       h: -1227979862
+      hashtag: 252757115
       i: 695104700
       j: 541377989
       k: 161291874
       leftarrow: -1328635503
       line: 2053085175
       m: 373346494
+      money: 902608017
       n: 1407997139
       o: -818900176
       p: 58029911
+      parenthesis_left: 27253771
+      parenthesis_right: 873280392
+      percent: -2119270750
+      plus: 878618907
       q: 1649456314
       question: 855381750
+      quote: 117771775
       r: 366090286
       s: 1358358348
       semicolon: -1767085084
       slash: -617602502
+      smalltilde: -915664141
       square: 123999817
       star: 500531747
       t: 1493055048
+      tilde: -1304995359
       u: 1537090025
+      underscore: -1789134987
       uparrow: -569113043
       v: -953438244
       w: -1057162663
@@ -2296,8 +2298,6 @@ TextureImporter:
       y: -1257960255
       z: -2140472720
       '{': 1717574917
-      '}': 1893507403
-      ~: -1304995359
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

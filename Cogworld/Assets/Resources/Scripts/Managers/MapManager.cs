@@ -4,6 +4,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Tilemaps;
 using static StructureCTR;
 using Random = UnityEngine.Random;
 
@@ -78,11 +79,12 @@ public class MapManager : MonoBehaviour
     public GameObject cameraRef;
     public GameObject playerRef;
     [SerializeField] private GameObject levelLoadCover;
+    [SerializeField] private Tilemap tilemap;
 
     [Header("Auto Mapgen Settings")]
     public List<MapGen_DataCTR> mapGenSpecifics = new List<MapGen_DataCTR>();
 
-    [Header("Collected Map Data")]
+    [Header("Key Information")]
     public Dictionary<Vector2Int, TData> _allTilesRealized = new Dictionary<Vector2Int, TData>(); // ~ This stuff is VERY important, but its coded poorly. Lets re-do it!
     [Tooltip("Contains all data related to the map.")]
     public TData[,] mapdata;
