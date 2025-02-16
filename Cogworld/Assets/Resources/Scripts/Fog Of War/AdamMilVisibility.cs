@@ -304,7 +304,7 @@ sealed class AdamMilVisibility : Visibility
         switch (toCheck)
         {
             case 0: // Tile
-                if (_tile.tileInfo.type == TileType.Floor || _tile.tileInfo.type == TileType.Default || _tile.specialNoBlockVis || (_tile.phaseWall && HF.PhaseWallVisCheck(myActor, _tile)))
+                if (_tile.tileInfo.type == TileType.Floor || _tile.tileInfo.type == TileType.Default || _tile.specialNoBlockVis || (_tile.isPhaseWall && HF.PhaseWallVisCheck(myActor, _tile)))
                 {
                     returnValue = false;
                 }

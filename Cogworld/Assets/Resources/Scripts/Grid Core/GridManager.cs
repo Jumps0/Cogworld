@@ -70,9 +70,6 @@ public class GridManager : MonoBehaviour
 
                 spawnedTile.name += spawnedTile.tileInfo.type.ToString(); // Modify name with type
 
-                spawnedTile.tileInfo.currentVis = TileVisibility.Unknown; // All tiles start hidden
-                FogOfWar.inst.unseenTiles.Add(spawnedTile); // Add to unseen tiles
-
                 spawnedTile.location.x = x;
                 spawnedTile.location.y = y;
 
@@ -311,9 +308,10 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    
+    // UNUSED LEGACY CODE. GUT THIS ENTIRE SCRIPT WHEN POSSIBLE
     public void TileVisFlip(TileVisibility old, TileVisibility desired)
     {
+        /*
         for (int x = 0; x < _width; x++)
         {
             for (int y = 0; y < _height; y++)
@@ -324,6 +322,7 @@ public class GridManager : MonoBehaviour
                 }
             }
         }
+        */
     }
 
     [SerializeField] private bool debugFlip = false;

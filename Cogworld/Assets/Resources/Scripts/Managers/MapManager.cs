@@ -262,7 +262,7 @@ public class MapManager : MonoBehaviour
 
         PlaceBranchNExits(); // Place exits (map type logic handled inside)
 
-        DrawBorder(mapsize.x, mapsize.y); // Draw the border
+        DrawBorder(); // Draw the border
 
         foreach (var door in _allTilesRealized) // Setup all the doors
         {
@@ -490,7 +490,7 @@ public class MapManager : MonoBehaviour
             }
         }
 
-        DrawBorder(mapsize.x, mapsize.y); // Draw the border
+        DrawBorder(); // Draw the border
 
         CreateRegions();
         TurnManager.inst.SetAllUnknown(); // Also fills the regions
@@ -579,11 +579,16 @@ public class MapManager : MonoBehaviour
 
         // 1 - Place 20x20 flat ground.
         Vector2Int offset = new Vector2Int(center.x - 10, center.y - 10);
+
         for (int x = 0 + offset.x; x < 20 + offset.x; x++)
         {
             for (int y = 0 + offset.y; y < 20 + offset.y; y++)
             {
-                CreateBlock(new Vector2Int(x, y), HF.IDbyTheme(TileType.Floor));
+                Vector2Int pos = new Vector2Int(x, y);
+                TData tile = new TData(); // New TData object
+                tile.bottom = CreateBlock(pos, HF.IDbyTheme(TileType.Floor)); // Place floor
+                tile.vis = 0; // Start hidden
+                mapdata[pos.x, pos.y] = tile;
             }
         }
 
@@ -592,54 +597,92 @@ public class MapManager : MonoBehaviour
         offset = new Vector2Int(center.x - 8, center.y - 8);
         for (int x = 0 + offset.x; x < 16 + offset.x; x++)
         {
-            CreateBlock(new Vector2Int(x, offset.y), wallID);
-            CreateBlock(new Vector2Int(x, offset.y + 15), wallID);
+            Vector2Int posA = new Vector2Int(x, offset.y), posB = new Vector2Int(x, offset.y + 15);
+
+            TData tileA = new TData(); // New TData object
+            tileA.bottom = CreateBlock(posA, wallID); // Place wall
+            tileA.vis = 0;
+            mapdata[posA.x, posA.y] = tileA;
+
+            TData tileB = new TData(); // New TData object
+            tileB.bottom = CreateBlock(posB, wallID); // Place wall
+            tileB.vis = 0;
+            mapdata[posB.x, posB.y] = tileB;
         }
         for (int y = 1 + offset.y; y < 15 + offset.y; y++)
         {
-            CreateBlock(new Vector2Int(offset.x, y), wallID);
-            CreateBlock(new Vector2Int(offset.x + 15, y), wallID);
+            Vector2Int posA = new Vector2Int(offset.x, y), posB = new Vector2Int(offset.x + 15, y);
+
+            TData tileA = new TData(); // New TData object
+            tileA.bottom = CreateBlock(posA, wallID); // Place wall
+            tileA.vis = 0;
+            mapdata[posA.x, posA.y] = tileA;
+
+            TData tileB = new TData(); // New TData object
+            tileB.bottom = CreateBlock(posB, wallID); // Place wall
+            tileB.vis = 0;
+            mapdata[posB.x, posB.y] = tileB;
         }
 
 
         // 3 - Create the rooms (this should be changed later)
         // For now its gonna be pre-set
+        List<Vector2Int> wallPos = new List<Vector2Int>();
+
         Vector2Int bl = new Vector2Int(center.x - 8, center.y - 8); // Bottom left corner
+        wallPos.Add(new Vector2Int(bl.x + 5, bl.y + 1));
+        wallPos.Add(new Vector2Int(bl.x + 5, bl.y + 2));
+        wallPos.Add(new Vector2Int(bl.x + 5, bl.y + 3));
+        //
+        wallPos.Add(new Vector2Int(bl.x + 7, bl.y + 3));
+        wallPos.Add(new Vector2Int(bl.x + 8, bl.y + 3));
+        wallPos.Add(new Vector2Int(bl.x + 9, bl.y + 3));
+        //
+        wallPos.Add(new Vector2Int(bl.x + 10, bl.y + 3));
+        wallPos.Add(new Vector2Int(bl.x + 10, bl.y + 4));
+        wallPos.Add(new Vector2Int(bl.x + 10, bl.y + 5));
+        wallPos.Add(new Vector2Int(bl.x + 10, bl.y + 6));
+        wallPos.Add(new Vector2Int(bl.x + 10, bl.y + 9));
+        wallPos.Add(new Vector2Int(bl.x + 10, bl.y + 10));
+        wallPos.Add(new Vector2Int(bl.x + 10, bl.y + 11));
+        wallPos.Add(new Vector2Int(bl.x + 10, bl.y + 12));
+        //
+        wallPos.Add(new Vector2Int(bl.x + 7, bl.y + 12));
+        wallPos.Add(new Vector2Int(bl.x + 8, bl.y + 12));
+        wallPos.Add(new Vector2Int(bl.x + 9, bl.y + 12));
+        //
+        wallPos.Add(new Vector2Int(bl.x + 5, bl.y + 12));
+        wallPos.Add(new Vector2Int(bl.x + 5, bl.y + 13));
+        wallPos.Add(new Vector2Int(bl.x + 5, bl.y + 14));
 
-        CreateBlock(new Vector2Int(bl.x + 5, bl.y + 1), wallID);
-        CreateBlock(new Vector2Int(bl.x + 5, bl.y + 2), wallID);
-        CreateBlock(new Vector2Int(bl.x + 5, bl.y + 3), wallID);
-        //
-        CreateBlock(new Vector2Int(bl.x + 7, bl.y + 3), wallID);
-        CreateBlock(new Vector2Int(bl.x + 8, bl.y + 3), wallID);
-        CreateBlock(new Vector2Int(bl.x + 9, bl.y + 3), wallID);
-        //
-        CreateBlock(new Vector2Int(bl.x + 10, bl.y + 3), wallID);
-        CreateBlock(new Vector2Int(bl.x + 10, bl.y + 4), wallID);
-        CreateBlock(new Vector2Int(bl.x + 10, bl.y + 5), wallID);
-        CreateBlock(new Vector2Int(bl.x + 10, bl.y + 6), wallID);
-        CreateBlock(new Vector2Int(bl.x + 10, bl.y + 9), wallID);
-        CreateBlock(new Vector2Int(bl.x + 10, bl.y + 10), wallID);
-        CreateBlock(new Vector2Int(bl.x + 10, bl.y + 11), wallID);
-        CreateBlock(new Vector2Int(bl.x + 10, bl.y + 12), wallID);
-        //
-        CreateBlock(new Vector2Int(bl.x + 7, bl.y + 12), wallID);
-        CreateBlock(new Vector2Int(bl.x + 8, bl.y + 12), wallID);
-        CreateBlock(new Vector2Int(bl.x + 9, bl.y + 12), wallID);
-        //
-        CreateBlock(new Vector2Int(bl.x + 5, bl.y + 12), wallID);
-        CreateBlock(new Vector2Int(bl.x + 5, bl.y + 13), wallID);
-        CreateBlock(new Vector2Int(bl.x + 5, bl.y + 14), wallID);
+        foreach (Vector2Int P in wallPos)
+        {
+            TData tile = new TData(); // New TData object
+            tile.bottom = CreateBlock(P, wallID); // Place wall
+            tile.vis = 0;
+            mapdata[P.x, P.y] = tile;
+        }
 
-        // 4 - Place the doors
-        CreateBlock(new Vector2Int(bl.x + 7, bl.y), HF.IDbyTheme(TileType.Door));
-        CreateBlock(new Vector2Int(bl.x + 7, bl.y + 15), HF.IDbyTheme(TileType.Door));
-        CreateBlock(new Vector2Int(bl.x, bl.y + 5), HF.IDbyTheme(TileType.Door));
-        CreateBlock(new Vector2Int(bl.x, bl.y + 9), HF.IDbyTheme(TileType.Door));
-        CreateBlock(new Vector2Int(bl.x + 10, bl.y + 7), HF.IDbyTheme(TileType.Door));
-        CreateBlock(new Vector2Int(bl.x + 10, bl.y + 8), HF.IDbyTheme(TileType.Door));
-        CreateBlock(new Vector2Int(bl.x + 15, bl.y + 6), HF.IDbyTheme(TileType.Door));
-        CreateBlock(new Vector2Int(bl.x + 15, bl.y + 7), HF.IDbyTheme(TileType.Door));
+        // 4 - Place the doors (hardcoded for now)
+        int doorID = HF.IDbyTheme(TileType.Door);
+        List<Vector2Int> doorPos = new List<Vector2Int>();
+
+        doorPos.Add(new Vector2Int(bl.x + 7, bl.y));
+        doorPos.Add(new Vector2Int(bl.x + 7, bl.y + 15));
+        doorPos.Add(new Vector2Int(bl.x, bl.y + 5));
+        doorPos.Add(new Vector2Int(bl.x, bl.y + 9));
+        doorPos.Add(new Vector2Int(bl.x + 10, bl.y + 7));
+        doorPos.Add(new Vector2Int(bl.x + 10, bl.y + 8));
+        doorPos.Add(new Vector2Int(bl.x + 15, bl.y + 6));
+        doorPos.Add(new Vector2Int(bl.x + 15, bl.y + 7));
+
+        foreach (Vector2Int P in doorPos)
+        {
+            TData tile = new TData();
+            tile.bottom = CreateBlock(P, doorID); // Place door
+            tile.vis = 0;
+            mapdata[P.x, P.y] = tile;
+        }
 
         // 5 - Place custom machines
         PlaceIndividualMachine(new Vector2Int(bl.x + 2, bl.y + 3), 1, 4); // Terminal 4x3 "Pipeworks"
@@ -1250,163 +1293,83 @@ public class MapManager : MonoBehaviour
         #endregion
     }
 
-    private void DrawBorder(int sizeX, int sizeY)
+    private void DrawBorder()
     {
-        int xSize = sizeX;
-        int ySize = sizeY;
+        int xSize = mapsize.x;
+        int ySize = mapsize.y;
 
         for (int x = -1; x < xSize; x++) // Bottom lane & Top Lane
         {
-            CreateBlock(new Vector2(x + xOff, -1 + yOff), 0);
-            CreateBlock(new Vector2(x + xOff, ySize + -1 + yOff), 0);
+            Vector2Int posA = new Vector2Int(x + xOff, -1 + yOff), posB = new Vector2Int(x + xOff, ySize + -1 + yOff);
+
+            TData tileA = new TData(); // New TData object
+            tileA.bottom = CreateBlock(posA, 0); // Place impassible wall (0)
+            tileA.vis = 2; // Start visible
+            mapdata[posA.x, posA.y] = tileA;
+
+            TData tileB = new TData(); // New TData object
+            tileB.bottom = CreateBlock(posB, 0); // Place impassible wall (0)
+            tileB.vis = 2; // Start visible
+            mapdata[posB.x, posB.y] = tileB;
         }
         for (int y = -1; y < ySize; y++) // Left and Right Lanes
         {
-            CreateBlock(new Vector2(-1 + xOff, y + yOff), 0);
-            CreateBlock(new Vector2(xSize + -1 + xOff, y + yOff), 0);
+            Vector2Int posA = new Vector2Int(-1 + xOff, y + yOff), posB = new Vector2Int(xSize + -1 + xOff, y + yOff);
+
+            TData tileA = new TData(); // New TData object
+            tileA.bottom = CreateBlock(posA, 0); // Place impassible wall (0)
+            tileA.vis = 2; // Start visible
+            mapdata[posA.x, posA.y] = tileA;
+
+            TData tileB = new TData(); // New TData object
+            tileB.bottom = CreateBlock(posB, 0); // Place impassible wall (0)
+            tileB.vis = 2; // Start visible
+            mapdata[posB.x, posB.y] = tileB;
         }
     }
 
-    private void CreateBlock(Vector2 pos, int type, bool dirty = false)
+    private TileBlock CreateBlock(Vector2 pos, int id, bool dirty = false)
     {
-
-        int _tileID = type;
-
         // Create the new tile
         TileBlock newTile = new TileBlock();
 
         // Assign it information
         newTile.location = new Vector2Int((int)pos.x, (int)pos.y);
+        newTile.tileInfo = MapManager.inst.tileDatabase.Tiles[id]; // Assign tile data from database by ID
 
-        var spawnedTile = Instantiate(_tilePrefab, new Vector3(pos.x * GridManager.inst.globalScale, pos.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
-        spawnedTile.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
-        spawnedTile.name = $"Tile {pos.x} {pos.y} - "; // Give grid based name
+        newTile.isDirty = dirty;
 
-        spawnedTile.tileInfo = MapManager.inst.tileDatabase.Tiles[_tileID]; // Assign tile data from database by ID
-
-        spawnedTile.name += spawnedTile.tileInfo.type.ToString(); // Modify name with type
-
-        spawnedTile.tileInfo.currentVis = TileVisibility.Unknown; // All tiles start hidden
-        spawnedTile.isExplored = false;
-        spawnedTile.isVisible = false;
-
-        if(dirty) // There's probably a better way of doing this
-            spawnedTile.SetToDirty();
-
-        FogOfWar.inst.unseenTiles.Add(spawnedTile); // Add to unseen tiles
-
-        spawnedTile._highlightPerm.GetComponent<SpriteRenderer>().color = Color.white;
-
-        if (_tileID != 0)
-        {  // Don't add impassible tiles
-            Vector2Int posi = new Vector2Int((int)pos.x, (int)pos.y);
-
-            // VVV Expand this later, it sucks! VVV
-            if (MapManager.inst.tileDatabase.Tiles[_tileID].type != TileType.Door) // Things that arent doors
-            {
-                if (_allTilesRealized.ContainsKey(posi))
-                {
-                    // Something already exists here, overwrite it and destroy newest instantiation
-                    TData T = _allTilesRealized[posi];
-
-                    T.bottom.tileInfo = MapManager.inst.tileDatabase.Tiles[_tileID];
-                    T.bottom.gameObject.name = $"Tile {pos.x} {pos.y} - " + spawnedTile.tileInfo.type.ToString();
-                    T.bottom.tileInfo.currentVis = TileVisibility.Unknown;
-                    T.bottom.Init();
-
-                    _allTilesRealized[posi] = T;
-                }
-                else
-                {
-                    _allTilesRealized.Add(posi, new TData());
-                    TData T = _allTilesRealized[posi];
-                    T.bottom = spawnedTile;
-                    T.vis = 0;
-
-                    _allTilesRealized[posi] = T;
-                }
-
-                // In some scenarios, when we are placing a tile at a position, there may be another one there, so we want to overwrite it.
-                // Simply deleting the old tile DOES NOT WORK because it already exists in a bunch of other lists and would cause massive problems.
-                // So we need to update the already existing tile's data with the new data and simply delete the newly instantiated tile so it is never added.
-
-                if (GridManager.inst.grid[(int)pos.x, (int)pos.y] == null)
-                {
-                    GridManager.inst.grid[(int)pos.x, (int)pos.y] = spawnedTile.gameObject; // Fill grid
-                }
-                else
-                {
-                    CopyComponentData<PlayerData>(spawnedTile.gameObject, GridManager.inst.grid[(int)pos.x, (int)pos.y]); // Copy over the values    
-                    Destroy(spawnedTile.gameObject);
-                }
-            }
-            else if (MapManager.inst.tileDatabase.Tiles[_tileID].type == TileType.Door) // Doors
-            {
-                TData T = _allTilesRealized[posi];
-
-                spawnedTile.AddComponent<DoorLogic>();
-                spawnedTile.GetComponent<DoorLogic>()._tile = spawnedTile.GetComponent<TileBlock>();
-                spawnedTile.GetComponent<DoorLogic>()._location = new Vector2Int((int)pos.x, (int)pos.y);
-                spawnedTile.GetComponent<DoorLogic>()._open = MapManager.inst.tileDatabase.Tiles[_tileID].altSprite;
-                spawnedTile.GetComponent<DoorLogic>()._closed = MapManager.inst.tileDatabase.Tiles[_tileID].displaySprite;
-                spawnedTile.AddComponent<AudioSource>();
-                spawnedTile.GetComponent<AudioSource>().playOnAwake = false;
-                spawnedTile.GetComponent<AudioSource>().loop = false;
-                spawnedTile.GetComponent<DoorLogic>().source = spawnedTile.GetComponent<AudioSource>();
-                spawnedTile.GetComponent<DoorLogic>().source.spatialBlend = 1f;
-                spawnedTile.GetComponent<DoorLogic>().source.volume = 0.5f;
-                spawnedTile.GetComponent<SpriteRenderer>().sortingOrder = 5;
-
-                T.top = spawnedTile.gameObject;
-                T.bottom = spawnedTile;
-
-                _allTilesRealized[posi] = T;
-
-                GridManager.inst.grid[(int)pos.x, (int)pos.y] = spawnedTile.gameObject; // Fill grid
-
-                // As a failsafe, if this door is being placed on top of a wall, we need to turn that wall into a floor tile.
-                if (_allTilesRealized.ContainsKey(posi))
-                {
-                    TileBlock tile = _allTilesRealized[posi].bottom;
-                    if(tile.tileInfo.type == TileType.Wall) // Is it a wall? We need to change that
-                    {
-                        // First get what type of floor tile we need to place
-                        int id = HF.IDbyTheme(TileType.Floor);
-
-                        TData TT = _allTilesRealized[posi];
-
-                        TT.bottom.gameObject.name = $"Tile {pos.x} {pos.y} - "; // Give grid based name
-                        TT.bottom.tileInfo = MapManager.inst.tileDatabase.Tiles[id]; // Assign tile data from database by ID
-                        TT.bottom.gameObject.name += _allTilesRealized[posi].bottom.tileInfo.type.ToString(); // Modify name with type
-                        TT.bottom.Init();
-
-                        _allTilesRealized[posi] = TT;
-
-                        // And update the grid too
-                        if (GridManager.inst.grid[(int)pos.x, (int)pos.y] != null)
-                        {
-                            GridManager.inst.grid[(int)pos.x, (int)pos.y] = _allTilesRealized[posi].bottom.gameObject;
-                        }
-                    }
-
-                }
-            }
-            //
+        // Variants check
+        if(id == 0) // Impassible wall
+        {
+            newTile.isImpassible = true;
         }
+        else
+        {
+            if(newTile.tileInfo.type == TileType.Door) // Door
+            {
+                newTile.isDoor = true;
+            }
+        }
+        // phase wall?
 
-        //spawnedTile.gameObject.transform.SetParent(GridManager.inst.floorParent.transform); // Set parent
-        spawnedTile.transform.parent = mapParent;
+        return newTile;
     }
 
-    public void FillWithRock(Vector2Int size)
+    public void FillWithRock(Vector2Int size, int id_override = 2)
     {
         for (int x = 0; x < size.x; x++)
         {
             for (int y = 0; y < size.y; y++)
             {
-                if (!CheckDictionaryEntry(_allTilesRealized, new Vector2Int(x, y)))
+                Vector2Int pos = new Vector2Int(x, y);
+
+                if (mapdata[pos.x, pos.y].bottom == null) // Make sure not to overwrite anything
                 {
-                    CreateBlock(new Vector2Int(x, y), 2);
+                    TData tile = new TData(); // New TData object
+                    tile.bottom = CreateBlock(pos, id_override);
+                    tile.vis = 0; // Start hidden
+                    mapdata[pos.x, pos.y] = tile;
                 }
             }
         }
@@ -2457,7 +2420,10 @@ public class MapManager : MonoBehaviour
             for (int y = 0; y < 8; y++)
             {
                 pos = new Vector2Int(x + offset.x, y + offset.y);
-                mapdata[pos.x, pos.y] = new TData(); // 4
+                TData tile = new TData(); // New TData object
+                tile.bottom = CreateBlock(pos, 4, Random.Range(0f, 1f) > 0.4f /*60% chance to be dirty*/); // Place floor (4)
+                tile.vis = 0; // Start hidden
+                mapdata[pos.x, pos.y] = tile;
             }
         }
 
@@ -2474,7 +2440,11 @@ public class MapManager : MonoBehaviour
         {
             for (int y = 0; y < 2; y++)
             {
-                CreateBlock(new Vector2(x + offset.x, y + offset.y), 4);
+                pos = new Vector2Int(x + offset.x, y + offset.y);
+                TData tile = new TData(); // New TData object
+                tile.bottom = CreateBlock(pos, 4, Random.Range(0f, 1f) > 0.4f /*60% chance to be dirty*/); // Place floor (4)
+                tile.vis = 0; // Start hidden
+                mapdata[pos.x, pos.y] = tile;
             }
         }
 
@@ -2486,7 +2456,11 @@ public class MapManager : MonoBehaviour
         {
             for (int y = 0; y < 8; y++)
             {
-                CreateBlock(new Vector2(x + offset.x, y + offset.y), 4);
+                pos = new Vector2Int(x + offset.x, y + offset.y);
+                TData tile = new TData(); // New TData object
+                tile.bottom = CreateBlock(pos, 4, Random.Range(0f, 1f) > 0.4f /*60% chance to be dirty*/); // Place floor (4)
+                tile.vis = 0; // Start hidden
+                mapdata[pos.x, pos.y] = tile;
             }
         }
 
@@ -2495,17 +2469,6 @@ public class MapManager : MonoBehaviour
         Vector2Int exitLoc = new Vector2Int(offset.x += Random.Range(4, 6), offset.y += Random.Range(1, 6));
 
         PlaceLevelExit(exitLoc, false, 0);
-
-        // Then dirty up the tiles a bit
-        foreach (var floor in _allTilesRealized)
-        {
-            float rand = Random.Range(0f, 1f);
-            if (rand > 0.4) // 60% chance
-            {
-                floor.Value.bottom.SetToDirty();
-            }
-        }
-
     }
 
 

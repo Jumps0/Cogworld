@@ -12,9 +12,6 @@ public class FogOfWar : MonoBehaviour
     }
 
     public List<Vector3Int> visibleTiles;
-    public List<TileBlock> unseenTiles = new List<TileBlock>();
-    public List<TileBlock> knownTiles = new List<TileBlock>();
-
 
     public void UpdateFogMap(List<Vector3Int> playerFOV)
     {

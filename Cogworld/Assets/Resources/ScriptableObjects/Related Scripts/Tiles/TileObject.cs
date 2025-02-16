@@ -44,9 +44,6 @@ public abstract class TileObject : ScriptableObject
     [Tooltip("The weapon attacking this tile must do more than the armor value to start damaging the tile.")]
     public int armor = 5;
 
-    [Header("Field of View")]
-    public TileVisibility currentVis;
-
     [Header("Destruction Sounds")]
     public List<AudioClip> destructionClips = new List<AudioClip>();
 

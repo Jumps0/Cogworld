@@ -44,6 +44,11 @@ public class TileBlock : MonoBehaviour
     public bool occupied = false;
     public Vector2Int location;
 
+    [Header("Variants")]
+    public bool isDoor = false;
+    public bool isPhaseWall = false;
+    public bool isImpassible = false;
+
     [Header("Visibility")]
     public bool isExplored;
     public bool isVisible;
@@ -60,8 +65,6 @@ public class TileBlock : MonoBehaviour
     [SerializeField] private Color caution_yellow;
 
     [Header("Phase Wall")]
-    [Tooltip("Is this tile a phase wall?")]
-    public bool phaseWall = false;
     [Tooltip("Which team can *use* this phase wall?")]
     public BotAlignment phaseWallTeam = BotAlignment.Complex;
     public Sprite phaseWallSprite;
@@ -135,8 +138,6 @@ public class TileBlock : MonoBehaviour
             isExplored = true;
             isVisible = true;
         }
-
-        vis = tileInfo.currentVis;
 
         if (recentlyRevealedViaIntel)
         {

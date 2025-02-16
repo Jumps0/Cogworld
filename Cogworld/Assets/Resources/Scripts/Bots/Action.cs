@@ -4048,7 +4048,7 @@ public static class Action
 
             for (int i = 0; i < hits.Length; i++)
             {
-                if (hits[i].collider.GetComponent<TileBlock>() && hits[i].collider.GetComponent<TileBlock>().phaseWall)
+                if (hits[i].collider.GetComponent<TileBlock>() && hits[i].collider.GetComponent<TileBlock>().isPhaseWall)
                 {
                     damage = Mathf.RoundToInt(damage - (float)(damage * 0.1f));
 
