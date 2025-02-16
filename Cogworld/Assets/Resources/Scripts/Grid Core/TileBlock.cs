@@ -88,7 +88,7 @@ public class TileBlock : MonoBehaviour
             return;
         }
 
-        _renderer.sprite = tileInfo.displaySprite; // Set the sprite
+        _renderer.sprite = tileInfo.displaySprite.sprite; // Set the sprite
         if (tileInfo.type == TileType.Wall || tileInfo.type == TileType.Machine) // Walls/Machines take up space
         {
             occupied = true;
@@ -311,7 +311,7 @@ public class TileBlock : MonoBehaviour
     public void DestroyMe()
     {
         // Change the sprite
-        this.GetComponent<SpriteRenderer>().sprite = tileInfo.destroyedSprite;
+        this.GetComponent<SpriteRenderer>().sprite = tileInfo.destroyedSprite.sprite;
 
         if(tileInfo.type == TileType.Floor)
         {
@@ -356,7 +356,7 @@ public class TileBlock : MonoBehaviour
     public void RepairMe()
     {
         // Change the sprite
-        this.GetComponent<SpriteRenderer>().sprite = tileInfo.displaySprite;
+        this.GetComponent<SpriteRenderer>().sprite = tileInfo.displaySprite.sprite;
 
         if(tileInfo.type == TileType.Wall)
         {

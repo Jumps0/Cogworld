@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 [System.Serializable]
 public enum TileType
@@ -19,19 +20,21 @@ public abstract class TileObject : ScriptableObject
     [Header("Primary")]
     public int Id;
 
-    public Sprite displaySprite;
     public string tileName;
+
+    [Header("Display")]
+    public Tile displaySprite;
+    [Tooltip("Used for things like the open sprite of doors.")]
+    public Tile altSprite;
+    [Tooltip("What should be shown when this sprite is destroyed.")]
+    public Tile destroyedSprite;
+    [Tooltip("How this sprite looks while in ASCII mode.")]
+    public Tile asciiRep;
+    public Color asciiColor;
 
     [Header("Details")]
     public TileType type;
 
-    [Tooltip("Used for things like the open sprite of doors.")]
-    public Sprite altSprite;
-    [Tooltip("What should be shown when this sprite is destroyed.")]
-    public Sprite destroyedSprite;
-
-    public Sprite asciiRep;
-    public Color asciiColor;
     public bool isDirty = false;
 
     /// <summary>

@@ -45,7 +45,7 @@ public class AnimTileBlock : MonoBehaviour
             }
             else
             {
-                _sprite.sprite = _tile.GetComponent<TileBlock>().tileInfo.asciiRep;
+                _sprite.sprite = _tile.GetComponent<TileBlock>().tileInfo.asciiRep.sprite;
             }
         }
         if (item != null)

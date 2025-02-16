@@ -63,9 +63,9 @@ public class MachinePart : MonoBehaviour
             if (sr != null && info.displaySprite != null)
             {
                 // Auto-assign sprite
-                sr.sprite = info.displaySprite;
-                sprite_ascii = info.asciiRep;
-                sprite_destroyed = info.destroyedSprite;
+                sr.sprite = info.displaySprite.sprite;
+                sprite_ascii = info.asciiRep.sprite;
+                sprite_destroyed = info.destroyedSprite.sprite;
             }
 
             // Set up the other values while we're here
@@ -84,7 +84,7 @@ public class MachinePart : MonoBehaviour
                     // Filter out interactable machines!!!
                     if (!T.displaySprite.name.Contains("interact"))
                     {
-                        validS.Add((T.displaySprite, T.asciiRep, T.destroyedSprite));
+                        validS.Add((T.displaySprite.sprite, T.asciiRep.sprite, T.destroyedSprite.sprite));
                     }
                 }
             }
