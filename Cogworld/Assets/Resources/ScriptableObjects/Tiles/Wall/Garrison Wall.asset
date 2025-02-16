@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: Garrison Wall
   m_EditorClassIdentifier: 
   Id: 11
-  displaySprite: {fileID: 1442719478, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
   tileName: Garrison Wall
-  type: 1
+  displaySprite: {fileID: 11400000, guid: b1b18593c9c939849bd56da44d3891b2, type: 2}
   altSprite: {fileID: 0}
-  destroyedSprite: {fileID: -1889050255, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
-  asciiRep: {fileID: 252757115, guid: 128a1eddcba3fdd4997d85244d8bc329, type: 3}
+  destroyedSprite: {fileID: 11400000, guid: e4ce95d44c1378b4986a69c92f942e7b, type: 2}
+  asciiRep: {fileID: 11400000, guid: a2c8357fbce19c948a5954355184ddbf, type: 2}
   asciiColor: {r: 0.882353, g: 0, b: 0, a: 1}
+  type: 1
   isDirty: 0
   impassable: 0
   health: {x: 50, y: 50}
   armor: 30
-  currentVis: 0
   destructionClips:
   - {fileID: 8300000, guid: b88a9d7216fc1894f850689f3f5ca1bd, type: 3}
   - {fileID: 8300000, guid: 17ada9be668b0da409442c5bf5213d61, type: 3}

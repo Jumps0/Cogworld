@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: Materials Floor Tile
   m_EditorClassIdentifier: 
   Id: 4
-  displaySprite: {fileID: 1088949718, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
   tileName: Materials Floor
-  type: 0
+  displaySprite: {fileID: 11400000, guid: 28f08bef50cfec941a05491f42bf8833, type: 2}
   altSprite: {fileID: -1865799676, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
-  destroyedSprite: {fileID: -1865799676, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
-  asciiRep: {fileID: 602842183, guid: 128a1eddcba3fdd4997d85244d8bc329, type: 3}
+  destroyedSprite: {fileID: 11400000, guid: d4f0d65fe726ea149bcaf7cd391e4fc4, type: 2}
+  asciiRep: {fileID: 11400000, guid: e4b0248cb8a927f428dac66c6c60ca87, type: 2}
   asciiColor: {r: 0.32156864, g: 0.32156864, b: 0.32156864, a: 1}
+  type: 0
   isDirty: 0
   impassable: 0
   health: {x: 10, y: 10}
   armor: 4
-  currentVis: 2
   destructionClips:
   - {fileID: 8300000, guid: e4262aefc6e5e1a4aa7d867d8e173f2c, type: 3}
   - {fileID: 8300000, guid: b283c5eb24e1e1041b1d7b7a42b0ecdf, type: 3}

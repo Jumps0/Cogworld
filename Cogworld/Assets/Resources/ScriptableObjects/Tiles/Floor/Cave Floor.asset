@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: Cave Floor
   m_EditorClassIdentifier: 
   Id: 22
-  displaySprite: {fileID: 508830427, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
   tileName: Cave Floor
-  type: 0
+  displaySprite: {fileID: 11400000, guid: b45b965669cb3d54b980f8262d48e9a8, type: 2}
   altSprite: {fileID: -1865799676, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
-  destroyedSprite: {fileID: -1865799676, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
-  asciiRep: {fileID: 602842183, guid: 128a1eddcba3fdd4997d85244d8bc329, type: 3}
+  destroyedSprite: {fileID: 11400000, guid: d4f0d65fe726ea149bcaf7cd391e4fc4, type: 2}
+  asciiRep: {fileID: 11400000, guid: e4b0248cb8a927f428dac66c6c60ca87, type: 2}
   asciiColor: {r: 0.32156864, g: 0.32156864, b: 0.32156864, a: 1}
+  type: 0
   isDirty: 0
   impassable: 0
   health: {x: 10, y: 10}
   armor: 1
-  currentVis: 2
   destructionClips:
   - {fileID: 8300000, guid: eb61202168084e44cb788c91f1b86b0b, type: 3}
   - {fileID: 8300000, guid: 8ff139f030e743c4b933732057795e06, type: 3}

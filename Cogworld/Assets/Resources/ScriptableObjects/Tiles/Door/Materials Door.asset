@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: Materials Door
   m_EditorClassIdentifier: 
   Id: 5
-  displaySprite: {fileID: 1236931233, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
   tileName: Materials Door
-  type: 2
-  altSprite: {fileID: 590259895, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
-  destroyedSprite: {fileID: 26118361, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
-  asciiRep: {fileID: 878618907, guid: 128a1eddcba3fdd4997d85244d8bc329, type: 3}
+  displaySprite: {fileID: 11400000, guid: 280654a154b68794f90f2ba60eed91a7, type: 2}
+  altSprite: {fileID: 11400000, guid: ac3bb792de226424083df0547f6b354c, type: 2}
+  destroyedSprite: {fileID: 11400000, guid: a189a4b1e55a3f54494b055a7eb9bb58, type: 2}
+  asciiRep: {fileID: 11400000, guid: 6c76e386c54a8de4f989719f2e5e1e26, type: 2}
   asciiColor: {r: 1, g: 0.5019608, b: 0, a: 1}
+  type: 2
   isDirty: 0
   impassable: 0
   health: {x: 12, y: 12}
   armor: 5
-  currentVis: 2
   destructionClips:
   - {fileID: 8300000, guid: a698ee5db52a7bf4dabc96531e061c58, type: 3}
   - {fileID: 8300000, guid: d5aa2a971e2b8ce4c8aa1763c05abe4f, type: 3}
