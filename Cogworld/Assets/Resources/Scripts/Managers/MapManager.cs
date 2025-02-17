@@ -896,13 +896,28 @@ public class MapManager : MonoBehaviour
 
     #region Map Realization
 
+    #region Tilemap Things
+    public void UpdateTilemap()
+    {
+
+    }
+
+    /// <summary>
+    /// Update an individual tile on the tilemap to what it should be based on the `mapdata` array.
+    /// </summary>
+    public void UpdateTile()
+    {
+
+    }
+    #endregion
+
     [Header("New MapGen Details")]
     public int xOff = 0;
     public int yOff = 0;
 
     [SerializeField] private Transform mapParent;
     [SerializeField] private Transform botParent;
-    public void GenerateByGrid(TileCTR[,] grid)
+    public void GenerateByGrid(TileCG[,] grid)
     {
 
         int xSize = grid.GetLength(0);

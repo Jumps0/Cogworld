@@ -6,7 +6,7 @@ using System.Collections.Generic;// needed for List<>
 #region CLASSES
 
 public class Dungeon {	
-	public	TileCTR[,]	tiles;
+	public	TileCG[,]	tiles;
 	public	int[,]	regions;
 	
 	public	IntVector2 entrance;
@@ -22,12 +22,12 @@ public class Dungeon {
 	
 	public	Dungeon(){}
 	
-	public	Dungeon( TileCTR[,] tiles,	int[,] regions){
+	public	Dungeon( TileCG[,] tiles,	int[,] regions){
 		this.tiles		= tiles;
 		this.regions	= regions;
 	}
 	
-	public	Dungeon( TileCTR[,] tiles,	int[,] regions, IntVector2 entrance, IntVector2 exit){
+	public	Dungeon( TileCG[,] tiles,	int[,] regions, IntVector2 entrance, IntVector2 exit){
 		this.tiles		= tiles;
 		this.regions	= regions;
 		
@@ -50,7 +50,7 @@ public class Dungeon {
 	
 }
 
-public	enum TileCTR{None, Hole, Floor, RoomFloor, Wall, Door, OpenDoor, ClosedDoor, DoorNorth, DoorEast, DoorSouth, DoorWest, Spawner };
+public	enum TileCG{None, Hole, Floor, RoomFloor, Wall, Door, OpenDoor, ClosedDoor, DoorNorth, DoorEast, DoorSouth, DoorWest, Spawner };
 
 
 public class DungeonParameters{
@@ -208,7 +208,7 @@ public	static class DungeonExtensions{
 public class RoomDungeon:Dungeon {
 	public	List<Room> rooms;
 		
-	public	RoomDungeon( DungeonParameters parameters, TileCTR[,] tiles,	int[,] regions, List<Room> rooms ){
+	public	RoomDungeon( DungeonParameters parameters, TileCG[,] tiles,	int[,] regions, List<Room> rooms ){
 		SetDungeonParameters(parameters);
 		this.tiles		= tiles;
 		this.regions	= regions;
@@ -282,12 +282,12 @@ public class RoomDungeon:Dungeon {
 		}
 	}
 	
-	public	void MirrorTileArray( TileCTR[,] array, bool horizontal){
+	public	void MirrorTileArray( TileCG[,] array, bool horizontal){
 		
 		int xSize = array.GetLength(0);
 		int ySize = array.GetLength(1);
 		
-		TileCTR[,] newArray = new TileCTR[xSize,ySize];
+		TileCG[,] newArray = new TileCG[xSize,ySize];
 		
 		for(int x = 0; x < xSize; x++){
 			for(int y = 0; y < ySize; y++){
@@ -307,7 +307,7 @@ public class RoomDungeon:Dungeon {
 		
 		public string name;
 				
-		public TileCTR[,] tiles;	//Tilegrid of the room
+		public TileCG[,] tiles;	//Tilegrid of the room
 		public List<Door> potentialDoors;
 		
 		public List<IntVector2> spawners;
@@ -333,7 +333,7 @@ public class RoomDungeon:Dungeon {
 		
 		public RoomTemplate(){}
 		
-		public RoomTemplate(TileCTR[,] tiles, List<Door> potentialDoors){			
+		public RoomTemplate(TileCG[,] tiles, List<Door> potentialDoors){			
 			this.tiles	= tiles;
 			this.potentialDoors = potentialDoors;
 		}
@@ -364,7 +364,7 @@ public class RoomDungeon:Dungeon {
 				
 		public Room(){}
 				
-		public Room(TileCTR[,] tiles, int x, int y, List<Door> potentialDoors){			
+		public Room(TileCG[,] tiles, int x, int y, List<Door> potentialDoors){			
 			this.tiles	= tiles;	
 			this.x		= x;			
 			this.y		= y;

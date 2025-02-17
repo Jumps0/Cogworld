@@ -70,7 +70,7 @@ public class DungeonGenerator : MonoBehaviour{
 	public	static DungeonGenerator instance;
 
 	[Tooltip("The Entire Dungeon in a 2D array (Type: Tile).")]
-	public	static	TileCTR[,]	_dungeon;	//2D-Array that stores the current type of a tile
+	public	static	TileCG[,]	_dungeon;	//2D-Array that stores the current type of a tile
 	public	static	int[,]	_regions;	//2D-Array
 	
 	public	int _dungeonWidth	= 81;
@@ -81,8 +81,8 @@ public class DungeonGenerator : MonoBehaviour{
 	
 	public	bool addMapToggle = true;	//toggle mapview between _regions and _dungeon
 	
-	public void setTile(IntVector2 pos, TileCTR tile)	{	_dungeon[pos.x,pos.y] = tile;			}	//OCCASIONAL ERROR
-	public TileCTR getTile(IntVector2 pos)				{	return _dungeon[pos.x,pos.y];			}
+	public void setTile(IntVector2 pos, TileCG tile)	{	_dungeon[pos.x,pos.y] = tile;			}	//OCCASIONAL ERROR
+	public TileCG getTile(IntVector2 pos)				{	return _dungeon[pos.x,pos.y];			}
 		
 	void Awake(){
 		
@@ -105,7 +105,7 @@ public class DungeonGenerator : MonoBehaviour{
 				
 		for(int x = 0; x < xSize; x++){
 			for(int y = 0; y < ySize; y++){
-				if(dungeon.tiles[x,y] == TileCTR.Floor){
+				if(dungeon.tiles[x,y] == TileCG.Floor){
 					return new IntVector2(x,y);
 				}				
 			}
@@ -220,9 +220,9 @@ public class DungeonGenerator : MonoBehaviour{
 		for(int x = 1; x < _dungeonWidth-1; x++){
 			for(int y = 1; y < _dungeonHeight-1; y++){	
 				switch(_dungeon[x,y]){
-					case TileCTR.None:	_regions[x,y] = -1000;	break;
-					case TileCTR.Wall:	_regions[x,y] = -100;	break;
-					case TileCTR.Door:	_regions[x,y] = -10;	break;
+					case TileCG.None:	_regions[x,y] = -1000;	break;
+					case TileCG.Wall:	_regions[x,y] = -100;	break;
+					case TileCG.Door:	_regions[x,y] = -10;	break;
 				}							
 			}
 		}
@@ -244,7 +244,7 @@ public class DungeonGenerator : MonoBehaviour{
 	private	bool RoomPlacementTrial( bool firstIsEntrance, PortalTemplate usedEntrance, int minimumRoomCount) {	
 		
 		//reset used variables
-		_dungeon	= new TileCTR[_dungeonWidth, _dungeonHeight];
+		_dungeon	= new TileCG[_dungeonWidth, _dungeonHeight];
 		_regions	= new int [_dungeonWidth, _dungeonHeight];
 		currentRoom	= 0;			
 		placedRooms	= new List<Room>();
@@ -386,7 +386,7 @@ public class DungeonGenerator : MonoBehaviour{
 					
 				//	print (curPos.x+","+curPos.y);
 				
-					if( rDungeon.tiles[curPos.x,curPos.y] != TileCTR.None)	{ reachedBorder = false; break; }	//we hit an obstacle
+					if( rDungeon.tiles[curPos.x,curPos.y] != TileCG.None)	{ reachedBorder = false; break; }	//we hit an obstacle
 					else												{ bridgeTiles.Add(curPos); }		//we didn't save coordinate for later, it may be carved out
 					curPos += offset;
 				}				
@@ -402,7 +402,7 @@ public class DungeonGenerator : MonoBehaviour{
 					
 					IntVector2 pointD = new IntVector2(targetRoom.x +point.x, targetRoom.y +point.y);//point in Dungeon
 					if(IntPointInBounds( pointD, xSize, ySize)){
-						rDungeon.tiles[pointD.x, pointD.y]	= TileCTR.Door;
+						rDungeon.tiles[pointD.x, pointD.y]	= TileCG.Door;
 					}else{
 						print ("error"+pointD.x+","+pointD.y);
 					}
@@ -410,7 +410,7 @@ public class DungeonGenerator : MonoBehaviour{
 				
 				//carve bridge
 				foreach( IntVector2 bridgeTile in bridgeTiles)	{
-					rDungeon.tiles[bridgeTile.x, bridgeTile.y]					= TileCTR.Floor;
+					rDungeon.tiles[bridgeTile.x, bridgeTile.y]					= TileCG.Floor;
 				}
 				
 				//add bridge walls
@@ -419,8 +419,8 @@ public class DungeonGenerator : MonoBehaviour{
 						
 						IntVector2 point = new IntVector2(bridgeTile.x +v2.x, bridgeTile.y +v2.y);
 						
-						if( IntPointInBounds( point, xSize, ySize) && rDungeon.tiles[point.x, point.y] == TileCTR.None ){
-							rDungeon.tiles[point.x, point.y] = TileCTR.Wall;
+						if( IntPointInBounds( point, xSize, ySize) && rDungeon.tiles[point.x, point.y] == TileCG.None ){
+							rDungeon.tiles[point.x, point.y] = TileCG.Wall;
 						}
 					}
 				}		
@@ -462,12 +462,12 @@ public class DungeonGenerator : MonoBehaviour{
 
 		for(int x = 0; x < xSize; x++){
 			for(int y = 0; y < ySize; y++){
-				if(rDungeon.tiles[x,y] == TileCTR.None){
+				if(rDungeon.tiles[x,y] == TileCG.None){
 					switch( dir ){
-						case PortalDirection.North:	if( y < ySize/2 )	{ rDungeon.tiles[x,y] = TileCTR.Wall;	}	break;
-						case PortalDirection.East:	if( x > xSize/2 )	{ rDungeon.tiles[x,y] = TileCTR.Wall;	}	break;
-						case PortalDirection.South:	if( y > ySize/2 )	{ rDungeon.tiles[x,y] = TileCTR.Wall;	}	break;
-						case PortalDirection.West:	if( x < xSize/2 )	{ rDungeon.tiles[x,y] = TileCTR.Wall;	}	break;						
+						case PortalDirection.North:	if( y < ySize/2 )	{ rDungeon.tiles[x,y] = TileCG.Wall;	}	break;
+						case PortalDirection.East:	if( x > xSize/2 )	{ rDungeon.tiles[x,y] = TileCG.Wall;	}	break;
+						case PortalDirection.South:	if( y > ySize/2 )	{ rDungeon.tiles[x,y] = TileCG.Wall;	}	break;
+						case PortalDirection.West:	if( x < xSize/2 )	{ rDungeon.tiles[x,y] = TileCG.Wall;	}	break;						
 					}					
 				}
 			}
@@ -600,7 +600,7 @@ public class DungeonGenerator : MonoBehaviour{
 					//	collision = (_dungeon[x +offX,y +offY] == Tile.Floor) && roomTemplate.tiles[x,y] != Tile.None;
 						
 						//New: One must be None, but walls can fuse
-						collision = !( (_dungeon[x +offX,y +offY] == TileCTR.None) || roomTemplate.tiles[x,y] == TileCTR.None ) || (_dungeon[x +offX,y +offY] == TileCTR.Wall && roomTemplate.tiles[x,y] == TileCTR.Wall);
+						collision = !( (_dungeon[x +offX,y +offY] == TileCG.None) || roomTemplate.tiles[x,y] == TileCG.None ) || (_dungeon[x +offX,y +offY] == TileCG.Wall && roomTemplate.tiles[x,y] == TileCG.Wall);
 						
 					//	collision = (_dungeon[x +offX,y +offY] == Tile.Floor || _dungeon[x +offX,y +offY] == Tile.RoomFloor) && roomTemplate.tiles[x,y] != Tile.None;		//Debug
 						
@@ -617,16 +617,16 @@ public class DungeonGenerator : MonoBehaviour{
 					int plugDoorIndex = roomTemplate.potentialDoors.FindIndex(x => x==plugDoor);					
 					plugDoor	= newRoom.potentialDoors[plugDoorIndex];	//refresh: reference the plugdoor in the room, not the roomTemplate
 									
-					newRoom.tiles	[plugDoor.x, plugDoor.y] = TileCTR.Door;
-					placedRoom.tiles[jackDoor.x, jackDoor.y] = TileCTR.Door;
+					newRoom.tiles	[plugDoor.x, plugDoor.y] = TileCG.Door;
+					placedRoom.tiles[jackDoor.x, jackDoor.y] = TileCG.Door;
 					
-					_dungeon[placedRoom.x+jackDoor.x, placedRoom.y+jackDoor.y] = TileCTR.Door;	//retroactively carve door into dungeon, placedRoom has been carved before
+					_dungeon[placedRoom.x+jackDoor.x, placedRoom.y+jackDoor.y] = TileCG.Door;	//retroactively carve door into dungeon, placedRoom has been carved before
 										
 					//2x2 Door
 					if(jackDoor.doorLength > 1){
-						newRoom.tiles		[plugDoor.x	+(verticalDoor?1:0), plugDoor.y	+(verticalDoor?0:1)] = TileCTR.Door;
-						placedRoom.tiles[jackDoor.x	+(verticalDoor?1:0), jackDoor.y	+(verticalDoor?0:1)] = TileCTR.Door;
-						_dungeon[placedRoom.x+jackDoor.x+(verticalDoor?1:0), placedRoom.y+jackDoor.y+(verticalDoor?0:1)] = TileCTR.Door;												
+						newRoom.tiles		[plugDoor.x	+(verticalDoor?1:0), plugDoor.y	+(verticalDoor?0:1)] = TileCG.Door;
+						placedRoom.tiles[jackDoor.x	+(verticalDoor?1:0), jackDoor.y	+(verticalDoor?0:1)] = TileCG.Door;
+						_dungeon[placedRoom.x+jackDoor.x+(verticalDoor?1:0), placedRoom.y+jackDoor.y+(verticalDoor?0:1)] = TileCG.Door;												
 					}
 					
 					
@@ -673,9 +673,9 @@ public class DungeonGenerator : MonoBehaviour{
 		//carve room into _dungeon
 		for(int x = 0; x < xSizeRoom; x++){
 			for(int y = 0; y < ySizeRoom; y++){						
-				if(room.tiles[x,y] != TileCTR.None){	//copy everything except Tile.None into dungeon							
+				if(room.tiles[x,y] != TileCG.None){	//copy everything except Tile.None into dungeon							
 					_dungeon[x +offX,y +offY] = room.tiles[x,y];							
-					if(room.tiles[x,y] == TileCTR.Floor){	_regions[x +offX,y +offY] = currentRoom;	}	//set region too					
+					if(room.tiles[x,y] == TileCG.Floor){	_regions[x +offX,y +offY] = currentRoom;	}	//set region too					
 				}
 			}
 		}				
@@ -697,7 +697,7 @@ public class DungeonGenerator : MonoBehaviour{
 		Room room;
 		
 		//copy array ( no reference to old array )
-		TileCTR[,] roomTemplateTilesCopy = new TileCTR[xSizeRoom, ySizeRoom];		
+		TileCG[,] roomTemplateTilesCopy = new TileCG[xSizeRoom, ySizeRoom];		
 		System.Array.Copy( roomTemplate.tiles, roomTemplateTilesCopy, xSizeRoom *ySizeRoom );
 									
 		room = new Room(roomTemplateTilesCopy, 0, 0, new List<Door>());		
@@ -734,7 +734,7 @@ public class DungeonGenerator : MonoBehaviour{
 				
 		for(int x = min; x < xSize; x++){
 			for(int y = min; y < ySize; y++){
-				if(room.tiles[x,y] == TileCTR.Floor){
+				if(room.tiles[x,y] == TileCG.Floor){
 					return new IntVector2(x,y) +new IntVector2(room.x,room.y);
 				}
 			}
@@ -974,15 +974,15 @@ public class DungeonGenerator : MonoBehaviour{
 		return roomTemplate;
 	}
 	
-	private	TileCTR[,] CreateBorderedRectRoom(int xSize, int ySize){
+	private	TileCG[,] CreateBorderedRectRoom(int xSize, int ySize){
 		
-		TileCTR[,]	tiles = new TileCTR[xSize,ySize];
+		TileCG[,]	tiles = new TileCG[xSize,ySize];
 		
 		//border
 		for(int x = 0; x < xSize; x++){
 			for(int y = 0; y < ySize; y++){
 				if( x == 0 || y == 0 || x == xSize-1 || y == ySize-1){
-					tiles[x,y] = TileCTR.Wall;
+					tiles[x,y] = TileCG.Wall;
 				}
 			}
 		}
@@ -990,25 +990,25 @@ public class DungeonGenerator : MonoBehaviour{
 		//insides
 		for(int x = 1; x < xSize-1; x++){
 			for(int y = 1; y < ySize-1; y++){				
-				tiles[x,y] = TileCTR.Floor;				
+				tiles[x,y] = TileCG.Floor;				
 			}
 		}
 		
 		return tiles;
 	}
 	
-	private	TileCTR[,] CreateUnborderedRectRoom(int xSize, int ySize){		
-		TileCTR[,]	tiles = new TileCTR[xSize,ySize];						
+	private	TileCG[,] CreateUnborderedRectRoom(int xSize, int ySize){		
+		TileCG[,]	tiles = new TileCG[xSize,ySize];						
 		//insides
 		for(int x = 0; x < xSize; x++){
 			for(int y = 0; y < ySize; y++){			
-				tiles[x,y] = TileCTR.Floor;				
+				tiles[x,y] = TileCG.Floor;				
 			}
 		}		
 		return tiles;
 	}
 	
-	private	void MirrorTiles( TileCTR[,] roomTiles ){
+	private	void MirrorTiles( TileCG[,] roomTiles ){
 		
 		int xSize = roomTiles.GetLength(0);
 		int ySize = roomTiles.GetLength(1);
@@ -1016,7 +1016,7 @@ public class DungeonGenerator : MonoBehaviour{
 		for(int x = 0; x < xSize; x++){
 			if(x < xSize/2){
 				for(int y = 0; y < ySize; y++){	//swap
-					TileCTR temp = roomTiles[x,y];
+					TileCG temp = roomTiles[x,y];
 					int xM = xSize -x -1;	//opposite cell
 					roomTiles[x,y] = roomTiles[xM,y];
 					roomTiles[xM,y] = temp;
@@ -1025,15 +1025,15 @@ public class DungeonGenerator : MonoBehaviour{
 		}
 	}
 	
-	private	void TransposeTiles( TileCTR[,] roomTiles ){
+	private	void TransposeTiles( TileCG[,] roomTiles ){
 		
 	}
 	
-	private	void RotateTiles( TileCTR[,] roomTiles ){
+	private	void RotateTiles( TileCG[,] roomTiles ){
 		
 	}
 	
-	private	void IngrowRoomBorderTiles( TileCTR[,] roomTiles ){	//D array is passed by ref
+	private	void IngrowRoomBorderTiles( TileCG[,] roomTiles ){	//D array is passed by ref
 		
 		int xSize = roomTiles.GetLength(0);
 		int ySize = roomTiles.GetLength(1);
@@ -1041,10 +1041,10 @@ public class DungeonGenerator : MonoBehaviour{
 		//chance to add wall if wall is adjacent already
 		for(int x = 1; x < xSize-1; x++){
 			for(int y = 1; y < ySize-1; y++){				
-				if(roomTiles[x,y] == TileCTR.Floor){
+				if(roomTiles[x,y] == TileCG.Floor){
 					int adj = adjacentWalls( roomTiles, x, y);
 					if(adj > 0 && Random.Range(0F,0.45F)+adj*0.1F > 0.35F){
-						roomTiles[x,y] = TileCTR.Wall;
+						roomTiles[x,y] = TileCG.Wall;
 					}
 				}
 				
@@ -1052,7 +1052,7 @@ public class DungeonGenerator : MonoBehaviour{
 		}
 	}
 	
-	private	TileCTR[,] OverlayNewRoom(TileCTR[,] oldTiles){
+	private	TileCG[,] OverlayNewRoom(TileCG[,] oldTiles){
 	
 		int xSize = oldTiles.GetLength(0);
 		int ySize = oldTiles.GetLength(1);
@@ -1066,12 +1066,12 @@ public class DungeonGenerator : MonoBehaviour{
 		int ySizeOverlay = Random.Range(minRoomSize, maxRoomSize +1);
 	
 		//ovelay room tiles
-		TileCTR[,] overlay = CreateUnborderedRectRoom(xSizeOverlay, ySizeOverlay);
+		TileCG[,] overlay = CreateUnborderedRectRoom(xSizeOverlay, ySizeOverlay);
 		
 		//new Array containing both rooms, it may happen that new room is completely within old, so use Max
 		int newXSize = Mathf.Max(offX +xSizeOverlay, xSize);
 		int newYSize = Mathf.Max(offY +ySizeOverlay, ySize);
-		TileCTR[,] newTiles = new TileCTR[newXSize, newYSize];
+		TileCG[,] newTiles = new TileCG[newXSize, newYSize];
 				
 		//copy both into it
 		for(int x = 0; x < newXSize; x++){
@@ -1085,13 +1085,13 @@ public class DungeonGenerator : MonoBehaviour{
 				//overlay new
 				if(x >= offX && y >= offY){									// if on or past the origin of overlay
 					if(x < offX +xSizeOverlay && y < offY +ySizeOverlay){	// if room is completely contained we have to check if the overlay array isnt out of bounds
-						TileCTR oldTile	= newTiles[x,y];
-						TileCTR overTile	= overlay[x -offX, y -offY];
+						TileCG oldTile	= newTiles[x,y];
+						TileCG overTile	= overlay[x -offX, y -offY];
 						
-						if			( oldTile == TileCTR.None ){				//if new is overlaying None: replace
+						if			( oldTile == TileCG.None ){				//if new is overlaying None: replace
 							newTiles[x,y] = overTile;
-						}else if	( oldTile == TileCTR.Floor || overTile == TileCTR.Floor){	//floor always wins, overrwriting old walls too if walls already exist on starting room
-							newTiles[x,y] = TileCTR.Floor;
+						}else if	( oldTile == TileCG.Floor || overTile == TileCG.Floor){	//floor always wins, overrwriting old walls too if walls already exist on starting room
+							newTiles[x,y] = TileCG.Floor;
 						}
 					}
 				}
@@ -1103,12 +1103,12 @@ public class DungeonGenerator : MonoBehaviour{
 	}
 		
 	//don't give border coordinates
-	private	int adjacentWalls( TileCTR[,] tiles, int x, int y){
+	private	int adjacentWalls( TileCG[,] tiles, int x, int y){
 		int adj = 0;
-		if( tiles[x-1,y+0] == TileCTR.Wall ){adj++;}
-		if( tiles[x+0,y+1] == TileCTR.Wall ){adj++;}
-		if( tiles[x+1,y+0] == TileCTR.Wall ){adj++;}
-		if( tiles[x+0,y-1] == TileCTR.Wall ){adj++;}
+		if( tiles[x-1,y+0] == TileCG.Wall ){adj++;}
+		if( tiles[x+0,y+1] == TileCG.Wall ){adj++;}
+		if( tiles[x+1,y+0] == TileCG.Wall ){adj++;}
+		if( tiles[x+0,y-1] == TileCG.Wall ){adj++;}
 		return adj;
 	}
 	
@@ -1128,7 +1128,7 @@ public class DungeonGenerator : MonoBehaviour{
 		
 		for(int x = 1; x < xSize-1; x++){
 			for(int y = 1; y < ySize-1; y++){
-				if(roomLabels[x,y] == 0 && roomTemplate.tiles[x,y] == TileCTR.Floor){
+				if(roomLabels[x,y] == 0 && roomTemplate.tiles[x,y] == TileCG.Floor){
 					regionLabel++;
 					int size = FillNeighbors(ref roomTemplate.tiles, regionLabel, x, y, ref roomLabels, 0);
 					if(size > largestSize){
@@ -1143,22 +1143,22 @@ public class DungeonGenerator : MonoBehaviour{
 		
 		for(int x = 1; x < xSize-1; x++){
 			for(int y = 1; y < ySize-1; y++){
-				if(	roomLabels[x,y] != largestRegionLabel && roomLabels[x,y]!= 0 ){	roomTemplate.tiles[x,y]= TileCTR.Wall;	}
+				if(	roomLabels[x,y] != largestRegionLabel && roomLabels[x,y]!= 0 ){	roomTemplate.tiles[x,y]= TileCG.Wall;	}
 			}
 		}		
 	}
 	
-	private int FillNeighbors(ref TileCTR[,] tiles, int label, int x, int y, ref int[,] roomLabels, int depth){
+	private int FillNeighbors(ref TileCG[,] tiles, int label, int x, int y, ref int[,] roomLabels, int depth){
 		
 		//visited
 		roomLabels[x,y] = label;
 		int hits = 1;
 		depth++; if(depth == 3000){print ("depth error"); return 10000;}
 		//edge is wall, so no need to check for out of bounds
-		if(roomLabels[x+0, y+1] == 0 && tiles[x+0, y+1] == TileCTR.Floor){	hits += FillNeighbors(ref tiles, label, x+0, y+1, ref roomLabels, depth);	}
-		if(roomLabels[x+1, y+0] == 0 && tiles[x+1, y+0] == TileCTR.Floor){	hits += FillNeighbors(ref tiles, label, x+1, y+0, ref roomLabels, depth);	}
-		if(roomLabels[x+0, y-1] == 0 && tiles[x+0, y-1] == TileCTR.Floor){	hits += FillNeighbors(ref tiles, label, x+0, y-1, ref roomLabels, depth);	}
-		if(roomLabels[x-1, y+0] == 0 && tiles[x-1, y+0] == TileCTR.Floor){	hits += FillNeighbors(ref tiles, label, x-1, y+0, ref roomLabels, depth);	}
+		if(roomLabels[x+0, y+1] == 0 && tiles[x+0, y+1] == TileCG.Floor){	hits += FillNeighbors(ref tiles, label, x+0, y+1, ref roomLabels, depth);	}
+		if(roomLabels[x+1, y+0] == 0 && tiles[x+1, y+0] == TileCG.Floor){	hits += FillNeighbors(ref tiles, label, x+1, y+0, ref roomLabels, depth);	}
+		if(roomLabels[x+0, y-1] == 0 && tiles[x+0, y-1] == TileCG.Floor){	hits += FillNeighbors(ref tiles, label, x+0, y-1, ref roomLabels, depth);	}
+		if(roomLabels[x-1, y+0] == 0 && tiles[x-1, y+0] == TileCG.Floor){	hits += FillNeighbors(ref tiles, label, x-1, y+0, ref roomLabels, depth);	}
 		return hits;
 	}
 			
@@ -1175,7 +1175,7 @@ public class DungeonGenerator : MonoBehaviour{
 				
 				bool obsolete = true;
 				
-				if( roomTemplate.tiles[x,y] == TileCTR.Wall ){
+				if( roomTemplate.tiles[x,y] == TileCG.Wall ){
 					
 					bool ignoreN = y == ySize-1;
 					bool ignoreE = x == xSize-1;
@@ -1183,16 +1183,16 @@ public class DungeonGenerator : MonoBehaviour{
 					bool ignoreW = x == 0;
 					
 					//if one adjacent block is empty, the block isn't obsolete
-					obsolete	= obsolete&& ( ignoreN||				( roomTemplate.tiles[x+0,y+1] == TileCTR.Wall || roomTemplate.tiles[x+0,y+1] == TileCTR.None) );	//N
-					obsolete	= obsolete&& ( ignoreN||	ignoreE||	( roomTemplate.tiles[x+1,y+1] == TileCTR.Wall || roomTemplate.tiles[x+1,y+1] == TileCTR.None) );	//NE
-					obsolete	= obsolete&& ( ignoreE||				( roomTemplate.tiles[x+1,y+0] == TileCTR.Wall || roomTemplate.tiles[x+1,y+0] == TileCTR.None) );	//E
-					obsolete	= obsolete&& ( ignoreS||	ignoreE||	( roomTemplate.tiles[x+1,y-1] == TileCTR.Wall || roomTemplate.tiles[x+1,y-1] == TileCTR.None) );	//SE
-					obsolete	= obsolete&& ( ignoreS||				( roomTemplate.tiles[x+0,y-1] == TileCTR.Wall || roomTemplate.tiles[x+0,y-1] == TileCTR.None) );	//S
-					obsolete	= obsolete&& ( ignoreS||	ignoreW||	( roomTemplate.tiles[x-1,y-1] == TileCTR.Wall || roomTemplate.tiles[x-1,y-1] == TileCTR.None) );	//SW
-					obsolete	= obsolete&& ( ignoreW||				( roomTemplate.tiles[x-1,y+0] == TileCTR.Wall || roomTemplate.tiles[x-1,y+0] == TileCTR.None) );	//W
-					obsolete	= obsolete&& ( ignoreN||	ignoreW||	( roomTemplate.tiles[x-1,y+1] == TileCTR.Wall || roomTemplate.tiles[x-1,y+1] == TileCTR.None) );	//NW
+					obsolete	= obsolete&& ( ignoreN||				( roomTemplate.tiles[x+0,y+1] == TileCG.Wall || roomTemplate.tiles[x+0,y+1] == TileCG.None) );	//N
+					obsolete	= obsolete&& ( ignoreN||	ignoreE||	( roomTemplate.tiles[x+1,y+1] == TileCG.Wall || roomTemplate.tiles[x+1,y+1] == TileCG.None) );	//NE
+					obsolete	= obsolete&& ( ignoreE||				( roomTemplate.tiles[x+1,y+0] == TileCG.Wall || roomTemplate.tiles[x+1,y+0] == TileCG.None) );	//E
+					obsolete	= obsolete&& ( ignoreS||	ignoreE||	( roomTemplate.tiles[x+1,y-1] == TileCG.Wall || roomTemplate.tiles[x+1,y-1] == TileCG.None) );	//SE
+					obsolete	= obsolete&& ( ignoreS||				( roomTemplate.tiles[x+0,y-1] == TileCG.Wall || roomTemplate.tiles[x+0,y-1] == TileCG.None) );	//S
+					obsolete	= obsolete&& ( ignoreS||	ignoreW||	( roomTemplate.tiles[x-1,y-1] == TileCG.Wall || roomTemplate.tiles[x-1,y-1] == TileCG.None) );	//SW
+					obsolete	= obsolete&& ( ignoreW||				( roomTemplate.tiles[x-1,y+0] == TileCG.Wall || roomTemplate.tiles[x-1,y+0] == TileCG.None) );	//W
+					obsolete	= obsolete&& ( ignoreN||	ignoreW||	( roomTemplate.tiles[x-1,y+1] == TileCG.Wall || roomTemplate.tiles[x-1,y+1] == TileCG.None) );	//NW
 					
-					if(obsolete){roomTemplate.tiles[x,y] = TileCTR.None;}
+					if(obsolete){roomTemplate.tiles[x,y] = TileCG.None;}
 					
 				}
 			}
@@ -1203,7 +1203,7 @@ public class DungeonGenerator : MonoBehaviour{
 	}
 	
 	//Convert FloorTiles to make a Border(Wall) on plain Floor-rooms, if a Floor Tile has Tile.None AND Tile.Floor as neighbor (8 dir) it is converted to a border
-	private	void CreateBorders( TileCTR[,] tiles ){
+	private	void CreateBorders( TileCG[,] tiles ){
 		
 		int xSize = tiles.GetLength(0);
 		int ySize = tiles.GetLength(1);		
@@ -1214,7 +1214,7 @@ public class DungeonGenerator : MonoBehaviour{
 				bool noneAdj	= false;	//at least 1 None adjacent
 				bool flooAdj	= false;	//at least 1 Floor adjacent		
 				
-				if( tiles[x,y] == TileCTR.Floor ){
+				if( tiles[x,y] == TileCG.Floor ){
 					
 					bool ignoreN = y == ySize-1;
 					bool ignoreE = x == xSize-1;
@@ -1222,26 +1222,26 @@ public class DungeonGenerator : MonoBehaviour{
 					bool ignoreW = x == 0;
 					
 					//if one adjacent block is None, condition is met
-					noneAdj	= noneAdj|| ( ignoreN||				( tiles[x+0,y+1] == TileCTR.None) );	//N
-					noneAdj	= noneAdj|| ( ignoreN||	ignoreE||	( tiles[x+1,y+1] == TileCTR.None) );	//NE
-					noneAdj	= noneAdj|| ( ignoreE||				( tiles[x+1,y+0] == TileCTR.None) );	//E
-					noneAdj	= noneAdj|| ( ignoreS||	ignoreE||	( tiles[x+1,y-1] == TileCTR.None) );	//SE
-					noneAdj	= noneAdj|| ( ignoreS||				( tiles[x+0,y-1] == TileCTR.None) );	//S
-					noneAdj	= noneAdj|| ( ignoreS||	ignoreW||	( tiles[x-1,y-1] == TileCTR.None) );	//SW
-					noneAdj	= noneAdj|| ( ignoreW||				( tiles[x-1,y+0] == TileCTR.None) );	//W
-					noneAdj	= noneAdj|| ( ignoreN||	ignoreW||	( tiles[x-1,y+1] == TileCTR.None) );	//NW
+					noneAdj	= noneAdj|| ( ignoreN||				( tiles[x+0,y+1] == TileCG.None) );	//N
+					noneAdj	= noneAdj|| ( ignoreN||	ignoreE||	( tiles[x+1,y+1] == TileCG.None) );	//NE
+					noneAdj	= noneAdj|| ( ignoreE||				( tiles[x+1,y+0] == TileCG.None) );	//E
+					noneAdj	= noneAdj|| ( ignoreS||	ignoreE||	( tiles[x+1,y-1] == TileCG.None) );	//SE
+					noneAdj	= noneAdj|| ( ignoreS||				( tiles[x+0,y-1] == TileCG.None) );	//S
+					noneAdj	= noneAdj|| ( ignoreS||	ignoreW||	( tiles[x-1,y-1] == TileCG.None) );	//SW
+					noneAdj	= noneAdj|| ( ignoreW||				( tiles[x-1,y+0] == TileCG.None) );	//W
+					noneAdj	= noneAdj|| ( ignoreN||	ignoreW||	( tiles[x-1,y+1] == TileCG.None) );	//NW
 					
 					//if one adjacent block is Floor, condition is met
-					flooAdj	= flooAdj|| ( !ignoreN&&				( tiles[x+0,y+1] == TileCTR.Floor));	//N
-					flooAdj	= flooAdj|| ( !ignoreN&&	!ignoreE&&	( tiles[x+1,y+1] == TileCTR.Floor));	//NE
-					flooAdj	= flooAdj|| ( !ignoreE&&				( tiles[x+1,y+0] == TileCTR.Floor));	//E
-					flooAdj	= flooAdj|| ( !ignoreS&&	!ignoreE&&	( tiles[x+1,y-1] == TileCTR.Floor));	//SE
-					flooAdj	= flooAdj|| ( !ignoreS&&				( tiles[x+0,y-1] == TileCTR.Floor));	//S
-					flooAdj	= flooAdj|| ( !ignoreS&&	!ignoreW&&	( tiles[x-1,y-1] == TileCTR.Floor));	//SW
-					flooAdj	= flooAdj|| ( !ignoreW&&				( tiles[x-1,y+0] == TileCTR.Floor));	//W
-					flooAdj	= flooAdj|| ( !ignoreN&&	!ignoreW&&	( tiles[x-1,y+1] == TileCTR.Floor));	//NW
+					flooAdj	= flooAdj|| ( !ignoreN&&				( tiles[x+0,y+1] == TileCG.Floor));	//N
+					flooAdj	= flooAdj|| ( !ignoreN&&	!ignoreE&&	( tiles[x+1,y+1] == TileCG.Floor));	//NE
+					flooAdj	= flooAdj|| ( !ignoreE&&				( tiles[x+1,y+0] == TileCG.Floor));	//E
+					flooAdj	= flooAdj|| ( !ignoreS&&	!ignoreE&&	( tiles[x+1,y-1] == TileCG.Floor));	//SE
+					flooAdj	= flooAdj|| ( !ignoreS&&				( tiles[x+0,y-1] == TileCG.Floor));	//S
+					flooAdj	= flooAdj|| ( !ignoreS&&	!ignoreW&&	( tiles[x-1,y-1] == TileCG.Floor));	//SW
+					flooAdj	= flooAdj|| ( !ignoreW&&				( tiles[x-1,y+0] == TileCG.Floor));	//W
+					flooAdj	= flooAdj|| ( !ignoreN&&	!ignoreW&&	( tiles[x-1,y+1] == TileCG.Floor));	//NW
 					
-					if(noneAdj && flooAdj){tiles[x,y] = TileCTR.Wall;}
+					if(noneAdj && flooAdj){tiles[x,y] = TileCG.Wall;}
 					
 				}
 			}
@@ -1255,14 +1255,14 @@ public class DungeonGenerator : MonoBehaviour{
 		int xSize = roomTemplate.tiles.GetLength(0);
 		int ySize = roomTemplate.tiles.GetLength(1);
 		
-		TileCTR[,] roomTemplateTilesCopy = new TileCTR[xSize,ySize];		
+		TileCG[,] roomTemplateTilesCopy = new TileCG[xSize,ySize];		
 		System.Array.Copy( roomTemplate.tiles, roomTemplateTilesCopy, xSize*ySize );
 		
 			
 		//scan for doors in horizontal(EW) and vertical(NS) direction
 		for(int x = 0; x < xSize; x++){
 			for(int y = 0; y < ySize; y++){
-				if( roomTemplate.tiles[x,y] == TileCTR.Wall ){
+				if( roomTemplate.tiles[x,y] == TileCG.Wall ){
 					//on the edges og the room tiles are considered open
 					bool noneN = y == ySize-1;
 					bool noneS = y == 0;
@@ -1270,17 +1270,17 @@ public class DungeonGenerator : MonoBehaviour{
 					bool noneW = x == 0;
 					
 					//if one adjacent block is empty, the block isn't obsolete
-					TileCTR nTile	= noneN ?	TileCTR.None:	roomTemplate.tiles[x+0,y+1];	//N
-					TileCTR sTile	= noneS ?	TileCTR.None:	roomTemplate.tiles[x+0,y-1];	//S
-					TileCTR eTile	= noneE ?	TileCTR.None:	roomTemplate.tiles[x+1,y+0];	//E
-					TileCTR wTile	= noneW ?	TileCTR.None:	roomTemplate.tiles[x-1,y+0];	//W
+					TileCG nTile	= noneN ?	TileCG.None:	roomTemplate.tiles[x+0,y+1];	//N
+					TileCG sTile	= noneS ?	TileCG.None:	roomTemplate.tiles[x+0,y-1];	//S
+					TileCG eTile	= noneE ?	TileCG.None:	roomTemplate.tiles[x+1,y+0];	//E
+					TileCG wTile	= noneW ?	TileCG.None:	roomTemplate.tiles[x-1,y+0];	//W
 					
 					//Doordirections, N-door means leaving room in N direction
 					
-					if		( nTile == TileCTR.None  && sTile == TileCTR.Floor && eTile == TileCTR.Wall  && wTile == TileCTR.Wall	){	roomTemplateTilesCopy[x,y] = TileCTR.DoorNorth;	}	//door North
-					else if	( nTile == TileCTR.Floor && sTile == TileCTR.None  && eTile == TileCTR.Wall  && wTile == TileCTR.Wall	){	roomTemplateTilesCopy[x,y] = TileCTR.DoorSouth;	}	//door South
-					else if	( nTile == TileCTR.Wall  && sTile == TileCTR.Wall  && eTile == TileCTR.None  && wTile == TileCTR.Floor	){	roomTemplateTilesCopy[x,y] = TileCTR.DoorEast;		}	//door East
-					else if	( nTile == TileCTR.Wall  && sTile == TileCTR.Wall  && eTile == TileCTR.Floor && wTile == TileCTR.None	){	roomTemplateTilesCopy[x,y] = TileCTR.DoorWest;		}	//door West
+					if		( nTile == TileCG.None  && sTile == TileCG.Floor && eTile == TileCG.Wall  && wTile == TileCG.Wall	){	roomTemplateTilesCopy[x,y] = TileCG.DoorNorth;	}	//door North
+					else if	( nTile == TileCG.Floor && sTile == TileCG.None  && eTile == TileCG.Wall  && wTile == TileCG.Wall	){	roomTemplateTilesCopy[x,y] = TileCG.DoorSouth;	}	//door South
+					else if	( nTile == TileCG.Wall  && sTile == TileCG.Wall  && eTile == TileCG.None  && wTile == TileCG.Floor	){	roomTemplateTilesCopy[x,y] = TileCG.DoorEast;		}	//door East
+					else if	( nTile == TileCG.Wall  && sTile == TileCG.Wall  && eTile == TileCG.Floor && wTile == TileCG.None	){	roomTemplateTilesCopy[x,y] = TileCG.DoorWest;		}	//door West
 				}
 			}
 		}	
@@ -1295,7 +1295,7 @@ public class DungeonGenerator : MonoBehaviour{
 		for(int x = 0; x < xSize; x++){
 			for(int y = 0; y < ySize; y++){
 				
-				if(roomTemplateTilesCopy[x,y] != TileCTR.None && roomTemplateTilesCopy[x,y] != TileCTR.Wall){	//is door?
+				if(roomTemplateTilesCopy[x,y] != TileCG.None && roomTemplateTilesCopy[x,y] != TileCG.Wall){	//is door?
 				
 					bool noneN = y == ySize-1;
 					//bool noneS = y == 0;
@@ -1303,16 +1303,16 @@ public class DungeonGenerator : MonoBehaviour{
 					//bool noneW = x == 0;
 					
 					//if one adjacent block is empty, the block isn't obsolete
-					TileCTR nTile	= noneN ?	TileCTR.None:	roomTemplateTilesCopy[x+0,y+1];	//N
+					TileCG nTile	= noneN ?	TileCG.None:	roomTemplateTilesCopy[x+0,y+1];	//N
 					//Tile sTile	= noneS ?	Tile.None:	roomTemplateTilesCopy[x+0,y-1];	//S
-					TileCTR eTile	= noneE ?	TileCTR.None:	roomTemplateTilesCopy[x+1,y+0];	//E
+					TileCG eTile	= noneE ?	TileCG.None:	roomTemplateTilesCopy[x+1,y+0];	//E
 					//Tile wTile	= noneW ?	Tile.None:	roomTemplateTilesCopy[x-1,y+0];	//W
 										
 					//Doordirections, N-door means leaving room in N direction
 					
-					if			( roomTemplateTilesCopy[x,y] == TileCTR.DoorNorth	|| roomTemplateTilesCopy[x,y] == TileCTR.DoorSouth) {	//door North
+					if			( roomTemplateTilesCopy[x,y] == TileCG.DoorNorth	|| roomTemplateTilesCopy[x,y] == TileCG.DoorSouth) {	//door North
 						
-						DoorDirection dir = roomTemplateTilesCopy[x,y] == TileCTR.DoorNorth? DoorDirection.North: DoorDirection.South;
+						DoorDirection dir = roomTemplateTilesCopy[x,y] == TileCG.DoorNorth? DoorDirection.North: DoorDirection.South;
 						
 						
 						//check if we have a door of length 2 by checking if right tile is same door type
@@ -1322,12 +1322,12 @@ public class DungeonGenerator : MonoBehaviour{
 						}else{
 							roomTemplate.potentialDoors.Add(new Door(	dir, 1, x,y	));
 						}
-						roomTemplateTilesCopy[x,y]		= TileCTR.Wall;	//remove DoorMark
+						roomTemplateTilesCopy[x,y]		= TileCG.Wall;	//remove DoorMark
 						
 						
-					}else if	( roomTemplateTilesCopy[x,y] == TileCTR.DoorEast	|| roomTemplateTilesCopy[x,y] == TileCTR.DoorWest) {	//door South
+					}else if	( roomTemplateTilesCopy[x,y] == TileCG.DoorEast	|| roomTemplateTilesCopy[x,y] == TileCG.DoorWest) {	//door South
 													
-						DoorDirection dir = roomTemplateTilesCopy[x,y] == TileCTR.DoorEast? DoorDirection.East: DoorDirection.West;
+						DoorDirection dir = roomTemplateTilesCopy[x,y] == TileCG.DoorEast? DoorDirection.East: DoorDirection.West;
 						
 						//check if we have a door of length 2 by checking if top tile is same door type
 						if( doors2x2Allowed && nTile == roomTemplateTilesCopy[x,y]){
@@ -1336,7 +1336,7 @@ public class DungeonGenerator : MonoBehaviour{
 						}else{
 							roomTemplate.potentialDoors.Add(new Door(	dir, 1, x,y	));
 						}
-						roomTemplateTilesCopy[x,y]		= TileCTR.Wall;	//remove DoorMark								
+						roomTemplateTilesCopy[x,y]		= TileCG.Wall;	//remove DoorMark								
 					}						
 				}
 				
@@ -1417,7 +1417,7 @@ public class DungeonGenerator : MonoBehaviour{
 		return newTemplate;
 	}
 	
-	private	List<Door> GenerateDoorList( TileCTR[,] tiles){
+	private	List<Door> GenerateDoorList( TileCG[,] tiles){
 		
 		List<Door> potentialDoors = new List<Door>();
 		
@@ -1431,10 +1431,10 @@ public class DungeonGenerator : MonoBehaviour{
 				//parsing from bottom left to top right
 				//Doordirections: DoorNorth means leaving direction	
 				switch(tiles[x,y]){		//	▼ only create door for lower tile, this function only uses doors of lenght 2						//AfterDoor has been added to list, set Tiles to wall, doorLink algorithm will carve them out again
-					case TileCTR.DoorNorth:	if(tiles[x+1,y]==TileCTR.DoorNorth){potentialDoors.Add(new Door( DoorDirection.North, 2, x,y	));}	tiles[x,y]=TileCTR.Wall;	break;
-					case TileCTR.DoorSouth:	if(tiles[x+1,y]==TileCTR.DoorSouth){potentialDoors.Add(new Door( DoorDirection.South, 2, x,y	));}	tiles[x,y]=TileCTR.Wall;	break;
-					case TileCTR.DoorEast:		if(tiles[x,y+1]==TileCTR.DoorEast) {potentialDoors.Add(new Door( DoorDirection.East,  2, x,y	));}	tiles[x,y]=TileCTR.Wall;	break;
-					case TileCTR.DoorWest:		if(tiles[x,y+1]==TileCTR.DoorWest) {potentialDoors.Add(new Door( DoorDirection.West,  2, x,y	));}	tiles[x,y]=TileCTR.Wall;	break;
+					case TileCG.DoorNorth:	if(tiles[x+1,y]==TileCG.DoorNorth){potentialDoors.Add(new Door( DoorDirection.North, 2, x,y	));}	tiles[x,y]=TileCG.Wall;	break;
+					case TileCG.DoorSouth:	if(tiles[x+1,y]==TileCG.DoorSouth){potentialDoors.Add(new Door( DoorDirection.South, 2, x,y	));}	tiles[x,y]=TileCG.Wall;	break;
+					case TileCG.DoorEast:		if(tiles[x,y+1]==TileCG.DoorEast) {potentialDoors.Add(new Door( DoorDirection.East,  2, x,y	));}	tiles[x,y]=TileCG.Wall;	break;
+					case TileCG.DoorWest:		if(tiles[x,y+1]==TileCG.DoorWest) {potentialDoors.Add(new Door( DoorDirection.West,  2, x,y	));}	tiles[x,y]=TileCG.Wall;	break;
 				}
 			}
 		}
@@ -1443,7 +1443,7 @@ public class DungeonGenerator : MonoBehaviour{
 		return potentialDoors;
 	}
 	
-	private	List<IntVector2> GenerateSpawnerList( TileCTR[,] tiles){
+	private	List<IntVector2> GenerateSpawnerList( TileCG[,] tiles){
 		
 		List<IntVector2> spawners = new List<IntVector2>();
 		
@@ -1454,7 +1454,7 @@ public class DungeonGenerator : MonoBehaviour{
 		for(int x = 0; x < xSize; x++){
 			for(int y = 0; y < ySize; y++){	
 				switch(tiles[x,y]){
-					case TileCTR.Spawner:	spawners.Add(new IntVector2(x,y));	tiles[x,y]=TileCTR.Floor;	break;
+					case TileCG.Spawner:	spawners.Add(new IntVector2(x,y));	tiles[x,y]=TileCG.Floor;	break;
 				}
 			}
 		}
@@ -1474,10 +1474,10 @@ public class DungeonGenerator : MonoBehaviour{
 		Color32 col = pixels[x,y];
 		
 		if 		(col.Equals(keyVoid))	{	return;	}	//outside of current room
-		else if	(col.Equals(keyHole))	{	dynGrid.Add( new Coordinate(x,y,TileCTR.Hole) );	}	//Hole
-		else if	(col.Equals(keyWall))	{	dynGrid.Add( new Coordinate(x,y,TileCTR.Wall) );	}	//Wall
-		else if	(col.Equals(keyFloor))	{	dynGrid.Add( new Coordinate(x,y,TileCTR.Floor) );	}	//Floor
-		else if	(col.Equals(keySpawn))	{	dynGrid.Add( new Coordinate(x,y,TileCTR.Spawner) );}	//Floor, but with Spawner
+		else if	(col.Equals(keyHole))	{	dynGrid.Add( new Coordinate(x,y,TileCG.Hole) );	}	//Hole
+		else if	(col.Equals(keyWall))	{	dynGrid.Add( new Coordinate(x,y,TileCG.Wall) );	}	//Wall
+		else if	(col.Equals(keyFloor))	{	dynGrid.Add( new Coordinate(x,y,TileCG.Floor) );	}	//Floor
+		else if	(col.Equals(keySpawn))	{	dynGrid.Add( new Coordinate(x,y,TileCG.Spawner) );}	//Floor, but with Spawner
 		else if	(col.Equals(keyDoor))	{	dynGrid.Add( new Coordinate(x,y,CheckDoorDirection(ref pixels, x,y)) );	}
 				
 		RecursiveRoomExtract(ref pixels, dynGrid, x+1,y+0);
@@ -1486,21 +1486,21 @@ public class DungeonGenerator : MonoBehaviour{
 		RecursiveRoomExtract(ref pixels, dynGrid, x-0,y-1);
 	}
 	
-	private	TileCTR CheckDoorDirection(ref Color32[,] pixels, int x, int y){
+	private	TileCG CheckDoorDirection(ref Color32[,] pixels, int x, int y){
 		
 		//search for side that has void, Doordirections: DoorNorth means leaving room while by going North
-		if 		(x+1 <  texWidth	&& pixels[x+1,y+0].Equals(keyVoid))	{	return TileCTR.DoorEast;	}//check right
-		else if	(y+1 <  texHeight	&& pixels[x+0,y+1].Equals(keyVoid))	{	return TileCTR.DoorNorth;	}//check up
-		else if	(x-1 >= 0			&& pixels[x-1,y-0].Equals(keyVoid))	{	return TileCTR.DoorWest;	}//check left
-		else if	(y-1 >= 0			&& pixels[x-0,y-1].Equals(keyVoid))	{	return TileCTR.DoorSouth;	}//check down
+		if 		(x+1 <  texWidth	&& pixels[x+1,y+0].Equals(keyVoid))	{	return TileCG.DoorEast;	}//check right
+		else if	(y+1 <  texHeight	&& pixels[x+0,y+1].Equals(keyVoid))	{	return TileCG.DoorNorth;	}//check up
+		else if	(x-1 >= 0			&& pixels[x-1,y-0].Equals(keyVoid))	{	return TileCG.DoorWest;	}//check left
+		else if	(y-1 >= 0			&& pixels[x-0,y-1].Equals(keyVoid))	{	return TileCG.DoorSouth;	}//check down
 		
 		//error
 		print ("error, template contains inner door");
 		
-		return TileCTR.Door;
+		return TileCG.Door;
 	}
 		
-	private	TileCTR[,] CreateTileArray( HashSet<Coordinate> dynGrid){
+	private	TileCG[,] CreateTileArray( HashSet<Coordinate> dynGrid){
 		
 		if(dynGrid.Count == 0){
 			print("dynamic grid is empty, maybe room template texture is imported with compression?");
@@ -1530,10 +1530,10 @@ public class DungeonGenerator : MonoBehaviour{
 	//	print ("Size:"+sizeX+"/"+sizeY);
 				
 		//Init Array with empty Tiles
-		TileCTR[,] roomTiles = new TileCTR[sizeX,sizeY];
+		TileCG[,] roomTiles = new TileCG[sizeX,sizeY];
 		for(int x=0; x < sizeX; x++){
 			for(int y=0; y < sizeY; y++){
-				roomTiles[x,y] = TileCTR.None;
+				roomTiles[x,y] = TileCG.None;
 			}
 		}
 		
@@ -1546,10 +1546,10 @@ public class DungeonGenerator : MonoBehaviour{
 	
 	//Dynamic Coordinate Grid http://stackoverflow.com/questions/1939319/defining-two-dimensional-dynamic-array
 	public class Coordinate/* : IEquatable<Coordinate>*/{
-		public Coordinate(int x, int y, TileCTR tileType){	this.x=x;this.y=y;this.tileType=tileType;	}
+		public Coordinate(int x, int y, TileCG tileType){	this.x=x;this.y=y;this.tileType=tileType;	}
 		public int x; //{ get; }
 		public int y; //{ get; }
-		public TileCTR tileType;
+		public TileCG tileType;
 		// override Equals and GetHashcode...
 	}
 	
@@ -1653,7 +1653,7 @@ public class DungeonGenerator : MonoBehaviour{
 #pragma warning restore 0618
 
         //init grids
-        _dungeon = new TileCTR[_dungeonWidth, _dungeonHeight];
+        _dungeon = new TileCG[_dungeonWidth, _dungeonHeight];
 		_regions		= new int[_dungeonWidth, _dungeonHeight];
 		_currentRegion	= -1;	//reset
 		
@@ -1663,7 +1663,7 @@ public class DungeonGenerator : MonoBehaviour{
 		
 		for (var x = 0; x < _dungeonWidth; x++) {			
 			for (var y = 0; y < _dungeonHeight; y++) {
-				setTile(new IntVector2(x, y), TileCTR.Wall);
+				setTile(new IntVector2(x, y), TileCG.Wall);
 				_regions[x,y] = _currentRegion;	//-1
 			}
 		}
@@ -1674,7 +1674,7 @@ public class DungeonGenerator : MonoBehaviour{
 		for (var x = 1; x < _dungeonWidth; x += 2) {
 			for (var y = 1; y < _dungeonHeight; y += 2) {		
 				var pos = new IntVector2(x, y);
-				if (getTile(pos) != TileCTR.Wall) continue;	//ignore already carved spaces
+				if (getTile(pos) != TileCG.Wall) continue;	//ignore already carved spaces
 				_growMaze(pos);
 			}
 		}	
@@ -1813,7 +1813,7 @@ public class DungeonGenerator : MonoBehaviour{
 			
 			for(int ix = x; ix < x+width; ix++){
 				for(int iy = y; iy < y+height; iy++){
-					_carve(new IntVector2(ix,iy), TileCTR.RoomFloor);
+					_carve(new IntVector2(ix,iy), TileCG.RoomFloor);
 				}	
 			}
 		}
@@ -1833,7 +1833,7 @@ public class DungeonGenerator : MonoBehaviour{
 			IntVector2 pos = new IntVector2(ix,iy);
 				
 			// Can't already be part of a region.
-			if (getTile(pos) != TileCTR.Wall) continue;
+			if (getTile(pos) != TileCG.Wall) continue;
 			
 			HashSet<int> regions = new HashSet<int>();
 						
@@ -1860,7 +1860,7 @@ public class DungeonGenerator : MonoBehaviour{
 				int connectedRooms = 0;
 				foreach (IntVector2 dir in cardinal) {
 					IntVector2 indexer = (con + dir);
-					if (_dungeon[indexer.x, indexer.y] == TileCTR.RoomFloor) connectedRooms++;
+					if (_dungeon[indexer.x, indexer.y] == TileCG.RoomFloor) connectedRooms++;
 				}				
 				return 2-connectedRooms;
 			});
@@ -1940,7 +1940,7 @@ public class DungeonGenerator : MonoBehaviour{
 					// Don't allow connectors right next to each other.				
 					foreach (IntVector2 dir in cardinal) {
 						IntVector2 indexer = (pos + dir);
-						if (_dungeon[indexer.x, indexer.y] == TileCTR.Door) return true;
+						if (_dungeon[indexer.x, indexer.y] == TileCG.Door) return true;
 					}
 					
 					//if no connectors are adjacent, add additional connector
@@ -1960,7 +1960,7 @@ public class DungeonGenerator : MonoBehaviour{
 			setTile(pos, Tile.ClosedDoor);
 		}*/
 		
-		setTile(pos, TileCTR.Door);
+		setTile(pos, TileCG.Door);
 	}
 	
 	
@@ -1976,18 +1976,18 @@ public class DungeonGenerator : MonoBehaviour{
 					
 					IntVector2 pos = new IntVector2(ix,iy);
 					
-					if (getTile(pos) == TileCTR.Wall) continue;
+					if (getTile(pos) == TileCG.Wall) continue;
 					
 					// If it only has one exit, it's a dead end.
 					var exits = 0;
 					foreach(IntVector2 dir in cardinal) {
-					  if (getTile(pos + dir) != TileCTR.Wall) exits++;
+					  if (getTile(pos + dir) != TileCG.Wall) exits++;
 					}
 					
 					if (exits != 1) continue;
 					
 					done = false;
-					setTile(pos, TileCTR.Wall);
+					setTile(pos, TileCG.Wall);
 					_regions[pos.x, pos.y] = -1;
 				}
 			}
@@ -2009,7 +2009,7 @@ public class DungeonGenerator : MonoBehaviour{
 		
 		for(int ix = 1; ix < _dungeonWidth-1; ix++){
 			for(int iy = 1; iy < _dungeonHeight-1; iy++){
-				if(_dungeon[ix,iy] == TileCTR.Floor){
+				if(_dungeon[ix,iy] == TileCG.Floor){
 					corridors.Add(new IntVector2(ix,iy));
 				}
 			}
@@ -2045,7 +2045,7 @@ public class DungeonGenerator : MonoBehaviour{
 				finalTrace.Add(trace[i]);	//add current position to final path
 				
 				foreach(IntVector2 dir in cardinal) {					
-					if(getTile( trace[i] +dir ) == TileCTR.Wall){			//if we see a wall in test direction
+					if(getTile( trace[i] +dir ) == TileCG.Wall){			//if we see a wall in test direction
 						
 						IntVector2 shortcut = trace[i] +dir +dir;						
 						if( trace.Contains( shortcut ) && !finalTrace.Contains(shortcut) ){	//and behind that wall an already visited pos of this trace that has not been removed
@@ -2062,7 +2062,7 @@ public class DungeonGenerator : MonoBehaviour{
 			
 			//uncarve old trace
 			foreach(IntVector2 pos in trace){
-				setTile(pos, TileCTR.Wall);				
+				setTile(pos, TileCG.Wall);				
 				_regions[pos.x, pos.y] = -1;
 			}
 			
@@ -2082,7 +2082,7 @@ public class DungeonGenerator : MonoBehaviour{
 		//check if we are a doorstep or branch, these must not be moved or else
 		int exits = 0;
 		foreach(IntVector2 dir in cardinal) {
-			if (getTile(current + dir) != TileCTR.Wall){	//if there is anything other than a wall we have an exit or else, doorsteps will have at least 2 non walls (door + path)
+			if (getTile(current + dir) != TileCG.Wall){	//if there is anything other than a wall we have an exit or else, doorsteps will have at least 2 non walls (door + path)
 				exits++;
 			}
 		}
@@ -2118,7 +2118,7 @@ public class DungeonGenerator : MonoBehaviour{
 		int xSize = _dungeon.GetLength(0);
 		int ySize = _dungeon.GetLength(1);
 		
-		TileCTR[,] newDungeon	= new TileCTR[ xSize *factor, ySize *factor ];
+		TileCG[,] newDungeon	= new TileCG[ xSize *factor, ySize *factor ];
 		int[,]  newRegions	= new int [ xSize *factor, ySize *factor ];
 		
 		
@@ -2154,16 +2154,16 @@ public class DungeonGenerator : MonoBehaviour{
 		if (!bounds.Contains(v2)) return false;
 		
 		// Destination must not be open.
-		return getTile(pos + direction * 2) == TileCTR.Wall;
+		return getTile(pos + direction * 2) == TileCG.Wall;
 	}
 
 	private	void _startRegion() {
 		_currentRegion++;
 	}
 
-	private	void _carve(IntVector2 pos, TileCTR? type = null) {
+	private	void _carve(IntVector2 pos, TileCG? type = null) {
 		
-		setTile(pos, type ?? TileCTR.Floor);	// if non is stated, default is floor
+		setTile(pos, type ?? TileCG.Floor);	// if non is stated, default is floor
 		
 		//print (pos.x +","+ pos.y);
 		_regions[pos.x, pos.y] = _currentRegion;
@@ -2210,7 +2210,7 @@ public class DungeonGenerator : MonoBehaviour{
 		this.threshold	= threshold	?? this.threshold;
 		
 		//init
-		_dungeon		= new TileCTR[_dungeonWidth, _dungeonHeight];
+		_dungeon		= new TileCG[_dungeonWidth, _dungeonHeight];
 		_regions		= new int[_dungeonWidth, _dungeonHeight];
 		
 		for(int x = 0; x < _dungeonWidth; x++){
@@ -2218,9 +2218,9 @@ public class DungeonGenerator : MonoBehaviour{
 								
 				float noise = Mathf.PerlinNoise( (x+this.offsetX) *this.scale, (y+this.offsetY) *this.scale );	
 				if( noise < this.threshold ){
-					_dungeon[x,y] = TileCTR.Floor;				
+					_dungeon[x,y] = TileCG.Floor;				
 				}else{
-					_dungeon[x,y] = TileCTR.Wall;	
+					_dungeon[x,y] = TileCG.Wall;	
 				}								
 			}			
 		}
@@ -2292,12 +2292,12 @@ public class DungeonGenerator : MonoBehaviour{
 		CaveBuild();
 		ConnectCaves();
 				
-		_dungeon	= new TileCTR[_dungeonWidth, _dungeonHeight];
+		_dungeon	= new TileCG[_dungeonWidth, _dungeonHeight];
 		_regions	= new int[_dungeonWidth, _dungeonHeight];	
 		
 		for(int x = 0; x < _dungeonWidth; x++){				
 			for(int y = 0; y < _dungeonHeight; y++){				
-				_dungeon[x,y] = Map[x,y] == 1? TileCTR.Floor:TileCTR.Wall;
+				_dungeon[x,y] = Map[x,y] == 1? TileCG.Floor:TileCG.Wall;
 				_regions[x,y] = Map[x,y] == 1? 0:-1;
 			}
 		}
@@ -3016,7 +3016,7 @@ public class DungeonGenerator : MonoBehaviour{
 	}
 	
 	//update map by Tilegrid
-	public void UpdateMap(ref TileCTR[,] grid){
+	public void UpdateMap(ref TileCG[,] grid){
 		int xSize = grid.GetLength(0);
 		int ySize = grid.GetLength(1);
 		
@@ -3027,16 +3027,16 @@ public class DungeonGenerator : MonoBehaviour{
 			for(int y = 0; y < ySize; y++){
 				switch(grid[x,y]){
 					default:				mapTexture.SetPixel(x, y, Color.clear);		break;
-					case TileCTR.Floor:		mapTexture.SetPixel(x, y, Color.grey);		break;
-					case TileCTR.RoomFloor:	mapTexture.SetPixel(x, y, Color.white);		break;
-					case TileCTR.Wall:			mapTexture.SetPixel(x, y, Color.black);		break;
-					case TileCTR.Door:			mapTexture.SetPixel(x, y, Color.magenta);	break;
+					case TileCG.Floor:		mapTexture.SetPixel(x, y, Color.grey);		break;
+					case TileCG.RoomFloor:	mapTexture.SetPixel(x, y, Color.white);		break;
+					case TileCG.Wall:			mapTexture.SetPixel(x, y, Color.black);		break;
+					case TileCG.Door:			mapTexture.SetPixel(x, y, Color.magenta);	break;
 					
 					//DEBUG for room Template Dungeon
-					case TileCTR.DoorNorth:	mapTexture.SetPixel(x, y, Color.yellow);	break;
-					case TileCTR.DoorEast:		mapTexture.SetPixel(x, y, Color.blue);		break;
-					case TileCTR.DoorSouth:	mapTexture.SetPixel(x, y, Color.green);		break;
-					case TileCTR.DoorWest:		mapTexture.SetPixel(x, y, Color.cyan);		break;
+					case TileCG.DoorNorth:	mapTexture.SetPixel(x, y, Color.yellow);	break;
+					case TileCG.DoorEast:		mapTexture.SetPixel(x, y, Color.blue);		break;
+					case TileCG.DoorSouth:	mapTexture.SetPixel(x, y, Color.green);		break;
+					case TileCG.DoorWest:		mapTexture.SetPixel(x, y, Color.cyan);		break;
 				}
 			}
 		}
@@ -3093,7 +3093,7 @@ public class DungeonGenerator : MonoBehaviour{
 		int ySize = room.tiles.GetLength(1);		
 		for(int x = 0; x < xSize; x++){
 			for(int y = 0; y < ySize; y++){
-				if( room.tiles[x,y] == TileCTR.Floor){
+				if( room.tiles[x,y] == TileCG.Floor){
 					BlendMapPixel(x +room.x, y +room.y, color, blendFactor);
 				}
 			}
