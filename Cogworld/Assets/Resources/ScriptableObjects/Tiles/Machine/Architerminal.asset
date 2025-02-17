@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: Architerminal
   m_EditorClassIdentifier: 
   Id: 28
-  displaySprite: {fileID: -1818419537, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   tileName: Unknown Terminal
-  type: 3
+  displaySprite: {fileID: 11400000, guid: 3a77451f97ca84e4a8bc142388091e9f, type: 2}
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}
-  asciiRep: {fileID: 277497930, guid: 128a1eddcba3fdd4997d85244d8bc329, type: 3}
+  asciiRep: {fileID: 11400000, guid: 9ed740fdf9df8dd4f84109e8a5c2f123, type: 2}
   asciiColor: {r: 0.854902, g: 0.854902, b: 0.854902, a: 1}
+  type: 3
   isDirty: 0
   impassable: 0
   health: {x: 35, y: 35}
   armor: 35
-  currentVis: 0
   destructionClips: []
   resistances:
   - damageType: 0

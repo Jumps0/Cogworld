@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: Recycler
   m_EditorClassIdentifier: 
   Id: 27
-  displaySprite: {fileID: -1695708046, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   tileName: Recycler
-  type: 3
+  displaySprite: {fileID: 11400000, guid: 6507f133cb1bc5448b07670b3eba6e4e, type: 2}
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}
-  asciiRep: {fileID: -806669935, guid: 128a1eddcba3fdd4997d85244d8bc329, type: 3}
+  asciiRep: {fileID: 11400000, guid: ad9c18dd5980c114a8477a46b954eba4, type: 2}
   asciiColor: {r: 0.69411767, g: 0.68235296, b: 0, a: 1}
+  type: 3
   isDirty: 0
   impassable: 0
   health: {x: 15, y: 15}
   armor: 15
-  currentVis: 0
   destructionClips: []
   resistances:
   - damageType: 0

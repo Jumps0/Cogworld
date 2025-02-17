@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: Fabricator
   m_EditorClassIdentifier: 
   Id: 0
-  displaySprite: {fileID: 30316025, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   tileName: Fabricator
-  type: 3
+  displaySprite: {fileID: 11400000, guid: 6eb8c96d54ce01543bf9eba2af56ac6e, type: 2}
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}
-  asciiRep: {fileID: 162860512, guid: 128a1eddcba3fdd4997d85244d8bc329, type: 3}
+  asciiRep: {fileID: 11400000, guid: 1383c210bae1d7347b75ea9e4ac42c42, type: 2}
   asciiColor: {r: 0, g: 0.427451, b: 0.854902, a: 1}
+  type: 3
   isDirty: 0
   impassable: 0
   health: {x: 15, y: 15}
   armor: 15
-  currentVis: 0
   destructionClips: []
   resistances:
   - damageType: 0

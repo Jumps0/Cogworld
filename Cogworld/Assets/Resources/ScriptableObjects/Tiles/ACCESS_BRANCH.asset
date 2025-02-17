@@ -13,14 +13,18 @@ MonoBehaviour:
   m_Name: ACCESS_BRANCH
   m_EditorClassIdentifier: 
   Id: 7
-  displaySprite: {fileID: -333158863, guid: 0669e38ad5cf6a74b85a00b903976e80, type: 3}
   tileName: Branch Access
-  type: 4
+  displaySprite: {fileID: 11400000, guid: 5ebadffeb721c7244a18f9caa540fe2a, type: 2}
   altSprite: {fileID: -268443102, guid: 0669e38ad5cf6a74b85a00b903976e80, type: 3}
-  asciiRep: {fileID: 386359694, guid: 484b699857d60234c908d529dd37a90d, type: 3}
+  destroyedSprite: {fileID: 0}
+  asciiRep: {fileID: 11400000, guid: acc7e972c9681904d9bdd421de561bc9, type: 2}
   asciiColor: {r: 1, g: 0.5019608, b: 0, a: 1}
+  type: 4
   isDirty: 0
   impassable: 0
   health: {x: 10, y: 10}
   armor: 5
-  currentVis: 0
+  destructionClips: []
+  resistances: []
+  door_open: []
+  door_close: []

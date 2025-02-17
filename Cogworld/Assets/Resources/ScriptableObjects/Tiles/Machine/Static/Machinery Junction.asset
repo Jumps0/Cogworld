@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: Machinery Junction
   m_EditorClassIdentifier: 
   Id: 45
-  displaySprite: {fileID: 1199986374, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   tileName: Machinery Junction
-  type: 3
+  displaySprite: {fileID: 11400000, guid: aa8589d85a9553143b0f6eddc84a400b, type: 2}
   altSprite: {fileID: -124849826, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   destroyedSprite: {fileID: 0}
-  asciiRep: {fileID: -124849826, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
+  asciiRep: {fileID: 11400000, guid: 8efa77169946ad74c9569ad886bc7702, type: 2}
   asciiColor: {r: 0.45098042, g: 0.45098042, b: 0.45098042, a: 1}
+  type: 3
   isDirty: 0
   impassable: 0
   health: {x: 15, y: 15}
   armor: 15
-  currentVis: 0
   destructionClips: []
   resistances:
   - damageType: 0
@@ -50,3 +49,7 @@ MonoBehaviour:
     immune: 0
   door_open: []
   door_close: []
+  sprites:
+  - {fileID: 11400000, guid: aa8589d85a9553143b0f6eddc84a400b, type: 2}
+  ASCII_sprites:
+  - {fileID: 11400000, guid: 8efa77169946ad74c9569ad886bc7702, type: 2}

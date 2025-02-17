@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: Pipe Single Split
   m_EditorClassIdentifier: 
   Id: 33
-  displaySprite: {fileID: 973588129, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   tileName: Pipes Single Split
-  type: 3
+  displaySprite: {fileID: 11400000, guid: 5d9e941f91740c641bca2db463c0ae11, type: 2}
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}
-  asciiRep: {fileID: 1582457499, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
+  asciiRep: {fileID: 11400000, guid: 5cdbe704215c4c441975f55d98c03acb, type: 2}
   asciiColor: {r: 0.45098042, g: 0.45098042, b: 0.45098042, a: 1}
+  type: 3
   isDirty: 0
   impassable: 0
   health: {x: 15, y: 15}
   armor: 15
-  currentVis: 0
   destructionClips: []
   resistances:
   - damageType: 0
@@ -50,3 +49,13 @@ MonoBehaviour:
     immune: 0
   door_open: []
   door_close: []
+  sprites:
+  - {fileID: 11400000, guid: 5d9e941f91740c641bca2db463c0ae11, type: 2}
+  - {fileID: 11400000, guid: fb8cd01ce65eed0418965772da10c878, type: 2}
+  - {fileID: 11400000, guid: 581038fbc465de5409f3f584dcc5e631, type: 2}
+  - {fileID: 11400000, guid: cb12176f64474c64897be6ddbc8384d6, type: 2}
+  ASCII_sprites:
+  - {fileID: 11400000, guid: 5cdbe704215c4c441975f55d98c03acb, type: 2}
+  - {fileID: 11400000, guid: 1cc67e2719e14b243a772d38f5f843ae, type: 2}
+  - {fileID: 11400000, guid: 5b44445a8a1e27c4daca04db92b4cd5a, type: 2}
+  - {fileID: 11400000, guid: 6cfc81e5e5eac56479559c9d3babf346, type: 2}

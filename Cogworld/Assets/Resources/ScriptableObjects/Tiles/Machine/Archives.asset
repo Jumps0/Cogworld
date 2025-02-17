@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: Archives
   m_EditorClassIdentifier: 
   Id: 29
-  displaySprite: {fileID: -2048724185, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   tileName: Archive Terminal
-  type: 3
+  displaySprite: {fileID: 11400000, guid: 702f75bd6f2ae0345b1a8ed7eaa95f62, type: 2}
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}
-  asciiRep: {fileID: 277497930, guid: 128a1eddcba3fdd4997d85244d8bc329, type: 3}
+  asciiRep: {fileID: 11400000, guid: 4266841a13978194287629f1a9cc55ee, type: 2}
   asciiColor: {r: 0.007843138, g: 0.5411765, b: 0, a: 1}
+  type: 3
   isDirty: 0
   impassable: 0
   health: {x: 15, y: 15}
   armor: 15
-  currentVis: 0
   destructionClips: []
   resistances:
   - damageType: 0

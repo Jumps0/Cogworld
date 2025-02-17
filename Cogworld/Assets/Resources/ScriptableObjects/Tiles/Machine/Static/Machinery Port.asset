@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: Machinery Port
   m_EditorClassIdentifier: 
   Id: 47
-  displaySprite: {fileID: -1726142538, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   tileName: Machinery Reciever
-  type: 3
+  displaySprite: {fileID: 11400000, guid: 7f103f7900c70c44ea4fdedb954e7a59, type: 2}
   altSprite: {fileID: 323879242, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   destroyedSprite: {fileID: 0}
-  asciiRep: {fileID: 323879242, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
+  asciiRep: {fileID: 11400000, guid: 0f406c50a8288f84a8a3404f4ac51beb, type: 2}
   asciiColor: {r: 0.45098042, g: 0.45098042, b: 0.45098042, a: 1}
+  type: 3
   isDirty: 0
   impassable: 0
   health: {x: 15, y: 15}
   armor: 15
-  currentVis: 0
   destructionClips: []
   resistances:
   - damageType: 0
@@ -50,3 +49,13 @@ MonoBehaviour:
     immune: 0
   door_open: []
   door_close: []
+  sprites:
+  - {fileID: 11400000, guid: 7f103f7900c70c44ea4fdedb954e7a59, type: 2}
+  - {fileID: 11400000, guid: 3e370fd0408e1944aa30346b9d88b8b1, type: 2}
+  - {fileID: 11400000, guid: e1ea2456f40f3af40b1ff00a6f557f15, type: 2}
+  - {fileID: 11400000, guid: d119f4ebe465ba84a84d8525c170a773, type: 2}
+  ASCII_sprites:
+  - {fileID: 11400000, guid: 0f406c50a8288f84a8a3404f4ac51beb, type: 2}
+  - {fileID: 11400000, guid: 2749c6ceb7e3add449a38d7662db124d, type: 2}
+  - {fileID: 11400000, guid: d7e4fc1857e02f84683d5008225377e8, type: 2}
+  - {fileID: 11400000, guid: 150ab844372ea59468337ce8415ca1f1, type: 2}

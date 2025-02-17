@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: Pipes Double
   m_EditorClassIdentifier: 
   Id: 39
-  displaySprite: {fileID: 308738488, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   tileName: Pipes Double
-  type: 3
+  displaySprite: {fileID: 11400000, guid: 13fb2386e52ee6d4fb7fb6ad8d2897d6, type: 2}
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}
-  asciiRep: {fileID: -270698988, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
+  asciiRep: {fileID: 11400000, guid: f45af6c0ec8e94540a0d50290d6a8f7b, type: 2}
   asciiColor: {r: 0.45098042, g: 0.45098042, b: 0.45098042, a: 1}
+  type: 3
   isDirty: 0
   impassable: 0
   health: {x: 15, y: 15}
   armor: 15
-  currentVis: 0
   destructionClips: []
   resistances:
   - damageType: 0
@@ -50,3 +49,9 @@ MonoBehaviour:
     immune: 0
   door_open: []
   door_close: []
+  sprites:
+  - {fileID: 11400000, guid: 13fb2386e52ee6d4fb7fb6ad8d2897d6, type: 2}
+  - {fileID: 11400000, guid: 68f635eaf0f02f64e92265b38e83deba, type: 2}
+  ASCII_sprites:
+  - {fileID: 11400000, guid: f45af6c0ec8e94540a0d50290d6a8f7b, type: 2}
+  - {fileID: 11400000, guid: 76f3fef5d2cfeed428afbfbe3ac5f995, type: 2}

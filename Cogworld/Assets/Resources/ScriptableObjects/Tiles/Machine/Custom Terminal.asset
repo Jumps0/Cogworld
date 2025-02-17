@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: Custom Terminal
   m_EditorClassIdentifier: 
   Id: 31
-  displaySprite: {fileID: -864200448, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   tileName: Custom Terminal
-  type: 3
+  displaySprite: {fileID: 11400000, guid: 1e92cd78b4501494b8c4e0874526d7ee, type: 2}
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}
-  asciiRep: {fileID: 1039914336, guid: 128a1eddcba3fdd4997d85244d8bc329, type: 3}
+  asciiRep: {fileID: 11400000, guid: 11844239f3c5f274390636adc2732e8b, type: 2}
   asciiColor: {r: 0.69411767, g: 0.33333334, b: 0, a: 1}
+  type: 3
   isDirty: 0
   impassable: 0
   health: {x: 15, y: 15}
   armor: 15
-  currentVis: 0
   destructionClips: []
   resistances:
   - damageType: 0

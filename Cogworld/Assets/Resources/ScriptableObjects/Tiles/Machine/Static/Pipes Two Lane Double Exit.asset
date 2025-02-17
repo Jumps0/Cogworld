@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: Pipes Two Lane Double Exit
   m_EditorClassIdentifier: 
   Id: 43
-  displaySprite: {fileID: -364493266, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   tileName: Pipes Double Double Split
-  type: 3
+  displaySprite: {fileID: 11400000, guid: 49dab6781e9e01a4f83c163bb66bb06b, type: 2}
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}
-  asciiRep: {fileID: 1926002693, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
+  asciiRep: {fileID: 11400000, guid: 7efd4d04a57c615408eeab64d8caf735, type: 2}
   asciiColor: {r: 0.45098042, g: 0.45098042, b: 0.45098042, a: 1}
+  type: 3
   isDirty: 0
   impassable: 0
   health: {x: 15, y: 15}
   armor: 15
-  currentVis: 0
   destructionClips: []
   resistances:
   - damageType: 0
@@ -50,3 +49,9 @@ MonoBehaviour:
     immune: 0
   door_open: []
   door_close: []
+  sprites:
+  - {fileID: 11400000, guid: 49dab6781e9e01a4f83c163bb66bb06b, type: 2}
+  - {fileID: 11400000, guid: a42bfacc6986c344e848f0f0114d823c, type: 2}
+  ASCII_sprites:
+  - {fileID: 11400000, guid: 7efd4d04a57c615408eeab64d8caf735, type: 2}
+  - {fileID: 11400000, guid: abea2ffa27715f141ae4d04786e0018a, type: 2}

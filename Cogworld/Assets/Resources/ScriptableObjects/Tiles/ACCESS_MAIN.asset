@@ -13,14 +13,18 @@ MonoBehaviour:
   m_Name: ACCESS_MAIN
   m_EditorClassIdentifier: 
   Id: 6
-  displaySprite: {fileID: 340414201, guid: 413bddcb3fd194b4f9cf98837c2ec9aa, type: 3}
   tileName: Main Access
-  type: 4
+  displaySprite: {fileID: 11400000, guid: 91aa1c9ea68ed73418206f872416a933, type: 2}
   altSprite: {fileID: -268443102, guid: 0669e38ad5cf6a74b85a00b903976e80, type: 3}
-  asciiRep: {fileID: 386359694, guid: 484b699857d60234c908d529dd37a90d, type: 3}
+  destroyedSprite: {fileID: 0}
+  asciiRep: {fileID: 11400000, guid: acc7e972c9681904d9bdd421de561bc9, type: 2}
   asciiColor: {r: 1, g: 0.5019608, b: 0, a: 1}
+  type: 4
   isDirty: 0
   impassable: 0
   health: {x: 10, y: 10}
   armor: 5
-  currentVis: 0
+  destructionClips: []
+  resistances: []
+  door_open: []
+  door_close: []

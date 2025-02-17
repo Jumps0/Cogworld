@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: Scanalyzer
   m_EditorClassIdentifier: 
   Id: 24
-  displaySprite: {fileID: 2136728699, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   tileName: Scanalyzer
-  type: 3
+  displaySprite: {fileID: 11400000, guid: 59022ce141855474680496dada9c3aea, type: 2}
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}
-  asciiRep: {fileID: -495236632, guid: 128a1eddcba3fdd4997d85244d8bc329, type: 3}
+  asciiRep: {fileID: 11400000, guid: 6c7f9fcf0eaf92f479144846126fef7e, type: 2}
   asciiColor: {r: 0.6392157, g: 0, b: 0.854902, a: 1}
+  type: 3
   isDirty: 0
   impassable: 0
   health: {x: 15, y: 15}
   armor: 15
-  currentVis: 0
   destructionClips: []
   resistances:
   - damageType: 0

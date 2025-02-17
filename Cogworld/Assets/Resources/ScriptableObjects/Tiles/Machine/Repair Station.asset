@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: Repair Station
   m_EditorClassIdentifier: 
   Id: 25
-  displaySprite: {fileID: -331687616, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   tileName: Repair Station
-  type: 3
+  displaySprite: {fileID: 11400000, guid: 24b3b2ba3c50aa74a8e70a04e5576361, type: 2}
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}
-  asciiRep: {fileID: -194451685, guid: 128a1eddcba3fdd4997d85244d8bc329, type: 3}
+  asciiRep: {fileID: 11400000, guid: e047eea8cac02c04cba538d2c50ad4aa, type: 2}
   asciiColor: {r: 0.5411765, g: 0, b: 0, a: 1}
+  type: 3
   isDirty: 0
   impassable: 0
   health: {x: 15, y: 15}
   armor: 15
-  currentVis: 0
   destructionClips: []
   resistances:
   - damageType: 0

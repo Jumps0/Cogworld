@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: Pipes Quadjunction
   m_EditorClassIdentifier: 
   Id: 40
-  displaySprite: {fileID: -1837225232, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   tileName: Pipes Double Junction
-  type: 3
+  displaySprite: {fileID: 11400000, guid: ab2d5d86f43dfa14e8c24b5f75b1da42, type: 2}
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}
-  asciiRep: {fileID: -271756482, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
+  asciiRep: {fileID: 11400000, guid: 166c34c13bc66304c8e5363ba750d40d, type: 2}
   asciiColor: {r: 0.45098042, g: 0.45098042, b: 0.45098042, a: 1}
+  type: 3
   isDirty: 0
   impassable: 0
   health: {x: 15, y: 15}
   armor: 15
-  currentVis: 0
   destructionClips: []
   resistances:
   - damageType: 0
@@ -50,3 +49,7 @@ MonoBehaviour:
     immune: 0
   door_open: []
   door_close: []
+  sprites:
+  - {fileID: 11400000, guid: ab2d5d86f43dfa14e8c24b5f75b1da42, type: 2}
+  ASCII_sprites:
+  - {fileID: 11400000, guid: 166c34c13bc66304c8e5363ba750d40d, type: 2}

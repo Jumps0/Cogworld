@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: Pipes Double Corner
   m_EditorClassIdentifier: 
   Id: 38
-  displaySprite: {fileID: -2006059973, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   tileName: Pipes Double Corner
-  type: 3
+  displaySprite: {fileID: 11400000, guid: 17751134d8d20b944a3964ffb69cd63a, type: 2}
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}
   asciiRep: {fileID: -781424716, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
   asciiColor: {r: 0.45098042, g: 0.45098042, b: 0.45098042, a: 1}
+  type: 3
   isDirty: 0
   impassable: 0
   health: {x: 15, y: 15}
   armor: 15
-  currentVis: 0
   destructionClips: []
   resistances:
   - damageType: 0
@@ -50,3 +49,13 @@ MonoBehaviour:
     immune: 0
   door_open: []
   door_close: []
+  sprites:
+  - {fileID: 11400000, guid: 17751134d8d20b944a3964ffb69cd63a, type: 2}
+  - {fileID: 11400000, guid: 93faebdc8ea5ba64795f2b7389ead3c6, type: 2}
+  - {fileID: 11400000, guid: 30cf184bab79f7b49ac22a0cdabdce81, type: 2}
+  - {fileID: 11400000, guid: 4ade8b6d10651a2468fa50473cdadb2a, type: 2}
+  ASCII_sprites:
+  - {fileID: 11400000, guid: 46dcb314fe23eb0479283f15a31c3658, type: 2}
+  - {fileID: 11400000, guid: c52cac9f719c7e14f94de23fd31e41ff, type: 2}
+  - {fileID: 11400000, guid: bdb5fd5911e5d4c4a8a1cecedff52ad5, type: 2}
+  - {fileID: 11400000, guid: 693f436c732149f47b644b2270b65043, type: 2}

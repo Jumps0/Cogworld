@@ -47,7 +47,7 @@ public class MachinePart : MonoBehaviour
     public bool isVisible = false;
     public GameObject indicator = null;
     private SpriteRenderer sr;
-    private Sprite sprite_destroyed = null;
+    //private Sprite sprite_destroyed = null;
     private Sprite sprite_ascii = null;
 
     // Future note:
@@ -65,7 +65,7 @@ public class MachinePart : MonoBehaviour
                 // Auto-assign sprite
                 sr.sprite = info.displaySprite.sprite;
                 sprite_ascii = info.asciiRep.sprite;
-                sprite_destroyed = info.destroyedSprite.sprite;
+                //sprite_destroyed = info.destroyedSprite.sprite;
             }
 
             // Set up the other values while we're here
@@ -75,8 +75,8 @@ public class MachinePart : MonoBehaviour
 
         if (initializeRandom)
         {
-            // Get a random sprite (Normal, Ascii, Destroyed)
-            List<(Sprite, Sprite, Sprite)> validS = new List<(Sprite, Sprite, Sprite)>();
+            // Get a random sprite (Normal, Ascii)
+            List<(Sprite, Sprite)> validS = new List<(Sprite, Sprite)>();
             foreach (var T in MapManager.inst.tileDatabase.Tiles)
             {
                 if(T.type == TileType.Machine)
@@ -84,13 +84,13 @@ public class MachinePart : MonoBehaviour
                     // Filter out interactable machines!!!
                     if (!T.displaySprite.name.Contains("interact"))
                     {
-                        validS.Add((T.displaySprite.sprite, T.asciiRep.sprite, T.destroyedSprite.sprite));
+                        validS.Add((T.displaySprite.sprite, T.asciiRep.sprite));
                     }
                 }
             }
 
             this.transform.Rotate(new Vector3(0f, 0f, 90f * Random.Range(0, 4))); // Random Rotation
-            (sr.sprite, sprite_ascii, sprite_destroyed) = validS[Random.Range(0, validS.Count - 1)];
+            (sr.sprite, sprite_ascii) = validS[Random.Range(0, validS.Count - 1)];
         }
 
         if (isSealedDoor)

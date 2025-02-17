@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: Garrison
   m_EditorClassIdentifier: 
   Id: 0
-  displaySprite: {fileID: -1033083984, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
   tileName: Garrison
-  type: 3
+  displaySprite: {fileID: 11400000, guid: 671222f299779d448a73df51cc25d002, type: 2}
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}
-  asciiRep: {fileID: 1772813992, guid: 128a1eddcba3fdd4997d85244d8bc329, type: 3}
+  asciiRep: {fileID: 11400000, guid: 6722e11bb447a9848a3655d45276cc64, type: 2}
   asciiColor: {r: 0.854902, g: 0.854902, b: 0.854902, a: 1}
+  type: 3
   isDirty: 0
   impassable: 0
   health: {x: 15, y: 15}
   armor: 15
-  currentVis: 0
   destructionClips: []
   resistances:
   - damageType: 0
