@@ -29,7 +29,12 @@ public abstract class TileObject : ScriptableObject
     [Tooltip("What should be shown when this sprite is destroyed.")]
     public Tile destroyedSprite;
     [Tooltip("How this sprite looks while in ASCII mode.")]
+    [Header("Display (ASCII)")]
     public Tile asciiRep;
+    [Tooltip("Occasionally used alternate sprite when in ASCII mode, usually just used for doors.")]
+    public Tile asciiAltSprite;
+    [Tooltip("Sprite for when this tile is destroyed while in ASCII mode.")]
+    public Tile asciiDestroyed;
     public Color asciiColor;
 
     [Header("Details")]
