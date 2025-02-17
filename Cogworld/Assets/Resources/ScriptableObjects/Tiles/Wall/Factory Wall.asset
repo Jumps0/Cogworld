@@ -15,7 +15,7 @@ MonoBehaviour:
   Id: 8
   tileName: Factory Wall
   displaySprite: {fileID: 11400000, guid: b1b18593c9c939849bd56da44d3891b2, type: 2}
-  altSprite: {fileID: 0}
+  altSprite: {fileID: 11400000, guid: 58bc9ea63bff94541bf03c3af0185c5f, type: 2}
   destroyedSprite: {fileID: 11400000, guid: e4ce95d44c1378b4986a69c92f942e7b, type: 2}
   asciiRep: {fileID: 11400000, guid: a2c8357fbce19c948a5954355184ddbf, type: 2}
   asciiColor: {r: 0.54509807, g: 0.54509807, b: 0.54509807, a: 1}
