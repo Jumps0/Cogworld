@@ -35,17 +35,22 @@ MonoBehaviour:
     isOverloaded: 0
     isDeteriorating: 0
     isRigged: 0
+    isFused: 0
+    isFaulty: 0
+    doneFaultyFailure: 0
     isBroken: 0
     corrupted: 0
+    doneCorruptionFeedback: 0
     disabledTimer: 0
     unstable: -1
     disposable: -1
+    chargable: -1
     siege: 0
     isDuplicate: 0
     duplicate_uuid: -1
     duplicates: 
   knowByPlayer: 0
-  floorDisplay: {fileID: 21300000, guid: a2682d3c36947604ca8f260cf0e591c4, type: 3}
+  floorDisplay: {fileID: 11400000, guid: 2878b8e45a75d294b9f04fc7865d6d11, type: 2}
   inventoryDisplay: {fileID: 21300000, guid: a2682d3c36947604ca8f260cf0e591c4, type: 3}
   asciiRep: {fileID: -923958525, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
   bigDisplay: {fileID: 21300000, guid: ee51f68e5bfbee749ab1f0446865ce17, type: 3}

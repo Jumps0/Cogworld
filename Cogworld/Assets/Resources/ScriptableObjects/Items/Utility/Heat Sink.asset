@@ -35,17 +35,22 @@ MonoBehaviour:
     isOverloaded: 0
     isDeteriorating: 0
     isRigged: 0
+    isFused: 0
+    isFaulty: 0
+    doneFaultyFailure: 0
     isBroken: 0
     corrupted: 0
+    doneCorruptionFeedback: 0
     disabledTimer: 0
     unstable: -1
     disposable: -1
+    chargable: -1
     siege: 0
     isDuplicate: 0
     duplicate_uuid: -1
     duplicates: 
   knowByPlayer: 1
-  floorDisplay: {fileID: 21300000, guid: a2682d3c36947604ca8f260cf0e591c4, type: 3}
+  floorDisplay: {fileID: 11400000, guid: 2878b8e45a75d294b9f04fc7865d6d11, type: 2}
   inventoryDisplay: {fileID: 21300000, guid: a2682d3c36947604ca8f260cf0e591c4, type: 3}
   asciiRep: {fileID: -923958525, guid: 95894c413779e6c48b416234e9e2565e, type: 3}
   bigDisplay: {fileID: 21300000, guid: 3a6fbdf5649712b409a49965d2bcbb07, type: 3}
@@ -246,10 +251,11 @@ MonoBehaviour:
     massSupport_stacks: 0
     collectsMatterBeam: 0
     matterCollectionRange: 0
-    internalStorage: 0
-    internalStorageType: 0
-    internalStorageCapacity: 0
-    internalStorageType_stacks: 0
+    internalStorageEffect:
+      hasEffect: 0
+      internalStorageType: 0
+      capacity: 0
+      internalStorageType_stacks: 0
     hackBonuses:
       hasHackBonus: 0
       hackSuccessBonus: 0
@@ -359,7 +365,9 @@ MonoBehaviour:
       minTempToActivate: 0
       energyGeneration: 0
       heatToEnergyAmount: 0
-      abalativeArmorEffect: 0
+      ablativeArmorEffect: 0
+      ablativeDamage: 1
+      ablativeChunks: 5
       parallel: 0
       stacks: 0
     bonusSlots:
@@ -394,8 +402,14 @@ MonoBehaviour:
       hasEffect: 0
       amount: 0
       stacks: 0
+    slayerEffect:
+      hasEffect: 0
+      slayerClasses: 
     authchipDetails:
       isAuthchip: 0
+    couplerDetails:
+      isCoupler: 0
+      botclass: 0
   canOverload: 0
   consumable: 0
   disposable: -1

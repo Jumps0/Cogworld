@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public enum ItemType
 {
@@ -346,7 +347,7 @@ public abstract class ItemObject : ScriptableObject
     [Tooltip("If false, the player doesn't know what it is, so it should be classified as a prototype until they equip/learn about it.")]
     public bool knowByPlayer = true;
 
-    public Sprite floorDisplay;
+    public Tile floorDisplay;
     public Sprite inventoryDisplay;
     public Sprite asciiRep;
     public Sprite bigDisplay;

@@ -45,7 +45,7 @@ public class Part : MonoBehaviour
     public void Init()
     {
         // Set basic values
-        this._sprite.sprite = _item.itemData.floorDisplay;
+        this._sprite.sprite = _item.itemData.floorDisplay.sprite;
         this.realColor = _item.itemData.itemColor;
         inInventory = false;
 
