@@ -266,6 +266,9 @@ public class MapManager : MonoBehaviour
 
         DrawBorder(); // Draw the border
 
+        // !! Update the Tilemap !!
+        UpdateTilemap();
+
         foreach (var door in _allTilesRealized) // Setup all the doors
         {
             if (door.Value.top && door.Value.top.GetComponent<DoorLogic>())
@@ -897,17 +900,174 @@ public class MapManager : MonoBehaviour
     #region Map Realization
 
     #region Tilemap Things
+    /// <summary>
+    /// Updates the entire tilemap to reflect the `mapdata` array.
+    /// </summary>
     public void UpdateTilemap()
     {
+        for (int x = 0; x < mapsize.x; x++)
+        {
+            for (int y = 0; y < mapsize.y; y++)
+            {
+                Vector2Int pos = new Vector2Int(x, y);
 
+                UpdateTile(mapdata[x, y], pos);
+            }
+        }
     }
 
     /// <summary>
     /// Update an individual tile on the tilemap to what it should be based on the `mapdata` array.
     /// </summary>
-    public void UpdateTile()
+    public void UpdateTile(TData tile, Vector2Int pos)
     {
+        // 1. Figure out what we actually need to display
+        Tile display = null;
 
+        // (ASCII Mode check)
+        bool ASCII = GlobalSettings.inst.settings.asciiMode;
+
+        if (tile.top != null) // Is there anything on the top?
+        {
+            // Display the top
+            GameObject top = tile.top;
+            // Since this is a top object, it can be a couple things:
+            // -ACCESS
+            // ? machine ?
+
+            // (This may change later)
+            if (top.GetComponent<AccessObject>())
+            {
+                AccessObject ao = top.GetComponent<AccessObject>();
+                if (ASCII)
+                {
+                    display = top.GetComponent<TileBlock>().tileInfo.asciiRep;
+                }
+                else
+                {
+                    display = top.GetComponent<TileBlock>().tileInfo.displaySprite;
+                }
+                display.color = top.GetComponent<TileBlock>().tileInfo.asciiColor;
+            }
+        }
+        else
+        {
+            // Display the bottom instead
+            TileBlock bottom = tile.bottom;
+            // Since this is a TileBlock, it can be a:
+            // -Floor
+            // -Wall
+            // -Door
+
+            // We need to determine what actually the sprite should be, cause it could be damaged, or in an alternate state
+            switch (bottom.tileInfo.type)
+            {
+                case TileType.Floor:
+                    // Is this destroyed?
+                    if (bottom.damaged)
+                    {
+                        display = bottom.tileInfo.destroyedSprite;
+                    }
+                    else
+                    {
+                        // Not destroyed (normal)
+                        if (ASCII)
+                        {
+                            display = bottom.tileInfo.asciiRep;
+                        }
+                        else
+                        {
+                            display = bottom.tileInfo.displaySprite;
+                        }
+                    }
+
+                    // And color
+                    display.color = bottom.tileInfo.asciiColor;
+                    break;
+                case TileType.Wall:
+                    // Is this destroyed?
+                    if (bottom.damaged)
+                    {
+                        if (ASCII)
+                        {
+                            display = bottom.tileInfo.altSprite; // (In this case, the alt sprite acts as the destroyed sprite while in ASCII mode)
+                        }
+                        else
+                        {
+                            display = bottom.tileInfo.destroyedSprite;
+                        }
+                    }
+                    else
+                    {
+                        // Not destroyed (normal)
+                        if (ASCII)
+                        {
+                            display = bottom.tileInfo.asciiRep;
+                        }
+                        else
+                        {
+                            display = bottom.tileInfo.displaySprite;
+                        }
+                    }
+
+                    // And color
+                    display.color = bottom.tileInfo.asciiColor;
+                    break;
+                case TileType.Door:
+                    // Is this destroyed?
+                    if (bottom.damaged)
+                    {
+                        if (ASCII)
+                        { // ";" character
+                            display = bottom.tileInfo.asciiDestroyed;
+                        }
+                        else
+                        { // Destroyed door sprite
+                            display = bottom.tileInfo.destroyedSprite;
+                        }
+                    }
+                    else
+                    {
+                        // Not destroyed (normal)
+                        if (ASCII)
+                        {
+                            if (bottom.door_open)
+                            { // "/" character
+                                display = bottom.tileInfo.asciiAltSprite;
+                            }
+                            else
+                            { // "+" character
+                                display = bottom.tileInfo.asciiRep;
+                            }
+                        }
+                        else
+                        {
+                            if (bottom.door_open)
+                            { // open sprite
+                                display = bottom.tileInfo.altSprite;
+                            }
+                            else
+                            { // closed sprite
+                                display = bottom.tileInfo.displaySprite;
+                            }
+                        }
+                    }
+                    break;
+                case TileType.Machine: // unused
+                    break;
+                case TileType.Exit: // unused
+                    break;
+                case TileType.Default: // unused
+                    break;
+                default:
+                    Debug.LogError($"ERROR: {bottom} at {pos} has no type!");
+                    break;
+            }
+
+        }
+
+        // 2. Update the tilemap at this position
+        tilemap.SetTile((Vector3Int)pos, display);
     }
     #endregion
 
@@ -1206,13 +1366,14 @@ public class MapManager : MonoBehaviour
 
                 int _target = int.Parse(exitTarget);
 
+                Vector2Int location = HF.V3_to_V2I(spawnLocation);
                 if (exitType.Contains("Branch"))
                 {
-                    PlaceLevelExit(HF.V3_to_V2I(spawnLocation), true, _target);
+                    mapdata[location.x, location.y].top = PlaceLevelExit(location, true, _target).gameObject;
                 }
                 else // Stairs (up)
                 {
-                    PlaceLevelExit(HF.V3_to_V2I(spawnLocation), false, _target);
+                    mapdata[location.x, location.y].top = PlaceLevelExit(location, false, _target).gameObject;
                 }
 
             }
@@ -1436,62 +1597,27 @@ public class MapManager : MonoBehaviour
                 int exitIndex = Random.Range(0, exitLocations.Count);
                 Vector2Int exitLocation = exitLocations[exitIndex];
                 exitLocations.RemoveAt(exitIndex);
-                PlaceLevelExit(exitLocation, false, 0);
+                mapdata[exitLocation.x, exitLocation.y].top = PlaceLevelExit(exitLocation, false, 0).gameObject;
             }
         }
         else // Custom Maps
         {
-
         }
     }
 
-    public void PlaceLevelExit(Vector2Int loc, bool isBranch, int targetDestination) // Can be branch or +1 access
+    public TileBlock PlaceLevelExit(Vector2Int loc, bool isBranch, int targetDestination) // Can be branch or +1 access
     {
-        /*
-        int type = 6;
-        if (isBranch)
-        {
-            type = 7;
-        }
-        */
+        // Create the new tile
+        TileBlock newAccess = new TileBlock();
 
-        var spawnedAccess = Instantiate(_accessPrefab, new Vector3(loc.x * GridManager.inst.globalScale, loc.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
-        spawnedAccess.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
-        spawnedAccess.name = $"ACCESS {loc.x} {loc.y} - "; // Give grid based name
+        // Assign it information
+        newAccess.location = new Vector2Int((int)loc.x, (int)loc.y);
+        newAccess.isAccess = true;
+        newAccess.access_isBranch = isBranch;
+        newAccess.access_destination = targetDestination;
+        newAccess.tileInfo = !isBranch ? MapManager.inst.tileDatabase.Tiles[6] : MapManager.inst.tileDatabase.Tiles[7]; // [ACCESS_MAIN] / [ACCESS_BRANCH]
 
-        // Add details
-        spawnedAccess.GetComponent<AccessObject>().Setup(targetDestination, isBranch);
-
-        spawnedAccess.GetComponent<AccessObject>().isExplored = false;
-        spawnedAccess.GetComponent<AccessObject>().isVisible = false;
-
-        //spawnedAccess.GetComponent<AccessObject>().tileInfo = MapManager.inst.tileDatabase.Tiles[type]; // Assign tile data from database by ID
-        //spawnedAccess.GetComponent<TileBlock>().tileInfo = MapManager.inst.tileDatabase.Tiles[type]; // Dumb workaround
-
-        //FogOfWar.inst.unseenTiles.Add(spawnedAccess.GetComponent<TileBlock>()); // Add to unseen tiles
-
-        spawnedAccess.GetComponent<AccessObject>().locX = (int)loc.x; // Assign X location
-        spawnedAccess.GetComponent<AccessObject>().locY = (int)loc.y; // Assign Y location
-
-        TData T = _allTilesRealized[loc];
-
-        spawnedAccess.GetComponent<SpriteRenderer>().sortingOrder = 5; // +4 layer so not hidden in floor
-
-        GridManager.inst.grid[(int)loc.x, (int)loc.y] = spawnedAccess; // Fill grid
-
-        spawnedAccess.transform.parent = mapParent;
-
-        if (isBranch)
-        {
-            placedBranches.Add(spawnedAccess);
-        }
-        else
-        {
-            placedExits.Add(spawnedAccess);
-        }
-
-        T.top = spawnedAccess;
-        _allTilesRealized[loc] = T;
+        return newAccess;
     }
 
     #endregion
@@ -2483,9 +2609,9 @@ public class MapManager : MonoBehaviour
 
         // Place the exit randomly in the second room (target = Materials)
 
-        Vector2Int exitLoc = new Vector2Int(offset.x += Random.Range(4, 6), offset.y += Random.Range(1, 6));
+        Vector2Int exitLocation = new Vector2Int(offset.x += Random.Range(4, 6), offset.y += Random.Range(1, 6));
 
-        PlaceLevelExit(exitLoc, false, 0);
+        mapdata[exitLocation.x, exitLocation.y].top = PlaceLevelExit(exitLocation, false, 0).gameObject;
     }
 
 

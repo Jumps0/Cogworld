@@ -42,12 +42,22 @@ public class TileBlock : MonoBehaviour
     public bool walkable;
     [Tooltip("Is something currently occupying this space?")]
     public bool occupied = false;
+    [Tooltip("This tile has been damaged/destroyed, and is displaying a different sprite.")]
+    public bool damaged = false;
     public Vector2Int location;
 
     [Header("Variants")]
     public bool isDoor = false;
+    public bool isAccess = false;
     public bool isPhaseWall = false;
     public bool isImpassible = false;
+
+    [Header("Door")]
+    public bool door_open = false;
+
+    [Header("ACCESS")]
+    public int access_destination;
+    public bool access_isBranch = false;
 
     [Header("Visibility")]
     public bool isExplored;
@@ -310,6 +320,8 @@ public class TileBlock : MonoBehaviour
     /// </summary>
     public void DestroyMe()
     {
+        damaged = true;
+
         // Change the sprite
         this.GetComponent<SpriteRenderer>().sprite = tileInfo.destroyedSprite.sprite;
 
@@ -355,6 +367,8 @@ public class TileBlock : MonoBehaviour
     /// </summary>
     public void RepairMe()
     {
+        damaged = false;
+
         // Change the sprite
         this.GetComponent<SpriteRenderer>().sprite = tileInfo.displaySprite.sprite;
 
