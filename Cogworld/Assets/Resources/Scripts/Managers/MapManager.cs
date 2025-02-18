@@ -1125,7 +1125,15 @@ public class MapManager : MonoBehaviour
         */
 
         // Finally, update the tile
-        tilemap.SetColor((Vector3Int)pos, finalColor);
+        // NOTE: This is astoundingly stupid. The tilemap REFUSES to change the sprite's color when the sprite is identical to the current state.
+        //       So we need to do this dumb double update in order for it to listen.
+        Tile display = tile.tileInfo.asciiRep;
+        display.color = finalColor;
+        tilemap.SetTile((Vector3Int)pos, display);
+
+        display = tile.tileInfo.displaySprite;
+        display.color = finalColor;
+        tilemap.SetTile((Vector3Int)pos, display);
     }
     #endregion
 

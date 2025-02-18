@@ -77,8 +77,8 @@ public class FogOfWar : MonoBehaviour
                     tile.vis = 2;
                 }
 
-                // -- VISION UPDATE --
-                MapManager.inst.TileUpdateVis((Vector2Int)pos);
+                // Update the actual value
+                MapManager.inst.mapdata[pos.x, pos.y].vis = tile.vis;
 
                 // Last step: Remove unseen tiles
                 if (tileNoLongerVisible)
@@ -90,6 +90,15 @@ public class FogOfWar : MonoBehaviour
 
         // Update visibleTiles
         visibleTiles = allTiles;
+
+        // ~~ Lastly, update the display graphics of every tile ~~
+        for (int x = 0; x < MapManager.inst.mapsize.x; x++)
+        {
+            for (int y = 0; y < MapManager.inst.mapsize.y; y++)
+            {
+                MapManager.inst.TileUpdateVis(new Vector2Int(x, y));
+            }
+        }
     }
 
     public void SetEntityVisibility()
@@ -146,7 +155,7 @@ public class FogOfWar : MonoBehaviour
         }
     }
 
-    private bool debug_nofog = false;
+    [SerializeField] private bool debug_nofog = false;
     public void DEBUG_ToggleFog()
     {
         debug_nofog = !debug_nofog;
