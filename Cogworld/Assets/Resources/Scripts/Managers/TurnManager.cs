@@ -266,6 +266,9 @@ public class TurnManager : MonoBehaviour
     /// </summary>
     public void AllEntityVisUpdate(bool late = false)
     {
+        // TEMPORARILY DISABLED !!
+        return;
+
         if (late)
         {
             StartCoroutine(LateAllEntityVisUpdate());

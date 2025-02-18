@@ -489,3 +489,24 @@ public class TileBlock : MonoBehaviour
     }
     #endregion
 }
+
+/// <summary>
+/// Temporary double of TileBlock for testing and use in the Map rework.
+/// </summary>
+public struct WorldTile
+{
+    [Header("Info")]
+    public Vector2Int location;
+    public TileObject tileInfo;
+
+    [Header("States")]
+    public bool isDirty;
+    public bool isImpassible;
+    public bool damaged;
+    public bool door_open;
+
+    [Header("Variants")]
+    public bool isDoor;
+    public bool isAccess;
+    public bool isPhaseWall;
+}

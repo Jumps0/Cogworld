@@ -19,8 +19,10 @@ public struct TData
     public byte vis;
     [Tooltip("Usually a floor or wall.")]
     public TileBlock bottom;
+    public WorldTile bottomtemp; // will replace TileObject bottom later.
     [Tooltip("Any non-permanent entity. Machines, doors, etc.")]
     public GameObject top;
+
 }
 
 public class MapManager : MonoBehaviour
@@ -262,7 +264,7 @@ public class MapManager : MonoBehaviour
             }
         }
 
-        PlaceBranchNExits(); // Place exits (map type logic handled inside)
+        //PlaceBranchNExits(); // Place exits (map type logic handled inside)
 
         DrawBorder(); // Draw the border
 
@@ -591,7 +593,7 @@ public class MapManager : MonoBehaviour
             {
                 Vector2Int pos = new Vector2Int(x, y);
                 TData tile = new TData(); // New TData object
-                tile.bottom = CreateBlock(pos, HF.IDbyTheme(TileType.Floor)); // Place floor
+                tile.bottomtemp = CreateBlock(pos, HF.IDbyTheme(TileType.Floor)); // Place floor
                 tile.vis = 0; // Start hidden
                 mapdata[pos.x, pos.y] = tile;
             }
@@ -605,12 +607,12 @@ public class MapManager : MonoBehaviour
             Vector2Int posA = new Vector2Int(x, offset.y), posB = new Vector2Int(x, offset.y + 15);
 
             TData tileA = new TData(); // New TData object
-            tileA.bottom = CreateBlock(posA, wallID); // Place wall
+            tileA.bottomtemp = CreateBlock(posA, wallID); // Place wall
             tileA.vis = 0;
             mapdata[posA.x, posA.y] = tileA;
 
             TData tileB = new TData(); // New TData object
-            tileB.bottom = CreateBlock(posB, wallID); // Place wall
+            tileB.bottomtemp = CreateBlock(posB, wallID); // Place wall
             tileB.vis = 0;
             mapdata[posB.x, posB.y] = tileB;
         }
@@ -619,12 +621,12 @@ public class MapManager : MonoBehaviour
             Vector2Int posA = new Vector2Int(offset.x, y), posB = new Vector2Int(offset.x + 15, y);
 
             TData tileA = new TData(); // New TData object
-            tileA.bottom = CreateBlock(posA, wallID); // Place wall
+            tileA.bottomtemp = CreateBlock(posA, wallID); // Place wall
             tileA.vis = 0;
             mapdata[posA.x, posA.y] = tileA;
 
             TData tileB = new TData(); // New TData object
-            tileB.bottom = CreateBlock(posB, wallID); // Place wall
+            tileB.bottomtemp = CreateBlock(posB, wallID); // Place wall
             tileB.vis = 0;
             mapdata[posB.x, posB.y] = tileB;
         }
@@ -663,7 +665,7 @@ public class MapManager : MonoBehaviour
         foreach (Vector2Int P in wallPos)
         {
             TData tile = new TData(); // New TData object
-            tile.bottom = CreateBlock(P, wallID); // Place wall
+            tile.bottomtemp = CreateBlock(P, wallID); // Place wall
             tile.vis = 0;
             mapdata[P.x, P.y] = tile;
         }
@@ -684,7 +686,7 @@ public class MapManager : MonoBehaviour
         foreach (Vector2Int P in doorPos)
         {
             TData tile = new TData();
-            tile.bottom = CreateBlock(P, doorID); // Place door
+            tile.bottomtemp = CreateBlock(P, doorID); // Place door
             tile.vis = 0;
             mapdata[P.x, P.y] = tile;
         }
@@ -826,7 +828,8 @@ public class MapManager : MonoBehaviour
                     propulsion.Add(HF.FindItemOfTierAndType(1, ItemType.Legs, false));
                     propulsion.Add(HF.FindItemOfTierAndType(1, ItemType.Treads, false));
                     propulsion.Add(HF.FindItemOfTierAndType(1, ItemType.Treads, false));
-
+                    // TEMPORARILY DISABLED !!
+                    /*
                     string[] itemsToSpawn = 
                         { 
                           propulsion[0].itemName, propulsion[1].itemName, propulsion[2].itemName, propulsion[3].itemName, 
@@ -847,6 +850,7 @@ public class MapManager : MonoBehaviour
                     InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Exp. Targeting Computer", new Vector2Int(54, 57), 1, true)); // ONLY FOR TESTING. REMOVE LATER (Exp. Targeting Computer)
                     InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Hvy. Siege Treads", new Vector2Int(53, 57), 1, true)); // ONLY FOR TESTING. REMOVE LATER (Hvy. Siege Treads)
                     InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("EX Chip 1", new Vector2Int(52, 57), 1, true)); // ONLY FOR TESTING. REMOVE LATER (Ex. Chip 1)
+                    */
                 }
 
 
@@ -911,7 +915,10 @@ public class MapManager : MonoBehaviour
             {
                 Vector2Int pos = new Vector2Int(x, y);
 
-                UpdateTile(mapdata[x, y], pos);
+                if (!mapdata[x, y].bottomtemp.Equals(default(WorldTile)))
+                {
+                    UpdateTile(mapdata[x, y], pos);
+                }
             }
         }
     }
@@ -953,7 +960,7 @@ public class MapManager : MonoBehaviour
         else
         {
             // Display the bottom instead
-            TileBlock bottom = tile.bottom;
+            WorldTile bottom = tile.bottomtemp;
             // Since this is a TileBlock, it can be a:
             // -Floor
             // -Wall
@@ -1071,10 +1078,6 @@ public class MapManager : MonoBehaviour
     }
     #endregion
 
-    [Header("New MapGen Details")]
-    public int xOff = 0;
-    public int yOff = 0;
-
     [SerializeField] private Transform mapParent;
     [SerializeField] private Transform botParent;
     public void GenerateByGrid(TileCG[,] grid)
@@ -1092,7 +1095,7 @@ public class MapManager : MonoBehaviour
         {
             for (int y = 0; y < ySize; y++)
             {
-                CreateBlock(new Vector2(x + xOff, y + yOff), HF.IDbyTheme(HF.Tile_to_TileType(grid[x, y])));
+                CreateBlock(new Vector2(x, y), HF.IDbyTheme(HF.Tile_to_TileType(grid[x, y])));
             }
         }
     }
@@ -1181,7 +1184,7 @@ public class MapManager : MonoBehaviour
                     }
                 }
 
-                CreateBlock(new Vector2(tile.Key.x + xOff, tile.Key.y + yOff), HF.IDbyTheme(TileType.Floor), isTileDirty);
+                CreateBlock(new Vector2(tile.Key.x, tile.Key.y), HF.IDbyTheme(TileType.Floor), isTileDirty);
             }
             else if (tile.Value.tag == "Wall")
             {
@@ -1190,11 +1193,11 @@ public class MapManager : MonoBehaviour
                     string[] split = tile.Value.name.Split("*"); // we want right side
                     string tileName = split[1];
 
-                    CreateBlock(new Vector2(tile.Key.x + xOff, tile.Key.y + yOff), HF.GetTileByString(tileName).Id);
+                    CreateBlock(new Vector2(tile.Key.x, tile.Key.y), HF.GetTileByString(tileName).Id);
                 }
                 else // Generic themed wall tile
                 {
-                    CreateBlock(new Vector2(tile.Key.x + xOff, tile.Key.y + yOff), HF.IDbyTheme(TileType.Wall));
+                    CreateBlock(new Vector2(tile.Key.x, tile.Key.y), HF.IDbyTheme(TileType.Wall));
                 }
             }
         }
@@ -1202,7 +1205,7 @@ public class MapManager : MonoBehaviour
         // Then the doors
         foreach (KeyValuePair<Vector3, GameObject> tile in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().placedDoors.ToList())
         {
-            CreateBlock(new Vector2(tile.Key.x + xOff, tile.Key.y + yOff), HF.IDbyTheme(TileType.Door));
+            CreateBlock(new Vector2(tile.Key.x, tile.Key.y), HF.IDbyTheme(TileType.Door));
         }
 
         // And any pre-placed objects (mostly just machines)
@@ -1224,14 +1227,14 @@ public class MapManager : MonoBehaviour
                 */
 
                 // We need to place a floor tile below this (since its a layered object)
-                CreateBlock(new Vector2(obj.transform.position.x + xOff, obj.transform.position.y + yOff), HF.IDbyTheme(TileType.Floor));
+                CreateBlock(new Vector2(obj.transform.position.x, obj.transform.position.y), HF.IDbyTheme(TileType.Floor));
 
                 if (!obj.GetComponent<Actor>()) // Sometimes there are bots in here
                 {
                     // This is an awkward bypass instead of using .Add because for some reason neighboring machines get assigned the same key???
-                    TData T = _allTilesRealized[HF.V3_to_V2I(obj.transform.position + new Vector3(xOff, yOff, 0f))];
+                    TData T = _allTilesRealized[HF.V3_to_V2I(obj.transform.position)];
                     T.top = obj;
-                    _allTilesRealized[HF.V3_to_V2I(obj.transform.position + new Vector3(xOff, yOff, 0f))] = T;
+                    _allTilesRealized[HF.V3_to_V2I(obj.transform.position)] = T;
                 }
             }
         }
@@ -1249,7 +1252,7 @@ public class MapManager : MonoBehaviour
 
         foreach (GameObject obj in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().preInitObjects)
         {
-            Vector3 spawnLocation = obj.transform.position + new Vector3(xOff, yOff, 0f);
+            Vector3 spawnLocation = obj.transform.position;
             if (obj.tag.Contains("Item"))
             {
 
@@ -1353,7 +1356,7 @@ public class MapManager : MonoBehaviour
 
         foreach (GameObject obj in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().prePlacedObjects.ToList())
         {
-            Vector3 spawnLocation = obj.transform.position + new Vector3(xOff, yOff, 0f);
+            Vector3 spawnLocation = obj.transform.position;
 
             if (obj.tag.Contains("Access") || obj.gameObject.name.Contains("Access"))
             {
@@ -1473,43 +1476,45 @@ public class MapManager : MonoBehaviour
 
     private void DrawBorder()
     {
-        int xSize = mapsize.x;
-        int ySize = mapsize.y;
+        int xSize = mapsize.x - 1;
+        int ySize = mapsize.y - 1;
+        
+        // Go along the (x, 0) & (0, y) lines because we can't go negative in the array
 
-        for (int x = -1; x < xSize; x++) // Bottom lane & Top Lane
+        for (int x = 0; x < xSize; x++) // Bottom lane & Top Lane
         {
-            Vector2Int posA = new Vector2Int(x + xOff, -1 + yOff), posB = new Vector2Int(x + xOff, ySize + -1 + yOff);
+            Vector2Int posA = new Vector2Int(x, 0), posB = new Vector2Int(x, ySize);
 
             TData tileA = new TData(); // New TData object
-            tileA.bottom = CreateBlock(posA, 0); // Place impassible wall (0)
+            tileA.bottomtemp = CreateBlock(posA, 0); // Place impassible wall (0)
             tileA.vis = 2; // Start visible
             mapdata[posA.x, posA.y] = tileA;
 
             TData tileB = new TData(); // New TData object
-            tileB.bottom = CreateBlock(posB, 0); // Place impassible wall (0)
+            tileB.bottomtemp = CreateBlock(posB, 0); // Place impassible wall (0)
             tileB.vis = 2; // Start visible
             mapdata[posB.x, posB.y] = tileB;
         }
-        for (int y = -1; y < ySize; y++) // Left and Right Lanes
+        for (int y = 0; y < ySize; y++) // Left and Right Lanes
         {
-            Vector2Int posA = new Vector2Int(-1 + xOff, y + yOff), posB = new Vector2Int(xSize + -1 + xOff, y + yOff);
+            Vector2Int posA = new Vector2Int(0, y), posB = new Vector2Int(xSize, y);
 
             TData tileA = new TData(); // New TData object
-            tileA.bottom = CreateBlock(posA, 0); // Place impassible wall (0)
+            tileA.bottomtemp = CreateBlock(posA, 0); // Place impassible wall (0)
             tileA.vis = 2; // Start visible
             mapdata[posA.x, posA.y] = tileA;
 
             TData tileB = new TData(); // New TData object
-            tileB.bottom = CreateBlock(posB, 0); // Place impassible wall (0)
+            tileB.bottomtemp = CreateBlock(posB, 0); // Place impassible wall (0)
             tileB.vis = 2; // Start visible
             mapdata[posB.x, posB.y] = tileB;
         }
     }
 
-    private TileBlock CreateBlock(Vector2 pos, int id, bool dirty = false)
+    private WorldTile CreateBlock(Vector2 pos, int id, bool dirty = false)
     {
         // Create the new tile
-        TileBlock newTile = new TileBlock();
+        WorldTile newTile = new WorldTile();
 
         // Assign it information
         newTile.location = new Vector2Int((int)pos.x, (int)pos.y);
@@ -1542,10 +1547,10 @@ public class MapManager : MonoBehaviour
             {
                 Vector2Int pos = new Vector2Int(x, y);
 
-                if (mapdata[pos.x, pos.y].bottom == null) // Make sure not to overwrite anything
+                if (mapdata[pos.x, pos.y].bottomtemp.Equals(default(WorldTile))) // Make sure not to overwrite anything
                 {
                     TData tile = new TData(); // New TData object
-                    tile.bottom = CreateBlock(pos, id_override);
+                    tile.bottomtemp = CreateBlock(pos, id_override);
                     tile.vis = 0; // Start hidden
                     mapdata[pos.x, pos.y] = tile;
                 }
@@ -2564,7 +2569,7 @@ public class MapManager : MonoBehaviour
             {
                 pos = new Vector2Int(x + offset.x, y + offset.y);
                 TData tile = new TData(); // New TData object
-                tile.bottom = CreateBlock(pos, 4, Random.Range(0f, 1f) > 0.4f /*60% chance to be dirty*/); // Place floor (4)
+                tile.bottomtemp = CreateBlock(pos, 4, Random.Range(0f, 1f) > 0.4f /*60% chance to be dirty*/); // Place floor (4)
                 tile.vis = 0; // Start hidden
                 mapdata[pos.x, pos.y] = tile;
             }
@@ -2585,7 +2590,7 @@ public class MapManager : MonoBehaviour
             {
                 pos = new Vector2Int(x + offset.x, y + offset.y);
                 TData tile = new TData(); // New TData object
-                tile.bottom = CreateBlock(pos, 4, Random.Range(0f, 1f) > 0.4f /*60% chance to be dirty*/); // Place floor (4)
+                tile.bottomtemp = CreateBlock(pos, 4, Random.Range(0f, 1f) > 0.4f /*60% chance to be dirty*/); // Place floor (4)
                 tile.vis = 0; // Start hidden
                 mapdata[pos.x, pos.y] = tile;
             }
@@ -2601,7 +2606,7 @@ public class MapManager : MonoBehaviour
             {
                 pos = new Vector2Int(x + offset.x, y + offset.y);
                 TData tile = new TData(); // New TData object
-                tile.bottom = CreateBlock(pos, 4, Random.Range(0f, 1f) > 0.4f /*60% chance to be dirty*/); // Place floor (4)
+                tile.bottomtemp = CreateBlock(pos, 4, Random.Range(0f, 1f) > 0.4f /*60% chance to be dirty*/); // Place floor (4)
                 tile.vis = 0; // Start hidden
                 mapdata[pos.x, pos.y] = tile;
             }
@@ -2611,7 +2616,7 @@ public class MapManager : MonoBehaviour
 
         Vector2Int exitLocation = new Vector2Int(offset.x += Random.Range(4, 6), offset.y += Random.Range(1, 6));
 
-        mapdata[exitLocation.x, exitLocation.y].top = PlaceLevelExit(exitLocation, false, 0).gameObject;
+        //mapdata[exitLocation.x, exitLocation.y].top = PlaceLevelExit(exitLocation, false, 0).gameObject;
     }
 
 
