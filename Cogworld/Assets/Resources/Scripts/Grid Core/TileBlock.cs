@@ -498,15 +498,21 @@ public struct WorldTile
     [Header("Info")]
     public Vector2Int location;
     public TileObject tileInfo;
+    [Tooltip("There are 3 visibility states. 0 = UNSEEN/UNEXPLORED | 1 = UNSEEN/EXPLORED | 2 = SEEN/EXPLORED ")]
+    public byte vis; 
 
     [Header("States")]
     public bool isDirty;
     public bool isImpassible;
     public bool damaged;
-    public bool door_open;
 
     [Header("Variants")]
-    public bool isDoor;
-    public bool isAccess;
+    public TileType type;
+    [Header(" Door")]
+    public bool door_open;
+    [Header(" Access")]
+    public bool access_branch;
+    public int access_destination;
+    [Header(" Phase")]
     public bool isPhaseWall;
 }

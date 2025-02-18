@@ -930,7 +930,7 @@ public static class HF
                         UIManager.inst.CreateNewLogMessage("EXIT=UNLOCKED: GARRISON", UIManager.inst.infoBlue, UIManager.inst.dullGreen, true);
                         // 3. Spawn an exit to garrison underneath the player, and ensure that the exit notification appears
                         Vector2Int loc = HF.V3_to_V2I(UIManager.inst.terminal_targetTerm.GetComponent<Garrison>().ejectionSpot.transform.position);
-                        MapManager.inst.mapdata[loc.x, loc.y].top = MapManager.inst.PlaceLevelExit(loc, true, 4).gameObject;
+                        MapManager.inst.mapdata[loc.x, loc.y] = MapManager.inst.PlaceLevelExit(loc, true, 4);
                         UIManager.inst.terminal_targetTerm.GetComponent<Garrison>().Open(); // Also let the garrison know
                                                                                             // 4. Print out in deep info blue (no time) "Access door unlocked."
                         return "Access door unlocked.";

@@ -11,6 +11,7 @@ public enum TileType
     Door,
     Machine,
     Exit,
+    Phasewall,
     Default
 }
 

@@ -13,13 +13,13 @@ using Random = UnityEngine.Random;
 /// </summary>
 public struct TData
 {
+    // NOTE: IM WILL REPLACE THIS IN THE MAPDATA ARRAY WITH JUST WORLDTILE SINCE IT CAN BE ALL IN ONE NOW.
     /// <summary>
     /// There are 3 visibility states. 0 = UNSEEN/UNEXPLORED | 1 = UNSEEN/EXPLORED | 2 = SEEN/EXPLORED 
     /// </summary>
     public byte vis;
     [Tooltip("Usually a floor or wall.")]
     public TileBlock bottom;
-    public WorldTile bottomtemp; // will replace TileObject bottom later.
     [Tooltip("Any non-permanent entity. Machines, doors, etc.")]
     public GameObject top;
 
@@ -89,7 +89,7 @@ public class MapManager : MonoBehaviour
     [Header("Key Information")]
     public Dictionary<Vector2Int, TData> _allTilesRealized = new Dictionary<Vector2Int, TData>(); // ~ This stuff is VERY important, but its coded poorly. Lets re-do it!
     [Tooltip("Contains all data related to the map.")]
-    public TData[,] mapdata;
+    public WorldTile[,] mapdata;
     [Tooltip("The official size of the generated map.")]
     public Vector2Int mapsize;
     //
@@ -170,7 +170,7 @@ public class MapManager : MonoBehaviour
             mapsize.y = DungeonGenerator._dungeon.GetLength(1);
 
             // !! Initialize the mapdata array
-            mapdata = new TData[mapsize.x, mapsize.y];
+            mapdata = new WorldTile[mapsize.x, mapsize.y];
 
             GenerateByGrid(DungeonGenerator._dungeon);
             
@@ -183,7 +183,7 @@ public class MapManager : MonoBehaviour
                 yield return null; // Wait for loading to finish...
 
             // !! Initialize the mapdata array
-            mapdata = new TData[mapsize.x, mapsize.y];
+            mapdata = new WorldTile[mapsize.x, mapsize.y];
 
             GenerateByCTR();
             yield return null;
@@ -195,7 +195,7 @@ public class MapManager : MonoBehaviour
                 case -1: // Starting cave
                     // !! Initialize the mapdata array
                     mapsize = new Vector2Int(120, 120);
-                    mapdata = new TData[mapsize.x, mapsize.y];
+                    mapdata = new WorldTile[mapsize.x, mapsize.y];
                     break;
                 case 0: // EXILEs cave
                     DungeonManagerCTR.instance.doDungeonGen = true;
@@ -204,7 +204,7 @@ public class MapManager : MonoBehaviour
                         yield return null; // Wait for loading to finish...
 
                     // !! Initialize the mapdata array
-                    mapdata = new TData[mapsize.x, mapsize.y];
+                    mapdata = new WorldTile[mapsize.x, mapsize.y];
 
                     GenerateByCTR();
                     yield return null;
@@ -592,10 +592,8 @@ public class MapManager : MonoBehaviour
             for (int y = 0 + offset.y; y < 20 + offset.y; y++)
             {
                 Vector2Int pos = new Vector2Int(x, y);
-                TData tile = new TData(); // New TData object
-                tile.bottomtemp = CreateBlock(pos, HF.IDbyTheme(TileType.Floor)); // Place floor
-                tile.vis = 0; // Start hidden
-                mapdata[pos.x, pos.y] = tile;
+
+                mapdata[pos.x, pos.y] = CreateBlock(pos, HF.IDbyTheme(TileType.Floor)); // Place floor
             }
         }
 
@@ -606,29 +604,17 @@ public class MapManager : MonoBehaviour
         {
             Vector2Int posA = new Vector2Int(x, offset.y), posB = new Vector2Int(x, offset.y + 15);
 
-            TData tileA = new TData(); // New TData object
-            tileA.bottomtemp = CreateBlock(posA, wallID); // Place wall
-            tileA.vis = 0;
-            mapdata[posA.x, posA.y] = tileA;
+            mapdata[posA.x, posA.y] = CreateBlock(posA, wallID); // Place wall
 
-            TData tileB = new TData(); // New TData object
-            tileB.bottomtemp = CreateBlock(posB, wallID); // Place wall
-            tileB.vis = 0;
-            mapdata[posB.x, posB.y] = tileB;
+            mapdata[posB.x, posB.y] = CreateBlock(posB, wallID); // Place wall
         }
         for (int y = 1 + offset.y; y < 15 + offset.y; y++)
         {
             Vector2Int posA = new Vector2Int(offset.x, y), posB = new Vector2Int(offset.x + 15, y);
 
-            TData tileA = new TData(); // New TData object
-            tileA.bottomtemp = CreateBlock(posA, wallID); // Place wall
-            tileA.vis = 0;
-            mapdata[posA.x, posA.y] = tileA;
+            mapdata[posA.x, posA.y] = CreateBlock(posA, wallID); // Place wall
 
-            TData tileB = new TData(); // New TData object
-            tileB.bottomtemp = CreateBlock(posB, wallID); // Place wall
-            tileB.vis = 0;
-            mapdata[posB.x, posB.y] = tileB;
+            mapdata[posB.x, posB.y] = CreateBlock(posB, wallID); // Place wall
         }
 
 
@@ -664,10 +650,7 @@ public class MapManager : MonoBehaviour
 
         foreach (Vector2Int P in wallPos)
         {
-            TData tile = new TData(); // New TData object
-            tile.bottomtemp = CreateBlock(P, wallID); // Place wall
-            tile.vis = 0;
-            mapdata[P.x, P.y] = tile;
+            mapdata[P.x, P.y] = CreateBlock(P, wallID); // Place wall
         }
 
         // 4 - Place the doors (hardcoded for now)
@@ -685,10 +668,7 @@ public class MapManager : MonoBehaviour
 
         foreach (Vector2Int P in doorPos)
         {
-            TData tile = new TData();
-            tile.bottomtemp = CreateBlock(P, doorID); // Place door
-            tile.vis = 0;
-            mapdata[P.x, P.y] = tile;
+            mapdata[P.x, P.y] = CreateBlock(P, doorID); // Place door
         }
 
         // 5 - Place custom machines
@@ -915,7 +895,7 @@ public class MapManager : MonoBehaviour
             {
                 Vector2Int pos = new Vector2Int(x, y);
 
-                if (!mapdata[x, y].bottomtemp.Equals(default(WorldTile)))
+                if (!mapdata[x, y].Equals(default(WorldTile)))
                 {
                     UpdateTile(mapdata[x, y], pos);
                 }
@@ -926,7 +906,7 @@ public class MapManager : MonoBehaviour
     /// <summary>
     /// Update an individual tile on the tilemap to what it should be based on the `mapdata` array.
     /// </summary>
-    public void UpdateTile(TData tile, Vector2Int pos)
+    public void UpdateTile(WorldTile tile, Vector2Int pos)
     {
         // 1. Figure out what we actually need to display
         Tile display = null;
@@ -934,143 +914,120 @@ public class MapManager : MonoBehaviour
         // (ASCII Mode check)
         bool ASCII = GlobalSettings.inst.settings.asciiMode;
 
-        if (tile.top != null) // Is there anything on the top?
+        switch (tile.tileInfo.type)
         {
-            // Display the top
-            GameObject top = tile.top;
-            // Since this is a top object, it can be a couple things:
-            // -ACCESS
-            // ? machine ?
-
-            // (This may change later)
-            if (top.GetComponent<AccessObject>())
-            {
-                AccessObject ao = top.GetComponent<AccessObject>();
-                if (ASCII)
+            case TileType.Floor:
+                // Is this destroyed?
+                if (tile.damaged)
                 {
-                    display = top.GetComponent<TileBlock>().tileInfo.asciiRep;
+                    display = tile.tileInfo.destroyedSprite;
                 }
                 else
                 {
-                    display = top.GetComponent<TileBlock>().tileInfo.displaySprite;
+                    // Not destroyed (normal)
+                    if (ASCII)
+                    {
+                        display = tile.tileInfo.asciiRep;
+                    }
+                    else
+                    {
+                        display = tile.tileInfo.displaySprite;
+                    }
                 }
-                display.color = top.GetComponent<TileBlock>().tileInfo.asciiColor;
-            }
-        }
-        else
-        {
-            // Display the bottom instead
-            WorldTile bottom = tile.bottomtemp;
-            // Since this is a TileBlock, it can be a:
-            // -Floor
-            // -Wall
-            // -Door
 
-            // We need to determine what actually the sprite should be, cause it could be damaged, or in an alternate state
-            switch (bottom.tileInfo.type)
-            {
-                case TileType.Floor:
-                    // Is this destroyed?
-                    if (bottom.damaged)
+                // And color
+                display.color = tile.tileInfo.asciiColor;
+                break;
+            case TileType.Wall:
+                // Is this destroyed?
+                if (tile.damaged)
+                {
+                    if (ASCII)
                     {
-                        display = bottom.tileInfo.destroyedSprite;
+                        display = tile.tileInfo.altSprite; // (In this case, the alt sprite acts as the destroyed sprite while in ASCII mode)
                     }
                     else
                     {
-                        // Not destroyed (normal)
-                        if (ASCII)
-                        {
-                            display = bottom.tileInfo.asciiRep;
-                        }
-                        else
-                        {
-                            display = bottom.tileInfo.displaySprite;
-                        }
+                        display = tile.tileInfo.destroyedSprite;
                     }
-
-                    // And color
-                    display.color = bottom.tileInfo.asciiColor;
-                    break;
-                case TileType.Wall:
-                    // Is this destroyed?
-                    if (bottom.damaged)
+                }
+                else
+                {
+                    // Not destroyed (normal)
+                    if (ASCII)
                     {
-                        if (ASCII)
-                        {
-                            display = bottom.tileInfo.altSprite; // (In this case, the alt sprite acts as the destroyed sprite while in ASCII mode)
-                        }
-                        else
-                        {
-                            display = bottom.tileInfo.destroyedSprite;
-                        }
+                        display = tile.tileInfo.asciiRep;
                     }
                     else
                     {
-                        // Not destroyed (normal)
-                        if (ASCII)
-                        {
-                            display = bottom.tileInfo.asciiRep;
-                        }
-                        else
-                        {
-                            display = bottom.tileInfo.displaySprite;
-                        }
+                        display = tile.tileInfo.displaySprite;
                     }
+                }
 
-                    // And color
-                    display.color = bottom.tileInfo.asciiColor;
-                    break;
-                case TileType.Door:
-                    // Is this destroyed?
-                    if (bottom.damaged)
+                // And color
+                display.color = tile.tileInfo.asciiColor;
+                break;
+            case TileType.Door:
+                // Is this destroyed?
+                if (tile.damaged)
+                {
+                    if (ASCII)
+                    { // ";" character
+                        display = tile.tileInfo.asciiDestroyed;
+                    }
+                    else
+                    { // Destroyed door sprite
+                        display = tile.tileInfo.destroyedSprite;
+                    }
+                }
+                else
+                {
+                    // Not destroyed (normal)
+                    if (ASCII)
                     {
-                        if (ASCII)
-                        { // ";" character
-                            display = bottom.tileInfo.asciiDestroyed;
+                        if (tile.door_open)
+                        { // "/" character
+                            display = tile.tileInfo.asciiAltSprite;
                         }
                         else
-                        { // Destroyed door sprite
-                            display = bottom.tileInfo.destroyedSprite;
+                        { // "+" character
+                            display = tile.tileInfo.asciiRep;
                         }
                     }
                     else
                     {
-                        // Not destroyed (normal)
-                        if (ASCII)
-                        {
-                            if (bottom.door_open)
-                            { // "/" character
-                                display = bottom.tileInfo.asciiAltSprite;
-                            }
-                            else
-                            { // "+" character
-                                display = bottom.tileInfo.asciiRep;
-                            }
+                        if (tile.door_open)
+                        { // open sprite
+                            display = tile.tileInfo.altSprite;
                         }
                         else
-                        {
-                            if (bottom.door_open)
-                            { // open sprite
-                                display = bottom.tileInfo.altSprite;
-                            }
-                            else
-                            { // closed sprite
-                                display = bottom.tileInfo.displaySprite;
-                            }
+                        { // closed sprite
+                            display = tile.tileInfo.displaySprite;
                         }
                     }
-                    break;
-                case TileType.Machine: // unused
-                    break;
-                case TileType.Exit: // unused
-                    break;
-                case TileType.Default: // unused
-                    break;
-                default:
-                    Debug.LogError($"ERROR: {bottom} at {pos} has no type!");
-                    break;
-            }
-
+                }
+                break;
+            case TileType.Machine:
+                // TODO
+                break;
+            case TileType.Exit:
+                if (ASCII)
+                {
+                    display = tile.tileInfo.asciiRep;
+                }
+                else
+                {
+                    display = tile.tileInfo.displaySprite;
+                }
+                display.color = tile.tileInfo.asciiColor;
+                break;
+            case TileType.Phasewall:
+                // TODO
+                break;
+            case TileType.Default:
+                break;
+            default:
+                break;
         }
 
         // 2. Update the tilemap at this position
@@ -1372,11 +1329,11 @@ public class MapManager : MonoBehaviour
                 Vector2Int location = HF.V3_to_V2I(spawnLocation);
                 if (exitType.Contains("Branch"))
                 {
-                    mapdata[location.x, location.y].top = PlaceLevelExit(location, true, _target).gameObject;
+                    mapdata[location.x, location.y] = PlaceLevelExit(location, true, _target);
                 }
                 else // Stairs (up)
                 {
-                    mapdata[location.x, location.y].top = PlaceLevelExit(location, false, _target).gameObject;
+                    mapdata[location.x, location.y] = PlaceLevelExit(location, false, _target);
                 }
 
             }
@@ -1485,29 +1442,17 @@ public class MapManager : MonoBehaviour
         {
             Vector2Int posA = new Vector2Int(x, 0), posB = new Vector2Int(x, ySize);
 
-            TData tileA = new TData(); // New TData object
-            tileA.bottomtemp = CreateBlock(posA, 0); // Place impassible wall (0)
-            tileA.vis = 2; // Start visible
-            mapdata[posA.x, posA.y] = tileA;
+            mapdata[posA.x, posA.y] = CreateBlock(posA, 0); // Place impassible wall (0)
 
-            TData tileB = new TData(); // New TData object
-            tileB.bottomtemp = CreateBlock(posB, 0); // Place impassible wall (0)
-            tileB.vis = 2; // Start visible
-            mapdata[posB.x, posB.y] = tileB;
+            mapdata[posB.x, posB.y] = CreateBlock(posB, 0); // Place impassible wall (0)
         }
         for (int y = 0; y < ySize; y++) // Left and Right Lanes
         {
             Vector2Int posA = new Vector2Int(0, y), posB = new Vector2Int(xSize, y);
 
-            TData tileA = new TData(); // New TData object
-            tileA.bottomtemp = CreateBlock(posA, 0); // Place impassible wall (0)
-            tileA.vis = 2; // Start visible
-            mapdata[posA.x, posA.y] = tileA;
+            mapdata[posA.x, posA.y] = CreateBlock(posA, 0); // Place impassible wall (0)
 
-            TData tileB = new TData(); // New TData object
-            tileB.bottomtemp = CreateBlock(posB, 0); // Place impassible wall (0)
-            tileB.vis = 2; // Start visible
-            mapdata[posB.x, posB.y] = tileB;
+            mapdata[posB.x, posB.y] = CreateBlock(posB, 0); // Place impassible wall (0)
         }
     }
 
@@ -1522,19 +1467,19 @@ public class MapManager : MonoBehaviour
 
         newTile.isDirty = dirty;
 
+        // Visibility (start hidden)
+        newTile.vis = 0;
+
         // Variants check
         if(id == 0) // Impassible wall
         {
             newTile.isImpassible = true;
+            newTile.vis = 2; // Always visible
         }
         else
         {
-            if(newTile.tileInfo.type == TileType.Door) // Door
-            {
-                newTile.isDoor = true;
-            }
+            newTile.type = newTile.tileInfo.type;
         }
-        // phase wall?
 
         return newTile;
     }
@@ -1547,12 +1492,9 @@ public class MapManager : MonoBehaviour
             {
                 Vector2Int pos = new Vector2Int(x, y);
 
-                if (mapdata[pos.x, pos.y].bottomtemp.Equals(default(WorldTile))) // Make sure not to overwrite anything
+                if (mapdata[pos.x, pos.y].Equals(default(WorldTile))) // Make sure not to overwrite anything
                 {
-                    TData tile = new TData(); // New TData object
-                    tile.bottomtemp = CreateBlock(pos, id_override);
-                    tile.vis = 0; // Start hidden
-                    mapdata[pos.x, pos.y] = tile;
+                    mapdata[pos.x, pos.y] = CreateBlock(pos, id_override);
                 }
             }
         }
@@ -1602,7 +1544,7 @@ public class MapManager : MonoBehaviour
                 int exitIndex = Random.Range(0, exitLocations.Count);
                 Vector2Int exitLocation = exitLocations[exitIndex];
                 exitLocations.RemoveAt(exitIndex);
-                mapdata[exitLocation.x, exitLocation.y].top = PlaceLevelExit(exitLocation, false, 0).gameObject;
+                mapdata[exitLocation.x, exitLocation.y] = PlaceLevelExit(exitLocation, false, 0);
             }
         }
         else // Custom Maps
@@ -1610,17 +1552,18 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    public TileBlock PlaceLevelExit(Vector2Int loc, bool isBranch, int targetDestination) // Can be branch or +1 access
+    public WorldTile PlaceLevelExit(Vector2Int loc, bool isBranch, int targetDestination) // Can be branch or +1 access
     {
         // Create the new tile
-        TileBlock newAccess = new TileBlock();
+        WorldTile newAccess = new WorldTile();
 
         // Assign it information
         newAccess.location = new Vector2Int((int)loc.x, (int)loc.y);
-        newAccess.isAccess = true;
-        newAccess.access_isBranch = isBranch;
+        newAccess.access_branch = isBranch;
         newAccess.access_destination = targetDestination;
         newAccess.tileInfo = !isBranch ? MapManager.inst.tileDatabase.Tiles[6] : MapManager.inst.tileDatabase.Tiles[7]; // [ACCESS_MAIN] / [ACCESS_BRANCH]
+
+        newAccess.type = TileType.Exit;
 
         return newAccess;
     }
@@ -2568,10 +2511,7 @@ public class MapManager : MonoBehaviour
             for (int y = 0; y < 8; y++)
             {
                 pos = new Vector2Int(x + offset.x, y + offset.y);
-                TData tile = new TData(); // New TData object
-                tile.bottomtemp = CreateBlock(pos, 4, Random.Range(0f, 1f) > 0.4f /*60% chance to be dirty*/); // Place floor (4)
-                tile.vis = 0; // Start hidden
-                mapdata[pos.x, pos.y] = tile;
+                mapdata[pos.x, pos.y] = CreateBlock(pos, 4, Random.Range(0f, 1f) > 0.4f /*60% chance to be dirty*/); // Place floor (4)
             }
         }
 
@@ -2589,10 +2529,7 @@ public class MapManager : MonoBehaviour
             for (int y = 0; y < 2; y++)
             {
                 pos = new Vector2Int(x + offset.x, y + offset.y);
-                TData tile = new TData(); // New TData object
-                tile.bottomtemp = CreateBlock(pos, 4, Random.Range(0f, 1f) > 0.4f /*60% chance to be dirty*/); // Place floor (4)
-                tile.vis = 0; // Start hidden
-                mapdata[pos.x, pos.y] = tile;
+                mapdata[pos.x, pos.y] = CreateBlock(pos, 4, Random.Range(0f, 1f) > 0.4f /*60% chance to be dirty*/); // Place floor (4)
             }
         }
 
@@ -2605,10 +2542,7 @@ public class MapManager : MonoBehaviour
             for (int y = 0; y < 8; y++)
             {
                 pos = new Vector2Int(x + offset.x, y + offset.y);
-                TData tile = new TData(); // New TData object
-                tile.bottomtemp = CreateBlock(pos, 4, Random.Range(0f, 1f) > 0.4f /*60% chance to be dirty*/); // Place floor (4)
-                tile.vis = 0; // Start hidden
-                mapdata[pos.x, pos.y] = tile;
+                mapdata[pos.x, pos.y] = CreateBlock(pos, 4, Random.Range(0f, 1f) > 0.4f /*60% chance to be dirty*/); // Place floor (4)
             }
         }
 
