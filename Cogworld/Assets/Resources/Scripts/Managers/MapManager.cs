@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using static StructureCTR;
@@ -928,10 +929,22 @@ public class MapManager : MonoBehaviour
                     if (ASCII)
                     {
                         display = tile.tileInfo.asciiRep;
+
+                        // TODO - DIRTY!!
+                        if (tile.isDirty)
+                        {
+
+                        }
                     }
                     else
                     {
                         display = tile.tileInfo.displaySprite;
+
+                        // TODO - DIRTY!!
+                        if (tile.isDirty)
+                        {
+
+                        }
                     }
                 }
 
@@ -1032,6 +1045,87 @@ public class MapManager : MonoBehaviour
 
         // 2. Update the tilemap at this position
         tilemap.SetTile((Vector3Int)pos, display);
+    }
+
+    /// <summary>
+    /// Initial reveal animation for a single tile at a specified position
+    /// </summary>
+    public void TileInitialReveal(Vector2Int pos)
+    {
+        // TODO
+    }
+
+    /// <summary>
+    /// Sets the visibility of a tile at a specific position.
+    /// </summary>
+    /// <param name="pos">The position on the map of the tile to update.</param>
+    public void TileUpdateVis(Vector2Int pos)
+    {
+        WorldTile tile = mapdata[pos.x, pos.y];
+        byte update = tile.vis;
+        Color finalColor = Color.black;
+        Color visc_white = tile.tileInfo.asciiColor;
+        Color visc_gray = HF.GetDarkerColor(visc_white, 0.3f);
+
+        bool isExplored = false, isVisible = false;
+
+        if (update == 0) // UNSEEN/UNKNOWN
+        {
+            isExplored = false;
+            isVisible = false;
+        }
+        else if (update == 1) // UNSEEN/EXPLORED
+        {
+            isExplored = true;
+            isVisible = false;
+        }
+        else if (update == 2) // SEEN/EXPLORED
+        {
+            isExplored = true;
+            isVisible = true;
+        }
+
+        if (tile.revealedViaIntel)
+        {
+            if (!isVisible)
+            {
+                finalColor = UIManager.inst.dullGreen;
+            }
+        }
+        else
+        {
+            if (isVisible)
+            {
+                finalColor = visc_white;
+
+                tile.revealedViaIntel = false;
+            }
+            else if (isExplored && isVisible)
+            {
+                finalColor = visc_white;
+
+                tile.revealedViaIntel = false;
+            }
+            else if (isExplored && !isVisible)
+            {
+                finalColor = visc_gray;
+            }
+            else if (!isExplored)
+            {
+                finalColor = Color.black;
+            }
+        }
+
+        /* // No longer relevant?
+        // Part on top check
+        if (_partOnTop != null)
+        {
+            HF.SetGenericTileVis(_partOnTop.gameObject, update);
+        }
+        */
+
+        // Finally, update the tile
+        tilemap.SetColor((Vector3Int)pos, finalColor);
     }
     #endregion
 
@@ -1464,8 +1558,9 @@ public class MapManager : MonoBehaviour
         // Assign it information
         newTile.location = new Vector2Int((int)pos.x, (int)pos.y);
         newTile.tileInfo = MapManager.inst.tileDatabase.Tiles[id]; // Assign tile data from database by ID
-
+        newTile.doneRevealAnimation = false;
         newTile.isDirty = dirty;
+        newTile.revealedViaIntel = false;
 
         // Visibility (start hidden)
         newTile.vis = 0;

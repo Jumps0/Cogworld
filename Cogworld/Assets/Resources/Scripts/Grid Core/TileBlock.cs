@@ -499,7 +499,9 @@ public struct WorldTile
     public Vector2Int location;
     public TileObject tileInfo;
     [Tooltip("There are 3 visibility states. 0 = UNSEEN/UNEXPLORED | 1 = UNSEEN/EXPLORED | 2 = SEEN/EXPLORED ")]
-    public byte vis; 
+    public byte vis;
+    public bool doneRevealAnimation;
+    public bool revealedViaIntel;
 
     [Header("States")]
     public bool isDirty;
@@ -515,4 +517,8 @@ public struct WorldTile
     public int access_destination;
     [Header(" Phase")]
     public bool isPhaseWall;
+    [Tooltip("Which team can *use* this phase wall?")]
+    public BotAlignment phase_team;
+    [Tooltip("Has this phase wall been revealed to the player?")]
+    public bool phase_revealed;
 }

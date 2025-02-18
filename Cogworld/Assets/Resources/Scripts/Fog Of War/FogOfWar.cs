@@ -37,58 +37,48 @@ public class FogOfWar : MonoBehaviour
         // Go through all the tiles
         foreach (Vector3Int pos in allTiles.ToList())
         {
-            // Ensure that this tile is actually in the world dictionary
-            bool tileInDict = MapManager.inst._allTilesRealized.ContainsKey((Vector2Int)pos);
+            // Ensure that this tile is actually set
+            bool tileInDict = !MapManager.inst.mapdata[pos.x, pos.y].Equals(default(WorldTile));
 
             if (tileInDict)
             {
                 // Variables
-                TData data = MapManager.inst._allTilesRealized[(Vector2Int)pos];
-                TileBlock bottom = MapManager.inst._allTilesRealized[(Vector2Int)pos].bottom;
-                GameObject top = MapManager.inst._allTilesRealized[(Vector2Int)pos].top;
+                WorldTile tile = MapManager.inst.mapdata[pos.x, pos.y];
 
                 // Is this tile no longer visible?
                 bool tileNoLongerVisible = visibleTiles.Contains(pos) && !playerFOV.Contains(pos);
                 if (tileNoLongerVisible)
                 {
-                    data.vis = 1; // UNSEEN & EXPLORED
+                    tile.vis = 1; // UNSEEN & EXPLORED
                 }
 
                 // Is this tile in both lists? (No vis change)
                 bool tileStillVisible = visibleTiles.Contains(pos) && playerFOV.Contains(pos);
                 if (tileStillVisible)
                 {
-                    data.vis = 2; // SEEN & EXPLORED
+                    tile.vis = 2; // SEEN & EXPLORED
                 }
 
                 // We just saw this tile
                 bool tileNewlyVisible = !visibleTiles.Contains(pos) && playerFOV.Contains(pos);
                 if (tileNewlyVisible)
                 {
-                    data.vis = 2; // SEEN & EXPLORED
+                    tile.vis = 2; // SEEN & EXPLORED
 
                     // Do the reveal animation if needed
-                    if (!bottom.firstTimeRevealed)
-                        bottom.FirstTimeReveal();
+                    if (!tile.doneRevealAnimation)
+                        MapManager.inst.TileInitialReveal((Vector2Int)pos);
                 }
 
                 // !! DEBUG - NO FOG !!
                 if (debug_nofog)
                 {
                     // For full vision
-                    data.vis = 2;
+                    tile.vis = 2;
                 }
 
                 // -- VISION UPDATE --
-                // Update the vis since all changes has been made
-                MapManager.inst._allTilesRealized[(Vector2Int)pos] = data;
-
-                // Update the objects
-                byte final_vis = data.vis;
-                bottom.UpdateVis(final_vis); // Update the vis for the bottom
-
-                if (top != null) // And if it exists, update the vis for the top
-                    HF.SetGenericTileVis(top, final_vis);
+                MapManager.inst.TileUpdateVis((Vector2Int)pos);
 
                 // Last step: Remove unseen tiles
                 if (tileNoLongerVisible)

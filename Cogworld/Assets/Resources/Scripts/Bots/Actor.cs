@@ -837,9 +837,6 @@ public class Actor : Entity
 
     public void UpdateFieldOfView()
     {
-        // TEMPORARILY DISABLED !!!
-        return;
-
         Vector3 location = this.transform.position;
         Vector3Int gridPosition = new Vector3Int((int)location.x, (int)location.y, (int)location.z);
 

@@ -5755,9 +5755,9 @@ public static class HF
     /// <param name="actor">The actor in question.</param>
     /// <param name="tile">The phase wall tile (a wall).</param>
     /// <returns>True/false, if this wall should be see-through for this specific bot.</returns>
-    public static bool PhaseWallVisCheck(Actor actor, TileBlock tile)
+    public static bool PhaseWallVisCheck(Actor actor, WorldTile tile)
     {
-        return tile.phaseWallTeam == actor.myFaction;
+        return tile.phase_team == actor.myFaction || tile.phase_revealed;
     }
 
     public static (int intVal, float floatVal) ParseEffectStackingValues(List<SimplifiedItemEffect> list)

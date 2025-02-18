@@ -230,6 +230,11 @@ sealed class AdamMilVisibility : Visibility
         return VisLogic(new Vector2Int((int)nx, (int)ny));
     }
 
+    /// <summary>
+    /// Checks to see if a specific location should block vision (like a wall or closed door).
+    /// </summary>
+    /// <param name="loc">A location to check (Vector2Int).</param>
+    /// <returns>True/False if this location should block vision.</returns>
     bool VisLogic(Vector2Int loc)
     {
         // The following shouldn't block LOS:
@@ -237,13 +242,45 @@ sealed class AdamMilVisibility : Visibility
         // - Access
         // - Machines
         // - Doors (open!)
+        // - Bots
 
         // The following should block LOS:
         // - Doors (closed!)
         // - Walls
-        // - Bots
+        // - (Unrevealed OR Non-team) Phase walls
 
-        bool returnValue = true;
+        bool ret = true;
+
+        WorldTile tile = MapManager.inst.mapdata[loc.x, loc.y];
+
+        switch (tile.type)
+        {
+            case TileType.Floor: // Floors don't block vision
+                ret = false;
+                break;
+            case TileType.Wall: // Walls block vision
+                ret = true;
+                break;
+            case TileType.Door: // Doors do or don't block based on their state
+                ret = !tile.door_open;
+                break;
+            case TileType.Machine: // Machines don't block vision
+                ret = false;
+                break;
+            case TileType.Exit: // Exits don't block vision
+                ret = false;
+                break;
+            case TileType.Phasewall:
+                ret = !HF.PhaseWallVisCheck(myActor, tile);
+                break;
+            case TileType.Default:
+                Debug.LogWarning($"{tile} has no type!");
+                ret = false;
+                break;
+        }
+
+        #region OLD CODE
+        /*
         TileBlock _tile = null;
         AccessObject _access = null;
         MachinePart _machine = null;
@@ -335,10 +372,10 @@ sealed class AdamMilVisibility : Visibility
                 returnValue = false; // Don't block vision
                 break;
         }
+        */
+        #endregion
 
-        
-
-        return returnValue;
+        return ret;
     }
 
     void SetVisible(uint x, uint y, uint octant, Vector3Int origin, List<Vector3Int> fieldOfView)

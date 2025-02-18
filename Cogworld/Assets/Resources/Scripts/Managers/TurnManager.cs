@@ -266,9 +266,6 @@ public class TurnManager : MonoBehaviour
     /// </summary>
     public void AllEntityVisUpdate(bool late = false)
     {
-        // TEMPORARILY DISABLED !!
-        return;
-
         if (late)
         {
             StartCoroutine(LateAllEntityVisUpdate());
@@ -278,7 +275,8 @@ public class TurnManager : MonoBehaviour
             foreach (Actor A in actors)
             {
                 A.UpdateFieldOfView();
-                A.UpdateVis(MapManager.inst._allTilesRealized[HF.V3_to_V2I(A.transform.position)].vis);
+                Vector2Int pos = HF.V3_to_V2I(A.transform.position);
+                A.UpdateVis(MapManager.inst.mapdata[pos.x, pos.y].vis);
             }
         }
     }
@@ -290,7 +288,8 @@ public class TurnManager : MonoBehaviour
         foreach (Actor A in actors)
         {
             A.UpdateFieldOfView();
-            A.UpdateVis(MapManager.inst._allTilesRealized[HF.V3_to_V2I(A.transform.position)].vis);
+            Vector2Int pos = HF.V3_to_V2I(A.transform.position);
+            A.UpdateVis(MapManager.inst.mapdata[pos.x, pos.y].vis);
         }
     }
 
