@@ -15,7 +15,6 @@ public class Actor : Entity
     [SerializeField] private List<Vector3Int> fieldOfView;
 
     [Header("Details")]
-    public UnitAI AI;
     public BotObject botInfo;
     public Allegance allegances;
     public BotAlignment myFaction;
@@ -58,11 +57,6 @@ public class Actor : Entity
     #region Pre-setup
     private void OnValidate()
     {
-        if (GetComponent<UnitAI>())
-        {
-            AI = GetComponent<UnitAI>();
-        }
-
         if (botInfo != null)
         {
             if (_sprite != null && botInfo.displaySprite != null)
@@ -344,10 +338,8 @@ public class Actor : Entity
         // !! Assumes that this bot is a hostile one !!
 
         NewGoal(Action.V3_to_V2I(this.GetComponent<BotAI>().squadLeader.transform.position));
-        // Then move based on inputs from PF
-        Vector2Int moveToLocation = Action.NormalizeMovement(this.gameObject.transform, this.GetComponent<OrientedPhysics>().desiredPostion);
-        Vector2Int realPos = Action.V3_to_V2I(this.GetComponent<OrientedPhysics>().desiredPostion);
-
+            
+        /*
         if (MapManager.inst._allTilesRealized.ContainsKey(realPos) && HF.IsUnoccupiedTile(MapManager.inst._allTilesRealized[realPos].bottom))
         {
             Debug.Log("Move successful");
@@ -358,6 +350,7 @@ public class Actor : Entity
             //Debug.Log("Move failed {" + moveToLocation + "}");
             Action.SkipAction(this.GetComponent<Actor>());
         }
+        */
     }
 
     public void MoveToPatrolPoint()
@@ -380,9 +373,7 @@ public class Actor : Entity
         Vector2Int goal = this.GetComponent<GroupLeader>().route[this.GetComponent<GroupLeader>().pointInRoute];
         NewGoal(goal);
 
-        // Then move based on inputs from PF
-        Vector2Int moveToLocation = Action.NormalizeMovement(this.gameObject.transform, this.GetComponent<OrientedPhysics>().desiredPostion);
-        Vector2Int realPos = Action.V3_to_V2I(this.GetComponent<OrientedPhysics>().desiredPostion);
+        /*
 
         if (MapManager.inst._allTilesRealized.ContainsKey(realPos) && HF.IsUnoccupiedTile(MapManager.inst._allTilesRealized[realPos].bottom))
         {
@@ -392,6 +383,7 @@ public class Actor : Entity
         {
             Action.SkipAction(this.GetComponent<Actor>());
         }
+        */
     }
 
     public GameObject FindBestFleeLocation(GameObject target, GameObject entity, List<GameObject> validMoveLocations)
