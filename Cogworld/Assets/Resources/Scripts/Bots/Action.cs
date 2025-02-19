@@ -1159,38 +1159,38 @@ public static class Action
         }
 
         // We need to move away from the source
-        List<GameObject> neighbors = HF.FindNeighbors((int)target.transform.position.x, (int)target.transform.position.y);
+        List<WorldTile> neighbors = HF.FindNeighbors((int)target.transform.position.x, (int)target.transform.position.y);
 
-        List<GameObject> validMoveLocations = new List<GameObject>();
+        List<WorldTile> validMoveLocations = new List<WorldTile>();
 
         foreach (var T in neighbors)
         {
-            if (HF.IsUnoccupiedTile(T.GetComponent<TileBlock>()))
+            if (HF.IsUnoccupiedTile(T))
             {
                 validMoveLocations.Add(T);
             }
         }
 
-        GameObject moveLocation = target.GetComponent<Actor>().FindBestFleeLocation(source.gameObject, target.gameObject, validMoveLocations);
+        Vector2 moveLocation = target.GetComponent<Actor>().FindBestFleeLocation(source.gameObject, target.gameObject, validMoveLocations);
 
         if(moveLocation != null)
         {
             // Normalize move direction
             Vector2Int moveDir = new Vector2Int(0, 0);
-            if (moveLocation.transform.position.x > target.transform.position.x)
+            if (moveLocation.x > target.transform.position.x)
             {
                 moveDir.x++;
             }
-            else if (moveLocation.transform.position.x < target.transform.position.x)
+            else if (moveLocation.x < target.transform.position.x)
             {
                 moveDir.x--;
             }
 
-            if (moveLocation.transform.position.y > target.transform.position.y)
+            if (moveLocation.y > target.transform.position.y)
             {
                 moveDir.y++;
             }
-            else if (moveLocation.transform.position.y < target.transform.position.y)
+            else if (moveLocation.y < target.transform.position.y)
             {
                 moveDir.y--;
             }
@@ -1239,7 +1239,7 @@ public static class Action
         }
 
         Vector2Int pos = HF.V3_to_V2I(target.transform.position) + direction;
-        TileBlock firstAttemptTile = MapManager.inst._allTilesRealized[pos].bottom.GetComponent<TileBlock>();
+        WorldTile firstAttemptTile = MapManager.inst.mapdata[pos.x, pos.y];
 
         // Is the tile where we want to send the target unoccupied?
         if (HF.IsUnoccupiedTile(firstAttemptTile))
@@ -7143,7 +7143,7 @@ public static class Action
 
         // Lastly, if we can't legally move into that tile, just don't move
         Vector2 finalDirect = actorPos - loc;
-        if (HF.IsUnoccupiedTile(MapManager.inst._allTilesRealized[new Vector2Int((int)finalDirect.x, (int)finalDirect.y)].bottom))
+        if (HF.IsUnoccupiedTile(MapManager.inst.mapdata[(int)finalDirect.x, (int)finalDirect.y]))
         {
             finalDirect = Vector2.zero;
         }

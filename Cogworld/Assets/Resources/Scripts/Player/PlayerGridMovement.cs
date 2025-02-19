@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
+using static UnityEditor.FilePathAttribute;
 
 public class PlayerGridMovement : MonoBehaviour
 {
@@ -142,63 +143,54 @@ public class PlayerGridMovement : MonoBehaviour
 
         isMoving = true;
 
-        TileBlock currentTile = GetCurrentPlayerTile();
-        Vector2Int currentPos = currentTile.location;
-        Vector2Int moveTarget = new Vector2Int(currentTile.location.x + X, currentTile.location.y + Y); // This is where we want to move to
-        //Debug.Log("Want to move from: (" + currentX + "," + currentY + ") to " + moveTarget);
+        Vector2Int currentPos = HF.V3_to_V2I(PlayerData.inst.transform.position);
+        Vector2Int moveTarget = new Vector2Int(currentPos.x + X, currentPos.y + Y); // This is where we want to move to
 
         // -- Machine interaction detection --
         InteractableMachine machineInteraction = null;
 
-        if (MapManager.inst._allTilesRealized.ContainsKey(moveTarget) && MapManager.inst._allTilesRealized[moveTarget].top != null) // Is there a layered object here?
+        if (MapManager.inst.mapdata[moveTarget.x, moveTarget.y].type == TileType.Machine) // Tile is type of machine?
         {
+            // TODO, when machines have been reworked come back to this
+            Debug.LogWarning("Machine rework has not been completed yet!");
+            /*
             GameObject top = MapManager.inst._allTilesRealized[moveTarget].top;
             InteractableMachine interactable = HF.GetInteractableMachine(top);
             if (interactable != null) // Is there an interactable machine here?
             {
                 machineInteraction = interactable;
             }
+            */
         }
 
-        // -- Ordinary Movement to tiles / exits detection --
+        List<WorldTile> neighbors = HF.FindNeighbors(currentPos.x, currentPos.y);
 
-        List<GameObject> neighbors = HF.FindNeighbors(currentPos.x, currentPos.y);
+        WorldTile desiredDestinationTile = MapManager.inst.mapdata[0,0]; // Set as default value because later code requires one!
 
-        GameObject desiredDestinationTile = null;
-
-        foreach (GameObject t in neighbors) // Find which of the neighbors we want to try and move to.
+        foreach (WorldTile t in neighbors) // Find which of the neighbors we want to try and move to.
         {
-            Vector2Int pos = HF.V3_to_V2I(t.transform.position);
-            // Exits take priority
-            if (MapManager.inst._allTilesRealized.ContainsKey(pos) && MapManager.inst._allTilesRealized[pos].top != null && MapManager.inst._allTilesRealized[pos].top.GetComponent<AccessObject>())
+            Vector2Int pos = t.location;
+            if(moveTarget == pos)
             {
-                desiredDestinationTile = MapManager.inst._allTilesRealized[pos].top; // This is the one
-                break;
-            }
-            else if (t.GetComponent<TileBlock>())
-            {
-                if (t.GetComponent<TileBlock>().location == moveTarget) // This tile is the one we want to move to
-                {
-                    desiredDestinationTile = t; // This is the one
-                    break; // Stop looking
-                }
+                desiredDestinationTile = t;
             }
         }
 
         // ------------------------------------------------
 
-        if (desiredDestinationTile == null)
+        if (desiredDestinationTile.location == Vector2Int.zero)
         {
             Debug.LogError("ERROR: Desired destination tile for movement is null! <PlayerGridMovement.cs>");
             return;
         }
 
-        if (desiredDestinationTile.GetComponent<TileBlock>())
+        if (desiredDestinationTile.type != TileType.Exit)
         {
-            if (!desiredDestinationTile.GetComponent<TileBlock>().occupied) // Space is Clear (Move!)
+            if (!desiredDestinationTile.occupied) // Space is Clear (Move!)
             {
                 moveKeyHeld = Action.BumpAction(GetComponent<Actor>(), new Vector2(X, Y));
-
+                // TODO: HOW DO WE HANDLE TRAPS?
+                Debug.LogWarning("HOW DO WE HANDLE TRAPS???");
                 if (MapManager.inst._allTilesRealized.ContainsKey(moveTarget) && MapManager.inst._allTilesRealized[moveTarget].top != null && MapManager.inst._allTilesRealized[moveTarget].top.GetComponent<FloorTrap>())
                 {
                     // There is a trap here!
@@ -209,14 +201,14 @@ public class PlayerGridMovement : MonoBehaviour
                     }
                 }
             }
-            else if (!desiredDestinationTile.GetComponent<TileBlock>().occupied && desiredDestinationTile.GetComponent<TileBlock>().GetBotOnTop() == null) // "Invalid Move" (Blocked)
+            else
             {
                 UIManager.inst.ShowCenterMessageTop("Invalid move", Color.black, UIManager.inst.alertRed);
             }
         }
-        else if (desiredDestinationTile.GetComponent<AccessObject>()) // "About to Leave Area" (Walking into exit)
+        else // "About to Leave Area" (Walking into exit)
         {
-            ConfirmLeaveArea(desiredDestinationTile.GetComponent<AccessObject>());
+            ConfirmLeaveArea(desiredDestinationTile);
         }
 
         // -- Machine Interaction (Parsing) --
@@ -246,34 +238,12 @@ public class PlayerGridMovement : MonoBehaviour
         }
         // -----------------------------------------
 
-        // Kick (Bot in way, kick it)
-
-        // Crush (Bot in way, run it over)
-
-
-        // <Some Kind of Attack>
-
-        // <Use Something>
-
         isMoving = false;
     }
 
     public TileBlock GetCurrentPlayerTile()
     {
-
-
-        // - Not gonna lie, raycasting to find this sucks, it has a lot of issues and isn't that versitle.
-        /*
-        int layerMask = ~(LayerMask.GetMask("Player")); // Ignore player Layer
-
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.TransformDirection(Vector3.zero), 10f, layerMask);
-
-        if (hit && hit.collider.tag == "Tile")
-        {
-            return hit.collider.gameObject.GetComponent<TileBlock>(); // Success
-        }
-        //Debug.LogError("Failed to get current player tile.");
-        */
+        Debug.LogWarning("This function needs to be reworked!");
 
         // - So we do this instead
         Vector2Int pLoc = HF.V3_to_V2I(PlayerData.inst.transform.position); // Get player's location (to V2I)
@@ -292,12 +262,12 @@ public class PlayerGridMovement : MonoBehaviour
     [SerializeField] private bool confirmLeaveLevel = false;
     [SerializeField] private float leaveLevelCooldown = 5f;
 
-    private void ConfirmLeaveArea(AccessObject target)
+    private void ConfirmLeaveArea(WorldTile target)
     {
         if (confirmLeaveLevel)
         {
             // Already confirmed, time to leave!
-            MapManager.inst.ChangeMap(target.targetDestination, target.isBranch);
+            MapManager.inst.ChangeMap(target.access_destination, target.access_branch);
         }
         else // First time confirm
         {

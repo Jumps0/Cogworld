@@ -399,19 +399,6 @@ public class TileBlock : MonoBehaviour
 
     #endregion
 
-    public Actor GetBotOnTop()
-    {
-        foreach (var E in GameManager.inst.entities) // A bit more performance heavy but raycasting wasn't working
-        {
-            if (HF.V3_to_V2I(E.transform.position) == location)
-            {
-                return E.GetComponent<Actor>();
-            }
-        }
-
-        return null; // Failure
-    }
-
     #region Phase Wall
 
     /// <summary>
@@ -498,6 +485,7 @@ public struct WorldTile
     [Header("Info")]
     public Vector2Int location;
     public TileObject tileInfo;
+    public bool occupied;
     [Tooltip("There are 3 visibility states. 0 = UNSEEN/UNEXPLORED | 1 = UNSEEN/EXPLORED | 2 = SEEN/EXPLORED ")]
     public byte vis;
     public bool doneRevealAnimation;
@@ -521,4 +509,21 @@ public struct WorldTile
     public BotAlignment phase_team;
     [Tooltip("Has this phase wall been revealed to the player?")]
     public bool phase_revealed;
+
+    #region Destruction
+    public void SetDestroyed(bool destroyed)
+    {
+        damaged = destroyed;
+        occupied = destroyed; // (Careful with this, if we don't do the bot occupation check this will break things a bit)
+
+        if (destroyed)
+        {
+
+        }
+        else
+        {
+
+        }
+    }
+    #endregion
 }

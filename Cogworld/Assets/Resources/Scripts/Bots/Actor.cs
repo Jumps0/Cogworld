@@ -280,19 +280,19 @@ public class Actor : Entity
     //finds an empty tile for this actor to move to
     public void FindNewTile()
     {
-        List<GameObject> neighbors = HF.FindNeighbors(((int)transform.localPosition.x), ((int)transform.localPosition.y));
-        GameObject tile = null;
-        foreach (GameObject neighbor in neighbors)
+        List<WorldTile> neighbors = HF.FindNeighbors(((int)transform.localPosition.x), ((int)transform.localPosition.y));
+        Vector2Int newgoal = Vector2Int.zero;
+        foreach (WorldTile neighbor in neighbors)
         {
-            if (HF.IsUnoccupiedTile(neighbor.GetComponent<TileBlock>()))
+            if (HF.IsUnoccupiedTile(neighbor))
             {
-                tile = neighbor;
+                newgoal = neighbor.location;
             }
         }
 
-        if (tile != null)
+        if (newgoal != Vector2Int.zero)
         {
-            NewGoal(new Vector2Int(tile.GetComponent<TileBlock>().location.x, tile.GetComponent<TileBlock>().location.y));
+            NewGoal(newgoal);
         }
         else
         {
@@ -387,22 +387,25 @@ public class Actor : Entity
         */
     }
 
-    public GameObject FindBestFleeLocation(GameObject target, GameObject entity, List<GameObject> validMoveLocations)
+    public Vector2 FindBestFleeLocation(GameObject target, GameObject entity, List<WorldTile> validMoveLocations)
     {
-        GameObject bestLocation = null;
+        Vector2 bestLocation = Vector2.zero;
         float furthestDistance = 0f;
 
+        Vector2 entityPos = (Vector2)entity.transform.position;
+        Vector2 targetPos = (Vector2)target.transform.position;
+
         // Calculate the current distance between the entity and the target
-        float currentDistance = Vector3.Distance(entity.transform.position, target.transform.position);
+        float currentDistance = Vector2.Distance(entityPos, targetPos);
 
         // Loop through each valid move location
-        foreach (GameObject moveLocation in validMoveLocations)
+        foreach (WorldTile moveLocation in validMoveLocations)
         {
             // Calculate the distance between the move location and the target
-            float distanceFromTarget = Vector3.Distance(target.transform.position, moveLocation.transform.position);
+            float distanceFromTarget = Vector2.Distance(targetPos, moveLocation.location);
 
             // Calculate the distance between the entity and the move location
-            float distanceFromEntity = Vector3.Distance(entity.transform.position, moveLocation.transform.position);
+            float distanceFromEntity = Vector2.Distance(entityPos, moveLocation.location);
 
             // Calculate the new distance between the entity and the target if the entity moves to this location
             float newDistance = Mathf.Max(currentDistance - distanceFromEntity, 0f) + distanceFromTarget;
@@ -411,7 +414,7 @@ public class Actor : Entity
             if (newDistance > furthestDistance)
             {
                 // Set this location as the new best location and update the furthest distance
-                bestLocation = moveLocation;
+                bestLocation = moveLocation.location;
                 furthestDistance = newDistance;
             }
         }

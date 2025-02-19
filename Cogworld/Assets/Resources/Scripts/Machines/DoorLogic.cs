@@ -50,6 +50,7 @@ public class DoorLogic : MonoBehaviour
     /// </summary>
     public void StateCheck()
     {
+        /*
         bool botNearby = false;
         foreach (TileBlock T in activationTiles)
         {
@@ -74,6 +75,7 @@ public class DoorLogic : MonoBehaviour
                 Close();
             }
         }
+        */
     }
 
     public void Open()

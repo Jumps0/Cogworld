@@ -3801,51 +3801,45 @@ public static class HF
     /// <param name="X">Current X position on the grid.</param>
     /// <param name="Y">Current Y position on the grid.</param>
     /// <returns>Returns a list of *VALID* neighbors that exist.</returns>
-    public static List<GameObject> FindNeighbors(int X, int Y)
+    public static List<WorldTile> FindNeighbors(int X, int Y)
     {
-        // --
-        // Copied from "Astar.cs"
-        // --
-
-        // NOTE: I hate GridManager, the array sucks. We are going to use _allTilesRealized instead.
-
-        List<GameObject> neighbors = new List<GameObject>();
+        List<WorldTile> neighbors = new List<WorldTile>();
 
         // We want to include diagonals into this.
         if (X < MapManager.inst.mapsize.x - 1) // [ RIGHT ]
         {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X + 1, Y)].bottom.gameObject);
+            neighbors.Add(MapManager.inst.mapdata[X + 1, Y]);
         }
         if (X > 0) // [ LEFT ]
         {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X - 1, Y)].bottom.gameObject);
+            neighbors.Add(MapManager.inst.mapdata[X - 1, Y]);
         }
         if (Y < MapManager.inst.mapsize.y - 1) // [ UP ]
         {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X, Y + 1)].bottom.gameObject);
+            neighbors.Add(MapManager.inst.mapdata[X, Y + 1]);
         }
         if (Y > 0) // [ DOWN ]
         {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X, Y - 1)].bottom.gameObject);
+            neighbors.Add(MapManager.inst.mapdata[X, Y - 1]);
         }
         // -- 
         // Diagonals
         // --
         if (X < MapManager.inst.mapsize.x - 1 && Y < MapManager.inst.mapsize.y - 1) // [ UP-RIGHT ]
         {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X + 1, Y + 1)].bottom.gameObject);
+            neighbors.Add(MapManager.inst.mapdata[X + 1, Y + 1]);
         }
         if (Y < MapManager.inst.mapsize.y - 1 && X > 0) // [ UP-LEFT ]
         {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X - 1, Y + 1)].bottom.gameObject);
+            neighbors.Add(MapManager.inst.mapdata[X - 1, Y + 1]);
         }
         if (Y > 0 && X > 0) // [ DOWN-LEFT ]
         {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X - 1, Y - 1)].bottom.gameObject);
+            neighbors.Add(MapManager.inst.mapdata[X - 1, Y - 1]);
         }
         if (Y > 0 && X < MapManager.inst.mapsize.x - 1) // [ DOWN-RIGHT ]
         {
-            neighbors.Add(MapManager.inst._allTilesRealized[new Vector2Int(X + 1, Y - 1)].bottom.gameObject);
+            neighbors.Add(MapManager.inst.mapdata[X + 1, Y - 1]);
         }
 
         return neighbors;
@@ -4257,13 +4251,13 @@ public static class HF
         List<Vector2> valids = new List<Vector2>();
 
         // Get neighbors
-        List<GameObject> neighbors = HF.FindNeighbors((int)pos.x, (int)pos.y);
+        List<WorldTile> neighbors = HF.FindNeighbors((int)pos.x, (int)pos.y);
 
         foreach (var N in neighbors)
         {
-            if (HF.IsUnoccupiedTile(N.GetComponent<TileBlock>()))
+            if (HF.IsUnoccupiedTile(N))
             {
-                valids.Add(N.transform.position);
+                valids.Add(N.location);
             }
         }
 
@@ -4275,34 +4269,47 @@ public static class HF
     /// </summary>
     /// <param name="tile">The specified tile to check.</param>
     /// <returns></returns>
-    public static bool IsUnoccupiedTile(TileBlock tile)
+    public static bool IsUnoccupiedTile(WorldTile tile)
     {
-        if (tile.tileInfo.type == TileType.Wall)
-        {
-            return false;
-        }
+        bool ret = false;
 
-        if (MapManager.inst._allTilesRealized.ContainsKey(tile.location))
+        TileType type = tile.tileInfo.type;
+        switch (type)
         {
-            TData T = MapManager.inst._allTilesRealized[tile.location];
-            if (T.bottom.GetComponent<DoorLogic>()) // This is a door
-            {
-                return true;
-            }
-            else
-            {
+            case TileType.Floor: // No blocking at all (unless a bot is there which is checked later)
+                ret = false;
+                break;
+            case TileType.Wall: // Always blocks (unless destroyed)
+                ret = !tile.damaged;
+                break;
+            case TileType.Door: // No blocking at all (unless a bot is there which is checked later)
+                ret = false;
+                break;
+            case TileType.Machine: // Always blocks (unless destroyed)
+                ret = !tile.damaged;
+                break;
+            case TileType.Exit: // NEVER blocks
                 return false;
-            }
+            case TileType.Phasewall: // No blocking at all (unless a bot is there which is checked later) 
+                ret = false;
+                break;
+            case TileType.Default:
+                break;
+            default:
+                break;
         }
 
-        if (GameManager.inst.GetBlockingActorAtLocation(tile.transform.position))
+        // Bot check
+        if (GameManager.inst.GetBlockingActorAtLocation(new Vector3(tile.location.x, tile.location.y)))
         {
-            return false;
+            ret = false;
         }
         else
         {
-            return true;
+            ret = true;
         }
+
+        return ret;
     }
     #endregion
 

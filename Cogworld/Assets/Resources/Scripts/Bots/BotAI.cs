@@ -341,22 +341,22 @@ public class BotAI : MonoBehaviour
 
         Vector2Int myPos = HF.V3_to_V2I(this.transform.position);
         // Get neighbors
-        List<GameObject> neighbors = HF.FindNeighbors(myPos.x, myPos.y);
+        List<WorldTile> neighbors = HF.FindNeighbors(myPos.x, myPos.y);
 
         float currentDistance = Vector2.Distance(myPos, center);
 
         if(currentDistance > maxDistance) // Too far, try to get closer
         {
             // Sort the neighbors based on distance
-            neighbors.Sort((a, b) => Vector3.Distance(this.transform.position, a.transform.position).CompareTo(Vector3.Distance(this.transform.position, b.transform.position)));
+            neighbors.Sort((a, b) => Vector2Int.Distance(myPos, a.location).CompareTo(Vector2Int.Distance(myPos, b.location)));
 
             // We are going to try the 3 closest tiles
             for (int i = 0; i < 3; i++)
             {
                 // Try moving here
-                if (HF.IsUnoccupiedTile(neighbors[i].GetComponent<TileBlock>()))
+                if (HF.IsUnoccupiedTile(neighbors[i]))
                 {
-                    Vector2 direction = HF.V3_to_V2I(neighbors[i].transform.position) - myPos;
+                    Vector2 direction = neighbors[i].location - myPos;
                     Action.MovementAction(this.GetComponent<Actor>(), direction);
                     return;
                 }
@@ -377,11 +377,11 @@ public class BotAI : MonoBehaviour
             }
             else // Move to a random space (if possible)
             {
-                List<GameObject> validMoveLocations = new List<GameObject>();
+                List<WorldTile> validMoveLocations = new List<WorldTile>();
 
                 foreach (var T in neighbors)
                 {
-                    if (HF.IsUnoccupiedTile(T.GetComponent<TileBlock>()))
+                    if (HF.IsUnoccupiedTile(T))
                     {
                         validMoveLocations.Add(T);
                     }
@@ -390,7 +390,7 @@ public class BotAI : MonoBehaviour
                 if(validMoveLocations.Count > 0)
                 {
                     // May need to swap these
-                    Vector2 direction = HF.V3_to_V2I(validMoveLocations[Random.Range(0, validMoveLocations.Count - 1)].transform.position) - myPos;
+                    Vector2 direction = validMoveLocations[Random.Range(0, validMoveLocations.Count - 1)].location - myPos;
                     Action.MovementAction(this.GetComponent<Actor>(), direction);
                     return;
                 }
@@ -424,13 +424,10 @@ public class BotAI : MonoBehaviour
             {
                 Vector2Int currentTile = new Vector2Int(x, y);
 
-                if (MapManager.inst._allTilesRealized.ContainsKey(currentTile))
+                // Check if the tile exists and is unoccupied.
+                if (HF.IsUnoccupiedTile(MapManager.inst.mapdata[x, y]))
                 {
-                    // Check if the tile exists and is unoccupied.
-                    if (HF.IsUnoccupiedTile(MapManager.inst._allTilesRealized[new Vector2Int(x, y)].bottom))
-                    {
-                        validPositions.Add(currentTile); // Add to valid positions
-                    }
+                    validPositions.Add(currentTile); // Add to valid positions
                 }
             }
         }
@@ -560,38 +557,38 @@ public class BotAI : MonoBehaviour
             if (Vector3.Distance(this.transform.position, fleeSource.transform.position) <= viewRange) // Flee!
             {
                 // We need to move away from the source
-                List<GameObject> neighbors = HF.FindNeighbors((int)this.transform.position.x, (int)this.transform.position.y);
+                List<WorldTile> neighbors = HF.FindNeighbors((int)this.transform.position.x, (int)this.transform.position.y);
 
-                List<GameObject> validMoveLocations = new List<GameObject>();
+                List<WorldTile> validMoveLocations = new List<WorldTile>();
 
                 foreach (var T in neighbors)
                 {
-                    if (HF.IsUnoccupiedTile(T.GetComponent<TileBlock>()))
+                    if (HF.IsUnoccupiedTile(T))
                     {
                         validMoveLocations.Add(T);
                     }
                 }
 
-                GameObject fleeLocation = this.GetComponent<Actor>().FindBestFleeLocation(fleeSource.gameObject, this.gameObject, validMoveLocations);
+                Vector2 fleeLocation = this.GetComponent<Actor>().FindBestFleeLocation(fleeSource.gameObject, this.gameObject, validMoveLocations);
 
                 if (fleeLocation != null)
                 {
                     // Normalize move direction
                     Vector2Int moveDir = new Vector2Int(0, 0);
-                    if (fleeLocation.transform.position.x > this.transform.position.x)
+                    if (fleeLocation.x > this.transform.position.x)
                     {
                         moveDir.x++;
                     }
-                    else if (fleeLocation.transform.position.x < this.transform.position.x)
+                    else if (fleeLocation.x < this.transform.position.x)
                     {
                         moveDir.x--;
                     }
 
-                    if (fleeLocation.transform.position.y > this.transform.position.y)
+                    if (fleeLocation.y > this.transform.position.y)
                     {
                         moveDir.y++;
                     }
-                    else if (fleeLocation.transform.position.y < this.transform.position.y)
+                    else if (fleeLocation.y < this.transform.position.y)
                     {
                         moveDir.y--;
                     }

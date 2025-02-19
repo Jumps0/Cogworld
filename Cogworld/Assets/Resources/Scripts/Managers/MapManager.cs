@@ -1116,7 +1116,7 @@ public class MapManager : MonoBehaviour
             }
         }
 
-        /* // No longer relevant?
+        /* // Maybe swing back to this later depending on how we handle parts on the floor? (This function will update their visibility)
         // Part on top check
         if (_partOnTop != null)
         {
@@ -1582,6 +1582,34 @@ public class MapManager : MonoBehaviour
         else
         {
             newTile.type = newTile.tileInfo.type;
+        }
+
+        // Default "occupied" state
+        switch (newTile.type)
+        {
+            case TileType.Floor:
+                newTile.occupied = false;
+                break;
+            case TileType.Wall:
+                newTile.occupied = true;
+                break;
+            case TileType.Door:
+                newTile.occupied = false;
+                break;
+            case TileType.Machine:
+                newTile.occupied = true;
+                break;
+            case TileType.Exit:
+                newTile.occupied = false;
+                break;
+            case TileType.Phasewall:
+                newTile.occupied = false;
+                break;
+            case TileType.Default:
+                newTile.occupied = false;
+                break;
+            default:
+                break;
         }
 
         return newTile;
