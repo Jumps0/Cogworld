@@ -52103,6 +52103,7 @@ MonoBehaviour:
   loaded: 0
   logEvoChanges: 0
   evoChanges: 
+  prefab_basictile: {fileID: 757329426654254245, guid: 19309d78453aaf34e86dad6d66876310, type: 3}
   mapParent: {fileID: 901294680}
   botParent: {fileID: 671847213}
   regionSize: 15
@@ -61779,6 +61780,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibleTiles: []
+  debug_nofog: 0
 --- !u!1 &1625025405
 GameObject:
   m_ObjectHideFlags: 0

@@ -67,7 +67,10 @@ public class FogOfWar : MonoBehaviour
 
                     // Do the reveal animation if needed
                     if (!tile.doneRevealAnimation)
+                    {
+                        tile.doneRevealAnimation = true;
                         MapManager.inst.TileInitialReveal((Vector2Int)pos);
+                    }
                 }
 
                 // !! DEBUG - NO FOG !!
@@ -79,6 +82,7 @@ public class FogOfWar : MonoBehaviour
 
                 // Update the actual value
                 MapManager.inst.mapdata[pos.x, pos.y].vis = tile.vis;
+                MapManager.inst.mapdata[pos.x, pos.y].doneRevealAnimation = tile.doneRevealAnimation;
 
                 // Last step: Remove unseen tiles
                 if (tileNoLongerVisible)

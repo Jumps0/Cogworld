@@ -1073,13 +1073,44 @@ public class MapManager : MonoBehaviour
         tilemap.SetTile((Vector3Int)pos, display);
     }
 
+    [SerializeField] private GameObject prefab_basictile;
     /// <summary>
     /// Initial reveal animation for a single tile at a specified position
     /// </summary>
     public void TileInitialReveal(Vector2Int pos)
     {
-        // TODO
+        StartCoroutine(Animation());
+
+        IEnumerator Animation()
+        {
+            // We will just hijack the highlight object and breifly flash it from green -> green 0% opacity
+            float startPercent = 0.3f;
+            Color dullGreen = UIManager.inst.dullGreen;
+            Color start = new Color(dullGreen.r, dullGreen.g, dullGreen.b, startPercent);
+            Color end = new Color(dullGreen.r, dullGreen.g, dullGreen.b, 0f);
+
+            // Temporarily create the basic tile prefab
+            GameObject tile = Instantiate(prefab_basictile, new Vector3(pos.x + 0.5f, pos.y + 0.5f), Quaternion.identity); // (Offset needed due to how tilemap works)
+
+            tile.GetComponent<SpriteRenderer>().color = start;
+
+            float elapsedTime = 0f;
+            float duration = 0.25f;
+            while (elapsedTime < duration)
+            {
+                tile.GetComponent<SpriteRenderer>().color = new Color(start.r, start.g, start.b, Mathf.Lerp(startPercent, 0f, elapsedTime / duration));
+
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            tile.GetComponent<SpriteRenderer>().color = end;
+
+            // Destroy the temp tile
+            Destroy(tile);
+        }
     }
+
 
     /// <summary>
     /// Sets the visibility of a tile at a specific position.
