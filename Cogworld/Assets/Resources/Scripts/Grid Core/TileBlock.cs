@@ -7,6 +7,7 @@
  */
 
 using System.Collections;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -490,6 +491,7 @@ public struct WorldTile
     public byte vis;
     public bool doneRevealAnimation;
     public bool revealedViaIntel;
+    public TerminalZone zone;
 
     [Header("States")]
     public bool isDirty;
@@ -509,6 +511,15 @@ public struct WorldTile
     public BotAlignment phase_team;
     [Tooltip("Has this phase wall been revealed to the player?")]
     public bool phase_revealed;
+    [Header(" Trap")]
+    public ItemObject trap_data;
+    [Tooltip("What faction this trap belongs to, will detonate vs all other hostile factions via player's tree.")]
+    public TrapType trap_type;
+    public bool trap_tripped;
+    public bool trap_active;
+    public bool trap_knowByPlayer;
+    public BotAlignment trap_alignment;
+
 
     #region Destruction
     public void SetDestroyed(bool destroyed)
@@ -525,5 +536,14 @@ public struct WorldTile
 
         }
     }
+    #endregion
+
+    #region Traps
+    public void TripTrap(Actor victim)
+    {
+        // TODO
+        Debug.LogWarning("TripTrap has not been implemented yet!");
+    }
+
     #endregion
 }

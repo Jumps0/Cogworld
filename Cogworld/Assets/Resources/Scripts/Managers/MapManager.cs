@@ -1037,6 +1037,32 @@ public class MapManager : MonoBehaviour
             case TileType.Phasewall:
                 // TODO
                 break;
+            case TileType.Trap:
+                if (ASCII)
+                {
+                    display = tile.tileInfo.asciiRep;
+                }
+                else
+                {
+                    display = tile.tileInfo.displaySprite;
+                }
+
+                // Does the player know trap exists?
+                if (tile.trap_knowByPlayer)
+                {
+                    // And is this trap on their team?
+                    if (HF.RelationToTrap(PlayerData.inst.GetComponent<Actor>(), tile) == BotRelation.Friendly)
+                    {
+                        // Darken the color a bit
+                        display.color = HF.GetDarkerColor(tile.tileInfo.asciiColor, 0.15f);
+                    }
+                    else
+                    {
+                        // Normal color
+                        display.color = tile.tileInfo.asciiColor;
+                    }
+                }
+                break;
             case TileType.Default:
                 break;
             default:

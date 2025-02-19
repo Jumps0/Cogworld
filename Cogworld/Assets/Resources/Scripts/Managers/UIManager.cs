@@ -5200,7 +5200,7 @@ public class UIManager : MonoBehaviour
             else if (focusObj.GetComponent<FloorTrap>())
             {
                 StartCoroutine(Scan_SubmodeAnimate());
-
+                /* // TODO: REWORK THIS TO REFLECT NEW PARADIGM
                 // - The square - here it indicates if this trap is friendly or not
                 if (HF.RelationToTrap(PlayerData.inst.GetComponent<Actor>(), focusObj.GetComponent<FloorTrap>()) != BotRelation.Friendly) 
                 {
@@ -5217,6 +5217,7 @@ public class UIManager : MonoBehaviour
 
                 scanSubTextB.enabled = false;
                 scanSubBackerImages[1].enabled = false;
+                */
             }
 
 

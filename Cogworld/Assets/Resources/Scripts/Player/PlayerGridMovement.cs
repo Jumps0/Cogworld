@@ -189,15 +189,13 @@ public class PlayerGridMovement : MonoBehaviour
             if (!desiredDestinationTile.occupied) // Space is Clear (Move!)
             {
                 moveKeyHeld = Action.BumpAction(GetComponent<Actor>(), new Vector2(X, Y));
-                // TODO: HOW DO WE HANDLE TRAPS?
-                Debug.LogWarning("HOW DO WE HANDLE TRAPS???");
-                if (MapManager.inst._allTilesRealized.ContainsKey(moveTarget) && MapManager.inst._allTilesRealized[moveTarget].top != null && MapManager.inst._allTilesRealized[moveTarget].top.GetComponent<FloorTrap>())
+
+                if (desiredDestinationTile.type == TileType.Trap)
                 {
                     // There is a trap here!
-                    FloorTrap trap = MapManager.inst._allTilesRealized[moveTarget].top.GetComponent<FloorTrap>();
-                    if(HF.RelationToTrap(this.GetComponent<Actor>(), trap) != BotRelation.Friendly && trap.active && !trap.tripped)
+                    if(HF.RelationToTrap(this.GetComponent<Actor>(), desiredDestinationTile) != BotRelation.Friendly && desiredDestinationTile.trap_active && !desiredDestinationTile.trap_tripped)
                     {
-                        HF.AttemptTriggerTrap(trap, PlayerData.inst.gameObject);
+                        HF.AttemptTriggerTrap(desiredDestinationTile, this.GetComponent<Actor>());
                     }
                 }
             }

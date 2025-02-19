@@ -12,6 +12,7 @@ public enum TileType
     Machine,
     Exit,
     Phasewall,
+    Trap,
     Default
 }
 

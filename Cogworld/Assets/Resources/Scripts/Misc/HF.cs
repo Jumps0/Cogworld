@@ -2272,11 +2272,11 @@ public static class HF
         return relationToTarget;
     }
 
-    public static BotRelation RelationToTrap(Actor bot, FloorTrap trap)
+    public static BotRelation RelationToTrap(Actor bot, WorldTile trap)
     {
         BotRelation relationToTarget = BotRelation.Neutral;
 
-        BotAlignment trapAlignment = trap.alignment;
+        BotAlignment trapAlignment = trap.trap_alignment;
         Allegance tree = bot.allegances;
 
         foreach ((BotAlignment, BotRelation) T in tree.alleganceTree)
@@ -4314,7 +4314,7 @@ public static class HF
     #endregion
 
     #region Floor Traps
-    public static void AttemptTriggerTrap(FloorTrap trap, GameObject target)
+    public static void AttemptTriggerTrap(WorldTile trap, Actor victim)
     {
         /*
          Triggering
@@ -4335,9 +4335,9 @@ public static class HF
 
         float triggerChance = 0f;
 
-        if (Action.HasTreads(target.GetComponent<Actor>()))
+        if (Action.HasTreads(victim.GetComponent<Actor>()))
         {
-            if (trap.type == TrapType.Stasis)
+            if (trap.trap_type == TrapType.Stasis)
             {
                 triggerChance = 1f - 1f;
             }
@@ -4346,9 +4346,9 @@ public static class HF
                 triggerChance = 1f;
             }
         }
-        else if (Action.HasLegs(target.GetComponent<Actor>()))
+        else if (Action.HasLegs(victim.GetComponent<Actor>()))
         {
-            if (trap.type == TrapType.Stasis)
+            if (trap.trap_type == TrapType.Stasis)
             {
                 triggerChance = 1f - 0.75f;
             }
@@ -4357,9 +4357,9 @@ public static class HF
                 triggerChance = 0.75f;
             }
         }
-        else if (Action.HasWheels(target.GetComponent<Actor>()))
+        else if (Action.HasWheels(victim.GetComponent<Actor>()))
         {
-            if (trap.type == TrapType.Stasis)
+            if (trap.trap_type == TrapType.Stasis)
             {
                 triggerChance = 1f - 0.5f;
             }
@@ -4368,9 +4368,9 @@ public static class HF
                 triggerChance = 0.5f;
             }
         }
-        else if (Action.HasFlight(target.GetComponent<Actor>()))
+        else if (Action.HasFlight(victim.GetComponent<Actor>()))
         {
-            if (trap.type == TrapType.Stasis)
+            if (trap.trap_type == TrapType.Stasis)
             {
                 triggerChance = 1f - 0.2f;
             }
@@ -4379,9 +4379,9 @@ public static class HF
                 triggerChance = 0.2f;
             }
         }
-        else if (Action.HasHover(target.GetComponent<Actor>()))
+        else if (Action.HasHover(victim.GetComponent<Actor>()))
         {
-            if (trap.type == TrapType.Stasis)
+            if (trap.trap_type == TrapType.Stasis)
             {
                 triggerChance = 1f - 0.4f;
             }
@@ -4392,7 +4392,7 @@ public static class HF
         }
         else // Same as hover
         {
-            if (trap.type == TrapType.Stasis)
+            if (trap.trap_type == TrapType.Stasis)
             {
                 triggerChance = 1f - 0.4f;
             }
@@ -4405,7 +4405,7 @@ public static class HF
         // Now do the roll
         if (Random.Range(0f, 1f) < triggerChance) // Hit!
         {
-            trap.TripTrap(target);
+            trap.TripTrap(victim);
         }
         else // Safe!
         {
