@@ -141,7 +141,8 @@ public class Actor : Entity
         {
             if (GetComponent<PlayerData>())
             {
-                UpdateFieldOfView();
+                FogOfWar.inst.FullMapVisUpdate(); // One time vision update across the whole map (to set all the unseen tiles to black).
+                UpdateFieldOfView(); // Normal FOV update
             }
             else // Here because PlayerData.inst hasn't been created yet (in Awake)
             {

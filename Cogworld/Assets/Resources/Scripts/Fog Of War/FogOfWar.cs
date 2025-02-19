@@ -86,12 +86,20 @@ public class FogOfWar : MonoBehaviour
                     allTiles.Remove(pos);
                 }
             }
+
+            // Update the visibility of this tile
+            MapManager.inst.TileUpdateVis((Vector2Int)pos);
         }
 
         // Update visibleTiles
         visibleTiles = allTiles;
+    }
 
-        // ~~ Lastly, update the display graphics of every tile ~~
+    /// <summary>
+    /// Do a vision update for the ENTIRE MAP. Use this sparingly! There are a lot of tiles out there!
+    /// </summary>
+    public void FullMapVisUpdate()
+    {
         for (int x = 0; x < MapManager.inst.mapsize.x; x++)
         {
             for (int y = 0; y < MapManager.inst.mapsize.y; y++)
