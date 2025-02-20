@@ -84,6 +84,10 @@ public class MapManager : MonoBehaviour
     [SerializeField] private GameObject levelLoadCover;
     [SerializeField] private Tilemap tilemap;
 
+    [Tooltip("List of debris sprites to be used on the tilemap.")]
+    [SerializeField] private List<Tile> debrisTiles = new List<Tile>();
+    [SerializeField] private List<Tile> debrisTiles_ASCII = new List<Tile>();
+
     [Header("Auto Mapgen Settings")]
     public List<MapGen_DataCTR> mapGenSpecifics = new List<MapGen_DataCTR>();
 
@@ -930,20 +934,18 @@ public class MapManager : MonoBehaviour
                     {
                         display = tile.tileInfo.asciiRep;
 
-                        // TODO - DIRTY!!
-                        if (tile.isDirty)
+                        if (tile.isDirty != -1) // Dirty tiles
                         {
-
+                            display = debrisTiles_ASCII[tile.isDirty];
                         }
                     }
                     else
                     {
                         display = tile.tileInfo.displaySprite;
 
-                        // TODO - DIRTY!!
-                        if (tile.isDirty)
+                        if (tile.isDirty != -1) // Dirty tiles
                         {
-
+                            display = debrisTiles[tile.isDirty];
                         }
                     }
                 }
@@ -1120,6 +1122,7 @@ public class MapManager : MonoBehaviour
     {
         WorldTile tile = mapdata[pos.x, pos.y];
         byte update = tile.vis;
+        Tile currentDisplay = tilemap.GetTile<Tile>(new Vector3Int(pos.x, pos.y)); // Save the current sprite for later
         Color finalColor = Color.black;
         Color visc_white = tile.tileInfo.asciiColor;
         Color visc_gray = HF.GetDarkerColor(visc_white, 0.3f);
@@ -1184,11 +1187,13 @@ public class MapManager : MonoBehaviour
         // Finally, update the tile
         // NOTE: This is astoundingly stupid. The tilemap REFUSES to change the sprite's color when the sprite is identical to the current state.
         //       So we need to do this dumb double update in order for it to listen.
+
+        
         Tile display = tile.tileInfo.asciiRep;
         display.color = finalColor;
         tilemap.SetTile((Vector3Int)pos, display);
 
-        display = tile.tileInfo.displaySprite;
+        display = currentDisplay;
         display.color = finalColor;
         tilemap.SetTile((Vector3Int)pos, display);
     }
@@ -1624,7 +1629,7 @@ public class MapManager : MonoBehaviour
         newTile.location = new Vector2Int((int)pos.x, (int)pos.y);
         newTile.tileInfo = MapManager.inst.tileDatabase.Tiles[id]; // Assign tile data from database by ID
         newTile.doneRevealAnimation = false;
-        newTile.isDirty = dirty;
+        newTile.isDirty = dirty ? Random.Range(0, debrisTiles.Count - 1) : -1; // (Assign a debris sprite ID so on the tilemap update the sprite doesn't randomly change)
         newTile.revealedViaIntel = false;
 
         // Visibility (start hidden)

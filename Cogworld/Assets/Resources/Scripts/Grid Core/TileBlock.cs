@@ -494,7 +494,8 @@ public struct WorldTile
     public TerminalZone zone;
 
     [Header("States")]
-    public bool isDirty;
+    [Tooltip("Where -1 = Not dirty, and any other number indicates the ID of the debris sprite.")]
+    public int isDirty;
     public bool isImpassible;
     public bool damaged;
 

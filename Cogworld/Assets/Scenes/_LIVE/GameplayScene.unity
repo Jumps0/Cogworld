@@ -52070,6 +52070,40 @@ MonoBehaviour:
   playerRef: {fileID: 0}
   levelLoadCover: {fileID: 1642838541}
   tilemap: {fileID: 1071564707}
+  debrisTiles:
+  - {fileID: 11400000, guid: e88c81a551cbe1f4c81174bf2bb24a6b, type: 2}
+  - {fileID: 11400000, guid: b28257fcbeee8c7449a9dfc613ba1fee, type: 2}
+  - {fileID: 11400000, guid: aa2d997e766ce00419ce6bb26f9d12cd, type: 2}
+  - {fileID: 11400000, guid: 9be169c07fa9879458243fd3c5044129, type: 2}
+  - {fileID: 11400000, guid: 64d598753475f864484e6d503088d2f6, type: 2}
+  - {fileID: 11400000, guid: 6038b5a1f23f24843ab97b0b03a1f8f2, type: 2}
+  - {fileID: 11400000, guid: 1fc5f6bdefdcbb34288cc79f30eaa6fc, type: 2}
+  - {fileID: 11400000, guid: fcfeec7641eff6c42b20cc0627ed3ca9, type: 2}
+  - {fileID: 11400000, guid: af5d8792fcbe37b48a9c2968b8bfb257, type: 2}
+  - {fileID: 11400000, guid: 310a72a52273b5740bf4265331dd1bae, type: 2}
+  - {fileID: 11400000, guid: 229a8f6dcc0e9424081cd133ca3bbdba, type: 2}
+  - {fileID: 11400000, guid: 826527f42c5cb0e408a13bc0e8ce3cfc, type: 2}
+  - {fileID: 11400000, guid: 3c767006e1035e44681cc3bdfdf27720, type: 2}
+  - {fileID: 11400000, guid: 5530c20050c2ca64a9bf3bf263e83304, type: 2}
+  - {fileID: 11400000, guid: e023c1fe83125c442b412439b2d59cc8, type: 2}
+  - {fileID: 11400000, guid: 4d6b6b2699607fd44ab2a118a37eb6ff, type: 2}
+  debrisTiles_ASCII:
+  - {fileID: 11400000, guid: f6fc518da75abbb4ba9ebb59f5f00623, type: 2}
+  - {fileID: 11400000, guid: 380be10a8a74a3140a635876504ff978, type: 2}
+  - {fileID: 11400000, guid: 8d77a5c78fb79d149a87a780e9c32f0e, type: 2}
+  - {fileID: 11400000, guid: e38c5fd93f88abb439b21e61cc60096e, type: 2}
+  - {fileID: 11400000, guid: 58bc9ea63bff94541bf03c3af0185c5f, type: 2}
+  - {fileID: 11400000, guid: 0b4929375ec0d3742b0612c31bafaea9, type: 2}
+  - {fileID: 11400000, guid: 96dbada2a893418468992d920de40aa1, type: 2}
+  - {fileID: 11400000, guid: 803a1b748ce4a7d4f927fecc0450e2a5, type: 2}
+  - {fileID: 11400000, guid: 6dc5c669f65ab9f488eab1e62f98951d, type: 2}
+  - {fileID: 11400000, guid: 23fe7ff6bc324f64b99e0fad65c2920e, type: 2}
+  - {fileID: 11400000, guid: b2de406f438602f488678233d2d130cc, type: 2}
+  - {fileID: 11400000, guid: 6c76e386c54a8de4f989719f2e5e1e26, type: 2}
+  - {fileID: 11400000, guid: 1d3ffa5173db7034a9c5fa52ca9a94da, type: 2}
+  - {fileID: 11400000, guid: 526f56b2e13534540b44739ce6f395e1, type: 2}
+  - {fileID: 11400000, guid: 87735028515e18d4c95b31cfbf682296, type: 2}
+  - {fileID: 11400000, guid: e4b0248cb8a927f428dac66c6c60ca87, type: 2}
   mapGenSpecifics:
   - {fileID: 11400000, guid: eb379394ad6a9054a860b16d444ed8cf, type: 2}
   - {fileID: 11400000, guid: 8c22a523bd4ae484b9d390b46f966e17, type: 2}
