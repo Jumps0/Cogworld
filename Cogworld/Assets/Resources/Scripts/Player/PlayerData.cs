@@ -1477,11 +1477,11 @@ public class PlayerData : MonoBehaviour
             // Get mouse position
             Vector3 mousePos = Mouse.current.position.ReadValue();
             mousePos = Camera.main.ScreenToWorldPoint(mousePos);
-
+            
             // Snap to nearest (by converting to V2I)
-            mousePos = new Vector3(Mathf.RoundToInt(mousePos.x), Mathf.RoundToInt(mousePos.y), 0);
+            mousePos = new Vector3(Mathf.FloorToInt(mousePos.x), Mathf.FloorToInt(mousePos.y), 0);
 
-            mouseTile.transform.position = mousePos;
+            mouseTile.transform.position = mousePos + new Vector3(0.5f, 0.5f);
         }
         else // Disable it
         {
