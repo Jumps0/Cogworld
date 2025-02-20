@@ -53,6 +53,12 @@ public class Entity : MonoBehaviour
 
     public void Move(Vector2 direction)
     {
+        // Movement Indicator Tile
+        if(this.GetComponent<Actor>() != PlayerData.inst.GetComponent<Actor>()) // (The thing moving should not see its own path)
+        {
+            MapManager.inst.TileInitialReveal(HF.V3_to_V2I(this.transform.position));
+        }
+
         // Move character
         transform.position += (Vector3)direction;
 

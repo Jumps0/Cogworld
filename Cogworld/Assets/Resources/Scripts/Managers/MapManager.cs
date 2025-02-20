@@ -269,7 +269,7 @@ public class MapManager : MonoBehaviour
             }
         }
 
-        //PlaceBranchNExits(); // Place exits (map type logic handled inside)
+        PlaceBranchNExits(); // Place exits (map type logic handled inside)
 
         DrawBorder(); // Draw the border
 
@@ -2743,7 +2743,7 @@ public class MapManager : MonoBehaviour
 
         Vector2Int exitLocation = new Vector2Int(offset.x += Random.Range(4, 6), offset.y += Random.Range(1, 6));
 
-        //mapdata[exitLocation.x, exitLocation.y].top = PlaceLevelExit(exitLocation, false, 0).gameObject;
+        mapdata[exitLocation.x, exitLocation.y] = PlaceLevelExit(exitLocation, false, 0);
     }
 
 
