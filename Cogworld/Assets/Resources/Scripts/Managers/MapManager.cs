@@ -1092,7 +1092,7 @@ public class MapManager : MonoBehaviour
             Color end = new Color(dullGreen.r, dullGreen.g, dullGreen.b, 0f);
 
             // Temporarily create the basic tile prefab
-            GameObject tile = Instantiate(prefab_basictile, new Vector3(pos.x + 0.5f, pos.y + 0.5f), Quaternion.identity); // (Offset needed due to how tilemap works)
+            GameObject tile = Instantiate(prefab_basictile, new Vector3(pos.x, pos.y), Quaternion.identity);
 
             tile.GetComponent<SpriteRenderer>().color = start;
 
