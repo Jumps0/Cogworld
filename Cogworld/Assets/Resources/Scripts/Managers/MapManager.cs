@@ -77,6 +77,7 @@ public class MapManager : MonoBehaviour
     [SerializeField] private GameObject _accessPrefab;
     [SerializeField] private GameObject debugPrefab;
     [SerializeField] private GameObject minePrefab;
+    [SerializeField] private GameObject botPrefab;
     public GameObject prefab_highlightedTile;
 
     [Header("References")]
@@ -2665,7 +2666,7 @@ public class MapManager : MonoBehaviour
         pos = HF.LocateFreeSpace(pos, true);
 
         // Create the bot and add in its details
-        var spawnedBot = Instantiate(info.prefab, new Vector3(pos.x * GridManager.inst.globalScale, pos.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
+        var spawnedBot = Instantiate(botPrefab, new Vector3(pos.x * GridManager.inst.globalScale, pos.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
         spawnedBot.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
         spawnedBot.name = ($"{info.botName} @ ({pos.x},{pos.y})"); // Give grid based name
         spawnedBot.GetComponent<Actor>().isVisible = false;
