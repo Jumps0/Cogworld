@@ -163,8 +163,6 @@ public class MapManager : MonoBehaviour
 
         playerIsInHideout = false;
 
-        //Debug.Log($"Creating a map of type [{mapType}].");
-
         if (currentLevel == -11)
             GlobalSettings.inst.SetStartingValues();
 
@@ -285,7 +283,6 @@ public class MapManager : MonoBehaviour
         }
 
         CreateRegions();
-        TurnManager.inst.SetAllUnknown(); // Also fills the regions
 
         // Spawn the player
         var spawnedPlayer = PlacePlayer();
@@ -442,20 +439,24 @@ public class MapManager : MonoBehaviour
     #region Hideout Related
     public IEnumerator InitNewHideout()
     {
-        GlobalSettings.inst.SetStartingValues();
-        currentLevelName = BaseManager.inst.data.layerName.ToUpper();
+        levelLoadCover.SetActive(true); // Enable the Level Load cover
 
         playerIsInHideout = true;
 
+        GlobalSettings.inst.SetStartingValues();
+        currentLevelName = BaseManager.inst.data.layerName.ToUpper();
+
         // Change this later !!!
         DungeonGenerator.instance.GenerateCaveDungeon(121, 121);
-        GenerateByGrid(DungeonGenerator._dungeon);
         mapsize.x = DungeonGenerator._dungeon.GetLength(0);
         mapsize.y = DungeonGenerator._dungeon.GetLength(1);
 
         // !! Initialize the mapdata array
         mapdata = new WorldTile[mapsize.x, mapsize.y];
         pathdata = new byte[mapsize.x, mapsize.y];
+
+        // Realize the map
+        GenerateByGrid(DungeonGenerator._dungeon);
 
         yield return null; // --- DELAY ---
 
@@ -490,24 +491,18 @@ public class MapManager : MonoBehaviour
 
         Vector2Int spawnLoc = validSpawnPoints[Random.Range(0, validSpawnPoints.Count - 1)];
 
-        playerSpawnLocation = new Vector3(spawnLoc.x, spawnLoc.y, 0);
-        originalPlayerSpawnLocation = playerSpawnLocation;
+        originalPlayerSpawnLocation = new Vector3(spawnLoc.x, spawnLoc.y, 0);
+        playerSpawnLocation = originalPlayerSpawnLocation;
 
         PlaceGenericOutpost(spawnLoc); // Place the outpost
         FillWithRock(mapsize);
 
         DrawBorder(); // Draw the border
 
-        CreateRegions();
-        TurnManager.inst.SetAllUnknown(); // Also fills the regions
+        // !! Update the Tilemap !!
+        UpdateTilemap();
 
-        foreach (var door in _allTilesRealized) // Setup all the doors
-        {
-            if (door.Value.top && door.Value.top.GetComponent<DoorLogic>())
-            {
-                door.Value.top.GetComponent<DoorLogic>().LoadActivationTiles();
-            }
-        }
+        CreateRegions();
 
         AssignMachineNames(); // Assign names to all placed machines
         AssignMachineCommands(); // Assign commands (for terminal interaction) to all placed machines.
@@ -551,6 +546,8 @@ public class MapManager : MonoBehaviour
         TurnManager.inst.AllEntityVisUpdate(); // Update vis
         //
         // --            --
+
+        levelLoadCover.SetActive(false); // Disable the Level Load cover
 
         // Enable Control
         spawnedPlayer.GetComponent<PlayerGridMovement>().playerMovementAllowed = true;

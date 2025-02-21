@@ -293,33 +293,4 @@ public class TurnManager : MonoBehaviour
             A.UpdateVis(MapManager.inst.mapdata[pos.x, pos.y].vis);
         }
     }
-
-    public void SetAllUnknown()
-    {
-        foreach (var T in MapManager.inst._allTilesRealized.ToList())
-        {
-            TData TD = T.Value;
-
-            TD.vis = 0;
-
-            // Update the vis since all changes has been made
-            MapManager.inst._allTilesRealized[T.Key] = TD;
-
-            // Now that the vis has been decided, we will actually update the objects
-            MapManager.inst._allTilesRealized[T.Key].bottom.UpdateVis(0); // Update the vis for the bottom
-            if (MapManager.inst._allTilesRealized[T.Key].top != null) // And if it exists, update the vis for the top
-                HF.SetGenericTileVis(MapManager.inst._allTilesRealized[T.Key].top, 0);
-
-            // While we're here, we will assign tiles to their respective regions.
-
-            // Find the region that contains this object
-            int regionX = Mathf.FloorToInt((float)T.Key.x / MapManager.inst.regionSize);
-            int regionY = Mathf.FloorToInt((float)T.Key.y / MapManager.inst.regionSize);
-
-            Vector2Int pos = new Vector2Int(regionX, regionY);
-
-            // Add the object to the corresponding region
-            MapManager.inst.regions[pos].objects.Add(T.Value.bottom.gameObject);
-        }
-    }
 }
