@@ -501,6 +501,7 @@ public struct WorldTile
     [Header("Variants")]
     public TileType type;
     [Header(" Door")]
+    [Tooltip("Is this door currently open?")]
     public bool door_open;
     [Header(" Access")]
     public bool access_branch;
@@ -538,6 +539,72 @@ public struct WorldTile
             if (type != TileType.Floor && MapManager.inst.pathdata[location.x, location.y] != 0) { MapManager.inst.pathdata[location.x, location.y] = 1; }
 
         }
+    }
+    #endregion
+
+    #region Doors
+    /// <summary>
+    /// Check if the door should open or close.
+    /// </summary>
+    public void DoorStateCheck()
+    {
+        bool botNearby = false;
+        /* // TODO
+        foreach (TileBlock T in activationTiles)
+        {
+            if (T.GetBotOnTop() != null) // Is there a bot nearby?
+            {
+                botNearby = true;
+                break;
+            }
+        }
+        */
+
+        if (botNearby) // If there is a bot nearby
+        {
+            if (!door_open) // If we're currently closed, we need to open
+            {
+                ToggleDoor(true);
+            }
+        }
+        else if (!botNearby) // If there isn't a bot nearby
+        {
+            if (door_open) // If we're currently open, we need to close
+            {
+                ToggleDoor(false);
+            }
+        }
+    }
+
+    public void ToggleDoor(bool open)
+    {
+        AudioClip clip = null;
+
+        if (open)
+        {
+            // Change state
+            door_open = true; // open
+
+            // Pick sound clip
+            clip = tileInfo.door_open[Random.Range(0, tileInfo.door_open.Count - 1)];
+        }
+        else
+        {
+            // Change state
+            door_open = false; // closed
+
+            // Pick sound clip
+            clip = tileInfo.door_open[Random.Range(0, tileInfo.door_close.Count - 1)];
+        }
+
+        // Play sound
+        AudioManager.inst.CreateTempClip(new Vector3(location.x, location.y), clip); // (Note: This will need to be altered later if/when the audio system is updated to be local)
+
+        // Update the tile
+        MapManager.inst.UpdateTile(this, location);
+
+        // Update the FOV
+        TurnManager.inst.AllEntityVisUpdate(true);
     }
     #endregion
 

@@ -295,14 +295,10 @@ public class GameManager : MonoBehaviour
 
         foreach (var L in neighbors)
         {
-            if (MapManager.inst._allTilesRealized.ContainsKey(L))
+            bool INBOUNDS = (L.x >= 0 && L.y >= 0 && L.x <= MapManager.inst.mapsize.x - 1 && L.y <= MapManager.inst.mapsize.y - 1);
+            if (INBOUNDS && MapManager.inst.mapdata[L.x, L.y].type == TileType.Door)
             {
-                GameObject go = MapManager.inst._allTilesRealized[L].top;
-
-                if(go && go.GetComponent<DoorLogic>() != null)
-                {
-                    go.GetComponent<DoorLogic>().StateCheck();
-                }
+                MapManager.inst.mapdata[L.x, L.y].DoorStateCheck();
             }
         }
 
