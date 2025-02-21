@@ -240,15 +240,7 @@ public class MapManager : MonoBehaviour
 
         if (mapType == 1) // Cave
         {
-            // Then dirty up the tiles a bit
-            foreach (var floor in _allTilesRealized)
-            {
-                float rand = Random.Range(0f, 1f);
-                if (rand > 0.4 && floor.Value.bottom.tileInfo.type == TileType.Floor) // 60% chance
-                {
-                    floor.Value.bottom.SetToDirty();
-                }
-            }
+
         }
         else if (mapType == 2) // Complex
         {
@@ -461,7 +453,11 @@ public class MapManager : MonoBehaviour
         mapsize.x = DungeonGenerator._dungeon.GetLength(0);
         mapsize.y = DungeonGenerator._dungeon.GetLength(1);
 
-        yield return new WaitForSeconds(1f); // --- DELAY ---
+        // !! Initialize the mapdata array
+        mapdata = new WorldTile[mapsize.x, mapsize.y];
+        pathdata = new byte[mapsize.x, mapsize.y];
+
+        yield return null; // --- DELAY ---
 
         // - Place the Player -
         // Pick a random cave and spot in that cave to spawn in (change later)
@@ -499,16 +495,6 @@ public class MapManager : MonoBehaviour
 
         PlaceGenericOutpost(spawnLoc); // Place the outpost
         FillWithRock(mapsize);
-
-        // Then dirty up the tiles a bit
-        foreach (var floor in _allTilesRealized)
-        {
-            float rand = Random.Range(0f, 1f);
-            if (rand > 0.6 && floor.Value.bottom.tileInfo.type == TileType.Floor) // 40% chance
-            {
-                floor.Value.bottom.SetToDirty();
-            }
-        }
 
         DrawBorder(); // Draw the border
 
@@ -606,7 +592,7 @@ public class MapManager : MonoBehaviour
             {
                 Vector2Int pos = new Vector2Int(x, y);
 
-                mapdata[pos.x, pos.y] = CreateBlock(pos, HF.IDbyTheme(TileType.Floor)); // Place floor
+                mapdata[pos.x, pos.y] = CreateBlock(pos, HF.IDbyTheme(TileType.Floor), Random.Range(0f, 1f) > 0.4f /*60% chance to be dirty*/); // Place floor
             }
         }
 
@@ -683,7 +669,7 @@ public class MapManager : MonoBehaviour
         {
             mapdata[P.x, P.y] = CreateBlock(P, doorID); // Place door
         }
-
+        /*
         // 5 - Place custom machines
         PlaceIndividualMachine(new Vector2Int(bl.x + 2, bl.y + 3), 1, 4); // Terminal 4x3 "Pipeworks"
         PlaceIndividualMachine(new Vector2Int(bl.x + 4, bl.y + 7), 0, 11); // Static Machine (Outpost Generator)
@@ -702,6 +688,7 @@ public class MapManager : MonoBehaviour
 
         // test trap
         PlaceTrap(MapManager.inst.itemDatabase.dict["Blade Trap"], new Vector2Int(bl.x + 5, bl.y + 11));
+        */
     }
 
     /// <summary>
@@ -1224,7 +1211,8 @@ public class MapManager : MonoBehaviour
         {
             for (int y = 0; y < ySize; y++)
             {
-                CreateBlock(new Vector2Int(x, y), HF.IDbyTheme(HF.Tile_to_TileType(grid[x, y])));
+                TileType type = HF.Tile_to_TileType(grid[x, y]);
+                mapdata[x, y] = CreateBlock(new Vector2Int(x, y), HF.IDbyTheme(type), type == TileType.Floor ? Random.Range(0f, 1f) > 0.4f /*60% chance to be dirty*/ : false);
             }
         }
     }
