@@ -530,10 +530,14 @@ public struct WorldTile
 
         if (destroyed)
         {
+            // Modify pathing (can now be free)
+            if (type != TileType.Floor && MapManager.inst.pathdata[location.x, location.y] > 0) { MapManager.inst.pathdata[location.x, location.y] = 0; }
 
         }
         else
         {
+            // Modify pathing (it should now be obstructed)
+            if (type != TileType.Floor && MapManager.inst.pathdata[location.x, location.y] != 0) { MapManager.inst.pathdata[location.x, location.y] = 1; }
 
         }
     }

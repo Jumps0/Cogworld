@@ -7,6 +7,7 @@ using UnityEngine.PlayerLoop;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using static StructureCTR;
+using static UnityEditor.PlayerSettings;
 using Random = UnityEngine.Random;
 
 /// <summary>
@@ -95,6 +96,8 @@ public class MapManager : MonoBehaviour
     public Dictionary<Vector2Int, TData> _allTilesRealized = new Dictionary<Vector2Int, TData>(); // ~ This stuff is VERY important, but its coded poorly. Lets re-do it!
     [Tooltip("Contains all data related to the map.")]
     public WorldTile[,] mapdata;
+    [Tooltip("A mirror of mapdata but used for pathing, where 0 is a free space, and anything above is some level of occupied. (Wall, bots, machines, traps, etc.)")]
+    public byte[,] pathdata;
     [Tooltip("The official size of the generated map.")]
     public Vector2Int mapsize;
     //
@@ -176,6 +179,7 @@ public class MapManager : MonoBehaviour
 
             // !! Initialize the mapdata array
             mapdata = new WorldTile[mapsize.x, mapsize.y];
+            pathdata = new byte[mapsize.x, mapsize.y];
 
             GenerateByGrid(DungeonGenerator._dungeon);
             
@@ -189,6 +193,7 @@ public class MapManager : MonoBehaviour
 
             // !! Initialize the mapdata array
             mapdata = new WorldTile[mapsize.x, mapsize.y];
+            pathdata = new byte[mapsize.x, mapsize.y];
 
             GenerateByCTR();
             yield return null;
@@ -201,6 +206,7 @@ public class MapManager : MonoBehaviour
                     // !! Initialize the mapdata array
                     mapsize = new Vector2Int(120, 120);
                     mapdata = new WorldTile[mapsize.x, mapsize.y];
+                    pathdata = new byte[mapsize.x, mapsize.y];
                     break;
                 case 0: // EXILEs cave
                     DungeonManagerCTR.instance.doDungeonGen = true;
@@ -210,6 +216,7 @@ public class MapManager : MonoBehaviour
 
                     // !! Initialize the mapdata array
                     mapdata = new WorldTile[mapsize.x, mapsize.y];
+                    pathdata = new byte[mapsize.x, mapsize.y];
 
                     GenerateByCTR();
                     yield return null;
@@ -1216,7 +1223,7 @@ public class MapManager : MonoBehaviour
         {
             for (int y = 0; y < ySize; y++)
             {
-                CreateBlock(new Vector2(x, y), HF.IDbyTheme(HF.Tile_to_TileType(grid[x, y])));
+                CreateBlock(new Vector2Int(x, y), HF.IDbyTheme(HF.Tile_to_TileType(grid[x, y])));
             }
         }
     }
@@ -1305,7 +1312,7 @@ public class MapManager : MonoBehaviour
                     }
                 }
 
-                CreateBlock(new Vector2(tile.Key.x, tile.Key.y), HF.IDbyTheme(TileType.Floor), isTileDirty);
+                CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), HF.IDbyTheme(TileType.Floor), isTileDirty);
             }
             else if (tile.Value.tag == "Wall")
             {
@@ -1314,11 +1321,11 @@ public class MapManager : MonoBehaviour
                     string[] split = tile.Value.name.Split("*"); // we want right side
                     string tileName = split[1];
 
-                    CreateBlock(new Vector2(tile.Key.x, tile.Key.y), HF.GetTileByString(tileName).Id);
+                    CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), HF.GetTileByString(tileName).Id);
                 }
                 else // Generic themed wall tile
                 {
-                    CreateBlock(new Vector2(tile.Key.x, tile.Key.y), HF.IDbyTheme(TileType.Wall));
+                    CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), HF.IDbyTheme(TileType.Wall));
                 }
             }
         }
@@ -1326,7 +1333,7 @@ public class MapManager : MonoBehaviour
         // Then the doors
         foreach (KeyValuePair<Vector3, GameObject> tile in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().placedDoors.ToList())
         {
-            CreateBlock(new Vector2(tile.Key.x, tile.Key.y), HF.IDbyTheme(TileType.Door));
+            CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), HF.IDbyTheme(TileType.Door));
         }
 
         // And any pre-placed objects (mostly just machines)
@@ -1348,7 +1355,7 @@ public class MapManager : MonoBehaviour
                 */
 
                 // We need to place a floor tile below this (since its a layered object)
-                CreateBlock(new Vector2(obj.transform.position.x, obj.transform.position.y), HF.IDbyTheme(TileType.Floor));
+                CreateBlock(new Vector2Int((int)obj.transform.position.x, (int)obj.transform.position.y), HF.IDbyTheme(TileType.Floor));
 
                 if (!obj.GetComponent<Actor>()) // Sometimes there are bots in here
                 {
@@ -1373,7 +1380,7 @@ public class MapManager : MonoBehaviour
 
         foreach (GameObject obj in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().preInitObjects)
         {
-            Vector3 spawnLocation = obj.transform.position;
+            Vector2Int spawnLocation = HF.V3_to_V2I(obj.transform.position);
             if (obj.tag.Contains("Item"))
             {
 
@@ -1383,7 +1390,7 @@ public class MapManager : MonoBehaviour
                 if (obj.gameObject.name.Contains("*")) // Specific Item Reference
                 {
                     string[] itemName = obj.gameObject.name.Split("*");
-                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(itemName[0], HF.V3_to_V2I(spawnLocation), 1, true, GlobalSettings.inst.faultyPrototypeChance));
+                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(itemName[0], spawnLocation, 1, true, GlobalSettings.inst.faultyPrototypeChance));
                 }
                 else if (obj.gameObject.GetComponent<MiscItemPool>()) // Specific Item Pool
                 {
@@ -1391,7 +1398,7 @@ public class MapManager : MonoBehaviour
                         new ItemSpawnInfo(
                             obj.gameObject.GetComponent<MiscItemPool>().itemPool[Random.Range(0, 
                             obj.gameObject.GetComponent<MiscItemPool>().itemPool.Count - 1)].itemName, 
-                            HF.V3_to_V2I(spawnLocation), 
+                            spawnLocation, 
                             1, 
                             true, 
                             GlobalSettings.inst.faultyPrototypeChance)
@@ -1425,7 +1432,7 @@ public class MapManager : MonoBehaviour
                     InventoryControl.inst.CreateItemInWorld(
                         new ItemSpawnInfo(
                             validitems[Random.Range(0, validitems.Count - 1)], 
-                            HF.V3_to_V2I(spawnLocation), 
+                            spawnLocation, 
                             1, 
                             true,
                             GlobalSettings.inst.faultyPrototypeChance)
@@ -1449,11 +1456,11 @@ public class MapManager : MonoBehaviour
 
                     bot = HF.FindBotOfTier(int.Parse(rating));
 
-                    PlaceBot(HF.V3_to_V2I(spawnLocation), bot, obj.gameObject);
+                    PlaceBot(spawnLocation, bot, obj.gameObject);
                 }
                 else // Bot was found, place it
                 {
-                    PlaceBot(HF.V3_to_V2I(spawnLocation), bot, obj.gameObject);
+                    PlaceBot(spawnLocation, bot, obj.gameObject);
                 }
             }
             else if (obj.tag == "Trigger" || obj.gameObject.name.Contains("Trigger"))
@@ -1461,14 +1468,14 @@ public class MapManager : MonoBehaviour
                 // There needs to be a floor under this
                 CreateBlock(spawnLocation, HF.IDbyTheme(TileType.Floor));
 
-                obj.transform.position += spawnLocation; // Janky nudge
+                obj.transform.position += obj.transform.position; // Janky nudge
                 obj.gameObject.GetComponent<SpriteRenderer>().enabled = false;
                 obj.gameObject.transform.parent = mapParent;
                 triggers.Add(obj.gameObject);
             }
             else if (obj.tag == "Event" || obj.gameObject.name.Contains("Event"))
             {
-                obj.transform.position += spawnLocation; // Janky nudge
+                obj.transform.position += obj.transform.position; // Janky nudge
                 obj.gameObject.GetComponent<SpriteRenderer>().enabled = false;
                 obj.gameObject.transform.parent = mapParent;
                 events.Add(obj.gameObject);
@@ -1477,7 +1484,7 @@ public class MapManager : MonoBehaviour
 
         foreach (GameObject obj in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().prePlacedObjects.ToList())
         {
-            Vector3 spawnLocation = obj.transform.position;
+            Vector2Int spawnLocation = HF.V3_to_V2I(obj.transform.position);
 
             if (obj.tag.Contains("Access") || obj.gameObject.name.Contains("Access"))
             {
@@ -1490,7 +1497,7 @@ public class MapManager : MonoBehaviour
 
                 int _target = int.Parse(exitTarget);
 
-                Vector2Int location = HF.V3_to_V2I(spawnLocation);
+                Vector2Int location = spawnLocation;
                 if (exitType.Contains("Branch"))
                 {
                     mapdata[location.x, location.y] = PlaceLevelExit(location, true, _target);
@@ -1505,7 +1512,7 @@ public class MapManager : MonoBehaviour
             {
                 // We are just going to create an exact copy of this part and copy over its component data
                 GameObject M = Instantiate(obj.gameObject);
-                M.transform.position = spawnLocation;
+                M.transform.position = obj.transform.position;
                 M.transform.rotation = obj.transform.rotation;
 
                 CopyComponentData<SpriteRenderer>(obj.gameObject, M);
@@ -1620,13 +1627,13 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    private WorldTile CreateBlock(Vector2 pos, int id, bool dirty = false)
+    private WorldTile CreateBlock(Vector2Int pos, int id, bool dirty = false)
     {
         // Create the new tile
         WorldTile newTile = new WorldTile();
 
         // Assign it information
-        newTile.location = new Vector2Int((int)pos.x, (int)pos.y);
+        newTile.location = pos;
         newTile.tileInfo = MapManager.inst.tileDatabase.Tiles[id]; // Assign tile data from database by ID
         newTile.doneRevealAnimation = false;
         newTile.isDirty = dirty ? Random.Range(0, debrisTiles.Count - 1) : -1; // (Assign a debris sprite ID so on the tilemap update the sprite doesn't randomly change)
@@ -1646,29 +1653,36 @@ public class MapManager : MonoBehaviour
             newTile.type = newTile.tileInfo.type;
         }
 
-        // Default "occupied" state
+        // Default "occupied" state (and pathdata setting)
         switch (newTile.type)
         {
             case TileType.Floor:
                 newTile.occupied = false;
+                pathdata[pos.x, pos.y] = 0;
                 break;
             case TileType.Wall:
                 newTile.occupied = true;
+                pathdata[pos.x, pos.y] = 1;
                 break;
             case TileType.Door:
                 newTile.occupied = false;
+                pathdata[pos.x, pos.y] = 0;
                 break;
             case TileType.Machine:
                 newTile.occupied = true;
+                pathdata[pos.x, pos.y] = 2;
                 break;
             case TileType.Exit:
                 newTile.occupied = false;
+                pathdata[pos.x, pos.y] = 0;
                 break;
             case TileType.Phasewall:
                 newTile.occupied = false;
+                pathdata[pos.x, pos.y] = 0;
                 break;
             case TileType.Default:
                 newTile.occupied = false;
+                pathdata[pos.x, pos.y] = 0;
                 break;
             default:
                 break;
@@ -1757,6 +1771,7 @@ public class MapManager : MonoBehaviour
         newAccess.tileInfo = !isBranch ? MapManager.inst.tileDatabase.Tiles[6] : MapManager.inst.tileDatabase.Tiles[7]; // [ACCESS_MAIN] / [ACCESS_BRANCH]
 
         newAccess.type = TileType.Exit;
+        pathdata[loc.x, loc.y] = 0;
 
         return newAccess;
     }

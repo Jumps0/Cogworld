@@ -53,17 +53,31 @@ public class Entity : MonoBehaviour
 
     public void Move(Vector2 direction)
     {
+        #region Pre-move
+        Vector2Int oldPosition = HF.V3_to_V2I(this.transform.position);
+
         // Movement Indicator Tile
-        if(this.GetComponent<Actor>() != PlayerData.inst.GetComponent<Actor>()) // (The thing moving should not see its own path)
+        if (this.GetComponent<Actor>() != PlayerData.inst.GetComponent<Actor>()) // (The thing moving should not see its own path)
         {
-            MapManager.inst.TileInitialReveal(HF.V3_to_V2I(this.transform.position));
+            MapManager.inst.TileInitialReveal(oldPosition);
         }
+
+        // Mark previous position as "free"
+        // NOTE: We (hopefully) avoid a race condition here if another bot tries to move here as we will handle movement "one by one".
+        if (MapManager.inst.pathdata[oldPosition.x, oldPosition.y] > 0) { MapManager.inst.pathdata[oldPosition.x, oldPosition.y] = 0; }
+        #endregion
 
         // Move character
         transform.position += (Vector3)direction;
 
+        #region Post-move
+        Vector2Int newPosition = new Vector2Int((int)transform.position.x, (int)transform.position.y);
+
+        // Indicate new position as occupied (by a bot)
+        if (MapManager.inst.pathdata[newPosition.x, newPosition.y] == 0) { MapManager.inst.pathdata[newPosition.x, newPosition.y] = 2; }
+
         // Update momentum
-        if(lastDirection == direction)
+        if (lastDirection == direction)
         {
             momentum++;
         }
@@ -80,16 +94,16 @@ public class Entity : MonoBehaviour
         lastDirection = direction;
 
         // Update any nearby doors
-        Vector2Int newLocation = new Vector2Int((int)transform.position.x, (int)transform.position.y);
-        GameManager.inst.LocalDoorUpdate(newLocation);
+        GameManager.inst.LocalDoorUpdate(newPosition);
 
         // Matter Check (if player)
         if (this.GetComponent<PlayerData>())
         {
-            SpecialPickupCheck(newLocation);
+            SpecialPickupCheck(newPosition);
         }
 
         this.GetComponent<Actor>().UpdateFieldOfView(); // Update their FOV
+        #endregion
     }
 
     public void AddToGameManager()
