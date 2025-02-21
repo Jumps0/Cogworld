@@ -486,7 +486,6 @@ public struct WorldTile
     [Header("Info")]
     public Vector2Int location;
     public TileObject tileInfo;
-    public bool occupied;
     [Tooltip("There are 3 visibility states. 0 = UNSEEN/UNEXPLORED | 1 = UNSEEN/EXPLORED | 2 = SEEN/EXPLORED ")]
     public byte vis;
     public bool doneRevealAnimation;
@@ -526,7 +525,6 @@ public struct WorldTile
     public void SetDestroyed(bool destroyed)
     {
         damaged = destroyed;
-        occupied = destroyed; // (Careful with this, if we don't do the bot occupation check this will break things a bit)
 
         if (destroyed)
         {
@@ -536,7 +534,7 @@ public struct WorldTile
         }
         else
         {
-            // Modify pathing (it should now be obstructed)
+            // Modify pathing (it should now go back to being obstructed)
             if (type != TileType.Floor && MapManager.inst.pathdata[location.x, location.y] != 0) { MapManager.inst.pathdata[location.x, location.y] = 1; }
 
         }

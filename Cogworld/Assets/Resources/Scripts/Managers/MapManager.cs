@@ -1657,31 +1657,24 @@ public class MapManager : MonoBehaviour
         switch (newTile.type)
         {
             case TileType.Floor:
-                newTile.occupied = false;
                 pathdata[pos.x, pos.y] = 0;
                 break;
             case TileType.Wall:
-                newTile.occupied = true;
                 pathdata[pos.x, pos.y] = 1;
                 break;
             case TileType.Door:
-                newTile.occupied = false;
                 pathdata[pos.x, pos.y] = 0;
                 break;
             case TileType.Machine:
-                newTile.occupied = true;
                 pathdata[pos.x, pos.y] = 2;
                 break;
             case TileType.Exit:
-                newTile.occupied = false;
                 pathdata[pos.x, pos.y] = 0;
                 break;
             case TileType.Phasewall:
-                newTile.occupied = false;
                 pathdata[pos.x, pos.y] = 0;
                 break;
             case TileType.Default:
-                newTile.occupied = false;
                 pathdata[pos.x, pos.y] = 0;
                 break;
             default:
