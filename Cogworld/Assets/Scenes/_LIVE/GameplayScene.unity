@@ -52065,6 +52065,7 @@ MonoBehaviour:
   _accessPrefab: {fileID: 757329426654254245, guid: 46fc05554c9f1a244850ce80784be65c, type: 3}
   debugPrefab: {fileID: 7279987755472343202, guid: f185db353b3a1cc42aacf4a68a7db9e3, type: 3}
   minePrefab: {fileID: 757329426654254245, guid: 8f34916c989e96d439b3eff23820e2af, type: 3}
+  botPrefab: {fileID: 1489840735499938570, guid: 1b186cc634c9d204cb3574893a661a51, type: 3}
   prefab_highlightedTile: {fileID: 757329426654254245, guid: 3519dc54298c631489be891d65b3b60d, type: 3}
   cameraRef: {fileID: 1521834753}
   playerRef: {fileID: 0}
