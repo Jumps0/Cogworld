@@ -544,21 +544,47 @@ public struct WorldTile
 
     #region Doors
     /// <summary>
+    /// An array containing 9 positions, where if ANY bot is at one of those positions, the door should be open.
+    /// </summary>
+    private Vector2Int[] doorTiles;
+    /// <summary>
+    /// Preload what tiles will open this door if a bot is inside of one.
+    /// </summary>
+    public void PreloadDoorTiles()
+    {
+        doorTiles = new Vector2Int[5];
+        doorTiles[0] = location; // Center
+
+        // Neighbors
+        doorTiles[1] = location + Vector2Int.up;
+        doorTiles[2] = location + Vector2Int.down;
+        doorTiles[3] = location + Vector2Int.left;
+        doorTiles[4] = location + Vector2Int.right;
+
+        /* // No diagonals!
+        doorTiles[5] = location + Vector2Int.up + Vector2Int.left;
+        doorTiles[6] = location + Vector2Int.up + Vector2Int.right;
+        doorTiles[7] = location + Vector2Int.down + Vector2Int.left;
+        doorTiles[8] = location + Vector2Int.down + Vector2Int.right;
+        */
+    }
+
+
+    /// <summary>
     /// Check if the door should open or close.
     /// </summary>
     public void DoorStateCheck()
     {
+        // (There is def a more optimal way to do this)
         bool botNearby = false;
-        /* // TODO
-        foreach (TileBlock T in activationTiles)
+        foreach (Vector2Int T in doorTiles)
         {
-            if (T.GetBotOnTop() != null) // Is there a bot nearby?
+            if (GameManager.inst.GetBlockingActorAtLocation(new Vector3(T.x, T.y)) != null) // Is there a bot here?
             {
                 botNearby = true;
                 break;
             }
         }
-        */
 
         if (botNearby) // If there is a bot nearby
         {
@@ -598,7 +624,7 @@ public struct WorldTile
         }
 
         // Play sound
-        AudioManager.inst.CreateTempClip(new Vector3(location.x, location.y), clip); // (Note: This will need to be altered later if/when the audio system is updated to be local)
+        AudioManager.inst.CreateTempClip(new Vector3(location.x, location.y), clip, 0.4f); // (Note: This will need to be altered later if/when the audio system is updated to be local)
 
         // Update the tile
         MapManager.inst.UpdateTile(this, location);

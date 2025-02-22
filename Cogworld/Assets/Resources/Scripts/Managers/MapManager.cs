@@ -1168,6 +1168,10 @@ public class MapManager : MonoBehaviour
             }
         }
 
+        // !! Impassible (border) tiles must always be visible !!
+        if (tile.isImpassible)
+            finalColor = visc_gray;
+
         /* // Maybe swing back to this later depending on how we handle parts on the floor? (This function will update their visibility)
         // Part on top check
         if (_partOnTop != null)
@@ -1638,6 +1642,10 @@ public class MapManager : MonoBehaviour
         {
             newTile.type = newTile.tileInfo.type;
         }
+
+        // Setup door tiles
+        if (newTile.type == TileType.Door)
+            newTile.PreloadDoorTiles();
 
         // Default "occupied" state (and pathdata setting)
         switch (newTile.type)
