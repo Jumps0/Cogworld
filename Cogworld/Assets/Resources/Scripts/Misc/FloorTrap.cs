@@ -96,6 +96,7 @@ public class FloorTrap : MonoBehaviour
 
     #endregion
 
+    /*
     public void Setup(ItemObject data, Vector2Int loc, TileBlock tile, BotAlignment alignmentN)
     {
         trapData = data;
@@ -298,21 +299,5 @@ public class FloorTrap : MonoBehaviour
 
         Destroy(this.gameObject);
     }
-}
-
-public enum TrapType
-{
-    Alarm,
-    Blade,
-    Chute,
-    DirtyBomb,
-    EMP,
-    Fire,
-    HE, // Heavy Explosive
-    Hellfire,
-    ProtonBomb,
-    Segregator,
-    Shock,
-    Stasis,
-    NONE
+    */
 }

@@ -666,6 +666,7 @@ public class MapManager : MonoBehaviour
         {
             mapdata[P.x, P.y] = CreateBlock(P, doorID); // Place door
         }
+
         /*
         // 5 - Place custom machines
         PlaceIndividualMachine(new Vector2Int(bl.x + 2, bl.y + 3), 1, 4); // Terminal 4x3 "Pipeworks"
@@ -677,15 +678,17 @@ public class MapManager : MonoBehaviour
 
         // 6 - Place Cache
         PlaceHideoutCache(new Vector2Int(bl.x + 8, bl.y + 10));
-
+        
         // # - Test bot
         Actor testBot = PlaceBot(new Vector2Int(bl.x + 12, bl.y + 5), HF.GetBotByString("Thug"));
         // Test QUEST Bot
         Actor questBot = PlaceBot(new Vector2Int(bl.x + 5, bl.y + 16), HF.GetBotByString("Zionite"));
+        */
 
         // test trap
-        PlaceTrap(MapManager.inst.itemDatabase.dict["Blade Trap"], new Vector2Int(bl.x + 5, bl.y + 11));
-        */
+        Vector2Int trapPosition = new Vector2Int(bl.x + 5, bl.y + 11);
+        mapdata[trapPosition.x, trapPosition.y] = PlaceTrap(trapPosition, 50, BotAlignment.Complex, false, 0);
+        
     }
 
     /// <summary>
@@ -1032,6 +1035,7 @@ public class MapManager : MonoBehaviour
                 // TODO
                 break;
             case TileType.Trap:
+                // By default we use the normal sprite.
                 if (ASCII)
                 {
                     display = tile.tileInfo.asciiRep;
@@ -1043,7 +1047,7 @@ public class MapManager : MonoBehaviour
 
                 // Does the player know trap exists?
                 if (tile.trap_knowByPlayer)
-                {
+                { // YES!
                     // And is this trap on their team?
                     if (HF.RelationToTrap(PlayerData.inst.GetComponent<Actor>(), tile) == BotRelation.Friendly)
                     {
@@ -1055,6 +1059,21 @@ public class MapManager : MonoBehaviour
                         // Normal color
                         display.color = tile.tileInfo.asciiColor;
                     }
+                }
+                else
+                { // NO!
+                    // We should display a floor tile here instead.
+                    TileObject floor = MapManager.inst.tileDatabase.Tiles[HF.IDbyTheme(TileType.Floor)];
+                    if (ASCII)
+                    {
+                        display = floor.asciiRep;
+                    }
+                    else
+                    {
+                        display = floor.displaySprite;
+                    }
+
+                    display.color = floor.asciiColor;
                 }
                 break;
             case TileType.Default:
@@ -2659,8 +2678,7 @@ public class MapManager : MonoBehaviour
         pos = HF.LocateFreeSpace(pos, true);
 
         // Create the bot and add in its details
-        var spawnedBot = Instantiate(botPrefab, new Vector3(pos.x * GridManager.inst.globalScale, pos.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
-        spawnedBot.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
+        var spawnedBot = Instantiate(botPrefab, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
         spawnedBot.name = ($"{info.botName} @ ({pos.x},{pos.y})"); // Give grid based name
         spawnedBot.GetComponent<Actor>().isVisible = false;
         spawnedBot.GetComponent<Actor>().isExplored = false;
@@ -3108,22 +3126,26 @@ public class MapManager : MonoBehaviour
 
     #region Misc
 
-    public void PlaceTrap(ItemObject trapData, Vector2Int location, BotAlignment alignment = BotAlignment.Complex)
+    public WorldTile PlaceTrap(Vector2Int pos, int id, BotAlignment alignment = BotAlignment.Complex, bool knowByPlayer = false, byte startingVis = 0, TerminalZone assignedTerminal = null)
     {
-        var spawnedMine = Instantiate(minePrefab, new Vector3(location.x * GridManager.inst.globalScale, location.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
-        spawnedMine.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
-        spawnedMine.name = $"Floor Trap {location.x} {location.y} - {trapData.deployableItem.trapType}"; // Give grid based name
+        // Create the new trap
+        WorldTile newTrap = CreateBlock(pos, id, false);
 
-        spawnedMine.GetComponent<FloorTrap>().Setup(trapData, location, _allTilesRealized[location].bottom, alignment);
+        // Add trap information
+        newTrap.trap_active = true;
+        newTrap.trap_alignment = alignment;
+        newTrap.trap_knowByPlayer = knowByPlayer;
+        newTrap.trap_data = newTrap.tileInfo.trapData;
+        newTrap.trap_type = newTrap.trap_data.trapType;
 
-        TData T = _allTilesRealized[location];
+        // Modify vision
+        newTrap.vis = startingVis;
 
-        spawnedMine.GetComponentInChildren<SpriteRenderer>().sortingOrder = 12;
+        // (Optional) Assign to terminal zone
+        if(assignedTerminal != null)
+            assignedTerminal.trapList.Add(newTrap);
 
-        spawnedMine.transform.parent = mapParent;
-
-        T.top = spawnedMine.gameObject;
-        _allTilesRealized[location] = T;
+        return newTrap;
     }
 
     public void LocationLog(string location, string goal = "GOAL=ESCAPE")

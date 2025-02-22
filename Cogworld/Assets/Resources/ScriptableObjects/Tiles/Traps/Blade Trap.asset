@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d958572c23fc14e94145b869655998, type: 3}
+  m_Name: Blade Trap
+  m_EditorClassIdentifier: 
+  Id: 50
+  tileName: Blade Trap
+  displaySprite: {fileID: 11400000, guid: 078ac9ea5f3ea1b4c85d4723c1eee2ac, type: 2}
+  altSprite: {fileID: -1865799676, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
+  destroyedSprite: {fileID: 11400000, guid: d4f0d65fe726ea149bcaf7cd391e4fc4, type: 2}
+  asciiRep: {fileID: 11400000, guid: 6df65b1fa4ef05b499d8770dfaf98082, type: 2}
+  asciiAltSprite: {fileID: 0}
+  asciiDestroyed: {fileID: 11400000, guid: e4b0248cb8a927f428dac66c6c60ca87, type: 2}
+  asciiColor: {r: 0.6698113, g: 0.6698113, b: 0.6698113, a: 1}
+  type: 6
+  isDirty: 0
+  impassable: 0
+  health: {x: 10, y: 10}
+  armor: 4
+  destructionClips:
+  - {fileID: 8300000, guid: e4262aefc6e5e1a4aa7d867d8e173f2c, type: 3}
+  - {fileID: 8300000, guid: b283c5eb24e1e1041b1d7b7a42b0ecdf, type: 3}
+  - {fileID: 8300000, guid: 5d2ff793136e56646a6d8274f73e0e32, type: 3}
+  - {fileID: 8300000, guid: 6338eef88de95414396b672d0e3e8b62, type: 3}
+  resistances: []
+  door_open: []
+  door_close: []
+  trapData:
+    trapType: 1
+    canSever: 0
+    sever_amount: {x: 0, y: 0}
+    sever_damage: {x: 0, y: 0}
+    canShock: 0
+    shock_amount: {x: 0, y: 0}
+    canBurn: 0
+    burn_amount: {x: 0, y: 0}
+    burn_damage: {x: 0, y: 0}
+    burn_heat: {x: 0, y: 0}
+    burn_affectsNeighbors: 0
+    canPierce: 0
+    pierce_amount: 0
+    pierce_damage: {x: 0, y: 0}
+    pierce_impaleChance: 0
+    canStasis: 0
+    stasis_strength: 0

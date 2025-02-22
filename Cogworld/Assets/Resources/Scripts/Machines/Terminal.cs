@@ -426,7 +426,7 @@ public class TerminalZone
     [Header("Content")]
     [Tooltip("A collection of points in a map that are assigned to this zone.")]
     public List<Vector2Int> assignedArea = new List<Vector2Int>();
-    public List<FloorTrap> trapList = new List<FloorTrap>();
+    public List<WorldTile> trapList = new List<WorldTile>();
     public List<DoorLogic> emergencyAccessDoors = new List<DoorLogic>();
 
     public void RevealArea()

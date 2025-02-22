@@ -847,10 +847,10 @@ public static class HF
                 case TerminalCommandType.Traps:
                     if (parsedName.Contains("Disarm"))
                     {
-                        List<FloorTrap> traps = UIManager.inst.terminal_targetTerm.GetComponent<Terminal>().zone.trapList;
+                        List<WorldTile> traps = UIManager.inst.terminal_targetTerm.GetComponent<Terminal>().zone.trapList;
                         if (traps.Count > 0)
                         {
-                            foreach (FloorTrap trap in traps)
+                            foreach (WorldTile trap in traps)
                             {
                                 trap.DeActivateTrap();
                             }
@@ -863,11 +863,11 @@ public static class HF
                     }
                     else if (parsedName.Contains("Locate"))
                     {
-                        List<FloorTrap> traps = UIManager.inst.terminal_targetTerm.GetComponent<Terminal>().zone.trapList;
+                        List<WorldTile> traps = UIManager.inst.terminal_targetTerm.GetComponent<Terminal>().zone.trapList;
                         if (traps.Count > 0)
                         {
                             // Group the traps and count how many of each are available.
-                            var groupedTraps = traps.GroupBy(f => f.fullName).ToDictionary(g => g.Key, g => g.Count());
+                            var groupedTraps = traps.GroupBy(f => f.trap_data.trapname).ToDictionary(g => g.Key, g => g.Count());
                             string print = "";
 
                             // Print the merged version of the items.
@@ -876,7 +876,7 @@ public static class HF
                                 string plural = trap.Value > 1 ? "s" : "";
                                 print += $"Located {trap.Value} {trap.Key}{plural}.\n";
                             }
-                            foreach (FloorTrap T in traps)
+                            foreach (WorldTile T in traps)
                             {
                                 T.LocateTrap();
                             }
@@ -890,11 +890,11 @@ public static class HF
                     }
                     else if (parsedName.Contains("Reprogram"))
                     {
-                        List<FloorTrap> traps = UIManager.inst.terminal_targetTerm.GetComponent<Terminal>().zone.trapList;
+                        List<WorldTile> traps = UIManager.inst.terminal_targetTerm.GetComponent<Terminal>().zone.trapList;
                         if (traps.Count > 0)
                         {
                             // Group the traps and count how many of each are available.
-                            var groupedTraps = traps.GroupBy(f => f.fullName).ToDictionary(g => g.Key, g => g.Count());
+                            var groupedTraps = traps.GroupBy(f => f.trap_data.trapname).ToDictionary(g => g.Key, g => g.Count());
                             string print = "";
 
                             // Print the merged version of the items.
@@ -903,9 +903,9 @@ public static class HF
                                 string plural = trap.Value > 1 ? "s" : "";
                                 print += $"Located {trap.Value} {trap.Key}{plural}.\n";
                             }
-                            foreach (FloorTrap T in traps)
+                            foreach (WorldTile T in traps)
                             {
-                                T.SetAlignment(BotAlignment.Player); // Delightfully devilish Seymour
+                                T.SetTrapAlignment(BotAlignment.Player); // Delightfully devilish Seymour
                             }
 
                             return HF.RemoveTrailingNewline(print);
@@ -3993,19 +3993,21 @@ public static class HF
 
     public static bool IsOpenSpace(Vector2Int position, bool ignoreFloorItems = false)
     {
-        if (MapManager.inst._allTilesRealized.TryGetValue(position, out TData T))
-        {
-            if (ignoreFloorItems)
-            {
-                return !T.bottom.occupied && HF.FindActorAtPosition(position) == null;
-            }
-            else
-            {
-                return T.bottom._partOnTop == null && !T.bottom.occupied && HF.FindActorAtPosition(position) == null;
-            }
-        }
+        WorldTile tile = MapManager.inst.mapdata[position.x, position.y];
 
-        return false;
+        if (MapManager.inst.pathdata[position.x, position.y] == 0)
+            return false;
+
+        bool NO_ACTOR_HERE = HF.FindActorAtPosition(position) == null;
+
+        if (ignoreFloorItems)
+        {
+            return NO_ACTOR_HERE;
+        }
+        else
+        {
+            return /*T.bottom._partOnTop == null && (TODO: COME BACK TO THIS)*/ NO_ACTOR_HERE;
+        }
     }
 
     public static List<Vector2Int> GetAdjacentPositions(Vector2Int position)
@@ -4444,25 +4446,26 @@ public static class HF
         }
 
         // Now that we have the full bonus, go through the player's FOV and check for any mines (that the player can't see)
-        List<FloorTrap> trapsInView = new List<FloorTrap>();
+        List<WorldTile> trapsInView = new List<WorldTile>();
 
         foreach (Vector3Int spot in FOV)
         {
             Vector2Int loc = new Vector2Int(spot.x, spot.y);
 
-            if (MapManager.inst._allTilesRealized.ContainsKey(loc) && MapManager.inst._allTilesRealized[loc].top != null && MapManager.inst._allTilesRealized[loc].top.GetComponent<FloorTrap>())
+            WorldTile tile = MapManager.inst.mapdata[loc.x, loc.y];
+            if (tile.type == TileType.Trap)
             {
-                if (!MapManager.inst._allTilesRealized[loc].top.GetComponent<FloorTrap>().knowByPlayer
-                    && !MapManager.inst._allTilesRealized[loc].top.GetComponent<FloorTrap>().tripped
-                    && MapManager.inst._allTilesRealized[loc].top.GetComponent<FloorTrap>().active)
+                if (!tile.trap_knowByPlayer
+                    && !tile.trap_tripped
+                    && tile.trap_active)
                 {
-                    trapsInView.Add(MapManager.inst._allTilesRealized[loc].top.GetComponent<FloorTrap>());
+                    trapsInView.Add(tile);
                 }
             }
         }
 
         // Now go through each trap and determine if it should be located
-        foreach (FloorTrap trap in trapsInView)
+        foreach (WorldTile trap in trapsInView)
         {
             if (Random.Range(0f, 1f) < detChance)
             {

@@ -10,6 +10,7 @@ using System.Collections;
 using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEditor.Searcher.SearcherWindow;
 
 /// <summary>
 /// A script used for the physical *real world* tiles used to build the world. What this tile is gets determined by its "tileInfo" (a TileObject variable).
@@ -513,7 +514,7 @@ public struct WorldTile
     [Tooltip("Has this phase wall been revealed to the player?")]
     public bool phase_revealed;
     [Header(" Trap")]
-    public ItemObject trap_data;
+    public TileTrapData trap_data;
     [Tooltip("What faction this trap belongs to, will detonate vs all other hostile factions via player's tree.")]
     public TrapType trap_type;
     public bool trap_tripped;
@@ -635,10 +636,133 @@ public struct WorldTile
     #endregion
 
     #region Traps
-    public void TripTrap(Actor victim)
+    public void LocateTrap()
     {
-        // TODO
-        Debug.LogWarning("TripTrap has not been implemented yet!");
+        #region Vision
+        vis = 2; // There is no possible way this could backfire
+
+        // Update the tile
+        MapManager.inst.UpdateTile(this, location);
+
+        // Update the FOV
+        TurnManager.inst.AllEntityVisUpdate(true);
+        #endregion
+
+        trap_knowByPlayer = true;
+
+        // TODO: COME BACK TO THIS
+        //UIManager.inst.CreateItemPopup(this.gameObject, trap_data.trapname, Color.black, tileInfo.asciiColor, HF.GetDarkerColor(tileInfo.asciiColor, 20f));
+
+        AudioManager.inst.CreateTempClip(new Vector3(location.x, location.y), AudioManager.inst.dict_ui["TRAP_SCAN"]); // UI - TRAP_SCAN
+    }
+
+    public void SetTrapAlignment(BotAlignment newA)
+    {
+        trap_alignment = newA;
+    }
+
+    public IEnumerator TripTrap(Actor victim)
+    {
+        trap_tripped = true;
+
+        if (victim != null && victim == PlayerData.inst.GetComponent<Actor>())
+        {
+            // Freeze player
+            PlayerData.inst.GetComponent<PlayerGridMovement>().playerMovementAllowed = false;
+        }
+
+        // Play trap triggered sound
+        AudioManager.inst.CreateTempClip(new Vector3(location.x, location.y), AudioManager.inst.dict_game["TRAPTRIGGER"]); // GAME - TRAPTRIGGER
+
+        // Log a message
+        UIManager.inst.CreateNewLogMessage("Triggered " + trap_data.trapname, UIManager.inst.warningOrange, UIManager.inst.corruptOrange_faded, false, true);
+
+        Debug.Log("Mine tripped!");
+
+        // This trap tile is now a floor tile
+        type = TileType.Floor;
+        MapManager.inst.UpdateTile(this, location); // (Occasionally irrelivent but that's ok)
+
+        yield return new WaitForEndOfFrame();
+
+        #region EXPLOSION!
+        switch (trap_type)
+        {
+            case TrapType.Alarm: // Triggers an alarm
+
+                break;
+            case TrapType.Blade: // Removes some parts (+ minor damage to those parts)
+
+                break;
+            case TrapType.Chute: // 1 way ticket to the Wastes
+
+                break;
+            case TrapType.DirtyBomb: // Big EMP boom
+
+                break;
+            case TrapType.EMP: // EMP boom
+
+                break;
+            case TrapType.Fire: // Fire boom
+                break;
+
+            case TrapType.HE: // Big boom
+
+                break;
+            case TrapType.Hellfire: // Big fire boom(?)
+
+                break;
+            case TrapType.ProtonBomb: // Big (laser/thermal?) bomb(?)
+
+                break;
+            case TrapType.Segregator:
+
+                break;
+            case TrapType.Shock: // Small EMP (?)
+
+                break;
+            case TrapType.Stasis: // Freeze for X strength
+
+                break;
+            case TrapType.NONE:
+                break;
+            default:
+                break;
+        }
+        #endregion
+
+        if (victim != null && victim == PlayerData.inst.GetComponent<Actor>())
+        {
+            // Un-Freeze player
+            PlayerData.inst.GetComponent<PlayerGridMovement>().playerMovementAllowed = true;
+        }
+
+        // TODO: Remove this trap from whatever zone its in
+    }
+
+    /// <summary>
+    /// Disarms the trap, making it no longer a threat to anyone.
+    /// </summary>
+    public void DeActivateTrap()
+    {
+        trap_active = false;
+    }
+
+    /// <summary>
+    /// Arms a trap, making it a threat to whichever alignment it is set to.
+    /// </summary>
+    public void ActivateTrap(BotAlignment newA)
+    {
+        trap_active = true;
+        trap_alignment = newA;
+
+    }
+    /// <summary>
+    /// Remove this trap from its "on floor" state and turn it into an item that can be picked up.
+    /// </summary>
+    public void ItemizeTrap()
+    {
+
     }
 
     #endregion

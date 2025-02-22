@@ -759,40 +759,16 @@ public class ItemDeployable
     public bool deployable = false;
     public DeployableType type;
 
+    [Header("Traps")]
+    [Tooltip("Contains information for when this trap is an item! The explosion & visual information is in `TileObject.cs`!")]
+    public TileTrapData trapData;
+
     /*
     [Header("Turrets")]
 
     [Header("Charges")]
 
     */
-    [Header("Traps")]
-    public TrapType trapType;
-    // Sever
-    public bool canSever = false;
-    public Vector2Int sever_amount;
-    [Tooltip("0.##% | Damaging each by ##-##% of remaining integrity.")]
-    public Vector2 sever_damage;
-    // Shock
-    public bool canShock = false;
-    [Tooltip("Percent range of corruption dealt. 0.##%")]
-    public Vector2 shock_amount;
-    // Burn
-    public bool canBurn = false;
-    public Vector2Int burn_amount;
-    public Vector2Int burn_damage;
-    public Vector2Int burn_heat;
-    public bool burn_affectsNeighbors = false;
-    // Pierce
-    public bool canPierce = false;
-    public int pierce_amount;
-    public Vector2Int pierce_damage;
-    [Tooltip("0.##%")]
-    public float pierce_impaleChance;
-    // Stasis
-    public bool canStasis = false;
-    [Tooltip("Default is 100")]
-    public int stasis_strength;
-
 }
 
 [System.Serializable]
