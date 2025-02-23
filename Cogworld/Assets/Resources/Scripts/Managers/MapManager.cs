@@ -97,7 +97,7 @@ public class MapManager : MonoBehaviour
     public Dictionary<Vector2Int, TData> _allTilesRealized = new Dictionary<Vector2Int, TData>(); // ~ This stuff is VERY important, but its coded poorly. Lets re-do it!
     [Tooltip("Contains all data related to the map.")]
     public WorldTile[,] mapdata;
-    [Tooltip("A mirror of mapdata but used for pathing, where 0 is a free space, and anything above is some level of occupied. (Wall, bots, machines, traps, etc.)")]
+    [Tooltip("A mirror of mapdata but used for pathing, where 0 is a free space, and anything above is some level of occupied. (Wall[1], bots[2], machines[3], traps[4], etc.)")]
     public byte[,] pathdata;
     [Tooltip("The official size of the generated map.")]
     public Vector2Int mapsize;
@@ -1686,6 +1686,9 @@ public class MapManager : MonoBehaviour
                 break;
             case TileType.Phasewall:
                 pathdata[pos.x, pos.y] = 0;
+                break;
+            case TileType.Trap:
+                pathdata[pos.x, pos.y] = 4;
                 break;
             case TileType.Default:
                 pathdata[pos.x, pos.y] = 0;

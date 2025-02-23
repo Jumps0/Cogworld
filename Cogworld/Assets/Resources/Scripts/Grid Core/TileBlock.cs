@@ -580,7 +580,7 @@ public struct WorldTile
         bool botNearby = false;
         foreach (Vector2Int T in doorTiles)
         {
-            if (GameManager.inst.GetBlockingActorAtLocation(new Vector3(T.x, T.y)) != null) // Is there a bot here?
+            if (MapManager.inst.pathdata[T.x, T.y] == 2) // Is there a bot here?
             {
                 botNearby = true;
                 break;

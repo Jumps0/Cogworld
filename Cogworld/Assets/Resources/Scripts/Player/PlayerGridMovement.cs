@@ -186,7 +186,7 @@ public class PlayerGridMovement : MonoBehaviour
 
         if (desiredDestinationTile.type != TileType.Exit)
         {
-            if (MapManager.inst.pathdata[desiredDestinationTile.location.x, desiredDestinationTile.location.y] == 0) // Space is Clear (Move!)
+            if (HF.LocationUnoccupied(desiredDestinationTile.location)) // Space is Clear (Move!)
             {
                 moveKeyHeld = Action.BumpAction(GetComponent<Actor>(), new Vector2(X, Y));
 

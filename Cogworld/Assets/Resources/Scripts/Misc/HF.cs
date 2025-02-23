@@ -4295,6 +4295,9 @@ public static class HF
             case TileType.Phasewall: // No blocking at all (unless a bot is there which is checked later) 
                 ret = false;
                 break;
+            case TileType.Trap:
+                ret = false;
+                break;
             case TileType.Default:
                 break;
             default:
@@ -4302,7 +4305,7 @@ public static class HF
         }
 
         // Bot check
-        if (GameManager.inst.GetBlockingActorAtLocation(new Vector3(tile.location.x, tile.location.y)))
+        if (MapManager.inst.pathdata[tile.location.x, tile.location.y] != 2)
         {
             ret = false;
         }
@@ -5145,6 +5148,12 @@ public static class HF
     #endregion
 
     #region Misc
+    public static bool LocationUnoccupied(Vector2Int pos)
+    {
+        byte info = MapManager.inst.pathdata[pos.x, pos.y];
+        return info == 0 || info == 4; // Clear or Trap tile
+    }
+
     public static void ScrollToTop(this ScrollRect scrollRect)
     {
         scrollRect.normalizedPosition = new Vector2(0, 1);
