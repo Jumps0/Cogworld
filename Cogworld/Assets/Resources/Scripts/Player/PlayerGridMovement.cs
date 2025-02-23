@@ -294,9 +294,8 @@ public class PlayerGridMovement : MonoBehaviour
         if (!GetComponent<Actor>().isAlive || interfacingMode != InterfacingMode.COMBAT) return;
 
         // Player must be on top of a tile with an item on it to be able to interact with it
-        TileBlock currentTile = GetCurrentPlayerTile();
-
-        if (currentTile != null && currentTile._partOnTop == null)
+        Vector2Int playerPos = HF.V3_to_V2I(this.transform.position);
+        if (!InventoryControl.inst.worldItems.ContainsKey(playerPos))
         {
             return;
         }
@@ -308,7 +307,7 @@ public class PlayerGridMovement : MonoBehaviour
         // See OnLeftClick() below
 
         // - Player hitting enter
-        currentTile._partOnTop.TryEquipItem(); // Try equipping it
+        InventoryControl.inst.worldItems[playerPos].GetComponent<Part>().TryEquipItem(); // Try equipping it
         //InventoryControl.inst.DebugPrintInventory();
     }
 
@@ -360,14 +359,15 @@ public class PlayerGridMovement : MonoBehaviour
         if (PlayerData.inst.GetComponent<BoxCollider2D>().OverlapPoint(mousePos))
         {
             // If the user left clicks on themselves, they are trying to pick up an item beneath them.
-            TileBlock itemCheck = GetCurrentPlayerTile(); // Get the current tile the player is on
-            if (itemCheck._partOnTop != null) // If there is an item on it (underneath the player)
+            Vector2Int playerPos = HF.V3_to_V2I(this.transform.position);
+            if (!InventoryControl.inst.worldItems.ContainsKey(playerPos))
             {
-                itemCheck._partOnTop.TryEquipItem(); // Try equipping it
+                return;
             }
 
-            // Finished
-            return;
+            InventoryControl.inst.worldItems[playerPos].GetComponent<Part>().TryEquipItem(); // Try equipping it
+
+            return; // Finished
         }
         else // Okay maybe they clicked on something else, lets find out.
         {

@@ -1,13 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using static StructureCTR;
-using static UnityEditor.PlayerSettings;
 using Random = UnityEngine.Random;
 
 /// <summary>
@@ -808,8 +805,7 @@ public class MapManager : MonoBehaviour
                     propulsion.Add(HF.FindItemOfTierAndType(1, ItemType.Legs, false));
                     propulsion.Add(HF.FindItemOfTierAndType(1, ItemType.Treads, false));
                     propulsion.Add(HF.FindItemOfTierAndType(1, ItemType.Treads, false));
-                    // TEMPORARILY DISABLED !!
-                    /*
+
                     string[] itemsToSpawn = 
                         { 
                           propulsion[0].itemName, propulsion[1].itemName, propulsion[2].itemName, propulsion[3].itemName, 
@@ -830,7 +826,6 @@ public class MapManager : MonoBehaviour
                     InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Exp. Targeting Computer", new Vector2Int(54, 57), 1, true)); // ONLY FOR TESTING. REMOVE LATER (Exp. Targeting Computer)
                     InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Hvy. Siege Treads", new Vector2Int(53, 57), 1, true)); // ONLY FOR TESTING. REMOVE LATER (Hvy. Siege Treads)
                     InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("EX Chip 1", new Vector2Int(52, 57), 1, true)); // ONLY FOR TESTING. REMOVE LATER (Ex. Chip 1)
-                    */
                 }
 
 
@@ -1104,6 +1099,8 @@ public class MapManager : MonoBehaviour
 
             // Temporarily create the basic tile prefab
             GameObject tile = Instantiate(prefab_basictile, new Vector3(pos.x, pos.y), Quaternion.identity);
+            tile.gameObject.name = "TEMP: Tile Reveal Animation";
+            tile.transform.SetParent(MapManager.inst.transform);
 
             tile.GetComponent<SpriteRenderer>().color = start;
 
@@ -1191,13 +1188,11 @@ public class MapManager : MonoBehaviour
         if (tile.isImpassible)
             finalColor = visc_gray;
 
-        /* // Maybe swing back to this later depending on how we handle parts on the floor? (This function will update their visibility)
-        // Part on top check
-        if (_partOnTop != null)
+        // Update the visibility of a part at this position if there is one
+        if (InventoryControl.inst.worldItems.ContainsKey(pos))
         {
-            HF.SetGenericTileVis(_partOnTop.gameObject, update);
+            InventoryControl.inst.worldItems[pos].GetComponent<Part>().UpdateVis(update);
         }
-        */
 
         // Finally, update the tile
         // NOTE: This is astoundingly stupid. The tilemap REFUSES to change the sprite's color when the sprite is identical to the current state.

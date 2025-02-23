@@ -77,7 +77,7 @@ public class InventoryControl : MonoBehaviour
     public void CreateItemInWorld(ItemSpawnInfo spawnInfo)
     {
         string itemName = spawnInfo.name;
-        Vector2 location = spawnInfo.location;
+        Vector2Int location = spawnInfo.location;
         int specificAmount = spawnInfo.amount;
         bool native = spawnInfo.native;
         float faultyRoll = spawnInfo.chanceForFaulty;
@@ -85,8 +85,7 @@ public class InventoryControl : MonoBehaviour
         int id = MapManager.inst.itemDatabase.dict[itemName].data.Id;
 
         // GameObject creation
-        var spawnedItem = Instantiate(_itemGroundPrefab, new Vector3(location.x * GridManager.inst.globalScale, location.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
-        spawnedItem.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
+        var spawnedItem = Instantiate(_itemGroundPrefab, new Vector3(location.x, location.y), Quaternion.identity); // Instantiate
         spawnedItem.name = $"Floor Item {location.x} {location.y} - "; // Give grid based name
 
         // Item creation
@@ -125,9 +124,7 @@ public class InventoryControl : MonoBehaviour
 
         spawnedItem.name += spawnedItem.GetComponent<Part>()._item.itemData.itemName.ToString(); // Modify name with type
 
-        spawnedItem.GetComponent<Part>().location.x = (int)location.x; // Assign X location
-        spawnedItem.GetComponent<Part>().location.x = (int)location.y; // Assign Y location
-        spawnedItem.GetComponent<Part>()._tile = MapManager.inst._allTilesRealized[new Vector2Int((int)location.x, (int)location.y)].bottom; // Assign tile
+        spawnedItem.GetComponent<Part>().location = location;
         spawnedItem.GetComponent<Part>().native = native;
 
         // Visibility
@@ -136,7 +133,6 @@ public class InventoryControl : MonoBehaviour
 
         // Dictionary storage
         worldItems[new Vector2Int((int)location.x, (int)location.y)] = spawnedItem;
-        MapManager.inst._allTilesRealized[new Vector2Int((int)location.x, (int)location.y)].bottom._partOnTop = spawnedItem.GetComponent<Part>();
 
         spawnedItem.GetComponentInChildren<SpriteRenderer>().sortingOrder = 6;
         spawnedItem.transform.parent = allFloorItems.transform;
@@ -152,8 +148,7 @@ public class InventoryControl : MonoBehaviour
     /// <param name="location">The place to put it.</param>
     public void PlaceItemIntoWorld(Item _item, Vector2Int location, TileBlock tile)
     {
-        var placedItem = Instantiate(_itemGroundPrefab, new Vector3(location.x * GridManager.inst.globalScale, location.y * GridManager.inst.globalScale), Quaternion.identity); // Instantiate
-        placedItem.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
+        var placedItem = Instantiate(_itemGroundPrefab, new Vector3(location.x, location.y), Quaternion.identity); // Instantiate
         placedItem.name = $"Floor Item {location.x} {location.y} - "; // Give grid based name
 
         _item.state = false;
@@ -162,12 +157,9 @@ public class InventoryControl : MonoBehaviour
 
         placedItem.name += placedItem.GetComponent<Part>()._item.itemData.itemName.ToString(); // Modify name with type
 
-        placedItem.GetComponent<Part>().location.x = (int)location.x; // Assign X location
-        placedItem.GetComponent<Part>().location.x = (int)location.y; // Assign Y location
-        placedItem.GetComponent<Part>()._tile = MapManager.inst._allTilesRealized[new Vector2Int((int)location.x, (int)location.y)].bottom; // Assign tile
+        placedItem.GetComponent<Part>().location = location;
 
-        worldItems[new Vector2Int((int)location.x, (int)location.y)] = placedItem; // Add to Dictionary
-        MapManager.inst._allTilesRealized[new Vector2Int((int)location.x, (int)location.y)].bottom._partOnTop = placedItem.GetComponent<Part>();
+        worldItems[location] = placedItem; // Add to Dictionary
 
         placedItem.GetComponentInChildren<SpriteRenderer>().sortingOrder = 6;
         placedItem.transform.parent = allFloorItems.transform;
@@ -601,7 +593,7 @@ public class InventoryControl : MonoBehaviour
 public class ItemSpawnInfo
 {
     public string name;
-    public Vector2 location;
+    public Vector2Int location;
     public int amount = 1;
     [Tooltip("If this item should be considered 'native' to the environment. If false, scavengers will pick this up and recycle it.")]
     public bool native = false;
@@ -612,7 +604,7 @@ public class ItemSpawnInfo
     [Tooltip("Rarely used. Make an item start with corruption on it.")]
     public int corruptedAmount = 0;
 
-    public ItemSpawnInfo(string name, Vector2 location, int amount, bool native, float rollForFaulty = 0f, int corruption = 0)
+    public ItemSpawnInfo(string name, Vector2Int location, int amount, bool native, float rollForFaulty = 0f, int corruption = 0)
     {
         this.name = name;
         this.location = location;

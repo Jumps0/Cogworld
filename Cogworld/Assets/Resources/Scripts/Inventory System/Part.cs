@@ -11,9 +11,8 @@ public class Part : MonoBehaviour
     public bool inInventory; // True = In Inventory, False = On Ground
     public bool knownByPlayer; // Prototype
 
-    public TileBlock _tile; // Assigned on Creation
-    public Vector2Int location; // Assigned on Creation
-    public Item _item; // Assigned on Creation
+    public Vector2Int location;
+    public Item _item;
     [Tooltip("Is this item native to 0b10? If false, scavengers will move to pick up and recycle this item.")]
     public bool native = false;
 
@@ -355,7 +354,8 @@ public class Part : MonoBehaviour
 
     public void TryEquipItem()
     {
-        if (PlayerData.inst.GetComponent<PlayerGridMovement>().GetCurrentPlayerTile() == _tile) // Is the player ontop of this item?
+        Vector2Int playerPos = HF.V3_to_V2I(PlayerData.inst.transform.position);
+        if (playerPos == location) // Is the player ontop of this item?
         {
             if (pickupcooldown > 0) return;
 
@@ -425,8 +425,7 @@ public class Part : MonoBehaviour
                 _highlight.SetActive(false);
                 // Remove this item from the ground
                 TryDisableConnectedPopup();
-                _tile._partOnTop = null;
-                InventoryControl.inst.worldItems.Remove(_tile.location);
+                InventoryControl.inst.worldItems.Remove(location);
                 Destroy(this.gameObject);
             }
             else if(slotAvailable) // If no space in inventory, then we try to add it to the slots
@@ -489,8 +488,7 @@ public class Part : MonoBehaviour
                     _highlight.SetActive(false);
                     // Remove this item from the ground
                     TryDisableConnectedPopup();
-                    _tile._partOnTop = null;
-                    InventoryControl.inst.worldItems.Remove(_tile.location);
+                    InventoryControl.inst.worldItems.Remove(location);
                     Destroy(this.gameObject);
                 }
                 else
@@ -583,8 +581,7 @@ public class Part : MonoBehaviour
         _highlight.SetActive(false);
         // Remove this item from the ground
         TryDisableConnectedPopup();
-        _tile._partOnTop = null;
-        InventoryControl.inst.worldItems.Remove(_tile.location);
+        InventoryControl.inst.worldItems.Remove(location);
         Destroy(this.gameObject);
 
     }
@@ -637,12 +634,8 @@ public class Part : MonoBehaviour
     public void PlayEquipSound()
     {
         // First check if this item is light or not
-        string name = HF.GetFullItemName(_item);
-        if (name.Contains("Lgt.") 
-            || name.Contains("Lgt") 
-            || name.Contains("LGT") 
-            || name.Contains("LGT.") 
-            || name.Contains("Light"))
+        string name = HF.GetFullItemName(_item).ToLower();
+        if (name.Contains("lgt") || name.Contains("light"))
         {
             AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_equipitem[$"PART_LGT_0{Random.Range(1, 3)}"]); // PART_LIGHT_1/2/3
         }

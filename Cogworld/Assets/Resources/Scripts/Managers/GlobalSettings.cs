@@ -1132,7 +1132,7 @@ public class GlobalSettings : MonoBehaviour
                 // Spawn it in as faulty
                 if(toSpawn != null)
                 {
-                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(toSpawn.itemName, HF.LocationOfPlayer(), 1, false, 1.0f));
+                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(toSpawn.itemName, HF.V3_to_V2I(HF.LocationOfPlayer()), 1, false, 1.0f));
 
                     DebugBarHelper($"Spawned a faulty {toSpawn.itemName}.");
 
@@ -1152,7 +1152,7 @@ public class GlobalSettings : MonoBehaviour
                 // Spawn it in as corrupted
                 if (corrItem != null)
                 {
-                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(corrItem.itemName, HF.LocationOfPlayer(), 1, false, 0, 100));
+                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(corrItem.itemName, HF.V3_to_V2I(HF.LocationOfPlayer()), 1, false, 0, 100));
 
                     DebugBarHelper($"Spawned a corrupted {corrItem.itemName}.");
 
