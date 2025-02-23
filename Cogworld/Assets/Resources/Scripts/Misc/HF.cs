@@ -3971,7 +3971,7 @@ public static class HF
         while (queue.Count > 0)
         {
             Vector2Int currentPos = queue.Dequeue();
-            if (IsOpenSpace(currentPos))
+            if (IsOpenSpaceForItem(currentPos, true, false))
             {
                 return currentPos;
             }
@@ -3991,23 +3991,29 @@ public static class HF
         return center;
     }
 
-    public static bool IsOpenSpace(Vector2Int position, bool ignoreFloorItems = false)
+    /// <summary>
+    /// Is the tile at this position open for an item to be placed here?
+    /// </summary>
+    /// <param name="position">The location to try and place the item</param>
+    /// <param name="ignoreFloorItems">If true, we don't care if there is already a part on the floor at this position (False by default).</param>
+    /// <param name="ignoreBots">If true, we don't care if there is a bot at this position (False by default).</param>
+    /// <returns>True/False if it is possible to place an item item.</returns>
+    public static bool IsOpenSpaceForItem(Vector2Int position, bool ignoreBots = false, bool ignoreFloorItems = false)
     {
         WorldTile tile = MapManager.inst.mapdata[position.x, position.y];
+        byte pathdata = MapManager.inst.pathdata[position.x, position.y];
 
-        if (MapManager.inst.pathdata[position.x, position.y] == 0)
-            return false;
+        bool ret = true;
 
-        bool NO_ACTOR_HERE = HF.FindActorAtPosition(position) == null;
+        ret = HF.IsUnoccupiedTile(tile);
 
-        if (ignoreFloorItems)
-        {
-            return NO_ACTOR_HERE;
-        }
-        else
-        {
-            return /*T.bottom._partOnTop == null && (TODO: COME BACK TO THIS)*/ NO_ACTOR_HERE;
-        }
+        if (ignoreBots == false && pathdata == 4)
+            ret = false;
+
+        if (ignoreFloorItems == false && InventoryControl.inst.worldItems.ContainsKey(position))
+            ret = false;
+
+        return ret;
     }
 
     public static List<Vector2Int> GetAdjacentPositions(Vector2Int position)
@@ -4270,7 +4276,7 @@ public static class HF
     /// Checks to see if a specified tile is unoccupied.
     /// </summary>
     /// <param name="tile">The specified tile to check.</param>
-    /// <returns></returns>
+    /// <returns>Returns TRUE if this tile is unoccupied.</returns>
     public static bool IsUnoccupiedTile(WorldTile tile)
     {
         bool ret = false;
@@ -4278,40 +4284,33 @@ public static class HF
         TileType type = tile.tileInfo.type;
         switch (type)
         {
-            case TileType.Floor: // No blocking at all (unless a bot is there which is checked later)
-                ret = false;
+            case TileType.Floor: // No blocking at all (unless a bot is there)
+                ret = true;
+                ret = MapManager.inst.pathdata[tile.location.x, tile.location.y] != 2; // Bot check
                 break;
             case TileType.Wall: // Always blocks (unless destroyed)
-                ret = !tile.damaged;
+                ret = tile.damaged;
                 break;
-            case TileType.Door: // No blocking at all (unless a bot is there which is checked later)
-                ret = false;
+            case TileType.Door: // No blocking at all (unless a bot is there)
+                ret = true;
+                ret = MapManager.inst.pathdata[tile.location.x, tile.location.y] != 2; // Bot check
                 break;
             case TileType.Machine: // Always blocks (unless destroyed)
-                ret = !tile.damaged;
+                ret = tile.damaged;
                 break;
             case TileType.Exit: // NEVER blocks
-                return false;
-            case TileType.Phasewall: // No blocking at all (unless a bot is there which is checked later) 
-                ret = false;
+                return true;
+            case TileType.Phasewall: // No blocking at all (unless a bot is there)
+                ret = true;
+                ret = MapManager.inst.pathdata[tile.location.x, tile.location.y] != 2; // Bot check
                 break;
             case TileType.Trap:
-                ret = false;
+                ret = true;
                 break;
             case TileType.Default:
                 break;
             default:
                 break;
-        }
-
-        // Bot check
-        if (MapManager.inst.pathdata[tile.location.x, tile.location.y] != 2)
-        {
-            ret = false;
-        }
-        else
-        {
-            ret = true;
         }
 
         return ret;

@@ -132,7 +132,7 @@ public class InventoryControl : MonoBehaviour
         spawnedItem.GetComponent<Part>().isVisible = false;
 
         // Dictionary storage
-        worldItems[new Vector2Int((int)location.x, (int)location.y)] = spawnedItem;
+        worldItems[location] = spawnedItem;
 
         spawnedItem.GetComponentInChildren<SpriteRenderer>().sortingOrder = 6;
         spawnedItem.transform.parent = allFloorItems.transform;
@@ -146,14 +146,13 @@ public class InventoryControl : MonoBehaviour
     /// </summary>
     /// <param name="_item">The item in question.</param>
     /// <param name="location">The place to put it.</param>
-    public void PlaceItemIntoWorld(Item _item, Vector2Int location, TileBlock tile)
+    public void PlaceItemIntoWorld(Item _item, Vector2Int location)
     {
         var placedItem = Instantiate(_itemGroundPrefab, new Vector3(location.x, location.y), Quaternion.identity); // Instantiate
         placedItem.name = $"Floor Item {location.x} {location.y} - "; // Give grid based name
 
         _item.state = false;
         placedItem.GetComponent<Part>()._item = _item; // Assign part data from database by ID
-        tile._partOnTop = placedItem.GetComponent<Part>();
 
         placedItem.name += placedItem.GetComponent<Part>()._item.itemData.itemName.ToString(); // Modify name with type
 
@@ -426,10 +425,7 @@ public class InventoryControl : MonoBehaviour
         }
 
         // Drop is as close to the source as possible
-        TileBlock dropTile = MapManager.inst._allTilesRealized[starting_pos].bottom;
-
-        Vector2Int dropLocation = HF.LocateFreeSpace(HF.V3_to_V2I(dropTile.transform.position)); // Find nearest free space
-        dropTile = MapManager.inst._allTilesRealized[dropLocation].bottom;
+        Vector2Int dropLocation = HF.LocateFreeSpace(starting_pos); // Find nearest free space
 
         if (source != null && source.gameObject.GetComponent<PlayerData>()) // Is player?
         {
@@ -443,7 +439,7 @@ public class InventoryControl : MonoBehaviour
             sourceInventory.RemoveItem(_item);
 
         // Place the item
-        PlaceItemIntoWorld(_item, dropTile.location, dropTile);
+        PlaceItemIntoWorld(_item, dropLocation);
 
         return;
     }
