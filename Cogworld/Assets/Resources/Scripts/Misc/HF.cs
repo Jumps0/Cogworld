@@ -2040,6 +2040,36 @@ public static class HF
     #endregion
 
     #region Find & Get
+    /// <summary>
+    /// Used for setting the byte flag in MapManager's `pathdata`.
+    /// </summary>
+    /// <param name="type">The type of tile.</param>
+    /// <returns>The byte which should be set here to be used in pathing.</returns>
+    public static byte TileObstructionType(TileType type)
+    {
+        // Wall[1], bots[2], machines[3], traps[4]
+        switch (type)
+        {
+            case TileType.Floor:
+                return 0;
+            case TileType.Wall:
+                return 1;
+            case TileType.Door:
+                return 0;
+            case TileType.Machine:
+                return 3;
+            case TileType.Exit:
+                return 0;
+            case TileType.Phasewall:
+                return 0;
+            case TileType.Trap:
+                return 4;
+            case TileType.Default:
+                return 0;
+            default:
+                return 0;
+        }
+    }
 
     /// <summary>
     /// Attempts to find and return the current amount of stored matter in the player's hideout cache. If unsuccessful, returns -1.

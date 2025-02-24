@@ -537,7 +537,7 @@ public struct WorldTile
         else
         {
             // Modify pathing (it should now go back to being obstructed)
-            if (type != TileType.Floor && MapManager.inst.pathdata[location.x, location.y] != 0) { MapManager.inst.pathdata[location.x, location.y] = 1; }
+            if (type != TileType.Floor && MapManager.inst.pathdata[location.x, location.y] != 0) { MapManager.inst.pathdata[location.x, location.y] = HF.TileObstructionType(type); }
 
         }
     }
