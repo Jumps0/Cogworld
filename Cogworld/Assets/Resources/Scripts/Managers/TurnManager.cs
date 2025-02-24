@@ -293,4 +293,12 @@ public class TurnManager : MonoBehaviour
             A.UpdateVis(MapManager.inst.mapdata[pos.x, pos.y].vis);
         }
     }
+
+    public void AllEntityLateSetup()
+    {
+        foreach(Actor A in actors)
+        {
+            A.LateSetup();
+        }
+    }
 }

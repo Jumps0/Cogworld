@@ -712,7 +712,7 @@ public class QuestManager : MonoBehaviour
     public void OpenQuestMenu()
     {
         // Play the OPEN sound
-        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_ui["OPEN"]); // UI - OPEN
+        AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_ui["OPEN1"]); // UI - OPEN1
 
         ui_mainReference.SetActive(true);
         ui_animator.Play("QUEST_WindowOpen");

@@ -409,6 +409,7 @@ public class MapManager : MonoBehaviour
         }
 
         TurnManager.inst.AllEntityVisUpdate(); // Update vis
+        TurnManager.inst.AllEntityLateSetup(); // and finish setting up
 
         // Load stored intel (non-branches)
         if (!currentLevelIsBranch)
@@ -541,6 +542,7 @@ public class MapManager : MonoBehaviour
         }
 
         TurnManager.inst.AllEntityVisUpdate(); // Update vis
+        TurnManager.inst.AllEntityLateSetup(); // And finishing setup
         //
         // --            --
 
@@ -675,12 +677,12 @@ public class MapManager : MonoBehaviour
 
         // 6 - Place Cache
         PlaceHideoutCache(new Vector2Int(bl.x + 8, bl.y + 10));
-        
+        */
         // # - Test bot
         Actor testBot = PlaceBot(new Vector2Int(bl.x + 12, bl.y + 5), HF.GetBotByString("Thug"));
         // Test QUEST Bot
         Actor questBot = PlaceBot(new Vector2Int(bl.x + 5, bl.y + 16), HF.GetBotByString("Zionite"));
-        */
+        
 
         // test trap
         Vector2Int trapPosition = new Vector2Int(bl.x + 5, bl.y + 11);
@@ -2453,6 +2455,8 @@ public class MapManager : MonoBehaviour
         spawnedPlayer.transform.localScale = new Vector3(GridManager.inst.globalScale, GridManager.inst.globalScale, GridManager.inst.globalScale); // Adjust scaling
         spawnedPlayer.GetComponent<PlayerGridMovement>().playerMovementAllowed = false; // Disable movement for the time being
         playerRef = spawnedPlayer; // Set playerRef in CameraController
+
+        spawnedPlayer.GetComponent<Actor>().Setup(null);
         spawnedPlayer.GetComponent<Actor>().ClearFieldOfView();
 
         return spawnedPlayer;
@@ -2678,6 +2682,8 @@ public class MapManager : MonoBehaviour
         // Create the bot and add in its details
         var spawnedBot = Instantiate(botPrefab, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
         spawnedBot.name = ($"{info.botName} @ ({pos.x},{pos.y})"); // Give grid based name
+
+        spawnedBot.GetComponent<Actor>().Setup(info);
         spawnedBot.GetComponent<Actor>().isVisible = false;
         spawnedBot.GetComponent<Actor>().isExplored = false;
 

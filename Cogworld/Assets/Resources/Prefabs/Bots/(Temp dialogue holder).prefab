@@ -1,0 +1,129 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &557345727654459176
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5683314244945023580}
+  - component: {fileID: 6571166156353343796}
+  - component: {fileID: 750799373355736174}
+  m_Layer: 0
+  m_Name: (Temp dialogue holder)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5683314244945023580
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 557345727654459176}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 55.523663, y: 53.616333, z: -0.039903816}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6571166156353343796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 557345727654459176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 0}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 0
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
+--- !u!114 &750799373355736174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 557345727654459176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88cb567f3ec23ef498af60463e6e23fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  squad: []
+  squadLeader: {fileID: 0}
+  state: 0
+  isTurn: 0
+  memory: 0
+  canSeePlayer: 0
+  relationToPlayer: 1
+  lastKnowEnemyLocation: {x: -1, y: -1}
+  pointsOfInterest: []
+  hasDialogue: 1
+  hasBufferDialogue: 1
+  talking: 0
+  finishedTalking: 0
+  dialogue:
+  - id: 1
+    speech: Oh you look... interesting. The Exiles will probably want to check you
+      out.
+  - id: 2
+    speech: Keep your grabby things to yourself, though. I've got my sensors on you.
+  moveToNextDialogue: 0
+  uniqueDialogueSound: {fileID: 8300000, guid: 90c69b1b5df42714cb31ded0323c7d13, type: 3}
+  uniqueName: 8R-AWN

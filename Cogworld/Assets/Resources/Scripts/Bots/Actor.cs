@@ -54,11 +54,14 @@ public class Actor : Entity
     [Header("Conditions")]
     public List<ModHacks> hacked_mods = new List<ModHacks>();
 
-    #region Pre-setup
-    private void OnValidate()
+    #region Setup
+    public void Setup(BotObject info)
     {
-        if (botInfo != null)
+        botInfo = info;
+        if (botInfo)
         {
+            baseColor = botInfo.idealColor;
+
             if (_sprite != null && botInfo.displaySprite != null)
             {
                 // Auto-assign sprite
@@ -72,15 +75,6 @@ public class Actor : Entity
             energyGeneration = botInfo.energyGeneration;
             fieldOfViewRange = botInfo.visualRange;
             maxHealth = botInfo.coreIntegrity;
-        }
-    }
-    #endregion
-
-    private void Awake()
-    {
-        if (botInfo)
-        {
-            baseColor = botInfo.idealColor;
         }
         else
         {
@@ -113,6 +107,7 @@ public class Actor : Entity
                 // Fill up armament & component inventories
                 foreach (var item in botInfo.armament)
                 {
+                    Debug.Log($"{this.gameObject.name} adding {item} {item.item.Name} to {armament}");
                     armament.AddItem(item.item, 1);
                 }
                 foreach (var item in botInfo.components)
@@ -135,7 +130,7 @@ public class Actor : Entity
         }
     }
 
-    private void Start()
+    public void LateSetup()
     {
         if (GameManager.inst)
         {
@@ -173,6 +168,7 @@ public class Actor : Entity
 
         this.gameObject.name = name;
     }
+    #endregion
 
     private void Update()
     {

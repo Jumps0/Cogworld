@@ -24,13 +24,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 117934310375941720}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1489840735499938571}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2190048589428052772
 SpriteRenderer:
@@ -108,13 +108,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1489840735416740149}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1489840735499938571}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1489840735416740139
 SpriteRenderer:
@@ -196,6 +196,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1489840735499938570}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -205,7 +206,6 @@ Transform:
   - {fileID: 5228594425662619589}
   - {fileID: 163610667098491925}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &38123581663690283
 BoxCollider2D:
@@ -217,6 +217,25 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -250,6 +269,12 @@ Rigidbody2D:
   m_AngularDrag: 0.05
   m_GravityScale: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
@@ -387,13 +412,13 @@ MonoBehaviour:
   isAlive: 1
   fieldOfViewRange: 16
   fieldOfView: []
-  AI: {fileID: 0}
-  botInfo: {fileID: 11400000, guid: 7febc8e1e95b83d40899cf19a0faa3ea, type: 2}
+  botInfo: {fileID: 0}
   myFaction: 0
   _class: 3
   wasFabricated: 0
   Initiative: 0
   _sprite: {fileID: 1489840735416740139}
+  _collider: {fileID: 38123581663690283}
   state_DORMANT: 0
   state_DISARMED: 0
   state_CLOAKED: 0
@@ -402,6 +427,7 @@ MonoBehaviour:
   directPlayerAlly: 0
   followThePlayer: 0
   hacked_mods: 
+  previousAttackers: []
   isExplored: 0
   isVisible: 0
   fow_sprite: {fileID: 1489840735416740139}
@@ -428,20 +454,16 @@ MonoBehaviour:
   memory: 0
   canSeePlayer: 0
   relationToPlayer: 1
+  lastKnowEnemyLocation: {x: -1, y: -1}
   pointsOfInterest: []
-  hasDialogue: 1
-  hasBufferDialogue: 1
+  hasDialogue: 0
+  hasBufferDialogue: 0
   talking: 0
   finishedTalking: 0
-  dialogue:
-  - id: 1
-    speech: Oh you look... interesting. The Exiles will probably want to check you
-      out.
-  - id: 2
-    speech: Keep your grabby things to yourself, though. I've got my sensors on you.
+  dialogue: []
   moveToNextDialogue: 0
-  uniqueDialogueSound: {fileID: 8300000, guid: 90c69b1b5df42714cb31ded0323c7d13, type: 3}
-  uniqueName: 8R-AWN
+  uniqueDialogueSound: {fileID: 0}
+  uniqueName: 
 --- !u!1 &9212121307027914503
 GameObject:
   m_ObjectHideFlags: 0
@@ -466,13 +488,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9212121307027914503}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1489840735499938571}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5910158691050015684
 SpriteRenderer:
