@@ -427,32 +427,27 @@ public class TerminalZone
     [Tooltip("A collection of points in a map that are assigned to this zone.")]
     public List<Vector2Int> assignedArea = new List<Vector2Int>();
     public List<WorldTile> trapList = new List<WorldTile>();
-    public List<DoorLogic> emergencyAccessDoors = new List<DoorLogic>();
+    public List<WorldTile> emergencyAccessDoors = new List<WorldTile>();
 
     public void RevealArea()
     {
         Debug.Log("Revealing area of terminal.");
         foreach (Vector2Int T in assignedArea)
         {
-            if (MapManager.inst._allTilesRealized.ContainsKey(T))
+            WorldTile tile = MapManager.inst.mapdata[T.x, T.y];
+            // Set all the tiles as explored and if not in direct LOS make them green
+            // - Don't do cave walls
+            if (!tile.tileInfo.isCaveWall)
             {
-                TileBlock tile = MapManager.inst._allTilesRealized[T].bottom;
-                // Set all the tiles as explored and if not in direct LOS make them green
-                // - Don't do cave walls
-                if(!(tile.tileInfo.Id == 0 || tile.tileInfo.Id == 2 || tile.tileInfo.Id == 18))
-                {
-                    // play an animation (once terminal is closed)
-                    tile.RevealViaZone();
-                }
-
+                // play an animation (once terminal is closed)
+                //tile.RevealViaZone(); // TODO: Rework this (old code in TileObject.s)
             }
 
-            if (MapManager.inst._allTilesRealized.ContainsKey(T)) // TODO
-            {
-                // Set all the tiles as explored and if not in direct LOS make them green
+            // TODO
 
-                // - If there are any exits reveal them
-            }
+            // Set all the tiles as explored and if not in direct LOS make them green
+
+            // - If there are any exits reveal them
         }
     }
 

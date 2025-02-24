@@ -174,16 +174,14 @@ public class FogOfWar : MonoBehaviour
 
         if (debug_nofog) // DEBUG mode, show everything
         {
-            foreach (var T in MapManager.inst._allTilesRealized)
+            // Tiles
+            for (int x = 0; x < MapManager.inst.mapsize.x; x++)
             {
-                TData TD = T.Value;
-                TD.vis = 2;
-
-                MapManager.inst._allTilesRealized[T.Key] = TD;
-
-                MapManager.inst._allTilesRealized[T.Key].bottom.UpdateVis(TD.vis); // Update the vis for the bottom
-                if (MapManager.inst._allTilesRealized[T.Key].top != null) // And if it exists, update the vis for the top
-                    HF.SetGenericTileVis(MapManager.inst._allTilesRealized[T.Key].top, TD.vis);
+                for (int y = 0; y < MapManager.inst.mapsize.y; y++)
+                {
+                    MapManager.inst.mapdata[x, y].vis = 2;
+                    MapManager.inst.TileUpdateVis(new Vector2Int(x, y));
+                }
             }
 
             // Bots

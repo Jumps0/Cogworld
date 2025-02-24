@@ -48,6 +48,8 @@ public abstract class TileObject : ScriptableObject
     /// Used for border tiles, normally false.
     /// </summary>
     public bool impassable = false;
+    [Tooltip("Is this a cave wall or some kind of industrialized wall?")]
+    public bool isCaveWall = false;
 
     [Tooltip("X = Current, Y = Max")]
     public Vector2Int health = new Vector2Int(10, 10);
@@ -66,15 +68,6 @@ public abstract class TileObject : ScriptableObject
 
     [Header("Trap")]
     public TileTrapData trapData;
-}
-
-[System.Serializable]
-public enum TileVisibility
-{
-    Visible,
-    Known,
-    Unknown,
-    NAN
 }
 
 [System.Serializable]

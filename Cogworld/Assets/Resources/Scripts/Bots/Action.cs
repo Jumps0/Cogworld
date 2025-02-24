@@ -122,7 +122,7 @@ public static class Action
             {
                 // Play collision sound
                 AudioManager.inst.PlayGlobalCombatSound(AudioManager.inst.dict_game["CAVEHIT_02"], 0.7f); // GAME - CAVEHIT_02
-                MeleeAction(actor, target.gameObject);
+                MeleeAction(actor, HF.V3_to_V2I(target.transform.position));
                 ShuntAction(actor, target);
             }
             return false;
@@ -134,19 +134,32 @@ public static class Action
         }
     }
 
-    public static void MeleeAction(Actor source, GameObject target)
+    /// <summary>
+    /// Performs a Melee Weapon Attack vs a specific target, with a specific weapon.
+    /// </summary>
+    /// <param name="source">The attacker (actor).</param>
+    /// <param name="targetLocation">The location of the thing being attacked.</param>
+    public static void MeleeAction(Actor source, Vector2Int targetLocation)
     {
         // TODO: Factor in attack time, and followup attacks.
 
         float targetCoreExposure;
         Item weapon = FindMeleeWeapon(source);
 
+        // We need to identify our target!
+        #region Target Identification
+        // Is there a bot here?
+        Actor a_target = HF.FindActorAtPosition(targetLocation);
+        // If there isn't, we should get the world tile too
+        WorldTile a_tile = MapManager.inst.mapdata[targetLocation.x, targetLocation.y];
+        #endregion
+
         // Are we attacking a bot or a structure?
-        if (target.GetComponent<Actor>())
+        if (a_target != null)
         {
-            if (target.GetComponent<Actor>().botInfo) // Bot
+            if (a_target.botInfo) // Bot
             {
-                targetCoreExposure = target.GetComponent<Actor>().botInfo.coreExposure;
+                targetCoreExposure = a_target.botInfo.coreExposure;
             }
             else // Player
             {
@@ -170,7 +183,7 @@ public static class Action
                  * The time cost to ram is the greater (slower) of 100 and your current move speed.
                  */
 
-                if (target.GetComponent<Actor>().botInfo) // Bot
+                if (a_target.botInfo) // Bot
                 {
                     // TODO: Bot attacking!
                 }
@@ -187,18 +200,18 @@ public static class Action
                     }
 
                     // Increase salvage potential
-                    target.GetComponent<Actor>().botInfo.salvagePotential += new Vector2Int(3, 3);
+                    a_target.botInfo.salvagePotential += new Vector2Int(3, 3);
 
                     // Deal damage to the bot
                     // -Consider resistances
-                    (bool hasRes, float resAmount) = HasResistanceTo(target.GetComponent<Actor>(), ItemDamageType.Impact);
+                    (bool hasRes, float resAmount) = HasResistanceTo(a_target, ItemDamageType.Impact);
                     if (hasRes)
                     {
-                        target.GetComponent<Actor>().currentHealth -= (int)(damage - (damage * resAmount));
+                        a_target.currentHealth -= (int)(damage - (damage * resAmount));
                     }
                     else
                     {
-                        target.GetComponent<Actor>().currentHealth -= (int)damage;
+                        a_target.currentHealth -= (int)damage;
                     }
 
 
@@ -212,7 +225,7 @@ public static class Action
                         Action.ModifyPlayerCore(-(int)damage);
                     }
 
-                    UIManager.inst.CreateNewLogMessage("Slammed into " + target.GetComponent<Actor>().botInfo.botName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
+                    UIManager.inst.CreateNewLogMessage("Slammed into " + a_target.botInfo.botName + ".", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, false);
                 }
             }
             else
@@ -280,7 +293,7 @@ public static class Action
                 int attackTime = weapon.itemData.meleeAttack.delay;
                 attackTime = Mathf.RoundToInt(attackTime + (attackTime *  bonus_attackTime));
 
-                if(source.gameObject != PlayerData.inst.gameObject && !target.GetComponent<BotAI>().canSeePlayer) // Not the player and (currently) can't see the player
+                if(source.gameObject != PlayerData.inst.gameObject && !a_target.GetComponent<BotAI>().canSeePlayer) // Not the player and (currently) can't see the player
                 {
                     hitChance = 1.2f; // Base hit chance is increased!
                 }
@@ -291,7 +304,7 @@ public static class Action
                 bool noCrit = false;
                 List<ArmorType> types = new List<ArmorType>();
                 // Use the to-hit function
-                (hitChance, noCrit, types) = Action.CalculateMeleeHitChance(source, target.GetComponent<Actor>(), weapon, hitChance);
+                (hitChance, noCrit, types) = Action.CalculateMeleeHitChance(source, a_target, weapon, hitChance);
                 #endregion
 
                 if (toHit <= hitChance) // Hit!
@@ -320,14 +333,14 @@ public static class Action
                     // Player has analysis of target
                     if (source.GetComponent<PlayerData>())
                     {
-                        if (target.GetComponent<Actor>().botInfo.playerHasAnalysisData)
+                        if (a_target.botInfo.playerHasAnalysisData)
                         {
                             damageAmount = Mathf.RoundToInt(damageAmount + (float)(damageAmount * 0.10f)); // +10% damage bonus
                         }
                     }
 
                     // link_complan damage bonus
-                    if (target.GetComponent<Actor>().botInfo && target.GetComponent<Actor>().hacked_mods.Contains(ModHacks.link_complan))
+                    if (a_target.botInfo && a_target.hacked_mods.Contains(ModHacks.link_complan))
                     {
                         damageAmount = Mathf.RoundToInt(damageAmount + (damageAmount * 0.25f)); // +25%
                     }
@@ -351,7 +364,7 @@ public static class Action
                         }
                         else
                         {
-                            speed = target.GetComponent<Actor>().botInfo._movement.moveSpeedPercent;
+                            speed = source.botInfo._movement.moveSpeedPercent;
                         }
                         // Calculate using: ([momentum] * [speed%] / 1200) * 40)
                         momentumBonus = (momentum * speed / 1200 * mult);
@@ -361,7 +374,7 @@ public static class Action
                     }
 
                     // Now for sneak attacks
-                    if (source.gameObject != PlayerData.inst.gameObject && !target.GetComponent<BotAI>().canSeePlayer) // Not the player and (currently) can't see the player
+                    if (source.gameObject != PlayerData.inst.gameObject && !a_target.GetComponent<BotAI>().canSeePlayer) // Not the player and (currently) can't see the player
                     {
                         UIManager.inst.CreateNewLogMessage($"Sneak attack on {source.uniqueName}", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
                         damageAmount *= 2; // +100% damage (so x2)
@@ -376,9 +389,9 @@ public static class Action
                     {
                         crit = true;
                     }
-                    if (target.GetComponent<PlayerData>()) // Player being attacked
+                    if (a_target.GetComponent<PlayerData>()) // Player being attacked
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount, weapon, source, crit);
+                        DamageBot(a_target, damageAmount, weapon, source, crit);
 
                         // Do a calc message
                         string message = $"{source.botInfo.botName}: {weapon.itemData.name} ({toHit * 100}%) Hit";
@@ -390,12 +403,12 @@ public static class Action
                     }
                     else // Bot being attacked
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount, weapon, source, crit);
+                        DamageBot(a_target, damageAmount, weapon, source, crit);
 
                         // Show a popup that says how much damage occured
-                        if (!target.GetComponent<PlayerData>())
+                        if (!a_target.GetComponent<PlayerData>())
                         {
-                            UI_CombatPopup(target.GetComponent<Actor>(), damageAmount.ToString());
+                            UI_CombatPopup(a_target, damageAmount.ToString());
                         }
 
                         // Do a calc message
@@ -408,12 +421,12 @@ public static class Action
                     // -- Now for this visuals and audio --
                     // - We need to spawn a visual on top of the target. Where the line is facing from the player to the target.
                     // Calculate direction vector from object A to object B
-                    Vector3 direction = target.transform.position - source.transform.position;
+                    Vector3 direction = new Vector3(targetLocation.x, targetLocation.y) - source.transform.position;
                     // Calculate angle in radians
                     float angleRad = Mathf.Atan2(direction.y, direction.x);
                     // Convert angle from radians to degrees
                     float angleDeg = angleRad * Mathf.Rad2Deg;
-                    GameManager.inst.CreateMeleeAttackIndicator(HF.V3_to_V2I(target.transform.position), angleDeg, weapon);
+                    GameManager.inst.CreateMeleeAttackIndicator(targetLocation, angleDeg, weapon);
                     // - Sound is taken care of in ^ -
                 }
                 else // Miss.
@@ -421,12 +434,12 @@ public static class Action
                     // -- Now for this visuals and audio --
                     // - We need to spawn a visual on top of the target. Where the line is facing from the player to the target.
                     // Calculate direction vector from object A to object B
-                    Vector3 direction = target.transform.position - source.transform.position;
+                    Vector3 direction = new Vector3(targetLocation.x, targetLocation.y) - source.transform.position;
                     // Calculate angle in radians
                     float angleRad = Mathf.Atan2(direction.y, direction.x);
                     // Convert angle from radians to degrees
                     float angleDeg = angleRad * Mathf.Rad2Deg;
-                    GameManager.inst.CreateMeleeAttackIndicator(HF.V3_to_V2I(target.transform.position), angleDeg, weapon, false);
+                    GameManager.inst.CreateMeleeAttackIndicator(targetLocation, angleDeg, weapon, false);
                     // - Sound is taken care of in ^ -
                 }
 
@@ -447,7 +460,7 @@ public static class Action
                         if (toHit <= hitChance) // Hit!
                         {
                             // First of all, is the original target still alive?
-                            if (target != null)
+                            if (a_target != null)
                             { // Yes continue.
                                 continue;
                             }
@@ -457,7 +470,7 @@ public static class Action
 
                                 if(neighbor != null)
                                 {
-                                    target = neighbor.gameObject;
+                                    a_target = neighbor;
                                 }
                                 else
                                 {
@@ -490,14 +503,14 @@ public static class Action
                             // Player has analysis of target
                             if (source.GetComponent<PlayerData>())
                             {
-                                if (target.GetComponent<Actor>().botInfo.playerHasAnalysisData)
+                                if (a_target.botInfo.playerHasAnalysisData)
                                 {
                                     damageAmount = Mathf.RoundToInt(damageAmount + (float)(damageAmount * 0.10f)); // +10% damage bonus
                                 }
                             }
 
                             // link_complan damage bonus
-                            if (target.GetComponent<Actor>().botInfo && target.GetComponent<Actor>().hacked_mods.Contains(ModHacks.link_complan))
+                            if (a_target.botInfo && a_target.hacked_mods.Contains(ModHacks.link_complan))
                             {
                                 damageAmount = Mathf.RoundToInt(damageAmount + (damageAmount * 0.25f)); // +25%
                             }
@@ -521,7 +534,7 @@ public static class Action
                                 }
                                 else
                                 {
-                                    speed = target.GetComponent<Actor>().botInfo._movement.moveSpeedPercent;
+                                    speed = a_target.botInfo._movement.moveSpeedPercent;
                                 }
                                 // Calculate using: ([momentum] * [speed%] / 1200) * 40)
                                 momentumBonus = (momentum * speed / 1200 * mult);
@@ -531,7 +544,7 @@ public static class Action
                             }
 
                             // Now for sneak attacks
-                            if (source.gameObject != PlayerData.inst.gameObject && !target.GetComponent<BotAI>().canSeePlayer) // Not the player and (currently) can't see the player
+                            if (source.gameObject != PlayerData.inst.gameObject && !a_target.GetComponent<BotAI>().canSeePlayer) // Not the player and (currently) can't see the player
                             {
                                 UIManager.inst.CreateNewLogMessage($"Sneak attack on {source.uniqueName}", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
                                 damageAmount *= 2; // +100% damage (so x2)
@@ -546,9 +559,9 @@ public static class Action
                             {
                                 crit = true;
                             }
-                            if (target.GetComponent<PlayerData>()) // Player being attacked
+                            if (a_target.GetComponent<PlayerData>()) // Player being attacked
                             {
-                                DamageBot(target.GetComponent<Actor>(), damageAmount, weapon, source, crit);
+                                DamageBot(a_target, damageAmount, weapon, source, crit);
 
                                 // Do a calc message
                                 string message = $"{source.botInfo.botName}: {weapon.itemData.name} ({toHit * 100}%) Hit";
@@ -560,13 +573,13 @@ public static class Action
                             }
                             else // Bot being attacked
                             {
-                                DamageBot(target.GetComponent<Actor>(), damageAmount, weapon, source, crit);
+                                DamageBot(a_target, damageAmount, weapon, source, crit);
 
 
                                 // Show a popup that says how much damage occured
-                                if (!target.GetComponent<PlayerData>())
+                                if (!a_target.GetComponent<PlayerData>())
                                 {
-                                    UI_CombatPopup(target.GetComponent<Actor>(), damageAmount.ToString());
+                                    UI_CombatPopup(a_target, damageAmount.ToString());
                                 }
 
                                 // Do a calc message
@@ -592,11 +605,16 @@ public static class Action
         }
         else // Attacking a structure
         {
-            // First off, are we attacking an empty floor tile?
-            if(target.GetComponent<TileBlock>() && target.GetComponent<TileBlock>().tileInfo.type == TileType.Floor)
+            // First off, are we attacking an empty floor tile (or exit)?
+            if(a_tile.type == TileType.Floor || a_tile.type == TileType.Exit)
             {
                 // Cancel early
                 return;
+            }
+            else if (a_tile.type == TileType.Trap) // Or a trap
+            {
+                // ** SPECIAL DATAJACK DETOUR!!! **
+                // TODO: Datajacking floor traps
             }
 
             // It's a structure, we cannot (and should not) miss.
@@ -634,15 +652,6 @@ public static class Action
             // Consider any flat damage bonuses
             damageAmount = Action.AddFlatDamageBonuses(damageAmount, source, weapon);
 
-            // Player has analysis of target
-            if (source.GetComponent<PlayerData>())
-            {
-                if (target.GetComponent<Actor>().botInfo.playerHasAnalysisData)
-                {
-                    damageAmount = Mathf.RoundToInt(damageAmount + (float)(damageAmount * 0.10f)); // +10% damage bonus
-                }
-            }
-
             // Then modify based on momentum
             if (momentum > 0)
             {
@@ -662,7 +671,7 @@ public static class Action
                 }
                 else
                 {
-                    speed = target.GetComponent<Actor>().botInfo._movement.moveSpeedPercent;
+                    speed = source.botInfo._movement.moveSpeedPercent;
                 }
                 // Calculate using: ([momentum] * [speed%] / 1200) * 40)
                 momentumBonus = (momentum * speed / 1200 * mult);
@@ -671,24 +680,10 @@ public static class Action
                 damageAmount = Mathf.RoundToInt(damageAmount + (damageAmount * momentumBonus));
             }
 
-            // Now for sneak attacks
-            if (source.gameObject != PlayerData.inst.gameObject && !target.GetComponent<BotAI>().canSeePlayer) // Not the player and (currently) can't see the player
-            {
-                UIManager.inst.CreateNewLogMessage($"Sneak attack on {source.uniqueName}", UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
-                damageAmount *= 2; // +100% damage (so x2)
-            }
-
             #endregion
 
-            // What are we attacking?
-            if (target.GetComponent<MachinePart>()) // Some type of machine
-            {
-                armor = target.GetComponent<MachinePart>().armor.y;
-            }
-            else if (target.GetComponent<TileBlock>()) // A wall or door
-            {
-                armor = target.GetComponent<TileBlock>().tileInfo.armor;
-            }
+            // Get the armor value
+            armor = a_tile.tileInfo.armor;
 
             #region Beat the Armor?
             if (damageAmount > armor) // Success! Destroy the structure
@@ -696,45 +691,36 @@ public static class Action
                 // -- Now for this visuals and audio --
                 // - We need to spawn a visual on top of the target. Where the line is facing from the player to the target.
                 // Calculate direction vector from object A to object B
-                Vector3 direction = target.transform.position - source.transform.position;
+                Vector3 direction = new Vector3(targetLocation.x, targetLocation.y) - source.transform.position;
                 // Calculate angle in radians
                 float angleRad = Mathf.Atan2(direction.y, direction.x);
                 // Convert angle from radians to degrees
                 float angleDeg = angleRad * Mathf.Rad2Deg;
-                GameManager.inst.CreateMeleeAttackIndicator(HF.V3_to_V2I(target.transform.position), angleDeg, weapon);
+                GameManager.inst.CreateMeleeAttackIndicator(targetLocation, angleDeg, weapon);
                 // - Sound is taken care of in ^ -
 
                 // - Destroy the object
-                if (target.GetComponent<MachinePart>()) // Some type of machine
-                {
-                    target.GetComponent<MachinePart>().DestroyMe();
+                // Do a calc message
+                string message = $"{a_tile.tileInfo.tileName} Destroyed ({damageAmount} > {armor})";
 
-                    // Do a calc message
-                    string message = $"{target.name} Destroyed ({damageAmount} > {armor})";
-
-                    UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
-                }
-                else if (target.GetComponent<TileBlock>()) // A wall or door
-                {
-                    target.GetComponent<TileBlock>().DestroyMe();
-                }
-
+                // Set the tile to damaged state
+                a_tile.SetDestroyed(true, message);
             }
             else // Failure. Don't destroy the structure
             {
                 // -- Now for this visuals and audio --
                 // - We need to spawn a visual on top of the target. Where the line is facing from the player to the target.
                 // Calculate direction vector from object A to object B
-                Vector3 direction = target.transform.position - source.transform.position;
+                Vector3 direction = new Vector3(targetLocation.x, targetLocation.y) - source.transform.position;
                 // Calculate angle in radians
                 float angleRad = Mathf.Atan2(direction.y, direction.x);
                 // Convert angle from radians to degrees
                 float angleDeg = angleRad * Mathf.Rad2Deg;
-                GameManager.inst.CreateMeleeAttackIndicator(HF.V3_to_V2I(target.transform.position), angleDeg, weapon, false);
+                GameManager.inst.CreateMeleeAttackIndicator(targetLocation, angleDeg, weapon, false);
                 // - Sound is taken care of in ^ -
 
                 // Message
-                string message = $" Damage insufficient to overcome {target.name} armor";
+                string message = $" Damage insufficient to overcome {a_tile.tileInfo.tileName} armor";
 
                 UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.inactiveGray, UIManager.inst.dullGreen, false, true);
             }
@@ -761,9 +747,9 @@ public static class Action
     /// Performs a Ranged Weapon Attack vs a specific target, with a specific weapon. (This also handles AOE attacks).
     /// </summary>
     /// <param name="source">The attacker.</param>
-    /// <param name="target">The defender (being attacked).</param>
+    /// <param name="targetLocation">The location of the defender (being attacked).</param>
     /// <param name="weapon">The weapon being used to attack with.</param>
-    public static void RangedAttackAction(Actor source, GameObject target, Item weapon)
+    public static void RangedAttackAction(Actor source, Vector2Int targetLocation, Item weapon)
     {
         if(weapon == null || target == null)
         {
@@ -1358,10 +1344,10 @@ public static class Action
     /// Part of a larger AOE attack. This will indivudally target something and handle what happens independently.
     /// </summary>
     /// <param name="source">The attacker.</param>
-    /// <param name="target">The thing being attacked.</param>
+    /// <param name="targetLocation">The location of the thing being attacked.</param>
     /// <param name="weapon">The weapon being used.</param>
     /// <returns>Returns if the attack is able to pass through the target object.</returns>
-    public static bool IndividualAOEAttack(Actor source, GameObject target, Item weapon, int falloff)
+    public static bool IndividualAOEAttack(Actor source, Vector2Int targetLocation, Item weapon, int falloff)
     {
         bool permiable = true;
         int chunks = Random.Range(weapon.itemData.explosionDetails.chunks.x, weapon.itemData.explosionDetails.chunks.y);

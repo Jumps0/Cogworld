@@ -524,7 +524,7 @@ public struct WorldTile
 
 
     #region Destruction
-    public void SetDestroyed(bool destroyed)
+    public void SetDestroyed(bool destroyed, string message = "")
     {
         if (destroyed == damaged) { return; } // Don't do anything if we are already at this state!
 
@@ -535,12 +535,20 @@ public struct WorldTile
             // Modify pathing (can now be free)
             if (type != TileType.Floor && MapManager.inst.pathdata[location.x, location.y] > 0) { MapManager.inst.pathdata[location.x, location.y] = 0; }
 
+            // Create a CALC message
+            UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+
+            // TODO
         }
         else
         {
             // Modify pathing (it should now go back to being obstructed)
             if (type != TileType.Floor && MapManager.inst.pathdata[location.x, location.y] != 0) { MapManager.inst.pathdata[location.x, location.y] = HF.TileObstructionType(type); }
 
+            // Create a LOG message indicating this tile has been repaired (TODO)
+            UIManager.inst.CreateNewLogMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+
+            // TODO
         }
     }
     #endregion

@@ -271,14 +271,6 @@ public class MapManager : MonoBehaviour
         // !! Update the Tilemap !!
         UpdateTilemap();
 
-        foreach (var door in _allTilesRealized) // Setup all the doors
-        {
-            if (door.Value.top && door.Value.top.GetComponent<DoorLogic>())
-            {
-                door.Value.top.GetComponent<DoorLogic>().LoadActivationTiles();
-            }
-        }
-
         CreateRegions();
 
         // Spawn the player
