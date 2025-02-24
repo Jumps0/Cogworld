@@ -239,20 +239,6 @@ public class PlayerGridMovement : MonoBehaviour
         isMoving = false;
     }
 
-    public TileBlock GetCurrentPlayerTile()
-    {
-        Debug.LogWarning("This function needs to be reworked!");
-
-        // - So we do this instead
-        Vector2Int pLoc = HF.V3_to_V2I(PlayerData.inst.transform.position); // Get player's location (to V2I)
-        if (MapManager.inst._allTilesRealized.ContainsKey(pLoc) && MapManager.inst._allTilesRealized[pLoc].bottom.GetComponent<TileBlock>())
-        {
-            return MapManager.inst._allTilesRealized[pLoc].bottom.GetComponent<TileBlock>();
-        }
-
-        return null; // Failure
-    }
-
     #endregion
 
     #region Leave Area 
@@ -408,10 +394,11 @@ public class PlayerGridMovement : MonoBehaviour
         if (GridManager.inst.astar.path.Count > 0 &&
             GridManager.inst.astar.searchStatus == AStarSearchStatus.Success)
         {
-            TileBlock currentTile = GetCurrentPlayerTile();
+            Vector2Int playerPos = HF.V3_to_V2I(this.transform.position);
+            WorldTile tile = MapManager.inst.mapdata[playerPos.x, playerPos.y];
             int lastItem = GridManager.inst.astar.path.Count - 2;
-            int targetX = GridManager.inst.astar.path[lastItem].X - currentTile.location.x;
-            int targetY = GridManager.inst.astar.path[lastItem].Y - currentTile.location.y;
+            int targetX = GridManager.inst.astar.path[lastItem].X - tile.location.x;
+            int targetY = GridManager.inst.astar.path[lastItem].Y - tile.location.y;
 
             AttemptMovement(targetX, targetY);
             GridManager.inst.ClearGridOfHighlightColor(UIManager.inst.dullGreen);

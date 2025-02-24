@@ -7206,7 +7206,7 @@ public static class HF
 
         // - If line of sight being blocked - // (THIS ALSO GETS USED LATER)
         Vector2 targetDirection = target.transform.position - source.transform.position;
-        float distance = Vector2.Distance(Action.V3_to_V2I(source.transform.position), Action.V3_to_V2I(target.transform.position));
+        float distance = Vector2.Distance(HF.V3_to_V2I(source.transform.position), HF.V3_to_V2I(target.transform.position));
 
         RaycastHit2D[] hits = Physics2D.RaycastAll(new Vector2(source.transform.position.x, source.transform.position.y), targetDirection.normalized, distance);
 
@@ -7261,7 +7261,7 @@ public static class HF
 
         Vector2 targetDirection = target - source.transform.position;
 
-        float distance = Vector2.Distance(Action.V3_to_V2I(source.transform.position), Action.V3_to_V2I(target));
+        float distance = Vector2.Distance(HF.V3_to_V2I(source.transform.position), HF.V3_to_V2I(target));
 
         RaycastHit2D[] hits = Physics2D.RaycastAll(new Vector2(source.transform.position.x, source.transform.position.y), targetDirection.normalized, distance);
 
@@ -7356,7 +7356,7 @@ public static class HF
         GameObject blocker = null;
 
         Vector2 targetDirection = target - source.transform.position;
-        float distance = Vector2.Distance(Action.V3_to_V2I(source.transform.position), Action.V3_to_V2I(target));
+        float distance = Vector2.Distance(HF.V3_to_V2I(source.transform.position), HF.V3_to_V2I(target));
 
         RaycastHit2D[] hits = Physics2D.RaycastAll(new Vector2(source.transform.position.x, source.transform.position.y), targetDirection.normalized, distance);
 

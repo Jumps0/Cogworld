@@ -774,7 +774,7 @@ public static class Action
         }
 
         // Is this redundant?
-        if(weapon.itemData.shot.shotRange < Vector2.Distance(Action.V3_to_V2I(source.gameObject.transform.position), Action.V3_to_V2I(source.gameObject.transform.position)))
+        if(weapon.itemData.shot.shotRange < Vector2.Distance(HF.V3_to_V2I(source.gameObject.transform.position), HF.V3_to_V2I(source.gameObject.transform.position)))
         {
             Action.SkipAction(source);
             return;
@@ -2157,7 +2157,7 @@ public static class Action
         toHitChance -= recoilBonus;
 
         // - Range - //
-        int distance = (int)Vector2Int.Distance(Action.V3_to_V2I(source.gameObject.transform.position), Action.V3_to_V2I(target.gameObject.transform.position));
+        int distance = (int)Vector2Int.Distance(HF.V3_to_V2I(source.gameObject.transform.position), HF.V3_to_V2I(target.gameObject.transform.position));
         if (distance < 6)
         {
             toHitChance += (0.03f * distance);
@@ -3378,11 +3378,6 @@ public static class Action
         return prop;
     }
 
-    public static Vector2Int V3_to_V2I(Vector3 v)
-    {
-        return new Vector2Int((int)v.x, (int)v.y);
-    }
-
     public static int GetTotalMass(Actor actor)
     {
         int totalMass = 0;
@@ -4043,7 +4038,7 @@ public static class Action
             // - Is the source firing through a phase wall?
             // (This is a bit overkill cause this will rarely happen but here we go)
             Vector2 targetDirection = target.transform.position - source.transform.position;
-            float distance = Vector2.Distance(Action.V3_to_V2I(source.transform.position), Action.V3_to_V2I(target.transform.position));
+            float distance = Vector2.Distance(HF.V3_to_V2I(source.transform.position), HF.V3_to_V2I(target.transform.position));
             RaycastHit2D[] hits = Physics2D.RaycastAll(new Vector2(source.transform.position.x, source.transform.position.y), targetDirection.normalized, distance);
 
             for (int i = 0; i < hits.Length; i++)

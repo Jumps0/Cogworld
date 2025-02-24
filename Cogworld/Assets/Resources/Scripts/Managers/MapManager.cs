@@ -84,7 +84,7 @@ public class MapManager : MonoBehaviour
     [SerializeField] private Tilemap tilemap;
 
     [Tooltip("List of debris sprites to be used on the tilemap.")]
-    [SerializeField] private List<Tile> debrisTiles = new List<Tile>();
+    public List<Tile> debrisTiles = new List<Tile>();
     [SerializeField] private List<Tile> debrisTiles_ASCII = new List<Tile>();
 
     [Header("Auto Mapgen Settings")]
@@ -901,7 +901,7 @@ public class MapManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Update an individual tile on the tilemap to what it should be based on the `mapdata` array.
+    /// Update an individual tile on the tilemap to what it should be based on the `mapdata` array [DOES NOT UPDATE FogOfWar VISION].
     /// </summary>
     public void UpdateTile(WorldTile tile, Vector2Int pos)
     {
@@ -1742,7 +1742,7 @@ public class MapManager : MonoBehaviour
             // Determine valid locations for exits
             foreach (Tunnel hall in halls)
             {
-                if (Vector2Int.Distance(hall.Center, Action.V3_to_V2I(playerSpawnLocation)) > 50f && hall.Width >= 2 && hall.Length >= 2)
+                if (Vector2Int.Distance(hall.Center, HF.V3_to_V2I(playerSpawnLocation)) > 50f && hall.Width >= 2 && hall.Length >= 2)
                 {
                     exitLocations.Add(hall.Center);
                 }

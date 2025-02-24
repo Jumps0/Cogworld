@@ -7,10 +7,7 @@
  */
 
 using System.Collections;
-using UnityEditor.PackageManager;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using static UnityEditor.Searcher.SearcherWindow;
 
 /// <summary>
 /// A script used for the physical *real world* tiles used to build the world. What this tile is gets determined by its "tileInfo" (a TileObject variable).

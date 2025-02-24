@@ -334,7 +334,7 @@ public class Actor : Entity
     {
         // !! Assumes that this bot is a hostile one !!
 
-        NewGoal(Action.V3_to_V2I(this.GetComponent<BotAI>().squadLeader.transform.position));
+        NewGoal(HF.V3_to_V2I(this.GetComponent<BotAI>().squadLeader.transform.position));
             
         /*
         if (MapManager.inst._allTilesRealized.ContainsKey(realPos) && HF.IsUnoccupiedTile(MapManager.inst._allTilesRealized[realPos].bottom))
@@ -776,7 +776,9 @@ public class Actor : Entity
         #endregion
 
         // Set tile underneath as dirty
-        MapManager.inst._allTilesRealized[Action.V3_to_V2I(this.transform.position)].bottom.SetToDirty();
+        Vector2Int pos = HF.V3_to_V2I(this.transform.position);
+        MapManager.inst.mapdata[pos.x, pos.y].isDirty = Random.Range(0, MapManager.inst.debrisTiles.Count - 1);
+        MapManager.inst.UpdateTile(MapManager.inst.mapdata[pos.x, pos.y], pos);
 
         StartCoroutine(DestroySelf());
     }

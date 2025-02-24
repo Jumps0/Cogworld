@@ -152,13 +152,13 @@ public class GridManager : MonoBehaviour
         {
             ClearGridOfHighlightColor(UIManager.inst.dullGreen); // Clear the path
 
-            // Get current player tile
-            TileBlock currentPlayerTile = PlayerData.inst.GetComponent<PlayerGridMovement>().GetCurrentPlayerTile();
+            // Get current player position
+            Vector2Int playerPos = HF.V3_to_V2I(PlayerData.inst.transform.position);
 
-            // Create a path from the current player tile to the mouse target tile
+            // Create a path from the current player position to the mouse target tile
             RegenerateAstar();
 
-            astar.CreatePath(grid, currentPlayerTile.location.x, currentPlayerTile.location.y, mouseTargetTile.location.x, mouseTargetTile.location.y);
+            astar.CreatePath(grid, playerPos.x, playerPos.y, mouseTargetTile.location.x, mouseTargetTile.location.y);
 
             if (astar.searchStatus == AStarSearchStatus.Failure)
             {
@@ -207,14 +207,14 @@ public class GridManager : MonoBehaviour
 
             if (mouseTargetTile != null)
             {
-                // Get current player tile
-                TileBlock currentPlayerTile = PlayerData.inst.GetComponent<PlayerGridMovement>().GetCurrentPlayerTile();
+                // Get current player position
+                Vector2Int playerPos = HF.V3_to_V2I(PlayerData.inst.transform.position);
 
                 // Create a path from:
                 // - Current player tile (X, Y)
                 // - Mouse target tile (X, Y)
                 RegenerateAstar(); // May be performance heavy (Here to prevent old bad Spot arrays)
-                astar.CreatePath(grid, currentPlayerTile.location.x, currentPlayerTile.location.y, mouseTargetTile.location.x, mouseTargetTile.location.y);
+                astar.CreatePath(grid, playerPos.x, playerPos.y, mouseTargetTile.location.x, mouseTargetTile.location.y);
 
             }
 
