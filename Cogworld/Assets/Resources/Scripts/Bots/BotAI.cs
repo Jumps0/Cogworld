@@ -474,7 +474,7 @@ public class BotAI : MonoBehaviour
 
         if (distanceToPoi > 3) // Navigate to it
         {
-            /*
+            /* // TODO - Rework later
             destinationReached = false;
             int index = pathing.path.Count - timeOnPath;
             if (index < 0)
@@ -505,8 +505,7 @@ public class BotAI : MonoBehaviour
                 moveDir.y--;
             }
             // Only move to valid tiles!
-            if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int((int)destination.x, (int)destination.y))
-                && this.GetComponent<Actor>().IsUnoccupiedTile(MapManager.inst._allTilesRealized[new Vector2Int((int)destination.x, (int)destination.y)].bottom))
+            if (HF.IsUnoccupiedTile(MapManager.inst.mapdata[(int)destination.x, (int)destination.y]))
             {
                 Action.MovementAction(this.GetComponent<Actor>(), moveDir); // Move
             }
@@ -656,28 +655,28 @@ public class BotAI : MonoBehaviour
     /// <summary>
     /// Finds a dirty floor tile somewhere on the map.
     /// </summary>
-    /// <returns>A dirty floor tile in the form of a GameObject.</returns>
-    public GameObject FindDirtyFloor()
+    /// <returns>A dirty floor tile in the form of a `Vector2Int` position.</returns>
+    public Vector2Int FindDirtyFloor()
     {
-        foreach (var T in MapManager.inst._allTilesRealized)
+        foreach (var T in MapManager.inst.mapdata)
         {
-            if (T.Value.bottom.isDirty)
+            if (T.isDirty > 0)
             {
-                return T.Value.bottom.gameObject;
+                return T.location;
             }
         }
 
-        return null;
+        return Vector2Int.zero;
     }
 
     /// <summary>
     /// Finds nearby dirty floor tiles within specified distance.
     /// </summary>
     /// <param name="distance">How far away to check, keep this low.</param>
-    /// <returns>A list of any dirty floor tiles.</returns>
-    public List<GameObject> FindDirtyFloorLocal(int distance = 8)
+    /// <returns>A list of any dirty floor tiles (in the form of `Vector2Int` positions).</returns>
+    public List<Vector2Int> FindDirtyFloorLocal(int distance = 8)
     {
-        List<GameObject> local = new List<GameObject>();
+        List<Vector2Int> local = new List<Vector2Int>();
 
         Vector2Int bottomLeft = HF.V3_to_V2I(this.transform.position) - new Vector2Int(distance, distance);
 
@@ -685,12 +684,9 @@ public class BotAI : MonoBehaviour
         {
             for (int y = bottomLeft.y; y < bottomLeft.y + (distance * 2); y++)
             {
-                if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(x, y)))
+                if (MapManager.inst.mapdata[x, y].isDirty > 0)
                 {
-                    if (MapManager.inst._allTilesRealized[new Vector2Int(x, y)].bottom.isDirty)
-                    {
-                        local.Add(MapManager.inst._allTilesRealized[new Vector2Int(x, y)].bottom.gameObject);
-                    }
+                    local.Add(new Vector2Int(x, y));
                 }
             }
         }

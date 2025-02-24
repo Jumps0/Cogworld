@@ -1336,9 +1336,9 @@ public static class Action
                     }
 
                     // If not, just destroy that part of the machine.
-                    if (MapManager.inst._allTilesRealized[pos].top.GetComponent<MachinePart>())
+                    if (MapManager.inst.mapdata[pos.x, pos.y].type == TileType.Machine)
                     {
-                        MapManager.inst._allTilesRealized[pos].top.GetComponent<MachinePart>().DestroyMe();
+                        MapManager.inst.mapdata[pos.x, pos.y].SetDestroyed(true);
                         // Do a message
                         if (target.botInfo)
                         {

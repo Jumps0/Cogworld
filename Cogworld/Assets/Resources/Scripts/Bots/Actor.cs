@@ -337,7 +337,7 @@ public class Actor : Entity
         NewGoal(HF.V3_to_V2I(this.GetComponent<BotAI>().squadLeader.transform.position));
             
         /*
-        if (MapManager.inst._allTilesRealized.ContainsKey(realPos) && HF.IsUnoccupiedTile(MapManager.inst._allTilesRealized[realPos].bottom))
+        if (HF.IsUnoccupiedTile(MapManager.inst.mapdata[realPos.x, realPos.y]))
         {
             Debug.Log("Move successful");
             Action.MovementAction(this, moveToLocation);
@@ -372,7 +372,7 @@ public class Actor : Entity
 
         /*
 
-        if (MapManager.inst._allTilesRealized.ContainsKey(realPos) && HF.IsUnoccupiedTile(MapManager.inst._allTilesRealized[realPos].bottom))
+        if (HF.IsUnoccupiedTile(MapManager.inst.mapdata[realPos.x, realPos.y]))
         {
             Action.MovementAction(this.GetComponent<Actor>(), moveToLocation);
         }

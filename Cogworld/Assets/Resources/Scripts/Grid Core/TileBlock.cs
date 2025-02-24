@@ -477,7 +477,7 @@ public class TileBlock : MonoBehaviour
 }
 
 /// <summary>
-/// Temporary double of TileBlock for testing and use in the Map rework.
+/// Contains all information regarding a tile at a specific position.
 /// </summary>
 public struct WorldTile
 {
@@ -519,10 +519,15 @@ public struct WorldTile
     public bool trap_knowByPlayer;
     public BotAlignment trap_alignment;
 
+    [Header("Machine")]
+    public MachineData machinedata;
+
 
     #region Destruction
     public void SetDestroyed(bool destroyed)
     {
+        if (destroyed == damaged) { return; } // Don't do anything if we are already at this state!
+
         damaged = destroyed;
 
         if (destroyed)
@@ -763,4 +768,12 @@ public struct WorldTile
     }
 
     #endregion
+}
+
+/// <summary>
+/// Will eventually replace the `MachinePart` script and store information about a machine at this position inside a WorldTile struct.
+/// </summary>
+public struct MachineData
+{
+    // TODO
 }
