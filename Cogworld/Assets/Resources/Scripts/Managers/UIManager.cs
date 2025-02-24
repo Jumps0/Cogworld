@@ -1359,11 +1359,18 @@ public class UIManager : MonoBehaviour
     public GameObject projectilePrefab_launcher;
     public List<GameObject> projectiles = new List<GameObject>();
 
-    public void CreateGenericProjectile(Transform origin, Transform target, ItemProjectile weapon, float speed, bool accurate)
+    /// <summary>
+    /// Creates a generic projectile that will move from point A to point B with specifics.
+    /// </summary>
+    /// <param name="origin">The position the projectile starts from.</param>
+    /// <param name="target">The position the projectile heads towards.</param>
+    /// <param name="weapon">The *ItemProjectile* weapon that shot this projectile.</param>
+    /// <param name="speed">The speed this projectile should move at.</param>
+    /// <param name="accurate">TRUE/FALSE if this project should hit its target position.</param>
+    public void CreateGenericProjectile(Vector2Int origin, Vector2Int target, ItemProjectile weapon, float speed, bool accurate)
     {
         // Instantiate it & Assign it to parent
-        GameObject newProjectile = Instantiate(projectilePrefab_generic, origin.position, Quaternion.identity);
-        newProjectile.transform.SetParent(origin.transform);
+        GameObject newProjectile = Instantiate(projectilePrefab_generic, new Vector3(origin.x, origin.y), Quaternion.identity);
         newProjectile.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         newProjectile.GetComponent<Canvas>().sortingOrder = 23;
         // Add it to list

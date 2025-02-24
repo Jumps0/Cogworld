@@ -307,32 +307,4 @@ public class GridManager : MonoBehaviour
             }
         }
     }
-
-    // UNUSED LEGACY CODE. GUT THIS ENTIRE SCRIPT WHEN POSSIBLE
-    public void TileVisFlip(TileVisibility old, TileVisibility desired)
-    {
-        /*
-        for (int x = 0; x < _width; x++)
-        {
-            for (int y = 0; y < _height; y++)
-            {
-                if(grid[x, y].GetComponent<TileBlock>().tileInfo.currentVis == old)
-                {
-                    grid[x, y].GetComponent<TileBlock>().tileInfo.currentVis = desired;
-                }
-            }
-        }
-        */
-    }
-
-    [SerializeField] private bool debugFlip = false;
-    private void DEBUG()
-    {
-        if (debugFlip)
-        {
-            TileVisFlip(TileVisibility.Visible, TileVisibility.Unknown);
-            debugFlip = false;
-        }
-    }
-    
 }

@@ -11,6 +11,7 @@ using Transform = UnityEngine.Transform;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 using Random = UnityEngine.Random;
+using static UnityEngine.GraphicsBuffer;
 
 public static class Action
 {
@@ -611,10 +612,11 @@ public static class Action
                 // Cancel early
                 return;
             }
-            else if (a_tile.type == TileType.Trap) // Or a trap
+            else if (a_tile.type == TileType.Trap && WeaponCanHack(weapon)) // Or a trap
             {
                 // ** SPECIAL DATAJACK DETOUR!!! **
                 // TODO: Datajacking floor traps
+                throw new NotImplementedException();
             }
 
             // It's a structure, we cannot (and should not) miss.
@@ -751,16 +753,23 @@ public static class Action
     /// <param name="weapon">The weapon being used to attack with.</param>
     public static void RangedAttackAction(Actor source, Vector2Int targetLocation, Item weapon)
     {
-        if(weapon == null || target == null)
-        {
+        // We need to identify our target!
+        #region Target Identification
+        // Is there a bot here?
+        Actor a_target = HF.FindActorAtPosition(targetLocation);
+        // If there isn't, we should get the world tile too
+        WorldTile a_tile = MapManager.inst.mapdata[targetLocation.x, targetLocation.y];
+        #endregion
 
+        if (weapon == null || (a_target == null && a_tile.Equals(default(WorldTile))))
+        {
             TurnManager.inst.EndTurn(source); // Alter this later
 
             return;
         }
 
         // Is this redundant?
-        if(weapon.itemData.shot.shotRange < Vector2.Distance(HF.V3_to_V2I(source.gameObject.transform.position), HF.V3_to_V2I(source.gameObject.transform.position)))
+        if(weapon.itemData.shot.shotRange < Vector2.Distance(HF.V3_to_V2I(source.gameObject.transform.position), targetLocation))
         {
             Action.SkipAction(source);
             return;
@@ -774,7 +783,7 @@ public static class Action
 
             int falloff = weapon.itemData.explosionDetails.fallOff;
             int radius = weapon.itemData.explosionDetails.radius;
-            Vector2Int center = new Vector2Int(Mathf.RoundToInt(target.transform.position.x), Mathf.RoundToInt(target.transform.position.y));
+            Vector2Int center = targetLocation;
             List<Vector2Int> effectedTiles = new List<Vector2Int>();
 
             // == We are going to start in the center and then work outwards, dealing with any obstructions as we go. ==
@@ -786,7 +795,7 @@ public static class Action
 
 
             // > Uniquely we will do the center tile alone incase the user shoots into a wall too strong for them to kill.
-            bool centerAttack = Action.IndividualAOEAttack(source, HF.GetTargetAtPosition(center), weapon, 0);
+            bool centerAttack = Action.IndividualAOEAttack(source, center, weapon, 0);
             effectedTiles.Add(center);
 
             // Create a dictionary to keep track of blocking tiles
@@ -816,7 +825,7 @@ public static class Action
                 int distFromCenter = Mathf.RoundToInt(Vector2.Distance(new Vector2(P.x, P.y), center));
 
                 // Next check if this position is blocked by another tile via raycast
-                RaycastHit2D[] hits = Physics2D.RaycastAll(center, tilePosition);
+                //RaycastHit2D[] hits = Physics2D.RaycastAll(center, tilePosition); // TODO: NO RAYCASTING!!!
                 bool clear = true;
 
                 foreach (var H in hits) // Go through the hits and see if there are any obstructions.
@@ -832,7 +841,7 @@ public static class Action
                 if (clear) // Our path is clear
                 {
                     // Perform AOE attack on the current tile
-                    bool blocksExplosion = Action.IndividualAOEAttack(source, HF.GetTargetAtPosition(tilePosition), weapon, (distFromCenter * falloff));
+                    bool blocksExplosion = Action.IndividualAOEAttack(source, tilePosition, weapon, (distFromCenter * falloff));
                     blockingTiles.Add(tilePosition, blocksExplosion);
 
                     effectedTiles.Add(tilePosition);
@@ -859,9 +868,9 @@ public static class Action
             ItemProjectile projData = weapon.itemData.projectile;
             int projAmount = weapon.itemData.projectileAmount;
 
-            if (target.GetComponent<Actor>()) // We are actually attacking a bot
+            if (a_target != null) // We are actually attacking a bot
             {
-                (toHitChance, noCrit, types) = Action.CalculateRangedHitChance(source, target.GetComponent<Actor>(), weapon);
+                (toHitChance, noCrit, types) = Action.CalculateRangedHitChance(source, a_target, weapon);
 
                 #region Hit or Miss
                 float rand = Random.Range(0f, 1f);
@@ -869,7 +878,7 @@ public static class Action
                 {
                     // For both cases we want to:
                     // - Create an in-world projectile that goes to the target
-                    UIManager.inst.CreateGenericProjectile(source.transform, target.transform, weapon.itemData.projectile, Random.Range(15f, 20f), true);
+                    UIManager.inst.CreateGenericProjectile(HF.V3_to_V2I(source.transform.position), targetLocation, weapon.itemData.projectile, Random.Range(15f, 20f), true);
                     // - Play a shooting sound, from the source
                     source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
 
@@ -896,14 +905,14 @@ public static class Action
                     // Player has analysis of target
                     if (source.GetComponent<PlayerData>())
                     {
-                        if (target.GetComponent<Actor>().botInfo.playerHasAnalysisData)
+                        if (a_target.botInfo.playerHasAnalysisData)
                         {
                             damageAmount = Mathf.RoundToInt(damageAmount + (float)(damageAmount * 0.10f)); // +10% damage bonus
                         }
                     }
 
                     // link_complan damage bonus
-                    if (target.GetComponent<Actor>().botInfo && target.GetComponent<Actor>().hacked_mods.Contains(ModHacks.link_complan))
+                    if (a_target.botInfo && a_target.hacked_mods.Contains(ModHacks.link_complan))
                     {
                         damageAmount = Mathf.RoundToInt(damageAmount + (damageAmount * 0.25f)); // +25%
                     }
@@ -914,9 +923,9 @@ public static class Action
                     {
                         crit = true;
                     }
-                    if (target.GetComponent<PlayerData>()) // Player being attacked
+                    if (a_target.GetComponent<PlayerData>()) // Player being attacked
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount, weapon, source, crit);
+                        DamageBot(a_target, damageAmount, weapon, source, crit);
 
                         // Do a calc message
                         string message = $"{source.botInfo.botName}: {weapon.itemData.name} ({toHitChance * 100}%) Hit";
@@ -928,13 +937,13 @@ public static class Action
                     }
                     else // Bot being attacked
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount, weapon, source, crit);
+                        DamageBot(a_target, damageAmount, weapon, source, crit);
 
 
                         // Show a popup that says how much damage occured
-                        if (!target.GetComponent<PlayerData>())
+                        if (!a_target.GetComponent<PlayerData>())
                         {
-                            UI_CombatPopup(target.GetComponent<Actor>(), damageAmount.ToString());
+                            UI_CombatPopup(a_target, damageAmount.ToString());
                         }
 
                         // Do a calc message
@@ -947,13 +956,13 @@ public static class Action
                 {  // ---------------------------- // Failure, a miss.
 
                     // Create a projectile that will miss
-                    UIManager.inst.CreateGenericProjectile(source.transform, target.transform, weapon.itemData.projectile, Random.Range(20f, 15f), false);
+                    UIManager.inst.CreateGenericProjectile(HF.V3_to_V2I(source.transform.position), targetLocation, weapon.itemData.projectile, Random.Range(20f, 15f), false);
 
                     // Play a sound
                     source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
 
 
-                    if (target.GetComponent<PlayerData>()) // Player being targeted
+                    if (a_target.GetComponent<PlayerData>()) // Player being targeted
                     {
                         // Do a calc message
                         string message = $"{source.botInfo.botName}: {weapon.itemData.name} ({toHitChance * 100}%) Miss";
@@ -988,45 +997,34 @@ public static class Action
                 #endregion
 
                 // Get the armor value
-                int armor = HF.TryGetStructureArmor(target);
+                int armor = a_tile.tileInfo.armor;
 
                 #region Beat the Armor?
                 if (damageAmount > armor) // Success! Destroy the structure
                 {
                     // - Create an in-world projectile that goes to the target
-                    UIManager.inst.CreateGenericProjectile(source.transform, target.transform, weapon.itemData.projectile, Random.Range(15f, 20f), true);
+                    UIManager.inst.CreateGenericProjectile(HF.V3_to_V2I(source.transform.position), targetLocation, weapon.itemData.projectile, Random.Range(15f, 20f), true);
                     // - Play a shooting sound, from the source
                     source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
 
                     // - Destroy the object
-                    if (target.GetComponent<MachinePart>()) // Some type of machine
-                    {
-                        target.GetComponent<MachinePart>().DestroyMe();
+                    // Do a calc message
+                    string message = $"{a_tile.tileInfo.tileName} Destroyed ({damageAmount} > {armor})";
 
-                        // Do a calc message
-                        if (target.GetComponent<MachinePart>().parentPart == target.GetComponent<MachinePart>()) // Only if this is the parent part
-                        {
-                            string message = $"{target.name} Destroyed ({damageAmount} > {armor})";
-
-                            UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
-                        }
-                    }
-                    else if (target.GetComponent<TileBlock>()) // A wall or door
-                    {
-                        target.GetComponent<TileBlock>().DestroyMe();
-                    }
+                    // Set the tile to damaged state
+                    a_tile.SetDestroyed(true, message);
 
                 }
                 else // Failure. Don't destroy the structure
                 {
                     // Create a projectile that will miss
-                    UIManager.inst.CreateGenericProjectile(source.transform, target.transform, weapon.itemData.projectile, Random.Range(20f, 15f), false);
+                    UIManager.inst.CreateGenericProjectile(HF.V3_to_V2I(source.transform.position), targetLocation, weapon.itemData.projectile, Random.Range(20f, 15f), false);
 
                     // Play a sound
                     source.GetComponent<AudioSource>().PlayOneShot(shotData.shotSound[Random.Range(0, shotData.shotSound.Count - 1)]);
 
                     // Message
-                    string message = $" Damage insufficient to overcome {target.name} armor";
+                    string message = $" Damage insufficient to overcome {a_tile.tileInfo.tileName} armor";
 
                     UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.inactiveGray, UIManager.inst.dullGreen, false, true);
                 }
@@ -1349,19 +1347,20 @@ public static class Action
     /// <returns>Returns if the attack is able to pass through the target object.</returns>
     public static bool IndividualAOEAttack(Actor source, Vector2Int targetLocation, Item weapon, int falloff)
     {
+        // We need to identify our target!
+        #region Target Identification
+        // Is there a bot here?
+        Actor a_target = HF.FindActorAtPosition(targetLocation);
+        // If there isn't, we should get the world tile too
+        WorldTile a_tile = MapManager.inst.mapdata[targetLocation.x, targetLocation.y];
+        #endregion
+
         bool permiable = true;
         int chunks = Random.Range(weapon.itemData.explosionDetails.chunks.x, weapon.itemData.explosionDetails.chunks.y);
         if(chunks == 0)
         {
             chunks = 1;
         }
-
-        // There are a couple things we could be attacking here:
-        // - Walls
-        // - Bots
-        // - Machines
-        // - Doors
-        // - The floor
 
         // > Get launcher loader/accuracy bonuses <
         float bonus_launcherAccuracy = 0f;
@@ -1429,10 +1428,10 @@ public static class Action
         #endregion
 
         // Get the armor value if this is a structure
-        int armor = HF.TryGetStructureArmor(target);
+        int armor = a_tile.tileInfo.armor;
         ItemExplosion attackData = weapon.itemData.explosion;
 
-        if (target.GetComponent<Actor>()) // We are attacking a bot
+        if (a_target) // We are attacking a bot
         {
             // We need to do standard hit/miss for this.
 
@@ -1443,7 +1442,7 @@ public static class Action
             List<ArmorType> types = new List<ArmorType>();
             int projAmount = weapon.itemData.projectileAmount;
 
-            (toHitChance, noCrit, types) = Action.CalculateRangedHitChance(source, target.GetComponent<Actor>(), weapon);
+            (toHitChance, noCrit, types) = Action.CalculateRangedHitChance(source, a_target, weapon);
 
             #region Hit or Miss
             float rand = Random.Range(0f, 1f);
@@ -1464,25 +1463,25 @@ public static class Action
                 // Player has analysis of target
                 if (source.GetComponent<PlayerData>())
                 {
-                    if (target.GetComponent<Actor>().botInfo.playerHasAnalysisData)
+                    if (a_target.botInfo.playerHasAnalysisData)
                     {
                         damageAmount = Mathf.RoundToInt(damageAmount + (float)(damageAmount * 0.10f)); // +10% damage bonus
                     }
                 }
 
                 // link_complan damage bonus
-                if (target.GetComponent<Actor>().botInfo && target.GetComponent<Actor>().hacked_mods.Contains(ModHacks.link_complan))
+                if (a_target.botInfo && a_target.hacked_mods.Contains(ModHacks.link_complan))
                 {
                     damageAmount = Mathf.RoundToInt(damageAmount + (damageAmount * 0.25f)); // +25%
                 }
                 #endregion
 
-                if (target.GetComponent<PlayerData>()) // Player being attacked
+                if (a_target.GetComponent<PlayerData>()) // Player being attacked
                 {
                     // Before we deal damage we need to split it into chunks
                     for(int i = 0; i < chunks; i++)
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount / chunks, weapon, source);
+                        DamageBot(a_target, damageAmount / chunks, weapon, source);
                     }
 
                     // Do a calc message
@@ -1498,13 +1497,13 @@ public static class Action
                     // Before we deal damage we need to split it into chunks
                     for (int i = 0; i < chunks; i++)
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount / chunks, weapon, source);
+                        DamageBot(a_target, damageAmount / chunks, weapon, source);
                     }
 
                     // Show a popup that says how much damage occured
-                    if (!target.GetComponent<PlayerData>())
+                    if (!a_target.GetComponent<PlayerData>())
                     {
-                        UI_CombatPopup(target.GetComponent<Actor>(), damageAmount.ToString());
+                        UI_CombatPopup(a_target, damageAmount.ToString());
                     }
 
                     // Do a calc message
@@ -1516,7 +1515,7 @@ public static class Action
             else
             {  // ---------------------------- // Failure, a miss.
 
-                if (target.GetComponent<PlayerData>()) // Player being targeted
+                if (a_target.GetComponent<PlayerData>()) // Player being targeted
                 {
                     // Do a calc message
                     string message = $"{source.botInfo.botName}: {weapon.itemData.name} ({toHitChance * 100}%) Miss";
@@ -1533,47 +1532,7 @@ public static class Action
             }
             #endregion
         }
-        else if(target.GetComponent<MachinePart>()) // We are attacking a machine
-        {
-            // For machines we can't miss, we just need to check if the damage we do beats the machine's armor.
-
-            permiable = false; // Machines block explosions unless they are destroyed
-
-            #region Damage Calculation
-            // Calculate Damage
-            int damageAmount = (int)Random.Range(weapon.itemData.explosionDetails.damage.x, weapon.itemData.explosionDetails.damage.y);
-
-            // Consider any flat damage bonuses
-            damageAmount = Action.AddFlatDamageBonuses(damageAmount, source, weapon);
-
-            damageAmount += falloff; // Apply damage falloff if any (remember it's negative).
-            if (damageAmount < 1)
-                damageAmount = 1; // Minimum 1 damage
-            #endregion
-
-            #region Beat the Armor?
-            if (damageAmount > armor) // Success! Destroy the structure
-            {
-                target.GetComponent<MachinePart>().DestroyMe();
-
-                // Do a calc message
-                if(target.GetComponent<MachinePart>().parentPart == target.GetComponent<MachinePart>()) // Only if this is the parent part
-                {
-                    string message = $"{target.name} Destroyed ({damageAmount} > {armor})";
-
-                    UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
-                }
-
-                permiable = true; // Destroyed so pass through
-            }
-            else // Failure, do nothing.
-            {
-
-            }
-            #endregion
-
-        }
-        else if (target.GetComponent<TileBlock>()) // Some kind of tile
+        else // We are attacking a tile
         {
             #region Damage Calculation
             // Calculate Damage
@@ -1588,55 +1547,19 @@ public static class Action
             #endregion
 
             // For structures we can't miss, we just need to check if the damage we do beats the structure's armor.
-            if (target.GetComponent<TileBlock>().tileInfo.type == TileType.Door) // A door
+
+            // - Permiability check
+            permiable = HF.IsPermiableTile(a_tile);
+
+            if (damageAmount > armor) // Success! Destroy the structure
             {
-                // Is the door open?
-                permiable = target.GetComponent<DoorLogic>().state; // Also if this is destroyed it becomes permiable either way
+                a_tile.SetDestroyed(true);
 
-                #region Beat the Armor?
-                if (damageAmount > armor) // Success! Destroy the structure
-                {
-                    target.GetComponent<TileBlock>().DestroyMe();
-
-                    permiable = true; // Destroyed so pass through
-                }
-                else // Failure, do nothing.
-                {
-
-                }
-                #endregion
+                permiable = true; // Destroyed so pass through
             }
-            else if (target.GetComponent<TileBlock>().tileInfo.type == TileType.Wall) // A wall
+            else // Failure, do nothing.
             {
-                permiable = false; // Wall's will block the explosion (unless they are destroyed)
 
-                #region Beat the Armor?
-                if (damageAmount > armor) // Success! Destroy the structure
-                {
-                    target.GetComponent<TileBlock>().DestroyMe();
-
-                    permiable = true; // Destroyed so pass through
-                }
-                else // Failure, do nothing.
-                {
-
-                }
-                #endregion
-            }
-            else if (target.GetComponent<TileBlock>().tileInfo.type == TileType.Floor) // A floor
-            {
-                permiable = true; // Floor tiles won't block the explosion
-
-                #region Beat the Armor?
-                if (damageAmount > armor) // Success! Destroy the structure
-                {
-                    target.GetComponent<TileBlock>().DestroyMe();
-                }
-                else // Failure, do nothing.
-                {
-
-                }
-                #endregion
             }
         }
 
@@ -1669,7 +1592,7 @@ public static class Action
 
 
         // > Uniquely we will do the center tile alone incase the user shoots into a wall too strong for them to kill.
-        bool centerAttack = Action.UnboundExplosiveAttack(HF.GetTargetAtPosition(center), details, 0);
+        bool centerAttack = Action.UnboundExplosiveAttack(center, details, 0);
         effectedTiles.Add(center);
 
         // Create a dictionary to keep track of blocking tiles
@@ -1715,7 +1638,7 @@ public static class Action
             if (clear) // Our path is clear
             {
                 // Perform AOE attack on the current tile
-                bool blocksExplosion = Action.UnboundExplosiveAttack(HF.GetTargetAtPosition(tilePosition), details, (distFromCenter * falloff));
+                bool blocksExplosion = Action.UnboundExplosiveAttack(tilePosition, details, (distFromCenter * falloff));
                 blockingTiles.Add(tilePosition, blocksExplosion);
 
                 effectedTiles.Add(tilePosition);
@@ -1734,29 +1657,26 @@ public static class Action
         TurnManager.inst.AllEntityVisUpdate();
     }
 
-    #endregion
-
-    #region HelperFunctions
-
-    public static bool UnboundExplosiveAttack(GameObject target, Item weapon, int falloff)
+    public static bool UnboundExplosiveAttack(Vector2Int targetLocation, Item weapon, int falloff)
     {
         // <Mostly copied from IndividualAOEAttack>
+
+        // We need to identify our target!
+        #region Target Identification
+        // Is there a bot here?
+        Actor a_target = HF.FindActorAtPosition(targetLocation);
+        // If there isn't, we should get the world tile too
+        WorldTile a_tile = MapManager.inst.mapdata[targetLocation.x, targetLocation.y];
+        #endregion
 
         bool permiable = true;
         int chunks = Random.Range(weapon.itemData.explosionDetails.chunks.x, weapon.itemData.explosionDetails.chunks.y);
 
-        // There are a couple things we could be attacking here:
-        // - Walls
-        // - Bots
-        // - Machines
-        // - Doors
-        // - The floor
-
         // Get the armor value if this is a structure
-        int armor = HF.TryGetStructureArmor(target);
+        int armor = a_tile.tileInfo.armor;
         ItemExplosion attackData = weapon.itemData.explosion;
 
-        if (target.GetComponent<Actor>()) // We are attacking a bot
+        if (a_target) // We are attacking a bot
         {
             permiable = true; // Bots are always permiable
 
@@ -1769,11 +1689,11 @@ public static class Action
             // First factor in the target's evasion/avoidance rate
             float avoidance = 0f;
             List<int> unused = new List<int>();
-            (avoidance, unused) = Action.CalculateAvoidance(target.GetComponent<Actor>());
+            (avoidance, unused) = Action.CalculateAvoidance(a_target);
             toHitChance -= (avoidance / 100);
 
             // - Siege Mode - //
-            if (target.GetComponent<PlayerData>())
+            if (a_target.GetComponent<PlayerData>())
             {
                 if (PlayerData.inst.timeTilSiege == 0)
                 {
@@ -1782,20 +1702,20 @@ public static class Action
             }
             else
             {
-                if (target.GetComponent<Actor>().siegeMode)
+                if (a_target.siegeMode)
                 {
                     toHitChance += Random.Range(0.2f, 0.3f);
                 }
             }
 
             // - No Movement past 2 turns - //
-            if (target.GetComponent<Actor>().noMovementFor >= 2)
+            if (a_target.noMovementFor >= 2)
             {
                 toHitChance += 0.10f;
             }
 
             // - Target Heat value - //
-            if (target.GetComponent<PlayerData>())
+            if (a_target.GetComponent<PlayerData>())
             {
                 if (PlayerData.inst.currentHeat > 0)
                 {
@@ -1804,64 +1724,64 @@ public static class Action
             }
             else
             {
-                if (target.GetComponent<Actor>().currentHeat > 0)
+                if (a_target.currentHeat > 0)
                 {
                     toHitChance += 0.03f;
                 }
             }
 
             // - Large/Huge target (doesn't apply to player) - //
-            if (target.GetComponent<Actor>().botInfo)
+            if (a_target.botInfo)
             {
-                if (target.GetComponent<Actor>().botInfo._size == BotSize.Large)
+                if (a_target.botInfo._size == BotSize.Large)
                 {
                     toHitChance += 0.10f;
                 }
-                else if (target.GetComponent<Actor>().botInfo._size == BotSize.Huge)
+                else if (a_target.botInfo._size == BotSize.Huge)
                 {
                     toHitChance += 0.30f;
                 }
             }
 
             // - Last move + speed - //
-            if (target.GetComponent<Actor>().noMovementFor > 0)
+            if (a_target.noMovementFor > 0)
             {
-                if (target.GetComponent<PlayerData>())
+                if (a_target.GetComponent<PlayerData>())
                 {
                     toHitChance += Mathf.RoundToInt(Mathf.Clamp(Mathf.Log(100 * (100 / PlayerData.inst.moveSpeed1), 2) * -2f, -15f, -1f));
                 }
                 else
                 {
-                    toHitChance += Mathf.RoundToInt(Mathf.Clamp(Mathf.Log(100 * (100 / target.GetComponent<Actor>().botInfo._movement.moveSpeedPercent), 2) * -2f, -15f, -1f));
+                    toHitChance += Mathf.RoundToInt(Mathf.Clamp(Mathf.Log(100 * (100 / a_target.botInfo._movement.moveSpeedPercent), 2) * -2f, -15f, -1f));
                 }
             }
 
             // - Target has legs - //
-            if (HasLegs(target.GetComponent<Actor>()))
+            if (HasLegs(a_target))
             {
                 toHitChance += -0.05f;
             }
 
             // - If attacker moved last action - //
-            if (target.GetComponent<Actor>().noMovementFor > 0)
+            if (a_target.noMovementFor > 0)
             {
                 toHitChance += -0.10f;
             }
 
             // - If attacker is using legs - //
-            if (HasLegs(target.GetComponent<Actor>()))
+            if (HasLegs(a_target))
             {
                 toHitChance += -0.05f;
             }
 
             // - Target is Small/Tiny - //
-            if (!target.GetComponent<PlayerData>()) // Applies to bots only
+            if (!a_target.GetComponent<PlayerData>()) // Applies to bots only
             {
-                if (target.GetComponent<Actor>().botInfo._size == BotSize.Tiny)
+                if (a_target.botInfo._size == BotSize.Tiny)
                 {
                     toHitChance += -0.30f;
                 }
-                else if (target.GetComponent<Actor>().botInfo._size == BotSize.Small)
+                else if (a_target.botInfo._size == BotSize.Small)
                 {
                     toHitChance += -0.10f;
                 }
@@ -1883,12 +1803,12 @@ public static class Action
 
                 #endregion
 
-                if (target.GetComponent<PlayerData>()) // Player being attacked
+                if (a_target.GetComponent<PlayerData>()) // Player being attacked
                 {
                     // Before we deal damage we need to split it into chunks
                     for (int i = 0; i < chunks; i++)
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount / chunks, weapon);
+                        DamageBot(a_target, damageAmount / chunks, weapon);
                     }
 
                     // Do a calc message
@@ -1900,17 +1820,17 @@ public static class Action
                     // Before we deal damage we need to split it into chunks
                     for (int i = 0; i < chunks; i++)
                     {
-                        DamageBot(target.GetComponent<Actor>(), damageAmount / chunks, weapon);
+                        DamageBot(a_target, damageAmount / chunks, weapon);
                     }
 
                     // Show a popup that says how much damage occured
-                    if (!target.GetComponent<PlayerData>())
+                    if (!a_target.GetComponent<PlayerData>())
                     {
-                        UI_CombatPopup(target.GetComponent<Actor>(), damageAmount.ToString());
+                        UI_CombatPopup(a_target, damageAmount.ToString());
                     }
 
                     // Do a calc message
-                    string message = target.GetComponent<Actor>() + " was hit by explosion [" + damageAmount + "].";
+                    string message = a_target.uniqueName + " was hit by explosion [" + damageAmount + "].";
 
                     UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
                 }
@@ -1918,7 +1838,7 @@ public static class Action
             else
             {  // ---------------------------- // Failure, a miss.
 
-                if (target.GetComponent<PlayerData>()) // Player being targeted
+                if (a_target.GetComponent<PlayerData>()) // Player being targeted
                 {
                     // Do a calc message
                     string message = "Evaded the explosion.";
@@ -1928,54 +1848,19 @@ public static class Action
                 else // AI being targeted
                 {
                     // Do a calc message
-                    string message = target.GetComponent<Actor>().botInfo.botName + " evaded the explosion.";
+                    string message = a_target.uniqueName + " evaded the explosion.";
 
                     UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.dullGreen, UIManager.inst.normalGreen, false, true);
                 }
             }
             #endregion
         }
-        else if (target.GetComponent<MachinePart>()) // We are attacking a machine
+        else // We are attacking a tile
         {
-            // For machines we can't miss, we just need to check if the damage we do beats the machine's armor.
-
-            permiable = false; // Machines block explosions unless they are destroyed
+            // - Permiability check
+            permiable = HF.IsPermiableTile(a_tile);
 
             #region Damage Calculation
-            // Calculate Damage
-            int damageAmount = (int)Random.Range(weapon.itemData.explosionDetails.damage.x, weapon.itemData.explosionDetails.damage.y);
-
-            damageAmount += falloff; // Apply damage falloff if any (remember it's negative).
-            if (damageAmount < 1)
-                damageAmount = 1; // Minimum 1 damage
-            #endregion
-
-            #region Beat the Armor?
-            if (damageAmount > armor) // Success! Destroy the structure
-            {
-                target.GetComponent<MachinePart>().DestroyMe();
-
-                // Do a calc message
-                if (target.GetComponent<MachinePart>().parentPart == target.GetComponent<MachinePart>()) // Only if this is the parent part
-                {
-                    string message = $"{target.name} Destroyed ({damageAmount} > {armor})";
-
-                    UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
-                }
-
-                permiable = true; // Destroyed so pass through
-            }
-            else // Failure, do nothing.
-            {
-
-            }
-            #endregion
-
-        }
-        else if (target.GetComponent<TileBlock>()) // Some kind of tile
-        {
-            #region Damage Calculation
-            // Calculate Damage
             int damageAmount = (int)Random.Range(weapon.itemData.explosionDetails.damage.x, weapon.itemData.explosionDetails.damage.y);
 
             damageAmount += falloff; // Apply damage falloff if any (remember it's negative).
@@ -1984,60 +1869,28 @@ public static class Action
             #endregion
 
             // For structures we can't miss, we just need to check if the damage we do beats the structure's armor.
-            if (target.GetComponent<TileBlock>().tileInfo.type == TileType.Door) // A door
+
+            // - Permiability check
+            permiable = HF.IsPermiableTile(a_tile);
+
+            if (damageAmount > armor) // Success! Destroy the structure
             {
-                // Is the door open?
-                permiable = target.GetComponent<DoorLogic>().state; // Also if this is destroyed it becomes permiable either way
+                a_tile.SetDestroyed(true);
 
-                #region Beat the Armor?
-                if (damageAmount > armor) // Success! Destroy the structure
-                {
-                    target.GetComponent<TileBlock>().DestroyMe();
-
-                    permiable = true; // Destroyed so pass through
-                }
-                else // Failure, do nothing.
-                {
-
-                }
-                #endregion
+                permiable = true; // Destroyed so pass through
             }
-            else if (target.GetComponent<TileBlock>().tileInfo.type == TileType.Wall) // A wall
+            else // Failure, do nothing.
             {
-                permiable = false; // Wall's will block the explosion (unless they are destroyed)
 
-                #region Beat the Armor?
-                if (damageAmount > armor) // Success! Destroy the structure
-                {
-                    target.GetComponent<TileBlock>().DestroyMe();
-
-                    permiable = true; // Destroyed so pass through
-                }
-                else // Failure, do nothing.
-                {
-
-                }
-                #endregion
-            }
-            else if (target.GetComponent<TileBlock>().tileInfo.type == TileType.Floor) // A floor
-            {
-                permiable = true; // Floor tiles won't block the explosion
-
-                #region Beat the Armor?
-                if (damageAmount > armor) // Success! Destroy the structure
-                {
-                    target.GetComponent<TileBlock>().DestroyMe();
-                }
-                else // Failure, do nothing.
-                {
-
-                }
-                #endregion
             }
         }
 
         return permiable;
     }
+
+    #endregion
+
+    #region HelperFunctions
 
     public static (float, bool, List<ArmorType>) CalculateRangedHitChance(Actor source, Actor target, Item weapon)
     {
@@ -6899,9 +6752,9 @@ public static class Action
                                 Vector3 targetTile = FOV[Random.Range(0, FOV.Count - 1)];
 
                                 // FIRE!
-                                GameObject goTarget = HF.DetermineAttackTarget(player.gameObject, targetTile);
+                                Vector2Int targetPos = HF.DetermineAttackTarget(player.gameObject, targetTile);
 
-                                Action.RangedAttackAction(player, goTarget, misfireWeapon);
+                                Action.RangedAttackAction(player, targetPos, misfireWeapon);
                             }
                         }
                         else if(matterCost > 0) // Matter weapon
@@ -6919,9 +6772,9 @@ public static class Action
                                 Vector3 targetTile = FOV[Random.Range(0, FOV.Count - 1)];
 
                                 // FIRE!
-                                GameObject goTarget = HF.DetermineAttackTarget(player.gameObject, targetTile);
+                                Vector2Int targetPos = HF.DetermineAttackTarget(player.gameObject, targetTile);
 
-                                Action.RangedAttackAction(player, goTarget, misfireWeapon);
+                                Action.RangedAttackAction(player, targetPos, misfireWeapon);
                             }
                         }
                     }
@@ -7196,6 +7049,16 @@ public static class Action
         }
 
         return failToFire;
+    }
+
+    /// <summary>
+    /// Can this weapon hack things like a Datajack can?
+    /// </summary>
+    /// <param name="weapon">The weapon to check.</param>
+    /// <returns>TRUE/FALSE if this weapon can hack.</returns>
+    public static bool WeaponCanHack(Item weapon)
+    {
+        return weapon.itemData.isSpecialAttack && weapon.itemData.specialAttack.datajack;
     }
     #endregion
 

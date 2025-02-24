@@ -3898,30 +3898,6 @@ public static class HF
         return null;
     }
 
-    /// <summary>
-    /// Attempts to retrieve a structures armor value. This structure could be a machine, a door, a tile, etc.
-    /// </summary>
-    /// <param name="structure">The structure gameObject to try to retrieve the armor value of.</param>
-    /// <returns>The INT armor value of the specified structure.</returns>
-    public static int TryGetStructureArmor(GameObject structure)
-    {
-        int armor = 0;
-
-        if (structure)
-        {
-            if (structure.GetComponent<MachinePart>())
-            {
-                armor = structure.GetComponent<MachinePart>().armor.y;
-            }
-            else if (structure.GetComponent<TileBlock>())
-            {
-                armor = structure.GetComponent<TileBlock>().tileInfo.armor;
-            }
-        }
-
-        return armor;
-    }
-
     public static string GetNextLetter(string lastLetter)
     {
         // Convert the last letter to a character
@@ -4306,8 +4282,9 @@ public static class HF
     /// Checks to see if a specified tile is unoccupied.
     /// </summary>
     /// <param name="tile">The specified tile to check.</param>
+    /// <param name="ignoreBots">Should bots be considered as an occupier.</param>
     /// <returns>Returns TRUE if this tile is unoccupied.</returns>
-    public static bool IsUnoccupiedTile(WorldTile tile)
+    public static bool IsUnoccupiedTile(WorldTile tile, bool ignoreBots = false)
     {
         bool ret = false;
 
@@ -4316,14 +4293,16 @@ public static class HF
         {
             case TileType.Floor: // No blocking at all (unless a bot is there)
                 ret = true;
-                ret = MapManager.inst.pathdata[tile.location.x, tile.location.y] != 2; // Bot check
+                if(!ignoreBots)
+                    ret = MapManager.inst.pathdata[tile.location.x, tile.location.y] != 2; // Bot check
                 break;
             case TileType.Wall: // Always blocks (unless destroyed)
                 ret = tile.damaged;
                 break;
             case TileType.Door: // No blocking at all (unless a bot is there)
                 ret = true;
-                ret = MapManager.inst.pathdata[tile.location.x, tile.location.y] != 2; // Bot check
+                if (!ignoreBots)
+                    ret = MapManager.inst.pathdata[tile.location.x, tile.location.y] != 2; // Bot check
                 break;
             case TileType.Machine: // Always blocks (unless destroyed)
                 ret = tile.damaged;
@@ -4332,7 +4311,8 @@ public static class HF
                 return true;
             case TileType.Phasewall: // No blocking at all (unless a bot is there)
                 ret = true;
-                ret = MapManager.inst.pathdata[tile.location.x, tile.location.y] != 2; // Bot check
+                if (!ignoreBots)
+                    ret = MapManager.inst.pathdata[tile.location.x, tile.location.y] != 2; // Bot check
                 break;
             case TileType.Trap:
                 ret = true;
@@ -4340,6 +4320,58 @@ public static class HF
             case TileType.Default:
                 break;
             default:
+                break;
+        }
+
+        return ret;
+    }
+
+    /// <summary>
+    /// Is this tile able to prevent an explosion from passing throught it?
+    /// </summary>
+    /// <param name="tile">The specified tile to check.</param>
+    /// <returns></returns>
+    public static bool IsPermiableTile(WorldTile tile)
+    {
+        // NOTE: This function is essentially just a copy of the above `IsUnoccupiedTile` check.
+
+        bool ret = false;
+
+        TileType type = tile.tileInfo.type;
+        switch (type)
+        {
+            case TileType.Floor:
+                ret = true;
+                break;
+            case TileType.Wall:
+                ret = tile.damaged;
+                break;
+            case TileType.Door:
+                if (tile.damaged)
+                {
+                    ret = true;
+                }
+                else
+                {
+                    ret = tile.door_open;
+                }
+                break;
+            case TileType.Machine:
+                ret = tile.damaged;
+                break;
+            case TileType.Exit:
+                return true;
+            case TileType.Phasewall:
+                ret = true;
+                break;
+            case TileType.Trap:
+                ret = true;
+                break;
+            case TileType.Default:
+                ret = true;
+                break;
+            default:
+                ret = true;
                 break;
         }
 
@@ -7351,7 +7383,7 @@ public static class HF
     /// <param name="source">The origin location.</param>
     /// <param name="target">The target location.</param>
     /// <returns>Returns the thing we are actually going to attack against.</returns>
-    public static GameObject DetermineAttackTarget(GameObject source, Vector3 target)
+    public static Vector2Int DetermineAttackTarget(GameObject source, Vector3 target)
     {
         GameObject blocker = null;
 

@@ -119,13 +119,6 @@ public class TileBlock : MonoBehaviour
         visc_gray = HF.GetDarkerColor(visc_white, 0.3f);
     }
 
-    public TileVisibility vis;
-
-    public void SetVisibility(TileVisibility newVis)
-    {
-        vis = newVis;
-    }
-
     #region Vision/Display
     public void UpdateVis(byte update)
     {

@@ -824,6 +824,7 @@ public class ItemSpecialAttack
 {
     public bool specialMelee = false; // Removes the "Hit" section
 
+    [Tooltip("Datajack or Remote datajacks.")]
     public bool datajack = false;
     public bool stasisBeam = false;
     public bool tearClaw = false;

@@ -10,8 +10,8 @@ public class Projectile_Generic : MonoBehaviour
     public GameObject _highlight;
 
     [Header("Values")]
-    public Transform _target;
-    public Transform _origin;
+    public Vector2Int _target;
+    public Vector2Int _origin;
     //
     public Color projColor;
     public Color highlightColor;
@@ -19,7 +19,7 @@ public class Projectile_Generic : MonoBehaviour
     public float _speed = 0.5f;
     public bool _accurate;
 
-    public void Setup(Transform origin, Transform target, ItemProjectile weapon, float speed, bool isAccurate)
+    public void Setup(Vector2Int origin, Vector2Int target, ItemProjectile weapon, float speed, bool isAccurate)
     {
         _origin = origin;
         _target = target;
@@ -39,12 +39,12 @@ public class Projectile_Generic : MonoBehaviour
     private IEnumerator MoveProjectile()
     {
         // calculate the direction towards the target
-        Vector3 direction = _target.position - _projectile.transform.position;
+        Vector3 direction = new Vector3(_target.x, _target.y) - _projectile.transform.position;
         direction.z = 0f; // ensure the projectile stays in the 2D plane
 
         while (true)
         {
-            if (_target == null || _origin == null || _projectile == null || _highlight == null)
+            if (_projectile == null || _highlight == null)
             {
                 OnReachTarget();
             }
@@ -60,15 +60,15 @@ public class Projectile_Generic : MonoBehaviour
                 if (_accurate)
                 {
                     _projectile.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
-                    _highlight.transform.position = new Vector3(Mathf.RoundToInt(_target.position.x), Mathf.RoundToInt(_target.position.y), _target.position.z);
+                    _highlight.transform.position = new Vector3(_target.x, _target.y, 0);
                 }
                 else
                 {
                     // Determine a random direction to miss the target by
                     Vector2 randomOffset = Random.insideUnitCircle.normalized;
-                    Vector3 missTarget = _target.position + new Vector3(randomOffset.x, randomOffset.y, 0f);
+                    Vector3 missTarget = new Vector3(_target.x, _target.y) + new Vector3(randomOffset.x, randomOffset.y, 0f);
 
-                    _projectile.transform.rotation = Quaternion.LookRotation(Vector3.forward, (missTarget - _origin.position).normalized);
+                    _projectile.transform.rotation = Quaternion.LookRotation(Vector3.forward, (missTarget - new Vector3(_origin.x, _origin.y)).normalized);
                     _highlight.transform.position = new Vector3(Mathf.RoundToInt(missTarget.x), Mathf.RoundToInt(missTarget.y), missTarget.z);
                 }
 
@@ -80,7 +80,7 @@ public class Projectile_Generic : MonoBehaviour
             {
                 // move the projectile towards the target at the specified speed
                 float step = _speed * Time.deltaTime;
-                _projectile.transform.position = Vector3.MoveTowards(_projectile.transform.position, _target.position, step);
+                _projectile.transform.position = Vector3.MoveTowards(_projectile.transform.position, new Vector3(_target.x, _target.y), step);
 
                 // snap the highlight to the nearest whole (int) number
                 Vector3 snapPosition = _projectile.transform.position;
@@ -97,7 +97,7 @@ public class Projectile_Generic : MonoBehaviour
             }
 
             // update the direction towards the target every frame
-            direction = _target.position - _projectile.transform.position;
+            direction = new Vector3(_target.x, _target.y) - _projectile.transform.position;
             direction.z = 0f; // ensure the projectile stays in the 2D plane
         }
     }
