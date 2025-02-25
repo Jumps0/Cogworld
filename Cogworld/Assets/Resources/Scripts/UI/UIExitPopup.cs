@@ -11,12 +11,13 @@ public class UIExitPopup : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public TextMeshProUGUI _text;
     public Image backing;
     public Image sideBar;
+    [SerializeField] private Image blackCover;
 
     public GameObject boxing;
     public GameObject connectorLine;
 
-    [Tooltip("The AccessObject assigned to this popup.")]
-    public GameObject _parent;
+    [Tooltip("The location of the parent tile for this exit.")]
+    public Vector2Int _parent;
 
     public List<GameObject> connectors = new List<GameObject>();
 
@@ -24,10 +25,10 @@ public class UIExitPopup : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public string setName;
     public bool mouseOver = false;
 
-    public void Setup(string name, GameObject parent)
+    public void Setup(string name, WorldTile parent)
     {
         setName = name;
-        _parent = parent;
+        _parent = parent.location;
         _text.text = setName;
         Appear();
     }
@@ -41,7 +42,7 @@ public class UIExitPopup : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         // - (At the same time) Edge comes in from WHITE to its normal color
         //      -Line follows the same rules
 
-        _parent.GetComponent<AccessObject>().blackBacker.SetActive(true);
+        blackCover.enabled = true;
 
         StartCoroutine(FadeIn());
         StartCoroutine(ConnectorExpand());
@@ -103,7 +104,7 @@ public class UIExitPopup : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             yield return null;
         }
 
-        _parent.GetComponent<AccessObject>().blackBacker.SetActive(false);
+        blackCover.enabled = false;
         this.gameObject.SetActive(false);
         Destroy(this.gameObject);
     }

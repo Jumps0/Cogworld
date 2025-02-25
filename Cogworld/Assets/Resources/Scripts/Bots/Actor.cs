@@ -107,7 +107,6 @@ public class Actor : Entity
                 // Fill up armament & component inventories
                 foreach (var item in botInfo.armament)
                 {
-                    Debug.Log($"{this.gameObject.name} adding {item} {item.item.Name} to {armament}");
                     armament.AddItem(item.item, 1);
                 }
                 foreach (var item in botInfo.components)

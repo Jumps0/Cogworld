@@ -374,16 +374,10 @@ public class UIManager : MonoBehaviour
         {
             for (int y = bottomLeft.y; y < bottomLeft.y + (dist * 2); y++)
             {
-                if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(x, y)))
+                if (MapManager.inst.mapdata[x, y].vis == 1) // Explored but not currently visible
                 {
-                    bool _e, _v = false;
-                    (_e, _v) = HF.GetGenericTileVis(MapManager.inst._allTilesRealized[new Vector2Int(x, y)].bottom.gameObject);
-
-                    if (_e && !_v)
-                    {
-                        //NFA_secondary.Add(new Vector2Int(x, y), kvp.Value.gameObject);
-                        nonFOV.Add(new Vector3Int(x, y, 0));
-                    }
+                    //NFA_secondary.Add(new Vector2Int(x, y), kvp.Value.gameObject);
+                    nonFOV.Add(new Vector3Int(x, y, 0));
                 }
             }
         }
@@ -1062,16 +1056,16 @@ public class UIManager : MonoBehaviour
     public List<GameObject> exitPopups = new List<GameObject>();
     public GameObject exitPopup_prefab;
 
-    public void CreateExitPopup(GameObject _parent, string setName)
+    public void CreateExitPopup(WorldTile _parent, string setName)
     {
         StartCoroutine(ExitPopup(_parent, setName));
     }
 
-    IEnumerator ExitPopup(GameObject _parent, string setName)
+    IEnumerator ExitPopup(WorldTile _parent, string setName)
     {
         // Instantiate it & Assign it to parent
-        GameObject newExitPopup = Instantiate(exitPopup_prefab, _parent.transform.position, Quaternion.identity);
-        newExitPopup.transform.SetParent(_parent.transform);
+        GameObject newExitPopup = Instantiate(exitPopup_prefab, new Vector3(_parent.location.x, _parent.location.y), Quaternion.identity);
+        newExitPopup.transform.SetParent(this.transform);
         newExitPopup.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         newExitPopup.GetComponent<Canvas>().sortingOrder = 29;
         // Add it to list
@@ -4970,6 +4964,9 @@ public class UIManager : MonoBehaviour
         AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_ui["ACCESS"]); // UI - ACCESS
     }
 
+    /// <summary>
+    /// The goal of this function is to "PING" all currently KNOWN exits (must be explored).
+    /// </summary>
     public void Scan_IndicateExits() // 4
     {
         if (!scanIndicateCooldown) // We don't want the player to be able to spam these
@@ -4977,25 +4974,31 @@ public class UIManager : MonoBehaviour
             StartCoroutine(Scan_Cooldown());
         }
 
-        List<GameObject> exits = new List<GameObject>();
+        List<Vector2Int> exits = new List<Vector2Int>();
 
         foreach (var B in MapManager.inst.placedBranches)
         {
-            if (B.gameObject.GetComponent<AccessObject>().isExplored)
+            if (MapManager.inst.mapdata[B.x, B.y].vis > 0)
             {
-                exits.Add(B.gameObject);
+                exits.Add(B);
             }
         }
 
         foreach (var E in MapManager.inst.placedExits)
         {
-            if (E.gameObject.GetComponent<AccessObject>().isExplored)
+            if (MapManager.inst.mapdata[E.x, E.y].vis > 0)
             {
-                exits.Add(E.gameObject);
+                exits.Add(E);
             }
         }
 
         AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_ui["ACCESS"]); // UI - ACCESS
+
+        // Then ping all the (known) exits
+        foreach (var E in exits)
+        {
+            MapManager.inst.mapdata[E.x, E.y].PingExit();
+        }
     }
 
     public void Scan_SubmodeCheck(Vector2Int pos)

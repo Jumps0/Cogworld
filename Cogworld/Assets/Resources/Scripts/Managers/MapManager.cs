@@ -1727,8 +1727,8 @@ public class MapManager : MonoBehaviour
     #region Access - (Exit/Branches)
     public bool firstExitFound = false;
     [Header("Exits")]
-    public List<GameObject> placedExits = new List<GameObject>();    // <Main> Access points
-    public List<GameObject> placedBranches = new List<GameObject>(); // <Branch> Access points
+    public List<Vector2Int> placedExits = new List<Vector2Int>();    // <Main> Access points
+    public List<Vector2Int> placedBranches = new List<Vector2Int>(); // <Branch> Access points
 
 
     public void PlaceBranchNExits()
@@ -1778,7 +1778,22 @@ public class MapManager : MonoBehaviour
         newAccess.location = new Vector2Int((int)loc.x, (int)loc.y);
         newAccess.access_branch = isBranch;
         newAccess.access_destination = targetDestination;
-        newAccess.tileInfo = !isBranch ? MapManager.inst.tileDatabase.Tiles[6] : MapManager.inst.tileDatabase.Tiles[7]; // [ACCESS_MAIN] / [ACCESS_BRANCH]
+        newAccess.access_destinationName = MapManager.inst.SetupExitName(newAccess);
+
+        // Tile info
+        // -It can be: MAIN, BRANCH, DSF, GARRISON
+        if(targetDestination == 3) // DSF
+        {
+            newAccess.tileInfo = MapManager.inst.tileDatabase.dict["DSF"];
+        }
+        else if(targetDestination == 4) // GARRISON
+        {
+            newAccess.tileInfo = MapManager.inst.tileDatabase.dict["Garrison"];
+        }
+        else // [ACCESS_MAIN] / [ACCESS_BRANCH]
+        {
+            newAccess.tileInfo = !isBranch ? MapManager.inst.tileDatabase.dict["Main Access"] : MapManager.inst.tileDatabase.dict["Branch Access"];
+        }
 
         newAccess.type = TileType.Exit;
         pathdata[loc.x, loc.y] = 0;
@@ -1786,6 +1801,161 @@ public class MapManager : MonoBehaviour
         return newAccess;
     }
 
+    /// <summary>
+    /// Given a WorldTile which is an exit/access tile, will return a proper name to display based on its destination ID.
+    /// </summary>
+    /// <param name="tile">A worldtile which MUST be assigned to be an exit/access tile.</param>
+    /// <returns>A string which should be displayed in the world when needed.</returns>
+    private string SetupExitName(WorldTile tile)
+    {
+        // FLAG - UPDATE NEW LEVELS
+        //
+        // 
+
+        // - Destination ID Guide -
+        #region Destination ID Guide
+        //
+        // 0 - Materials
+        // 1 - Lower Caves
+        // 2 - Storage
+        // 3 - DSF
+        // 4 - Garrison
+        // 5 - Factory
+        // 6 - Extension
+        // 7 - Upper Caves
+        // 8 - Research
+        // 9 - Access
+        // 10 - Command
+        // 11 - Armory
+        // 12 - Archies
+        // 13 - Zhirov
+        // 14 - Data Miner
+        // 15 - Architect
+        // 16 - Exiles
+        // 17 - Warlord
+        // 18 - Section 7
+        // 19 - Testing
+        // 20 - Quarantine 
+        // 21 - Lab
+        // 22 - Hub_04(d)
+        // 23 - Zion
+        // 24 - Zion Deep Caves
+        // 25 - Mines
+        // 26 - Recycling
+        // 27 - Subcaves
+        // 28 - Wastes
+        // 29 - Scraptown
+        #endregion
+        //
+        // Things that you also need to update when you change this:
+        // MapManager: PlayAmbientMusic()
+        // MapManager: ChangeMap()
+        // HF:         IDbyTheme()
+        // 
+        // -                     -
+
+        int destination = tile.access_destination;
+        string destName = "";
+
+        switch (destination)
+        {
+            case 0:
+                destName = "MATERIALS";
+                break;
+            case 1:
+                destName = "LOWER CAVES";
+                break;
+            case 2:
+                destName = "STORAGE";
+                break;
+            case 3:
+                destName = "DSF";
+                break;
+            case 4:
+                destName = "GARRISON";
+                break;
+            case 5:
+                destName = "FACTORY";
+                break;
+            case 6:
+                destName = "EXTENSION";
+                break;
+            case 7:
+                destName = "UPPER CAVES";
+                break;
+            case 8:
+                destName = "RESEARCH";
+                break;
+            case 9:
+                destName = "ACCESS";
+                break;
+            case 10:
+                destName = "COMMAND";
+                break;
+            case 11:
+                destName = "ARMORY";
+                break;
+            case 12:
+                destName = "ARCHIVES";
+                break;
+            case 13:
+                destName = "ZHIROV";
+                break;
+            case 14:
+                destName = "DATA MINER";
+                break;
+            case 15:
+                destName = "ARCHITECT";
+                break;
+            case 16:
+                destName = "EXILES";
+                break;
+            case 17:
+                destName = "WARLORD";
+                break;
+            case 18:
+                destName = "SECTION 7";
+                break;
+            case 19:
+                destName = "TESTING";
+                break;
+            case 20:
+                destName = "QUARANTINE";
+                break;
+            case 21:
+                destName = "LAB";
+                break;
+            case 22:
+                destName = "HUB_04(d)";
+                break;
+            case 23:
+                destName = "ZION";
+                break;
+            case 24:
+                destName = "ZION DEEP CAVES";
+                break;
+            case 25:
+                destName = "MINES";
+                break;
+            case 26:
+                destName = "RECYCLING";
+                break;
+            case 27:
+                destName = "SUBCAVES";
+                break;
+            case 28:
+                destName = "WASTES";
+                break;
+            case 29:
+                destName = "SCRAPTOWN";
+                break;
+            default:
+                destName = "UNKNOWN";
+                break;
+        }
+
+        return destName;
+    }
     #endregion
 
     #region Machine Placement

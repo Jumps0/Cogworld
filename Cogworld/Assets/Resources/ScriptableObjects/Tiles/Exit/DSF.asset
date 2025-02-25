@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bf959f1c2ce52248b62ff453abcc06c, type: 3}
+  m_Name: DSF
+  m_EditorClassIdentifier: 
+  Id: 7
+  tileName: DSF
+  displaySprite: {fileID: 11400000, guid: 5ebadffeb721c7244a18f9caa540fe2a, type: 2}
+  altSprite: {fileID: -268443102, guid: 0669e38ad5cf6a74b85a00b903976e80, type: 3}
+  destroyedSprite: {fileID: 0}
+  asciiRep: {fileID: 11400000, guid: acc7e972c9681904d9bdd421de561bc9, type: 2}
+  asciiAltSprite: {fileID: 0}
+  asciiDestroyed: {fileID: 0}
+  asciiColor: {r: 0, g: 0.8470589, b: 1, a: 1}
+  type: 4
+  isDirty: 0
+  impassable: 0
+  isCaveWall: 0
+  health: {x: 10, y: 10}
+  armor: 5
+  destructionClips: []
+  resistances: []
+  door_open: []
+  door_close: []
+  trapData:
+    trapname: 
+    trapType: 0
+    canSever: 0
+    sever_amount: {x: 0, y: 0}
+    sever_damage: {x: 0, y: 0}
+    canShock: 0
+    shock_amount: {x: 0, y: 0}
+    canBurn: 0
+    burn_amount: {x: 0, y: 0}
+    burn_damage: {x: 0, y: 0}
+    burn_heat: {x: 0, y: 0}
+    burn_affectsNeighbors: 0
+    canPierce: 0
+    pierce_amount: 0
+    pierce_damage: {x: 0, y: 0}
+    pierce_impaleChance: 0
+    canStasis: 0
+    stasis_strength: 0

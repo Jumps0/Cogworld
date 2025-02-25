@@ -188,7 +188,7 @@ public class TileBlock : MonoBehaviour
         // Part on top check
         if(_partOnTop != null)
         {
-            HF.SetGenericTileVis(_partOnTop.gameObject, update);
+            //HF.SetGenericTileVis(_partOnTop.gameObject, update);
         }
     }
 
@@ -518,7 +518,6 @@ public struct WorldTile
     [Header("Machine")]
     public MachineData machinedata;
 
-
     #region Destruction
     public void SetDestroyed(bool destroyed, string message = "")
     {
@@ -772,6 +771,32 @@ public struct WorldTile
     }
 
     #endregion
+
+    #region Exits (ACCESS)
+    public void PingExit()
+    {
+        bool found = false;
+        // If a popup for this doesn't already exist we need to create one.
+        foreach (GameObject P in UIManager.inst.exitPopups)
+        {
+            if (P.GetComponentInChildren<UIExitPopup>()._parent == this.location)
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found)
+        {
+            UIManager.inst.CreateExitPopup(this, access_destinationName);
+            if (!MapManager.inst.firstExitFound) // If this is the first exit the player has found (on this level), display a log message.
+            {
+                MapManager.inst.firstExitFound = true;
+                UIManager.inst.CreateNewLogMessage("EXIT=FOUND", UIManager.inst.deepInfoBlue, UIManager.inst.infoBlue, false, true);
+            }
+        }
+    }
+    #endregion
 }
 
 /// <summary>
@@ -784,212 +809,6 @@ public struct MachineData
 
 // !! OLD ACCESS OBJECT CODE
 /*
-
-    public void Setup(int target, bool branch)
-    {
-        targetDestination = target;
-        isBranch = branch;
-
-        if (branch)
-        {
-            this.GetComponent<SpriteRenderer>().sprite = MapManager.inst.tileDatabase.dict["Branch Access"].displaySprite.sprite;
-        }
-        else
-        {
-            this.GetComponent<SpriteRenderer>().sprite = MapManager.inst.tileDatabase.dict["Main Access"].displaySprite.sprite;
-        }
-        if (target == 3 || target == 4) // DSF or GARRISON
-        {
-            // Same sprite, different color
-            this.GetComponent<SpriteRenderer>().sprite = MapManager.inst.tileDatabase.dict["Branch Access"].displaySprite.sprite;
-            this.GetComponent<SpriteRenderer>().color = new Color(0 / 255f, 216f / 255f, 255f / 255f);
-        }
-
-        QueryName();
-    }
-
-    public void UpdateVis(byte update)
-    {
-        if (update == 0) // UNSEEN/UNKNOWN
-        {
-            isExplored = false;
-            isVisible = false;
-        }
-        else if (update == 1) // UNSEEN/EXPLORED
-        {
-            isExplored = true;
-            isVisible = false;
-        }
-        else if (update == 2) // SEEN/EXPLORED
-        {
-            isExplored = true;
-            isVisible = true;
-        }
-
-        if (isVisible)
-        {
-            this.GetComponent<SpriteRenderer>().color = Color.white;
-        }
-        else if (isExplored && isVisible)
-        {
-            this.GetComponent<SpriteRenderer>().color = Color.white;
-        }
-        else if (isExplored && !isVisible)
-        {
-            this.GetComponent<SpriteRenderer>().color = Color.gray;
-        }
-        else if (!isExplored)
-        {
-            this.GetComponent<SpriteRenderer>().color = Color.black;
-        }
-    }
-
-    // FLAG - UPDATE NEW LEVELS
-    //
-    // 
-
-    // - Destination ID Guide -
-    //
-    // 0 - Materials
-    // 1 - Lower Caves
-    // 2 - Storage
-    // 3 - DSF
-    // 4 - Garrison
-    // 5 - Factory
-    // 6 - Extension
-    // 7 - Upper Caves
-    // 8 - Research
-    // 9 - Access
-    // 10 - Command
-    // 11 - Armory
-    // 12 - Archies
-    // 13 - Zhirov
-    // 14 - Data Miner
-    // 15 - Architect
-    // 16 - Exiles
-    // 17 - Warlord
-    // 18 - Section 7
-    // 19 - Testing
-    // 20 - Quarantine 
-    // 21 - Lab
-    // 22 - Hub_04(d)
-    // 23 - Zion
-    // 24 - Zion Deep Caves
-    // 25 - Mines
-    // 26 - Recycling
-    // 27 - Subcaves
-    // 28 - Wastes
-    // 29 - Scraptown
-    //
-    // Things that you also need to update when you change this:
-    // MapManager: PlayAmbientMusic()
-    // MapManager: ChangeMap()
-    // HF:         IDbyTheme()
-    // 
-    // -                     -
-
-    public void QueryName()
-    {
-        switch (targetDestination)
-        {
-            case 0:
-                destName = "MATERIALS";
-                break;
-            case 1:
-                destName = "LOWER CAVES";
-                break;
-            case 2:
-                destName = "STORAGE";
-                break;
-            case 3:
-                destName = "DSF";
-                break;
-            case 4:
-                destName = "GARRISON";
-                break;
-            case 5:
-                destName = "FACTORY";
-                break;
-            case 6:
-                destName = "EXTENSION";
-                break;
-            case 7:
-                destName = "UPPER CAVES";
-                break;
-            case 8:
-                destName = "RESEARCH";
-                break;
-            case 9:
-                destName = "ACCESS";
-                break;
-            case 10:
-                destName = "COMMAND";
-                break;
-            case 11:
-                destName = "ARMORY";
-                break;
-            case 12:
-                destName = "ARCHIVES";
-                break;
-            case 13:
-                destName = "ZHIROV";
-                break;
-            case 14:
-                destName = "DATA MINER";
-                break;
-            case 15:
-                destName = "ARCHITECT";
-                break;
-            case 16:
-                destName = "EXILES";
-                break;
-            case 17:
-                destName = "WARLORD";
-                break;
-            case 18:
-                destName = "SECTION 7";
-                break;
-            case 19:
-                destName = "TESTING";
-                break;
-            case 20:
-                destName = "QUARANTINE";
-                break;
-            case 21:
-                destName = "LAB";
-                break;
-            case 22:
-                destName = "HUB_04(d)";
-                break;
-            default:
-                destName = "UNKNOWN";
-                break;
-        }
-    }
-
-    public void InitialReveal()
-    {
-        bool found = false;
-        // If a popup for this doesn't already exist we need to create one.
-        foreach (GameObject P in UIManager.inst.exitPopups)
-        {
-            if (P.GetComponentInChildren<UIExitPopup>()._parent == this.gameObject)
-            {
-                found = true;
-                break;
-            }
-        }
-
-        if (!found)
-        {
-            UIManager.inst.CreateExitPopup(this.gameObject, destName);
-            if (!MapManager.inst.firstExitFound) // If this is the first exit the player has found (on this level), display a log message.
-            {
-                MapManager.inst.firstExitFound = true;
-                UIManager.inst.CreateNewLogMessage("EXIT=FOUND", UIManager.inst.deepInfoBlue, UIManager.inst.infoBlue, false, true);
-            }
-        }
-    }
 
     private void OnMouseEnter()
     {

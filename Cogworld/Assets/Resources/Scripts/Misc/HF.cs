@@ -650,13 +650,13 @@ public static class HF
                         {
                             GameManager.inst.AccessMain();
                             print = $"Found {MapManager.inst.placedExits.Count} main access points:\n";
-                            foreach (GameObject exit in MapManager.inst.placedExits)
+                            foreach (Vector2Int exit in MapManager.inst.placedExits)
                             {
-                                Vector2Int location = HF.V3_to_V2I(exit.transform.position);
-                                string locationName = exit.GetComponent<AccessObject>().destName;
+                                WorldTile tile = MapManager.inst.mapdata[exit.x, exit.y];
+                                string locationName = tile.access_destinationName;
                                 locationName = locationName.Substring(0, 1).ToUpper() + locationName.Substring(1).ToLower(); // Reformat (all caps to norm /w capitalization)
 
-                                print += $"  ({location.x},{location.y}) {locationName}\n";
+                                print += $"  ({exit.x},{exit.y}) {locationName}\n";
                             }
 
                             print += "Map Updated.\n";
@@ -675,13 +675,13 @@ public static class HF
                         {
                             GameManager.inst.AccessBranch();
                             print = $"Found {MapManager.inst.placedBranches.Count} branch access points:\n";
-                            foreach (GameObject exit in MapManager.inst.placedBranches)
+                            foreach (Vector2Int exit in MapManager.inst.placedBranches)
                             {
-                                Vector2Int location = HF.V3_to_V2I(exit.transform.position);
-                                string locationName = exit.GetComponent<AccessObject>().destName;
+                                WorldTile tile = MapManager.inst.mapdata[exit.x, exit.y];
+                                string locationName = tile.access_destinationName;
                                 locationName = locationName.Substring(0, 1).ToUpper() + locationName.Substring(1).ToLower(); // Reformat (all caps to norm /w capitalization)
 
-                                print += $"  ({location.x},{location.y}) {locationName}\n";
+                                print += $"  ({exit.x},{exit.y}) {locationName}\n";
                             }
 
                             print += "Map Updated.\n";
@@ -3693,136 +3693,6 @@ public static class HF
     public static BotObject GetBotByString(string str)
     {
         return MapManager.inst.botDatabase.dict.ContainsKey(str) ? MapManager.inst.botDatabase.dict[str] : null;
-    }
-
-    /// <summary>
-    /// Checks a generic object which is presumed to be a tile and returns its visibility.
-    /// </summary>
-    /// <param name="target">The target gameobject to check.</param>
-    /// <returns>1. Is this target explored? 2. Is this target currently visible to the player? (Both bools)</returns>
-    public static (bool, bool) GetGenericTileVis(GameObject target)
-    {
-        // - Return values -
-        bool _e = false;
-        bool _v = false;
-        // -               -
-
-        if (target.GetComponent<TileBlock>()) // Walls, Floors, & Door tiles
-        {
-            _e = target.GetComponent<TileBlock>().isExplored;
-            _v = target.GetComponent<TileBlock>().isVisible;
-        }
-        else if (target.GetComponentInChildren<TileBlock>())
-        {
-            _e = target.GetComponentInChildren<TileBlock>().isExplored;
-            _v = target.GetComponentInChildren<TileBlock>().isVisible;
-        }
-
-        if (target.GetComponent<MachinePart>()) // Machines
-        {
-            _e = target.GetComponent<MachinePart>().isExplored;
-            _v = target.GetComponent<MachinePart>().isVisible;
-        }
-        else if (target.GetComponentInChildren<MachinePart>())
-        {
-            _e = target.GetComponentInChildren<MachinePart>().isExplored;
-            _v = target.GetComponentInChildren<MachinePart>().isVisible;
-        }
-
-        // Bots
-        if (target.GetComponent<Actor>() && target != PlayerData.inst.gameObject)
-        {
-            _e = target.GetComponent<Actor>().isExplored;
-            _v = target.GetComponent<Actor>().isVisible;
-        }
-        else if (target.GetComponentInChildren<Actor>() && target != PlayerData.inst.gameObject)
-        {
-            _e = target.GetComponentInChildren<Actor>().isExplored;
-            _v = target.GetComponentInChildren<Actor>().isVisible;
-        }
-
-        // Access
-        if (target.GetComponent<AccessObject>())
-        {
-            _e = target.GetComponent<AccessObject>().isExplored;
-            _v = target.GetComponent<AccessObject>().isVisible;
-        }
-        else if (target.GetComponentInChildren<AccessObject>())
-        {
-            _e = target.GetComponentInChildren<AccessObject>().isExplored;
-            _v = target.GetComponentInChildren<AccessObject>().isVisible;
-        }
-
-        // Items
-        if (target.GetComponent<Part>())
-        {
-            _e = target.GetComponent<Part>().isExplored;
-            _v = target.GetComponent<Part>().isVisible;
-        }
-        else if (target.GetComponentInChildren<Part>())
-        {
-            _e = target.GetComponentInChildren<Part>().isExplored;
-            _v = target.GetComponentInChildren<Part>().isVisible;
-        }
-
-        return (_e, _v);
-
-    }
-
-    /// <summary>
-    /// A generic method of setting a gameObject's visibility
-    /// </summary>
-    public static void SetGenericTileVis(GameObject target, byte vis)
-    {
-        // Identify what we need to change then change it
-
-        if (target.GetComponent<TileBlock>()) // Walls, Floors, & Door tiles
-        {
-            target.GetComponent<TileBlock>().UpdateVis(vis);
-        }
-        else if (target.GetComponentInChildren<TileBlock>())
-        {
-            target.GetComponentInChildren<TileBlock>().UpdateVis(vis);
-        }
-
-        if (target.GetComponent<MachinePart>()) // Machines
-        {
-            target.GetComponent<MachinePart>().UpdateVis(vis);
-        }
-        else if (target.GetComponentInChildren<MachinePart>())
-        {
-            target.GetComponentInChildren<MachinePart>().UpdateVis(vis);
-        }
-
-        // Bots
-        if (target.GetComponent<Actor>() && target != PlayerData.inst.gameObject)
-        {
-            target.GetComponent<Actor>().UpdateVis(vis);
-        }
-        else if (target.GetComponentInChildren<Actor>() && target != PlayerData.inst.gameObject)
-        {
-            target.GetComponentInChildren<Actor>().UpdateVis(vis);
-        }
-
-        // Access
-        if (target.GetComponent<AccessObject>())
-        {
-            target.GetComponent<AccessObject>().UpdateVis(vis);
-        }
-        else if (target.GetComponentInChildren<AccessObject>())
-        {
-            target.GetComponentInChildren<AccessObject>().UpdateVis(vis);
-        }
-
-        // Items
-        if (target.GetComponent<Part>())
-        {
-            target.GetComponent<Part>().UpdateVis(vis);
-        }
-        else if (target.GetComponentInChildren<Part>())
-        {
-            target.GetComponentInChildren<Part>().UpdateVis(vis);
-        }
     }
 
     /// <summary>
