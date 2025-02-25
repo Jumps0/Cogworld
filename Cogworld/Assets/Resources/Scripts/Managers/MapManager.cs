@@ -1114,6 +1114,19 @@ public class MapManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates the vision (fog of war) state for the ENTIRE (tile)map;
+    /// </summary>
+    public void TilemapVisUpdate()
+    {
+        for (int x = 0; x < MapManager.inst.mapsize.x; x++)
+        {
+            for (int y = 0; y < MapManager.inst.mapsize.y; y++)
+            {
+                MapManager.inst.TileUpdateVis(new Vector2Int(x, y));
+            }
+        }
+    }
 
     /// <summary>
     /// Sets the visibility of a tile at a specific position.

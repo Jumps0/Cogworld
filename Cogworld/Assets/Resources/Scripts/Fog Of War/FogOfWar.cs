@@ -99,20 +99,6 @@ public class FogOfWar : MonoBehaviour
         visibleTiles = allTiles;
     }
 
-    /// <summary>
-    /// Do a vision update for the ENTIRE MAP. Use this sparingly! There are a lot of tiles out there!
-    /// </summary>
-    public void FullMapVisUpdate()
-    {
-        for (int x = 0; x < MapManager.inst.mapsize.x; x++)
-        {
-            for (int y = 0; y < MapManager.inst.mapsize.y; y++)
-            {
-                MapManager.inst.TileUpdateVis(new Vector2Int(x, y));
-            }
-        }
-    }
-
     public void SetEntityVisibility()
     {
         foreach (Actor actor in GameManager.inst.Entities)
