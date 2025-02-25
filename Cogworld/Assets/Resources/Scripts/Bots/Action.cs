@@ -825,14 +825,12 @@ public static class Action
                 int distFromCenter = Mathf.RoundToInt(Vector2.Distance(new Vector2(P.x, P.y), center));
 
                 // Next check if this position is blocked by another tile via raycast
-                //RaycastHit2D[] hits = Physics2D.RaycastAll(center, tilePosition); // TODO: NO RAYCASTING!!!
+                List<Vector2Int> hits = HF.BresenhamLine(center, tilePosition);
                 bool clear = true;
 
                 foreach (var H in hits) // Go through the hits and see if there are any obstructions.
                 {
-                    Vector2Int hPos = new Vector2Int(Mathf.RoundToInt(H.transform.position.x), Mathf.RoundToInt(H.transform.position.y));
-
-                    if (blockingTiles.ContainsKey(hPos) && blockingTiles[hPos] == false)
+                    if (blockingTiles.ContainsKey(H) && blockingTiles[H] == false)
                     {
                         clear = false;
                     }
@@ -6752,9 +6750,7 @@ public static class Action
                                 Vector3 targetTile = FOV[Random.Range(0, FOV.Count - 1)];
 
                                 // FIRE!
-                                Vector2Int targetPos = HF.DetermineAttackTarget(player.gameObject, targetTile);
-
-                                Action.RangedAttackAction(player, targetPos, misfireWeapon);
+                                Action.RangedAttackAction(player, HF.V3_to_V2I(targetTile), misfireWeapon);
                             }
                         }
                         else if(matterCost > 0) // Matter weapon
@@ -6771,10 +6767,7 @@ public static class Action
                                 FOV.Remove(new Vector3Int((int)pPos.x, (int)pPos.y));
                                 Vector3 targetTile = FOV[Random.Range(0, FOV.Count - 1)];
 
-                                // FIRE!
-                                Vector2Int targetPos = HF.DetermineAttackTarget(player.gameObject, targetTile);
-
-                                Action.RangedAttackAction(player, targetPos, misfireWeapon);
+                                Action.RangedAttackAction(player, HF.V3_to_V2I(targetTile), misfireWeapon);
                             }
                         }
                     }

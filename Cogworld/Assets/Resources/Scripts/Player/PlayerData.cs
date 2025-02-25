@@ -551,10 +551,11 @@ public class PlayerData : MonoBehaviour
             // Here we check if the player actually has line-of-sight on the target.
             // -If yes, then the line is green, no changes necessary.
             // -If no, then the line, starting PAST the blocking object, is red.
-            GameObject blocker = HF.ReturnObstacleInLOS(this.gameObject, mousePosition, true);
-            if (blocker != null) // There is an obstacle!
+            Vector2Int blockingPos = HF.ReturnObstacleInLOS(new Vector2Int((int)currentPos.x, (int)currentPos.y), HF.V3_to_V2I(mousePosition), true);
+            bool blocked = blockingPos != Vector2Int.zero;
+            if (blocked) // There is an obstacle!
             {
-                float dist = Vector2.Distance(this.transform.position, blocker.transform.position);
+                float dist = Vector2.Distance(currentPos, blockingPos);
                 foreach (var T in targetLine)
                 {
                     // We only want to change the line colors past the blocking object
@@ -565,7 +566,7 @@ public class PlayerData : MonoBehaviour
                 }
 
                 if(!TargetLineContainsHighlight())
-                    SetHighlightColor(HF.V3_to_V2I(blocker.transform.position), highlightGreen); // Set the blocker highlight
+                    SetHighlightColor(blockingPos, highlightGreen); // Set the blocker highlight
             }
 
             // Only the final target light is bright green. Everything else is darker
@@ -596,7 +597,7 @@ public class PlayerData : MonoBehaviour
             // 3) Is within the weapons range
             // Then and only then will we show the special indicator.
             Item launcher = Action.HasLauncher(this.GetComponent<Actor>());
-            if (launcher != null & blocker == null && distance <= launcher.itemData.shot.shotRange)
+            if (launcher != null & !blocked && distance <= launcher.itemData.shot.shotRange)
             {
                 // Success! Lets draw it.
 
@@ -776,116 +777,8 @@ public class PlayerData : MonoBehaviour
 
             #region Scan Window Indicator
             // - Show what's being targeted up in the / SCAN / window. -
-
-            // We need to figure out what the player has their mouse over.
-            // Objects of interest are:
-            // -Walls, Doors, Bots, Machines, Floor items, traps
-
-            // We are going to copy over the raycast down method from UIManager
-            Vector3 lowerPosition = new Vector3(mousePosition.x, mousePosition.y, 2);
-            Vector3 upperPosition = new Vector3(mousePosition.x, mousePosition.y, -2);
-            direction = lowerPosition - upperPosition;
-            distance = Vector3.Distance(new Vector3Int((int)lowerPosition.x, (int)lowerPosition.y, 0), upperPosition);
-            direction.Normalize();
-            RaycastHit2D[] hits2 = Physics2D.RaycastAll(upperPosition, direction, distance);
-
-            // - Flags -
-            GameObject wall = null;
-            GameObject exit = null;
-            GameObject bot = null;
-            GameObject item = null;
-            GameObject door = null;
-            GameObject machine = null;
-            GameObject trap = null;
-
-            // Loop through all the hits and set the targeting highlight on each tile (ideally shouldn't loop that many times)
-            for (int i = 0; i < hits2.Length; i++)
-            {
-                RaycastHit2D hit = hits2[i];
-                // PROBLEM!!! This list of hits is unsorted and contains multiple things that violate the heirarchy below. This MUST be fixed!
-
-                // There is a heirarchy of what we want to display:
-                // -A wall
-                // -An exit
-                // -A bot
-                // -An item
-                // -A door
-                // -A machine
-                // -A trap
-
-                // We will solve this problem by setting flags. And then going back afterwards and using our heirarchy.
-
-                #region Hierarchy Flagging
-                if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Wall"))
-                {
-                    // A wall
-                    wall = hit.collider.gameObject;
-                }
-                else if (hit.collider.GetComponent<AccessObject>())
-                {
-                    // An exit
-                    exit = hit.collider.gameObject;
-                }
-                else if (hit.collider.GetComponent<Actor>() && hit.collider.GetComponent<Actor>() != PlayerData.inst.GetComponent<Actor>())
-                {
-                    // A bot
-                    bot = hit.collider.gameObject;
-                }
-                else if (hit.collider.GetComponent<Part>())
-                {
-                    // An item
-                    item = hit.collider.gameObject;
-                }
-                else if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Door"))
-                {
-                    // Door
-                    door = hit.collider.gameObject;
-                }
-                else if (hit.collider.GetComponent<MachinePart>())
-                {
-                    // Machine
-                    machine = hit.collider.gameObject;
-                }
-                else if (hit.collider.GetComponent<FloorTrap>())
-                {
-                    // Trap
-                    trap = hit.collider.gameObject;
-                }
-                #endregion
-            }
-
-            if (wall && wall.GetComponent<TileBlock>().isExplored)
-            {
-                UIManager.inst.Scan_FlipSubmode(true, wall);
-            }
-            else if (exit && exit.GetComponent<AccessObject>().isExplored)
-            {
-                UIManager.inst.Scan_FlipSubmode(true, exit);
-            }
-            else if (bot && bot.GetComponent<Actor>().isExplored)
-            {
-                UIManager.inst.Scan_FlipSubmode(true, bot);
-            }
-            else if (item && item.GetComponent<Part>().isExplored)
-            {
-                UIManager.inst.Scan_FlipSubmode(true, item);
-            }
-            else if (door && door.GetComponent<TileBlock>().isExplored)
-            {
-                UIManager.inst.Scan_FlipSubmode(true, door);
-            }
-            else if (machine && machine.GetComponent<MachinePart>().isExplored)
-            {
-                UIManager.inst.Scan_FlipSubmode(true, machine);
-            }
-            else if (trap && trap.GetComponent<FloorTrap>().knowByPlayer && MapManager.inst._allTilesRealized[HF.V3_to_V2I(trap.transform.position)].vis > 0)
-            {
-                UIManager.inst.Scan_FlipSubmode(true, trap);
-            }
-            else
-            {
-                UIManager.inst.Scan_FlipSubmode(false);
-            }
+            Vector2Int mousePos = HF.V3_to_V2I(mousePosition);
+            UIManager.inst.Scan_SubmodeCheck(mousePos);
             #endregion
 
             UIManager.inst.Evasion_Volley(true); // Open the /VOLLEY/ window
@@ -1343,8 +1236,9 @@ public class PlayerData : MonoBehaviour
 
             if (Action.IsMeleeWeapon(equippedWeapon))
             {
-                GameObject target = HF.GetTargetAtPosition(mousePosition); // Use ray-line to get target
-                Action.MeleeAction(actor, target);
+                // (Attack target determined internally)
+                Vector3 mouse = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+                Action.MeleeAction(actor, HF.V3_to_V2I(mouse));
             }
             else
             {
@@ -1362,9 +1256,10 @@ public class PlayerData : MonoBehaviour
                     }
                     else // Normal attack
                     {
-                        GameObject target = HF.DetermineAttackTarget(this.gameObject, Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue())); // Use ray-line to get target
-
-                        Action.RangedAttackAction(this.GetComponent<Actor>(), target, equippedWeapon);
+                        // (Attack target determined internally)
+                        Vector3 mouse = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+                        // TODO: DETERMINE IF ANYTHING IS IN THE WAY
+                        Action.RangedAttackAction(this.GetComponent<Actor>(), HF.V3_to_V2I(mouse), equippedWeapon);
                     }
                 }
             }
@@ -1381,21 +1276,21 @@ public class PlayerData : MonoBehaviour
     private void AOEAttackLogic(Item equippedWeapon)
     {
         // Firstly, the target is wherever the player's mouse is.
-        GameObject target = HF.GetTargetAtPosition(HF.V3_to_V2I(Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue())));
+        Vector3 mouse = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         // Second, the attack only attack happens when the projectile we are firing reaches the target.
 
         // - Calculate the travel time
-        float distance = Vector3.Distance(this.transform.position, target.transform.position);
+        float distance = Vector3.Distance(this.transform.position, mouse);
         float travelTime = distance / 20f; // distance / speed
 
         // Now we need to launch the projectile, and stall until it reaches its target.
-        StartCoroutine(StalledAOEAttack(travelTime, target, equippedWeapon));
+        StartCoroutine(StalledAOEAttack(travelTime, HF.V3_to_V2I(mouse), equippedWeapon));
     }
 
-    private IEnumerator StalledAOEAttack(float waitTime, GameObject target, Item equippedWeapon)
+    private IEnumerator StalledAOEAttack(float waitTime, Vector2Int target, Item equippedWeapon)
     {
         // - Create an in-world projectile that goes to the target
-        UIManager.inst.CreateLauncherProjectile(this.transform, target.transform, equippedWeapon.itemData);
+        UIManager.inst.CreateLauncherProjectile(HF.V3_to_V2I(this.transform.position), target, equippedWeapon.itemData);
 
         yield return new WaitForSeconds(waitTime); // Wait until it gets there
 

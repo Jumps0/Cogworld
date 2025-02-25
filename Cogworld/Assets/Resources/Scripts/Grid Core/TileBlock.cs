@@ -497,6 +497,9 @@ public struct WorldTile
     [Header(" Access")]
     public bool access_branch;
     public int access_destination;
+    [Tooltip("Does the player know where this leads? If not will display as '???'")]
+    public bool access_knownDestination;
+    public string access_destinationName;
     [Header(" Phase")]
     public bool isPhaseWall;
     [Tooltip("Which team can *use* this phase wall?")]

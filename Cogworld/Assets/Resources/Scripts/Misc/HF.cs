@@ -7231,53 +7231,42 @@ public static class HF
     #endregion
 
     #region Spotting
-
-    public static bool LOSOnTarget(GameObject source, GameObject target)
+    /// <summary>
+    /// Replacement for the previous Raycast2D for the tilemap.
+    /// </summary>
+    /// <param name="start">Vector2Int start location.</param>
+    /// <param name="end">Vector2Int end location.</param>
+    /// <returns>A list of *Vector2Int* tile positions between the start and end position.</returns>
+    public static List<Vector2Int> BresenhamLine(Vector2Int start, Vector2Int end)
     {
-        bool LOS = true;
+        List<Vector2Int> line = new List<Vector2Int>();
 
-        // - If line of sight being blocked - // (THIS ALSO GETS USED LATER)
-        Vector2 targetDirection = target.transform.position - source.transform.position;
-        float distance = Vector2.Distance(HF.V3_to_V2I(source.transform.position), HF.V3_to_V2I(target.transform.position));
+        int dx = Mathf.Abs(end.x - start.x);
+        int dy = Mathf.Abs(end.y - start.y);
+        int sx = (start.x < end.x) ? 1 : -1;
+        int sy = (start.y < end.y) ? 1 : -1;
+        int err = dx - dy;
 
-        RaycastHit2D[] hits = Physics2D.RaycastAll(new Vector2(source.transform.position.x, source.transform.position.y), targetDirection.normalized, distance);
-
-        for (int i = 0; i < hits.Length; i++)
+        while (true)
         {
-            RaycastHit2D hit = hits[i];
-            TileBlock tile = hit.collider.GetComponent<TileBlock>();
-            DoorLogic door = hit.collider.GetComponent<DoorLogic>();
-            MachinePart machine = hit.collider.GetComponent<MachinePart>();
+            line.Add(start);
 
-            // (TODO: Expand this later when needed)
-            // If we encounter:
-            // - A wall
-            // - A closed door
-            // - A machine
+            if (start.x == end.x && start.y == end.y) break;
 
-            // Then there is no LOS
-
-            if (tile != null && tile.tileInfo.type == TileType.Wall)
+            int e2 = err * 2;
+            if (e2 > -dy)
             {
-                return false;
+                err -= dy;
+                start.x += sx;
             }
-
-            if (door != null && tile.specialNoBlockVis == true)
+            if (e2 < dx)
             {
-                LOS = true;
-            }
-            else if (door != null && tile.specialNoBlockVis == false)
-            {
-                return false;
-            }
-
-            if (machine != null)
-            {
-                return false;
+                err += dx;
+                start.y += sy;
             }
         }
 
-        return LOS;
+        return line;
     }
 
     /// <summary>
@@ -7286,154 +7275,38 @@ public static class HF
     /// <param name="source">The origin location.</param>
     /// <param name="target">The target location.</param>
     /// <param name="requireVision">If the player needs to be able to see the blocking object.</param>
-    /// <returns></returns>
-    public static GameObject ReturnObstacleInLOS(GameObject source, Vector3 target, bool requireVision = false)
+    /// <returns>A Vector2Int position of something that is in the way.</returns>
+    public static Vector2Int ReturnObstacleInLOS(Vector2Int source, Vector2Int target, bool requireVision = false)
     {
-        GameObject blocker = null;
+        // Gather up the line of tiles between the source and the target.
+        List<Vector2Int> line = BresenhamLine(source, target);
 
-        Vector2 targetDirection = target - source.transform.position;
+        // Toss out the start and finish
+        line.Remove(source);
+        line.Remove(target);
 
-        float distance = Vector2.Distance(HF.V3_to_V2I(source.transform.position), HF.V3_to_V2I(target));
+        Vector2Int blocker = Vector2Int.zero;
 
-        RaycastHit2D[] hits = Physics2D.RaycastAll(new Vector2(source.transform.position.x, source.transform.position.y), targetDirection.normalized, distance);
-
-        for (int i = 0; i < hits.Length; i++)
+        if(line.Count > 0)
         {
-            RaycastHit2D hit = hits[i];
-            TileBlock tile = hit.collider.GetComponent<TileBlock>();
-            DoorLogic door = hit.collider.GetComponent<DoorLogic>();
-            MachinePart machine = hit.collider.GetComponent<MachinePart>();
-
-            // (TODO: Expand this later when needed)
-            // If we encounter:
-            // - A wall
-            // - A closed door
-            // - A machine
-
-            // Then there is no LOS
-
-            if (tile != null && tile.tileInfo.type == TileType.Wall)
+            foreach (Vector2Int T in line)
             {
-                if (requireVision)
+                // Vision check
+                if (!requireVision || (requireVision && MapManager.inst.mapdata[T.x, T.y].vis == 2))
                 {
-                    if (tile.isExplored)
+                    // Is there a bot here?
+                    if (MapManager.inst.pathdata[T.x, T.y] == 2)
                     {
-                        return tile.gameObject;
+                        return T; // There is!
                     }
-                    else
+
+                    // We can use the permiability function to check this
+                    if (!HF.IsPermiableTile(MapManager.inst.mapdata[T.x, T.y]))
                     {
-                        blocker = null;
+                        return T; // This is a blocker
                     }
                 }
-                else
-                {
-                    return tile.gameObject;
-                }
             }
-
-            if (door != null && tile.specialNoBlockVis == true)
-            {
-                blocker = null;
-            }
-            else if (door != null && tile.specialNoBlockVis == false)
-            {
-                if (requireVision)
-                {
-                    if (door.GetComponent<TileBlock>().isExplored)
-                    {
-                        return door.gameObject;
-                    }
-                    else
-                    {
-                        blocker = null;
-                    }
-                }
-                else
-                {
-                    return door.gameObject;
-                }
-            }
-
-            if (machine != null)
-            {
-                if (requireVision)
-                {
-                    if (machine.isExplored)
-                    {
-                        return machine.gameObject;
-                    }
-                    else
-                    {
-                        blocker = null;
-                    }
-                }
-                else
-                {
-                    return machine.gameObject;
-                }
-            }
-        }
-
-        return blocker;
-    }
-
-    /// <summary>
-    /// Basically *ReturnObstacleInLOS* but refined for attack targeting.
-    /// </summary>
-    /// <param name="source">The origin location.</param>
-    /// <param name="target">The target location.</param>
-    /// <returns>Returns the thing we are actually going to attack against.</returns>
-    public static Vector2Int DetermineAttackTarget(GameObject source, Vector3 target)
-    {
-        GameObject blocker = null;
-
-        Vector2 targetDirection = target - source.transform.position;
-        float distance = Vector2.Distance(HF.V3_to_V2I(source.transform.position), HF.V3_to_V2I(target));
-
-        RaycastHit2D[] hits = Physics2D.RaycastAll(new Vector2(source.transform.position.x, source.transform.position.y), targetDirection.normalized, distance);
-
-        for (int i = 0; i < hits.Length; i++)
-        {
-            RaycastHit2D hit = hits[i];
-            TileBlock tile = hit.collider.GetComponent<TileBlock>();
-            DoorLogic door = hit.collider.GetComponent<DoorLogic>();
-            MachinePart machine = hit.collider.GetComponent<MachinePart>();
-
-            // (TODO: Expand this later when needed)
-            // List of viable targets:
-            // - A wall
-            // - A closed door
-            // - A machine
-            // - A bot
-
-            if (tile != null && tile.tileInfo.type == TileType.Wall)
-            {
-                blocker = tile.gameObject;
-            }
-
-            if (door != null && tile.specialNoBlockVis == true)
-            {
-                blocker = null;
-            }
-            else if (door != null && tile.specialNoBlockVis == false)
-            {
-                blocker = door.gameObject;
-            }
-
-            if (machine != null)
-            {
-                blocker = machine.gameObject;
-            }
-        }
-
-        if(blocker == null)
-        {
-            // We have nothing blocking our LOS from player to where this mouse is, so we are probably targeting a floor tile right now.
-            // We need to keep going (recursively) past the mouse position until we actually hit something.
-
-            Vector2 direction = targetDirection;
-            direction.Normalize();
-            blocker = HF.DetermineAttackTarget(source, target + (Vector3)direction); // Recursion!
         }
 
         return blocker;

@@ -14,8 +14,8 @@ public class Projectile_Launcher : MonoBehaviour
     [SerializeField] private AudioSource _source;
 
     [Header("Values")]
-    public Transform _target;
-    public Transform _origin;
+    public Vector2Int _target;
+    public Vector2Int _origin;
     private ItemObject _weapon;
     //
     public Color projColor;
@@ -23,7 +23,7 @@ public class Projectile_Launcher : MonoBehaviour
     //
     private float _speed = 20f;
 
-    public void Setup(Transform origin, Transform target, ItemObject weapon)
+    public void Setup(Vector2Int origin, Vector2Int target, ItemObject weapon)
     {
         _origin = origin;
         _target = target;
@@ -50,12 +50,12 @@ public class Projectile_Launcher : MonoBehaviour
             StartCoroutine(BeginLayTrail());
 
         // calculate the direction towards the target
-        Vector3 direction = _target.position - this.transform.position;
+        Vector3 direction = new Vector3(_target.x, _target.y) - this.transform.position;
         direction.z = 0f; // ensure the projectile stays in the 2D plane
 
         // Determine which direction the projectile should face
         #region Projectile Orientation
-        _projectile.GetComponent<Image>().sprite = HF.GetProjectileSprite(_origin.transform.position, _target.transform.position);
+        _projectile.GetComponent<Image>().sprite = HF.GetProjectileSprite(new Vector3(_origin.x, _origin.y), new Vector3(_target.x, _target.y));
         #endregion
 
         while (true)
@@ -81,8 +81,8 @@ public class Projectile_Launcher : MonoBehaviour
 
             if (distanceToTarget <= 0.01f)
             {
-                    
-                _highlight.transform.position = new Vector3(Mathf.RoundToInt(_target.position.x), Mathf.RoundToInt(_target.position.y), _target.position.z);
+
+                _highlight.transform.position = new Vector3(_target.x, _target.y);
 
                 // destroy the projectile if it has reached the target
                 if (!finishing)
@@ -94,7 +94,7 @@ public class Projectile_Launcher : MonoBehaviour
 
                 // move the projectile towards the target at the specified speed
                 float step = _speed * Time.deltaTime;
-                this.transform.position = Vector3.MoveTowards(this.transform.position, _target.position, step);
+                this.transform.position = Vector3.MoveTowards(this.transform.position, new Vector3(_target.x, _target.y), step);
 
                 // Snap the highlight & projectile to the nearest whole (int) number
                 Vector3 snapPosition = this.transform.position;
@@ -116,7 +116,7 @@ public class Projectile_Launcher : MonoBehaviour
             }
 
             // update the direction towards the target every frame
-            direction = _target.position - this.transform.position;
+            direction = new Vector3(_target.x, _target.y) - this.transform.position;
             direction.z = 0f; // ensure the projectile stays in the 2D plane
         }
     }

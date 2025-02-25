@@ -10,6 +10,9 @@ using System.Text;
 using Image = UnityEngine.UI.Image;
 using Color = UnityEngine.Color;
 using UnityEngine.InputSystem;
+using Slider = UnityEngine.UI.Slider;
+using Button = UnityEngine.UI.Button;
+using ColorUtility = UnityEngine.ColorUtility;
 
 /*  MISC USEFUL LINKS
  *  -Pixel-perfect guide: https://medium.com/@dan.liberatore/pixel-perfect-text-and-ui-in-unity-2021-56d60ba9370f
@@ -1379,11 +1382,10 @@ public class UIManager : MonoBehaviour
         newProjectile.GetComponentInChildren<Projectile_Generic>().Setup(origin, target, weapon, speed, accurate);
     }
 
-    public void CreateLauncherProjectile(Transform origin, Transform target, ItemObject weapon)
+    public void CreateLauncherProjectile(Vector2Int origin, Vector2Int target, ItemObject weapon)
     {
         // Instantiate it & Assign it to parent
-        GameObject newProjectile = Instantiate(projectilePrefab_launcher, origin.position, Quaternion.identity);
-        newProjectile.transform.SetParent(origin.transform);
+        GameObject newProjectile = Instantiate(projectilePrefab_launcher, new Vector3(origin.x, origin.y), Quaternion.identity);
         newProjectile.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         newProjectile.GetComponent<Canvas>().sortingOrder = 23;
         // Add it to list
@@ -4996,34 +4998,72 @@ public class UIManager : MonoBehaviour
         AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_ui["ACCESS"]); // UI - ACCESS
     }
 
-    public void Scan_FlipSubmode(bool state, GameObject focusObj = null)
+    public void Scan_SubmodeCheck(Vector2Int pos)
     {
-        if (state) // Enable Submode
+        // Firstly check if there is anything of interest here
+
+        // We need to figure out what the player has their mouse over.
+        // Objects of interest are:
+        // -Walls, Doors, Bots, Machines, Floor items, traps
+
+        WorldTile tile = MapManager.inst.mapdata[pos.x, pos.y];
+        Actor actor = HF.FindActorAtPosition(pos);
+        Part part = InventoryControl.inst.worldItems[pos].GetComponent<Part>();
+
+        int focus = -1;
+        if (actor != null && actor.isVisible) // 1. Is there a bot here?
         {
-            // Enable the sub text blocker
-            scanSubParent.SetActive(true);
-            scanSubTextA.enabled = true;
-            scanSubTextB.enabled = true;
-            scanSubBackerImages[0].enabled = true;
-            scanSubBackerImages[1].enabled = true;
-            scanSubBackerImages[0].color = Color.black;
-            scanSubBackerImages[1].color = Color.black;
-            // Disable the text
-            scanButtonText[0].enabled = false;
-            scanButtonText[1].enabled = false;
-            scanButtonText[2].enabled = false;
-            scanButtonText[3].enabled = false;
-
-            // NOTE: The highlight backing animation only plays for "important" objects like; actors, items, exits, and traps.
-
-            // Now figure out what the focus object is
-            if (focusObj.GetComponent<Actor>())
+            focus = 0;
+        }
+        else if (part != null && part.isVisible) // 2. Is there a part here?
+        {
+            focus = 1;
+        }
+        else if(!tile.Equals(default(WorldTile)) && tile.vis == 2) // 3. This is some kind of normal tile
+        {
+            // Is there a trap here the player knows of?
+            if (tile.type == TileType.Trap && tile.trap_knowByPlayer)
             {
+                focus = 2;
+            }
+            else // Something more simple
+            {
+                focus = 3;
+            }
+        }
+        else // Nothing interesting here, close the box!
+        {
+            HideDisplay();
+            return;
+        }
+
+        // Since we got this far (as you can see above, if we didn't find anything we would have broken out early with that return)
+        // we now need to act on our focus.
+
+        // Enable the sub text blocker
+        scanSubParent.SetActive(true);
+        scanSubTextA.enabled = true;
+        scanSubTextB.enabled = true;
+        scanSubBackerImages[0].enabled = true;
+        scanSubBackerImages[1].enabled = true;
+        scanSubBackerImages[0].color = Color.black;
+        scanSubBackerImages[1].color = Color.black;
+        // Disable the text
+        scanButtonText[0].enabled = false;
+        scanButtonText[1].enabled = false;
+        scanButtonText[2].enabled = false;
+        scanButtonText[3].enabled = false;
+
+        // NOTE: The highlight backing animation only plays for "important" objects like; actors, items, exits, and traps.
+
+        switch (focus)
+        {
+            case 0: // Bot
                 StartCoroutine(Scan_SubmodeAnimate());
 
                 // - The square - here it represents the actor's current health
                 scanSubImage.enabled = true;
-                float currentIntegrity = (float)focusObj.GetComponent<Actor>().currentHealth / (float)focusObj.GetComponent<Actor>().maxHealth;
+                float currentIntegrity = (float)actor.currentHealth / (float)actor.maxHealth;
                 if (currentIntegrity >= 0.75f) // Green (>=75%)
                 {
                     scanSubImage.color = activeGreen;
@@ -5041,8 +5081,8 @@ public class UIManager : MonoBehaviour
                     scanSubImage.color = dangerRed;
                 }
                 // - The text - here line A is the actors's name and line B is the base change to hit the actor (dark green)
-                scanSubTextA.text = focusObj.name;
-                if (HF.DetermineRelation(PlayerData.inst.GetComponent<Actor>(), focusObj.GetComponent<Actor>()) == BotRelation.Hostile)
+                scanSubTextA.text = actor.uniqueName;
+                if (HF.DetermineRelation(PlayerData.inst.GetComponent<Actor>(), actor) == BotRelation.Hostile)
                 {
                     // Display it as red if the bot is hostile
                     scanSubTextA.color = dangerRed;
@@ -5059,14 +5099,14 @@ public class UIManager : MonoBehaviour
                 Item activeWeapon = Action.FindActiveWeapon(PlayerData.inst.GetComponent<Actor>());
                 if (activeWeapon != null)
                 {
-                    (toHitChance, noCrit, types) = Action.CalculateRangedHitChance(PlayerData.inst.GetComponent<Actor>(), focusObj.GetComponent<Actor>(), activeWeapon);
+                    (toHitChance, noCrit, types) = Action.CalculateRangedHitChance(PlayerData.inst.GetComponent<Actor>(), actor, activeWeapon);
                 }
 
                 scanSubTextB.text = "Base Hit " + (int)(toHitChance * 100);
                 scanSubTextB.color = subGreen;
 
                 // And the "danger notification". This tells the player if the enemy bot knows the Player is there.
-                if (HF.ActorInBotFOV(focusObj.GetComponent<Actor>(), PlayerData.inst.GetComponent<Actor>()) && focusObj.GetComponent<BotAI>().memory > 0)
+                if (HF.ActorInBotFOV(actor, PlayerData.inst.GetComponent<Actor>()) && actor.GetComponent<BotAI>().memory > 0)
                 {
                     scanSubDangerNotify.enabled = true;
                     scanSubDangerNotify.text = "!";
@@ -5076,56 +5116,26 @@ public class UIManager : MonoBehaviour
                     scanSubDangerNotify.enabled = false;
                     scanSubDangerNotify.text = "!";
                 }
-
-            }
-            else if (focusObj.GetComponent<AccessObject>())
-            {
-                // - The square - here it's disabled
-                scanSubImage.enabled = false;
-
-                // - The text - here line A is the name primary or branch access, and the secondary is where it leads
-                if (focusObj.GetComponent<AccessObject>().isBranch)
-                {
-                    scanSubTextA.text = "Branch Access";
-                }
-                else
-                {
-                    scanSubTextA.text = "Level Access";
-                }
-                scanSubTextA.color = highGreen;
-
-                scanSubTextB.text = "< ";
-                if (focusObj.GetComponent<AccessObject>().playerKnowsDestination)
-                {
-                    scanSubTextB.text += focusObj.GetComponent<AccessObject>().destName;
-                }
-                else
-                {
-                    scanSubTextB.text += "???";
-                }
-                scanSubTextB.color = highGreen;
-                
-            }
-            else if (focusObj.GetComponent<Part>())
-            {
+                break;
+            case 1: // Part
                 StartCoroutine(Scan_SubmodeAnimate());
 
-                if (focusObj.GetComponent<Part>()._item.Id != 17)
+                if (part._item.Id != 17)
                 {
-                    Item _item = focusObj.GetComponent<Part>()._item;
+                    Item _item = part._item;
 
                     // - The square - here it represents the item's current health
                     scanSubImage.enabled = true;
-                    float currentIntegrity = (float)focusObj.GetComponent<Part>()._item.integrityCurrent / (float)focusObj.GetComponent<Part>()._item.itemData.integrityMax;
-                    if (currentIntegrity >= 0.75f) // Green (>=75%)
+                    float currentItemIntegrity = (float)part._item.integrityCurrent / (float)part._item.itemData.integrityMax;
+                    if (currentItemIntegrity >= 0.75f) // Green (>=75%)
                     {
                         scanSubImage.color = activeGreen;
                     }
-                    else if (currentIntegrity < 0.75f && currentIntegrity <= 0.50f) // Yellow (75-50%)
+                    else if (currentItemIntegrity < 0.75f && currentItemIntegrity <= 0.50f) // Yellow (75-50%)
                     {
                         scanSubImage.color = cautiousYellow;
                     }
-                    else if (currentIntegrity < 0.5f && currentIntegrity <= 0.25f) // Orange (50-25%)
+                    else if (currentItemIntegrity < 0.5f && currentItemIntegrity <= 0.25f) // Orange (50-25%)
                     {
                         scanSubImage.color = corruptOrange;
                     }
@@ -5152,16 +5162,16 @@ public class UIManager : MonoBehaviour
                     // The square is green
                     scanSubImage.color = activeGreen;
                     // The text is grayed out (## Matter)
-                    scanSubTextA.text = focusObj.GetComponent<Part>()._item.amount + " " + HF.GetFullItemName(focusObj.GetComponent<Part>()._item);
+                    scanSubTextA.text = part._item.amount + " " + HF.GetFullItemName(part._item);
                     scanSubTextA.color = inactiveGray;
 
                     scanSubTextB.enabled = false;
                     scanSubBackerImages[1].enabled = false;
                 }
 
-                if(focusObj.GetComponent<Part>()._item.itemData.mechanicalDescription.Length > 0)
+                if (part._item.itemData.mechanicalDescription.Length > 0)
                 {
-                    scanSubTextB.text = focusObj.GetComponent<Part>()._item.itemData.mechanicalDescription;
+                    scanSubTextB.text = part._item.itemData.mechanicalDescription;
                     scanSubTextB.color = subGreen;
                 }
                 else // Disable it if the item doesn't have a mechanical description
@@ -5169,76 +5179,113 @@ public class UIManager : MonoBehaviour
                     scanSubTextB.enabled = false;
                     scanSubBackerImages[1].enabled = false;
                 }
-            }
-            else if (focusObj.GetComponent<TileBlock>())
-            {
-                // - The square - here it's disabled
-                scanSubImage.enabled = false;
-                if (focusObj.GetComponent<DoorLogic>()) // Is this a door?
-                {
-                    scanSubTextA.text = focusObj.GetComponent<DoorLogic>()._tile.tileInfo.tileName;
-                    scanSubTextA.color = highGreen;
-
-                    scanSubTextB.enabled = false;
-                    scanSubBackerImages[1].enabled = false;
-                }
-                else // Its not a door
-                {
-                    // - The text - here line A is the tile's name (in full green) and line B is the tile's armor value (dark green)
-                    scanSubTextA.text = focusObj.GetComponent<TileBlock>().tileInfo.tileName;
-                    scanSubTextA.color = highGreen;
-
-                    scanSubTextB.text = focusObj.GetComponent<TileBlock>().tileInfo.armor.ToString();
-                    scanSubTextB.color = subGreen;
-                }
-            }
-            else if (focusObj.GetComponent<MachinePart>())
-            {
-                // Here the square is off
-                scanSubImage.enabled = false;
-
-                // The text shows its name, and then armor
-                scanSubTextA.text = focusObj.GetComponent<MachinePart>().displayName;
-                scanSubTextA.color = highGreen;
-
-                scanSubTextB.text = focusObj.GetComponent<MachinePart>().armor.ToString();
-                scanSubTextB.color = subGreen;
-            }
-            else if (focusObj.GetComponent<FloorTrap>())
-            {
+                break;
+            case 2: // Tile (Trap)
                 StartCoroutine(Scan_SubmodeAnimate());
-                /* // TODO: REWORK THIS TO REFLECT NEW PARADIGM
                 // - The square - here it indicates if this trap is friendly or not
-                if (HF.RelationToTrap(PlayerData.inst.GetComponent<Actor>(), focusObj.GetComponent<FloorTrap>()) != BotRelation.Friendly) 
+                if (HF.RelationToTrap(PlayerData.inst.GetComponent<Actor>(), tile) != BotRelation.Friendly)
                 {
                     scanSubImage.color = dangerRed;
                     scanSubTextA.color = dangerRed;
                 }
-                else if (HF.RelationToTrap(PlayerData.inst.GetComponent<Actor>(), focusObj.GetComponent<FloorTrap>()) != BotRelation.Hostile)
+                else if (HF.RelationToTrap(PlayerData.inst.GetComponent<Actor>(), tile) != BotRelation.Hostile)
                 {
                     scanSubImage.color = activeGreen;
                     scanSubTextA.color = highGreen;
                 }
                 // - The text - here line A is the actors's name
-                scanSubTextA.text = focusObj.GetComponent<FloorTrap>().fullName;
+                scanSubTextA.text = tile.tileInfo.tileName;
 
                 scanSubTextB.enabled = false;
                 scanSubBackerImages[1].enabled = false;
-                */
-            }
+                break;
+            case 3: // Tile (Something else)
+                // Can be a couple different things
+                if(tile.type == TileType.Wall)
+                {
+                    // - The text - here line A is the tile's name (in full green) and line B is the tile's armor value (dark green)
+                    scanSubTextA.text = tile.tileInfo.tileName;
+                    scanSubTextA.color = highGreen;
 
+                    scanSubTextB.text = tile.tileInfo.armor.ToString();
+                    scanSubTextB.color = subGreen;
+                }
+                else if (tile.type == TileType.Door)
+                {
+                    scanSubTextA.text = tile.tileInfo.tileName;
+                    scanSubTextA.color = highGreen;
 
-            // Trim the two display strings, as we can only display at most 26 characters per line.
-            if (scanSubTextA.text.Length > 26)
-            {
-                scanSubTextA.text = scanSubTextA.text.Substring(0, 26);
-            }
-            if (scanSubBackerImages[1].enabled && scanSubTextB.text.Length > 26)
-            {
-                scanSubTextB.text = scanSubTextB.text.Substring(0, 26);
-            }
+                    scanSubTextB.enabled = false;
+                    scanSubBackerImages[1].enabled = false;
+                }
+                else if(tile.type == TileType.Exit)
+                {
+                    // - The square - here it's disabled
+                    scanSubImage.enabled = false;
+
+                    // - The text - here line A is the name primary or branch access, and the secondary is where it leads
+                    if (tile.access_knownDestination)
+                    {
+                        if (tile.access_branch)
+                        {
+                            scanSubTextA.text = "Branch Access";
+                        }
+                        else
+                        {
+                            scanSubTextA.text = "Level Access";
+                        }
+                    }
+                    else
+                    {
+                        scanSubTextA.text = "Unknown Access";
+                    }
+                    scanSubTextA.color = highGreen;
+
+                    scanSubTextB.text = "< ";
+                    if (tile.access_knownDestination)
+                    {
+                        scanSubTextB.text += tile.access_destinationName;
+                    }
+                    else
+                    {
+                        scanSubTextB.text += "???";
+                    }
+                    scanSubTextB.color = highGreen;
+                }
+                else if(tile.type == TileType.Machine)
+                {
+                    // Here the square is off
+                    scanSubImage.enabled = false;
+
+                    // The text shows its name, and then armor
+                    //scanSubTextA.text = tile.machinedata.displayName; // TODO: COME BACK TO THIS AFTER MACHINES REWORK
+                    scanSubTextA.color = highGreen;
+
+                    scanSubTextB.text = tile.tileInfo.armor.ToString();
+                    scanSubTextB.color = subGreen;
+                }
+                else // Other boring things don't have anything
+                {
+                    HideDisplay();
+                    return;
+                }
+                break;
+            default:
+                HideDisplay();
+                return;
         }
-        else // Disable Submode
+
+        // Trim the two display strings, as we can only display at most 26 characters per line.
+        if (scanSubTextA.text.Length > 26)
+        {
+            scanSubTextA.text = scanSubTextA.text.Substring(0, 26);
+        }
+        if (scanSubBackerImages[1].enabled && scanSubTextB.text.Length > 26)
+        {
+            scanSubTextB.text = scanSubTextB.text.Substring(0, 26);
+        }
+
+        void HideDisplay()
         {
             // Disable sub text blocker
             scanSubParent.SetActive(false);
@@ -5248,8 +5295,6 @@ public class UIManager : MonoBehaviour
             scanButtonText[2].enabled = true;
             scanButtonText[3].enabled = true;
         }
-
-        
     }
 
     private IEnumerator Scan_SubmodeAnimate()
