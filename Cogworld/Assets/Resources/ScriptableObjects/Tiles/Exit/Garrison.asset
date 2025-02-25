@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bf959f1c2ce52248b62ff453abcc06c, type: 3}
   m_Name: Garrison
   m_EditorClassIdentifier: 
-  Id: 7
-  tileName: Garrison
+  Id: 52
+  tileName: Garrison Access
   displaySprite: {fileID: 11400000, guid: 5ebadffeb721c7244a18f9caa540fe2a, type: 2}
   altSprite: {fileID: -268443102, guid: 0669e38ad5cf6a74b85a00b903976e80, type: 3}
   destroyedSprite: {fileID: 0}

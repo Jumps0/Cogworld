@@ -1360,7 +1360,7 @@ public class PlayerData : MonoBehaviour
     public void HandleMouseHighlight()
     {
         // There are probably other cases where this shouldn't be enabled. Consider them here and add more when needed
-        if(UIManager.inst.terminal_targetTerm == null)
+        if(UIManager.inst.terminal_targetTerm == null || this.GetComponent<PlayerGridMovement>().interfacingMode != InterfacingMode.COMBAT)
         {
             mouseTile.SetActive(true);
 
@@ -1377,6 +1377,8 @@ public class PlayerData : MonoBehaviour
             mousePos = new Vector3(Mathf.RoundToInt(mousePos.x), Mathf.RoundToInt(mousePos.y), 0);
 
             mouseTile.transform.position = mousePos;
+
+            MouseHover(mousePos);
         }
         else // Disable it
         {
@@ -1384,6 +1386,45 @@ public class PlayerData : MonoBehaviour
         }
     }
     #endregion
+
+    /// <summary>
+    /// Currently just used for the exit pinging.
+    /// </summary>
+    private void MouseHover(Vector3 mousePos)
+    {
+        // (I'm not too pleased with all this stuff being called every frame)
+        Vector2Int pos = HF.V3_to_V2I(mousePos);
+        WorldTile tile = MapManager.inst.mapdata[pos.x, pos.y];
+
+        if(tile.type == TileType.Exit)
+        {
+            if (tile.vis > 0) // Explored
+            {
+                bool found = false;
+                // If a popup for this doesn't already exist we need to create one.
+                foreach (GameObject P in UIManager.inst.exitPopups)
+                {
+                    if (P.GetComponentInChildren<UIExitPopup>()._parent == pos)
+                    {
+                        found = true;
+                        P.GetComponentInChildren<UIExitPopup>().mouseOver = true;
+                    }
+                    else
+                    {
+                        // If it's not the one we're looking for, that means our mouse isn't currently over it, so we can tell it to shut off
+                        P.GetComponentInChildren<UIExitPopup>().mouseOver = false;
+                    }
+                }
+                if (!found)
+                {
+                    UIManager.inst.CreateExitPopup(tile, tile.access_destinationName);
+
+                    // Play the "ACCESS" sound
+                    AudioManager.inst.CreateTempClip(mousePos, AudioManager.inst.dict_ui["ACCESS"]); // UI - ACCESS
+                }
+            }
+        }
+    }
 
     #region Overheating
     private Coroutine overheatwarning;

@@ -11,7 +11,6 @@ public class UIExitPopup : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public TextMeshProUGUI _text;
     public Image backing;
     public Image sideBar;
-    [SerializeField] private Image blackCover;
 
     public GameObject boxing;
     public GameObject connectorLine;
@@ -41,8 +40,6 @@ public class UIExitPopup : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         // - Text + Bar fades in from black
         // - (At the same time) Edge comes in from WHITE to its normal color
         //      -Line follows the same rules
-
-        blackCover.enabled = true;
 
         StartCoroutine(FadeIn());
         StartCoroutine(ConnectorExpand());
@@ -104,7 +101,6 @@ public class UIExitPopup : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             yield return null;
         }
 
-        blackCover.enabled = false;
         this.gameObject.SetActive(false);
         Destroy(this.gameObject);
     }

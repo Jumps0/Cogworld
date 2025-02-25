@@ -1111,6 +1111,18 @@ public class MapManager : MonoBehaviour
 
             // Destroy the temp tile
             Destroy(tile);
+
+            // For Exit tiles we should also ping the exit
+            #region Exit (Access) Tiles
+            if (mapdata[pos.x, pos.y].type == TileType.Exit)
+            {
+                // Play the "ACCESS" sound
+                AudioManager.inst.CreateTempClip(new Vector3(pos.x, pos.y), AudioManager.inst.dict_ui["ACCESS"]); // UI - ACCESS
+
+                // Ping it
+                mapdata[pos.x, pos.y].PingExit();
+            }
+            #endregion
         }
     }
 
@@ -1784,11 +1796,11 @@ public class MapManager : MonoBehaviour
         // -It can be: MAIN, BRANCH, DSF, GARRISON
         if(targetDestination == 3) // DSF
         {
-            newAccess.tileInfo = MapManager.inst.tileDatabase.dict["DSF"];
+            newAccess.tileInfo = MapManager.inst.tileDatabase.dict["DSF Access"];
         }
         else if(targetDestination == 4) // GARRISON
         {
-            newAccess.tileInfo = MapManager.inst.tileDatabase.dict["Garrison"];
+            newAccess.tileInfo = MapManager.inst.tileDatabase.dict["Garrison Access"];
         }
         else // [ACCESS_MAIN] / [ACCESS_BRANCH]
         {
