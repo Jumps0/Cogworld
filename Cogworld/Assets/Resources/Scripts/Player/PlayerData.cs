@@ -336,6 +336,7 @@ public class PlayerData : MonoBehaviour
         ClearAllHighlights();
         LTH_Clear();
         UIManager.inst.Evasion_Volley(false); // Close the /VOLLEY/ window
+        UIManager.inst.Scan_SubmodeHide(); // Exit out of the scan submode
         canDoTargeting = false;
     }
 

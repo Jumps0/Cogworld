@@ -5011,14 +5011,14 @@ public class UIManager : MonoBehaviour
 
         WorldTile tile = MapManager.inst.mapdata[pos.x, pos.y];
         Actor actor = HF.FindActorAtPosition(pos);
-        Part part = InventoryControl.inst.worldItems[pos].GetComponent<Part>();
+        GameObject part = InventoryControl.inst.worldItems.ContainsKey(pos) ? InventoryControl.inst.worldItems[pos] : null;
 
         int focus = -1;
         if (actor != null && actor.isVisible) // 1. Is there a bot here?
         {
             focus = 0;
         }
-        else if (part != null && part.isVisible) // 2. Is there a part here?
+        else if (part != null && part.GetComponent<Part>().isVisible) // 2. Is there a part here?
         {
             focus = 1;
         }
@@ -5036,7 +5036,7 @@ public class UIManager : MonoBehaviour
         }
         else // Nothing interesting here, close the box!
         {
-            HideDisplay();
+            Scan_SubmodeHide();
             return;
         }
 
@@ -5123,13 +5123,15 @@ public class UIManager : MonoBehaviour
             case 1: // Part
                 StartCoroutine(Scan_SubmodeAnimate());
 
-                if (part._item.Id != 17)
+                Part p = part.GetComponent<Part>();
+
+                if (p._item.Id != 17)
                 {
-                    Item _item = part._item;
+                    Item _item = p._item;
 
                     // - The square - here it represents the item's current health
                     scanSubImage.enabled = true;
-                    float currentItemIntegrity = (float)part._item.integrityCurrent / (float)part._item.itemData.integrityMax;
+                    float currentItemIntegrity = (float)p._item.integrityCurrent / (float)p._item.itemData.integrityMax;
                     if (currentItemIntegrity >= 0.75f) // Green (>=75%)
                     {
                         scanSubImage.color = activeGreen;
@@ -5165,17 +5167,23 @@ public class UIManager : MonoBehaviour
                     // The square is green
                     scanSubImage.color = activeGreen;
                     // The text is grayed out (## Matter)
-                    scanSubTextA.text = part._item.amount + " " + HF.GetFullItemName(part._item);
+                    scanSubTextA.text = p._item.amount + " " + HF.GetFullItemName(p._item);
                     scanSubTextA.color = inactiveGray;
 
                     scanSubTextB.enabled = false;
                     scanSubBackerImages[1].enabled = false;
                 }
 
-                if (part._item.itemData.mechanicalDescription.Length > 0)
+                if (p._item.itemData.mechanicalDescription.Length > 0)
                 {
-                    scanSubTextB.text = part._item.itemData.mechanicalDescription;
+                    scanSubTextB.text = p._item.itemData.mechanicalDescription;
                     scanSubTextB.color = subGreen;
+
+                    // Don't show the info for prototype items
+                    if (!p._item.itemData.knowByPlayer)
+                    {
+                        scanSubTextB.text = "???";
+                    }
                 }
                 else // Disable it if the item doesn't have a mechanical description
                 {
@@ -5203,8 +5211,10 @@ public class UIManager : MonoBehaviour
                 scanSubBackerImages[1].enabled = false;
                 break;
             case 3: // Tile (Something else)
+                scanSubImage.enabled = false;
+
                 // Can be a couple different things
-                if(tile.type == TileType.Wall)
+                if (tile.type == TileType.Wall)
                 {
                     // - The text - here line A is the tile's name (in full green) and line B is the tile's armor value (dark green)
                     scanSubTextA.text = tile.tileInfo.tileName;
@@ -5269,12 +5279,12 @@ public class UIManager : MonoBehaviour
                 }
                 else // Other boring things don't have anything
                 {
-                    HideDisplay();
+                    Scan_SubmodeHide();
                     return;
                 }
                 break;
             default:
-                HideDisplay();
+                Scan_SubmodeHide();
                 return;
         }
 
@@ -5287,17 +5297,17 @@ public class UIManager : MonoBehaviour
         {
             scanSubTextB.text = scanSubTextB.text.Substring(0, 26);
         }
+    }
 
-        void HideDisplay()
-        {
-            // Disable sub text blocker
-            scanSubParent.SetActive(false);
-            // Re-enable the text
-            scanButtonText[0].enabled = true;
-            scanButtonText[1].enabled = true;
-            scanButtonText[2].enabled = true;
-            scanButtonText[3].enabled = true;
-        }
+    public void Scan_SubmodeHide()
+    {
+        // Disable sub text blocker
+        scanSubParent.SetActive(false);
+        // Re-enable the text
+        scanButtonText[0].enabled = true;
+        scanButtonText[1].enabled = true;
+        scanButtonText[2].enabled = true;
+        scanButtonText[3].enabled = true;
     }
 
     private IEnumerator Scan_SubmodeAnimate()

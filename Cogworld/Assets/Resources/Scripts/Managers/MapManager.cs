@@ -1084,7 +1084,20 @@ public class MapManager : MonoBehaviour
 
         IEnumerator Animation()
         {
+            // For Exit tiles we should also ping the exit
+            #region Exit (Access) Tiles
+            if (mapdata[pos.x, pos.y].type == TileType.Exit)
+            {
+                // Play the "ACCESS" sound
+                AudioManager.inst.CreateTempClip(new Vector3(pos.x, pos.y), AudioManager.inst.dict_ui["ACCESS"]); // UI - ACCESS
+
+                // Ping it
+                mapdata[pos.x, pos.y].PingExit();
+            }
+            #endregion
+
             // We will just hijack the highlight object and breifly flash it from green -> green 0% opacity
+            #region Greentile
             float startPercent = 0.3f;
             Color dullGreen = UIManager.inst.dullGreen;
             Color start = new Color(dullGreen.r, dullGreen.g, dullGreen.b, startPercent);
@@ -1111,17 +1124,6 @@ public class MapManager : MonoBehaviour
 
             // Destroy the temp tile
             Destroy(tile);
-
-            // For Exit tiles we should also ping the exit
-            #region Exit (Access) Tiles
-            if (mapdata[pos.x, pos.y].type == TileType.Exit)
-            {
-                // Play the "ACCESS" sound
-                AudioManager.inst.CreateTempClip(new Vector3(pos.x, pos.y), AudioManager.inst.dict_ui["ACCESS"]); // UI - ACCESS
-
-                // Ping it
-                mapdata[pos.x, pos.y].PingExit();
-            }
             #endregion
         }
     }
