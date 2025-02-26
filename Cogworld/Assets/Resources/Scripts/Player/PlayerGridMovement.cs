@@ -444,7 +444,10 @@ public class PlayerGridMovement : MonoBehaviour
 
             // If they click on a Bot, Item, or Machine, the /DATA/ window should open
             if (target == null || UIManager.inst.dataMenu.isAnimating) { return; } // Nothing, bail out (or the menu is in the process of opening or closing)
-            
+
+            // Forcefully exit out of targeting mode since we are about to open this window
+            this.GetComponent<PlayerData>().doTargeting = false;
+
             if (target.GetComponent<Actor>()) // A bot
             {
                 // If right clicked, the /DATA/ menu should open and display info about the bot.

@@ -7119,9 +7119,9 @@ public static class HF
 
         while (true)
         {
-            line.Add(start);
+            line.Add(start); // Add the start position (aka current position) to the list
 
-            if (start.x == end.x && start.y == end.y) break;
+            if (start.x == end.x && start.y == end.y) break; // If the start point has reached the end point, stop.
 
             int e2 = err * 2;
             if (e2 > -dy)
@@ -7140,40 +7140,38 @@ public static class HF
     }
 
     /// <summary>
-    /// Basically *LOSOnTarget* but returns the first thing blocking line of sight if there is anything.
+    /// Given a list of positions from a source to a target, returns the first obstacle that would block a direct path to the target.
     /// </summary>
-    /// <param name="source">The origin location.</param>
-    /// <param name="target">The target location.</param>
+    /// <param name="pathToTarget">A Vector2 list which defines a path from the source to a target.</param>
     /// <param name="requireVision">If the player needs to be able to see the blocking object.</param>
-    /// <returns>A Vector2Int position of something that is in the way.</returns>
-    public static Vector2Int ReturnObstacleInLOS(Vector2Int source, Vector2Int target, bool requireVision = false)
+    /// <returns>A Vector2Int position of something that is in the way. No blocker returns Vector2Int.zero</returns>
+    public static Vector2Int ReturnObstacleInLOS(List<Vector2> pathToTarget, bool requireVision = false)
     {
-        // Gather up the line of tiles between the source and the target.
-        List<Vector2Int> line = BresenhamLine(source, target);
-
         // Toss out the start and finish
-        line.Remove(source);
-        line.Remove(target);
+        pathToTarget.RemoveAt(0);
+        pathToTarget.RemoveAt(pathToTarget.Count - 1);
 
         Vector2Int blocker = Vector2Int.zero;
-
-        if(line.Count > 0)
+        Debug.Log(pathToTarget.Count);
+        if(pathToTarget.Count > 0)
         {
-            foreach (Vector2Int T in line)
+            foreach (Vector2 T in pathToTarget)
             {
+                Vector2Int P = new Vector2Int((int)T.x, (int)T.y);
+
                 // Vision check
-                if (!requireVision || (requireVision && MapManager.inst.mapdata[T.x, T.y].vis == 2))
+                if (!requireVision || (requireVision && MapManager.inst.mapdata[P.x, P.y].vis == 2))
                 {
                     // Is there a bot here?
-                    if (MapManager.inst.pathdata[T.x, T.y] == 2)
+                    if (MapManager.inst.pathdata[P.x, P.y] == 2)
                     {
-                        return T; // There is!
+                        return P; // There is!
                     }
 
                     // We can use the permiability function to check this
-                    if (!HF.IsPermiableTile(MapManager.inst.mapdata[T.x, T.y]))
+                    if (!HF.IsPermiableTile(MapManager.inst.mapdata[P.x, P.y]))
                     {
-                        return T; // This is a blocker
+                        return P; // This is a blocker
                     }
                 }
             }

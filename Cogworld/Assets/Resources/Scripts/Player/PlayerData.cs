@@ -482,7 +482,7 @@ public class PlayerData : MonoBehaviour
             // There are some safety rails in place to make sure the "dart" doesn't shoot past the edge of the map, but honestly I
             // don't 100% trust it, so there is probably like a 0.1% chance when the player is aiming an error happens.
 
-            path = new List<Vector3>();
+            path = new List<Vector2>();
 
             Vector2 start = new Vector2Int(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y));
             Vector2 finish = mousePosition;
@@ -522,13 +522,13 @@ public class PlayerData : MonoBehaviour
 
             foreach (var P in path) // Go through the path and mark each tile
             {
-                if (!targetLine.ContainsKey(HF.V3_to_V2I(P)))
+                if (!targetLine.ContainsKey(new Vector2Int((int)P.x, (int)P.y)))
                 {
-                    CreateHighlightTile(HF.V3_to_V2I(P));
+                    CreateHighlightTile(new Vector2Int((int)P.x, (int)P.y));
                 }
             }
 
-            if (GapCheckHelper(HF.V3_to_V2I(finish)))
+            if (GapCheckHelper(new Vector2Int((int)finish.x, (int)finish.y)))
             {
                 GapCheck();
             }
@@ -552,7 +552,7 @@ public class PlayerData : MonoBehaviour
             // Here we check if the player actually has line-of-sight on the target.
             // -If yes, then the line is green, no changes necessary.
             // -If no, then the line, starting PAST the blocking object, is red.
-            Vector2Int blockingPos = HF.ReturnObstacleInLOS(new Vector2Int((int)currentPos.x, (int)currentPos.y), HF.V3_to_V2I(mousePosition), true);
+            Vector2Int blockingPos = HF.ReturnObstacleInLOS(path, true);
             bool blocked = blockingPos != Vector2Int.zero;
             if (blocked) // There is an obstacle!
             {
@@ -790,7 +790,7 @@ public class PlayerData : MonoBehaviour
     [SerializeField] private Color highlightGreen;
     [SerializeField] private Color highlightRed;
     private Dictionary<Vector2Int, GameObject> targetLine = new Dictionary<Vector2Int, GameObject>();
-    List<Vector3> path = new List<Vector3>();
+    List<Vector2> path = new List<Vector2>();
     private void CreateHighlightTile(Vector2Int pos)
     {
         var spawnedTile = Instantiate(MapManager.inst.prefab_highlightedTile, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
@@ -854,19 +854,19 @@ public class PlayerData : MonoBehaviour
 
         if (HF.GetDirection(HF.V3_to_V2I(path[path.Count - 1]), HF.V3_to_V2I(path[0])) == Vector2.up)
         {
-            CreateHighlightTile(HF.V3_to_V2I(path[path.Count - 1] + new Vector3(0, 1)));
+            CreateHighlightTile(HF.V3_to_V2I(path[path.Count - 1] + new Vector2(0, 1)));
         }
         else if (HF.GetDirection(HF.V3_to_V2I(path[path.Count - 1]), HF.V3_to_V2I(path[0])) == Vector2.down)
         {
-            CreateHighlightTile(HF.V3_to_V2I(path[path.Count - 1] + new Vector3(0, -1)));
+            CreateHighlightTile(HF.V3_to_V2I(path[path.Count - 1] + new Vector2(0, -1)));
         }
         else if (HF.GetDirection(HF.V3_to_V2I(path[path.Count - 1]), HF.V3_to_V2I(path[0])) == Vector2.left)
         {
-            CreateHighlightTile(HF.V3_to_V2I(path[path.Count - 1] + new Vector3(1, 0)));
+            CreateHighlightTile(HF.V3_to_V2I(path[path.Count - 1] + new Vector2(1, 0)));
         }
         else if (HF.GetDirection(HF.V3_to_V2I(path[path.Count - 1]), HF.V3_to_V2I(path[0])) == Vector2.right)
         {
-            CreateHighlightTile(HF.V3_to_V2I(path[path.Count - 1] + new Vector3(-1, 0)));
+            CreateHighlightTile(HF.V3_to_V2I(path[path.Count - 1] + new Vector2(-1, 0)));
         }
     }
 
