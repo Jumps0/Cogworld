@@ -7144,11 +7144,11 @@ public static class HF
         }
 
         return path;
+    }
 
-        bool IsWithinGrid(int x, int y)
-        {
-            return x >= 0 && x < MapManager.inst.mapsize.x - 1 && y >= 0 && y < MapManager.inst.mapsize.y - 1;
-        }
+    public static bool IsWithinGrid(int x, int y)
+    {
+        return x >= 0 && x < MapManager.inst.mapsize.x - 1 && y >= 0 && y < MapManager.inst.mapsize.y - 1;
     }
 
     /// <summary>

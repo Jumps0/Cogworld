@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
-using static UnityEditor.FilePathAttribute;
 
 public class PlayerGridMovement : MonoBehaviour
 {

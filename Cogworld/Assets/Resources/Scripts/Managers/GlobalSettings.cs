@@ -401,6 +401,9 @@ public class GlobalSettings : MonoBehaviour
         {
             Vector2 m = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
             Vector2Int mousePos = new Vector2Int((int)(m.x + 0.5f), (int)(m.y + 0.5f)); // Adjustment due to tiles being offset slightly from natural grid
+
+            if(!HF.IsWithinGrid(mousePos.x, mousePos.y)) { return; } // Needs to be within the grid
+
             WorldTile tile = MapManager.inst.mapdata[mousePos.x, mousePos.y];
 
             // We should display as much as we can about this tile

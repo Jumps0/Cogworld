@@ -523,8 +523,9 @@ public struct WorldTile
     public void SetDestroyed(bool destroyed, string message = "")
     {
         if (destroyed == isDamaged) { return; } // Don't do anything if we are already at this state!
-
+        
         isDamaged = destroyed;
+        MapManager.inst.mapdata[location.x, location.y].isDamaged = isDamaged; // This is annoying. Without this the value doesn't actually change
 
         if (destroyed)
         {
@@ -556,6 +557,7 @@ public struct WorldTile
         MapManager.inst.UpdateTile(this, location);
         // And update the Fog of War since this probably changes local visibility in some way.
         TurnManager.inst.AllEntityVisUpdate(true);
+        Debug.Log(MapManager.inst.mapdata[location.x, location.y].isDamaged);
     }
     #endregion
 
@@ -623,19 +625,17 @@ public struct WorldTile
     {
         AudioClip clip = null;
 
+        // Change state
+        door_open = open;
+        MapManager.inst.mapdata[location.x, location.y].door_open = door_open;
+
         if (open)
         {
-            // Change state
-            door_open = true; // open
-
             // Pick sound clip
             clip = tileInfo.door_open[Random.Range(0, tileInfo.door_open.Count - 1)];
         }
         else
         {
-            // Change state
-            door_open = false; // closed
-
             // Pick sound clip
             clip = tileInfo.door_open[Random.Range(0, tileInfo.door_close.Count - 1)];
         }
@@ -656,6 +656,7 @@ public struct WorldTile
     {
         #region Vision
         vis = 2; // There is no possible way this could backfire
+        MapManager.inst.mapdata[location.x, location.y].vis = vis;
 
         // Update the tile
         MapManager.inst.UpdateTile(this, location);
@@ -665,6 +666,7 @@ public struct WorldTile
         #endregion
 
         trap_knowByPlayer = true;
+        MapManager.inst.mapdata[location.x, location.y].trap_knowByPlayer = trap_knowByPlayer;
 
         // TODO: COME BACK TO THIS
         //UIManager.inst.CreateItemPopup(this.gameObject, trap_data.trapname, Color.black, tileInfo.asciiColor, HF.GetDarkerColor(tileInfo.asciiColor, 20f));
@@ -675,11 +677,13 @@ public struct WorldTile
     public void SetTrapAlignment(BotAlignment newA)
     {
         trap_alignment = newA;
+        MapManager.inst.mapdata[location.x, location.y].trap_alignment = trap_alignment;
     }
 
     public IEnumerator TripTrap(Actor victim)
     {
         trap_tripped = true;
+        MapManager.inst.mapdata[location.x, location.y].trap_tripped = trap_tripped;
 
         if (victim != null && victim == PlayerData.inst.GetComponent<Actor>())
         {
@@ -697,6 +701,7 @@ public struct WorldTile
 
         // This trap tile is now a floor tile
         type = TileType.Floor;
+        MapManager.inst.mapdata[location.x, location.y].type = type;
         MapManager.inst.UpdateTile(this, location); // (Occasionally irrelivent but that's ok)
 
         yield return new WaitForEndOfFrame();
@@ -762,6 +767,7 @@ public struct WorldTile
     public void DeActivateTrap()
     {
         trap_active = false;
+        MapManager.inst.mapdata[location.x, location.y].trap_active = trap_active;
     }
 
     /// <summary>
@@ -772,6 +778,8 @@ public struct WorldTile
         trap_active = true;
         trap_alignment = newA;
 
+        MapManager.inst.mapdata[location.x, location.y].trap_active = trap_active;
+        MapManager.inst.mapdata[location.x, location.y].trap_alignment = trap_alignment;
     }
     /// <summary>
     /// Remove this trap from its "on floor" state and turn it into an item that can be picked up.
