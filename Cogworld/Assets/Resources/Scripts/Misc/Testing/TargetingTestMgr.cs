@@ -86,7 +86,7 @@ public class TargetingTestMgr : MonoBehaviour
             CleanAllTiles();
         }
 
-        if (Input.GetMouseButton(1))
+        if (Mouse.current.rightButton.isPressed)
         {
             CleanAllTiles();
             FindLinePath();
@@ -142,9 +142,10 @@ public class TargetingTestMgr : MonoBehaviour
         text_coords.text = start.ToString() + " to " + finish.ToString();
 
         //StartCoroutine(Pathfind(HF.V3_to_V2I(playerPosition), HF.V3_to_V2I(mousePosition)));
-        FindPathNonIE(start, finish);
+        //FindPathNonIE(start, finish);
         //FindPathGreedy(start, finish);
         //FindPathSegments(start, finish);
+        FindPathBresenham(start, finish);
     }
 
     private IEnumerator Pathfind(Vector2 start, Vector2 finish)
@@ -357,14 +358,16 @@ public class TargetingTestMgr : MonoBehaviour
     {
         // Find the neighbor closest to the target
         Vector2 closestNeighbor = neighbors[0];
-        float closestDistance = Vector2.Distance(neighbors[0], target);
+        float closestDistance = /*Vector2.Distance*/EuclideanDistance(neighbors[0], target);
 
         for (int i = 1; i < neighbors.Count; i++)
         {
-            float distance = Vector2.Distance(neighbors[i], target);
+            Vector2 pos = neighbors[i];
+            float distance = /*Vector2.Distance*/EuclideanDistance(pos, target);
+
             if (distance < closestDistance)
             {
-                closestNeighbor = neighbors[i];
+                closestNeighbor = pos;
                 closestDistance = distance;
             }
         }
@@ -466,6 +469,55 @@ public class TargetingTestMgr : MonoBehaviour
         text_status.color = Color.green;
     }
     */
+    #endregion
+
+    #region Bresenham's Line Algorithm
+    private void FindPathBresenham(Vector2 start, Vector2 finish)
+    {
+        int x0 = (int)start.x, x1 = (int)finish.x;
+        int y0 = (int)start.y, y1 = (int)finish.y;
+
+        int dx = Mathf.Abs(x1 - x0);
+        int dy = Mathf.Abs(y1 - y0);
+        int sx = x0 < x1 ? 1 : -1;
+        int sy = y0 < y1 ? 1 : -1;
+        int err = dx - dy;
+
+        while (true)
+        {
+            // Change the color of the current tile to blue
+            if (IsWithinGrid(x0, y0))
+            {
+                world[new Vector2Int(x0, y0)].GetComponent<SpriteRenderer>().color = Color.blue;
+            }
+
+            // Check if we've reached the end point
+            if (x0 == x1 && y0 == y1) break;
+
+            int e2 = 2 * err;
+            if (e2 > -dy)
+            {
+                err -= dy;
+                x0 += sx;
+            }
+            if (e2 < dx)
+            {
+                err += dx;
+                y0 += sy;
+            }
+        }
+
+        pathFinished = true;
+        MarkPath(finish); // Finish up by drawing the path
+
+        text_status.text = "Finished.";
+        text_status.color = Color.green;
+    }
+
+    private bool IsWithinGrid(int x, int y)
+    {
+        return x >= 0 && x < mapSize.x && y >= 0 && y < mapSize.y;
+    }
     #endregion
 
     private void MarkPath(Vector2 end)
@@ -656,6 +708,12 @@ public class TargetingTestMgr : MonoBehaviour
 
     }
 
+    private float EuclideanDistance(Vector2 node, Vector2 goal)
+    {
+        float dx = Mathf.Abs(node.x - goal.x);
+        float dy = Mathf.Abs(node.y - goal.y);
+        return Mathf.Sqrt(dx * dx + dy * dy);
+    }
 
     #endregion
 }
