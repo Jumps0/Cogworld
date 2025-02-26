@@ -473,6 +473,7 @@ public class PlayerData : MonoBehaviour
             #endregion
 
             #region B) Line Drawing via "Dart"
+            /*
             // I'm not 100% happy with this method, but as implemented, it works better than raycasting (especially the line trimming).
             
             // - Explainer -
@@ -533,7 +534,25 @@ public class PlayerData : MonoBehaviour
                 GapCheck();
             }
             //CleanPath(); // Clean the path
-            
+            */
+            #endregion
+
+            #region C) Bresenham's Line Algorithm
+            // Finally, a better option.
+
+            Vector2Int start = new Vector2Int(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y));
+            Vector2Int finish = HF.V3_to_V2I(mousePosition);
+
+            path = HF.BresenhamPath(start, finish);
+
+            // Draw the path 
+            foreach (var P in path) // Go through the path and mark each tile
+            {
+                if (!targetLine.ContainsKey(P))
+                {
+                    CreateHighlightTile(P);
+                }
+            }
             #endregion
 
             #region LOS Color check & Melee adjustment
@@ -556,7 +575,7 @@ public class PlayerData : MonoBehaviour
             bool blocked = blockingPos != Vector2Int.zero;
             if (blocked) // There is an obstacle!
             {
-                float dist = Vector2.Distance(currentPos, blockingPos);
+                float dist = Vector2.Distance(start, blockingPos);
                 foreach (var T in targetLine)
                 {
                     // We only want to change the line colors past the blocking object
@@ -598,7 +617,7 @@ public class PlayerData : MonoBehaviour
             // 3) Is within the weapons range
             // Then and only then will we show the special indicator.
             Item launcher = Action.HasLauncher(this.GetComponent<Actor>());
-            if (launcher != null & !blocked && distance <= launcher.itemData.shot.shotRange)
+            if (launcher != null & !blocked && Vector2.Distance(start, finish) <= launcher.itemData.shot.shotRange)
             {
                 // Success! Lets draw it.
 
@@ -790,7 +809,7 @@ public class PlayerData : MonoBehaviour
     [SerializeField] private Color highlightGreen;
     [SerializeField] private Color highlightRed;
     private Dictionary<Vector2Int, GameObject> targetLine = new Dictionary<Vector2Int, GameObject>();
-    List<Vector2> path = new List<Vector2>();
+    List<Vector2Int> path = new List<Vector2Int>();
     private void CreateHighlightTile(Vector2Int pos)
     {
         var spawnedTile = Instantiate(MapManager.inst.prefab_highlightedTile, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
@@ -852,21 +871,21 @@ public class PlayerData : MonoBehaviour
 
         // This issue doesn't appear to show up in diagonal lines, so we won't check the diagonal directions here.
 
-        if (HF.GetDirection(HF.V3_to_V2I(path[path.Count - 1]), HF.V3_to_V2I(path[0])) == Vector2.up)
+        if (HF.GetDirection(path[path.Count - 1], path[0]) == Vector2Int.up)
         {
-            CreateHighlightTile(HF.V3_to_V2I(path[path.Count - 1] + new Vector2(0, 1)));
+            CreateHighlightTile(path[path.Count - 1] + new Vector2Int(0, 1));
         }
-        else if (HF.GetDirection(HF.V3_to_V2I(path[path.Count - 1]), HF.V3_to_V2I(path[0])) == Vector2.down)
+        else if (HF.GetDirection(path[path.Count - 1], path[0]) == Vector2Int.down)
         {
-            CreateHighlightTile(HF.V3_to_V2I(path[path.Count - 1] + new Vector2(0, -1)));
+            CreateHighlightTile(path[path.Count - 1] + new Vector2Int(0, -1));
         }
-        else if (HF.GetDirection(HF.V3_to_V2I(path[path.Count - 1]), HF.V3_to_V2I(path[0])) == Vector2.left)
+        else if (HF.GetDirection(path[path.Count - 1], path[0]) == Vector2Int.left)
         {
-            CreateHighlightTile(HF.V3_to_V2I(path[path.Count - 1] + new Vector2(1, 0)));
+            CreateHighlightTile(path[path.Count - 1] + new Vector2Int(1, 0));
         }
-        else if (HF.GetDirection(HF.V3_to_V2I(path[path.Count - 1]), HF.V3_to_V2I(path[0])) == Vector2.right)
+        else if (HF.GetDirection(path[path.Count - 1], path[0]) == Vector2Int.right)
         {
-            CreateHighlightTile(HF.V3_to_V2I(path[path.Count - 1] + new Vector2(-1, 0)));
+            CreateHighlightTile(path[path.Count - 1] + new Vector2Int(-1, 0));
         }
     }
 

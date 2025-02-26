@@ -824,11 +824,11 @@ public static class Action
                 Vector2Int tilePosition = P;
                 int distFromCenter = Mathf.RoundToInt(Vector2.Distance(new Vector2(P.x, P.y), center));
 
-                // Next check if this position is blocked by another tile via raycast
-                List<Vector2Int> hits = HF.BresenhamLine(center, tilePosition);
+                // Next check if this position is blocked by another tile via Bresenham line
+                List<Vector2Int> line = HF.BresenhamPath(center, tilePosition);
                 bool clear = true;
 
-                foreach (var H in hits) // Go through the hits and see if there are any obstructions.
+                foreach (var H in line) // Go through the hits and see if there are any obstructions.
                 {
                     if (blockingTiles.ContainsKey(H) && blockingTiles[H] == false)
                     {

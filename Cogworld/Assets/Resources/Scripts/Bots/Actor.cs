@@ -894,7 +894,10 @@ public class Actor : Entity
 
             if (this.GetComponent<BotAI>().canSeePlayer) // If we have previously seen the player, we need to check if we can see them still
             {
-                if (/*HF.ReturnObstacleInLOS(HF.V3_to_V2I(this.transform.position), HF.V3_to_V2I(PlayerData.inst.transform.position)) == Vector2Int.zero*/ true) // TODO: COME BACK TO THIS
+                // Draw a Bresenham line from this actor to the player.
+                List<Vector2Int> path = HF.BresenhamPath(HF.V3_to_V2I(this.transform.position), HF.V3_to_V2I(PlayerData.inst.transform.position));
+
+                if (HF.ReturnObstacleInLOS(path) == Vector2Int.zero)
                 {
                     // Yes we can still see them directly.
                 }

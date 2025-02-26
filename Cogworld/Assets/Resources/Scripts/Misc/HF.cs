@@ -7102,76 +7102,86 @@ public static class HF
 
     #region Spotting
     /// <summary>
-    /// Replacement for the previous Raycast2D for the tilemap.
+    /// Will draw a DIRECT "Bresenham" path from point A to point B, and return a list of that path.
     /// </summary>
-    /// <param name="start">Vector2Int start location.</param>
-    /// <param name="end">Vector2Int end location.</param>
-    /// <returns>A list of *Vector2Int* tile positions between the start and end position.</returns>
-    public static List<Vector2Int> BresenhamLine(Vector2Int start, Vector2Int end)
+    /// <param name="start">The start position.</param>
+    /// <param name="finish">The finish position.</param>
+    /// <returns>A Vector2Int list of positions which corresponds to a path directly from A to B.</returns>
+    public static List<Vector2Int> BresenhamPath(Vector2Int start, Vector2Int finish)
     {
-        List<Vector2Int> line = new List<Vector2Int>();
+        List<Vector2Int> path = new List<Vector2Int>();
 
-        int dx = Mathf.Abs(end.x - start.x);
-        int dy = Mathf.Abs(end.y - start.y);
-        int sx = (start.x < end.x) ? 1 : -1;
-        int sy = (start.y < end.y) ? 1 : -1;
+        int x0 = start.x, x1 = finish.x;
+        int y0 = start.y, y1 = finish.y;
+
+        int dx = Mathf.Abs(x1 - x0);
+        int dy = Mathf.Abs(y1 - y0);
+        int sx = x0 < x1 ? 1 : -1;
+        int sy = y0 < y1 ? 1 : -1;
         int err = dx - dy;
 
         while (true)
         {
-            line.Add(start); // Add the start position (aka current position) to the list
+            if (IsWithinGrid(x0, y0))
+            { // Add position to path
+                path.Add(new Vector2Int(x0, y0));
+            }
 
-            if (start.x == end.x && start.y == end.y) break; // If the start point has reached the end point, stop.
+            // Check if we've reached the end point
+            if (x0 == x1 && y0 == y1) break;
 
-            int e2 = err * 2;
+            int e2 = 2 * err;
             if (e2 > -dy)
             {
                 err -= dy;
-                start.x += sx;
+                x0 += sx;
             }
             if (e2 < dx)
             {
                 err += dx;
-                start.y += sy;
+                y0 += sy;
             }
         }
 
-        return line;
+        return path;
+
+        bool IsWithinGrid(int x, int y)
+        {
+            return x >= 0 && x < MapManager.inst.mapsize.x - 1 && y >= 0 && y < MapManager.inst.mapsize.y - 1;
+        }
     }
 
     /// <summary>
     /// Given a list of positions from a source to a target, returns the first obstacle that would block a direct path to the target.
     /// </summary>
-    /// <param name="pathToTarget">A Vector2 list which defines a path from the source to a target.</param>
+    /// <param name="pathToTarget">A Vector2Int list which defines a path from the source to a target.</param>
     /// <param name="requireVision">If the player needs to be able to see the blocking object.</param>
     /// <returns>A Vector2Int position of something that is in the way. No blocker returns Vector2Int.zero</returns>
-    public static Vector2Int ReturnObstacleInLOS(List<Vector2> pathToTarget, bool requireVision = false)
+    public static Vector2Int ReturnObstacleInLOS(List<Vector2Int> pathToTarget, bool requireVision = false)
     {
         // Toss out the start and finish
         pathToTarget.RemoveAt(0);
         pathToTarget.RemoveAt(pathToTarget.Count - 1);
 
         Vector2Int blocker = Vector2Int.zero;
-        Debug.Log(pathToTarget.Count);
+
         if(pathToTarget.Count > 0)
         {
-            foreach (Vector2 T in pathToTarget)
+            foreach (Vector2Int T in pathToTarget)
             {
-                Vector2Int P = new Vector2Int((int)T.x, (int)T.y);
-
                 // Vision check
-                if (!requireVision || (requireVision && MapManager.inst.mapdata[P.x, P.y].vis == 2))
+                if (!requireVision || (requireVision && MapManager.inst.mapdata[T.x, T.y].vis == 2))
                 {
                     // Is there a bot here?
-                    if (MapManager.inst.pathdata[P.x, P.y] == 2)
+                    if (MapManager.inst.pathdata[T.x, T.y] == 2)
                     {
-                        return P; // There is!
+                        return T; // There is!
                     }
 
                     // We can use the permiability function to check this
-                    if (!HF.IsPermiableTile(MapManager.inst.mapdata[P.x, P.y]))
+                    if (!HF.IsPermiableTile(MapManager.inst.mapdata[T.x, T.y]))
                     {
-                        return P; // This is a blocker
+                        return T; // This is a blocker
                     }
                 }
             }
