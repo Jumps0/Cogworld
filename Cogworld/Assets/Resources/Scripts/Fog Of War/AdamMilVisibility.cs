@@ -262,14 +262,14 @@ sealed class AdamMilVisibility : Visibility
                 ret = true;
 
                 // (Unless they are broken)
-                if (tile.damaged)
+                if (tile.isDamaged)
                     ret = false;
                 break;
             case TileType.Door: // Doors do or don't block based on their state
                 ret = !tile.door_open;
 
                 // (Unless they are broken)
-                if (tile.damaged)
+                if (tile.isDamaged)
                     ret = false;
                 break;
             case TileType.Machine: // Machines don't block vision

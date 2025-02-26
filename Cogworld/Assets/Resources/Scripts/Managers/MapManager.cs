@@ -906,7 +906,7 @@ public class MapManager : MonoBehaviour
         {
             case TileType.Floor:
                 // Is this destroyed?
-                if (tile.damaged)
+                if (tile.isDamaged)
                 {
                     display = tile.tileInfo.destroyedSprite;
                 }
@@ -938,7 +938,7 @@ public class MapManager : MonoBehaviour
                 break;
             case TileType.Wall:
                 // Is this destroyed?
-                if (tile.damaged)
+                if (tile.isDamaged)
                 {
                     if (ASCII)
                     {
@@ -967,7 +967,7 @@ public class MapManager : MonoBehaviour
                 break;
             case TileType.Door:
                 // Is this destroyed?
-                if (tile.damaged)
+                if (tile.isDamaged)
                 {
                     if (ASCII)
                     { // ";" character
@@ -1662,6 +1662,7 @@ public class MapManager : MonoBehaviour
         newTile.doneRevealAnimation = false;
         newTile.isDirty = dirty ? Random.Range(0, debrisTiles.Count - 1) : -1; // (Assign a debris sprite ID so on the tilemap update the sprite doesn't randomly change)
         newTile.revealedViaIntel = false;
+        newTile.isDamaged = false;
 
         // Visibility (start hidden)
         newTile.vis = 0;

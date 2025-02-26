@@ -120,19 +120,6 @@ public class GlobalSettings : MonoBehaviour
     public int heatWarningLevel = 300;
     #endregion
 
-    #region DebugUI
-    [Header("DebugUI")]
-    [SerializeField] private GameObject debugUI_parent; // The dictionary checker
-    [SerializeField] private TMP_InputField dField;
-    [SerializeField] private Button dButton;
-    [SerializeField] private UnityEngine.UI.Image dImage1;
-    [SerializeField] private UnityEngine.UI.Image dImage2;
-    [SerializeField] private TextMeshProUGUI dText1;
-    [SerializeField] private TextMeshProUGUI dText2;
-    private string dString = "";
-
-    #endregion
-
     // Update is called once per frame
     void Update()
     {
@@ -354,12 +341,6 @@ public class GlobalSettings : MonoBehaviour
     public bool debugLogMessageTest = false;
     public ItemObject testitem;
 
-    public void OnToggleDCCheck(InputAction.CallbackContext context)
-    {
-        // Toggle Debug Menu
-        debugUI_parent.SetActive(!debugUI_parent.activeInHierarchy);
-    }
-
     public void OnToggleDebug(InputAction.CallbackContext context)
     {
         ToggleDebugBar();
@@ -386,6 +367,7 @@ public class GlobalSettings : MonoBehaviour
     [SerializeField] private TMP_InputField db_ifield;
     [SerializeField] private TextMeshProUGUI db_textaid;
     [SerializeField] private TextMeshProUGUI db_playerPosition;
+    [SerializeField] private TextMeshProUGUI db_tileinfo;
     [SerializeField] private bool db_helper_override = false;
     private Coroutine db_helperCooldown;
     [SerializeField] private List<string> db_commandHistory = new List<string>(); // Tracks past commands which can be re-used
@@ -414,8 +396,79 @@ public class GlobalSettings : MonoBehaviour
             db_playerPosition.text = $"player  x:{playerPos.x} y:{playerPos.y}" + "\n" + $"mouse   x:{mousePos.x} y:{mousePos.y}";
         }
 
+        // Tileinfo text
+        if (db_tileinfo.gameObject.activeInHierarchy && PlayerData.inst)
+        {
+            Vector2 m = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            Vector2Int mousePos = new Vector2Int((int)(m.x + 0.5f), (int)(m.y + 0.5f)); // Adjustment due to tiles being offset slightly from natural grid
+            WorldTile tile = MapManager.inst.mapdata[mousePos.x, mousePos.y];
+
+            // We should display as much as we can about this tile
+            db_tileinfo.text = $"Tile @ ({mousePos.x},{mousePos.y})\n";
+            db_tileinfo.text += $"Type: {tile.type}\n";
+            string vision = "";
+            if(tile.vis == 2)
+            {
+                vision = "Visible & Known";
+            }
+            else if(tile.vis == 1)
+            {
+                vision = "Unseen & Known";
+            }
+            else if(tile.vis == 0)
+            {
+                vision = "Unseen & Unknown";
+            }
+            db_tileinfo.text += $"Vision: {vision}\n";
+            db_tileinfo.text += $"Damaged: {(tile.isDamaged ? "YES" : "NO")}\n";
+            switch (tile.type)
+            {
+                case TileType.Floor:
+                    db_tileinfo.text += $"Dirty: ";
+                    if(tile.isDirty > 0)
+                    {
+                        db_tileinfo.text += $"YES ({tile.isDirty})\n";
+                    }
+                    else
+                    {
+                        db_tileinfo.text += $"NO\n";
+                    }
+                    break;
+                case TileType.Wall:
+                    break;
+                case TileType.Door:
+                    db_tileinfo.text += $"Door is: {(tile.door_open ? "OPEN" : "CLOSED")}\n";
+                    break;
+                case TileType.Machine:
+                    // TODO
+                    Debug.LogWarning("Needs to be implemented when `MachineData` is done.");
+                    break;
+                case TileType.Exit:
+                    db_tileinfo.text += $"Destination: ({tile.access_destination}) {tile.access_destinationName}\n";
+                    db_tileinfo.text += $"Branch: {(tile.access_branch ? "YES" : "NO")}\n";
+                    break;
+                case TileType.Phasewall:
+                    db_tileinfo.text += $"Assigned team: {tile.phase_team.ToString()}\n";
+                    db_tileinfo.text += $"Revealed: {(tile.phase_revealed ? "YES" : "NO")}\n";
+                    break;
+                case TileType.Trap:
+                    db_tileinfo.text += $"Trap type: {tile.trap_type.ToString()}\n";
+                    db_tileinfo.text += $"Tripped: {(tile.trap_tripped ? "YES" : "NO")}\n";
+                    db_tileinfo.text += $"Active: {(tile.trap_active ? "YES" : "NO")}\n";
+                    db_tileinfo.text += $"Discovered: {(tile.trap_knowByPlayer ? "YES" : "NO")}\n";
+                    db_tileinfo.text += $"Alignment: {tile.trap_alignment.ToString()}\n";
+                    break;
+                case TileType.Default:
+                    break;
+                default:
+                    break;
+            }
+
+            db_tileinfo.text += $"Impassible: {(tile.isImpassible ? "YES" : "NO")}\n";
+        }
+
         // Interfacing mode enforcement
-        if(db_ifield.gameObject.activeInHierarchy && db_ifield.isFocused)
+        if (db_ifield.gameObject.activeInHierarchy && db_ifield.isFocused)
         {
             PlayerData.inst.GetComponent<PlayerGridMovement>().UpdateInterfacingMode(InterfacingMode.TYPING);
         }
@@ -591,6 +644,11 @@ public class GlobalSettings : MonoBehaviour
                     db_textaid.gameObject.SetActive(true);
                     db_textaid.text = "> corruptme \"value\" [Runs a corruption event on the player. (#1-11)]";
                 }
+                else if (command.Contains("tileinfo"))
+                {
+                    db_textaid.gameObject.SetActive(true);
+                    db_textaid.text = "> tileinfo [Reveals information about a hovered over tile.]";
+                }
                 // Expand this as needed
             }
         }
@@ -643,6 +701,8 @@ public class GlobalSettings : MonoBehaviour
          *    -Spawns in a random CORRUPTED item beneath the player.
          *  > corruptme "value"
          *    -Runs a corruption event on the player (#1-11).
+         *  > tileinfo
+         *    -Reveals information about a tile the mouse is over.
          * ================================
          */
         #endregion
@@ -1205,6 +1265,17 @@ public class GlobalSettings : MonoBehaviour
                     }
 
                 }
+            case "tileinfo":
+                Vector2 m = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+                Vector2Int mousePos = new Vector2Int((int)(m.x + 0.5f), (int)(m.y + 0.5f)); // Adjustment due to tiles being offset slightly from natural grid
+                DebugBarHelper($"Toggled tileinfo...");
+
+                // Toggle the text
+                db_tileinfo.gameObject.SetActive(!db_tileinfo.gameObject.activeInHierarchy);
+
+                success = true;
+
+                break;
             default: // Unknown command
                 DebugBarHelper("Unknown command...");
                 return;
@@ -1246,39 +1317,6 @@ public class GlobalSettings : MonoBehaviour
 
     #endregion
 
-    public void DEBUG_CheckDict()
-    {
-        dImage1.gameObject.SetActive(false);
-        dImage2.gameObject.SetActive(false);
-        dText1.text = "Layer 0:";
-        dText2.text = "Layer 1:";
-
-        dString = dField.text;
-
-        if (dString.Contains(",") && !dString.Contains("!")) // 2nd part is a failsafe to stop parsing
-        {
-            string[] split = dString.Split(",");
-
-            Vector2Int key = new Vector2Int(int.Parse(split[0]), int.Parse(split[1]));
-
-            if (MapManager.inst._allTilesRealized.ContainsKey(key)) // Bottom layer
-            {
-                dImage1.gameObject.SetActive(true);
-                dText1.text = MapManager.inst._allTilesRealized[key].bottom.gameObject.name;
-                if (MapManager.inst._allTilesRealized[key].bottom.occupied)
-                {
-                    dText1.text += " (O)";
-                }
-            }
-            // Top layer
-            if (MapManager.inst._allTilesRealized.ContainsKey(key) && MapManager.inst._allTilesRealized[key].top != null)
-            {
-                dImage2.gameObject.SetActive(true);
-                dText2.text = MapManager.inst._allTilesRealized[key].top.gameObject.name;
-            }
-        }
-    }
-
     #region Input Actions
     public PlayerInputActions inputActions;
     private void OnEnable()
@@ -1286,14 +1324,12 @@ public class GlobalSettings : MonoBehaviour
         inputActions = Resources.Load<InputActionsSO>("Inputs/InputActionsSO").InputActions;
 
         inputActions.Player.ToggleDebug.performed += OnToggleDebug;
-        inputActions.Player.ToggleDCCheck.performed += OnToggleDCCheck;
         inputActions.Player.Enter.performed += OnSubmit;
     }
 
     private void OnDisable()
     {
         inputActions.Player.ToggleDebug.performed -= OnToggleDebug;
-        inputActions.Player.ToggleDCCheck.performed -= OnToggleDCCheck;
         inputActions.Player.Enter.performed -= OnSubmit;
     }
     #endregion

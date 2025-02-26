@@ -4167,7 +4167,7 @@ public static class HF
                     ret = MapManager.inst.pathdata[tile.location.x, tile.location.y] != 2; // Bot check
                 break;
             case TileType.Wall: // Always blocks (unless destroyed)
-                ret = tile.damaged;
+                ret = tile.isDamaged;
                 break;
             case TileType.Door: // No blocking at all (unless a bot is there)
                 ret = true;
@@ -4175,7 +4175,7 @@ public static class HF
                     ret = MapManager.inst.pathdata[tile.location.x, tile.location.y] != 2; // Bot check
                 break;
             case TileType.Machine: // Always blocks (unless destroyed)
-                ret = tile.damaged;
+                ret = tile.isDamaged;
                 break;
             case TileType.Exit: // NEVER blocks
                 return true;
@@ -4214,10 +4214,10 @@ public static class HF
                 ret = true;
                 break;
             case TileType.Wall:
-                ret = tile.damaged;
+                ret = tile.isDamaged;
                 break;
             case TileType.Door:
-                if (tile.damaged)
+                if (tile.isDamaged)
                 {
                     ret = true;
                 }
@@ -4227,7 +4227,7 @@ public static class HF
                 }
                 break;
             case TileType.Machine:
-                ret = tile.damaged;
+                ret = tile.isDamaged;
                 break;
             case TileType.Exit:
                 return true;

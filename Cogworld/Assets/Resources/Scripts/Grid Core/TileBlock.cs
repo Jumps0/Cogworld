@@ -487,7 +487,8 @@ public struct WorldTile
     [Tooltip("Where -1 = Not dirty, and any other number indicates the ID of the debris sprite.")]
     public int isDirty;
     public bool isImpassible;
-    public bool damaged;
+    [Tooltip("Is this tile currently damaged? Default is FALSE.")]
+    public bool isDamaged;
 
     [Header("Variants")]
     public TileType type;
@@ -521,9 +522,9 @@ public struct WorldTile
     #region Destruction
     public void SetDestroyed(bool destroyed, string message = "")
     {
-        if (destroyed == damaged) { return; } // Don't do anything if we are already at this state!
+        if (destroyed == isDamaged) { return; } // Don't do anything if we are already at this state!
 
-        damaged = destroyed;
+        isDamaged = destroyed;
 
         if (destroyed)
         {
@@ -531,7 +532,8 @@ public struct WorldTile
             if (type != TileType.Floor && MapManager.inst.pathdata[location.x, location.y] > 0) { MapManager.inst.pathdata[location.x, location.y] = 0; }
 
             // Create a CALC message
-            UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+            if(message != "")
+                UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
 
             // TODO
         }
@@ -541,10 +543,19 @@ public struct WorldTile
             if (type != TileType.Floor && MapManager.inst.pathdata[location.x, location.y] != 0) { MapManager.inst.pathdata[location.x, location.y] = HF.TileObstructionType(type); }
 
             // Create a LOG message indicating this tile has been repaired (TODO)
-            UIManager.inst.CreateNewLogMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+            if (message != "")
+                UIManager.inst.CreateNewLogMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
+
+            // Reset doors
+            if (type == TileType.Door) { door_open = false; }
 
             // TODO
         }
+
+        // Update this tile's visibility
+        MapManager.inst.UpdateTile(this, location);
+        // And update the Fog of War since this probably changes local visibility in some way.
+        TurnManager.inst.AllEntityVisUpdate(true);
     }
     #endregion
 
