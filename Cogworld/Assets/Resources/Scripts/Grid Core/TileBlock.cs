@@ -536,6 +536,12 @@ public struct WorldTile
             if(message != "")
                 UIManager.inst.CreateNewCalcMessage(message, UIManager.inst.activeGreen, UIManager.inst.dullGreen, false, true);
 
+            // If this is a wall tile we need to warn the player it could collapse
+            if(type == TileType.Wall)
+            {
+                GameManager.inst.WarningPulseAdd(location);
+            }
+
             // TODO
         }
         else
@@ -550,6 +556,12 @@ public struct WorldTile
             // Reset doors
             if (type == TileType.Door) { door_open = false; }
 
+            // If this is a wall tile we should remove its warning pulser if it exists
+            if (type == TileType.Wall)
+            {
+                GameManager.inst.WarningPulseRemove(location);
+            }
+
             // TODO
         }
 
@@ -557,7 +569,7 @@ public struct WorldTile
         MapManager.inst.UpdateTile(this, location);
         // And update the Fog of War since this probably changes local visibility in some way.
         TurnManager.inst.AllEntityVisUpdate(true);
-        Debug.Log(MapManager.inst.mapdata[location.x, location.y].isDamaged);
+
     }
     #endregion
 

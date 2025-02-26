@@ -22,6 +22,16 @@ public class SimpleTileAnimator : MonoBehaviour
     public float chain_animationTime;
     [Tooltip("Is there any delay between the first animation ending and the second animation starting? 0 by default.")]
     public float chain_delay;
+    [Header("   Collapse/Destroyed Animation")]
+    public bool isDestroyed = false;
+
+    private void Update()
+    {
+        if (isDestroyed)
+        {
+            CollapseDestroyed();
+        }
+    }
 
     public void Init(Color startC, Color endC, float time)
     {
@@ -146,6 +156,13 @@ public class SimpleTileAnimator : MonoBehaviour
 
         // All done? Destroy this object
         Destroy(this.gameObject);
+    }
+    #endregion
+
+    #region Collapse/Destroyed Animation
+    private void CollapseDestroyed()
+    {
+        sprite.color = GameManager.inst.warningPulseColor;
     }
     #endregion
 }

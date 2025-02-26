@@ -1074,7 +1074,7 @@ public class MapManager : MonoBehaviour
         tilemap.SetTile((Vector3Int)pos, display);
     }
 
-    [SerializeField] private GameObject prefab_basictile;
+    public GameObject prefab_basictile;
     /// <summary>
     /// Initial reveal animation for a single tile at a specified position
     /// </summary>

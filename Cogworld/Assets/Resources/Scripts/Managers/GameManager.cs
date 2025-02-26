@@ -213,6 +213,7 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
+    #region Updates
     /// <summary>
     /// Updates the field of view for every existing entity. Updates player FOV as well
     /// </summary>
@@ -304,6 +305,50 @@ public class GameManager : MonoBehaviour
 
     }
 
+    #region Collapse/Warning pulse
+    private float pulseSpeed = 0.3f;
+    private Dictionary<Vector2Int, GameObject> warningPulsers = new Dictionary<Vector2Int, GameObject>();
+    [HideInInspector] public Color warningPulseColor = Color.red;
+    /// <summary>
+    /// Ensures that all of the destroyed/collapse warning tiles that are flashing red are in sync.
+    /// </summary>
+    private void DestructionPulseIndicator()
+    {
+        float pulseValue = Mathf.PingPong(Time.time * pulseSpeed, 1f); // Oscillate between 0 and 1
+        float lerp = Mathf.Lerp(0.35f, 0f, pulseValue);
+        Color newColor = new Color(warningPulseColor.r, warningPulseColor.g, warningPulseColor.b, lerp);
+        warningPulseColor = newColor;
+    }
+
+    public void WarningPulseAdd(Vector2Int pos)
+    {
+        // Delete any existing ones
+        if (warningPulsers.ContainsKey(pos))
+        {
+            Destroy(warningPulsers[pos]);
+            warningPulsers.Remove(pos);
+        }
+
+        // Create a new one
+        GameObject newPulser = Instantiate(MapManager.inst.prefab_basictile, new Vector3(pos.x, pos.y), Quaternion.identity);
+        newPulser.transform.SetParent(MapManager.inst.transform);
+        newPulser.GetComponent<SimpleTileAnimator>().isDestroyed = true;
+        newPulser.gameObject.name = $"({pos.x}, {pos.y}) - Warning Pulser";
+
+        warningPulsers.Add(pos, newPulser);
+    }
+
+    public void WarningPulseRemove(Vector2Int pos)
+    {
+        if (warningPulsers.ContainsKey(pos))
+        {
+            Destroy(warningPulsers[pos]);
+            warningPulsers.Remove(pos);
+        }
+    }
+    #endregion
+    #endregion
+
     private void Start()
     {
         // - Startup Logic -
@@ -328,6 +373,7 @@ public class GameManager : MonoBehaviour
         {
             EvolutionCheck();
         }
+        DestructionPulseIndicator();
     }
 
     #region Start-Up
