@@ -1006,7 +1006,74 @@ public class MapManager : MonoBehaviour
                 }
                 break;
             case TileType.Machine:
-                // TODO
+                // Theres a quite a bit of variation here since the machine has 4 different colors
+                MachineData md = tile.machinedata;
+                Color active = md.activeColor;
+                Color disabled = md.disabledColor;
+
+                // Is this machine active/interactable/not-destroyed
+                if (!md.machineIsDestroyed)
+                {
+                    // NOTE: IT'S NOT THIS SIMPLE SINCE WE HAVE MULTIPLE ROTATIONS FOR SOME SPRITES. EXPAND THIS!!!
+                    if (ASCII)
+                    {
+                        display = tile.tileInfo.asciiRep;
+                    }
+                    else
+                    {
+                        display = tile.tileInfo.displaySprite;
+                    }
+
+                    // Although this machine may not be destroyed, is it's parent object destroyed?
+                    // If so, we need to show the disabled color instead.
+                    bool isDisabled = false;
+
+                    if (!md.isParent)
+                    {
+                        WorldTile parent = md.GetParent(pos);
+
+                        isDisabled = parent.machinedata.machineIsDestroyed;
+                    }
+
+                    // If it is disabled/destroyed, we need to show the grayed out version
+                    if (isDisabled)
+                    {
+                        display.color = disabled;
+                    }
+                    else
+                    {
+                        display.color = active;
+                    }
+                }
+                else
+                {
+                    // If THIS machine is damaged, we need to display the floor instead
+                    TileObject floor = MapManager.inst.tileDatabase.Tiles[HF.IDbyTheme(TileType.Floor)];
+
+                    // And the floor tile can be destroyed too!
+                    if (ASCII)
+                    {
+                        display = floor.asciiRep;
+
+                        if (tile.isDirty != -1) // Dirty tiles
+                        {
+                            display = debrisTiles_ASCII[tile.isDirty];
+                        }
+                    }
+                    else
+                    {
+                        display = floor.displaySprite;
+
+                        if (tile.isDirty != -1) // Dirty tiles
+                        {
+                            display = debrisTiles[tile.isDirty];
+                        }
+                    }
+
+                    display.color = floor.asciiColor;
+                }
+
+
                 break;
             case TileType.Exit:
                 if (ASCII)
@@ -1736,6 +1803,28 @@ public class MapManager : MonoBehaviour
     public bool CheckDictionaryEntry(Dictionary<Vector2Int, TData> dict, Vector2Int key)
     {
         return dict.ContainsKey(key);
+    }
+
+    public WorldTile PlaceTrap(Vector2Int pos, int id, BotAlignment alignment = BotAlignment.Complex, bool knowByPlayer = false, byte startingVis = 0, TerminalZone assignedTerminal = null)
+    {
+        // Create the new trap
+        WorldTile newTrap = CreateBlock(pos, id, false);
+
+        // Add trap information
+        newTrap.trap_active = true;
+        newTrap.trap_alignment = alignment;
+        newTrap.trap_knowByPlayer = knowByPlayer;
+        newTrap.trap_data = newTrap.tileInfo.trapData;
+        newTrap.trap_type = newTrap.trap_data.trapType;
+
+        // Modify vision
+        newTrap.vis = startingVis;
+
+        // (Optional) Assign to terminal zone
+        if (assignedTerminal != null)
+            assignedTerminal.trapList.Add(newTrap);
+
+        return newTrap;
     }
 
     #endregion
@@ -2960,8 +3049,6 @@ public class MapManager : MonoBehaviour
         mapdata[exitLocation.x, exitLocation.y] = PlaceLevelExit(exitLocation, false, 0);
     }
 
-
-
     #endregion
 
     #region > Change Levels <
@@ -3319,29 +3406,7 @@ public class MapManager : MonoBehaviour
     #endregion
 
     #region Misc
-
-    public WorldTile PlaceTrap(Vector2Int pos, int id, BotAlignment alignment = BotAlignment.Complex, bool knowByPlayer = false, byte startingVis = 0, TerminalZone assignedTerminal = null)
-    {
-        // Create the new trap
-        WorldTile newTrap = CreateBlock(pos, id, false);
-
-        // Add trap information
-        newTrap.trap_active = true;
-        newTrap.trap_alignment = alignment;
-        newTrap.trap_knowByPlayer = knowByPlayer;
-        newTrap.trap_data = newTrap.tileInfo.trapData;
-        newTrap.trap_type = newTrap.trap_data.trapType;
-
-        // Modify vision
-        newTrap.vis = startingVis;
-
-        // (Optional) Assign to terminal zone
-        if(assignedTerminal != null)
-            assignedTerminal.trapList.Add(newTrap);
-
-        return newTrap;
-    }
-
+    
     public void LocationLog(string location, string goal = "GOAL=ESCAPE")
     {
         string locationMessage = "LOCATION=";

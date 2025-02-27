@@ -840,15 +840,11 @@ public struct WorldTile
         // Color setup
         #region Colors
         machinedata.activeColor = tileInfo.asciiColor;
-        machinedata.dimColor = HF.GetDarkerColor(machinedata.activeColor, 0.3f);
         machinedata.disabledColor = Color.gray;
-        machinedata.dimDisabledColor = HF.GetDarkerColor(machinedata.disabledColor, 0.3f);
 
         // And save this info
         MapManager.inst.mapdata[location.x, location.y].machinedata.activeColor = machinedata.activeColor;
-        MapManager.inst.mapdata[location.x, location.y].machinedata.dimColor = machinedata.dimColor;
         MapManager.inst.mapdata[location.x, location.y].machinedata.disabledColor = machinedata.disabledColor;
-        MapManager.inst.mapdata[location.x, location.y].machinedata.dimDisabledColor = machinedata.dimDisabledColor;
         #endregion
     }
 
@@ -912,6 +908,8 @@ public struct MachineData
     public MachineType type;
     [Tooltip("Is this machine ACTIVE/USABLE?")]
     public bool state;
+    [Tooltip("Seperated from the based `isDamaged` because not only can this be destroyed but the floor before it can be to.")]
+    public bool machineIsDestroyed;
 
     [Header("Explosion")]
     [Tooltip("Does this machine explode? Usually only some static machines do this.")]
@@ -936,13 +934,30 @@ public struct MachineData
 
     [Header("Colors")]
     public Color activeColor;
-    public Color dimColor;
     public Color disabledColor;
-    public Color dimDisabledColor;
 
     // TODO: !! All the other stuff needed for the individual interactable machines !!
 
     // Future note:
     // -How to handle Machine audio: https://www.gridsagegames.com/blog/2020/06/building-cogminds-ambient-soundscape/
 
+    public WorldTile GetParent(Vector2Int loc)
+    {
+        if (MapManager.inst.mapdata[loc.x, loc.y].machinedata.isParent)
+        {
+            return MapManager.inst.mapdata[loc.x, loc.y];
+        }
+        else
+        {
+            foreach (Vector2Int MD in MapManager.inst.mapdata[loc.x, loc.y].machinedata.children)
+            {
+                if(MapManager.inst.mapdata[MD.x, MD.y].machinedata.isParent)
+                {
+                    return MapManager.inst.mapdata[MD.x, MD.y];
+                }
+            }
+        }
+
+        return default(WorldTile);
+    }
 }
