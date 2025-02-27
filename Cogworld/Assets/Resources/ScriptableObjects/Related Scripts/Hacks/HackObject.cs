@@ -38,7 +38,8 @@ public enum MachineType
     Terminal,
     CustomTerminal,
     DoorTerminal,
-    Misc
+    Static,
+    None
 }
 
 [System.Serializable]

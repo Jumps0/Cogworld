@@ -1,11 +1,4 @@
-/*
- * Originally Created by: TaroDev
- * Expanded by: Cody Jackson
- * Youtube Link: https://www.youtube.com/watch?v=kkAjpQAM-jE
- * 
- * 
- */
-
+// By: Cody Jackson | cody@krselectric.com
 using System.Collections;
 using UnityEngine;
 
@@ -488,7 +481,7 @@ public struct WorldTile
     public int isDirty;
     public bool isImpassible;
     [Tooltip("Is this tile currently damaged? Default is FALSE.")]
-    public bool isDamaged;
+    public bool isDamaged; // Important for machines too!
 
     [Header("Variants")]
     public TileType type;
@@ -836,6 +829,77 @@ public struct WorldTile
         // TODO
     }
     #endregion
+
+    #region Machines
+    // Dear god this is gonna be a lot.
+
+    public void MachineInit()
+    {
+        MachineSetName();
+
+        // Color setup
+        #region Colors
+        machinedata.activeColor = tileInfo.asciiColor;
+        machinedata.dimColor = HF.GetDarkerColor(machinedata.activeColor, 0.3f);
+        machinedata.disabledColor = Color.gray;
+        machinedata.dimDisabledColor = HF.GetDarkerColor(machinedata.disabledColor, 0.3f);
+
+        // And save this info
+        MapManager.inst.mapdata[location.x, location.y].machinedata.activeColor = machinedata.activeColor;
+        MapManager.inst.mapdata[location.x, location.y].machinedata.dimColor = machinedata.dimColor;
+        MapManager.inst.mapdata[location.x, location.y].machinedata.disabledColor = machinedata.disabledColor;
+        MapManager.inst.mapdata[location.x, location.y].machinedata.dimDisabledColor = machinedata.dimDisabledColor;
+        #endregion
+    }
+
+    private void MachineSetName()
+    {
+        switch (machinedata.type)
+        {
+            case MachineType.Fabricator:
+                machinedata.displayName = "Fabricator";
+                break;
+            case MachineType.Garrison:
+                machinedata.displayName = "Garrison";
+                break;
+            case MachineType.Recycling:
+                machinedata.displayName = "Recycling Unit";
+                break;
+            case MachineType.RepairStation:
+                machinedata.displayName = "Repair Station";
+                break;
+            case MachineType.Scanalyzer:
+                machinedata.displayName = "Scanalyzer";
+                break;
+            case MachineType.Terminal:
+                machinedata.displayName = "Terminal";
+                break;
+            case MachineType.CustomTerminal:
+                // TODO
+                // More complicated
+                break;
+            case MachineType.DoorTerminal:
+                // TODO
+                // More complicated
+                break;
+            case MachineType.Static:
+                // TODO
+                // More complicated
+                break;
+            case MachineType.None:
+                machinedata.displayName = "NONE";
+                Debug.LogWarning($"Machine @ ({location.x}, {location.y}) has no type!");
+                break;
+            default:
+                machinedata.displayName = "NONE";
+                Debug.LogWarning($"Machine @ ({location.x}, {location.y}) has no type!");
+                break;
+        }
+
+        // And save this name
+        MapManager.inst.mapdata[location.x, location.y].machinedata.displayName = machinedata.displayName;
+    }
+    #endregion
 }
 
 /// <summary>
@@ -843,5 +907,42 @@ public struct WorldTile
 /// </summary>
 public struct MachineData
 {
-    // TODO
+    [Header("Basic Info")]
+    public string displayName;
+    public MachineType type;
+    [Tooltip("Is this machine ACTIVE/USABLE?")]
+    public bool state;
+
+    [Header("Explosion")]
+    [Tooltip("Does this machine explode? Usually only some static machines do this.")]
+    public bool explodes;
+    public int explosion_heattransfer;
+    public ExplosionGeneric explosion_details;
+    public ItemExplosion explosion_potential;
+
+    [Header("Random Junk")]
+    [Tooltip("Instead of being a normal machine, this is just a piece of junk on the map that some NPCs can pass through.")]
+    public bool isRandomJunk;
+    [Tooltip("If set as a piece of junk, certain factions of NPC can walk through this.")]
+    public bool junk_walkable;
+
+    [Header("Parent & Ownership")]
+    [Tooltip("Is this part the PARENT or PRIMARY interactable for all the other parts that make up this machine")]
+    public bool isParent;
+    [Tooltip("If this part is the parent, will contain all other children that make up this machine.")]
+    public Vector2Int[] children;
+    [Tooltip("Reference to the UI indicator showing where this machine is IF it is currently not on the screen.")]
+    public GameObject indicator;
+
+    [Header("Colors")]
+    public Color activeColor;
+    public Color dimColor;
+    public Color disabledColor;
+    public Color dimDisabledColor;
+
+    // TODO: !! All the other stuff needed for the individual interactable machines !!
+
+    // Future note:
+    // -How to handle Machine audio: https://www.gridsagegames.com/blog/2020/06/building-cogminds-ambient-soundscape/
+
 }

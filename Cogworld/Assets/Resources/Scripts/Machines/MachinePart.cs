@@ -175,7 +175,7 @@ public class MachinePart : MonoBehaviour
             {
                 displayName = this.GetComponent<StaticMachine>()._name;
             }
-            type = MachineType.Misc;
+            type = MachineType.Static;
         }
     }
 

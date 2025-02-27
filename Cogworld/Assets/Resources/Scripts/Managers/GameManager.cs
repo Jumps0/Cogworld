@@ -1282,7 +1282,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void RevealWorldMachine(GameObject specificMachine = null, MachineType type = MachineType.Misc)
+    public void RevealWorldMachine(GameObject specificMachine = null, MachineType type = MachineType.Static)
     {
         if(specificMachine != null) // Reveal this specific machine
         {
@@ -1372,7 +1372,7 @@ public class GameManager : MonoBehaviour
                     break;
                 case MachineType.DoorTerminal:
                     break;
-                case MachineType.Misc:
+                case MachineType.Static:
                     break;
             }
         }

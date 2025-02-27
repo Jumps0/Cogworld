@@ -431,7 +431,7 @@ public static class HF
                 return "Terminal";
             case MachineType.DoorTerminal:
                 return "Terminal";
-            case MachineType.Misc:
+            case MachineType.Static:
                 return "Unknown";
             default:
                 return "Unknown";
@@ -491,7 +491,7 @@ public static class HF
                 break;
             case MachineType.DoorTerminal:
                 break;
-            case MachineType.Misc:
+            case MachineType.Static:
                 break;
             default:
                 break;
@@ -2031,7 +2031,7 @@ public static class HF
                 return GameManager.inst.colors.machine_customterminal;
             case MachineType.DoorTerminal:
                 return GameManager.inst.colors.machine_customterminal;
-            case MachineType.Misc:
+            case MachineType.Static:
                 return GameManager.inst.colors.machine_static;
             default:
                 return GameManager.inst.colors.machine_static;
@@ -5335,7 +5335,7 @@ public static class HF
             case MachineType.DoorTerminal:
 
                 break;
-            case MachineType.Misc:
+            case MachineType.Static:
                 foreach (var P in MapManager.inst.machines_static.ToList())
                 {
                     if (P == go.gameObject.transform.parent.gameObject)
