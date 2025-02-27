@@ -495,6 +495,7 @@ public struct WorldTile
     [Header(" Door")]
     [Tooltip("Is this door currently open?")]
     public bool door_open;
+    public bool isSecretDoor;
     [Header(" Access")]
     public bool access_branch;
     public int access_destination;
@@ -826,6 +827,13 @@ public struct WorldTile
                 UIManager.inst.CreateNewLogMessage("EXIT=FOUND", UIManager.inst.deepInfoBlue, UIManager.inst.infoBlue, false, true);
             }
         }
+    }
+    #endregion
+
+    #region Secret Door
+    public void SecretDoorReveal()
+    {
+        // TODO
     }
     #endregion
 }

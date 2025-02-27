@@ -91,12 +91,7 @@ public class EventTile : MonoBehaviour
             {
                 Vector2Int loc = HF.V3_to_V2I(S.transform.position);
 
-                if (MapManager.inst._allTilesRealized.ContainsKey(loc))
-                {
-                    MapManager.inst._allTilesRealized[loc].bottom.tileInfo = MapManager.inst.tileDatabase.Tiles[4]; // Replace type with floor tile
-                    MapManager.inst._allTilesRealized[loc].bottom.Init(); // Force the tile to update
-                    MapManager.inst._allTilesRealized[loc].bottom.SecretDoorReveal(); // Make it play its reveal animation
-                }
+                MapManager.inst.mapdata[loc.x, loc.y].SecretDoorReveal();
             }
 
             // Play a tile animation for each

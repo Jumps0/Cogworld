@@ -597,11 +597,6 @@ public class GlobalSettings : MonoBehaviour
                     db_textaid.gameObject.SetActive(true);
                     db_textaid.text = "> fow [Toggles the Fog of War]";
                 }
-                else if (command.Contains("notiles"))
-                {
-                    db_textaid.gameObject.SetActive(true);
-                    db_textaid.text = "> notiles [Toggles vision of all tile sprites]";
-                }
                 else if (command.Contains("pos"))
                 {
                     db_textaid.gameObject.SetActive(true);
@@ -682,8 +677,6 @@ public class GlobalSettings : MonoBehaviour
          *    Name: The direct name of this thing, better spell it correctly!
          *  > fow
          *    -Toggles the fog of war
-         *  > notiles
-         *    -Toggles vision of all tile sprites
          *  > pos
          *    -Returns (and displays) coordinate position of player, and mouse
          *  > newflooranim
@@ -961,15 +954,6 @@ public class GlobalSettings : MonoBehaviour
                 break;
             case "fow":
                 FogOfWar.inst.DEBUG_ToggleFog();
-                success = true;
-
-                break;
-            case "notiles":
-                foreach (var T in MapManager.inst._allTilesRealized)
-                {
-                    T.Value.bottom._renderer.enabled = !T.Value.bottom._renderer.enabled;
-                }
-
                 success = true;
 
                 break;

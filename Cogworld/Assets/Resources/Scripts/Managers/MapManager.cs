@@ -1663,6 +1663,7 @@ public class MapManager : MonoBehaviour
         newTile.isDirty = dirty ? Random.Range(0, debrisTiles.Count - 1) : -1; // (Assign a debris sprite ID so on the tilemap update the sprite doesn't randomly change)
         newTile.revealedViaIntel = false;
         newTile.isDamaged = false;
+        newTile.isSecretDoor = false;
 
         // Visibility (start hidden)
         newTile.vis = 0;

@@ -543,6 +543,8 @@ public class PlayerData : MonoBehaviour
             Vector2Int start = new Vector2Int(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y));
             Vector2Int finish = HF.V3_to_V2I(mousePosition);
 
+            if(start == finish) { return; } // Don't draw a line with no length!
+
             path = HF.BresenhamPath(start, finish);
 
             // Draw the path 
@@ -638,23 +640,20 @@ public class PlayerData : MonoBehaviour
                 Vector2Int target = new Vector2Int(Mathf.RoundToInt(mousePosition.x), Mathf.RoundToInt(mousePosition.y));
                 Vector2Int BL_corner = new Vector2Int(target.x - range, target.y - range);
 
-                List<GameObject> tiles = new List<GameObject>();
+                List<WorldTile> tiles = new List<WorldTile>();
                 for (int x = 0 + BL_corner.x; x < (range * 2) + 1 + BL_corner.x; x++)
                 {
                     for (int y = 0 + BL_corner.y; y < (range * 2) + 1 + BL_corner.y; y++)
                     {
-                        if (MapManager.inst._allTilesRealized.ContainsKey(new Vector2Int(x, y)))
-                        {
-                            tiles.Add(MapManager.inst._allTilesRealized[new Vector2Int(x, y)].bottom.gameObject);
-                        }
+                        tiles.Add(MapManager.inst.mapdata[x,y]);
                     }
                 }
 
                 // - Now we need to go through the very fun process of refining this square into a circle. While we're at it, we spawn the prefabs aswell.
-                foreach (GameObject T in tiles)
+                foreach (WorldTile T in tiles)
                 {
-                    float tileDistiance = Vector2Int.Distance(HF.V3_to_V2I(T.transform.position), target);
-                    Vector2Int pos = HF.V3_to_V2I(T.transform.position);
+                    float tileDistiance = Vector2Int.Distance(T.location, target);
+                    Vector2Int pos = T.location;
 
                     // Check if the distance is within the radius of the circle
                     if (tileDistiance <= range)
