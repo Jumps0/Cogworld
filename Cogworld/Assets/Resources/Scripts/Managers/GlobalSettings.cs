@@ -412,25 +412,25 @@ public class GlobalSettings : MonoBehaviour
             string vision = "";
             if(tile.vis == 2)
             {
-                vision = "Visible & Known";
+                vision = "<color=#33ff57>Visible</color> & Known";
             }
             else if(tile.vis == 1)
             {
-                vision = "Unseen & Known";
+                vision = "<color=#B4C3A4>Unseen</color> & Known";
             }
             else if(tile.vis == 0)
             {
-                vision = "Unseen & Unknown";
+                vision = "<color=#B4C3A4>Unseen</color> & Unknown";
             }
             db_tileinfo.text += $"Vision: {vision}\n";
-            db_tileinfo.text += $"Damaged: {(tile.isDamaged ? "YES" : "NO")}\n";
+            db_tileinfo.text += $"Damaged: {(tile.isDamaged ? "<color= #FF3100 >YES</color>" : "NO")}\n";
             switch (tile.type)
             {
                 case TileType.Floor:
                     db_tileinfo.text += $"Dirty: ";
                     if(tile.isDirty > 0)
                     {
-                        db_tileinfo.text += $"YES ({tile.isDirty})\n";
+                        db_tileinfo.text += $"<color=#00CC00>YES</color> ({tile.isDirty})\n";
                     }
                     else
                     {
@@ -440,25 +440,25 @@ public class GlobalSettings : MonoBehaviour
                 case TileType.Wall:
                     break;
                 case TileType.Door:
-                    db_tileinfo.text += $"Door is: {(tile.door_open ? "OPEN" : "CLOSED")}\n";
+                    db_tileinfo.text += $"Door is: {(tile.door_open ? "<color= #54cc00 >YES</color>" : "CLOSED")}\n";
                     break;
                 case TileType.Machine:
                     // TODO
                     Debug.LogWarning("Needs to be implemented when `MachineData` is done.");
                     break;
                 case TileType.Exit:
-                    db_tileinfo.text += $"Destination: ({tile.access_destination}) {tile.access_destinationName}\n";
-                    db_tileinfo.text += $"Branch: {(tile.access_branch ? "YES" : "NO")}\n";
+                    db_tileinfo.text += $"Destination: (<color=#FF9600>{tile.access_destination}</color>) <color=#FF9600>{tile.access_destinationName}</color>\n";
+                    db_tileinfo.text += $"Branch: {(tile.access_branch ? "<color=#CC7800>YES</color>" : "NO")}\n";
                     break;
                 case TileType.Phasewall:
                     db_tileinfo.text += $"Assigned team: {tile.phase_team.ToString()}\n";
-                    db_tileinfo.text += $"Revealed: {(tile.phase_revealed ? "YES" : "NO")}\n";
+                    db_tileinfo.text += $"Revealed: {(tile.phase_revealed ? "<color=#00CC00>YES</color>" : "NO")}\n";
                     break;
                 case TileType.Trap:
                     db_tileinfo.text += $"Trap type: {tile.trap_type.ToString()}\n";
-                    db_tileinfo.text += $"Tripped: {(tile.trap_tripped ? "YES" : "NO")}\n";
-                    db_tileinfo.text += $"Active: {(tile.trap_active ? "YES" : "NO")}\n";
-                    db_tileinfo.text += $"Discovered: {(tile.trap_knowByPlayer ? "YES" : "NO")}\n";
+                    db_tileinfo.text += $"Tripped: {(tile.trap_tripped ? "<color=#00CC00>YES</color>" : "NO")}\n";
+                    db_tileinfo.text += $"Active: {(tile.trap_active ? "<color=#00CC00>YES</color>" : "NO")}\n";
+                    db_tileinfo.text += $"Discovered: {(tile.trap_knowByPlayer ? "<color=#00CC00>YES</color>" : "NO")}\n";
                     db_tileinfo.text += $"Alignment: {tile.trap_alignment.ToString()}\n";
                     break;
                 case TileType.Default:
@@ -467,7 +467,7 @@ public class GlobalSettings : MonoBehaviour
                     break;
             }
 
-            db_tileinfo.text += $"Impassible: {(tile.isImpassible ? "YES" : "NO")}\n";
+            db_tileinfo.text += $"Impassible: {(tile.isImpassible ? "<color= #FF3100 >YES</color>" : "NO")}\n";
         }
 
         // Interfacing mode enforcement
