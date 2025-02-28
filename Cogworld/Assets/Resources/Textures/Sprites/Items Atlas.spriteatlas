@@ -77,6 +77,7 @@ SpriteAtlas:
     isAtlasV2: 0
     cachedData: {fileID: 0}
     packedSpriteRenderDataKeys:
+    - ca1a5a530d65f9840870dbe101007d13: 698792287
     - ca1a5a530d65f9840870dbe101007d13: -19455067
     - ca1a5a530d65f9840870dbe101007d13: 1394623029
     - ca1a5a530d65f9840870dbe101007d13: -838771620
@@ -92,7 +93,6 @@ SpriteAtlas:
     - ca1a5a530d65f9840870dbe101007d13: -1732488489
     - ca1a5a530d65f9840870dbe101007d13: -1598801519
     - ca1a5a530d65f9840870dbe101007d13: 1945101601
-    - ca1a5a530d65f9840870dbe101007d13: 698792287
     - ca1a5a530d65f9840870dbe101007d13: -282640685
     - ca1a5a530d65f9840870dbe101007d13: -1417777807
     - ca1a5a530d65f9840870dbe101007d13: 272627401
@@ -107,6 +107,7 @@ SpriteAtlas:
     - ca1a5a530d65f9840870dbe101007d13: -819036517
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 698792287, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - {fileID: -19455067, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - {fileID: 1394623029, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - {fileID: -838771620, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
@@ -122,7 +123,6 @@ SpriteAtlas:
   - {fileID: -1732488489, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - {fileID: -1598801519, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - {fileID: 1945101601, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
-  - {fileID: 698792287, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - {fileID: -282640685, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - {fileID: -1417777807, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - {fileID: 272627401, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
@@ -136,6 +136,7 @@ SpriteAtlas:
   - {fileID: -1521503818, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - {fileID: -819036517, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   m_PackedSpriteNamesToIndex:
+  - matter
   - cogmind16x16_375
   - cogmind16x16_374
   - cogmind16x16_377
@@ -151,7 +152,6 @@ SpriteAtlas:
   - cogmind16x16_355
   - cogmind16x16_354
   - cogmind16x16_353
-  - cogmind16x16_352
   - cogmind16x16_368
   - cogmind16x16_369
   - cogmind16x16_362

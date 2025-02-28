@@ -56,12 +56,6 @@ public class TestMgr : MonoBehaviour
 
     private void TilemapTest()
     {
-        if (tilemap == null)
-        {
-            Debug.LogError("Tilemap reference is not assigned!");
-            return;
-        }
-
         // Get the bounds of the Tilemap (the area covered by tiles)
         BoundsInt bounds = tilemap.cellBounds;
 
@@ -83,10 +77,6 @@ public class TestMgr : MonoBehaviour
                 {
                     Debug.Log($"Tile at {position}: No sprite found");
                 }
-            }
-            else
-            {
-                Debug.Log($"No tile at {position}");
             }
         }
     }
