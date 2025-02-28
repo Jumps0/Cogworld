@@ -1032,7 +1032,8 @@ public class MapManager : MonoBehaviour
                     {
                         WorldTile parent = md.GetParent(pos);
 
-                        isDisabled = parent.machinedata.machineIsDestroyed;
+                        if(!parent.Equals(default(WorldTile)))
+                            isDisabled = parent.machinedata.machineIsDestroyed;
                     }
 
                     // If it is disabled/destroyed, we need to show the grayed out version

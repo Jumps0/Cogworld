@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Tilemaps;
 
 public class TestMgr : MonoBehaviour
 {
@@ -15,10 +16,12 @@ public class TestMgr : MonoBehaviour
     [Header("References")]
     public GameObject refA;
     public GameObject refB;
+    public Tilemap tilemap;
 
     private void Start()
     {
         //StartCoroutine(Delay(2.5f));
+        TilemapTest();
     }
 
     private IEnumerator Delay(float delay = 0f)
@@ -38,6 +41,7 @@ public class TestMgr : MonoBehaviour
 
     private void Update()
     {
+        /*
         if(Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             StartCoroutine(Delay());
@@ -46,6 +50,44 @@ public class TestMgr : MonoBehaviour
         {
             refA.GetComponent<UIDataHeader>().Close();
             refB.GetComponent<UIDataGenericDetail>().Close();
+        }
+        */
+    }
+
+    private void TilemapTest()
+    {
+        if (tilemap == null)
+        {
+            Debug.LogError("Tilemap reference is not assigned!");
+            return;
+        }
+
+        // Get the bounds of the Tilemap (the area covered by tiles)
+        BoundsInt bounds = tilemap.cellBounds;
+
+        // Loop through all the tiles within the bounds of the Tilemap
+        foreach (Vector3Int position in bounds.allPositionsWithin)
+        {
+            // Get the tile at the current position
+            TileBase tile = tilemap.GetTile(position);
+
+            // If the tile exists, print its sprite
+            if (tile != null)
+            {
+                // Check if the tile is a Tile object and has a sprite
+                if (tile is Tile tileObject && tileObject.sprite != null)
+                {
+                    Debug.Log($"Tile at {position}: {tileObject.sprite.name}");
+                }
+                else
+                {
+                    Debug.Log($"Tile at {position}: No sprite found");
+                }
+            }
+            else
+            {
+                Debug.Log($"No tile at {position}");
+            }
         }
     }
 }
