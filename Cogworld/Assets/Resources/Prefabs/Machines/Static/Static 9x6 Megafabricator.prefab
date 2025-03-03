@@ -8846,7 +8846,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9163113434371694507}
   m_Layer: 0
-  m_Name: Static 9x5 Megafabricator
+  m_Name: Static 9x6 Megafabricator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
