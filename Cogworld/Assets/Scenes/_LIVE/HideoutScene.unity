@@ -21804,13 +21804,6 @@ MonoBehaviour:
   showNewLevelAnimation: 0
   useAdvMoveDisNumbers: 1
   heatWarningLevel: 300
-  debugUI_parent: {fileID: 774804271}
-  dField: {fileID: 1318891503}
-  dButton: {fileID: 272563533}
-  dImage1: {fileID: 1243660871}
-  dImage2: {fileID: 1104097593}
-  dText1: {fileID: 17027669}
-  dText2: {fileID: 409690421}
   debugitemtest: 0
   debugLeftMessageTest: 0
   debugBottomMessageTest: 0
@@ -21820,6 +21813,7 @@ MonoBehaviour:
   db_ifield: {fileID: 1213955988}
   db_textaid: {fileID: 1807259343}
   db_playerPosition: {fileID: 1864509533}
+  db_tileinfo: {fileID: 0}
   db_helper_override: 0
   db_commandHistory: []
 --- !u!114 &605101187
@@ -52062,7 +52056,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerPrefab: {fileID: 1489840735499938570, guid: c412c0b4a2a9a9a4d9fe277ac1825452, type: 3}
   _tilePrefab: {fileID: 2442036288785041687, guid: b327a3d3d340883489efec1006ef3c21, type: 3}
-  _accessPrefab: {fileID: 757329426654254245, guid: 46fc05554c9f1a244850ce80784be65c, type: 3}
   debugPrefab: {fileID: 7279987755472343202, guid: f185db353b3a1cc42aacf4a68a7db9e3, type: 3}
   minePrefab: {fileID: 757329426654254245, guid: 8f34916c989e96d439b3eff23820e2af, type: 3}
   botPrefab: {fileID: 1489840735499938570, guid: 1b186cc634c9d204cb3574893a661a51, type: 3}
@@ -52119,6 +52112,7 @@ MonoBehaviour:
   itemDatabase: {fileID: 11400000, guid: de7b8b5ccd57e8f4bab9ca053bc6cdcc, type: 2}
   hackDatabase: {fileID: 11400000, guid: 242c46d91e9de9f4e80d4fd13228919f, type: 2}
   knowledgeDatabase: {fileID: 11400000, guid: fc0dd8fcbaee23847ab15edeaa54afc7, type: 2}
+  machineDatabase: {fileID: 11400000, guid: 71d806cde4c0e1a428c43e9830dd64b5, type: 2}
   debugDisabled: 0
   currentLevel: -11
   currentBranch: 0
@@ -52153,6 +52147,8 @@ MonoBehaviour:
   machines_repairStation: []
   machines_scanalyzers: []
   machines_customTerminals: []
+  staticMachinesTilemap: {fileID: 8792998006673259567, guid: fb849e85fe716da4dbabeb99fff4a2bc, type: 3}
+  interactableMachinesTilemap: {fileID: 2645767866660683443, guid: ebd454871b6fb394c92ca64ac6b84ecc, type: 3}
   imp_terminals:
   - {fileID: 7456691822352536937, guid: 752bd34d6359c9f48bee92b5ad5628d0, type: 3}
   - {fileID: 7456691822352536937, guid: 87f78e215a850974c9e5263f8330ceee, type: 3}
@@ -61704,6 +61700,7 @@ MonoBehaviour:
   alertLevel: 0
   alertValue: 0
   alert_steralization: 0
+  warningPulseColor: {r: 1, g: 0, b: 0, a: 1}
   startupCanvas: {fileID: 618440340}
   lngPanel: {fileID: 1926439973}
   lngMode_text: {fileID: 219404132}
@@ -75052,7 +75049,6 @@ MonoBehaviour:
   globalScale: 1
   mouseTargetTile: {fileID: 0}
   oldTargetTile: {fileID: 0}
-  debugFlip: 0
 --- !u!1 &1979391750
 GameObject:
   m_ObjectHideFlags: 0

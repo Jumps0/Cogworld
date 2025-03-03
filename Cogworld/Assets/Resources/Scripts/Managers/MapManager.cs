@@ -36,6 +36,7 @@ public class MapManager : MonoBehaviour
         itemDatabase.SetupDict();
         hackDatabase.SetupDict();
         knowledgeDatabase.SetupDict();
+        machineDatabase.SetupDict();
     }
 
     // !! THIS IS WHERE IT ALL STARTS !!
@@ -109,6 +110,7 @@ public class MapManager : MonoBehaviour
     public ItemDatabaseObject itemDatabase;
     public HackDatabaseObject hackDatabase;
     public KnowledgeDatabaseObject knowledgeDatabase;
+    public MachineDatabaseObject machineDatabase;
 
     [Header("DEBUG")]
     // -- Debug --
@@ -2094,6 +2096,8 @@ public class MapManager : MonoBehaviour
     public List<GameObject> machines_customTerminals = new List<GameObject>();
 
     [Header("Machine Prefabs")]
+    public Tilemap staticMachinesTilemap;
+    public Tilemap interactableMachinesTilemap;
     public List<GameObject> imp_terminals = new List<GameObject>();
     public List<GameObject> imp_fabricators = new List<GameObject>();
     public List<GameObject> imp_recyclingunits = new List<GameObject>();

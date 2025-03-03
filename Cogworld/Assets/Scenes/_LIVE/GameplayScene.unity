@@ -52247,6 +52247,7 @@ MonoBehaviour:
   itemDatabase: {fileID: 11400000, guid: de7b8b5ccd57e8f4bab9ca053bc6cdcc, type: 2}
   hackDatabase: {fileID: 11400000, guid: 242c46d91e9de9f4e80d4fd13228919f, type: 2}
   knowledgeDatabase: {fileID: 11400000, guid: fc0dd8fcbaee23847ab15edeaa54afc7, type: 2}
+  machineDatabase: {fileID: 11400000, guid: 71d806cde4c0e1a428c43e9830dd64b5, type: 2}
   debugDisabled: 0
   currentLevel: -11
   currentBranch: 0
@@ -52281,6 +52282,8 @@ MonoBehaviour:
   machines_repairStation: []
   machines_scanalyzers: []
   machines_customTerminals: []
+  staticMachinesTilemap: {fileID: 8792998006673259567, guid: fb849e85fe716da4dbabeb99fff4a2bc, type: 3}
+  interactableMachinesTilemap: {fileID: 2645767866660683443, guid: ebd454871b6fb394c92ca64ac6b84ecc, type: 3}
   imp_terminals:
   - {fileID: 7456691822352536937, guid: 752bd34d6359c9f48bee92b5ad5628d0, type: 3}
   - {fileID: 7456691822352536937, guid: 87f78e215a850974c9e5263f8330ceee, type: 3}
@@ -61832,6 +61835,7 @@ MonoBehaviour:
   alertLevel: 0
   alertValue: 0
   alert_steralization: 0
+  warningPulseColor: {r: 1, g: 0, b: 0, a: 1}
   startupCanvas: {fileID: 618440340}
   lngPanel: {fileID: 1926439973}
   lngMode_text: {fileID: 219404132}
