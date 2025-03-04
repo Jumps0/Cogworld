@@ -24,7 +24,7 @@ public class MachineDatabaseObject : ScriptableObject, ISerializationCallbackRec
 
         foreach (var machine in Machines)
         {
-            dict.Add(machine.name, machine); // Doesn't use trueName because that is used for a special purpose.
+            dict.Add(machine.displayName, machine); // Doesn't use trueName because that is used for a special purpose.
         }
     }
 

@@ -1,5 +1,6 @@
 // By: Cody Jackson | cody@krselectric.com
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -835,21 +836,6 @@ public struct WorldTile
 
     public void MachineInit()
     {
-        MachineSetName();
-
-        // Color setup
-        #region Colors
-        machinedata.activeColor = tileInfo.asciiColor;
-        machinedata.disabledColor = Color.gray;
-
-        // And save this info
-        MapManager.inst.mapdata[location.x, location.y].machinedata.activeColor = machinedata.activeColor;
-        MapManager.inst.mapdata[location.x, location.y].machinedata.disabledColor = machinedata.disabledColor;
-        #endregion
-    }
-
-    private void MachineSetName()
-    {
         switch (machinedata.type)
         {
             case MachineType.Fabricator:
@@ -894,7 +880,72 @@ public struct WorldTile
 
         // And save this name
         MapManager.inst.mapdata[location.x, location.y].machinedata.displayName = machinedata.displayName;
+
+        // Color setup
+        #region Colors
+        machinedata.activeColor = tileInfo.asciiColor;
+        machinedata.disabledColor = Color.gray;
+
+        // And save this info
+        MapManager.inst.mapdata[location.x, location.y].machinedata.activeColor = machinedata.activeColor;
+        MapManager.inst.mapdata[location.x, location.y].machinedata.disabledColor = machinedata.disabledColor;
+        #endregion
     }
+
+    #region Terminal
+    private void TerminalInit()
+    {
+
+    }
+
+    #endregion
+
+    #region Custom Terminal
+    private void CustomTerminalInit()
+    {
+        /*
+         // Whatever this is?
+         if(obj.GetComponentInChildren<TerminalCustom>().customType == CustomTerminalType.DoorLock)
+            {
+                foreach (Vector2Int loc in obj.GetComponentInChildren<TerminalCustom>().wallRevealCoordinates)
+                {
+                    if (MapManager.inst._allTilesRealized.ContainsKey(loc))
+                    {
+                        obj.GetComponentInChildren<TerminalCustom>().linkedDoors.Add(MapManager.inst._allTilesRealized[loc].bottom);
+                    }
+                }
+            }
+         */
+    }
+    #endregion
+
+    #region Fabricator
+    private void FabricatorInit()
+    {
+
+    }
+    #endregion
+
+    #region Recycling Units
+    private void RecyclingInit()
+    {
+
+    }
+    #endregion
+
+    #region Repair Station
+    private void RepairInit()
+    {
+
+    }
+    #endregion
+
+    #region Scanalyzer
+    private void ScanalyzerInit()
+    {
+
+    }
+    #endregion
     #endregion
 }
 
@@ -904,7 +955,12 @@ public struct WorldTile
 public struct MachineData
 {
     [Header("Basic Info")]
+    [Tooltip("The general (generic) name for this machine. Mostly used in logging (ex: Garrison). Set upon startup in MachineData.")]
     public string displayName;
+    [Tooltip("What this machine is reffered to as in the Terminal (Hacking) window.")]
+    public string terminalName;
+    [Tooltip("What this machine is reffered to as in logging printouts.")]
+    public string logName;
     public MachineType type;
     [Tooltip("Is this machine ACTIVE/USABLE?")]
     public bool state;
@@ -935,6 +991,37 @@ public struct MachineData
     [Header("Colors")]
     public Color activeColor;
     public Color disabledColor;
+
+    [Header("** Interactable Machine Variables **")]
+    [Header("Hacking Info")]
+    [Tooltip("Mostly flavor. If true, enables tracing.")]
+    public bool restrictedAccess;
+    [Tooltip("0, 1, 2, 3. 0 = Open System")]
+    public int secLvl;
+    [Tooltip("The detection chance while hacking.")]
+    public float detectionChance;
+    [Tooltip("If detected in hacking, what is the trace progress.")]
+    public float traceProgress;
+    [Tooltip("While hacking, has the user been detected?")]
+    public bool detected;
+    [Tooltip("Is this machine no longer accessible (in lockdown).")]
+    public bool locked; // No longer accessable
+    [Tooltip("How many times has the user interacted with this machine.")]
+    public int timesAccessed;
+
+    [Header("Commands")]
+    public List<TerminalCommand> avaiableCommands;
+
+    [Header("Trojans")]
+    public List<HackObject> trojans;
+
+    [Header("Terminal Variables")]
+    public TerminalZone terminalZone;
+    [Tooltip("The Operator class Actor assigned to monitor this machine.")]
+    public Actor terminalOverseer;
+    public List<TerminalCustomCode> terminalCustomCodes;
+    public List<ItemObject> storedObjects;
+    public bool databaseLockout;
 
     // TODO: !! All the other stuff needed for the individual interactable machines !!
 

@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using static StructureCTR;
 using Random = UnityEngine.Random;
+using Tile = UnityEngine.Tilemaps.Tile;
 
 /// <summary>
 /// Contains all data for a specific position in the world. Includes objects for both layers, and vision status.
@@ -659,18 +660,18 @@ public class MapManager : MonoBehaviour
             mapdata[P.x, P.y] = CreateBlock(P, doorID); // Place door
         }
 
-        /*
+        
         // 5 - Place custom machines
-        PlaceIndividualMachine(new Vector2Int(bl.x + 2, bl.y + 3), 1, 4); // Terminal 4x3 "Pipeworks"
-        PlaceIndividualMachine(new Vector2Int(bl.x + 4, bl.y + 7), 0, 11); // Static Machine (Outpost Generator)
+        //PlaceIndividualMachine(new Vector2Int(bl.x + 2, bl.y + 3), 1, 4); // Terminal 4x3 "Pipeworks"
+        //PlaceIndividualMachine(new Vector2Int(bl.x + 4, bl.y + 7), 0, 11); // Static Machine (Outpost Generator)
         PlaceIndividualMachine(new Vector2Int(bl.x + 8, bl.y + 4), 0, 0); // Static Machine (Recharging Bay)
 
         //PlaceIndividualMachine(new Vector2Int(bl.x + 3, bl.y + 13), 2, 2); // Fabricator 4x2 "Alice"
-        PlaceIndividualMachine(new Vector2Int(bl.x + 2, bl.y + 13), 6, 0); // Garrison 3x3 "Angel"
+        //PlaceIndividualMachine(new Vector2Int(bl.x + 2, bl.y + 13), 6, 0); // Garrison 3x3 "Angel"
 
         // 6 - Place Cache
-        PlaceHideoutCache(new Vector2Int(bl.x + 8, bl.y + 10));
-        */
+        //PlaceHideoutCache(new Vector2Int(bl.x + 8, bl.y + 10));
+        
         // # - Test bot
         Actor testBot = PlaceBot(new Vector2Int(bl.x + 12, bl.y + 5), HF.GetBotByString("Thug"));
         // Test QUEST Bot
@@ -688,6 +689,7 @@ public class MapManager : MonoBehaviour
     /// </summary>
     private void PlaceHideoutCache(Vector2 pos)
     {
+        /* TODO: COME BACK TO THIS
         // Set prefab
         GameObject prefab = imp_customTerminals[0];
 
@@ -711,14 +713,14 @@ public class MapManager : MonoBehaviour
             T.top = M.gameObject;
             _allTilesRealized[loc] = T;
         }
-        /*
-         * NOTE:
-         * In the machine prefabs, all components my be perfectly aligned on exact numbers. If there are any decimals in the numbers (eg. -1.9999) there
-         * is a high chance that the spawning will break and the machine part will be spawned in the incorrect space due to rounding.
-         */
+        
+        // NOTE:
+        // In the machine prefabs, all components my be perfectly aligned on exact numbers. If there are any decimals in the numbers (eg. -1.9999) there
+        // is a high chance that the spawning will break and the machine part will be spawned in the incorrect space due to rounding.
 
         // Setup the machine's script
         cache.GetComponentInChildren<TerminalCustom>().Init(CustomTerminalType.HideoutCache);
+        */
     }
 
     #endregion
@@ -1604,6 +1606,7 @@ public class MapManager : MonoBehaviour
             }
             else if (obj.gameObject.name.Contains("Machine"))
             {
+                /* TODO: COME BACK TO THIS
                 // We are just going to create an exact copy of this part and copy over its component data
                 GameObject M = Instantiate(obj.gameObject);
                 M.transform.position = obj.transform.position;
@@ -1664,6 +1667,7 @@ public class MapManager : MonoBehaviour
                 T.bottom.occupied = true;
                 T.top = M.gameObject;
                 _allTilesRealized[loc] = T;
+                */
             }
         }
 
@@ -2085,31 +2089,16 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    [Header("All Machines (in world)")]
-    public List<GameObject> machines_static = new List<GameObject>();
-    public List<GameObject> machines_terminals = new List<GameObject>();
-    public List<GameObject> machines_fabricators = new List<GameObject>();
-    public List<GameObject> machines_recyclingUnits = new List<GameObject>();
-    public List<GameObject> machines_garrisons = new List<GameObject>();
-    public List<GameObject> machines_repairStation = new List<GameObject>();
-    public List<GameObject> machines_scanalyzers = new List<GameObject>();
-    public List<GameObject> machines_customTerminals = new List<GameObject>();
+    [Tooltip("Contains locations of all (parent) machine tiles.")]
+    public List<Vector2Int> placedMachines = new List<Vector2Int>();
 
     [Header("Machine Prefabs")]
     public Tilemap staticMachinesTilemap;
     public Tilemap interactableMachinesTilemap;
-    public List<GameObject> imp_terminals = new List<GameObject>();
-    public List<GameObject> imp_fabricators = new List<GameObject>();
-    public List<GameObject> imp_recyclingunits = new List<GameObject>();
-    public List<GameObject> imp_garrisons = new List<GameObject>();
-    public List<GameObject> imp_repairstations = new List<GameObject>();
-    public List<GameObject> imp_scanalyzers = new List<GameObject>();
-    public List<GameObject> imp_customTerminals = new List<GameObject>();
-    public List<GameObject> staticMachinePrefabs = new List<GameObject>();
 
     private void PlaceInteractableMachines()
     {
-        /*
+        /* TODO: COME BACK TO THIS
         int term = 0, scan = 0, recy = 0, fab = 0, garr = 0;
 
         // We want to spawn in the following machines:
@@ -2126,7 +2115,7 @@ public class MapManager : MonoBehaviour
             PlaceMachineInRooms(toPlace, DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().rooms, GetMachineSizeFromName(toPlace));
             term++;
         }
-        */
+        
         // The spread of machines depends on the current layer
         List<RoomCTR> rooms = DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().rooms;
 
@@ -2187,6 +2176,7 @@ public class MapManager : MonoBehaviour
                 }
             }
         }
+        */
     }
 
     Vector2Int GetMachineSizeFromName(GameObject machine)
@@ -2201,6 +2191,7 @@ public class MapManager : MonoBehaviour
 
     private void PlaceStaticMachines()
     {
+        /* TODO: COME BACK THIS
         // The spread of machines depends on the current layer
         List<RoomCTR> rooms = DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().rooms;
 
@@ -2260,10 +2251,12 @@ public class MapManager : MonoBehaviour
                 }
             }
         }
+        */
     }
 
     void PlaceMachineInRooms(GameObject machineToPlace, List<RoomCTR> rooms, Vector2Int machineSize)
     {
+        /* TODO: COME BACK TO THIS
         foreach (RoomCTR room in rooms)
         {
             RoomCTR roomCtr = room;
@@ -2320,10 +2313,12 @@ public class MapManager : MonoBehaviour
                 }
             }
         }
+        */
     }
 
     bool CanPlaceMachineAtTile(DTile tile, RoomCTR room, int rotation, int machineWidth, int machineHeight)
     {
+        /* TODO: COME BACK TO THIS
         for (int x = 0; x < machineWidth; x++)
         {
             for (int y = 0; y < machineHeight; y++)
@@ -2336,6 +2331,8 @@ public class MapManager : MonoBehaviour
             }
         }
         return true;
+        */
+        return false;
     }
 
     Vector2Int RotateVector2Int(Vector2Int v, int rotation)
@@ -2349,6 +2346,7 @@ public class MapManager : MonoBehaviour
             default: return v;
         }
     }
+
     /// <summary>
     /// Place an individual machine somewhere in the world.
     /// </summary>
@@ -2451,184 +2449,196 @@ public class MapManager : MonoBehaviour
         char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
         List<char> alphabet = alpha.ToList(); // Fill alphabet list
 
-        if (machines_terminals.Count > 0)
+        int f_amount = 0, g_amount = 0, r_amount = 0, rs_amount = 0, s_amount = 0, t_amount = 0, ct_amount = 0;
+        string fill = "", letter1 = "", letter2 = "", letter3 = "";
+        WorldTile tile;
+
+        foreach (Vector2Int pos in placedMachines)
         {
-            int amount = 1;
-            foreach (var term in machines_terminals)
+            switch (MapManager.inst.mapdata[pos.x, pos.y].machinedata.type)
             {
-                // -- Naming -- 
-                string fill = "";
-                if (amount <= 9)
-                {
-                    fill = "00";
-                }
-                else if (amount <= 99)
-                {
-                    fill = "0";
-                }
-                string letter1 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToUpper();
-                string letter2 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
-                string letter3 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
+                case MachineType.Fabricator:
+                    // -- Naming --
+                    fill = "";
+                    if (f_amount <= 9)
+                    {
+                        fill = "00";
+                    }
+                    else if (f_amount <= 99)
+                    {
+                        fill = "0";
+                    }
 
-                term.GetComponentInChildren<Terminal>().specialName = "Terminal v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
-                term.GetComponentInChildren<Terminal>().fullName = "Terminal " + currentLevelName[0] + fill + amount.ToString();
+                    letter1 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToUpper();
+                    letter2 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
+                    letter3 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
 
-                amount++;
-                // -- Security --
-                term.GetComponentInChildren<Terminal>().restrictedAccess = true;
-                term.GetComponentInChildren<Terminal>().secLvl = HF.MachineSecLvl();
+                    tile = MapManager.inst.mapdata[pos.x, pos.y];
+
+                    tile.machinedata.terminalName = "Fabricator v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
+                    tile.machinedata.logName = "Fabricator " + currentLevelName[0] + fill + f_amount.ToString();
+
+                    // -- Security --
+                    tile.machinedata.restrictedAccess = true;
+                    tile.machinedata.secLvl = HF.MachineSecLvl();
+
+                    MapManager.inst.mapdata[pos.x, pos.y] = tile;
+                    f_amount++;
+                    break;
+                case MachineType.Garrison:
+                    // -- Naming --
+                    fill = "";
+                    if (g_amount <= 9)
+                    {
+                        fill = "00";
+                    }
+                    else if (g_amount <= 99)
+                    {
+                        fill = "0";
+                    }
+
+                    tile = MapManager.inst.mapdata[pos.x, pos.y];
+
+                    letter1 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToUpper();
+                    letter2 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
+                    letter3 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
+
+                    tile.machinedata.terminalName = "Garrison v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
+                    tile.machinedata.logName = "Garrison " + currentLevelName[0] + fill + g_amount.ToString();
+
+                    // -- Security --
+                    tile.machinedata.restrictedAccess = true;
+                    tile.machinedata.secLvl = HF.MachineSecLvl();
+
+                    MapManager.inst.mapdata[pos.x, pos.y] = tile;
+                    g_amount++;
+                    break;
+                case MachineType.Recycling:
+                    // -- Naming --
+                    fill = "";
+                    if (r_amount <= 9)
+                    {
+                        fill = "00";
+                    }
+                    else if (r_amount <= 99)
+                    {
+                        fill = "0";
+                    }
+
+                    letter1 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToUpper();
+                    letter2 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
+                    letter3 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
+
+                    tile = MapManager.inst.mapdata[pos.x, pos.y];
+
+                    tile.machinedata.terminalName = "Recycling v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
+                    tile.machinedata.logName = "Recycling Unit " + currentLevelName[0] + fill + r_amount.ToString();
+
+                    // -- Security --
+                    tile.machinedata.restrictedAccess = true;
+                    tile.machinedata.secLvl = HF.MachineSecLvl();
+
+                    MapManager.inst.mapdata[pos.x, pos.y] = tile;
+                    r_amount++;
+                    break;
+                case MachineType.RepairStation:
+                    // -- Naming --
+                    fill = "";
+                    if (rs_amount <= 9)
+                    {
+                        fill = "00";
+                    }
+                    else if (rs_amount <= 99)
+                    {
+                        fill = "0";
+                    }
+
+                    letter1 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToUpper();
+                    letter2 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
+                    letter3 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
+
+                    tile = MapManager.inst.mapdata[pos.x, pos.y];
+
+                    tile.machinedata.terminalName = "Repair Station v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
+                    tile.machinedata.logName = "Repair Station " + currentLevelName[0] + fill + rs_amount.ToString();
+
+                    // -- Security --
+                    tile.machinedata.restrictedAccess = true;
+                    tile.machinedata.secLvl = HF.MachineSecLvl();
+
+                    MapManager.inst.mapdata[pos.x, pos.y] = tile;
+                    rs_amount++;
+                    break;
+                case MachineType.Scanalyzer:
+                    // -- Naming --
+                    fill = "";
+                    if (s_amount <= 9)
+                    {
+                        fill = "00";
+                    }
+                    else if (s_amount <= 99)
+                    {
+                        fill = "0";
+                    }
+
+                    letter1 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToUpper();
+                    letter2 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
+                    letter3 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
+
+                    tile = MapManager.inst.mapdata[pos.x, pos.y];
+
+                    tile.machinedata.terminalName = "Scanalyzer v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
+                    tile.machinedata.logName = "Scanalyzer " + currentLevelName[0] + fill + s_amount.ToString();
+
+                    // -- Security --
+                    tile.machinedata.restrictedAccess = true;
+                    tile.machinedata.secLvl = HF.MachineSecLvl();
+
+                    MapManager.inst.mapdata[pos.x, pos.y] = tile;
+                    s_amount++;
+                    break;
+                case MachineType.Terminal:
+                    // -- Naming -- 
+                    fill = "";
+                    if (t_amount <= 9)
+                    {
+                        fill = "00";
+                    }
+                    else if (t_amount <= 99)
+                    {
+                        fill = "0";
+                    }
+                    letter1 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToUpper();
+                    letter2 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
+                    letter3 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
+
+                    tile = MapManager.inst.mapdata[pos.x, pos.y];
+
+                    tile.machinedata.terminalName = "Terminal v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
+                    tile.machinedata.logName = "Terminal " + currentLevelName[0] + fill + t_amount.ToString();
+
+                    // -- Security --
+                    tile.machinedata.restrictedAccess = true;
+                    tile.machinedata.secLvl = HF.MachineSecLvl();
+
+                    MapManager.inst.mapdata[pos.x, pos.y] = tile;
+                    t_amount++;
+                    break;
+                case MachineType.CustomTerminal:
+                    // Custom Terminals get custom names
+                    break;
+                case MachineType.DoorTerminal:
+                    // Custom Terminals get custom names
+                    break;
+                case MachineType.Static:
+                    // Static Machines don't get name assignments
+                    break;
+                case MachineType.None:
+                    break;
+                default:
+                    break;
             }
         }
-
-        if (machines_fabricators.Count > 0)
-        {
-            int amount = 1;
-            foreach (var fab in machines_fabricators)
-            {
-                // -- Naming --
-                string fill = "";
-                if (amount <= 9)
-                {
-                    fill = "00";
-                }
-                else if (amount <= 99)
-                {
-                    fill = "0";
-                }
-
-                string letter1 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToUpper();
-                string letter2 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
-                string letter3 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
-
-                fab.GetComponentInChildren<Fabricator>().specialName = "Fabricator v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
-
-                fab.GetComponentInChildren<Fabricator>().fullName = "Fabricator " + currentLevelName[0] + fill + amount.ToString();
-                amount++;
-                // -- Security --
-                fab.GetComponentInChildren<Fabricator>().restrictedAccess = true;
-                fab.GetComponentInChildren<Fabricator>().secLvl = HF.MachineSecLvl();
-            }
-        }
-
-        if (machines_recyclingUnits.Count > 0)
-        {
-            int amount = 1;
-            foreach (var recy in machines_recyclingUnits)
-            {
-                // -- Naming --
-                string fill = "";
-                if (amount <= 9)
-                {
-                    fill = "00";
-                }
-                else if (amount <= 99)
-                {
-                    fill = "0";
-                }
-
-                string letter1 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToUpper();
-                string letter2 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
-                string letter3 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
-
-                recy.GetComponentInChildren<RecyclingUnit>().specialName = "Recycling v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
-
-                recy.GetComponentInChildren<RecyclingUnit>().fullName = "Recycling Unit " + currentLevelName[0] + fill + amount.ToString();
-                amount++;
-                // -- Security --
-                recy.GetComponentInChildren<RecyclingUnit>().restrictedAccess = true;
-                recy.GetComponentInChildren<RecyclingUnit>().secLvl = HF.MachineSecLvl();
-            }
-        }
-
-        if (machines_garrisons.Count > 0)
-        {
-            int amount = 1;
-            foreach (var garr in machines_garrisons)
-            {
-                // -- Naming --
-                string fill = "";
-                if (amount <= 9)
-                {
-                    fill = "00";
-                }
-                else if (amount <= 99)
-                {
-                    fill = "0";
-                }
-
-                garr.GetComponentInChildren<Garrison>().specialName = "Garrison Terminal";
-
-                garr.GetComponentInChildren<Garrison>().fullName = "Garrison " + currentLevelName[0] + fill + amount.ToString();
-                amount++;
-                // -- Security --
-                garr.GetComponentInChildren<Garrison>().restrictedAccess = true;
-                garr.GetComponentInChildren<Garrison>().secLvl = HF.MachineSecLvl();
-            }
-        }
-
-        if (machines_repairStation.Count > 0)
-        {
-            int amount = 1;
-            foreach (var reps in machines_repairStation)
-            {
-                // -- Naming --
-                string fill = "";
-                if (amount <= 9)
-                {
-                    fill = "00";
-                }
-                else if (amount <= 99)
-                {
-                    fill = "0";
-                }
-
-                string letter1 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToUpper();
-                string letter2 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
-                string letter3 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
-
-                reps.GetComponentInChildren<RepairStation>().specialName = "Repair Station v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
-
-                reps.GetComponentInChildren<RepairStation>().fullName = "Repair Station " + currentLevelName[0] + fill + amount.ToString();
-                amount++;
-                // -- Security --
-                reps.GetComponentInChildren<RepairStation>().restrictedAccess = true;
-                reps.GetComponentInChildren<RepairStation>().secLvl = HF.MachineSecLvl();
-            }
-        }
-
-        if (machines_scanalyzers.Count > 0)
-        {
-            int amount = 1;
-            foreach (var scan in machines_scanalyzers)
-            {
-                // -- Naming --
-                string fill = "";
-                if (amount <= 9)
-                {
-                    fill = "00";
-                }
-                else if (amount <= 99)
-                {
-                    fill = "0";
-                }
-
-                string letter1 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToUpper();
-                string letter2 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
-                string letter3 = alphabet[Random.Range(0, alphabet.Count - 1)].ToString().ToLower();
-
-                scan.GetComponentInChildren<Scanalyzer>().specialName = "Scanalyzer v" + letter1 + letter2 + ".0" + Random.Range(1, 9) + letter3;
-
-                scan.GetComponentInChildren<Scanalyzer>().fullName = "Scanalyzer " + currentLevelName[0] + fill + amount.ToString();
-                amount++;
-                // -- Security --
-                scan.GetComponentInChildren<Scanalyzer>().restrictedAccess = true;
-                scan.GetComponentInChildren<Scanalyzer>().secLvl = HF.MachineSecLvl();
-            }
-        }
-
-        // Custom Terminals get custom names
-
-        // Static Machines don't get name assignments
     }
 
     private void AssignMachineCommands()
@@ -2636,55 +2646,9 @@ public class MapManager : MonoBehaviour
         char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
         List<char> alphabet = alpha.ToList(); // Fill alphabet list
 
-        // We do terminals here, all other machines will self load
-        foreach (GameObject obj in machines_terminals)
+        foreach (Vector2Int pos in placedMachines)
         {
-            obj.GetComponentInChildren<Terminal>().Init();
-        }
-
-        // Plus assign wall reveal tiles for Custom Terminals
-        foreach (GameObject obj in machines_customTerminals)
-        {
-            if(obj.GetComponentInChildren<TerminalCustom>().customType == CustomTerminalType.DoorLock)
-            {
-                foreach (Vector2Int loc in obj.GetComponentInChildren<TerminalCustom>().wallRevealCoordinates)
-                {
-                    if (MapManager.inst._allTilesRealized.ContainsKey(loc))
-                    {
-                        obj.GetComponentInChildren<TerminalCustom>().linkedDoors.Add(MapManager.inst._allTilesRealized[loc].bottom);
-                    }
-                }
-            }
-        }
-
-        foreach(GameObject obj in machines_fabricators)
-        {
-            obj.GetComponentInChildren<Fabricator>().Init();
-        }
-
-        foreach (GameObject obj in machines_garrisons)
-        {
-            obj.GetComponentInChildren<Garrison>().Init();
-        }
-
-        foreach (GameObject obj in machines_recyclingUnits)
-        {
-            obj.GetComponentInChildren<RecyclingUnit>().Init();
-        }
-
-        foreach (GameObject obj in machines_repairStation)
-        {
-            obj.GetComponentInChildren<RepairStation>().Init();
-        }
-
-        foreach (GameObject obj in machines_scanalyzers)
-        {
-            obj.GetComponentInChildren<Scanalyzer>().Init();
-        }
-
-        foreach (GameObject obj in machines_customTerminals)
-        {
-            obj.GetComponentInChildren<TerminalCustom>().Init();
+            MapManager.inst.mapdata[pos.x, pos.y].MachineInit();
         }
     }
 
@@ -2694,36 +2658,32 @@ public class MapManager : MonoBehaviour
     private void ZoneTerminals()
     {
         // And now (ouch), go through every placed tile, and assign its position to the nearest terminal.
-        foreach (var tile in MapManager.inst._allTilesRealized)
+        foreach (var tile in MapManager.inst.mapdata)
         {
-            Vector2Int tilePos = tile.Key;
-            Terminal nearestTerminal = FindNearestTerminal(tilePos);
-            if (nearestTerminal != null)
+            Vector2Int tilePos = tile.location;
+            Vector2Int nearestTerminal = FindNearestTerminal(tilePos);
+            if (nearestTerminal != Vector2Int.zero)
             {
-                nearestTerminal.zone.assignedArea.Add(tilePos);
-
-                // and add mines too
-                if(_allTilesRealized[tilePos].top != null && _allTilesRealized[tilePos].top.GetComponent<FloorTrap>())
-                {
-                    _allTilesRealized[tilePos].top.GetComponent<FloorTrap>().zone = nearestTerminal.zone;
-                }
+                MapManager.inst.mapdata[nearestTerminal.x, nearestTerminal.y].zone.assignedArea.Add(tilePos);
             }
         }
     }
 
-    private Terminal FindNearestTerminal(Vector2Int tilePos)
+    private Vector2Int FindNearestTerminal(Vector2Int tilePos)
     {
-        Terminal nearestTerminal = null;
+        Vector2Int nearestTerminal = Vector2Int.zero;
         float nearestDistance = float.MaxValue;
 
-        foreach (GameObject terminal in machines_terminals)
+        foreach (Vector2Int pos in placedMachines)
         {
-            Vector2Int terminalPos = HF.V3_to_V2I(terminal.transform.position);
-            float distance = Vector2Int.Distance(tilePos, terminalPos);
-            if (distance < nearestDistance)
+            if (MapManager.inst.mapdata[pos.x, pos.y].type == TileType.Machine && MapManager.inst.mapdata[pos.x, pos.y].machinedata.type == MachineType.Terminal)
             {
-                nearestDistance = distance;
-                nearestTerminal = terminal.GetComponentInChildren<Terminal>();
+                float distance = Vector2Int.Distance(tilePos, pos);
+                if (distance < nearestDistance)
+                {
+                    nearestDistance = distance;
+                    nearestTerminal = pos;
+                }
             }
         }
 
