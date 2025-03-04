@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce788b639fd6b844a918039e8a6d4a83, type: 3}
+  m_Name: Nuclear Reactor
+  m_EditorClassIdentifier: 
+  Id: 0
+  displayName: Nuclear Reactor
+  description: 
+  type: 8
+  operationSound: {fileID: 8300000, guid: ec72664eb0d40a34dbb570cdfc99d06d, type: 3}
+  explosionSound:
+  - {fileID: 0}
+  symmetry: 0
+  varSOUTH:
+    sboundsBL: {x: 36, y: 0}
+    sboundsTR: {x: 38, y: 2}
+    aboundsBL: {x: 36, y: 4}
+    aboundsTR: {x: 38, y: 6}
+  varEAST:
+    sboundsBL: {x: 0, y: 0}
+    sboundsTR: {x: 0, y: 0}
+    aboundsBL: {x: 0, y: 0}
+    aboundsTR: {x: 0, y: 0}
+  varNORTH:
+    sboundsBL: {x: 0, y: 0}
+    sboundsTR: {x: 0, y: 0}
+    aboundsBL: {x: 0, y: 0}
+    aboundsTR: {x: 0, y: 0}
+  varWEST:
+    sboundsBL: {x: 0, y: 0}
+    sboundsTR: {x: 0, y: 0}
+    aboundsBL: {x: 0, y: 0}
+    aboundsTR: {x: 0, y: 0}

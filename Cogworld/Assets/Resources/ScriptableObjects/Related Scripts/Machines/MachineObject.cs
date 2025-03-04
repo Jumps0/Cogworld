@@ -15,8 +15,10 @@ public abstract class MachineObject : ScriptableObject
     [TextArea(3,5)] public string description;
 
     [Header("Information")]
-    public MachineType type;
+    public MachineType type = MachineType.Static;
     public AudioClip operationSound;
+    [Tooltip("(OPTIONAL) If this machine explodes, what sound should play?")]
+    public List<AudioClip> explosionSound = null;
 
     [Header("Variants")]
     public MachineSymmetry symmetry;
@@ -26,6 +28,11 @@ public abstract class MachineObject : ScriptableObject
     public MachineBounds varEAST;
     public MachineBounds varNORTH;
     public MachineBounds varWEST;
+
+    public Vector2Int Size()
+    {
+        return new Vector2Int(varSOUTH.sboundsTR.x - varSOUTH.sboundsBL.x, varSOUTH.sboundsTR.y - varSOUTH.sboundsBL.y);
+    }
 
 }
 

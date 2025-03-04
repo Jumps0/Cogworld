@@ -10,19 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce788b639fd6b844a918039e8a6d4a83, type: 3}
-  m_Name: Default Machine
+  m_Name: Subatomic Condenser
   m_EditorClassIdentifier: 
   Id: 0
-  displayName: 
+  displayName: Subatomic Condenser
   description: 
-  type: 0
-  operationSound: {fileID: 0}
+  type: 8
+  operationSound: {fileID: 8300000, guid: e243ac608fb624942879f5f6581dc2b9, type: 3}
+  explosionSound:
+  - {fileID: 0}
   symmetry: 0
   varSOUTH:
-    sboundsBL: {x: 0, y: 0}
-    sboundsTR: {x: 0, y: 0}
-    aboundsBL: {x: 0, y: 0}
-    aboundsTR: {x: 0, y: 0}
+    sboundsBL: {x: 48, y: 0}
+    sboundsTR: {x: 50, y: 2}
+    aboundsBL: {x: 48, y: 4}
+    aboundsTR: {x: 50, y: 6}
   varEAST:
     sboundsBL: {x: 0, y: 0}
     sboundsTR: {x: 0, y: 0}

@@ -12,4 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02c0c3cb9141dbf4db3986e3d5426130, type: 3}
   m_Name: Machine Database
   m_EditorClassIdentifier: 
-  Machines: []
+  Machines:
+  - {fileID: 11400000, guid: a53c3292764802a49a78ee1ba22ebed4, type: 2}
+  - {fileID: 11400000, guid: 5a74638589cf330468e742609bdbd214, type: 2}
+  - {fileID: 11400000, guid: 6e60b296899ba004db39ba10127f6974, type: 2}
+  - {fileID: 11400000, guid: 5effed1c81449e4459c15f9349b2abe0, type: 2}
+  - {fileID: 11400000, guid: c94db145a66864c4c99ccc5750e5225b, type: 2}
+  - {fileID: 11400000, guid: 4f92d1fd0ee6b2d49b832cb195ab145d, type: 2}
+  - {fileID: 11400000, guid: a226f5b4fa5273a4f9660a949e1b6246, type: 2}
+  - {fileID: 11400000, guid: 276967a75e87ec24a974a0d4163ef1f8, type: 2}
+  - {fileID: 11400000, guid: d0487e68f7948ac4aad70f6d28148dfe, type: 2}
+  - {fileID: 11400000, guid: 9d5fb4e266ebdd440b94df421d8788ee, type: 2}
+  - {fileID: 11400000, guid: cbc2911aebf90544fb366f2d1ad7f599, type: 2}
+  - {fileID: 11400000, guid: 407da2fdf93e2b841b88975b4de8bf73, type: 2}
+  - {fileID: 11400000, guid: 0a542ff4363133149a06ba56c161c6a6, type: 2}
