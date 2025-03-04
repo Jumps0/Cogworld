@@ -1,3 +1,4 @@
+using DungeonResources;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -2179,16 +2180,6 @@ public class MapManager : MonoBehaviour
         */
     }
 
-    Vector2Int GetMachineSizeFromName(GameObject machine)
-    {
-        string[] nameParts = machine.name.Split(' ');
-        string sizeString = nameParts[1];
-        string[] sizeParts = sizeString.Split('x');
-        int width = int.Parse(sizeParts[0]);
-        int height = int.Parse(sizeParts[1]);
-        return new Vector2Int(width + 2, height + 2);
-    }
-
     private void PlaceStaticMachines()
     {
         /* TODO: COME BACK THIS
@@ -2350,24 +2341,48 @@ public class MapManager : MonoBehaviour
     /// <summary>
     /// Place an individual machine somewhere in the world.
     /// </summary>
-    /// <param name="location">Where the machine should be placed.</param>
-    /// <param name="type">The type of machine to be placed. [0 = Static, 1 = Terminal, 2 = Fabricator, 3 = Scanalyzer, 4 = Repair Station, 5 = Recycling Unit, 6 = Garrison, 7 = Custom]</param>
-    /// <param name="id">The id (list based) of the item to be placed.</param>
-    public void PlaceIndividualMachine(Vector2Int location, int type, int id)
+    /// <param name="location">Where in the world the BOTTOM LEFT CORNER of this machine should be placed (along with the rest of the tiles).</param>
+    /// <param name="id">ID of the machine in the dictionary.</param>
+    /// <param name="direction">The facing direction of this machine. Default is SOUTH.</param>
+    /// <param name="force">(Optional) Ignore if this placement location is invalid. Will reshape the map in some way.</param>
+    public void PlaceIndividualMachine(Vector2Int location, int id, Direction direction = Direction.SO, bool force = false)
     {
-        Vector2Int size = Vector2Int.zero;
-        Vector2 offset = Vector2.zero;
-        GameObject machine = null;
+        MachineObject machine = MapManager.inst.machineDatabase.Machines[id];
+        Vector2Int size = machine.Size(direction);
 
-        // Offset if its even in size
-        if (size.x % 2 == 0 && size.x > 1)
+        // !! Here we verify if we can legally place this machine or not.
+        // !! If we can't we won't place it.
+        if(!force && !ValidMachinePlacement(location, machine, direction))
         {
-            offset.x = 0.5f;
+            return;
         }
-        if (size.y % 2 == 0 && size.y > 1)
+
+        // Now that we know the placement is valid (or just don't care),
+        // we then open the related machine tilemap, identify the tiles,
+        // and go through each one, placing them into the world.
+        //
+        // We also do the main machine setup & assignment along the way.
+
+        Tilemap machineMap = null;
+        bool INTERACTABLE = false;
+        if(machine.type == MachineType.Static)
         {
-            offset.y = 0.5f;
+            machineMap = staticMachinesTilemap;
         }
+        else
+        {
+            machineMap = interactableMachinesTilemap;
+            INTERACTABLE = true;
+        }
+
+        // If the machine is static, then we will just pick the first
+        // sprite to be the "parent" sprite since it doesn't matter.
+        //
+        // If it is interactable, then we need to identify the sprite
+        // (by name) that is the main interactable tile, and make that
+        // the parent.
+
+        // ---- TODO
 
         switch (type)
         {
@@ -2442,6 +2457,38 @@ public class MapManager : MonoBehaviour
          * In the machine prefabs, all components my be perfectly aligned on exact numbers. If there are any decimals in the numbers (eg. -1.9999) there
          * is a high chance that the spawning will break and the machine part will be spawned in the incorrect space due to rounding.
          */
+    }
+
+    /// <summary>
+    /// Checks to see if the specified machine in the specified orientation can be placed at the specified location in the world.
+    /// </summary>
+    /// <returns>TRUE/FALSE if this is a valid location to place.</returns>
+    /// <param name="location">Where in the world the BOTTOM LEFT CORNER of this machine should be placed (along with the rest of the tiles).</param>
+    /// <param name="machine">The machine to be placed.</param>
+    /// <param name="direction">The facing direction of this machine.</param>
+    private bool ValidMachinePlacement(Vector2Int location, MachineObject machine, Direction direction = Direction.SO)
+    {
+        // We will go through every placement position we need and see if they are valid.
+        Vector2Int topRight = machine.GetBounds(direction).sboundsTR;
+        Vector2Int bottomLeft = location;
+
+        for (int x = bottomLeft.x; x <= topRight.x; x++)
+        {
+            for (int y = bottomLeft.y; y <= topRight.y; y++)
+            {
+                Vector2Int pos = new Vector2Int(x, y);
+
+                // We consider anything that isn't an open floor tile (no bots) to be an obstruction.
+                bool NOTFLOOR = MapManager.inst.mapdata[pos.x, pos.y].type != TileType.Floor;
+                bool BOTHERE = MapManager.inst.pathdata[pos.x, pos.y] == 2;
+                if (NOTFLOOR || BOTHERE)
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     private void AssignMachineNames()

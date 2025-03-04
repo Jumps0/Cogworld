@@ -1,3 +1,4 @@
+using DungeonResources;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
@@ -29,11 +30,49 @@ public abstract class MachineObject : ScriptableObject
     public MachineBounds varNORTH;
     public MachineBounds varWEST;
 
-    public Vector2Int Size()
+    public Vector2Int Size(Direction direction = Direction.SO)
     {
-        return new Vector2Int(varSOUTH.sboundsTR.x - varSOUTH.sboundsBL.x, varSOUTH.sboundsTR.y - varSOUTH.sboundsBL.y);
+        if(direction == Direction.SO)
+        {
+            return new Vector2Int(varSOUTH.sboundsTR.x - varSOUTH.sboundsBL.x, varSOUTH.sboundsTR.y - varSOUTH.sboundsBL.y);
+        }
+        else if (direction == Direction.EA)
+        {
+            return new Vector2Int(varEAST.sboundsTR.x - varEAST.sboundsBL.x, varEAST.sboundsTR.y - varEAST.sboundsBL.y);
+        }
+        else if (direction == Direction.NO)
+        {
+            return new Vector2Int(varNORTH.sboundsTR.x - varNORTH.sboundsBL.x, varNORTH.sboundsTR.y - varNORTH.sboundsBL.y);
+        }
+        else if (direction == Direction.WE)
+        {
+            return new Vector2Int(varWEST.sboundsTR.x - varWEST.sboundsBL.x, varWEST.sboundsTR.y - varWEST.sboundsBL.y);
+        }
+
+        return Vector2Int.zero;
     }
 
+    public MachineBounds GetBounds(Direction direction)
+    {
+        if (direction == Direction.SO)
+        {
+            return varSOUTH;
+        }
+        else if (direction == Direction.EA)
+        {
+            return varEAST;
+        }
+        else if (direction == Direction.NO)
+        {
+            return varNORTH;
+        }
+        else if (direction == Direction.WE)
+        {
+            return varWEST;
+        }
+
+        return null;
+    }
 }
 
 [System.Serializable]
