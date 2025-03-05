@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 /// <summary>
 /// A script used for the physical *real world* tiles used to build the world. What this tile is gets determined by its "tileInfo" (a TileObject variable).
@@ -930,6 +931,10 @@ public struct WorldTile
 /// </summary>
 public struct MachineData
 {
+    [Header("Visual")]
+    public Tile sprite_normal;
+    public Tile sprite_ascii;
+
     [Header("Basic Info")]
     [Tooltip("The general (generic) name for this machine. Mostly used in logging (ex: Garrison). Set upon startup in MachineData.")]
     public string displayName;

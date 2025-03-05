@@ -1020,14 +1020,13 @@ public class MapManager : MonoBehaviour
                 // Is this machine active/interactable/not-destroyed
                 if (!md.machineIsDestroyed)
                 {
-                    // NOTE: IT'S NOT THIS SIMPLE SINCE WE HAVE MULTIPLE ROTATIONS FOR SOME SPRITES. EXPAND THIS!!!
                     if (ASCII)
                     {
-                        display = tile.tileInfo.asciiRep;
+                        display = tile.machinedata.sprite_ascii;
                     }
                     else
                     {
-                        display = tile.tileInfo.displaySprite;
+                        display = tile.machinedata.sprite_normal;
                     }
 
                     // Although this machine may not be destroyed, is it's parent object destroyed?
@@ -2404,14 +2403,22 @@ public class MapManager : MonoBehaviour
                         // Thankfully we have less work todo, since we will be
                         // modifying an existing (presumably) floor tile.
 
+                        // Modify the position to be respective to the world map
+                        Vector2Int worldPos = new Vector2Int((pos.x - bottomLeft.x) + location.x, (pos.y - bottomLeft.y) + location.y);
+
                         // Just flatly assign the defaults
-                        WorldTile tile = MachineAssignDefaults(pos, machine);
+                        WorldTile tile = MachineAssignDefaults(worldPos, machine);
+
+                        // Then assign both sprites
+                        tile.machinedata.sprite_normal = tileObject;
+                        Tile asciiTile = (Tile)machineMap.GetTile((Vector3Int)bounds.GetASCII(pos));
+                        tile.machinedata.sprite_ascii = asciiTile;
 
                         // - Parenting (since this is a child it doesn't have anything)
                         tile.machinedata.isParent = false;
 
                         // Finally, overwrite the map
-                        MapManager.inst.mapdata[pos.x, pos.y] = tile;
+                        MapManager.inst.mapdata[worldPos.x, worldPos.y] = tile;
                     }
                 }
             }
@@ -2458,7 +2465,6 @@ public class MapManager : MonoBehaviour
         // - Junk initialization (done elsewhere)
         tile.machinedata.isRandomJunk = false;
         tile.machinedata.junk_walkable = false;
-
 
         #region Hacking
         // restrictedAccess & secLvl are assigned along with the names.

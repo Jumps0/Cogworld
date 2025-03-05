@@ -100,6 +100,20 @@ public class MachineBounds
     public Vector2Int aboundsBL;
     [Tooltip("The top right corner of this machine (ASCII).")]
     public Vector2Int aboundsTR;
+
+    /// <summary>
+    /// Given a position within the STANDARD visual bounds, find that same position within the ASCII visual bounds.
+    /// </summary>
+    /// <param name="pos">A position within the bounds to find.</param>
+    /// <returns>A position of the same sprite but the ASCII version.</returns>
+    public Vector2Int GetASCII(Vector2Int pos)
+    {
+        // Since the size of the STANDARD and ASCII bounds is ALWAYS
+        // the same, we are safely able to do this.
+        Vector2Int diff = new Vector2Int(pos.x - sboundsBL.x, pos.y - sboundsBL.y);
+
+        return new Vector2Int(diff.x + aboundsBL.x, diff.y + aboundsBL.y);
+    }
 }
 
 [System.Serializable]
