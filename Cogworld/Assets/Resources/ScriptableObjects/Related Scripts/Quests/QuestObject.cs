@@ -568,7 +568,7 @@ public class QuestActions
     [Header("Destroy")]
     [Tooltip("Destroy a specific machine in the world (use parent object please).")]
     public bool destroy_specificMachine;
-    public MachinePart destroy_machine;
+    public Vector2Int destroy_machine;
     [Tooltip("Destroy a specific object (gameObject) somewhere in the world.")]
     public bool destroy_specificObject;
     public GameObject destroy_object;

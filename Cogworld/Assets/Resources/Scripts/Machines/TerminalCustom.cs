@@ -111,14 +111,3 @@ public class TerminalCustom : InteractableMachine
     #endregion
 
 }
-
-public enum CustomTerminalType
-{
-    Shop,
-    WarlordCamp,
-    LoreEntry,
-    DoorLock,
-    PrototypeData,
-    HideoutCache,
-    Misc
-}

@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 using static StructureCTR;
 using Random = UnityEngine.Random;
 using Tile = UnityEngine.Tilemaps.Tile;
@@ -1035,10 +1036,10 @@ public class MapManager : MonoBehaviour
 
                     if (!md.isParent)
                     {
-                        WorldTile parent = md.GetParent(pos);
+                        Vector2Int parent = md.GetParent(pos);
 
                         if(!parent.Equals(default(WorldTile)))
-                            isDisabled = parent.machinedata.machineIsDestroyed;
+                            isDisabled = MapManager.inst.mapdata[parent.x, parent.y].machinedata.machineIsDestroyed;
                     }
 
                     // If it is disabled/destroyed, we need to show the grayed out version
@@ -1835,6 +1836,16 @@ public class MapManager : MonoBehaviour
         return newTrap;
     }
 
+    /// <summary>
+    /// Given a position, returns the tile on the tilemap at that position.
+    /// </summary>
+    /// <param name="pos">The location to get the tile at.</param>
+    /// <returns>A `Tile` from the tilemap.</returns>
+    public Tile GetTileAt(Vector2Int pos)
+    {
+        return (Tile)tilemap.GetTile(new Vector3Int(pos.x, pos.y, 0));
+    }
+
     #endregion
 
     #region Access - (Exit/Branches)
@@ -2375,12 +2386,51 @@ public class MapManager : MonoBehaviour
             INTERACTABLE = true;
         }
 
+        // Get the appropriate orientation
+        MachineBounds bounds = machine.GetBounds(direction);
+        Vector2Int bottomLeft = bounds.sboundsBL, topRight = bounds.sboundsTR;
+
         // If the machine is static, then we will just pick the first
         // sprite to be the "parent" sprite since it doesn't matter.
         //
         // If it is interactable, then we need to identify the sprite
         // (by name) that is the main interactable tile, and make that
         // the parent.
+
+        if (INTERACTABLE)
+        {
+            for (int x = bottomLeft.x; x <= topRight.x; x++)
+            {
+                for (int y = bottomLeft.y; y <= topRight.y; y++)
+                {
+                    Vector2Int pos = new Vector2Int(x, y);
+
+                    // We will just read through every needed position in
+                    // the tilemap, checking if its valid (and also the 
+                    // machine's core) along the way.
+
+                    TileBase tile = machineMap.GetTile(new Vector3Int(x, y, 0));
+
+                    if (tile is Tile tileObject && tileObject.sprite != null)
+                    {
+                        string tileName = tileObject.sprite.name;
+
+                        if (IsMachineCore(tileObject.sprite))
+                        {
+
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                }
+            }
+        }
+        else // STATIC
+        {
+
+        }
 
         // ---- TODO
 
@@ -2457,6 +2507,31 @@ public class MapManager : MonoBehaviour
          * In the machine prefabs, all components my be perfectly aligned on exact numbers. If there are any decimals in the numbers (eg. -1.9999) there
          * is a high chance that the spawning will break and the machine part will be spawned in the incorrect space due to rounding.
          */
+    }
+
+    /// <summary>
+    /// Used to check if a specific sprite should be considered the "core" of a specific interactable machine.
+    /// </summary>
+    /// <param name="sprite">The sprite to check.</param>
+    /// <returns>TRUE/FALSE, if this is the core.</returns>
+    private bool IsMachineCore(Sprite sprite)
+    {
+        string name = sprite.name;
+
+        if(name == "FULL" // For ANY (non-ASCII) core
+            || name == "F_" // Fabricator
+            || name == "T_" // Terminal
+            || name == "G_" // Garrison
+            || name == "R_" // Repair
+            || name == "Y_" // Recycling
+            || name == "X_" // Custom
+            || name == "S_" // Scanalyzer
+            )
+        {
+            return true;
+        }
+
+        return false;
     }
 
     /// <summary>

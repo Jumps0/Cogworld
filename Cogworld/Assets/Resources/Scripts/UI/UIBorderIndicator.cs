@@ -9,7 +9,7 @@ public class UIBorderIndicator : MonoBehaviour
 {
     [Header("References")]
     public SpriteRenderer sprite;
-    public MachinePart machine_parent;
+    public Vector2Int machine_parent;
     [SerializeField] private Animator animator;
     [SerializeField] private Material material;
 

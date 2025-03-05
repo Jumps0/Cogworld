@@ -624,32 +624,21 @@ public class BotAI : MonoBehaviour
     /// Finds the nearest recycler to this bot.
     /// </summary>
     /// <returns>The parent part of the recycler.</returns>
-    public RecyclingUnit FindNearestRecycler()
+    public Vector2Int FindNearestRecycler()
     {
-        Transform tMin = null;
+        Vector2Int tMin = Vector2Int.zero;
         float minDist = Mathf.Infinity;
-        Vector3 currentPos = this.transform.position;
-        foreach (GameObject M in MapManager.inst.machines_recyclingUnits)
+        Vector2Int currentPos = HF.V3_to_V2I(this.transform.position);
+        foreach (Vector2Int M in HF.GetMachinesByType(MachineType.Recycling))
         {
-            float dist = Vector3.Distance(M.transform.position, currentPos);
+            float dist = Vector2Int.Distance(M, currentPos);
             if (dist < minDist)
             {
-                tMin = M.transform;
+                tMin = M;
                 minDist = dist;
             }
         }
-        return tMin.transform.GetChild(0).GetComponent<RecyclingUnit>(); ;
-    }
-
-    /// <summary>
-    /// Find a random static machine.
-    /// </summary>
-    /// <returns>The parent part of a static machine.</returns>
-    public StaticMachine FindRandomStaticMachine()
-    {
-        GameObject M = MapManager.inst.machines_static[Random.Range(0, MapManager.inst.machines_static.Count)];
-
-        return M.transform.GetChild(0).GetComponent<StaticMachine>();
+        return tMin;
     }
 
     /// <summary>

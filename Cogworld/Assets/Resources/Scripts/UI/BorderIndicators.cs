@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 // from tutorial: https://www.youtube.com/watch?v=-zOMX7CcxAo
 
@@ -25,7 +26,7 @@ public class BorderIndicators : MonoBehaviour
     private float _spriteWidth;
     private float _spriteHeight;
 
-    private Dictionary<GameObject, GameObject> _targetIndicators = new Dictionary<GameObject, GameObject>();
+    private Dictionary<Vector2Int, GameObject> _targetIndicators = new Dictionary<Vector2Int, GameObject>();
 
     public void CreateIndicators()
     {
@@ -35,15 +36,28 @@ public class BorderIndicators : MonoBehaviour
         _spriteHeight = bounds.size.y / 2f;
         _spriteWidth = bounds.size.x / 2f;
 
-        List<GameObject> machines = HF.GetAllInteractableMachines();
+        List<Vector2Int> machines = HF.GetMachinesByType(MachineType.None);
 
-        foreach (GameObject machine in machines)
+        foreach (Vector2Int M in machines)
         {
-            MachinePart m = machine.GetComponentInChildren<MachinePart>();
-            if (m.parentPart.indicator == null)
+            // Need to differentiate between parent & non-parent
+            if (MapManager.inst.mapdata[M.x, M.y].machinedata.isParent)
             {
-                var indicator = CreateMachineIndicator(m.parentPart);
-                _targetIndicators.Add(machine, indicator);
+                if (MapManager.inst.mapdata[M.x, M.y].machinedata.indicator == null)
+                {
+                    var indicator = CreateMachineIndicator(M);
+                    _targetIndicators.Add(M, indicator);
+                }
+            }
+            else
+            {
+                Vector2Int parent = MapManager.inst.mapdata[M.x, M.y].machinedata.GetParent(M);
+
+                if (MapManager.inst.mapdata[parent.x, parent.y].machinedata.indicator == null)
+                {
+                    var indicator = CreateMachineIndicator(parent);
+                    _targetIndicators.Add(parent, indicator);
+                }
             }
         }
     }
@@ -54,16 +68,16 @@ public class BorderIndicators : MonoBehaviour
         if (PlayerData.inst && MapManager.inst.loaded)
         {
             // Update the indicators
-            foreach (KeyValuePair<GameObject, GameObject> pair in _targetIndicators)
+            foreach (KeyValuePair<Vector2Int, GameObject> pair in _targetIndicators)
             {
                 UpdateIndicator(pair.Key, pair.Value);
             }
         }
     }
 
-    private void UpdateIndicator(GameObject target, GameObject indicator)
+    private void UpdateIndicator(Vector2Int target, GameObject indicator)
     {
-        var screenPos = _camera.WorldToViewportPoint(target.transform.position);
+        var screenPos = _camera.WorldToViewportPoint(new Vector3(target.x, target.y));
         bool isOffScreen = screenPos.x <= 0 || screenPos.x >= buffer.x || screenPos.y <= 0 || screenPos.y >= buffer.y; // Defaults are 0 | 1 | 0 | 1. We modify due to UI covering some of the screen
         if (isOffScreen)
         {
@@ -126,20 +140,25 @@ public class BorderIndicators : MonoBehaviour
         }
     }
 
-    public GameObject CreateMachineIndicator(MachinePart machine)
+    public GameObject CreateMachineIndicator(Vector2Int pos)
     {
-        GameObject go = Instantiate(prefab_indicator, machine.parentPart.transform.parent.transform.position, Quaternion.identity);
-        go.transform.SetParent(machine.parentPart.transform.parent.transform);
+        GameObject go = Instantiate(prefab_indicator, new Vector3(pos.x, pos.y), Quaternion.identity);
+
+        go.transform.SetParent(UIManager.inst.transform);
+
+        // - What was this?
         //GameObject go = Instantiate(prefab_indicator_alt, machine.parentPart.transform.parent.transform.position, Quaternion.identity);
         //go.transform.SetParent(machine.parentPart.transform.parent.transform);
         //go.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+
         // Assign it the to machine
-        machine.parentPart.indicator = go;
+        MapManager.inst.mapdata[pos.x, pos.y].machinedata.indicator = go;
+
         // Assign Sprite
-        go.GetComponent<UIBorderIndicator>().sprite.sprite = machine.parentPart.GetComponent<SpriteRenderer>().sprite;
+        go.GetComponent<UIBorderIndicator>().sprite.sprite = MapManager.inst.GetTileAt(pos).sprite;
 
         // Assign Parent
-        go.GetComponent<UIBorderIndicator>().machine_parent = machine.parentPart;
+        go.GetComponent<UIBorderIndicator>().machine_parent = pos;
 
         return go;
     }

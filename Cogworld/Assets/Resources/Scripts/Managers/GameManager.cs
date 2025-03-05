@@ -1197,14 +1197,14 @@ public class GameManager : MonoBehaviour
     }
 
     #region Machine Revealing
-    public void IndexMachinesGeneric(int id)
+    public void IndexMachinesGeneric(MachineType type)
     {
         // We don't need to do any messaging for this since the hack reward already handled that
 
-        StartCoroutine(IndexMachinesAction(id));
+        StartCoroutine(IndexMachinesAction(type));
     }
 
-    private IEnumerator IndexMachinesAction(int id)
+    private IEnumerator IndexMachinesAction(MachineType type)
     {
         // We need to stall while the terminal window is open
         while (UIManager.inst.terminal_hackinfoArea1.activeInHierarchy)

@@ -20,6 +20,7 @@ using ColorUtility = UnityEngine.ColorUtility;
 using static UnityEngine.Rendering.DebugUI;
 using static Setup;
 using System.Drawing;
+using Unity.VisualScripting;
 
 /// <summary>
 /// Contains helper functions to be used globally.
@@ -340,7 +341,35 @@ public static class HF
     #endregion
 
     #region Machines/Hacking
+    /// <summary>
+    /// Gets a list of the location of all "parent" machine tiles for a specific type of machine.
+    /// </summary>
+    /// <param name="type">The type of machine to search for.</param>
+    /// <returns>A list of positions referring to the parent components of the type of machines found.</returns>
+    public static List<Vector2Int> GetMachinesByType(MachineType type)
+    {
+        List<Vector2Int> machines = new List<Vector2Int>();
 
+        foreach (Vector2Int M in MapManager.inst.placedMachines)
+        {
+            if(type == MachineType.None) // Alternative mode! We return any except static machines.
+            {
+                if (MapManager.inst.mapdata[M.x, M.y].machinedata.type != MachineType.Static)
+                {
+                    machines.Add(M);
+                }
+            }
+            else // Normal mode
+            {
+                if (MapManager.inst.mapdata[M.x, M.y].machinedata.type == type)
+                {
+                    machines.Add(M);
+                }
+            }
+        }
+
+        return machines;
+    }
     public static int MachineSecLvl()
     {
         float random = Random.Range(0f, 1f);
@@ -407,13 +436,13 @@ public static class HF
     }
 
     /// <summary>
-    /// Given a gameObject references a specific machine, will determine what type of machine that is and return it as a String.
+    /// Given a machine type, will return that as a string.
     /// </summary>
-    /// <param name="machine">The gameObject which MUST have some kind of machine script attached to it.</param>
+    /// <param name="machine">Type of the machine.</param>
     /// <returns>A string of the type of the machine.</returns>
-    public static string GetMachineTypeAsString(InteractableMachine machine)
+    public static string GetMachineTypeAsString(MachineType type)
     {
-        switch (machine.type)
+        switch (type)
         {
             case MachineType.Fabricator:
                 return "Fabricator";
@@ -443,61 +472,11 @@ public static class HF
         return machine.GetComponent<InteractableMachine>() ? machine.GetComponent<InteractableMachine>() : null;
     }
 
-    public static GameObject GetRandomMachineOfType(MachineType type)
+    public static Vector2Int GetRandomMachineOfType(MachineType type)
     {
-        switch (type)
-        {
-            case MachineType.Fabricator:
-                if(MapManager.inst.machines_fabricators.Count > 0)
-                {
-                    return MapManager.inst.machines_fabricators[Random.Range(0, MapManager.inst.machines_fabricators.Count - 1)];
-                }
-                break;
-            case MachineType.Garrison:
-                if (MapManager.inst.machines_garrisons.Count > 0)
-                {
-                    return MapManager.inst.machines_garrisons[Random.Range(0, MapManager.inst.machines_garrisons.Count - 1)];
-                }
-                break;
-            case MachineType.Recycling:
-                if (MapManager.inst.machines_recyclingUnits.Count > 0)
-                {
-                    return MapManager.inst.machines_recyclingUnits[Random.Range(0, MapManager.inst.machines_recyclingUnits.Count - 1)];
-                }
-                break;
-            case MachineType.RepairStation:
-                if (MapManager.inst.machines_repairStation.Count > 0)
-                {
-                    return MapManager.inst.machines_repairStation[Random.Range(0, MapManager.inst.machines_repairStation.Count - 1)];
-                }
-                break;
-            case MachineType.Scanalyzer:
-                if (MapManager.inst.machines_scanalyzers.Count > 0)
-                {
-                    return MapManager.inst.machines_scanalyzers[Random.Range(0, MapManager.inst.machines_scanalyzers.Count - 1)];
-                }
-                break;
-            case MachineType.Terminal:
-                if (MapManager.inst.machines_terminals.Count > 0)
-                {
-                    return MapManager.inst.machines_terminals[Random.Range(0, MapManager.inst.machines_terminals.Count - 1)];
-                }
-                break;
-            case MachineType.CustomTerminal:
-                if (MapManager.inst.machines_customTerminals.Count > 0)
-                {
-                    return MapManager.inst.machines_customTerminals[Random.Range(0, MapManager.inst.machines_customTerminals.Count - 1)];
-                }
-                break;
-            case MachineType.DoorTerminal:
-                break;
-            case MachineType.Static:
-                break;
-            default:
-                break;
-        }
+        List<Vector2Int> machines = HF.GetMachinesByType(type);
 
-        return null;
+        return machines[Random.Range(0, machines.Count - 1)];
     }
 
     public static float CalculateHackSuccessChance(float baseChance)
@@ -737,107 +716,118 @@ public static class HF
                 case TerminalCommandType.Index:
                     if (parsedName.Contains("Fabricators"))
                     {
-                        GameManager.inst.IndexMachinesGeneric(0);
-                        return ("Found " + MapManager.inst.machines_fabricators.Count + " fabricators.\nDownloaded coordinate data.");
+                        GameManager.inst.IndexMachinesGeneric(MachineType.Fabricator);
+                        return ("Found " + HF.GetMachinesByType(MachineType.Fabricator).Count + " fabricators.\nDownloaded coordinate data.");
                     }
                     else if (parsedName.Contains("Garrisons"))
                     {
-                        GameManager.inst.IndexMachinesGeneric(1);
-                        return ("Found " + MapManager.inst.machines_garrisons.Count + " garrisons.\nDownloaded coordinate data.");
+                        GameManager.inst.IndexMachinesGeneric(MachineType.Garrison);
+                        return ("Found " + HF.GetMachinesByType(MachineType.Garrison).Count + " garrisons.\nDownloaded coordinate data.");
+                    }
+                    else if (parsedName.Contains("Recycling Units"))
+                    {
+                        GameManager.inst.IndexMachinesGeneric(MachineType.Recycling);
+                        return ("Found " + HF.GetMachinesByType(MachineType.Recycling).Count + " recycling units.\nDownloaded coordinate data.");
+                    }
+                    else if (parsedName.Contains("Repair Stations"))
+                    {
+                        GameManager.inst.IndexMachinesGeneric(MachineType.RepairStation);
+                        return ("Found " + HF.GetMachinesByType(MachineType.RepairStation).Count + " repair stations.\nDownloaded coordinate data.");
+                    }
+                    else if (parsedName.Contains("Scanalyzers"))
+                    {
+                        GameManager.inst.IndexMachinesGeneric(MachineType.Scanalyzer);
+                        return ("Found " + HF.GetMachinesByType(MachineType.Scanalyzer).Count + " scanalyzers.\nDownloaded coordinate data.");
+                    }
+                    else if (parsedName.Contains("Terminals"))
+                    {
+                        GameManager.inst.IndexMachinesGeneric(MachineType.Terminal);
+                        return ("Found " + HF.GetMachinesByType(MachineType.Terminal).Count + " terminals.\nDownloaded coordinate data.");
                     }
                     else if (parsedName.Contains("Machines")) // aka all interactable
                     {
-                        GameManager.inst.IndexMachinesGeneric(2);
-                        string mrs = "Found " + (MapManager.inst.machines_fabricators.Count + MapManager.inst.machines_repairStation.Count + MapManager.inst.machines_recyclingUnits.Count + MapManager.inst.machines_scanalyzers.Count + MapManager.inst.machines_garrisons.Count) +
-                            " machines: \n";
-                        if(MapManager.inst.machines_terminals.Count > 0)
+                        GameManager.inst.IndexMachinesGeneric(MachineType.None);
+                        string mrs = "Found " + HF.GetMachinesByType(MachineType.None).Count + " machines: \n";
+
+                        List<Vector2Int> terminals = HF.GetMachinesByType(MachineType.Terminal);
+                        if (terminals.Count > 0)
                         {
-                            if(MapManager.inst.machines_terminals.Count > 9) // 2 digits
+                            if (terminals.Count > 9) // 2 digits
                             {
-                                mrs += "  " + MapManager.inst.machines_terminals.Count + " Terminals\n";
+                                mrs += "  " + terminals.Count + " Terminals\n";
                             }
                             else
                             {
-                                mrs += "   " + MapManager.inst.machines_terminals.Count + " Terminals\n";
+                                mrs += "   " + terminals.Count + " Terminals\n";
                             }
                         }
-                        if (MapManager.inst.machines_fabricators.Count > 0)
+
+                        List<Vector2Int> fabricators = HF.GetMachinesByType(MachineType.Fabricator);
+                        if (fabricators.Count > 0)
                         {
-                            if (MapManager.inst.machines_fabricators.Count > 9) // 2 digits
+                            if (fabricators.Count > 9) // 2 digits
                             {
-                                mrs += "  " + MapManager.inst.machines_fabricators.Count + " Fabricators\n";
+                                mrs += "  " + fabricators.Count + " Fabricators\n";
                             }
                             else
                             {
-                                mrs += "   " + MapManager.inst.machines_fabricators.Count + " Fabricators\n";
+                                mrs += "   " + fabricators.Count + " Fabricators\n";
                             }
                         }
-                        if (MapManager.inst.machines_repairStation.Count > 0)
+
+                        List<Vector2Int> repair = HF.GetMachinesByType(MachineType.RepairStation);
+                        if (repair.Count > 0)
                         {
-                            if (MapManager.inst.machines_repairStation.Count > 9) // 2 digits
+                            if (repair.Count > 9) // 2 digits
                             {
-                                mrs += "  " + MapManager.inst.machines_repairStation.Count + " Repair Stations\n";
+                                mrs += "  " + repair.Count + " Repair Stations\n";
                             }
                             else
                             {
-                                mrs += "   " + MapManager.inst.machines_repairStation.Count + " Repair Stations\n";
+                                mrs += "   " + repair.Count + " Repair Stations\n";
                             }
                         }
-                        if (MapManager.inst.machines_recyclingUnits.Count > 0)
+
+                        List<Vector2Int> recycling = HF.GetMachinesByType(MachineType.Recycling);
+                        if (recycling.Count > 0)
                         {
-                            if (MapManager.inst.machines_recyclingUnits.Count > 9) // 2 digits
+                            if (recycling.Count > 9) // 2 digits
                             {
-                                mrs += "  " + MapManager.inst.machines_recyclingUnits.Count + " Recycling Units\n";
+                                mrs += "  " + recycling.Count + " Recycling Units\n";
                             }
                             else
                             {
-                                mrs += "   " + MapManager.inst.machines_recyclingUnits.Count + " Recycling Units\n";
+                                mrs += "   " + recycling.Count + " Recycling Units\n";
                             }
                         }
-                        if (MapManager.inst.machines_scanalyzers.Count > 0)
+
+                        List<Vector2Int> scan = HF.GetMachinesByType(MachineType.Scanalyzer);
+                        if (scan.Count > 0)
                         {
-                            if (MapManager.inst.machines_scanalyzers.Count > 9) // 2 digits
+                            if (scan.Count > 9) // 2 digits
                             {
-                                mrs += "  " + MapManager.inst.machines_scanalyzers.Count + " Scanalyzers\n";
+                                mrs += "  " + scan.Count + " Scanalyzers\n";
                             }
                             else
                             {
-                                mrs += "   " + MapManager.inst.machines_scanalyzers.Count + " Scanalyzers\n";
+                                mrs += "   " + scan.Count + " Scanalyzers\n";
                             }
                         }
-                        if (MapManager.inst.machines_garrisons.Count > 0)
+
+                        List<Vector2Int> garrisons = HF.GetMachinesByType(MachineType.Garrison);
+                        if (garrisons.Count > 0)
                         {
-                            if (MapManager.inst.machines_garrisons.Count > 9) // 2 digits
+                            if (garrisons.Count > 9) // 2 digits
                             {
-                                mrs += "  " + MapManager.inst.machines_garrisons.Count + " Garrison Accesses\n";
+                                mrs += "  " + garrisons.Count + " Garrison Accesses\n";
                             }
                             else
                             {
-                                mrs += "   " + MapManager.inst.machines_garrisons.Count + " Garrison Accesses\n";
+                                mrs += "   " + garrisons.Count + " Garrison Accesses\n";
                             }
                         }
 
                         return (mrs + "Downloaded coordinate data.");
-                    }
-                    else if (parsedName.Contains("Recycling Units"))
-                    {
-                        GameManager.inst.IndexMachinesGeneric(3);
-                        return ("Found " + MapManager.inst.imp_recyclingunits.Count + " recycling units.\nDownloaded coordinate data.");
-                    }
-                    else if (parsedName.Contains("Repair Stations"))
-                    {
-                        GameManager.inst.IndexMachinesGeneric(4);
-                        return ("Found " + MapManager.inst.machines_repairStation.Count + " repair stations.\nDownloaded coordinate data.");
-                    }
-                    else if (parsedName.Contains("Scanalyzers"))
-                    {
-                        GameManager.inst.IndexMachinesGeneric(5);
-                        return ("Found " + MapManager.inst.machines_scanalyzers.Count + " scanalyzers.\nDownloaded coordinate data.");
-                    }
-                    else if (parsedName.Contains("Terminals"))
-                    {
-                        GameManager.inst.IndexMachinesGeneric(6);
-                        return ("Found " + MapManager.inst.machines_terminals.Count + " terminals.\nDownloaded coordinate data.");
                     }
                     break;
                 case TerminalCommandType.Inventory:
@@ -1177,17 +1167,23 @@ public static class HF
                     if (MapManager.inst.playerIsInHideout) // - Player is in the hideout, attempting to retrieve (by default 100) matter from their cache
                     {
                         // Get the machine
-                        TerminalCustom cache = null;
-                        foreach (GameObject machine in MapManager.inst.machines_customTerminals)
+                        Vector2Int cache = Vector2Int.zero;
+                        foreach (Vector2Int machine in HF.GetMachinesByType(MachineType.CustomTerminal))
                         {
-                            if (machine.GetComponentInChildren<TerminalCustom>() && machine.GetComponentInChildren<TerminalCustom>().customType == CustomTerminalType.HideoutCache)
+                            if (MapManager.inst.mapdata[machine.x, machine.y].machinedata.customType == CustomTerminalType.HideoutCache)
                             {
-                                cache = machine.GetComponentInChildren<TerminalCustom>();
+                                cache = machine;
                             }
                         }
 
+                        if(cache == Vector2Int.zero)
+                        {
+                            Debug.LogError("Hideout cache location not found!");
+                            return "! GAME ERROR ! Hideout cache location not found.";
+                        }
+
                         // How much is actualled stored at the moment?
-                        int stored = cache.storedMatter;
+                        int stored = MapManager.inst.mapdata[cache.x, cache.y].machinedata.cacheStoredMatter;
                         // A couple things can happen here
                         if(stored == 0) // Nothing stored (leave message and quit)
                         {
@@ -1195,7 +1191,7 @@ public static class HF
                         }
                         else if(stored < 100) // Less than 100 stored (eject all)
                         {
-                            cache.storedMatter = 0; // Set value to 0
+                            MapManager.inst.mapdata[cache.x, cache.y].machinedata.cacheStoredMatter = 0; // Set value to 0
                             Vector2Int pos = HF.V3_to_V2I(PlayerData.inst.transform.position);
 
                             // The easiest way to do this is to just drop it under the player and force the pick up check because the logic there is already complete.
@@ -1209,7 +1205,7 @@ public static class HF
                         }
                         else if (stored > 100) // More than 100, eject 100
                         {
-                            cache.storedMatter -= 100;
+                            MapManager.inst.mapdata[cache.x, cache.y].machinedata.cacheStoredMatter -= 100;
                             Vector2Int pos = HF.V3_to_V2I(PlayerData.inst.transform.position);
 
                             // The easiest way to do this is to just drop it under the player and force the pick up check because the logic there is already complete.
@@ -1539,16 +1535,23 @@ public static class HF
                     int toRemove = 100;
 
                     // - First get the machine we are using
-                    TerminalCustom terminal = null;
-                    foreach (GameObject machine in MapManager.inst.machines_customTerminals)
+                    Vector2Int cacheSubmit = Vector2Int.zero;
+                    foreach (Vector2Int machine in HF.GetMachinesByType(MachineType.CustomTerminal))
                     {
-                        if(machine.GetComponentInChildren<TerminalCustom>() && machine.GetComponentInChildren<TerminalCustom>().customType == CustomTerminalType.HideoutCache)
+                        if (MapManager.inst.mapdata[machine.x, machine.y].machinedata.customType == CustomTerminalType.HideoutCache)
                         {
-                            terminal = machine.GetComponentInChildren<TerminalCustom>();
+                            cacheSubmit = machine;
                         }
                     }
 
+                    if (cacheSubmit == Vector2Int.zero)
+                    {
+                        Debug.LogError("Hideout cache location not found!");
+                        return "! GAME ERROR ! Hideout cache location not found.";
+                    }
+
                     // Add up all the matter the player currently has, including internal storage since we will take out of that first
+                    #region Matter Collection/Calculation
                     int matter = PlayerData.inst.currentMatter;
                     int internalMatter = 0;
 
@@ -1620,12 +1623,13 @@ public static class HF
                             PlayerData.inst.currentMatter = 0;
                         }
                     }
+                    #endregion
 
                     // So how much did we actually add?
                     int added = 100 - toRemove;
 
                     // Change the value in the cache, and leave a message
-                    terminal.storedMatter += added;
+                    MapManager.inst.mapdata[cacheSubmit.x, cacheSubmit.y].machinedata.cacheStoredMatter += added;
 
                     return $"Submitted {added} matter to be stored in local cache.";
             }
@@ -2006,37 +2010,6 @@ public static class HF
         return hackName;
     }
 
-    /// <summary>
-    /// Given a machine type, returns what color that machine and its parts should be colored. Color pallet is inside `GameManager.cs` at the bottom.
-    /// </summary>
-    /// <param name="type">The type of machine this is.</param>
-    /// <returns>A color this machine should appear as (with a base color of white).</returns>
-    public static Color MachineColor(MachineType type)
-    {
-        switch (type)
-        {
-            case MachineType.Fabricator:
-                return GameManager.inst.colors.machine_fabricator;
-            case MachineType.Garrison:
-                return GameManager.inst.colors.machine_garrison;
-            case MachineType.Recycling:
-                return GameManager.inst.colors.machine_recycler;
-            case MachineType.RepairStation:
-                return GameManager.inst.colors.machine_repairbay;
-            case MachineType.Scanalyzer:
-                return GameManager.inst.colors.machine_scanalyzer;
-            case MachineType.Terminal:
-                return GameManager.inst.colors.machine_terminal;
-            case MachineType.CustomTerminal:
-                return GameManager.inst.colors.machine_customterminal;
-            case MachineType.DoorTerminal:
-                return GameManager.inst.colors.machine_customterminal;
-            case MachineType.Static:
-                return GameManager.inst.colors.machine_static;
-            default:
-                return GameManager.inst.colors.machine_static;
-        }
-    }
     #endregion
 
     #region Find & Get
@@ -2080,11 +2053,11 @@ public static class HF
         int value = -1;
 
         // We first need to find the physical cache machine, which is a Custom Terminal
-        foreach (var machines in MapManager.inst.machines_customTerminals)
+        foreach (Vector2Int machine in HF.GetMachinesByType(MachineType.CustomTerminal))
         {
-            if(machines.GetComponentInChildren<TerminalCustom>() && machines.GetComponentInChildren<TerminalCustom>().customType == CustomTerminalType.HideoutCache)
+            if (MapManager.inst.mapdata[machine.x, machine.y].machinedata.customType == CustomTerminalType.HideoutCache)
             {
-                value = machines.GetComponentInChildren<TerminalCustom>().storedMatter; // Get the value
+                value = MapManager.inst.mapdata[machine.x, machine.y].machinedata.cacheStoredMatter;
             }
         }
 
@@ -2096,12 +2069,11 @@ public static class HF
     /// </summary>
     public static void TrySetCachedMatter(int value)
     {
-        // We first need to find the physical cache machine, which is a Custom Terminal
-        foreach (var machines in MapManager.inst.machines_customTerminals)
+        foreach (Vector2Int machine in HF.GetMachinesByType(MachineType.CustomTerminal))
         {
-            if (machines.GetComponentInChildren<TerminalCustom>() && machines.GetComponentInChildren<TerminalCustom>().customType == CustomTerminalType.HideoutCache)
+            if (MapManager.inst.mapdata[machine.x, machine.y].machinedata.customType == CustomTerminalType.HideoutCache)
             {
-                machines.GetComponentInChildren<TerminalCustom>().storedMatter = value; // Set the value
+                MapManager.inst.mapdata[machine.x, machine.y].machinedata.cacheStoredMatter = value;
             }
         }
     }
@@ -2178,39 +2150,6 @@ public static class HF
         }
 
         return null;
-    }
-
-    public static List<GameObject> GetAllInteractableMachines()
-    {
-        List<GameObject> machines = new List<GameObject>();
-
-        // Remember that we are returning the parent gameObject. The actual scripts are on the child of the parent.
-        foreach (var M in MapManager.inst.machines_fabricators)
-        {
-            machines.Add(M);
-        }
-        foreach (var M in MapManager.inst.machines_garrisons)
-        {
-            machines.Add(M);
-        }
-        foreach (var M in MapManager.inst.machines_recyclingUnits)
-        {
-            machines.Add(M);
-        }
-        foreach (var M in MapManager.inst.machines_repairStation)
-        {
-            machines.Add(M);
-        }
-        foreach (var M in MapManager.inst.machines_scanalyzers)
-        {
-            machines.Add(M);
-        }
-        foreach (var M in MapManager.inst.machines_terminals)
-        {
-            machines.Add(M);
-        }
-
-        return machines;
     }
 
     public static int GetHeatTransfer(Item item)
@@ -5263,90 +5202,6 @@ public static class HF
 
         // No space found
         return (false, -1);
-    }
-
-    public static void RemoveMachineFromList(MachinePart go)
-    {
-        switch (go.type)
-        {
-            case MachineType.Fabricator:
-                foreach (var P in MapManager.inst.machines_fabricators.ToList())
-                {
-                    if(P == go.gameObject.transform.parent.gameObject)
-                    {
-                        MapManager.inst.machines_fabricators.Remove(P);
-                    }
-                }
-                break;
-            case MachineType.Garrison:
-                foreach (var P in MapManager.inst.machines_garrisons.ToList())
-                {
-                    if (P == go.gameObject.transform.parent.gameObject)
-                    {
-                        MapManager.inst.machines_garrisons.Remove(P);
-                    }
-                }
-                break;
-            case MachineType.Recycling:
-                foreach (var P in MapManager.inst.machines_recyclingUnits.ToList())
-                {
-                    if (P == go.gameObject.transform.parent.gameObject)
-                    {
-                        MapManager.inst.machines_recyclingUnits.Remove(P);
-                    }
-                }
-                break;
-            case MachineType.RepairStation:
-                foreach (var P in MapManager.inst.machines_repairStation.ToList())
-                {
-                    if (P == go.gameObject.transform.parent.gameObject)
-                    {
-                        MapManager.inst.machines_repairStation.Remove(P);
-                    }
-                }
-                break;
-            case MachineType.Scanalyzer:
-                foreach (var P in MapManager.inst.machines_scanalyzers.ToList())
-                {
-                    if (P == go.gameObject.transform.parent.gameObject)
-                    {
-                        MapManager.inst.machines_scanalyzers.Remove(P);
-                    }
-                }
-                break;
-            case MachineType.Terminal:
-                foreach (var P in MapManager.inst.machines_terminals.ToList())
-                {
-                    if (P == go.gameObject.transform.parent.gameObject)
-                    {
-                        MapManager.inst.machines_terminals.Remove(P);
-                    }
-                }
-                break;
-            case MachineType.CustomTerminal:
-                foreach (var P in MapManager.inst.machines_customTerminals.ToList())
-                {
-                    if (P == go.gameObject.transform.parent.gameObject)
-                    {
-                        MapManager.inst.machines_customTerminals.Remove(P);
-                    }
-                }
-                break;
-            case MachineType.DoorTerminal:
-
-                break;
-            case MachineType.Static:
-                foreach (var P in MapManager.inst.machines_static.ToList())
-                {
-                    if (P == go.gameObject.transform.parent.gameObject)
-                    {
-                        MapManager.inst.machines_static.Remove(P);
-                    }
-                }
-                break;
-            default:
-                break;
-        }
     }
 
     /// <summary>

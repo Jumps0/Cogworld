@@ -229,7 +229,7 @@ public class PlayerGridMovement : MonoBehaviour
             else
             {
                 // Create log messages
-                UIManager.inst.CreateNewLogMessage($"Connecting with {HF.GetMachineTypeAsString(machineInteraction)}...", UIManager.inst.highlightGreen, UIManager.inst.dullGreen, true);
+                UIManager.inst.CreateNewLogMessage($"Connecting with {HF.GetMachineTypeAsString(type)}...", UIManager.inst.highlightGreen, UIManager.inst.dullGreen, true);
                 UIManager.inst.Terminal_OpenGeneric(machineInteraction);
             }
         }

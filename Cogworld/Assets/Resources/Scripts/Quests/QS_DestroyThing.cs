@@ -15,7 +15,7 @@ public class QS_DestroyThing : QuestStep
     public int a_max = 1;
     [Tooltip("Destroy a specific machine in the world (use parent object please).")]
     public bool destroy_specificMachine;
-    public MachinePart destroy_machine;
+    public Vector2Int destroy_machine;
     [Tooltip("Destroy a specific object (gameObject) somewhere in the world.")]
     public bool destroy_specificObject;
     public GameObject destroy_object;
@@ -41,12 +41,12 @@ public class QS_DestroyThing : QuestStep
         if (destroy_isGeneric)
         {
             // Just find a machine in world to destroy
-            destroy_machine = HF.GetRandomMachineOfType(destroy_machtype).GetComponent<MachinePart>();
+            destroy_machine = HF.GetRandomMachineOfType(destroy_machtype);
         }
 
         if (destroy_specificMachine)
         {
-            string name = HF.GetMachineTypeAsString(destroy_machine.GetComponent<InteractableMachine>());
+            string name = HF.GetMachineTypeAsString(destroy_machtype);
             stepDescription = $"Locate and destroy {name}.";
         }
         else if (destroy_specificObject)
@@ -61,7 +61,7 @@ public class QS_DestroyThing : QuestStep
 
         if (destroy_specificMachine)
         {
-            if(destroy_machine == null || destroy_machine.destroyed)
+            if (destroy_machine == null || !MapManager.inst.mapdata[destroy_machine.x, destroy_machine.y].machinedata.state || MapManager.inst.mapdata[destroy_machine.x, destroy_machine.y].machinedata.machineIsDestroyed)
             {
                 complete = true;
             }

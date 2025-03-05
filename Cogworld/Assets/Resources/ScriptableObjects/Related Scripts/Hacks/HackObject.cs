@@ -39,6 +39,7 @@ public enum MachineType
     CustomTerminal,
     DoorTerminal,
     Static,
+    [Tooltip("Can be used as a wildcard for any excluding STATIC.")]
     None
 }
 

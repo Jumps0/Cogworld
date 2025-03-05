@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// !! THIS SCRIPT WILL SOON BE DEPRICATED AND REMOVED !!
+/// </summary>
 [ExecuteInEditMode] // For sprite auto-assigning
 public class MachinePart : MonoBehaviour
 {
@@ -313,7 +316,7 @@ public class MachinePart : MonoBehaviour
         // Remove from MapManager data
         Vector2Int pos = HF.V3_to_V2I(this.transform.position);
         MapManager.inst._allTilesRealized.Remove(pos);
-        HF.RemoveMachineFromList(this);
+        //HF.RemoveMachineFromList(this);
         MapManager.inst._allTilesRealized[pos].bottom.occupied = false;
         MapManager.inst._allTilesRealized[pos].bottom.walkable = true; // should be fine?
 

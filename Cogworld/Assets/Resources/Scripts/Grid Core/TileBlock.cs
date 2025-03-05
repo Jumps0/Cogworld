@@ -1023,16 +1023,24 @@ public struct MachineData
     public List<ItemObject> storedObjects;
     public bool databaseLockout;
 
+    [Header("Custom Terminal Variables")]
+    public CustomTerminalType customType;
+    [Header("-- Door Control")]
+    [Tooltip("Coordinates to the wall(s) that will dissapear if this *door* is opened.")]
+    public List<Vector2Int> wallRevealCoordinates;
+    public AudioClip customDoorRevealSound;
+    public int cacheStoredMatter;
+
     // TODO: !! All the other stuff needed for the individual interactable machines !!
 
     // Future note:
     // -How to handle Machine audio: https://www.gridsagegames.com/blog/2020/06/building-cogminds-ambient-soundscape/
 
-    public WorldTile GetParent(Vector2Int loc)
+    public Vector2Int GetParent(Vector2Int loc)
     {
         if (MapManager.inst.mapdata[loc.x, loc.y].machinedata.isParent)
         {
-            return MapManager.inst.mapdata[loc.x, loc.y];
+            return loc;
         }
         else
         {
@@ -1040,11 +1048,22 @@ public struct MachineData
             {
                 if(MapManager.inst.mapdata[MD.x, MD.y].machinedata.isParent)
                 {
-                    return MapManager.inst.mapdata[MD.x, MD.y];
+                    return MD;
                 }
             }
         }
 
-        return default(WorldTile);
+        return Vector2Int.zero;
     }
+}
+
+public enum CustomTerminalType
+{
+    Shop,
+    WarlordCamp,
+    LoreEntry,
+    DoorLock,
+    PrototypeData,
+    HideoutCache,
+    Misc
 }
