@@ -835,6 +835,9 @@ public struct WorldTile
     #region Machines
     // Dear god this is gonna be a lot.
 
+    /// <summary>
+    /// Intializes this machine, called upon Map Intialization in `MapManager`.
+    /// </summary>
     public void MachineInit()
     {
         switch (machinedata.type)
@@ -930,9 +933,9 @@ public struct MachineData
     [Header("Basic Info")]
     [Tooltip("The general (generic) name for this machine. Mostly used in logging (ex: Garrison). Set upon startup in MachineData.")]
     public string displayName;
-    [Tooltip("What this machine is reffered to as in the Terminal (Hacking) window.")]
+    [Tooltip("What this machine is reffered to as in the Terminal (Hacking) window. [Set in `AssignMachineNames()` inside `MapManager` upon startup.]")]
     public string terminalName;
-    [Tooltip("What this machine is reffered to as in logging printouts.")]
+    [Tooltip("What this machine is reffered to as in logging printouts. [Set in `AssignMachineNames()` inside `MapManager` upon startup.]")]
     public string logName;
     public MachineType type;
     [Tooltip("Is this machine ACTIVE/USABLE?")]
@@ -962,7 +965,9 @@ public struct MachineData
     public GameObject indicator;
 
     [Header("Colors")]
+    [Tooltip("The color of this machine and its parts when its active. [Set in the Init function]")]
     public Color activeColor;
+    [Tooltip("The color of this machine and its parts when it is damaged/destroyed an thus inactive. [Set in the Init function]")]
     public Color disabledColor;
 
     [Header("** Interactable Machine Variables **")]

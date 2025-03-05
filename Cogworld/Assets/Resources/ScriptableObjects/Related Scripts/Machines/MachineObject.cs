@@ -18,8 +18,6 @@ public abstract class MachineObject : ScriptableObject
     [Header("Information")]
     public MachineType type = MachineType.Static;
     public AudioClip operationSound;
-    [Tooltip("(OPTIONAL) If this machine explodes, what sound should play?")]
-    public List<AudioClip> explosionSound = null;
 
     [Header("Variants")]
     public MachineSymmetry symmetry;
@@ -29,6 +27,14 @@ public abstract class MachineObject : ScriptableObject
     public MachineBounds varEAST;
     public MachineBounds varNORTH;
     public MachineBounds varWEST;
+
+    [Header("Explosion")]
+    public bool explodes;
+    public int explosion_heattransfer;
+    public ExplosionGeneric explosion_details;
+    public ItemExplosion explosion_potential;
+    [Tooltip("If this machine explodes, what sound should play?")]
+    public List<AudioClip> explosionSound = null;
 
     public Vector2Int Size(Direction direction = Direction.SO)
     {

@@ -17,23 +17,28 @@ MonoBehaviour:
   description: 
   type: 8
   operationSound: {fileID: 0}
+  explosionSound: []
   symmetry: 1
   varSOUTH:
+    parent: {x: 1, y: 0}
     sboundsBL: {x: 0, y: 0}
     sboundsTR: {x: 2, y: 0}
     aboundsBL: {x: 0, y: 2}
     aboundsTR: {x: 2, y: 2}
   varEAST:
+    parent: {x: 0, y: 0}
     sboundsBL: {x: 0, y: 4}
     sboundsTR: {x: 0, y: 6}
     aboundsBL: {x: 2, y: 4}
     aboundsTR: {x: 2, y: 6}
   varNORTH:
+    parent: {x: 0, y: 0}
     sboundsBL: {x: 0, y: 0}
     sboundsTR: {x: 0, y: 0}
     aboundsBL: {x: 0, y: 0}
     aboundsTR: {x: 0, y: 0}
   varWEST:
+    parent: {x: 0, y: 0}
     sboundsBL: {x: 0, y: 0}
     sboundsTR: {x: 0, y: 0}
     aboundsBL: {x: 0, y: 0}

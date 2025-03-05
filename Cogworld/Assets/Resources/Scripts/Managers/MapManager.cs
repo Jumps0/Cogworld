@@ -2370,7 +2370,6 @@ public class MapManager : MonoBehaviour
         // We also do the main machine setup & assignment along the way.
 
         Tilemap machineMap = null;
-        bool INTERACTABLE = false;
         if(machine.type == MachineType.Static)
         {
             machineMap = staticMachinesTilemap;
@@ -2378,86 +2377,113 @@ public class MapManager : MonoBehaviour
         else
         {
             machineMap = interactableMachinesTilemap;
-            INTERACTABLE = true;
         }
 
         // Get the appropriate orientation
         MachineBounds bounds = machine.GetBounds(direction);
         Vector2Int bottomLeft = bounds.sboundsBL, topRight = bounds.sboundsTR;
 
-        // If the machine is static, then we will just pick the first
-        // sprite to be the "parent" sprite since it doesn't matter.
-        //
-        // If it is interactable, then we need to identify the sprite
-        // (by name) that is the main interactable tile, and make that
-        // the parent.
+        // First get the location of the parent part (all machines have this)
+        Vector2Int parentLoc = bounds.parent;
+        // Collect up all the children for future storage.
+        List<Vector2Int> children = new List<Vector2Int>();
 
-        if (INTERACTABLE)
+        for (int x = bottomLeft.x; x <= topRight.x; x++)
         {
-            // Problem:
-            // If we find the parent (core) after already passing through
-            // some non-parent parts, how do we update them?
-            //
-            // ?
-
-            for (int x = bottomLeft.x; x <= topRight.x; x++)
+            for (int y = bottomLeft.y; y <= topRight.y; y++)
             {
-                for (int y = bottomLeft.y; y <= topRight.y; y++)
+                Vector2Int pos = new Vector2Int(x, y);
+
+                if (pos != parentLoc) // Do the parent last
                 {
-                    Vector2Int pos = new Vector2Int(x, y);
+                    // Validity check
+                    TileBase tilebase = machineMap.GetTile(new Vector3Int(x, y, 0));
 
-                    // We will just read through every needed position in
-                    // the tilemap, checking if its valid (and also the 
-                    // machine's core) along the way.
-
-                    TileBase tile = machineMap.GetTile(new Vector3Int(x, y, 0));
-
-                    if (tile is Tile tileObject && tileObject.sprite != null)
+                    if (tilebase is Tile tileObject && tileObject.sprite != null)
                     {
-                        string tileName = tileObject.sprite.name;
+                        // Thankfully we have less work todo, since we will be
+                        // modifying an existing (presumably) floor tile.
 
-                        if (IsMachineCore(tileObject.sprite))
-                        {
+                        // Just flatly assign the defaults
+                        WorldTile tile = MachineAssignDefaults(pos, machine);
 
-                        }
-                        else
-                        {
+                        // - Parenting (since this is a child it doesn't have anything)
+                        tile.machinedata.isParent = false;
 
-                        }
+                        // Finally, overwrite the map
+                        MapManager.inst.mapdata[pos.x, pos.y] = tile;
                     }
                 }
             }
         }
-        else // STATIC
-        {
 
-        }
+        // Do the parent last
+        WorldTile parentTile = MachineAssignDefaults(parentLoc, machine);
 
+        // - Parenting (since this is a child it doesn't have anything)
+        parentTile.machinedata.isParent = true;
+        parentTile.machinedata.children = new Vector2Int[children.Count];
+        parentTile.machinedata.children = children.ToArray();
+
+        MapManager.inst.mapdata[parentLoc.x, parentLoc.y] = parentTile;
     }
 
     /// <summary>
-    /// Used to check if a specific sprite should be considered the "core" of a specific interactable machine.
+    /// Given a position, assigns default machine values (excluding parent/child assignment).
     /// </summary>
-    /// <param name="sprite">The sprite to check.</param>
-    /// <returns>TRUE/FALSE, if this is the core.</returns>
-    private bool IsMachineCore(Sprite sprite)
+    /// <param name="pos">The position of the machine in the world.</param>
+    /// <param name="machine">A machine scriptable object containing info about this machine.</param>
+    /// <returns>A `WorldTile` to overwrite on the map.</returns>
+    private WorldTile MachineAssignDefaults(Vector2Int pos, MachineObject machine)
     {
-        string name = sprite.name;
+        WorldTile tile = MapManager.inst.mapdata[pos.x, pos.y];
 
-        if(name == "FULL" // For ANY (non-ASCII) core
-            || name == "F_" // Fabricator
-            || name == "T_" // Terminal
-            || name == "G_" // Garrison
-            || name == "R_" // Repair
-            || name == "Y_" // Recycling
-            || name == "X_" // Custom
-            || name == "S_" // Scanalyzer
-            )
-        {
-            return true;
-        }
+        #region Basic Info
+        // - Type (based on ScriptableObject)
+        tile.machinedata.type = machine.type;
+        // - State (default is ON)
+        tile.machinedata.state = true;
+        // - Is Destroyed (default is FALSE)
+        tile.machinedata.machineIsDestroyed = false;
+        #endregion
 
-        return false;
+        #region Explosion
+        // - Explosion info (based on ScriptableObject)
+        tile.machinedata.explodes = machine.explodes;
+        tile.machinedata.explosion_heattransfer = machine.explosion_heattransfer;
+        tile.machinedata.explosion_details = machine.explosion_details;
+        tile.machinedata.explosion_potential = machine.explosion_potential;
+        #endregion
+
+        // - Junk initialization (done elsewhere)
+        tile.machinedata.isRandomJunk = false;
+        tile.machinedata.junk_walkable = false;
+
+
+        #region Hacking
+        // restrictedAccess & secLvl are assigned along with the names.
+        tile.machinedata.detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
+        tile.machinedata.traceProgress = 0;
+        tile.machinedata.detected = false;
+        tile.machinedata.locked = false;
+        tile.machinedata.timesAccessed = 0;
+        #endregion
+
+        tile.machinedata.atWork = false;
+
+        #region Terminals
+        // - Most of this is set later, so its not an issue.
+        tile.machinedata.databaseLockout = false;
+        #endregion
+
+        #region Custom Terminals
+        // - Most of this is set later, so its not an issue.
+        tile.machinedata.customType = CustomTerminalType.Misc;
+        #endregion
+
+        // TODO: OTHER MACHINES LATER
+
+        return tile;
     }
 
     /// <summary>

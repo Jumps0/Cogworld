@@ -21,21 +21,25 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 1d9aa95970742a948961e9f81f320938, type: 3}
   symmetry: 0
   varSOUTH:
+    parent: {x: 5, y: 1}
     sboundsBL: {x: 4, y: 0}
     sboundsTR: {x: 6, y: 2}
     aboundsBL: {x: 4, y: 4}
     aboundsTR: {x: 6, y: 6}
   varEAST:
+    parent: {x: 0, y: 0}
     sboundsBL: {x: 0, y: 0}
     sboundsTR: {x: 0, y: 0}
     aboundsBL: {x: 0, y: 0}
     aboundsTR: {x: 0, y: 0}
   varNORTH:
+    parent: {x: 0, y: 0}
     sboundsBL: {x: 0, y: 0}
     sboundsTR: {x: 0, y: 0}
     aboundsBL: {x: 0, y: 0}
     aboundsTR: {x: 0, y: 0}
   varWEST:
+    parent: {x: 0, y: 0}
     sboundsBL: {x: 0, y: 0}
     sboundsTR: {x: 0, y: 0}
     aboundsBL: {x: 0, y: 0}
