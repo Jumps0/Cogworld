@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
@@ -30,6 +31,13 @@ public class BorderIndicators : MonoBehaviour
 
     public void CreateIndicators()
     {
+        // Destroy any pre-existing indicators !!!
+        foreach (var kvp in _targetIndicators.ToList())
+        {
+            Destroy(kvp.Value);
+            // NOTE: The script `UIBorderIndicator` has an OnDestroy which will remove it from this list.
+        }
+
         _camera = Camera.main;
 
         var bounds = prefab_indicator.GetComponent<SpriteRenderer>().bounds;

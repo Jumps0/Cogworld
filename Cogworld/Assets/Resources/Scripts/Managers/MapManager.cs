@@ -1809,11 +1809,6 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    public bool CheckDictionaryEntry(Dictionary<Vector2Int, TData> dict, Vector2Int key)
-    {
-        return dict.ContainsKey(key);
-    }
-
     public WorldTile PlaceTrap(Vector2Int pos, int id, BotAlignment alignment = BotAlignment.Complex, bool knowByPlayer = false, byte startingVis = 0, TerminalZone assignedTerminal = null)
     {
         // Create the new trap
@@ -2399,6 +2394,12 @@ public class MapManager : MonoBehaviour
 
         if (INTERACTABLE)
         {
+            // Problem:
+            // If we find the parent (core) after already passing through
+            // some non-parent parts, how do we update them?
+            //
+            // ?
+
             for (int x = bottomLeft.x; x <= topRight.x; x++)
             {
                 for (int y = bottomLeft.y; y <= topRight.y; y++)
@@ -2432,81 +2433,6 @@ public class MapManager : MonoBehaviour
 
         }
 
-        // ---- TODO
-
-        switch (type)
-        {
-            case 0: // Static
-                StaticMachine stat = staticMachinePrefabs[id].GetComponentInChildren<StaticMachine>();
-                size = stat._size;
-                machine = Instantiate(staticMachinePrefabs[id], new Vector3(location.x + offset.x, location.y + offset.y, 0), Quaternion.identity);
-                machines_static.Add(machine);
-                break;
-            case 1: // Terminal
-                Terminal term = imp_terminals[id].GetComponentInChildren<Terminal>();
-                size = term._size;
-                machine = Instantiate(imp_terminals[id], new Vector3(location.x + offset.x, location.y + offset.y, 0), Quaternion.identity);
-                machines_terminals.Add(machine);
-                break;
-            case 2: // Fabricator
-                Fabricator fab = imp_fabricators[id].GetComponentInChildren<Fabricator>();
-                size = fab._size;
-                machine = Instantiate(imp_fabricators[id], new Vector3(location.x + offset.x, location.y + offset.y, 0), Quaternion.identity);
-                machines_fabricators.Add(machine);
-                break;
-            case 3: // Scanalyzer
-                Scanalyzer scan = imp_scanalyzers[id].GetComponentInChildren<Scanalyzer>();
-                size = scan._size;
-                machine = Instantiate(imp_scanalyzers[id], new Vector3(location.x + offset.x, location.y + offset.y, 0), Quaternion.identity);
-                machines_scanalyzers.Add(machine);
-                break;
-            case 4: // Repair Station
-                RepairStation rep = imp_repairstations[id].GetComponentInChildren<RepairStation>();
-                size = rep._size;
-                machine = Instantiate(imp_repairstations[id], new Vector3(location.x + offset.x, location.y + offset.y, 0), Quaternion.identity);
-                machines_repairStation.Add(machine);
-                break;
-            case 5: // Recycling Unit
-                RecyclingUnit recy = imp_recyclingunits[id].GetComponentInChildren<RecyclingUnit>();
-                size = recy._size;
-                machine = Instantiate(imp_recyclingunits[id], new Vector3(location.x + offset.x, location.y + offset.y, 0), Quaternion.identity);
-                machines_recyclingUnits.Add(machine);
-                break;
-            case 6: // Garrison
-                Garrison garr = imp_garrisons[id].GetComponentInChildren<Garrison>();
-                size = garr._size;
-                machine = Instantiate(imp_garrisons[id], new Vector3(location.x + offset.x, location.y + offset.y, 0), Quaternion.identity);
-                machines_garrisons.Add(machine);
-                break;
-            case 7: // Custom
-                TerminalCustom termC = imp_customTerminals[id].GetComponentInChildren<TerminalCustom>();
-                size = termC._size;
-                machine = Instantiate(imp_customTerminals[id], new Vector3(location.x + offset.x, location.y + offset.y, 0), Quaternion.identity);
-                machines_customTerminals.Add(machine);
-                break;
-            default:
-                Debug.LogError("ERROR: Invalid Machine Selection.");
-                break;
-        }
-
-        machine.transform.SetParent(mapParent);
-        machine.transform.position = new Vector3(location.x + offset.x, location.y + offset.y, 0f);
-        machine.transform.rotation = Quaternion.Euler(0f, 0f, 90f * 0);
-        MachinePart[] machines = machine.GetComponentsInChildren<MachinePart>();
-        foreach (MachinePart M in machines)
-        {
-            M.GetComponent<SpriteRenderer>().sortingOrder = 7;
-            Vector2Int loc = new Vector2Int((int)(M.gameObject.transform.position.x + offset.x), (int)(M.gameObject.transform.position.y + offset.y));
-            TData T = _allTilesRealized[loc];
-            T.bottom.occupied = true;
-            T.top = M.gameObject;
-            _allTilesRealized[loc] = T;
-        }
-        /*
-         * NOTE:
-         * In the machine prefabs, all components my be perfectly aligned on exact numbers. If there are any decimals in the numbers (eg. -1.9999) there
-         * is a high chance that the spawning will break and the machine part will be spawned in the incorrect space due to rounding.
-         */
     }
 
     /// <summary>

@@ -220,8 +220,8 @@ public class UITraceBar : MonoBehaviour
         trueBar.fillAmount = 1f;
         trueBar.color = trueColor;
         facadeBar.fillAmount = 1f;
-
-        UIManager.inst.Terminal_DoConsequences(UIManager.inst.highSecRed, HF.GetMachineTypeAsString(UIManager.inst.terminal_targetTerm).ToUpper() + " LOCKED");
+        // TODO: COME BACK TO THIS
+        //UIManager.inst.Terminal_DoConsequences(UIManager.inst.highSecRed, HF.GetMachineTypeAsString(UIManager.inst.terminal_targetTerm).ToUpper() + " LOCKED");
 
         float delay = 0.1f;
 

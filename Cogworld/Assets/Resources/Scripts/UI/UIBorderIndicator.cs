@@ -117,7 +117,7 @@ public class UIBorderIndicator : MonoBehaviour
     {
         if (UIManager.inst && UIManager.inst.GetComponent<BorderIndicators>().locations.ContainsValue(this.gameObject))
         {
-            UIManager.inst.GetComponent<BorderIndicators>().locations.Remove(HF.V3_to_V2I(this.gameObject.transform.position)); // This should work?
+            UIManager.inst.GetComponent<BorderIndicators>().locations.Remove(machine_parent); // This should work?
         }
     }
 

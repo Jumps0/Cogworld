@@ -1215,167 +1215,25 @@ public class GameManager : MonoBehaviour
         // And play the sound
         AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_ui["ACCESS"]); // (UI - ACCESS)
 
-        switch (id)
+        foreach (var M in MapManager.inst.placedMachines)
         {
-            case 0: // Fabricators
-                foreach (var M in MapManager.inst.machines_fabricators)
-                {
-                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
-                }
-                break;
-            case 1: // Garrisons
-                foreach (var M in MapManager.inst.machines_garrisons)
-                {
-                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
-                }
-                break;
-            case 2: // Machines (all interactable)
-                foreach (var M in MapManager.inst.machines_fabricators)
-                {
-                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
-                }
-                foreach (var M in MapManager.inst.machines_garrisons)
-                {
-                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
-                }
-                foreach (var M in MapManager.inst.machines_recyclingUnits)
-                {
-                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
-                }
-                foreach (var M in MapManager.inst.machines_repairStation)
-                {
-                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
-                }
-                foreach (var M in MapManager.inst.machines_scanalyzers)
-                {
-                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
-                }
-                foreach (var M in MapManager.inst.machines_terminals)
-                {
-                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
-                }
-                break;
-            case 3: // Recycling Units
-                foreach (var M in MapManager.inst.machines_recyclingUnits)
-                {
-                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
-                }
-                break;
-            case 4: // Repair Stations
-                foreach (var M in MapManager.inst.machines_repairStation)
-                {
-                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
-                }
-                break;
-            case 5: // Scanalyzers
-                foreach (var M in MapManager.inst.machines_scanalyzers)
-                {
-                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
-                }
-                break;
-            case 6: // Terminals
-                foreach (var M in MapManager.inst.machines_terminals)
-                {
-                    GameManager.inst.RevealWorldMachine(M.GetComponentInChildren<MachinePart>().gameObject);
-                }
-                break;
+            if(type == MachineType.None) // Any non-static machine
+            {
+                GameManager.inst.RevealWorldMachine(M);
+            }
+            else if (type != MachineType.None && MapManager.inst.mapdata[M.x, M.y].machinedata.type == type) // Must match type
+            {
+                GameManager.inst.RevealWorldMachine(M);
+            }
         }
     }
 
-    public void RevealWorldMachine(GameObject specificMachine = null, MachineType type = MachineType.Static)
+    public void RevealWorldMachine(Vector2Int parentLocation)
     {
-        if(specificMachine != null) // Reveal this specific machine
-        {
-            specificMachine.GetComponent<MachinePart>().RevealMe();
-        }
-        else // Reveal a random machine based on type
-        {
-            MachinePart m = null;
-            switch (type)
-            {
-                case MachineType.Fabricator:
-                    m = MapManager.inst.machines_fabricators[Random.Range(0, MapManager.inst.machines_fabricators.Count - 1)].GetComponentInChildren<MachinePart>();
-                    if (m.parentPart.isExplored) // We already know this one, roll again
-                    {
-                        GameManager.inst.RevealWorldMachine(null, type);
-                    }
-                    else
-                    {
-                        m.parentPart.RevealMe();
-                    }
-                    break;
-                case MachineType.Garrison:
-                    m = MapManager.inst.machines_garrisons[Random.Range(0, MapManager.inst.machines_garrisons.Count - 1)].GetComponentInChildren<MachinePart>();
-                    if (m.parentPart.isExplored) // We already know this one, roll again
-                    {
-                        GameManager.inst.RevealWorldMachine(null, type);
-                    }
-                    else
-                    {
-                        m.parentPart.RevealMe();
-                    }
-                    break;
-                case MachineType.Recycling:
-                    m = MapManager.inst.machines_recyclingUnits[Random.Range(0, MapManager.inst.machines_recyclingUnits.Count - 1)].GetComponentInChildren<MachinePart>();
-                    if (m.parentPart.isExplored) // We already know this one, roll again
-                    {
-                        GameManager.inst.RevealWorldMachine(null, type);
-                    }
-                    else
-                    {
-                        m.parentPart.RevealMe();
-                    }
-                    break;
-                case MachineType.RepairStation:
-                    m = MapManager.inst.machines_repairStation[Random.Range(0, MapManager.inst.machines_repairStation.Count - 1)].GetComponentInChildren<MachinePart>();
-                    if (m.parentPart.isExplored) // We already know this one, roll again
-                    {
-                        GameManager.inst.RevealWorldMachine(null, type);
-                    }
-                    else
-                    {
-                        m.parentPart.RevealMe();
-                    }
-                    break;
-                case MachineType.Scanalyzer:
-                    m = MapManager.inst.machines_scanalyzers[Random.Range(0, MapManager.inst.machines_scanalyzers.Count - 1)].GetComponentInChildren<MachinePart>();
-                    if (m.parentPart.isExplored) // We already know this one, roll again
-                    {
-                        GameManager.inst.RevealWorldMachine(null, type);
-                    }
-                    else
-                    {
-                        m.parentPart.RevealMe();
-                    }
-                    break;
-                case MachineType.Terminal:
-                    m = MapManager.inst.machines_terminals[Random.Range(0, MapManager.inst.machines_terminals.Count - 1)].GetComponentInChildren<MachinePart>();
-                    if (m.parentPart.isExplored) // We already know this one, roll again
-                    {
-                        GameManager.inst.RevealWorldMachine(null, type);
-                    }
-                    else
-                    {
-                        m.parentPart.RevealMe();
-                    }
-                    break;
-                case MachineType.CustomTerminal:
-                    m = MapManager.inst.machines_customTerminals[Random.Range(0, MapManager.inst.machines_customTerminals.Count - 1)].GetComponentInChildren<MachinePart>();
-                    if (m.parentPart.isExplored) // We already know this one, roll again
-                    {
-                        GameManager.inst.RevealWorldMachine(null, type);
-                    }
-                    else
-                    {
-                        m.parentPart.RevealMe();
-                    }
-                    break;
-                case MachineType.DoorTerminal:
-                    break;
-                case MachineType.Static:
-                    break;
-            }
-        }
+        MapManager.inst.mapdata[parentLocation.x, parentLocation.y].MachineReveal();
+
+        // Update indicators
+        UIManager.inst.GetComponent<BorderIndicators>().CreateIndicators();
     }
 
     public List<char> storedIntel = new List<char>(); // TODO: Change this to appropriate variables later
@@ -1447,35 +1305,11 @@ public class GameManager : MonoBehaviour
 
     public void MachineTimerUpdate() // Do a production check on any working machines
     {
-        foreach (GameObject obj in MapManager.inst.machines_fabricators)
+        foreach (Vector2Int M in MapManager.inst.placedMachines)
         {
-            if (obj.GetComponentInChildren<Fabricator>().working)
+            if (MapManager.inst.mapdata[M.x, M.y].machinedata.atWork)
             {
-                obj.GetComponentInChildren<Fabricator>().Check();
-            }
-        }
-
-        foreach (GameObject obj in MapManager.inst.machines_scanalyzers)
-        {
-            if (obj.GetComponentInChildren<Scanalyzer>().working)
-            {
-                obj.GetComponentInChildren<Scanalyzer>().Check();
-            }
-        }
-
-        foreach (GameObject obj in MapManager.inst.machines_repairStation)
-        {
-            if (obj.GetComponentInChildren<RepairStation>().working)
-            {
-                obj.GetComponentInChildren<RepairStation>().Check();
-            }
-        }
-
-        foreach (GameObject obj in MapManager.inst.machines_recyclingUnits)
-        {
-            if (obj.GetComponentInChildren<RecyclingUnit>().working)
-            {
-                obj.GetComponentInChildren<RecyclingUnit>().Check();
+                MapManager.inst.mapdata[M.x, M.y].machinedata.OperationTick();
             }
         }
     }

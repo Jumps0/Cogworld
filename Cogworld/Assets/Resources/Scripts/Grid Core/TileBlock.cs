@@ -1,6 +1,7 @@
 // By: Cody Jackson | cody@krselectric.com
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -892,60 +893,32 @@ public struct WorldTile
         #endregion
     }
 
-    #region Terminal
-    private void TerminalInit()
+    /// <summary>
+    /// Triggered by an intel reveal. We need to set this entire machine (children included) to green, and create a Border Indicator.
+    /// </summary>
+    public void MachineReveal()
     {
+        // Get parent position
+        Vector2Int parentPos = location;
+        if (!machinedata.isParent)
+        {
+            parentPos = machinedata.GetParent(location);
+        }
 
+        List<Vector2Int> pieces = machinedata.children.ToList(); // Gather up all children
+        pieces.Add(parentPos); // Include the parent as well
+
+        // Go through pieces and set them all to revealing, along with settings the flag
+        foreach (var P in pieces)
+        {
+            if (MapManager.inst.mapdata[P.x, P.y].vis == 0) { MapManager.inst.mapdata[P.x, P.y].vis = 1; } // Set all unexplored to explored
+
+            MapManager.inst.mapdata[P.x, P.y].revealedViaIntel = true; // Set intel flag so it appears green
+        }
+
+        // !! Vision Update !!
+        TurnManager.inst.AllEntityVisUpdate(true);
     }
-
-    #endregion
-
-    #region Custom Terminal
-    private void CustomTerminalInit()
-    {
-        /*
-         // Whatever this is?
-         if(obj.GetComponentInChildren<TerminalCustom>().customType == CustomTerminalType.DoorLock)
-            {
-                foreach (Vector2Int loc in obj.GetComponentInChildren<TerminalCustom>().wallRevealCoordinates)
-                {
-                    if (MapManager.inst._allTilesRealized.ContainsKey(loc))
-                    {
-                        obj.GetComponentInChildren<TerminalCustom>().linkedDoors.Add(MapManager.inst._allTilesRealized[loc].bottom);
-                    }
-                }
-            }
-         */
-    }
-    #endregion
-
-    #region Fabricator
-    private void FabricatorInit()
-    {
-
-    }
-    #endregion
-
-    #region Recycling Units
-    private void RecyclingInit()
-    {
-
-    }
-    #endregion
-
-    #region Repair Station
-    private void RepairInit()
-    {
-
-    }
-    #endregion
-
-    #region Scanalyzer
-    private void ScanalyzerInit()
-    {
-
-    }
-    #endregion
     #endregion
 }
 
@@ -1015,6 +988,9 @@ public struct MachineData
     [Header("Trojans")]
     public List<HackObject> trojans;
 
+    [Tooltip("Is this machine currently working on something? (Fabricators, Repair Bays, Scanalyzers, etc. use this)")]
+    public bool atWork;
+
     [Header("Terminal Variables")]
     public TerminalZone terminalZone;
     [Tooltip("The Operator class Actor assigned to monitor this machine.")]
@@ -1035,6 +1011,69 @@ public struct MachineData
 
     // Future note:
     // -How to handle Machine audio: https://www.gridsagegames.com/blog/2020/06/building-cogminds-ambient-soundscape/
+
+    /// <summary>
+    /// Called every turn, used by most "operational" machines when they are busy working on something.
+    /// </summary>
+    public void OperationTick()
+    {
+        // TODO
+    }
+
+    #region Terminal
+    private void TerminalInit()
+    {
+
+    }
+
+    #endregion
+
+    #region Custom Terminal
+    private void CustomTerminalInit()
+    {
+        /*
+         // Whatever this is?
+         if(obj.GetComponentInChildren<TerminalCustom>().customType == CustomTerminalType.DoorLock)
+            {
+                foreach (Vector2Int loc in obj.GetComponentInChildren<TerminalCustom>().wallRevealCoordinates)
+                {
+                    if (MapManager.inst._allTilesRealized.ContainsKey(loc))
+                    {
+                        obj.GetComponentInChildren<TerminalCustom>().linkedDoors.Add(MapManager.inst._allTilesRealized[loc].bottom);
+                    }
+                }
+            }
+         */
+    }
+    #endregion
+
+    #region Fabricator
+    private void FabricatorInit()
+    {
+
+    }
+    #endregion
+
+    #region Recycling Units
+    private void RecyclingInit()
+    {
+
+    }
+    #endregion
+
+    #region Repair Station
+    private void RepairInit()
+    {
+
+    }
+    #endregion
+
+    #region Scanalyzer
+    private void ScanalyzerInit()
+    {
+
+    }
+    #endregion
 
     public Vector2Int GetParent(Vector2Int loc)
     {

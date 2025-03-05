@@ -79,6 +79,10 @@ public abstract class MachineObject : ScriptableObject
 [Tooltip("Provides information for where on the machine tilemap this variant can be found. Remember there is a unique tilemap for STATIC machines and one for INTERACTABLE machines.")]
 public class MachineBounds
 {
+    [Header("Parent")]
+    [Tooltip("The location of where the 'parent part' is, which contains the logic, and a list of its children.")]
+    public Vector2Int parent;
+
     [Header("Standard Visual")]
     [Tooltip("The bottom left corner of this machine.")]
     public Vector2Int sboundsBL;
