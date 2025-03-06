@@ -1397,7 +1397,10 @@ public class PlayerData : MonoBehaviour
 
             mouseTile.transform.position = mousePos;
 
-            MouseHover(mousePos);
+            // Verify the mouse is within the bounds of the map
+            Vector2Int mouseInt = HF.V3_to_V2I(mousePos);
+            if(HF.PosWithinMap(mouseInt))
+                MouseHover(mouseInt);
         }
         else // Disable it
         {
@@ -1405,16 +1408,16 @@ public class PlayerData : MonoBehaviour
         }
     }
     #endregion
-
+    
     /// <summary>
     /// Currently just used for the exit pinging.
     /// </summary>
-    private void MouseHover(Vector3 mousePos)
+    private void MouseHover(Vector2Int mousePos)
     {
         // (I'm not too pleased with all this stuff being called every frame)
-        Vector2Int pos = HF.V3_to_V2I(mousePos);
+        Vector2Int pos = mousePos;
         WorldTile tile = MapManager.inst.mapdata[pos.x, pos.y];
-
+        
         if(tile.type == TileType.Exit)
         {
             if (tile.vis > 0) // Explored
@@ -1439,7 +1442,7 @@ public class PlayerData : MonoBehaviour
                     UIManager.inst.CreateExitPopup(tile, tile.access_destinationName);
 
                     // Play the "ACCESS" sound
-                    AudioManager.inst.CreateTempClip(mousePos, AudioManager.inst.dict_ui["ACCESS"]); // UI - ACCESS
+                    AudioManager.inst.CreateTempClip(new Vector3(mousePos.x, mousePos.y), AudioManager.inst.dict_ui["ACCESS"]); // UI - ACCESS
                 }
             }
         }

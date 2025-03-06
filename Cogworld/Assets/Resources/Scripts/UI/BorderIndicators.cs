@@ -48,24 +48,10 @@ public class BorderIndicators : MonoBehaviour
 
         foreach (Vector2Int M in machines)
         {
-            // Need to differentiate between parent & non-parent
-            if (MapManager.inst.mapdata[M.x, M.y].machinedata.isParent)
+            if (MapManager.inst.mapdata[M.x, M.y].machinedata.type != MachineType.Static && MapManager.inst.mapdata[M.x, M.y].machinedata.indicator == null)
             {
-                if (MapManager.inst.mapdata[M.x, M.y].machinedata.indicator == null)
-                {
-                    var indicator = CreateMachineIndicator(M);
-                    _targetIndicators.Add(M, indicator);
-                }
-            }
-            else
-            {
-                Vector2Int parent = MapManager.inst.mapdata[M.x, M.y].machinedata.GetParent(M);
-
-                if (MapManager.inst.mapdata[parent.x, parent.y].machinedata.indicator == null)
-                {
-                    var indicator = CreateMachineIndicator(parent);
-                    _targetIndicators.Add(parent, indicator);
-                }
+                var indicator = CreateMachineIndicator(M);
+                _targetIndicators.Add(M, indicator);
             }
         }
     }

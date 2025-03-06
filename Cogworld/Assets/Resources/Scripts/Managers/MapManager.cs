@@ -272,9 +272,6 @@ public class MapManager : MonoBehaviour
 
         DrawBorder(); // Draw the border
 
-        // !! Update the Tilemap !!
-        UpdateTilemap();
-
         CreateRegions();
 
         // Spawn the player
@@ -339,6 +336,10 @@ public class MapManager : MonoBehaviour
         AssignMachineNames(); // Assign names to all placed machines
         AssignMachineCommands(); // Assign commands (for terminal interaction) to all placed machines.
         ZoneTerminals(); // Create terminal zones
+
+        // !! Update the Tilemap !!
+        UpdateTilemap();
+
         UIManager.inst.GetComponent<BorderIndicators>().CreateIndicators(); // Create indicators for all (interactable) machines
 
         //
@@ -493,14 +494,15 @@ public class MapManager : MonoBehaviour
 
         DrawBorder(); // Draw the border
 
-        // !! Update the Tilemap !!
-        UpdateTilemap();
-
         CreateRegions();
 
         AssignMachineNames(); // Assign names to all placed machines
         AssignMachineCommands(); // Assign commands (for terminal interaction) to all placed machines.
         ZoneTerminals(); // Create terminal zones
+
+        // !! Update the Tilemap !!
+        UpdateTilemap();
+
         UIManager.inst.GetComponent<BorderIndicators>().CreateIndicators(); // Create indicators for all (interactable) machines
 
         // Spawn the player
@@ -666,7 +668,7 @@ public class MapManager : MonoBehaviour
         // 5 - Place custom machines
         //PlaceIndividualMachine(new Vector2Int(bl.x + 2, bl.y + 3), 1, 4); // Terminal 4x3 "Pipeworks"
         //PlaceIndividualMachine(new Vector2Int(bl.x + 4, bl.y + 7), 0, 11); // Static Machine (Outpost Generator)
-        PlaceIndividualMachine(new Vector2Int(bl.x + 8, bl.y + 4), 0, 0); // Static Machine (Recharging Bay)
+        PlaceIndividualMachine(new Vector2Int(bl.x + 7, bl.y + 4), 10); // Static Machine (Recharging Bay)
 
         //PlaceIndividualMachine(new Vector2Int(bl.x + 3, bl.y + 13), 2, 2); // Fabricator 4x2 "Alice"
         //PlaceIndividualMachine(new Vector2Int(bl.x + 2, bl.y + 13), 6, 0); // Garrison 3x3 "Angel"
@@ -908,7 +910,7 @@ public class MapManager : MonoBehaviour
         // (ASCII Mode check)
         bool ASCII = GlobalSettings.inst.settings.asciiMode;
 
-        switch (tile.tileInfo.type)
+        switch (tile.type)
         {
             case TileType.Floor:
                 // Is this destroyed?
@@ -1033,13 +1035,8 @@ public class MapManager : MonoBehaviour
                     // If so, we need to show the disabled color instead.
                     bool isDisabled = false;
 
-                    if (!md.isParent)
-                    {
-                        Vector2Int parent = md.GetParent(pos);
-
-                        if(!parent.Equals(default(WorldTile)))
-                            isDisabled = MapManager.inst.mapdata[parent.x, parent.y].machinedata.machineIsDestroyed;
-                    }
+                    Vector2Int parentPos = MapManager.inst.mapdata[pos.x, pos.y].machinedata.parentLocation;
+                    isDisabled = MapManager.inst.mapdata[parentPos.x, parentPos.y].machinedata.machineIsDestroyed;
 
                     // If it is disabled/destroyed, we need to show the grayed out version
                     if (isDisabled)
@@ -2361,7 +2358,7 @@ public class MapManager : MonoBehaviour
         {
             return;
         }
-
+        
         // Now that we know the placement is valid (or just don't care),
         // we then open the related machine tilemap, identify the tiles,
         // and go through each one, placing them into the world.
@@ -2383,7 +2380,7 @@ public class MapManager : MonoBehaviour
         Vector2Int bottomLeft = bounds.sboundsBL, topRight = bounds.sboundsTR;
 
         // First get the location of the parent part (all machines have this)
-        Vector2Int parentLoc = bounds.parent;
+        Vector2Int parentLoc = new Vector2Int(bounds.parent.x + location.x, bounds.parent.y + location.y);
         // Collect up all the children for future storage.
         List<Vector2Int> children = new List<Vector2Int>();
 
@@ -2406,6 +2403,8 @@ public class MapManager : MonoBehaviour
                         // Modify the position to be respective to the world map
                         Vector2Int worldPos = new Vector2Int((pos.x - bottomLeft.x) + location.x, (pos.y - bottomLeft.y) + location.y);
 
+                        children.Add(worldPos); // Add to children list
+
                         // Just flatly assign the defaults
                         WorldTile tile = MachineAssignDefaults(worldPos, machine);
 
@@ -2415,7 +2414,7 @@ public class MapManager : MonoBehaviour
                         tile.machinedata.sprite_ascii = asciiTile;
 
                         // - Parenting (since this is a child it doesn't have anything)
-                        tile.machinedata.isParent = false;
+                        tile.machinedata.parentLocation = Vector2Int.zero;
 
                         // Finally, overwrite the map
                         MapManager.inst.mapdata[worldPos.x, worldPos.y] = tile;
@@ -2427,11 +2426,20 @@ public class MapManager : MonoBehaviour
         // Do the parent last
         WorldTile parentTile = MachineAssignDefaults(parentLoc, machine);
 
+        // Assign both sprites
+        Tile normalTile_p = (Tile)machineMap.GetTile((Vector3Int)bounds.parent);
+        Tile asciiTile_p = (Tile)machineMap.GetTile((Vector3Int)bounds.GetASCII(parentLoc));
+        parentTile.machinedata.sprite_normal = normalTile_p;
+        parentTile.machinedata.sprite_ascii = asciiTile_p;
+
         // - Parenting (since this is a child it doesn't have anything)
-        parentTile.machinedata.isParent = true;
+        parentTile.machinedata.parentLocation = parentLoc;
         parentTile.machinedata.children = new Vector2Int[children.Count];
         parentTile.machinedata.children = children.ToArray();
+        parentTile.AssignParentLocation(parentLoc); // Assign parent location to children
 
+        placedMachines.Add(parentLoc);
+        Debug.Log($"Placed machine {id} at {location.x},{location.y} with direction {direction}. Parent at {parentLoc.x},{parentLoc.y}.");
         MapManager.inst.mapdata[parentLoc.x, parentLoc.y] = parentTile;
     }
 
@@ -2446,6 +2454,8 @@ public class MapManager : MonoBehaviour
         WorldTile tile = MapManager.inst.mapdata[pos.x, pos.y];
 
         #region Basic Info
+        tile.type = TileType.Machine; // Now a machine here.
+        pathdata[pos.x, pos.y] = 3;   // Should now be unwalkable.
         // - Type (based on ScriptableObject)
         tile.machinedata.type = machine.type;
         // - State (default is ON)

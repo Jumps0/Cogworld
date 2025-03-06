@@ -903,11 +903,7 @@ public struct WorldTile
     public void MachineReveal()
     {
         // Get parent position
-        Vector2Int parentPos = location;
-        if (!machinedata.isParent)
-        {
-            parentPos = machinedata.GetParent(location);
-        }
+        Vector2Int parentPos = machinedata.parentLocation;
 
         List<Vector2Int> pieces = machinedata.children.ToList(); // Gather up all children
         pieces.Add(parentPos); // Include the parent as well
@@ -922,6 +918,18 @@ public struct WorldTile
 
         // !! Vision Update !!
         TurnManager.inst.AllEntityVisUpdate(true);
+    }
+
+    /// <summary>
+    /// TO BE USED BY THE PARENT OBJECT ONLY! Tells the children of a parent machine part the location of the parent part.
+    /// </summary>
+    /// <param name="pos">Location of the parent machine part.</param>
+    public void AssignParentLocation(Vector2Int pos)
+    {
+        foreach (Vector2Int P in machinedata.children)
+        {
+            MapManager.inst.mapdata[P.x, P.y].machinedata.parentLocation = pos;
+        }
     }
     #endregion
 }
@@ -962,8 +970,8 @@ public struct MachineData
     public bool junk_walkable;
 
     [Header("Parent & Ownership")]
-    [Tooltip("Is this part the PARENT or PRIMARY interactable for all the other parts that make up this machine")]
-    public bool isParent;
+    [Tooltip("Location of the parent part of this machine. If this machine IS the parent then this and `location` will be the same.")]
+    public Vector2Int parentLocation;
     [Tooltip("If this part is the parent, will contain all other children that make up this machine.")]
     public Vector2Int[] children;
     [Tooltip("Reference to the UI indicator showing where this machine is IF it is currently not on the screen.")]
@@ -1084,26 +1092,6 @@ public struct MachineData
 
     }
     #endregion
-
-    public Vector2Int GetParent(Vector2Int loc)
-    {
-        if (MapManager.inst.mapdata[loc.x, loc.y].machinedata.isParent)
-        {
-            return loc;
-        }
-        else
-        {
-            foreach (Vector2Int MD in MapManager.inst.mapdata[loc.x, loc.y].machinedata.children)
-            {
-                if(MapManager.inst.mapdata[MD.x, MD.y].machinedata.isParent)
-                {
-                    return MD;
-                }
-            }
-        }
-
-        return Vector2Int.zero;
-    }
 }
 
 public enum CustomTerminalType

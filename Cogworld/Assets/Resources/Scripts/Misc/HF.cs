@@ -5018,6 +5018,18 @@ public static class HF
     #endregion
 
     #region Misc
+    /// <summary>
+    /// Verifies if a specific position is within the bounds of the map.
+    /// </summary>
+    /// <param name="pos">The position to check.</param>
+    /// <returns>TRUE/FALSE if this position is within the bounds of the map.</returns>
+    public static bool PosWithinMap(Vector2Int pos)
+    {
+        Vector2Int mapsize = MapManager.inst.mapsize;
+
+        return pos.x >= 0 && pos.y >= 0 && pos.x < mapsize.x && pos.y < mapsize.y;
+    }
+
     public static bool LocationUnoccupied(Vector2Int pos)
     {
         byte info = MapManager.inst.pathdata[pos.x, pos.y];
