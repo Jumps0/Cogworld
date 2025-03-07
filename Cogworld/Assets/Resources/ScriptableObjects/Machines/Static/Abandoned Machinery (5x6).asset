@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce788b639fd6b844a918039e8a6d4a83, type: 3}
+  m_Name: Abandoned Machinery (5x6)
+  m_EditorClassIdentifier: 
+  Id: 0
+  displayName: Abandoned Machinery Integrator
+  description: 
+  type: 8
+  operationSound: {fileID: 0}
+  symmetry: 2
+  varSOUTH:
+    parent: {x: 2, y: 262}
+    sboundsBL: {x: 0, y: 257}
+    sboundsTR: {x: 4, y: 262}
+    aboundsBL: {x: 0, y: 264}
+    aboundsTR: {x: 4, y: 269}
+  varEAST:
+    parent: {x: 6, y: 259}
+    sboundsBL: {x: 6, y: 257}
+    sboundsTR: {x: 11, y: 261}
+    aboundsBL: {x: 6, y: 264}
+    aboundsTR: {x: 11, y: 268}
+  varNORTH:
+    parent: {x: 15, y: 257}
+    sboundsBL: {x: 13, y: 257}
+    sboundsTR: {x: 17, y: 262}
+    aboundsBL: {x: 13, y: 264}
+    aboundsTR: {x: 17, y: 269}
+  varWEST:
+    parent: {x: 24, y: 259}
+    sboundsBL: {x: 19, y: 257}
+    sboundsTR: {x: 24, y: 261}
+    aboundsBL: {x: 19, y: 264}
+    aboundsTR: {x: 24, y: 268}
+  explodes: 0
+  explosion_heattransfer: 0
+  explosion_details:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
+    damageType: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
+    salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosion_potential:
+    explosionSounds: []
+    explosionGFX: 0
+  explosionSound:
+  - {fileID: 0}

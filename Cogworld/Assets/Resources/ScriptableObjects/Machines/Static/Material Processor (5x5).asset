@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce788b639fd6b844a918039e8a6d4a83, type: 3}
+  m_Name: Material Processor (5x5)
+  m_EditorClassIdentifier: 
+  Id: 0
+  displayName: Material Processor
+  description: 
+  type: 8
+  operationSound: {fileID: 8300000, guid: 4effb60835da26244ac7dad7b95613fe, type: 3}
+  symmetry: 0
+  varSOUTH:
+    parent: {x: 2, y: 247}
+    sboundsBL: {x: 0, y: 245}
+    sboundsTR: {x: 4, y: 249}
+    aboundsBL: {x: 0, y: 251}
+    aboundsTR: {x: 4, y: 255}
+  varEAST:
+    parent: {x: 0, y: 0}
+    sboundsBL: {x: 0, y: 0}
+    sboundsTR: {x: 0, y: 0}
+    aboundsBL: {x: 0, y: 0}
+    aboundsTR: {x: 0, y: 0}
+  varNORTH:
+    parent: {x: 0, y: 0}
+    sboundsBL: {x: 0, y: 0}
+    sboundsTR: {x: 0, y: 0}
+    aboundsBL: {x: 0, y: 0}
+    aboundsTR: {x: 0, y: 0}
+  varWEST:
+    parent: {x: 0, y: 0}
+    sboundsBL: {x: 0, y: 0}
+    sboundsTR: {x: 0, y: 0}
+    aboundsBL: {x: 0, y: 0}
+    aboundsTR: {x: 0, y: 0}
+  explodes: 0
+  explosion_heattransfer: 0
+  explosion_details:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
+    damageType: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
+    salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosion_potential:
+    explosionSounds: []
+    explosionGFX: 0
+  explosionSound: []
