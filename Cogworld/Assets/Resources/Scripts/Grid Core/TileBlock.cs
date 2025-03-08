@@ -845,18 +845,23 @@ public struct WorldTile
         {
             case MachineType.Fabricator:
                 machinedata.displayName = "Fabricator";
+                machinedata.activeColor = GameManager.inst.colors.machine_fabricator;
                 break;
             case MachineType.Garrison:
                 machinedata.displayName = "Garrison";
+                machinedata.activeColor = GameManager.inst.colors.machine_garrison;
                 break;
             case MachineType.Recycling:
                 machinedata.displayName = "Recycling Unit";
+                machinedata.activeColor = GameManager.inst.colors.machine_recycler;
                 break;
             case MachineType.RepairStation:
                 machinedata.displayName = "Repair Station";
+                machinedata.activeColor = GameManager.inst.colors.machine_repairbay;
                 break;
             case MachineType.Scanalyzer:
                 machinedata.displayName = "Scanalyzer";
+                machinedata.activeColor = GameManager.inst.colors.machine_scanalyzer;
                 break;
             case MachineType.Terminal:
                 machinedata.displayName = "Terminal";
@@ -864,20 +869,25 @@ public struct WorldTile
                 machinedata.terminalZone.assignedTerminal = location;
                 machinedata.terminalZone.assignedArea = new List<Vector2Int>();
 
+                machinedata.activeColor = GameManager.inst.colors.machine_terminal;
+
                 // Save it
                 MapManager.inst.mapdata[location.x, location.y].machinedata.terminalZone = machinedata.terminalZone;
                 MapManager.inst.mapdata[location.x, location.y].machinedata.terminalZone.assignedTerminal = machinedata.terminalZone.assignedTerminal;
                 MapManager.inst.mapdata[location.x, location.y].machinedata.terminalZone.assignedArea = machinedata.terminalZone.assignedArea;
                 break;
             case MachineType.CustomTerminal:
+                machinedata.activeColor = GameManager.inst.colors.machine_customterminal;
                 // TODO
                 // More complicated
                 break;
             case MachineType.DoorTerminal:
+                machinedata.activeColor = GameManager.inst.colors.machine_customterminal;
                 // TODO
                 // More complicated
                 break;
             case MachineType.Static:
+                machinedata.activeColor = GameManager.inst.colors.machine_static;
                 // TODO
                 // More complicated
                 break;
@@ -894,15 +904,10 @@ public struct WorldTile
         // And save this name
         MapManager.inst.mapdata[location.x, location.y].machinedata.displayName = machinedata.displayName;
 
-        // Color setup
-        #region Colors
-        machinedata.activeColor = tileInfo.asciiColor;
+        // Other Color setup
         machinedata.disabledColor = Color.gray;
-
-        // And save this info
         MapManager.inst.mapdata[location.x, location.y].machinedata.activeColor = machinedata.activeColor;
         MapManager.inst.mapdata[location.x, location.y].machinedata.disabledColor = machinedata.disabledColor;
-        #endregion
     }
 
     /// <summary>

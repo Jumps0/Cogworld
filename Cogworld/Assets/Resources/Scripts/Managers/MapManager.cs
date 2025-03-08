@@ -1031,22 +1031,7 @@ public class MapManager : MonoBehaviour
                         display = tile.machinedata.sprite_normal;
                     }
 
-                    // Although this machine may not be destroyed, is it's parent object destroyed?
-                    // If so, we need to show the disabled color instead.
-                    bool isDisabled = false;
-
-                    Vector2Int parentPos = MapManager.inst.mapdata[pos.x, pos.y].machinedata.parentLocation;
-                    isDisabled = MapManager.inst.mapdata[parentPos.x, parentPos.y].machinedata.machineIsDestroyed;
-
-                    // If it is disabled/destroyed, we need to show the grayed out version
-                    if (isDisabled)
-                    {
-                        display.color = disabled;
-                    }
-                    else
-                    {
-                        display.color = active;
-                    }
+                    display.color = DetermineMachineColor(pos);
                 }
                 else
                 {
@@ -1221,8 +1206,11 @@ public class MapManager : MonoBehaviour
         WorldTile tile = mapdata[pos.x, pos.y];
         byte update = tile.vis;
         Tile currentDisplay = tilemap.GetTile<Tile>(new Vector3Int(pos.x, pos.y)); // Save the current sprite for later
+
         Color finalColor = Color.black;
         Color visc_white = tile.tileInfo.asciiColor;
+        // Its a bit more complicated for machines
+        if (tile.type == TileType.Machine && !tile.machinedata.machineIsDestroyed) { visc_white = DetermineMachineColor(pos); }
         Color visc_gray = HF.GetDarkerColor(visc_white, 0.3f);
 
         bool isExplored = false, isVisible = false;
@@ -1296,6 +1284,36 @@ public class MapManager : MonoBehaviour
         display = currentDisplay;
         display.color = finalColor;
         tilemap.SetTile((Vector3Int)pos, display);
+    }
+
+    public Color DetermineMachineColor(Vector2Int pos)
+    {
+        Color final = Color.white;
+
+        // Is this machine the parent? If not, we need to get it,
+        // because only the parent has the set colors.
+        Vector2Int parentPos = MapManager.inst.mapdata[pos.x, pos.y].machinedata.parentLocation;
+
+        Color active = MapManager.inst.mapdata[parentPos.x, parentPos.y].machinedata.activeColor;
+        Color disabled = MapManager.inst.mapdata[parentPos.x, parentPos.y].machinedata.disabledColor;
+
+        // Although this machine may not be destroyed, is it's parent object destroyed?
+        // If so, we need to show the disabled color instead.
+        bool isDisabled = false;
+
+        isDisabled = MapManager.inst.mapdata[parentPos.x, parentPos.y].machinedata.machineIsDestroyed;
+
+        // If it is disabled/destroyed, we need to show the grayed out version
+        if (isDisabled)
+        {
+            final = disabled;
+        }
+        else
+        {
+            final = active;
+        }
+
+        return final;
     }
     #endregion
 
@@ -2439,7 +2457,7 @@ public class MapManager : MonoBehaviour
         parentTile.AssignParentLocation(parentLoc); // Assign parent location to children
 
         placedMachines.Add(parentLoc);
-        Debug.Log($"Placed machine {id} at {location.x},{location.y} with direction {direction}. Parent at {parentLoc.x},{parentLoc.y}.");
+
         MapManager.inst.mapdata[parentLoc.x, parentLoc.y] = parentTile;
     }
 
