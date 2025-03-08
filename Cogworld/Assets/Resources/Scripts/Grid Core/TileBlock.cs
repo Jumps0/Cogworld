@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Tile = UnityEngine.Tilemaps.Tile;
 
 /// <summary>
 /// A script used for the physical *real world* tiles used to build the world. What this tile is gets determined by its "tileInfo" (a TileObject variable).
@@ -477,7 +478,6 @@ public struct WorldTile
     public byte vis;
     public bool doneRevealAnimation;
     public bool revealedViaIntel;
-    public TerminalZone zone;
 
     [Header("States")]
     [Tooltip("Where -1 = Not dirty, and any other number indicates the ID of the debris sprite.")]
@@ -860,6 +860,14 @@ public struct WorldTile
                 break;
             case MachineType.Terminal:
                 machinedata.displayName = "Terminal";
+                machinedata.terminalZone = new TerminalZone();
+                machinedata.terminalZone.assignedTerminal = location;
+                machinedata.terminalZone.assignedArea = new List<Vector2Int>();
+
+                // Save it
+                MapManager.inst.mapdata[location.x, location.y].machinedata.terminalZone = machinedata.terminalZone;
+                MapManager.inst.mapdata[location.x, location.y].machinedata.terminalZone.assignedTerminal = machinedata.terminalZone.assignedTerminal;
+                MapManager.inst.mapdata[location.x, location.y].machinedata.terminalZone.assignedArea = machinedata.terminalZone.assignedArea;
                 break;
             case MachineType.CustomTerminal:
                 // TODO

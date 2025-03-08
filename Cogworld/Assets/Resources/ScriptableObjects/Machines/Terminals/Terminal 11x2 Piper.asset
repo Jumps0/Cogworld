@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce788b639fd6b844a918039e8a6d4a83, type: 3}
+  m_Name: Terminal 11x2 Piper
+  m_EditorClassIdentifier: 
+  Id: 0
+  displayName: Terminal Piper
+  description: 
+  type: 5
+  operationSound: {fileID: 8300000, guid: 9073141b07e0da340a41ea0074427d09, type: 3}
+  symmetry: 2
+  varSOUTH:
+    parent: {x: 145, y: 6}
+    sboundsBL: {x: 140, y: 6}
+    sboundsTR: {x: 150, y: 7}
+    aboundsBL: {x: 140, y: 9}
+    aboundsTR: {x: 150, y: 10}
+  varEAST:
+    parent: {x: 153, y: 5}
+    sboundsBL: {x: 152, y: 0}
+    sboundsTR: {x: 153, y: 10}
+    aboundsBL: {x: 155, y: 0}
+    aboundsTR: {x: 156, y: 10}
+  varNORTH:
+    parent: {x: 145, y: 1}
+    sboundsBL: {x: 140, y: 0}
+    sboundsTR: {x: 150, y: 1}
+    aboundsBL: {x: 140, y: 3}
+    aboundsTR: {x: 150, y: 4}
+  varWEST:
+    parent: {x: 158, y: 5}
+    sboundsBL: {x: 158, y: 0}
+    sboundsTR: {x: 159, y: 10}
+    aboundsBL: {x: 161, y: 0}
+    aboundsTR: {x: 162, y: 10}
+  explodes: 0
+  explosion_heattransfer: 0
+  explosion_details:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
+    damageType: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
+    salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosion_potential:
+    explosionSounds: []
+    explosionGFX: 0
+  explosionSound: []

@@ -666,7 +666,7 @@ public class MapManager : MonoBehaviour
 
         
         // 5 - Place custom machines
-        //PlaceIndividualMachine(new Vector2Int(bl.x + 2, bl.y + 3), 1, 4); // Terminal 4x3 "Pipeworks"
+        PlaceIndividualMachine(new Vector2Int(bl.x + 1, bl.y + 1), machineDatabase.dict["Terminal Pipeworks"].Id, Direction.NO); // Terminal 4x3 "Pipeworks"
         PlaceIndividualMachine(new Vector2Int(bl.x + 4, bl.y + 7), machineDatabase.dict["Cave Base Generator"].Id); // Static Machine (Outpost Generator)
         PlaceIndividualMachine(new Vector2Int(bl.x + 7, bl.y + 4), machineDatabase.dict["Recharge Station"].Id); // Static Machine (Recharging Bay)
 
@@ -2754,7 +2754,7 @@ public class MapManager : MonoBehaviour
             Vector2Int nearestTerminal = FindNearestTerminal(tilePos);
             if (nearestTerminal != Vector2Int.zero)
             {
-                MapManager.inst.mapdata[nearestTerminal.x, nearestTerminal.y].zone.assignedArea.Add(tilePos);
+                MapManager.inst.mapdata[nearestTerminal.x, nearestTerminal.y].machinedata.terminalZone.assignedArea.Add(tilePos);
             }
         }
     }

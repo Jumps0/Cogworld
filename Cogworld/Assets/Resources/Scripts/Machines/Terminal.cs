@@ -421,7 +421,7 @@ public enum TerminalCommandType
 public class TerminalZone
 {
     [Header("Assigned Terminal")]
-    public Terminal assignedTerminal;
+    public Vector2Int assignedTerminal;
 
     [Header("Content")]
     [Tooltip("A collection of points in a map that are assigned to this zone.")]
