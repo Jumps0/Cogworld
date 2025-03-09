@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce788b639fd6b844a918039e8a6d4a83, type: 3}
+  m_Name: Scanalyzer 7x2 Wide
+  m_EditorClassIdentifier: 
+  Id: 0
+  displayName: Scanalyzer Wide
+  description: 
+  type: 4
+  operationSound: {fileID: 0}
+  symmetry: 2
+  varSOUTH:
+    parent: {x: 17, y: 16}
+    sboundsBL: {x: 14, y: 15}
+    sboundsTR: {x: 20, y: 16}
+    aboundsBL: {x: 14, y: 18}
+    aboundsTR: {x: 20, y: 19}
+  varEAST:
+    parent: {x: 22, y: 18}
+    sboundsBL: {x: 22, y: 15}
+    sboundsTR: {x: 23, y: 21}
+    aboundsBL: {x: 22, y: 23}
+    aboundsTR: {x: 23, y: 29}
+  varNORTH:
+    parent: {x: 17, y: 21}
+    sboundsBL: {x: 14, y: 21}
+    sboundsTR: {x: 20, y: 22}
+    aboundsBL: {x: 14, y: 24}
+    aboundsTR: {x: 20, y: 25}
+  varWEST:
+    parent: {x: 26, y: 18}
+    sboundsBL: {x: 25, y: 15}
+    sboundsTR: {x: 26, y: 21}
+    aboundsBL: {x: 25, y: 23}
+    aboundsTR: {x: 26, y: 29}
+  explodes: 0
+  explosion_heattransfer: 0
+  explosion_details:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
+    damageType: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
+    salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosion_potential:
+    explosionSounds: []
+    explosionGFX: 0
+  explosionSound: []

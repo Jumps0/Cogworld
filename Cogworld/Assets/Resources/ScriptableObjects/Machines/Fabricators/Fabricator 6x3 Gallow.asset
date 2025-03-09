@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce788b639fd6b844a918039e8a6d4a83, type: 3}
+  m_Name: Fabricator 6x3 Gallow
+  m_EditorClassIdentifier: 
+  Id: 0
+  displayName: Fabricator Gallow
+  description: 
+  type: 0
+  operationSound: {fileID: 0}
+  symmetry: 2
+  varSOUTH:
+    parent: {x: 3, y: 72}
+    sboundsBL: {x: 0, y: 71}
+    sboundsTR: {x: 5, y: 73}
+    aboundsBL: {x: 0, y: 75}
+    aboundsTR: {x: 5, y: 77}
+  varEAST:
+    parent: {x: 8, y: 74}
+    sboundsBL: {x: 7, y: 71}
+    sboundsTR: {x: 9, y: 76}
+    aboundsBL: {x: 7, y: 78}
+    aboundsTR: {x: 9, y: 83}
+  varNORTH:
+    parent: {x: 2, y: 80}
+    sboundsBL: {x: 0, y: 79}
+    sboundsTR: {x: 5, y: 81}
+    aboundsBL: {x: 0, y: 83}
+    aboundsTR: {x: 5, y: 85}
+  varWEST:
+    parent: {x: 12, y: 73}
+    sboundsBL: {x: 11, y: 71}
+    sboundsTR: {x: 13, y: 76}
+    aboundsBL: {x: 11, y: 78}
+    aboundsTR: {x: 13, y: 83}
+  explodes: 0
+  explosion_heattransfer: 0
+  explosion_details:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
+    damageType: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
+    salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosion_potential:
+    explosionSounds: []
+    explosionGFX: 0
+  explosionSound: []

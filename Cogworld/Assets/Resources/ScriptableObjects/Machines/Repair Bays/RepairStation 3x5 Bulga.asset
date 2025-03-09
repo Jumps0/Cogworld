@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce788b639fd6b844a918039e8a6d4a83, type: 3}
+  m_Name: RepairStation 3x5 Bulga
+  m_EditorClassIdentifier: 
+  Id: 0
+  displayName: Repair Station Bulga
+  description: 
+  type: 3
+  operationSound: {fileID: 0}
+  symmetry: 2
+  varSOUTH:
+    parent: {x: 15, y: 32}
+    sboundsBL: {x: 13, y: 31}
+    sboundsTR: {x: 17, y: 33}
+    aboundsBL: {x: 13, y: 55}
+    aboundsTR: {x: 17, y: 37}
+  varEAST:
+    parent: {x: 24, y: 33}
+    sboundsBL: {x: 23, y: 31}
+    sboundsTR: {x: 25, y: 35}
+    aboundsBL: {x: 23, y: 37}
+    aboundsTR: {x: 25, y: 41}
+  varNORTH:
+    parent: {x: 15, y: 40}
+    sboundsBL: {x: 13, y: 39}
+    sboundsTR: {x: 17, y: 41}
+    aboundsBL: {x: 13, y: 43}
+    aboundsTR: {x: 17, y: 45}
+  varWEST:
+    parent: {x: 20, y: 33}
+    sboundsBL: {x: 19, y: 31}
+    sboundsTR: {x: 21, y: 35}
+    aboundsBL: {x: 19, y: 37}
+    aboundsTR: {x: 21, y: 41}
+  explodes: 0
+  explosion_heattransfer: 0
+  explosion_details:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
+    damageType: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
+    salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosion_potential:
+    explosionSounds: []
+    explosionGFX: 0
+  explosionSound: []
