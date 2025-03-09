@@ -147,12 +147,15 @@ public class BorderIndicators : MonoBehaviour
 
         // Assign it the to machine
         MapManager.inst.mapdata[pos.x, pos.y].machinedata.indicator = go;
+        WorldTile tile = MapManager.inst.mapdata[pos.x, pos.y];
 
-        // Assign Sprite
-        go.GetComponent<UIBorderIndicator>().sprite.sprite = MapManager.inst.GetTileAt(pos).sprite;
-
+        UIBorderIndicator indicator = go.GetComponent<UIBorderIndicator>();
+        // Assign Sprite (The ASCII one, since we want to display the letter instead of a blank full sprite)
+        indicator.sprite.sprite = tile.machinedata.sprite_ascii.sprite;
+        // And set the color
+        indicator.sprite.color = HF.GetMachineColor(tile.machinedata.type);
         // Assign Parent
-        go.GetComponent<UIBorderIndicator>().machine_parent = pos;
+        indicator.machine_parent = pos;
 
         return go;
     }

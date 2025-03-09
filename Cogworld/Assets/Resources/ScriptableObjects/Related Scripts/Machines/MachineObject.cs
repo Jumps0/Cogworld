@@ -1,7 +1,6 @@
 using DungeonResources;
 using System.Collections;
 using System.Collections.Generic;
-using System.Xml;
 using UnityEngine;
 
 
@@ -105,14 +104,16 @@ public class MachineBounds
     /// Given a position within the STANDARD visual bounds, find that same position within the ASCII visual bounds.
     /// </summary>
     /// <param name="pos">A position within the bounds to find.</param>
+    /// <param name="normal_boundsBL">The specific oriented bounds (bottom left corner) of the requested machine within the STANDARD area.</param>
+    /// <param name="ascii_boundsBL">The specific oriented bounds (bottom left corner) of the requested machine within the ASCII area.</param>
     /// <returns>A position of the same sprite but the ASCII version.</returns>
-    public Vector2Int GetASCII(Vector2Int pos)
+    public Vector2Int GetASCII(Vector2Int pos, Vector2Int normal_boundsBL, Vector2Int ascii_boundsBL)
     {
         // Since the size of the STANDARD and ASCII bounds is ALWAYS
         // the same, we are safely able to do this.
-        Vector2Int diff = new Vector2Int(pos.x - sboundsBL.x, pos.y - sboundsBL.y);
+        Vector2Int diff = new Vector2Int(pos.x - normal_boundsBL.x, pos.y - normal_boundsBL.y);
 
-        return new Vector2Int(diff.x + aboundsBL.x, diff.y + aboundsBL.y);
+        return new Vector2Int(diff.x + ascii_boundsBL.x, diff.y + ascii_boundsBL.y);
     }
 }
 

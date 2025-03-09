@@ -17,8 +17,6 @@ using Color = UnityEngine.Color;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using ColorUtility = UnityEngine.ColorUtility;
-using static UnityEngine.Rendering.DebugUI;
-using static Setup;
 using System.Drawing;
 using Unity.VisualScripting;
 
@@ -341,6 +339,40 @@ public static class HF
     #endregion
 
     #region Machines/Hacking
+    /// <summary>
+    /// Given a machine type, return what color this machine should appear as.
+    /// </summary>
+    /// <param name="type">The type of machine.</param>
+    /// <returns>A color this machine should appear as.</returns>
+    public static Color GetMachineColor(MachineType type)
+    {
+        switch (type)
+        {
+            case MachineType.Fabricator:
+                return GameManager.inst.colors.machine_fabricator;
+            case MachineType.Garrison:
+                return GameManager.inst.colors.machine_garrison;
+            case MachineType.Recycling:
+                return GameManager.inst.colors.machine_recycler;
+            case MachineType.RepairStation:
+                return GameManager.inst.colors.machine_repairbay;
+            case MachineType.Scanalyzer:
+                return GameManager.inst.colors.machine_scanalyzer;
+            case MachineType.Terminal:
+                return GameManager.inst.colors.machine_terminal;
+            case MachineType.CustomTerminal:
+                return GameManager.inst.colors.machine_customterminal;
+            case MachineType.DoorTerminal:
+                return GameManager.inst.colors.machine_customterminal;
+            case MachineType.Static:
+                return GameManager.inst.colors.machine_static;
+            case MachineType.None:
+                return Color.white;
+            default:
+                return Color.white;
+        }
+    }
+
     /// <summary>
     /// Gets a list of the location of all "parent" machine tiles for a specific type of machine.
     /// </summary>

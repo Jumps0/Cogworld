@@ -2406,7 +2406,7 @@ public class MapManager : MonoBehaviour
         {
             for (int y = bottomLeft.y; y <= topRight.y; y++)
             {
-                Vector2Int pos = new Vector2Int(x, y);
+                Vector2Int pos = new Vector2Int(x, y); // !! Position with respect to the machine tilemap !!
 
                 if (pos != parentLoc) // Do the parent last
                 {
@@ -2428,7 +2428,7 @@ public class MapManager : MonoBehaviour
 
                         // Then assign both sprites
                         tile.machinedata.sprite_normal = tileObject;
-                        Tile asciiTile = (Tile)machineMap.GetTile((Vector3Int)bounds.GetASCII(pos));
+                        Tile asciiTile = (Tile)machineMap.GetTile((Vector3Int)bounds.GetASCII(pos, bounds.sboundsBL, bounds.aboundsBL));
                         tile.machinedata.sprite_ascii = asciiTile;
 
                         // - Parenting (since this is a child it doesn't have anything)
@@ -2446,7 +2446,7 @@ public class MapManager : MonoBehaviour
 
         // Assign both sprites
         Tile normalTile_p = (Tile)machineMap.GetTile((Vector3Int)bounds.parent);
-        Tile asciiTile_p = (Tile)machineMap.GetTile((Vector3Int)bounds.GetASCII(parentLoc));
+        Tile asciiTile_p = (Tile)machineMap.GetTile((Vector3Int)bounds.GetASCII(bounds.parent, bounds.sboundsBL, bounds.aboundsBL));
         parentTile.machinedata.sprite_normal = normalTile_p;
         parentTile.machinedata.sprite_ascii = asciiTile_p;
 

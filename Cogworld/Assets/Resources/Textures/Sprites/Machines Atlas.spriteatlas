@@ -166,7 +166,6 @@ SpriteAtlas:
     - ca1a5a530d65f9840870dbe101007d13: -1188816633
     - ca1a5a530d65f9840870dbe101007d13: 1338870972
     - ca1a5a530d65f9840870dbe101007d13: -711299339
-    - ca1a5a530d65f9840870dbe101007d13: 806475119
     - ca1a5a530d65f9840870dbe101007d13: -1255146484
     - ca1a5a530d65f9840870dbe101007d13: 1614205099
     - ca1a5a530d65f9840870dbe101007d13: 1288600129
@@ -203,6 +202,7 @@ SpriteAtlas:
     - ca1a5a530d65f9840870dbe101007d13: -1039712887
     - ca1a5a530d65f9840870dbe101007d13: -1844500679
     - ca1a5a530d65f9840870dbe101007d13: 1581321882
+    - ca1a5a530d65f9840870dbe101007d13: 806475119
     - ca1a5a530d65f9840870dbe101007d13: -1147811113
     - ca1a5a530d65f9840870dbe101007d13: -1839961517
     - ca1a5a530d65f9840870dbe101007d13: 86473769
@@ -262,7 +262,6 @@ SpriteAtlas:
   - {fileID: -1188816633, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - {fileID: 1338870972, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - {fileID: -711299339, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
-  - {fileID: 806475119, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - {fileID: -1255146484, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - {fileID: 1614205099, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - {fileID: 1288600129, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
@@ -299,6 +298,7 @@ SpriteAtlas:
   - {fileID: -1039712887, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - {fileID: -1844500679, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - {fileID: 1581321882, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
+  - {fileID: 806475119, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - {fileID: -1147811113, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - {fileID: -1839961517, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - {fileID: 86473769, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
@@ -357,7 +357,6 @@ SpriteAtlas:
   - pipe_doublesplit4ASCII
   - pipe_singlesplit3ASCII
   - pipe_singlesplit1ASCII
-  - cogmind16x16_178
   - machine_junctionASCII
   - pipe_singledoublecorner8
   - pipe_singledoublecorner6
@@ -394,6 +393,7 @@ SpriteAtlas:
   - pipe_multisplit1ASCII
   - pipe_multisplit2ASCII
   - pipe_singledoublecorner4ASCII
+  - machine_fullblank
   - pipe_singledoublecorner6ASCII
   - pipe_doublecorner2ASCII
   - pipe_doublesinglesplit1ASCII

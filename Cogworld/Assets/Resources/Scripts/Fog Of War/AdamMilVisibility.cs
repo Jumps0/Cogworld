@@ -251,6 +251,9 @@ sealed class AdamMilVisibility : Visibility
 
         bool ret = true;
 
+        // Emergency mapsize sanity check
+        if (!HF.PosWithinMap(loc)) { return true; }
+
         WorldTile tile = MapManager.inst.mapdata[loc.x, loc.y];
 
         switch (tile.type)

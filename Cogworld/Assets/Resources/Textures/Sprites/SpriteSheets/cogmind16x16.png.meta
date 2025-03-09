@@ -3071,7 +3071,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_178
+      name: machine_fullblank
       rect:
         serializedVersion: 2
         x: 288
@@ -8489,7 +8489,6 @@ TextureImporter:
       cogmind16x16_159: -355784192
       cogmind16x16_16: -1477251107
       cogmind16x16_17: -231543296
-      cogmind16x16_178: 806475119
       cogmind16x16_18: 1666683830
       cogmind16x16_183: 431038155
       cogmind16x16_184: 1950357201
@@ -9002,6 +9001,7 @@ TextureImporter:
       l: 1236765128
       m: -2142760330
       machine_chunk: -218498374
+      machine_fullblank: 806475119
       machine_interface1: -490523518
       machine_interface1ASCII: 1191007564
       machine_interface2: 2030832659
