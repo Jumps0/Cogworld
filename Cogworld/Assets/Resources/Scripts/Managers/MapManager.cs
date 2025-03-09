@@ -671,7 +671,7 @@ public class MapManager : MonoBehaviour
         PlaceIndividualMachine(new Vector2Int(bl.x + 7, bl.y + 4), machineDatabase.dict["Recharge Station"].Id); // Static Machine (Recharging Bay)
 
         //PlaceIndividualMachine(new Vector2Int(bl.x + 3, bl.y + 13), 2, 2); // Fabricator 4x2 "Alice"
-        //PlaceIndividualMachine(new Vector2Int(bl.x + 2, bl.y + 13), 6, 0); // Garrison 3x3 "Angel"
+        PlaceIndividualMachine(new Vector2Int(bl.x + 1, bl.y + 12), machineDatabase.dict["Garrison Angel"].Id, Direction.EA); // Garrison 3x3 "Angel"
 
         // 6 - Place Cache
         //PlaceHideoutCache(new Vector2Int(bl.x + 8, bl.y + 10));
@@ -2398,7 +2398,7 @@ public class MapManager : MonoBehaviour
         Vector2Int bottomLeft = bounds.sboundsBL, topRight = bounds.sboundsTR;
 
         // First get the location of the parent part (all machines have this)
-        Vector2Int parentLoc = new Vector2Int(bounds.parent.x + location.x, bounds.parent.y + location.y);
+        Vector2Int parentLoc = new Vector2Int((bounds.parent.x - bottomLeft.x) + location.x, (bounds.parent.y - bottomLeft.y) + location.y);
         // Collect up all the children for future storage.
         List<Vector2Int> children = new List<Vector2Int>();
 
