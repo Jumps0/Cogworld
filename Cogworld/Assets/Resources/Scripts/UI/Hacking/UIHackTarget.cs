@@ -145,7 +145,7 @@ public class UIHackTarget : MonoBehaviour
             }
 
             // If its an open system we auto-succeed
-            if (UIManager.inst.terminal_targetTerm.secLvl == 0)
+            if (MapManager.inst.mapdata[UIManager.inst.terminal_targetTerm.x, UIManager.inst.terminal_targetTerm.y].machinedata.secLvl == 0)
             {
                 SucceedHack(fill);
             }

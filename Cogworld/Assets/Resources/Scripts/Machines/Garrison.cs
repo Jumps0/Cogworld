@@ -20,75 +20,17 @@ public class Garrison : MonoBehaviour
 
     public void Init()
     {
-        /*
-        detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
-        type = MachineType.Garrison;
-
-        char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
-        List<char> alphabet = alpha.ToList(); // Fill alphabet list
-
-        // We need to load this machine with the following commands:
-        // - Couplers
-        // - Seal
-        // - Unlock
-
-        // [Couplers]
-        string letter = alphabet[0].ToString().ToLower();
-        alphabet.Remove(alphabet[0]);
-
-        HackObject hack = MapManager.inst.hackDatabase.Hack[28];
-
-        TerminalCommand newCommand = new TerminalCommand(letter, "Couplers", TerminalCommandType.Couplers, "", hack);
-
-        avaiableCommands.Add(newCommand);
-
-        // While we're here, fill the garrison with a list of 3-5 random couplers
-        for (int i = 0; i < Random.Range(3,5); i++)
-        {
-            Item newCoupler = new Item(MapManager.inst.itemDatabase.Items[Random.Range(0,5)]); // TODO: When all coupler items are added, update this range
-            couplers.Add(newCoupler);
-        }
-
-        // [Seal]
-        letter = alphabet[0].ToString().ToLower();
-        alphabet.Remove(alphabet[0]);
-
-        hack = MapManager.inst.hackDatabase.Hack[29];
-
-        newCommand = new TerminalCommand(letter, "Seal", TerminalCommandType.Seal, "", hack);
-
-        avaiableCommands.Add(newCommand);
-
-        // [Unlock]
-        letter = alphabet[0].ToString().ToLower();
-        alphabet.Remove(alphabet[0]);
-
-        hack = MapManager.inst.hackDatabase.Hack[30];
-
-        newCommand = new TerminalCommand(letter, "Unlock", TerminalCommandType.Unlock, "", hack);
-
-        avaiableCommands.Add(newCommand);
-        */
+        
     }
 
     public void Open()
     {
-        doorRevealed = true;
-
-        // Not sure if anything else happens here?
+        
     }
 
     public void Seal()
     {
-        g_sealed = true;
         
-        /*
-        // Grey out the core sprite
-        this.GetComponentInChildren<MachinePart>().parentPart.GetComponent<SpriteRenderer>().color = Color.gray;
-        // Disable all further access
-        this.GetComponentInChildren<MachinePart>().parentPart.state = false;
-        locked = true;
-        */
     }
 
     public void CouplerStatus()
@@ -96,50 +38,5 @@ public class Garrison : MonoBehaviour
         // Nothing happens here?
     }
 
-    #region Hacks
-    public void ForceEject()
-    {
-
-    }
-
-    public void ForceJam()
-    {
-
-    }
-
-    public void TrojanBroadcast()
-    {
-
-    }
-
-    public void TrojanDecay()
-    {
-
-    }
-
-    public void TrojanIntercept()
-    {
-
-    }
-
-    public void TrojanRedirect()
-    {
-
-    }
-
-    public void TrojanReprogram()
-    {
-
-    }
-
-    public void TrojanRestock()
-    {
-
-    }
-
-    public void TrojanWatcher()
-    {
-
-    }
-    #endregion
+    
 }

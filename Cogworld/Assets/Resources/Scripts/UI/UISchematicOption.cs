@@ -46,7 +46,7 @@ public class UISchematicOption : MonoBehaviour
         bot = _bot;
         command = new TerminalCommand(letter, "Load Schematic", TerminalCommandType.Load, "", MapManager.inst.hackDatabase.Hack[26], null, null, _bot, _item);
 
-        int secLvl = UIManager.inst.terminal_targetTerm.GetComponent<Fabricator>().secLvl; // A bit risky but this should usually always work
+        int secLvl = MapManager.inst.mapdata[UIManager.inst.terminal_targetTerm.x, UIManager.inst.terminal_targetTerm.y].machinedata.secLvl;
         float chance = 0f;
         if (secLvl == 0)
         {
@@ -194,7 +194,7 @@ public class UISchematicOption : MonoBehaviour
         }
 
         // If its an open system we auto-succeed
-        if (UIManager.inst.terminal_targetTerm.secLvl == 0)
+        if (MapManager.inst.mapdata[UIManager.inst.terminal_targetTerm.x, UIManager.inst.terminal_targetTerm.y].machinedata.secLvl == 0)
         {
             SucceedHack(fill);
         }

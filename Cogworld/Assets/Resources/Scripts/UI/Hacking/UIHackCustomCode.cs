@@ -78,13 +78,15 @@ public class UIHackCustomCode : MonoBehaviour
 
     public void AttemptHack()
     {
-        if (UIManager.inst.terminal_targetTerm.GetComponent<Terminal>() && UIManager.inst.terminal_targetTerm.GetComponent<Terminal>().customCodes.Count > 0)
+        WorldTile tile = MapManager.inst.mapdata[UIManager.inst.terminal_targetTerm.x, UIManager.inst.terminal_targetTerm.y];
+
+        if (tile.machinedata.type == MachineType.Terminal && tile.machinedata.terminalCustomCodes.Count > 0)
         {
             // Does the connected terminal accept this custom code?
-            if (UIManager.inst.terminal_targetTerm.GetComponent<Terminal>().customCodes.Contains(code))
+            if (tile.machinedata.terminalCustomCodes.Contains(code))
             {
                 // Activate the code!
-                UIManager.inst.terminal_targetTerm.GetComponent<Terminal>().UseCustomCode(code);
+                tile.machinedata.UseCustomCode(code);
                 SetAsUsed();
             }
             else // Do nothing (dummy)

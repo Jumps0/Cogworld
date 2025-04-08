@@ -1173,22 +1173,33 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region Global Actions Realized
-
+    /// <summary>
+    /// Reveal ALL primary (MAIN) access points on the entire map.
+    /// </summary>
     public void AccessMain()
     {
-
+        // TODO
     }
 
+    /// <summary>
+    /// Reveal ALL secondary (BRANCH) access points on the entire map.
+    /// </summary>
     public void AccessBranch()
     {
-
+        // TODO
     }
 
-    public void AccessEmergency(GameObject target)
+    /// <summary>
+    /// Reveal the nearby "emergency access points" of a terminal, should they exist.
+    /// </summary>
+    /// <param name="target">The Vector2Int location of the target machine.</param>
+    public void AccessEmergency(Vector2Int target)
     {
-        if (target.GetComponent<Terminal>())
+        WorldTile tile = MapManager.inst.mapdata[target.x, target.y];
+
+        if (tile.machinedata.type == MachineType.Terminal)
         {
-            target.GetComponent<Terminal>().zone.RevealLocalEAccess();
+            tile.machinedata.terminalZone.RevealLocalEAccess();
         }
         else
         {

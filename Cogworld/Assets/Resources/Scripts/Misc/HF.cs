@@ -645,6 +645,7 @@ public static class HF
         else // This is a special action reward
         {
             string parsedName = HF.ParseHackName(command.hack);
+            WorldTile terminal = MapManager.inst.mapdata[UIManager.inst.terminal_targetTerm.x, UIManager.inst.terminal_targetTerm.y];
 
             switch (command.hack.hackType)
             {
@@ -701,7 +702,7 @@ public static class HF
                     }
                     else if (command.secondaryText == "emergency")
                     {
-                        GameManager.inst.AccessEmergency(UIManager.inst.terminal_targetTerm.gameObject);
+                        GameManager.inst.AccessEmergency(UIManager.inst.terminal_targetTerm);
                         return "Local emergency access data updated.";
                     }
                     break;
@@ -864,7 +865,7 @@ public static class HF
                 case TerminalCommandType.Traps:
                     if (parsedName.Contains("Disarm"))
                     {
-                        List<WorldTile> traps = UIManager.inst.terminal_targetTerm.GetComponent<Terminal>().zone.trapList;
+                        List<WorldTile> traps = terminal.machinedata.terminalZone.trapList;
                         if (traps.Count > 0)
                         {
                             foreach (WorldTile trap in traps)
@@ -880,7 +881,7 @@ public static class HF
                     }
                     else if (parsedName.Contains("Locate"))
                     {
-                        List<WorldTile> traps = UIManager.inst.terminal_targetTerm.GetComponent<Terminal>().zone.trapList;
+                        List<WorldTile> traps = terminal.machinedata.terminalZone.trapList;
                         if (traps.Count > 0)
                         {
                             // Group the traps and count how many of each are available.
@@ -907,7 +908,7 @@ public static class HF
                     }
                     else if (parsedName.Contains("Reprogram"))
                     {
-                        List<WorldTile> traps = UIManager.inst.terminal_targetTerm.GetComponent<Terminal>().zone.trapList;
+                        List<WorldTile> traps = terminal.machinedata.terminalZone.trapList;
                         if (traps.Count > 0)
                         {
                             // Group the traps and count how many of each are available.
@@ -3805,8 +3806,9 @@ public static class HF
     /// </summary>
     /// <param name="center">The start location to perform the search.</param>
     /// <param name="ignoreFloorItems">Do we care about an item being on the floor already? (Used for bot placement)</param>
+    /// <param name="ignoreBots">Do we care about a bot being in this location already?</param>
     /// <returns>A free position (Vector2Int) that has been found.</returns>
-    public static Vector2Int LocateFreeSpace(Vector2Int center, bool ignoreFloorItems = false)
+    public static Vector2Int LocateFreeSpace(Vector2Int center, bool ignoreFloorItems = false, bool ignoreBots = true)
     {
         HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
@@ -3815,7 +3817,7 @@ public static class HF
         while (queue.Count > 0)
         {
             Vector2Int currentPos = queue.Dequeue();
-            if (IsOpenSpaceForItem(currentPos, true, false))
+            if (IsOpenSpaceForItem(currentPos, ignoreBots, ignoreFloorItems))
             {
                 return currentPos;
             }

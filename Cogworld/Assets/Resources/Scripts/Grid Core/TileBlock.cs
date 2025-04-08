@@ -948,6 +948,8 @@ public struct MachineData
     public Tile sprite_ascii;
 
     [Header("Basic Info")]
+    [Tooltip("The location of this machine tile in the world.")]
+    public Vector2Int location;
     [Tooltip("The general (generic) name for this machine. Mostly used in logging (ex: Garrison). Set upon startup in MachineData.")]
     public string displayName;
     [Tooltip("What this machine is reffered to as in the Terminal (Hacking) window. [Set in `AssignMachineNames()` inside `MapManager` upon startup.]")]
@@ -1045,9 +1047,305 @@ public struct MachineData
     #region Terminal
     private void TerminalInit()
     {
+        detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
+        type = MachineType.Terminal;
 
+        char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+        List<char> alphabet = alpha.ToList(); // Fill alphabet list
+
+        int amount = 0;
+
+        // -- We want to generate:
+        // - 1-4 Lore entries
+        // - 0-2 Access+Alert entries
+        // - 0-1 Analysis entries (scaled to level)
+        // - 0-2 Enumerate entries
+        // - 0-1 Index entries
+        // - 0-1 Layout(Zone) entries
+        // - 0-1 Recall entries (make sure to check if there is one first)
+        // - 0-1 Schematic (item) entries (scaled to level)
+        // - 0-1 Schematic (bot) entries (scaled to level)
+        // - 0-1 Traps entries
+
+        // Lore
+        for (int i = 0; i < Random.Range(1, 4); i++)
+        {
+            string letter = alphabet[0].ToString().ToLower();
+            alphabet.Remove(alphabet[0]);
+            //
+            KnowledgeObject data = MapManager.inst.knowledgeDatabase.Data[Random.Range(0, MapManager.inst.knowledgeDatabase.Data.Length)];
+            string displayText = "\"" + data.name + "\"";
+
+            HackObject hack = MapManager.inst.hackDatabase.dict["Query"];
+
+            TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Query, "Record", hack, data);
+
+            avaiableCommands.Add(newCommand);
+
+            amount++;
+        }
+
+        // Access [73-75] Alert [76-77]
+        if (Random.Range(0f, 1f) >= 0.4f)
+        {
+            // Access here
+            string letter = alphabet[0].ToString().ToLower();
+            alphabet.Remove(alphabet[0]);
+
+            string[] options = { "Access(Branch)", "Access(Emergency)", "Access(Main)" };
+            HackObject hack = MapManager.inst.hackDatabase.dict[options[Random.Range(0, options.Length - 1)]];
+            string displayText = hack.trueName;
+
+            TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Access, "", hack, null);
+
+            avaiableCommands.Add(newCommand);
+        }
+
+        if (Random.Range(0f, 1f) >= 0.5f)
+        {
+            // Alert here
+            string letter = alphabet[0].ToString().ToLower();
+            alphabet.Remove(alphabet[0]);
+
+            string[] options = { "Alert(Check)", "Alert(Purge)" };
+            HackObject hack = MapManager.inst.hackDatabase.dict[options[Random.Range(0, options.Length - 1)]];
+            string displayText = hack.trueName;
+
+            TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Alert, "", hack, null);
+
+            avaiableCommands.Add(newCommand);
+        }
+
+        // Analysis [78-87]
+        if (Random.Range(0f, 1f) >= 0.5f)
+        {
+            string letter = alphabet[0].ToString().ToLower();
+            alphabet.Remove(alphabet[0]);
+
+            // Current level goes from -10 to -1. But we want to scale from tier 1 to 10, so we just add 11
+            int tier = MapManager.inst.currentLevel + 11;
+            if (tier <= 0)
+            {
+                tier = 1;
+            }
+
+            HackObject hack = MapManager.inst.hackDatabase.dict[$"Analysis([Bot Name]) - Tier {tier}"];
+
+            BotObject bot = HF.FindBotOfTier(tier);
+
+            string displayText = bot.botName;
+
+            TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Analysis, "Analysis", hack, null, null, bot);
+
+            avaiableCommands.Add(newCommand);
+        }
+
+        // Enumerate [91-103]
+        if (Random.Range(0f, 1f) >= 0.5f)
+        {
+            string letter = alphabet[0].ToString().ToLower();
+            alphabet.Remove(alphabet[0]);
+
+            List<string> options = new List<string>();
+            options.Add("Enumerate(Assaults)");
+            options.Add("Enumerate(Coupling)");
+            options.Add("Enumerate(Exterminations)");
+            options.Add("Enumerate(Garrison)");
+            options.Add("Enumerate(Guards)");
+            options.Add("Enumerate(Intercept)");
+            options.Add("Enumerate(Investigations)");
+            options.Add("Enumerate(Maintenance)");
+            options.Add("Enumerate(Patrols)");
+            options.Add("Enumerate(Reinforcements)");
+            options.Add("Enumerate(Squads)");
+            options.Add("Enumerate(Surveillance)");
+            options.Add("Enumerate(Transport)");
+
+            int index = Random.Range(0, options.Count - 1);
+            HackObject hack = MapManager.inst.hackDatabase.dict[options[index]];
+
+            string displayText = hack.trueName;
+
+            TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Enumerate, "", hack, null);
+
+            avaiableCommands.Add(newCommand);
+
+            // Then do another one
+            options.RemoveAt(index);
+            index = Random.Range(0, options.Count - 1);
+            hack = MapManager.inst.hackDatabase.dict[options[index]];
+
+            displayText = hack.trueName;
+
+            newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Enumerate, "", hack, null);
+
+            avaiableCommands.Add(newCommand);
+        }
+
+        // Index [104-110]
+        if (Random.Range(0f, 1f) >= 0.5f)
+        {
+            string letter = alphabet[0].ToString().ToLower();
+            alphabet.Remove(alphabet[0]);
+
+            List<string> options = new List<string>();
+            options.Add("Index(Fabricators)");
+            options.Add("Index(Garrisons)");
+            options.Add("Index(Machines)");
+            options.Add("Index(Recycling Units)");
+            options.Add("Index(Repair Stations)");
+            options.Add("Index(Scanalyzers)");
+            options.Add("Index(Terminals)");
+
+            int rand = Random.Range(0, options.Count - 1);
+            HackObject hack = MapManager.inst.hackDatabase.dict[options[rand]];
+
+            string displayText = hack.trueName;
+
+            TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Index, "", hack, null);
+
+            avaiableCommands.Add(newCommand);
+        }
+
+        // Layout (Zone)
+        if (Random.Range(0f, 1f) >= 0.6f)
+        {
+            string letter = alphabet[0].ToString().ToLower();
+            alphabet.Remove(alphabet[0]);
+
+            HackObject hack = MapManager.inst.hackDatabase.dict["Layout(Zone)"];
+
+            string displayText = hack.trueName;
+
+            TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Layout, "", hack, null);
+
+            avaiableCommands.Add(newCommand);
+        }
+
+        // Recall
+        if (GameManager.inst.activeAssaults.Count > 0 || GameManager.inst.activeExterminations.Count > 0 || GameManager.inst.activeInvestigations.Count > 0 || GameManager.inst.activeReinforcements.Count > 0)
+        {
+            if ((Random.Range(0f, 1f) >= 0.4f))
+            {
+                string letter = alphabet[0].ToString().ToLower();
+                alphabet.Remove(alphabet[0]);
+
+                HackObject hack = null;
+
+                if (GameManager.inst.activeAssaults.Count > 0)
+                {
+                    hack = MapManager.inst.hackDatabase.dict["Recall(Assaults)"];
+                }
+                else if (GameManager.inst.activeExterminations.Count > 0)
+                {
+                    hack = MapManager.inst.hackDatabase.dict["Recall(Extermination)"];
+                }
+                else if (GameManager.inst.activeInvestigations.Count > 0)
+                {
+                    hack = MapManager.inst.hackDatabase.dict["Recall(Investigation)"];
+                }
+                else if (GameManager.inst.activeReinforcements.Count > 0)
+                {
+                    hack = MapManager.inst.hackDatabase.dict["Recall(Reinforcements)"];
+                }
+
+                string displayText = hack.trueName;
+
+                TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Recall, "", hack, null);
+
+                avaiableCommands.Add(newCommand);
+            }
+        }
+
+        // Schematic (Item) [129-145]
+        if (Random.Range(0f, 1f) >= 0.5f)
+        {
+            string letter = alphabet[0].ToString().ToLower();
+            alphabet.Remove(alphabet[0]);
+
+            // Current level goes from -10 to -1. But we want to scale from tier 1 to 10, so we just add 11
+            int tier = MapManager.inst.currentLevel + 11;
+            if (tier <= 2) // temp fix
+            {
+                tier = 3;
+            }
+
+            bool star = false;
+            if (Random.Range(0f, 1f) > 0.65f) // Chance to get a "starred" item
+            {
+                star = true;
+            }
+            string p = "";
+            if (star)
+            {
+                p = "P";
+            }
+
+            HackObject hack = MapManager.inst.hackDatabase.dict[$"Schematic([Part Name]) - Rating {tier}{p}"];
+
+            ItemObject item = HF.FindItemOfTier(tier);
+
+            string displayText = item.itemName;
+
+            TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Schematic, "Schematic", hack, null, null, null, item);
+
+            avaiableCommands.Add(newCommand);
+        }
+
+        // Schematic (Bot) [120-128]
+        if (Random.Range(0f, 1f) >= 0.5f)
+        {
+            string letter = alphabet[0].ToString().ToLower();
+            alphabet.Remove(alphabet[0]);
+
+            // Current level goes from -10 to -1. But we want to scale from tier 1 to 10, so we just add 11
+            int tier = MapManager.inst.currentLevel + 11;
+            if (tier <= 0)
+            {
+                tier = 1;
+            }
+
+            HackObject hack = MapManager.inst.hackDatabase.dict[$"Schematic([Bot Name]) - Tier {tier}"];
+
+            BotObject bot = HF.FindBotOfTier(tier);
+
+            string displayText = bot.botName;
+
+            TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Schematic, "Schematic", hack, null, null, bot);
+
+            avaiableCommands.Add(newCommand);
+        }
+        // Traps [146-148]
+        if (Random.Range(0f, 1f) >= 0.5f)
+        {
+            string letter = alphabet[0].ToString().ToLower();
+            alphabet.Remove(alphabet[0]);
+
+            List<string> options = new List<string>();
+            options.Add("Traps(Disarm)");
+            options.Add("Traps(Locate)");
+            options.Add("Traps(Reprogram)");
+
+            HackObject hack = MapManager.inst.hackDatabase.dict[options[Random.Range(0, options.Count - 1)]];
+
+            string displayText = hack.trueName;
+
+            TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Schematic, "", hack, null);
+
+            avaiableCommands.Add(newCommand);
+        }
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y].machinedata = this;
     }
 
+    public void UseCustomCode(TerminalCustomCode code)
+    {
+        // TODO: idk how this is gonna get parsed
+        // Create log messages
+        string message = "";
+        UIManager.inst.CreateNewLogMessage(message, UIManager.inst.highlightGreen, UIManager.inst.dullGreen, false, true);
+    }
     #endregion
 
     #region Custom Terminal
@@ -1074,6 +1372,151 @@ public struct MachineData
     {
 
     }
+    #endregion
+
+    #region Garrison
+    [Header("Garrison")]
+    [Tooltip("This garrison is permanently closed.")]
+    public bool garrison_sealed;
+    [Tooltip("The player can now ENTER the garrison, there is a specific EXIT placed in the world.")]
+    public bool garrison_doorIsRevealed;
+    //
+    [Tooltip("[FALSEBYDEFAULT] This Garrison Access is communicating with additional reinforcements preparing for dispatch. Using a Signal Interpreter provides the precise number of turns remaining until the next dispatch.")]
+    public bool garrison_flag_transmitting;
+    [Tooltip("[FALSEBYDEFAULT] ???")]
+    public bool garrison_flag_redeploying;
+    //
+    [Tooltip("List of item IDs referring to couplers that this machine will spawn when requested to via the command.")]
+    public List<int> garrison_couplerIDs;
+    private void GarrisonInit()
+    {
+        detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
+        type = MachineType.Garrison;
+
+        char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+        List<char> alphabet = alpha.ToList(); // Fill alphabet list
+
+        // We need to load this machine with the following commands:
+        // - Couplers
+        // - Seal
+        // - Unlock
+
+        // [Couplers]
+        string letter = alphabet[0].ToString().ToLower();
+        alphabet.Remove(alphabet[0]);
+
+        HackObject hack = MapManager.inst.hackDatabase.Hack[28];
+
+        TerminalCommand newCommand = new TerminalCommand(letter, "Couplers", TerminalCommandType.Couplers, "", hack);
+
+        avaiableCommands.Add(newCommand);
+
+        // While we're here, fill the garrison with a list of 3-5 random couplers
+        for (int i = 0; i < Random.Range(3,5); i++)
+        {
+            // TODO: When all coupler items are added, update this range
+            garrison_couplerIDs.Add(Random.Range(0, 5));
+        }
+
+        // [Seal]
+        letter = alphabet[0].ToString().ToLower();
+        alphabet.Remove(alphabet[0]);
+
+        hack = MapManager.inst.hackDatabase.Hack[29];
+
+        newCommand = new TerminalCommand(letter, "Seal", TerminalCommandType.Seal, "", hack);
+
+        avaiableCommands.Add(newCommand);
+
+        // [Unlock]
+        letter = alphabet[0].ToString().ToLower();
+        alphabet.Remove(alphabet[0]);
+
+        hack = MapManager.inst.hackDatabase.Hack[30];
+
+        newCommand = new TerminalCommand(letter, "Unlock", TerminalCommandType.Unlock, "", hack);
+
+        avaiableCommands.Add(newCommand);
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y].machinedata = this;
+    }
+
+    private void Garrison_Open()
+    {
+        garrison_doorIsRevealed = true;
+
+        // TODO
+        // Not sure if anything else happens here?
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y].machinedata = this;
+    }
+
+    private void Garrison_Seal()
+    {
+        garrison_sealed = true;
+
+        locked = true;
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y].machinedata = this;
+        // (UPDATE VIS) Since we need to change this machine's color
+        MapManager.inst.UpdateTilemap();
+        MapManager.inst.TilemapVisUpdate();
+    }
+
+    private void Garrison_CouplerStatus()
+    {
+
+    }
+
+    #region Hacks
+    public void ForceEject()
+    {
+
+    }
+
+    public void ForceJam()
+    {
+
+    }
+
+    public void TrojanBroadcast()
+    {
+
+    }
+
+    public void TrojanDecay()
+    {
+
+    }
+
+    public void TrojanIntercept()
+    {
+
+    }
+
+    public void TrojanRedirect()
+    {
+
+    }
+
+    public void TrojanReprogram()
+    {
+
+    }
+
+    public void TrojanRestock()
+    {
+
+    }
+
+    public void TrojanWatcher()
+    {
+
+    }
+    #endregion
     #endregion
 
     #region Recycling Units

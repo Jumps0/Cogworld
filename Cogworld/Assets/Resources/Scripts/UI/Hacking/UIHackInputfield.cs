@@ -233,7 +233,7 @@ public class UIHackInputfield : MonoBehaviour
         // -- Calculate Chance of Success --
         float chance = 0f;
 
-        int secLvl = UIManager.inst.terminal_targetTerm.secLvl;
+        int secLvl = MapManager.inst.mapdata[UIManager.inst.terminal_targetTerm.x, UIManager.inst.terminal_targetTerm.y].machinedata.secLvl;
         if (secLvl == 0)
         {
             chance = 1f; // If its an open system we auto-succeed
@@ -368,7 +368,7 @@ public class UIHackInputfield : MonoBehaviour
         foreach (HackObject hack in MapManager.inst.hackDatabase.Hack)
         {
             // Hack must be compatible with this machine.
-            if(UIManager.inst.terminal_targetTerm.type == hack.relatedMachine)
+            if(MapManager.inst.mapdata[UIManager.inst.terminal_targetTerm.x, UIManager.inst.terminal_targetTerm.y].machinedata.type == hack.relatedMachine)
             {
                 AC_list.Add(HF.GetLeftSubstring(HF.ParseHackName(hack).ToLower()));
                 validHacks.Add(hack);

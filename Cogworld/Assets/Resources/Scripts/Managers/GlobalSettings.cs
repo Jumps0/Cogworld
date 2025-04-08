@@ -1048,7 +1048,7 @@ public class GlobalSettings : MonoBehaviour
                 if(UIManager.inst.terminal_targetTerm != null)
                 {
                     // Need to get current hack status values
-                    bool detected = UIManager.inst.terminal_targetTerm.detected;
+                    bool detected = MapManager.inst.mapdata[UIManager.inst.terminal_targetTerm.x, UIManager.inst.terminal_targetTerm.y].machinedata.detected;
 
                     if (!detected)
                     {

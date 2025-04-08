@@ -1303,6 +1303,10 @@ public class MapManager : MonoBehaviour
 
         isDisabled = MapManager.inst.mapdata[parentPos.x, parentPos.y].machinedata.machineIsDestroyed;
 
+        // Same goes for it being locked
+        if(!isDisabled)
+            isDisabled = MapManager.inst.mapdata[parentPos.x, parentPos.y].machinedata.locked;
+
         // If it is disabled/destroyed, we need to show the grayed out version
         if (isDisabled)
         {
@@ -2474,6 +2478,8 @@ public class MapManager : MonoBehaviour
         #region Basic Info
         tile.type = TileType.Machine; // Now a machine here.
         pathdata[pos.x, pos.y] = 3;   // Should now be unwalkable.
+        // - Location
+        tile.machinedata.location = pos;
         // - Type (based on ScriptableObject)
         tile.machinedata.type = machine.type;
         // - State (default is ON)

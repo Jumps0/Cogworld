@@ -221,12 +221,9 @@ public class PlayerGridMovement : MonoBehaviour
             }
             else if(type == MachineType.Garrison)
             {
-                if (!machineInteraction.GetComponent<Garrison>().g_sealed)
-                {
-                    // Create log messages
-                    UIManager.inst.CreateNewLogMessage("Connecting with Garrison Access...", UIManager.inst.highlightGreen, UIManager.inst.dullGreen, true);
-                    UIManager.inst.Terminal_OpenGeneric(machineInteraction);
-                }
+                // Create log messages
+                UIManager.inst.CreateNewLogMessage("Connecting with Garrison Access...", UIManager.inst.highlightGreen, UIManager.inst.dullGreen, true);
+                UIManager.inst.Terminal_OpenGeneric(machineInteraction);
             }
             else
             {
