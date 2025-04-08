@@ -1157,7 +1157,7 @@ public static class HF
 
                     terminal.machinedata.Fabricator_Build();
 
-                    return "Building " + bName + "...\nETC: " + terminal.machinedata.buildTime;
+                    return "Building " + bName + "...\nETC: " + terminal.machinedata.timeToComplete;
                 case TerminalCommandType.Network:
                     break;
                 case TerminalCommandType.Refit:
@@ -1165,7 +1165,7 @@ public static class HF
                 case TerminalCommandType.Repair: // TODO
                     terminal.machinedata.Repair_Repair(null);
 
-                    return "Repairing " + HF.ExtractText(parsedName) + "...\nETC: " + terminal.machinedata.repair_timeToComplete;
+                    return "Repairing " + HF.ExtractText(parsedName) + "...\nETC: " + terminal.machinedata.timeToComplete;
                 case TerminalCommandType.Scan:
                     int buildTime3 = 0;
                     int secLvl3 = terminal.machinedata.secLvl;
@@ -3956,27 +3956,20 @@ public static class HF
     /// Attempts to find the parent part of a machine at the specified machine.
     /// </summary>
     /// <param name="pos">The position to check.</param>
-    /// <returns>If one is found, returns the gameObject of the machine parent located near the position.</returns>
-    public static GameObject GetMachineParentAtPosition(Vector2Int pos)
+    /// <returns>If one is found, returns the Vector2Int position of the machine parent located near the position.</returns>
+    public static Vector2Int GetMachineParentAtPosition(Vector2Int pos)
     {
-        Vector3 lowerPosition = new Vector3(pos.x, pos.y, 2);
-        Vector3 upperPosition = new Vector3(pos.x, pos.y, -2);
-        Vector3 direction = lowerPosition - upperPosition;
-        float distance = Vector3.Distance(new Vector3Int((int)lowerPosition.x, (int)lowerPosition.y, 0), upperPosition);
-        direction.Normalize();
-        RaycastHit2D[] hits = Physics2D.RaycastAll(upperPosition, direction, distance);
+        WorldTile tile = MapManager.inst.mapdata[pos.x, pos.y];
 
-        for (int i = 0; i < hits.Length; i++)
+        if(tile.machinedata.parentLocation == pos)
         {
-            RaycastHit2D hit = hits[i];
-
-            if (hit.collider.GetComponent<MachinePart>())
-            {
-                return hit.collider.GetComponent<MachinePart>().parentPart.gameObject;
-            }
+            return pos; // This IS the parent
         }
-
-        return null;
+        else
+        {
+            // This is a child, get the parent
+            return tile.machinedata.parentLocation;
+        }
     }
 
     public static Sprite GetBlackAndWhiteSprite(Sprite coloredSprite)
@@ -7087,132 +7080,6 @@ public static class HF
         }
 
         return blocker;
-    }
-
-    /// <summary>
-    /// Attempts to locate the most relevant object to target at the specified position. Walls, bots, doors, machines, floors, etc.
-    /// </summary>
-    /// <param name="pos">The location to check at.</param>
-    /// <returns>The most relevant game object at the specified position. Most common scenario is a floor/wall.</returns>
-    public static GameObject GetTargetAtPosition(Vector2Int pos)
-    {
-        Vector3 lowerPosition = new Vector3(pos.x, pos.y, 2);
-        Vector3 upperPosition = new Vector3(pos.x, pos.y, -2);
-        Vector3 direction = lowerPosition - upperPosition;
-        float distance = Vector3.Distance(new Vector3Int((int)lowerPosition.x, (int)lowerPosition.y, 0), upperPosition);
-        direction.Normalize();
-        RaycastHit2D[] hits = Physics2D.RaycastAll(upperPosition, direction, distance);
-
-        // - Flags -
-        GameObject wall = null;
-        GameObject bot = null;
-        GameObject door = null;
-        GameObject machine = null;
-        GameObject part = null;
-        GameObject floor = null;
-
-        // Loop through all the hits and set the targeting highlight on each tile (ideally shouldn't loop that many times)
-        for (int i = 0; i < hits.Length; i++)
-        {
-            RaycastHit2D hit = hits[i];
-            // PROBLEM!!! This list of hits is unsorted and contains multiple things that violate the heirarchy below. This MUST be fixed!
-
-            // There is a heirarchy of what we want to display:
-            // -A wall
-            // -A bot
-            // -A door
-            // -A machine
-            // -A part (item)
-            // -A floor tile
-
-            // We will solve this problem by setting flags. And then going back afterwards and using our heirarchy.
-
-            #region Hierarchy Flagging
-            if (hit.collider.GetComponent<Actor>())
-            {
-                // A bot
-                bot = hit.collider.gameObject;
-            }
-            else if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Wall"))
-            {
-                // A wall
-                wall = hit.collider.gameObject;
-            }
-            else if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Door"))
-            {
-                // Door
-                door = hit.collider.gameObject;
-            }
-            else if (hit.collider.GetComponent<MachinePart>()) // maybe refine this later
-            {
-                // Machine
-                machine = hit.collider.gameObject;
-            }
-            else if (hit.collider.GetComponent<Part>())
-            {
-                // Part (Item)
-                part = hit.collider.gameObject;
-            }
-            else if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Floor"))
-            {
-                // Floor tile
-                floor = hit.collider.gameObject;
-            }
-
-            #endregion
-        }
-
-        GameObject retObject = null;
-
-        if (bot != null)
-        {
-            retObject = bot;
-        }
-        else if (door != null)
-        {
-            retObject = door;
-        }
-        else if (machine != null)
-        {
-            retObject = machine;
-        }
-        else if (wall != null)
-        {
-            retObject = wall;
-        }
-        else if(part != null)
-        {
-            retObject = part;
-        }
-        else if (floor != null)
-        {
-            retObject = floor;
-        }
-
-        return retObject;
-    }
-
-    /// <summary>
-    /// Similar to GetTargetAtPosition except it returns the neighboring targets AROUND the specified position as a list.
-    /// </summary>
-    /// <param name="pos">The center position.</param>
-    /// <returns>A list of (most relevant) neighboring gameObjects.</returns>
-    public static List<GameObject> GetNeighboringTargetsAtPosition(Vector2Int pos)
-    {
-        List<GameObject> neighbors = new List<GameObject>();
-
-        neighbors.Add(HF.GetTargetAtPosition(pos + Vector2Int.up));
-        neighbors.Add(HF.GetTargetAtPosition(pos + Vector2Int.down));
-        neighbors.Add(HF.GetTargetAtPosition(pos + Vector2Int.left));
-        neighbors.Add(HF.GetTargetAtPosition(pos + Vector2Int.right));
-
-        // Diagonals
-        neighbors.Add(HF.GetTargetAtPosition(pos + Vector2Int.up + Vector2Int.left));
-        neighbors.Add(HF.GetTargetAtPosition(pos + Vector2Int.up + Vector2Int.right));
-        neighbors.Add(HF.GetTargetAtPosition(pos + Vector2Int.down + Vector2Int.left));
-        neighbors.Add(HF.GetTargetAtPosition(pos + Vector2Int.down + Vector2Int.right));
-
-        return neighbors;
     }
 
     /// <summary>

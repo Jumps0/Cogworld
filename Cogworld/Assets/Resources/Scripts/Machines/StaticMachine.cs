@@ -21,13 +21,4 @@ public class StaticMachine : MonoBehaviour
     public bool s_unstable = false;
 
 
-    #region Explosion
-    public void Detonate()
-    {
-        if (explosive)
-        {
-            // TODO
-        }
-    }
-    #endregion
 }

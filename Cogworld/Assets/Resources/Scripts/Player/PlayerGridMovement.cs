@@ -318,14 +318,14 @@ public class PlayerGridMovement : MonoBehaviour
                     UIManager.inst.dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().ShowExtraDetail(UIManager.inst.dataMenu.data_focusObject.extraDetailString);
                 }
             }
-            else if (UIManager.inst.dataMenu.data_onTraits && UIManager.inst.dataMenu.selection_obj != null) // Open the traits menu
+            else if (UIManager.inst.dataMenu.data_onTraits && UIManager.inst.dataMenu.selection_obj) // Open the traits menu
             {
                 if (!UIManager.inst.dataMenu.data_traitBox.activeInHierarchy) // Menu isn't already open
                 {
                     UIManager.inst.dataMenu.data_traitBox.GetComponent<UIDataTraitbox>().Open();
                 }
             }
-            else if (UIManager.inst.dataMenu.data_onAnalysis && UIManager.inst.dataMenu.selection_obj != null) // Open the analysis menu
+            else if (UIManager.inst.dataMenu.data_onAnalysis && UIManager.inst.dataMenu.selection_obj) // Open the analysis menu
             {
                 if (!UIManager.inst.dataMenu.data_traitBox.activeInHierarchy) // Menu isn't already open
                 {
@@ -355,19 +355,19 @@ public class PlayerGridMovement : MonoBehaviour
         }
         else // Okay maybe they clicked on something else, lets find out.
         {
-            GameObject target = HF.GetTargetAtPosition(new Vector2Int((int)mousePos.x, (int)mousePos.y));
+            Vector2Int mPos = new Vector2Int((int)mousePos.x, (int)mousePos.y);
+
+            Actor actor = HF.FindActorAtPosition(mPos);
 
             // What did we get?
-            if(target == null) {} // Nothing
-            else if (target.GetComponent<Actor>()) // A bot
+            if (actor) // A bot
             {
                 // If left clicked, the bot should have some special interaction if it has a quest point
-                Actor a = target.GetComponent<Actor>();
-                QuestPoint quest = HF.ActorHasQuestPoint(a);
+                QuestPoint quest = HF.ActorHasQuestPoint(actor);
 
                 if (quest != null && quest.CanInteract()) // Has a quest that can be interacted with
                 {
-                    if (Vector2.Distance(a.transform.position, PlayerData.inst.transform.position) < 1.2f) // Adjacency check (Expensive so we do it last)
+                    if (Vector2.Distance(actor.transform.position, PlayerData.inst.transform.position) < 1.2f) // Adjacency check (Expensive so we do it last)
                     {
                         quest.Interact();
                     }
@@ -376,8 +376,10 @@ public class PlayerGridMovement : MonoBehaviour
                     return;
                 }
             }
-            else if (target.GetComponent<TileBlock>()) // Some kind of structure
+            else // Some kind of structure
             {
+                WorldTile tile = MapManager.inst.mapdata[mPos.x, mPos.y];
+
                 // ??
 
                 // Finished
@@ -438,31 +440,30 @@ public class PlayerGridMovement : MonoBehaviour
         {
             Vector2Int mPos = new Vector2Int((int)(mousePos.x + 0.5f), (int)(mousePos.y + 0.5f)); // Adjustment due to tiles being offset slightly from natural grid
 
-            GameObject target = HF.GetTargetAtPosition(mPos);
-
             // If they click on a Bot, Item, or Machine, the /DATA/ window should open
-            if (target == null || UIManager.inst.dataMenu.isAnimating) { return; } // Nothing, bail out (or the menu is in the process of opening or closing)
+            if (UIManager.inst.dataMenu.isAnimating) { return; } // Nothing, bail out (or the menu is in the process of opening or closing)
 
             // Forcefully exit out of targeting mode since we are about to open this window
             this.GetComponent<PlayerData>().doTargeting = false;
 
-            if (target.GetComponent<Actor>()) // A bot
+            Actor actor = HF.FindActorAtPosition(mPos);
+            Part part = HF.TryFindPartAtLocation(mPos);
+            WorldTile tile = MapManager.inst.mapdata[mPos.x, mPos.y];
+
+            if (actor != null) // A bot
             {
                 // If right clicked, the /DATA/ menu should open and display info about the bot.
-                Actor a = target.GetComponent<Actor>();
-                UIManager.inst.Data_OpenMenu(null, a.gameObject, a); // Open the /DATA/ menu
+                UIManager.inst.Data_OpenMenu(Vector2Int.zero, null, actor, actor); // Open the /DATA/ menu
             }
-            else if (target.GetComponent<Part>()) // An item
+            else if (part) // An item
             {
                 // If right clicked, the /DATA/ menu should open and display info about the item.
-                Part p = target.GetComponent<Part>();
-                UIManager.inst.Data_OpenMenu(p._item);
+                UIManager.inst.Data_OpenMenu(Vector2Int.zero, part._item);
             }
-            else if (target.GetComponent<MachinePart>()) // A machine
+            else if (tile.type == TileType.Machine) // A machine
             {
                 // If right clicked, the /DATA/ menu should open and display info about the machine.
-                MachinePart m = target.GetComponent<MachinePart>();
-                UIManager.inst.Data_OpenMenu(null, m.gameObject);
+                UIManager.inst.Data_OpenMenu(mPos);
             }
         }
     }

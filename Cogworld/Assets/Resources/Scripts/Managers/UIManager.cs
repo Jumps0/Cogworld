@@ -6471,31 +6471,33 @@ public class UIManager : MonoBehaviour
     [Header("/ DATA / Menu")]
     public UIDataDisplay dataMenu;
 
+    /// <summary>
+    /// Open the /DATA/ side menu to give a large amount of additional info on something that was clicked.
+    /// </summary>
+    /// <param name="tilePosition">A position refering to a tile or machine in the world. Set to Vector2Int.zero if nothing is intented.</param>
+    /// <param name="item">An item.</param>
+    /// <param name="bot">A bot.</param>
+    /// <param name="itemOwner">The owner of a specific item. The previous item variable must not be null.</param>
     public void Data_OpenMenu(Vector2Int tilePosition, Item item = null, Actor bot = null, Actor itemOwner = null)
     {
         // Firstly assign/determine values
+        bool IS_MACHINE = false;
+        bool IS_TILE = false;
+
         if(tilePosition != Vector2Int.zero)
         {
+            WorldTile wt = MapManager.inst.mapdata[tilePosition.x, tilePosition.y];
 
-        }
-
-        if(other != null)
-        {
-            if (other.GetComponent<Actor>())
+            if(wt.type == TileType.Machine)
             {
-                bot = other.GetComponent<Actor>();
+                IS_MACHINE = true;
             }
-            else if (other.GetComponent<MachinePart>())
+            else
             {
-                machine = other.GetComponent<MachinePart>().parentPart;
-            }
-            else if (other.GetComponent<TileBlock>())
-            {
-                tile = other.GetComponent<TileBlock>();
-                // But we only want walls & doors
-                if (tile.tileInfo.type == TileType.Floor || tile.tileInfo.type == TileType.Machine || tile.tileInfo.type == TileType.Exit || tile.tileInfo.type == TileType.Default)
+                // We only care about walls & doors
+                if (wt.type == TileType.Wall || wt.type == TileType.Door)
                 {
-                    tile = null;
+                    IS_TILE = true;
                 }
             }
         }
@@ -7506,7 +7508,7 @@ public class UIManager : MonoBehaviour
             dataMenu.selection_item = item;
         }
 
-        dataMenu.selection_obj = other;
+        dataMenu.selection_obj = IS_MACHINE || IS_TILE || bot != null;
 
         // Enable the menu
         dataMenu.data_parent.SetActive(true);
@@ -10002,14 +10004,16 @@ public class UIManager : MonoBehaviour
 
             #endregion
         }
-        else if(machine != null)
+        else if(IS_MACHINE)
         {
+            WorldTile machine = MapManager.inst.mapdata[tilePosition.x, tilePosition.y];
+
             // Pretty simple, not much to show here besides overview and resistances
 
             // Disable the big image because we don't use it
             dataMenu.data_superImageParent.gameObject.SetActive(false);
             // Set title to machine's name
-            dataMenu.data_mainTitle.text = machine.displayName;
+            dataMenu.data_mainTitle.text = machine.machinedata.displayName;
             // Disable the mini-image
             dataMenu.data_smallImage.transform.parent.gameObject.SetActive(false);
 
@@ -10020,15 +10024,15 @@ public class UIManager : MonoBehaviour
             string extra = "Amount of concentrated damage required to overcome this object's armor to disable or destroy it. After resistances are factored in, " +
                 "the damage from a single hit must be greater than or equal to this value.";
             Color aC = Color.white;
-            if (machine.armor.y >= 40)
+            if (machine.tileInfo.armor >= 40)
             {
                 aC = highSecRed;
             }
-            else if (machine.armor.y <= 12)
+            else if (machine.tileInfo.armor <= 12)
             {
                 aC = highlightGreen;
             }
-            else if (machine.armor.y < 40 && machine.armor.y >= 20)
+            else if (machine.tileInfo.armor < 40 && machine.tileInfo.armor >= 20)
             {
                 aC = warningOrange;
             }
@@ -10036,15 +10040,14 @@ public class UIManager : MonoBehaviour
             {
                 aC = cautiousYellow;
             }
-            string a = machine.armor.y.ToString();
-            if(machine.armor.y >= 999) // No chance buster
+            string a = machine.tileInfo.armor.ToString();
+            if(machine.tileInfo.armor >= 999) // No chance buster
             {
                 a = "**";
             }
-            mArmor.Setup(true, false, true, "Armor", aC, extra, a, false, "", false, "", machine.armor.y / 75f, true);
+            mArmor.Setup(true, false, true, "Armor", aC, extra, a, false, "", false, "", machine.tileInfo.armor / 75f, true);
 
             // State - there is some variance in this
-            InteractableMachine interactable = HF.GetInteractableMachine(machine.gameObject);
 
             // https://www.gridsagegames.com/blog/2015/11/garrison-access/
             UIDataGenericDetail mState = UIManager.inst.Data_CreateGeneric();
@@ -10061,92 +10064,85 @@ public class UIManager : MonoBehaviour
              *  TRANSMITTING - [Garrison] Calling in more dudes
              *  REDEPLOYING - [Garrison?] Recalling squad
              */
-            if (machine.GetComponent<Fabricator>() && machine.GetComponent<Fabricator>().flag_overload) // OVERLOAD
+            if (machine.machinedata.type == MachineType.Fabricator && machine.machinedata.fabricator_flag_overload) // OVERLOAD
             {
                 extra = "This machine is currently inoperable and is randomly send high corruption arcs of electromagnetic energy at any nearby bots. An investigation squad is likely to be on its way.";
                 mState.Setup(true, true, false, "State", highSecRed, extra, "", false, "", false, "OVERLOAD");
             }
-            else if ((machine.GetComponent<Fabricator>() && machine.GetComponent<Fabricator>().working) || (machine.GetComponent<RepairStation>() && machine.GetComponent<RepairStation>().working)) // PROCESSING
+            else if ((machine.machinedata.type == MachineType.Fabricator || machine.machinedata.type == MachineType.RepairStation) && machine.machinedata.atWork) // PROCESSING
             {
-                int time = 0;
-                if (machine.GetComponent<Fabricator>())
-                {
-                    time = TurnManager.inst.globalTime - machine.GetComponent<Fabricator>().begunBuildTime;
-                }
-                else if (machine.GetComponent<RepairStation>())
-                {
-                    time = machine.GetComponent<RepairStation>().timeToComplete;
-                }
+                int time = machine.machinedata.timeToComplete;
+
                 extra = "This machine is currently in operation and will finish after the specified time.";
                 mState.Setup(true, true, false, "State", energyBlue, extra, "", false, "", false, "PROCESSING T-" + time.ToString());
             }
-            else if (machine.GetComponent<Garrison>() && (machine.GetComponent<Garrison>().s_redeploying || machine.GetComponent<Garrison>().s_transmitting))
+            else if (machine.machinedata.type == MachineType.Garrison && (machine.machinedata.garrison_flag_redeploying || machine.machinedata.garrison_flag_transmitting))
             {
-                if (machine.GetComponent<Garrison>().s_redeploying)
+                if (machine.machinedata.garrison_flag_redeploying)
                 {
                     extra = "Forces summoned by this Garrison Access are currently moving to redeploy to a different area. They will arrive here shortly.";
                     mState.Setup(true, true, false, "State", warningOrange, extra, "", false, "", false, "REDEPLOYING");
                 }
-                else if (machine.GetComponent<Garrison>().s_transmitting)
+                else if (machine.machinedata.garrison_flag_transmitting)
                 {
                     extra = "This Garrison Access is communicating with additional reinforcements preparing for dispatch. Using a Signal Interpreter provides the precise number of turns remaining until the next dispatch.";
                     mState.Setup(true, true, false, "State", warningOrange, extra, "", false, "", false, "TRANSMITTING");
                 }
             }
-            else if (machine.GetComponent<Terminal>() && machine.GetComponent<Terminal>().databaseLockout)
+            else if (machine.machinedata.type == MachineType.Terminal && machine.machinedata.databaseLockout)
             {
                 extra = "This terminal's access to the central database has been compromised due to frequenty incursion attempts, and has thus been denied access to make further attempts.";
                 mState.Setup(true, true, false, "State", warningOrange, extra, "", false, "", false, "COMPROMISED");
             }
-            else if (machine.GetComponent<StaticMachine>() && (machine.GetComponent<StaticMachine>().s_detonate || machine.GetComponent<StaticMachine>().s_unstable))
+            else if (machine.machinedata.type == MachineType.Static && (machine.machinedata.static_flag_detonate || machine.machinedata.static_flag_unstable))
             {
-                if (machine.GetComponent<StaticMachine>().s_detonate)
+                if (machine.machinedata.static_flag_detonate)
                 {
                     extra = "This machine is about to explode due to external interference.";
-                    mState.Setup(true, true, false, "State", highSecRed, extra, "", false, "", false, "DETONATE " + machine.GetComponent<StaticMachine>().detonate_timer);
+                    mState.Setup(true, true, false, "State", highSecRed, extra, "", false, "", false, "DETONATE " + machine.machinedata.static_timeToDetonation);
                 }
-                else if (machine.GetComponent<StaticMachine>().s_unstable)
+                else if (machine.machinedata.static_flag_unstable)
                 {
                     extra = "This machine has become extremely unstable due to external circumstances, and will explode very soon.";
-                    mState.Setup(true, true, false, "State", highSecRed, extra, "", false, "", false, "UNSTABLE " + machine.GetComponent<StaticMachine>().detonate_timer);
+                    mState.Setup(true, true, false, "State", highSecRed, extra, "", false, "", false, "UNSTABLE " + machine.machinedata.static_timeToDetonation);
                 }
             }
-            else if (!machine.GetComponent<StaticMachine>() && interactable != null && interactable.detected) // Tracing (this is some kind of interactable machine)
+            else if (machine.machinedata.type != MachineType.Static && machine.machinedata.type != MachineType.None && machine.machinedata.detected) // Tracing (this is some kind of interactable machine)
             {
                 extra = "Due to recently detected hacking attempts, the central control system is currently attempting to trace the approximate location of the intrusion. Once successful, and investigate squad will be sent to this position.";
-                mState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "TRACING " + (interactable.traceProgress * 100).ToString());
+                mState.Setup(true, true, false, "State", cautiousYellow, extra, "", false, "", false, "TRACING " + (machine.machinedata.traceProgress * 100).ToString());
             }
-            else if (machine.state) // Active (green)
+            else if (machine.machinedata.state) // Active (green)
             {
                 extra = "Current state of this machine. This message will provide more context for special states.";
                 mState.Setup(true, true, false, "State", highlightGreen, extra, "", false, "", false, "ACTIVE");
             }
-            else if(!machine.state) // Inactive (gray)
+            else if(!machine.machinedata.state) // Inactive (gray)
             {
                 extra = "This machine is inactive and will not function.";
                 mState.Setup(true, true, false, "State", inactiveGray, extra, "", false, "", false, "INACTIVE");
             }
-            else if (machine.destroyed) // Disabled (gray)
+            else if (machine.machinedata.machineIsDestroyed) // Disabled (gray)
             {
                 extra = "Critical components of this machine have been destroyed and thus this machine is disabled.";
                 mState.Setup(true, true, false, "State", inactiveGray, extra, "", false, "", false, "DISABLED");
             }
 
             // Building/Repair progress
-            if (machine.GetComponent<Fabricator>() && machine.GetComponent<Fabricator>().working)
+            if (machine.machinedata.type == MachineType.Fabricator && machine.machinedata.atWork)
             {
                 UIDataGenericDetail mTrojans = UIManager.inst.Data_CreateGeneric();
-                if (machine.state)
+                if (machine.machinedata.state)
                 {
                     extra = "This machine is currently working on fabricating the specified object. It will finish after the specified time.";
                     string Fname = "";
-                    if (machine.GetComponent<Fabricator>().targetBot != null)
+                    if (machine.machinedata.desiredBot != null)
                     {
-                        Fname = machine.GetComponent<Fabricator>().targetBot.botName;
+                        Fname = machine.machinedata.desiredBot.botName;
                     }
-                    else if (machine.GetComponent<Fabricator>().targetPart != null)
+                    else if (machine.machinedata.desiredPart != null)
                     {
-                        Fname = machine.GetComponent<Fabricator>().targetPart.itemName;
+                        Fname = machine.machinedata.desiredPart.itemName;
                     }
                     mTrojans.Setup(true, false, false, "Building...", Color.white, extra, "", false, Fname);
                 }
@@ -10156,13 +10152,13 @@ public class UIManager : MonoBehaviour
                     mTrojans.Setup(true, false, false, "Building...", Color.white, extra, "", false, "Disabled");
                 }
             }
-            else if (machine.GetComponent<RepairStation>() && machine.GetComponent<RepairStation>().working)
+            else if (machine.machinedata.type == MachineType.RepairStation && machine.machinedata.atWork)
             {
                 UIDataGenericDetail mTrojans = UIManager.inst.Data_CreateGeneric();
-                if (machine.state)
+                if (machine.machinedata.state)
                 {
                     extra = "This machine is currently working on repairing the following item. It will finish after the specified time.";
-                    mTrojans.Setup(true, false, false, "Repairing...", Color.white, extra, "", false, machine.GetComponent<RepairStation>().targetPart.itemName);
+                    mTrojans.Setup(true, false, false, "Repairing...", Color.white, extra, "", false, machine.machinedata.repair_desiredPart.itemData.itemName);
                 }
                 else
                 {
@@ -10172,11 +10168,11 @@ public class UIManager : MonoBehaviour
             }
 
             // Trojans
-            if (!machine.GetComponent<StaticMachine>())
+            if (machine.machinedata.type != MachineType.Static)
             {
-                if (machine.state)
+                if (machine.machinedata.state)
                 {
-                    List<HackObject> trojans = machine.gameObject.GetComponent<InteractableMachine>().trojans;
+                    List<HackObject> trojans = machine.machinedata.trojans;
                     bool first = true;
                     if (trojans.Count > 0)
                     {
@@ -10249,10 +10245,10 @@ public class UIManager : MonoBehaviour
             }
 
             // Explosive Potential
-            if(machine.GetComponent<StaticMachine>() && machine.GetComponent<StaticMachine>().explosive)
+            if(machine.machinedata.type == MachineType.Static && machine.machinedata.explodes)
             {
                 UIManager.inst.Data_CreateHeader("Explosive Potential"); // Explosive Potential ============================================================
-                ExplosionGeneric detail = machine.GetComponent<MachinePart>().explosiveDetails;
+                ExplosionGeneric detail = machine.machinedata.explosion_details;
 
                 // Stability
                 UIDataGenericDetail mStability = UIManager.inst.Data_CreateGeneric();
@@ -10333,7 +10329,7 @@ public class UIManager : MonoBehaviour
                     iESpectrum.Setup(true, false, false, "Specturm", Color.white, extra, "N/A", true); // No bar (simple)
                 }
                 // Heat transfer
-                int ht = machine.heatTransfer;
+                int ht = machine.machinedata.explosion_heattransfer;
                 UIDataGenericDetail mHeatTransfer = UIManager.inst.Data_CreateGeneric();
                 if (ht > 0)
                 {
@@ -10404,8 +10400,10 @@ public class UIManager : MonoBehaviour
 
             #endregion
         }
-        else if(tile != null)
+        else if(IS_TILE)
         {
+            WorldTile tile = MapManager.inst.mapdata[tilePosition.x, tilePosition.y];
+
             // Pretty simple, not much to show here besides overview and resistances
 
             // Disable the big image because we don't use it
@@ -10549,7 +10547,7 @@ public class UIManager : MonoBehaviour
         AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_ui["CLOSE"]); // UI - CLOSE
 
         dataMenu.selection_item = null;
-        dataMenu.selection_obj = null;
+        dataMenu.selection_obj = false;
         dataMenu.selected_comparison_item = null;
 
         StartCoroutine(Data_CloseMenuAnimation());
@@ -10903,7 +10901,8 @@ public class UIDataDisplay
     public Item selection_item;
     [Tooltip("A second item we compare the first against.")]
     public Item selected_comparison_item;
-    public GameObject selection_obj;
+    [Tooltip("Is the current selected `thing` an object? (Machine, Tile, Bot)")]
+    public bool selection_obj;
     public List<Image> bits = new List<Image>(); // Gets faded out/in when the menu closes
 
     [Header("Animation")]

@@ -130,7 +130,7 @@ public class DynamicInterface : UserInterface
         }
 
         // In a rare case, we may want to be displaying the Hideout Cache's Inventory instead
-        if(UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.customType == CustomTerminalType.HideoutCache)
+        if(UIManager.inst.cTerminal_machine != null && MapManager.inst.mapdata[UIManager.inst.cTerminal_machine.x, UIManager.inst.cTerminal_machine.y].machinedata.customType == CustomTerminalType.HideoutCache)
         {
             #region Cache Inventory
             // No sub headers needed

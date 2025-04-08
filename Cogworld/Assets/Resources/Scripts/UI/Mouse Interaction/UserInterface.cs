@@ -887,7 +887,7 @@ public abstract class UserInterface : MonoBehaviour
                     if (destinationSlot.parent.GetComponent<StaticInterface>()) // Moving TO the /INVENTORY/
                     {
                         word = "Detached ";
-                        if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.customType == CustomTerminalType.HideoutCache)
+                        if (UIManager.inst.cTerminal_machine != null && MapManager.inst.mapdata[UIManager.inst.cTerminal_machine.x, UIManager.inst.cTerminal_machine.y].machinedata.customType == CustomTerminalType.HideoutCache)
                             word = "Retrieved ";
 
                         UIManager.inst.ShowCenterMessageTop(word + HF.GetFullItemName(originSlot.item), UIManager.inst.highlightGreen, Color.black);
@@ -899,7 +899,7 @@ public abstract class UserInterface : MonoBehaviour
                         HF.MiscItemEquipLogic(originItem, "Equipped", false);
 
                         word = "Attached ";
-                        if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.customType == CustomTerminalType.HideoutCache)
+                        if (UIManager.inst.cTerminal_machine != null && MapManager.inst.mapdata[UIManager.inst.cTerminal_machine.x, UIManager.inst.cTerminal_machine.y].machinedata.customType == CustomTerminalType.HideoutCache)
                             word = "Stored ";
 
                         if (originSlot.item.itemData.slot == ItemSlot.Power)
@@ -1036,7 +1036,7 @@ public abstract class UserInterface : MonoBehaviour
                                 break; // We have space!
                             }
                         }
-                        else if(UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.customType == CustomTerminalType.HideoutCache)
+                        else if(UIManager.inst.cTerminal_machine != null && MapManager.inst.mapdata[UIManager.inst.cTerminal_machine.x, UIManager.inst.cTerminal_machine.y].machinedata.customType == CustomTerminalType.HideoutCache)
                         { // UNLESS we have the CACHE inventory open and are trying to add something to it, then there are no limits.
                             // We've found our slot
                             destinationObjects.Add(S.Key);
@@ -1089,7 +1089,7 @@ public abstract class UserInterface : MonoBehaviour
                     // Prototype discovery
                     HF.MiscItemEquipLogic(item, "", false);
 
-                    if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.customType == CustomTerminalType.HideoutCache) // Special case if we are instead submitting it to the cache
+                    if (UIManager.inst.cTerminal_machine != null && MapManager.inst.mapdata[UIManager.inst.cTerminal_machine.x, UIManager.inst.cTerminal_machine.y].machinedata.customType == CustomTerminalType.HideoutCache) // Special case if we are instead submitting it to the cache
                     {
                         InventoryControl.inst.hideout_inventory.AddItem(item, 1);
                         if (!once)
@@ -1193,7 +1193,7 @@ public abstract class UserInterface : MonoBehaviour
             qualifier = "corrupted";
         }
 
-        if (UIManager.inst.cTerminal_machine != null && UIManager.inst.cTerminal_machine.customType == CustomTerminalType.HideoutCache)
+        if (UIManager.inst.cTerminal_machine != null && MapManager.inst.mapdata[UIManager.inst.cTerminal_machine.x, UIManager.inst.cTerminal_machine.y].machinedata.customType == CustomTerminalType.HideoutCache)
         {
             hideoutCase = "store";
         }

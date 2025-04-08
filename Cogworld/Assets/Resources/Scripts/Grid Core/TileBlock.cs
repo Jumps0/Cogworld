@@ -479,6 +479,9 @@ public struct WorldTile
     public bool doneRevealAnimation;
     public bool revealedViaIntel;
 
+    [Header("Tile Resistances")]
+    public List<BotResistances> resistances;
+
     [Header("States")]
     [Tooltip("Where -1 = Not dirty, and any other number indicates the ID of the debris sprite.")]
     public int isDirty;
@@ -1042,8 +1045,8 @@ public struct MachineData
 
     #region Generic Operations
     [Header("Generic Operations")]
-    [Tooltip("How long it will take to work on the specified componenet.")]
-    public int buildTime;
+    [Tooltip("How long it will take to work on the specified component.")]
+    public int timeToComplete;
     [Tooltip("When (based on the current global time) this machine operation started.")]
     public int begunBuildTime;
     [Tooltip("Is this machine currently working on something? (Fabricators, Repair Bays, Scanalyzers, etc. use this)")]
@@ -1068,7 +1071,7 @@ public struct MachineData
                 case MachineType.Fabricator:
                     MapManager.inst.machine_timers[location].GetComponent<UITimerMachine>().Tick();
 
-                    if (TurnManager.inst.globalTime >= begunBuildTime + buildTime)
+                    if (TurnManager.inst.globalTime >= begunBuildTime + timeToComplete)
                     {
                         Fabricator_FinishBuild();
                     }
@@ -1088,6 +1091,17 @@ public struct MachineData
                 case MachineType.DoorTerminal:
                     break;
                 case MachineType.Static:
+                    if (static_flag_detonate || static_flag_unstable) // There is definently a difference between the two but i'm not sure what it is right now.
+                    {
+                        if(static_timeToDetonation > 0)
+                        {
+                            static_timeToDetonation--;
+                        }
+                        else
+                        {
+                            Static_Detonate();
+                        }
+                    }
                     break;
                 case MachineType.None:
                     break;
@@ -1515,6 +1529,7 @@ public struct MachineData
     #endregion
 
     #region Fabricator
+    [Tooltip("This machine is currently inoperable and is randomly send high corruption arcs of electromagnetic energy at any nearby bots.")]
     public bool fabricator_flag_overload;
 
     // TODO FUTURE WORK: AUTHCHIPS
@@ -1591,15 +1606,15 @@ public struct MachineData
                 
                 if(secLvl == 1)
                 {
-                    buildTime = bot.fabricationInfo.fabTime.x;
+                    timeToComplete = bot.fabricationInfo.fabTime.x;
                 }
                 else if(secLvl == 2)
                 {
-                    buildTime = bot.fabricationInfo.fabTime.y;
+                    timeToComplete = bot.fabricationInfo.fabTime.y;
                 }
                 else if( secLvl == 3)
                 {
-                    buildTime = bot.fabricationInfo.fabTime.z;
+                    timeToComplete = bot.fabricationInfo.fabTime.z;
                 }
                 
             }
@@ -1616,15 +1631,15 @@ public struct MachineData
                 
                 if (secLvl == 1)
                 {
-                    buildTime = item.fabricationInfo.fabTime.x;
+                    timeToComplete = item.fabricationInfo.fabTime.x;
                 }
                 else if (secLvl == 2)
                 {
-                    buildTime = item.fabricationInfo.fabTime.y;
+                    timeToComplete = item.fabricationInfo.fabTime.y;
                 }
                 else if (secLvl == 3)
                 {
-                    buildTime = item.fabricationInfo.fabTime.z;
+                    timeToComplete = item.fabricationInfo.fabTime.z;
                 }
                 
             }
@@ -1711,7 +1726,7 @@ public struct MachineData
             desiredBot = bot;
         }
 
-        buildTime = time;
+        timeToComplete = time;
 
         Fabricator_AddBuildCommand(item, bot);
 
@@ -1729,7 +1744,7 @@ public struct MachineData
         // Create physical timer
         GameObject timerObject = GameObject.Instantiate(UIManager.inst.prefab_machineTimer, new Vector2(location.x, location.y), Quaternion.identity);
         // Assign Details
-        timerObject.GetComponent<UITimerMachine>().Init(buildTime);
+        timerObject.GetComponent<UITimerMachine>().Init(timeToComplete);
 
         // Save the object
         MapManager.inst.machine_timers.Add(location, timerObject);
@@ -1801,7 +1816,7 @@ public struct MachineData
 
         desiredPart = null;
         desiredBot = null;
-        buildTime = 0;
+        timeToComplete = 0;
         begunBuildTime = 0;
 
         // (UPDATE MAPDATA)
@@ -2028,7 +2043,6 @@ public struct MachineData
     #region Repair Station
     [Header("Repair Station")]
     public Item repair_desiredPart;
-    public int repair_timeToComplete;
 
     // https://www.gridsagegames.com/blog/2014/01/recycling-units-repair-stations/
 
@@ -2047,7 +2061,7 @@ public struct MachineData
     public void Repair_Scan(Item item, int time)
     {
         repair_desiredPart = item;
-        repair_timeToComplete = time;
+        timeToComplete = time;
 
         // (UPDATE MAPDATA)
         MapManager.inst.mapdata[location.x, location.y].machinedata = this;
@@ -2092,6 +2106,18 @@ public struct MachineData
 
         // (UPDATE MAPDATA)
         MapManager.inst.mapdata[location.x, location.y].machinedata = this;
+    }
+    #endregion
+
+    #region Static
+    [Header("Static")]
+    public bool static_flag_detonate;
+    public bool static_flag_unstable;
+    public int static_timeToDetonation;
+
+    public void Static_Detonate()
+    {
+        // TODO
     }
     #endregion
 }

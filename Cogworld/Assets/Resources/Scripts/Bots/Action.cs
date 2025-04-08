@@ -1295,25 +1295,26 @@ public static class Action
             else
             {
                 // No. Stop here, but is there a machine at the location?
-                GameObject machine = HF.GetMachineParentAtPosition(pos);
+                Vector2Int machinePos = HF.GetMachineParentAtPosition(pos);
+                WorldTile machineTile = MapManager.inst.mapdata[machinePos.x, machinePos.y];
 
-                if(machine != null)
+                if(machinePos != Vector2Int.zero)
                 {
                     // Is the machine static and does it explode?
-                    if (machine.GetComponent<StaticMachine>())
+                    if (machineTile.machinedata.type == MachineType.Static)
                     {
-                        if (machine.GetComponent<StaticMachine>().explosive)
+                        if (machineTile.machinedata.explodes)
                         {
                             // Do a message
                             if (target.botInfo)
                             {
-                                UIManager.inst.CreateNewLogMessage(target.botInfo + " was knocked back into " + machine.GetComponent<StaticMachine>()._name + ", causing it to explode.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                                UIManager.inst.CreateNewLogMessage(target.botInfo + " was knocked back into " + machineTile.machinedata.logName + ", causing it to explode.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                             }
                             else
                             {
-                                UIManager.inst.CreateNewLogMessage("Knocked back into " + machine.GetComponent<StaticMachine>()._name + ", causing it to explode.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                                UIManager.inst.CreateNewLogMessage("Knocked back into " + machineTile.machinedata.logName + ", causing it to explode.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                             }
-                            machine.GetComponent<StaticMachine>().Detonate(); // Kaboom.
+                            machineTile.machinedata.Static_Detonate(); // Kaboom.
                         }
                     }
 
@@ -6920,26 +6921,28 @@ public static class Action
         if (doFlightVariant)
         {
             // We can safely use any direction, we just need to do a little interpretation.
-            GameObject thing = HF.GetTargetAtPosition(loc);
 
             string printString = "";
 
-            if(thing.GetComponent<TileBlock>() && !thing.GetComponent<TileBlock>().occupied)
+            WorldTile tile = MapManager.inst.mapdata[loc.x, loc.y];
+
+            if (MapManager.inst.pathdata[loc.x, loc.y] == 0)
             {
                 // Just a floor? We consider it a ceiling
                 printString = "ceiling";
             }
-            else if (thing.GetComponent<Actor>())
+            else if (MapManager.inst.pathdata[loc.x, loc.y] == 2)
             {
                 // A bot, use its name
-                printString = thing.GetComponent<Actor>().uniqueName;
+                Actor sunday_driver = HF.FindActorAtPosition(loc);
+                printString = sunday_driver.uniqueName;
             }
-            else if (thing.GetComponent<MachinePart>())
+            else if (MapManager.inst.pathdata[loc.x, loc.y] == 3)
             {
                 // A machine, use its name
-                printString = thing.GetComponent<MachinePart>().parentPart.displayName;
+                printString = tile.machinedata.displayName;
             }
-            else
+            else if (MapManager.inst.pathdata[loc.x, loc.y] == 1)
             {
                 // A wall
                 printString = "wall";
