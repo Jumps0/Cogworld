@@ -10,7 +10,7 @@ using UnityEngine;
 /// Similarly, unprocessed parts can be listed and retrieved via other system commands.
 /// https://www.gridsagegames.com/blog/2014/01/recycling-units-repair-stations/
 /// </summary>
-public class RecyclingUnit : InteractableMachine
+public class RecyclingUnit : MonoBehaviour
 {
 
     [Header("Operation")]
@@ -23,6 +23,7 @@ public class RecyclingUnit : InteractableMachine
 
     public void Init()
     {
+        /*
         detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
         type = MachineType.Recycling;
 
@@ -30,7 +31,7 @@ public class RecyclingUnit : InteractableMachine
         storedComponents = new InventoryObject(10, specialName + "'s component Inventory");
 
         // We need to load this machine with the following commands:
-
+        */
     }
 
     public void Check()
@@ -40,10 +41,12 @@ public class RecyclingUnit : InteractableMachine
 
     private void Update()
     {
+        /*
         if (!locked)
         {
             OverflowCheck();
         }
+        */
     }
 
     // If the stored matter goes above 500 it is reset. If components stored goes above 10 that inventory is emptied.

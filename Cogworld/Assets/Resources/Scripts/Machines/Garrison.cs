@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Garrison : InteractableMachine
+public class Garrison : MonoBehaviour
 {
     public bool doorRevealed = false; // The player can now ENTER the garrison.
     public bool g_sealed = false; // This garrison is permanently closed.
@@ -20,6 +20,7 @@ public class Garrison : InteractableMachine
 
     public void Init()
     {
+        /*
         detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
         type = MachineType.Garrison;
 
@@ -67,6 +68,7 @@ public class Garrison : InteractableMachine
         newCommand = new TerminalCommand(letter, "Unlock", TerminalCommandType.Unlock, "", hack);
 
         avaiableCommands.Add(newCommand);
+        */
     }
 
     public void Open()
@@ -80,11 +82,13 @@ public class Garrison : InteractableMachine
     {
         g_sealed = true;
         
+        /*
         // Grey out the core sprite
         this.GetComponentInChildren<MachinePart>().parentPart.GetComponent<SpriteRenderer>().color = Color.gray;
         // Disable all further access
         this.GetComponentInChildren<MachinePart>().parentPart.state = false;
         locked = true;
+        */
     }
 
     public void CouplerStatus()

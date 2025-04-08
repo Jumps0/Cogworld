@@ -146,20 +146,21 @@ public class PlayerGridMovement : MonoBehaviour
         Vector2Int moveTarget = new Vector2Int(currentPos.x + X, currentPos.y + Y); // This is where we want to move to
 
         // -- Machine interaction detection --
-        InteractableMachine machineInteraction = null;
+        Vector2Int machineInteraction = Vector2Int.zero;
 
         if (MapManager.inst.mapdata[moveTarget.x, moveTarget.y].type == TileType.Machine) // Tile is type of machine?
         {
-            // TODO, when machines have been reworked come back to this
-            Debug.LogWarning("Machine rework has not been completed yet!");
-            /*
-            GameObject top = MapManager.inst._allTilesRealized[moveTarget].top;
-            InteractableMachine interactable = HF.GetInteractableMachine(top);
-            if (interactable != null) // Is there an interactable machine here?
+            WorldTile machineTile = MapManager.inst.mapdata[moveTarget.x, moveTarget.y];
+
+            // Now check if this tile is viable to interact with
+            bool MACHINE_BROKEN = machineTile.machinedata.machineIsDestroyed;
+            bool MACHINE_LOCKED = machineTile.machinedata.locked;
+            bool MACHINE_INTERACTABLE = (machineTile.machinedata.type != MachineType.Static && machineTile.machinedata.type != MachineType.None);
+
+            if(!MACHINE_BROKEN && !MACHINE_LOCKED && MACHINE_INTERACTABLE)
             {
-                machineInteraction = interactable;
+                machineInteraction = moveTarget;
             }
-            */
         }
 
         List<WorldTile> neighbors = HF.FindNeighbors(currentPos.x, currentPos.y);
@@ -209,9 +210,10 @@ public class PlayerGridMovement : MonoBehaviour
         }
 
         // -- Machine Interaction (Parsing) --
-        if (machineInteraction != null && !machineInteraction.locked) // Can interact with this machine
+        if (machineInteraction != Vector2Int.zero) // A Machine to interact with
         {
-            MachineType type = machineInteraction.type;
+            WorldTile machineTile = MapManager.inst.mapdata[moveTarget.x, moveTarget.y];
+            MachineType type = machineTile.machinedata.type;
 
             if (type == MachineType.CustomTerminal)
             {

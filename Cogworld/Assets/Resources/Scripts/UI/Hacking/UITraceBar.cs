@@ -33,7 +33,7 @@ public class UITraceBar : MonoBehaviour
 
     //[SerializeField] private float textSpeed = 0.01f;
 
-    public void Setup(InteractableMachine terminal)
+    public void Setup(Vector2Int terminal)
     {
         // The bar starts out at 0 percent.
         traceAmount = 0f;
@@ -220,8 +220,8 @@ public class UITraceBar : MonoBehaviour
         trueBar.fillAmount = 1f;
         trueBar.color = trueColor;
         facadeBar.fillAmount = 1f;
-        // TODO: COME BACK TO THIS
-        //UIManager.inst.Terminal_DoConsequences(UIManager.inst.highSecRed, HF.GetMachineTypeAsString(UIManager.inst.terminal_targetTerm).ToUpper() + " LOCKED");
+
+        UIManager.inst.Terminal_DoConsequences(UIManager.inst.highSecRed, HF.GetMachineTypeAsString(UIManager.inst.terminal_targetTerm).ToUpper() + " LOCKED");
 
         float delay = 0.1f;
 

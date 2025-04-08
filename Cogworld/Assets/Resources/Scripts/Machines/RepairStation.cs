@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RepairStation : InteractableMachine
+public class RepairStation : MonoBehaviour
 {
     [Header("Operation")]
     public ItemObject targetPart = null;
@@ -16,8 +16,8 @@ public class RepairStation : InteractableMachine
 
     public void Init()
     {
-        detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
-        type = MachineType.RepairStation;
+        //detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
+        //type = MachineType.RepairStation;
 
         // We need to load this machine with the following commands:
 

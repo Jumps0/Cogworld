@@ -237,7 +237,7 @@ public class TileBlock : MonoBehaviour
 
     private IEnumerator RevealZone(bool doSound = false)
     {
-        while (UIManager.inst.terminal_targetTerm)
+        while (/*UIManager.inst.terminal_targetTerm*/ false)
         {
             yield return null; // Wait until the terminal screen is closed
         }
@@ -483,8 +483,8 @@ public struct WorldTile
     [Tooltip("Where -1 = Not dirty, and any other number indicates the ID of the debris sprite.")]
     public int isDirty;
     public bool isImpassible;
-    [Tooltip("Is this tile currently damaged? Default is FALSE.")]
-    public bool isDamaged; // Important for machines too!
+    [Tooltip("Is this tile currently damaged? Default is FALSE. Does not refer to machines.")]
+    public bool isDamaged;
 
     [Header("Variants")]
     public TileType type;

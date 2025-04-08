@@ -1752,7 +1752,7 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region Generic Machine / Terminal
-    [HideInInspector] public InteractableMachine terminal_targetTerm;
+    [HideInInspector] public Vector2Int terminal_targetTerm;
     [Header("Terminal/Generic Machines")]
     public bool terminal_isAnimating = false;
     public GameObject terminal_hackingAreaRef;
@@ -1802,8 +1802,10 @@ public class UIManager : MonoBehaviour
     public GameObject codes_setArea; // Where prefabs are assigned to
     public GameObject codes_prefab;
 
-    public void Terminal_OpenGeneric(InteractableMachine target)
+    public void Terminal_OpenGeneric(Vector2Int target)
     {
+        WorldTile machineTile = MapManager.inst.mapdata[target.x, target.y];
+
         terminal_isAnimating = true;
 
         // Freeze player
@@ -2907,8 +2909,10 @@ public class UIManager : MonoBehaviour
     public GameObject cTerminal_gibberishPrefab;
     public bool cTerminal_animating = false;
 
-    public void CTerminal_Open(InteractableMachine target)
+    public void CTerminal_Open(Vector2Int target)
     {
+        WorldTile machineTile = MapManager.inst.mapdata[target.x, target.y];
+
         cTerminal_animating = true;
 
         // Freeze player

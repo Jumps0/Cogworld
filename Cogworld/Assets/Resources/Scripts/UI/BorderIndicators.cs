@@ -130,7 +130,7 @@ public class BorderIndicators : MonoBehaviour
             // Stop it from flashing
             indicator.GetComponent<UIBorderIndicator>().SetFlash(false);
 
-            indicator.SetActive(false);
+            //indicator.SetActive(false);
         }
     }
 

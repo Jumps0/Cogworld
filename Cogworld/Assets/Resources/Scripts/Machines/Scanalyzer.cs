@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // https://www.gridsagegames.com/blog/2013/12/scanalyzers-fabricators/
-public class Scanalyzer : InteractableMachine
+public class Scanalyzer : MonoBehaviour
 {
     [Header("Operation")]
     public ItemObject targetPart = null;
@@ -13,8 +13,8 @@ public class Scanalyzer : InteractableMachine
 
     public void Init()
     {
-        detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
-        type = MachineType.Scanalyzer;
+        //detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
+        //type = MachineType.Scanalyzer;
 
         // We need to load this machine with the following commands:
 

@@ -499,11 +499,6 @@ public static class HF
         }
     }
 
-    public static InteractableMachine GetInteractableMachine(GameObject machine)
-    {
-        return machine.GetComponent<InteractableMachine>() ? machine.GetComponent<InteractableMachine>() : null;
-    }
-
     public static Vector2Int GetRandomMachineOfType(MachineType type)
     {
         List<Vector2Int> machines = HF.GetMachinesByType(type);
@@ -1774,7 +1769,7 @@ public static class HF
 
     }
 
-    public static void TraceHacking(InteractableMachine machine, float levelOfFailure = 0f)
+    public static void TraceHacking(Vector2Int machine, float levelOfFailure = 0f)
     {
         #region From the Manual
         /*
@@ -1800,10 +1795,12 @@ public static class HF
          */
         #endregion
 
-        float detectionChance = machine.detectionChance;
-        float traceProgress = machine.traceProgress;
-        bool detected = machine.detected;
-        int timesAccessed = machine.timesAccessed;
+        WorldTile machineTile = MapManager.inst.mapdata[machine.x, machine.y];
+
+        float detectionChance = machineTile.machinedata.detectionChance;
+        float traceProgress = machineTile.machinedata.traceProgress;
+        bool detected = machineTile.machinedata.detected;
+        int timesAccessed = machineTile.machinedata.timesAccessed;
 
         /*
         Detection: Initially your presence is unknown, but with each subsequent action there is a chance your activity will be detected. 
@@ -1816,7 +1813,7 @@ public static class HF
             which either causes system corruption or disables connected hackware.
          */
 
-        int secLvl = machine.secLvl;
+        int secLvl = machineTile.machinedata.secLvl;
 
         // Get any possible bonuses from system sheields
         List<float> bonuses = HF.SystemShieldBonuses();
@@ -1888,9 +1885,9 @@ public static class HF
         // Now update values
         detectionChance += bonuses[1]; // add it back so spam open/closing doesn't cheese the detecting
 
-        machine.detectionChance = detectionChance;
-        machine.detected = detected;
-        machine.traceProgress = traceProgress;
+        MapManager.inst.mapdata[machine.x, machine.y].machinedata.detectionChance = detectionChance;
+        MapManager.inst.mapdata[machine.x, machine.y].machinedata.detected = detected;
+        MapManager.inst.mapdata[machine.x, machine.y].machinedata.traceProgress = traceProgress;
     }
 
     /// <summary>

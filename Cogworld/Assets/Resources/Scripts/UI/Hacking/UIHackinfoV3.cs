@@ -14,7 +14,7 @@ public class UIHackinfoV3 : MonoBehaviour
     public TextMeshProUGUI _detectionChanceText;
     public TextMeshProUGUI _detValueText;
     public Image detectedBacker;
-    public InteractableMachine machine = null;
+    public Vector2Int machine;
 
     [Header("Color Pallet")]
     public Color lowDetColor;
@@ -27,14 +27,14 @@ public class UIHackinfoV3 : MonoBehaviour
 
     [SerializeField] private float textSpeed = 0.007f;
 
-    public void Setup(InteractableMachine terminal)
+    public void Setup(Vector2Int terminal)
     {
         machine = terminal;
         detectionChance = 1f;
 
         if (machine != null)
         {
-            detectionChance = terminal.detectionChance;
+            detectionChance = MapManager.inst.mapdata[terminal.x, terminal.y].machinedata.detectionChance;
         }
 
         // Get any possible bonuses from system sheields
@@ -53,41 +53,8 @@ public class UIHackinfoV3 : MonoBehaviour
 
             if (machine != null)
             {
-                if (machine.GetComponent<Terminal>()) // Open Terminal
-                {
-                    detectionChance = machine.GetComponent<Terminal>().detectionChance;
-                    detected = machine.GetComponent<Terminal>().detected;
-                }
-                else if (machine.GetComponent<Fabricator>()) // Open Fabricator
-                {
-                    detectionChance = machine.GetComponent<Fabricator>().detectionChance;
-                    detected = machine.GetComponent<Fabricator>().detected;
-                }
-                else if (machine.GetComponent<Scanalyzer>()) // Open Scanalyzer
-                {
-                    detectionChance = machine.GetComponent<Scanalyzer>().detectionChance;
-                    detected = machine.GetComponent<Scanalyzer>().detected;
-                }
-                else if (machine.GetComponent<RepairStation>()) // Open Repair Station
-                {
-                    detectionChance = machine.GetComponent<RepairStation>().detectionChance;
-                    detected = machine.GetComponent<RepairStation>().detected;
-                }
-                else if (machine.GetComponent<RecyclingUnit>()) // Open Recycling Unit
-                {
-                    detectionChance = machine.GetComponent<RecyclingUnit>().detectionChance;
-                    detected = machine.GetComponent<RecyclingUnit>().detected;
-                }
-                else if (machine.GetComponent<Garrison>()) // Open Garrison
-                {
-                    detectionChance = machine.GetComponent<Garrison>().detectionChance;
-                    detected = machine.GetComponent<Garrison>().detected;
-                }
-                else if (machine.GetComponent<TerminalCustom>()) // Open Custom Terminal
-                {
-                    detectionChance = machine.GetComponent<TerminalCustom>().detectionChance;
-                    detected = machine.GetComponent<TerminalCustom>().detected;
-                }
+                detectionChance = MapManager.inst.mapdata[machine.x, machine.y].machinedata.detectionChance;
+                detected = MapManager.inst.mapdata[machine.x, machine.y].machinedata.detected;
             }
 
             if(detectionChance > 1f)

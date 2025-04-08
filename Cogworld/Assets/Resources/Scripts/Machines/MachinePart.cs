@@ -56,6 +56,7 @@ public class MachinePart : MonoBehaviour
     // Future note:
     // -How to handle Machine audio: https://www.gridsagegames.com/blog/2020/06/building-cogminds-ambient-soundscape/
 
+    /*
     private void Start()
     {
         // Get sprite renderer
@@ -401,4 +402,5 @@ public class MachinePart : MonoBehaviour
     }
 
     #endregion
+    */
 }

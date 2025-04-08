@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class TerminalCustom : InteractableMachine
+public class TerminalCustom : MonoBehaviour
 {
     [Tooltip("(Optional) Where completed components get spawned.")]
     public Transform ejectionSpot;
@@ -23,8 +23,8 @@ public class TerminalCustom : InteractableMachine
 
     public void Init(CustomTerminalType customtype = CustomTerminalType.Misc)
     {
-        detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
-        type = MachineType.CustomTerminal;
+        //detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
+        //type = MachineType.CustomTerminal;
         customType = customtype;
 
         switch (customType)
@@ -68,12 +68,12 @@ public class TerminalCustom : InteractableMachine
     public void SetupAsCache()
     {
         customType = CustomTerminalType.HideoutCache;
-        specialName = "Hideout Cache (Local)";
+        //specialName = "Hideout Cache (Local)";
 
         // Setup component inventory
         if(InventoryControl.inst.hideout_inventory == null)
         {
-            InventoryControl.inst.hideout_inventory = new InventoryObject(25, specialName + "'s component Inventory");
+            //InventoryControl.inst.hideout_inventory = new InventoryObject(25, specialName + "'s component Inventory");
         }
 
         #region Add Commands
@@ -92,7 +92,7 @@ public class TerminalCustom : InteractableMachine
 
         TerminalCommand newCommand = new TerminalCommand(letter, "Retrieve(Matter)", TerminalCommandType.Retrieve, "", hack);
 
-        avaiableCommands.Add(newCommand);
+        //avaiableCommands.Add(newCommand);
 
         // [Submit (Matter)]
         letter = alphabet[0].ToString().ToLower();
@@ -102,7 +102,7 @@ public class TerminalCustom : InteractableMachine
 
         newCommand = new TerminalCommand(letter, "Store(Matter)", TerminalCommandType.Submit, "", hack);
 
-        avaiableCommands.Add(newCommand);
+        //avaiableCommands.Add(newCommand);
         #endregion
 
 

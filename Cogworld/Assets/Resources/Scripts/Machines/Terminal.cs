@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class Terminal : InteractableMachine
+public class Terminal : MonoBehaviour
 {
     public Vector2Int centerLoc; // Where this terminal is in the grid.
 
@@ -25,8 +25,8 @@ public class Terminal : InteractableMachine
 
     public void Init()
     {
-        detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
-        type = MachineType.Terminal;
+        //detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
+        //type = MachineType.Terminal;
 
         char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
         List<char> alphabet = alpha.ToList(); // Fill alphabet list
@@ -58,7 +58,7 @@ public class Terminal : InteractableMachine
 
             TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Query, "Record", hack, data);
 
-            avaiableCommands.Add(newCommand);
+            //avaiableCommands.Add(newCommand);
 
             amount++;
         }
@@ -76,7 +76,7 @@ public class Terminal : InteractableMachine
 
             TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Access, "", hack, null);
 
-            avaiableCommands.Add(newCommand);
+            //avaiableCommands.Add(newCommand);
         }
 
         if (Random.Range(0f, 1f) >= 0.5f)
@@ -91,7 +91,7 @@ public class Terminal : InteractableMachine
 
             TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Alert, "", hack, null);
 
-            avaiableCommands.Add(newCommand);
+            //avaiableCommands.Add(newCommand);
         }
 
         // Analysis [78-87]
@@ -115,7 +115,7 @@ public class Terminal : InteractableMachine
 
             TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Analysis, "Analysis", hack, null, null, bot);
 
-            avaiableCommands.Add(newCommand);
+            //avaiableCommands.Add(newCommand);
         }
 
         // Enumerate [91-103]
@@ -146,7 +146,7 @@ public class Terminal : InteractableMachine
 
             TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Enumerate, "", hack, null);
 
-            avaiableCommands.Add(newCommand);
+            //avaiableCommands.Add(newCommand);
 
             // Then do another one
             options.RemoveAt(index);
@@ -157,7 +157,7 @@ public class Terminal : InteractableMachine
 
             newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Enumerate, "", hack, null);
 
-            avaiableCommands.Add(newCommand);
+            //avaiableCommands.Add(newCommand);
         }
 
         // Index [104-110]
@@ -182,7 +182,7 @@ public class Terminal : InteractableMachine
 
             TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Index, "", hack, null);
 
-            avaiableCommands.Add(newCommand);
+            //avaiableCommands.Add(newCommand);
         }
 
         // Layout (Zone)
@@ -197,7 +197,7 @@ public class Terminal : InteractableMachine
 
             TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Layout, "", hack, null);
 
-            avaiableCommands.Add(newCommand);
+            //avaiableCommands.Add(newCommand);
         }
 
         // Recall
@@ -231,7 +231,7 @@ public class Terminal : InteractableMachine
 
                 TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Recall, "", hack, null);
 
-                avaiableCommands.Add(newCommand);
+                //avaiableCommands.Add(newCommand);
             }
         }
 
@@ -267,7 +267,7 @@ public class Terminal : InteractableMachine
 
             TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Schematic, "Schematic", hack, null, null, null, item);
 
-            avaiableCommands.Add(newCommand);
+            //avaiableCommands.Add(newCommand);
         }
 
         // Schematic (Bot) [120-128]
@@ -291,7 +291,7 @@ public class Terminal : InteractableMachine
 
             TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Schematic, "Schematic", hack, null, null, bot);
 
-            avaiableCommands.Add(newCommand);
+            //avaiableCommands.Add(newCommand);
         }
         // Traps [146-148]
         if (Random.Range(0f, 1f) >= 0.5f)
@@ -310,7 +310,7 @@ public class Terminal : InteractableMachine
 
             TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Schematic, "", hack, null);
 
-            avaiableCommands.Add(newCommand);
+            //avaiableCommands.Add(newCommand);
         }
     }
 

@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 // https://www.gridsagegames.com/blog/2013/12/scanalyzers-fabricators/
-public class Fabricator : InteractableMachine
+public class Fabricator : MonoBehaviour 
 {
     [Header("Operation")]
     public ItemObject targetPart = null;
@@ -23,8 +23,8 @@ public class Fabricator : InteractableMachine
 
     public void Init()
     {
-        detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
-        type = MachineType.Fabricator;
+        //detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
+        //type = MachineType.Fabricator;
 
         char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
         List<char> alphabet = alpha.ToList(); // Fill alphabet list
@@ -42,7 +42,7 @@ public class Fabricator : InteractableMachine
 
         TerminalCommand newCommand = new TerminalCommand(letter, "Network Status", TerminalCommandType.Network, "", hack);
 
-        avaiableCommands.Add(newCommand);
+        //avaiableCommands.Add(newCommand);
 
         // [Load Schematic]
         letter = alphabet[0].ToString().ToLower();
@@ -52,7 +52,7 @@ public class Fabricator : InteractableMachine
 
         newCommand = new TerminalCommand(letter, "Load Schematic", TerminalCommandType.LoadIndirect, "", hack);
 
-        avaiableCommands.Add(newCommand);
+        //avaiableCommands.Add(newCommand);
 
         // Preload
         if(Random.Range(0f, 1f) > 0.5f) // 50/50
@@ -88,6 +88,7 @@ public class Fabricator : InteractableMachine
 
                 newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Build, "", hack, null, null, bot);
 
+                /*
                 if(secLvl == 1)
                 {
                     buildTime = bot.fabricationInfo.fabTime.x;
@@ -100,6 +101,7 @@ public class Fabricator : InteractableMachine
                 {
                     buildTime = bot.fabricationInfo.fabTime.z;
                 }
+                */
             }
             else // 70% chance to be an item
             {
@@ -111,6 +113,7 @@ public class Fabricator : InteractableMachine
 
                 newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Build, "", hack, null, null, null, item);
 
+                /*
                 if (secLvl == 1)
                 {
                     buildTime = item.fabricationInfo.fabTime.x;
@@ -123,9 +126,10 @@ public class Fabricator : InteractableMachine
                 {
                     buildTime = item.fabricationInfo.fabTime.z;
                 }
+                */
             }
 
-            avaiableCommands.Add(newCommand);
+            //avaiableCommands.Add(newCommand);
         }
         else // We need to show the "No Schematic Loaded" false command
         {
@@ -133,7 +137,7 @@ public class Fabricator : InteractableMachine
 
             newCommand = new TerminalCommand(letter, "No Schematic Loaded", TerminalCommandType.NONE, "", hack);
 
-            avaiableCommands.Add(newCommand);
+            //avaiableCommands.Add(newCommand);
         }
 
     }
@@ -144,6 +148,7 @@ public class Fabricator : InteractableMachine
         char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
         List<char> alphabet = alpha.ToList(); // Fill alphabet list
 
+        /*
         string letter = HF.GetNextLetter(avaiableCommands[avaiableCommands.Count - 1].assignedChar);
         string displayText = "Build ";
 
@@ -188,6 +193,7 @@ public class Fabricator : InteractableMachine
 
         // And refresh the options
         UIManager.inst.Terminal_RefreshHackingOptions();
+        */
     }
 
 
@@ -214,6 +220,7 @@ public class Fabricator : InteractableMachine
 
     public void Build()
     {
+        /*
         // Set values
         begunBuildTime = TurnManager.inst.globalTime;
         working = true;
@@ -240,6 +247,7 @@ public class Fabricator : InteractableMachine
         TerminalCommand newCommand = new TerminalCommand(HF.GetNextLetter(avaiableCommands[avaiableCommands.Count - 1].assignedChar), "No Schematic Loaded", TerminalCommandType.NONE, "", hack);
 
         avaiableCommands.Add(newCommand);
+        */
     }
 
     public void FinishBuild()
@@ -248,6 +256,7 @@ public class Fabricator : InteractableMachine
 
         Vector2Int dropLocation = HF.LocateFreeSpace(HF.V3_to_V2I(ejectionSpot.transform.position));
 
+        /*
         AudioManager.inst.CreateTempClip(this.transform.position, AudioManager.inst.dict_game["FABRICATION"], 1f); // GAME - FABRICATION
 
         if (targetPart != null)
@@ -288,6 +297,7 @@ public class Fabricator : InteractableMachine
         targetBot = null;
         buildTime = 0;
         begunBuildTime = 0;
+        */
     }
     #endregion
 
@@ -310,6 +320,7 @@ public class Fabricator : InteractableMachine
     #region Hacks
     public void Force()
     {
+        /*
         locked = true;
 
         // Recolor to gray, this terminal is now locked
@@ -323,6 +334,7 @@ public class Fabricator : InteractableMachine
         {
             Build();
         }
+        */
     }
 
     #endregion
