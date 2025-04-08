@@ -16,29 +16,11 @@ public class RepairStation : MonoBehaviour
 
     public void Init()
     {
-        //detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
-        //type = MachineType.RepairStation;
-
-        // We need to load this machine with the following commands:
-
+        
     }
 
-    public void Scan(ItemObject item, int time)
-    {
-        targetPart = item;
-        timeToComplete = time;
-    }
+    
 
-    // https://www.gridsagegames.com/blog/2014/01/recycling-units-repair-stations/
-    // TODO: Repair stations cannot repair faulty prototypes or deteriorating parts
-    public void Repair()
-    {
-
-    }
-
-    public void Check()
-    {
-
-    }
+    
     
 }

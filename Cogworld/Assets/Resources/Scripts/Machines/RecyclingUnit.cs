@@ -24,45 +24,16 @@ public class RecyclingUnit : MonoBehaviour
     public void Init()
     {
         /*
-        detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
-        type = MachineType.Recycling;
-
-        // Setup component inventory
-        storedComponents = new InventoryObject(10, specialName + "'s component Inventory");
-
-        // We need to load this machine with the following commands:
+        
         */
     }
 
-    public void Check()
-    {
-
-    }
+    
 
     private void Update()
     {
-        /*
-        if (!locked)
-        {
-            OverflowCheck();
-        }
-        */
+
     }
 
-    // If the stored matter goes above 500 it is reset. If components stored goes above 10 that inventory is emptied.
-    private void OverflowCheck()
-    {
-        if(storedMatter > 500)
-        {
-            storedMatter = 0;
-        }
-        if(storedComponents.Container.Items.Length > 10)
-        {
-            // Reset the inventory but keep the most recently added item
-            Item final = storedComponents.Container.Items[0].item;
-
-            storedComponents.Container.Clear();
-            storedComponents.AddItem(final);
-        }
-    }
+    
 }

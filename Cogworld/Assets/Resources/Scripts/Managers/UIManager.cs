@@ -1821,15 +1821,15 @@ public class UIManager : MonoBehaviour
         InvokeRepeating("Terminal_Binary", 0f, 1f);
 
         // Also take the time to track how many times this machine has been interacted with for later use.
-        terminal_targetTerm.timesAccessed++;
+        machineTile.machinedata.timesAccessed++;
 
         // Assign name + get Sec Level / Restricted access
-        int secLvl = UIManager.inst.terminal_targetTerm.secLvl;
+        int secLvl = machineTile.machinedata.secLvl;
         bool restrictedAccess = true;
         string terminalNameSpacer = " "; // Needed due to how UI alignment works
 
-        terminal_name.text = terminalNameSpacer + terminal_targetTerm.fullName;
-        restrictedAccess = terminal_targetTerm.restrictedAccess;
+        terminal_name.text = terminalNameSpacer + machineTile.machinedata.terminalName;
+        restrictedAccess = machineTile.machinedata.restrictedAccess;
 
         // Restricted access?
         if (restrictedAccess)
@@ -1976,7 +1976,7 @@ public class UIManager : MonoBehaviour
         // Add it to list
         terminal_hackinfoList.Add(hackSystemName);
         // Assign Details
-        hackSystemName.GetComponent<UIHackinfoV1>().Setup(terminal_targetTerm.specialName);
+        hackSystemName.GetComponent<UIHackinfoV1>().Setup(MapManager.inst.mapdata[terminal_targetTerm.x, terminal_targetTerm.y].machinedata.logName);
 
         // Add a spacer
         GameObject hackSpacer4 = Instantiate(terminal_hackinfoSpacer_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
@@ -2261,6 +2261,8 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator Terminal_InitConsequences(Color setColor, string displayString, bool doSound = true, bool summonInvestigationSquad = true, bool forceExit = false)
     {
+        WorldTile terminal = MapManager.inst.mapdata[terminal_targetTerm.x, terminal_targetTerm.y];
+
         // We want to init the consequences thingy
         GameObject hackLock = Instantiate(terminal_locked_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
         hackLock.transform.SetParent(terminal_hackinfoArea1.transform);
@@ -2288,7 +2290,7 @@ public class UIManager : MonoBehaviour
         if (summonInvestigationSquad)
         {
             string name = "";
-            name = terminal_targetTerm.fullName;
+            name = terminal.machinedata.logName;
 
             // Also consider secondary consequences
             HF.TerminalFailConsequence(name);
@@ -2312,6 +2314,8 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator Terminal_OpenTargetResults()
     {
+        WorldTile terminal = MapManager.inst.mapdata[terminal_targetTerm.x, terminal_targetTerm.y];
+
         terminal_targetresultsAreaRef.SetActive(true); // Enable the window
         terminal_targetresultsAreaRef.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["OPEN_1"], 0.7f); // UI - OPEN_1
         StartCoroutine(Terminal_TargetResultBorderAnim()); // Do the opener animation
@@ -2319,8 +2323,8 @@ public class UIManager : MonoBehaviour
         yield return new WaitForSeconds(0.4f);
 
         // Generate the hacking target options
-        List<TerminalCommand> commands = terminal_targetTerm.avaiableCommands;
-        int secLvl = terminal_targetTerm.secLvl;
+        List<TerminalCommand> commands = terminal.machinedata.avaiableCommands;
+        int secLvl = terminal.machinedata.secLvl;
 
         // Create & Setup the pre-set options the player can choose (Targets)
         int i = 0;
@@ -2386,6 +2390,8 @@ public class UIManager : MonoBehaviour
 
     public void Terminal_RefreshHackingOptions()
     {
+        WorldTile terminal = MapManager.inst.mapdata[terminal_targetTerm.x, terminal_targetTerm.y];
+
         // First we need to clear up all the old options
         foreach (var option in terminal_hackTargetsList.ToList())
         {
@@ -2400,8 +2406,8 @@ public class UIManager : MonoBehaviour
         // Then we need to put in the new ones again
         #region New options
         // Generate the hacking target options
-        List<TerminalCommand> commands = terminal_targetTerm.avaiableCommands;
-        int secLvl = terminal_targetTerm.secLvl;
+        List<TerminalCommand> commands = terminal.machinedata.avaiableCommands;
+        int secLvl = terminal.machinedata.secLvl;
 
         int i = 0;
         foreach (TerminalCommand command in commands)
@@ -2584,7 +2590,7 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void Terminal_CloseAny()
     {
-        if (terminal_targetTerm.GetComponent<TerminalCustom>())
+        if (MapManager.inst.mapdata[terminal_targetTerm.x, terminal_targetTerm.y].machinedata.type == MachineType.CustomTerminal)
         {
             CTerminal_Close(); // Custom Terminal
         }
@@ -2601,7 +2607,7 @@ public class UIManager : MonoBehaviour
             return;
         }
 
-        AudioManager.inst.CreateTempClip(terminal_targetTerm.transform.position, AudioManager.inst.dict_ui["CLOSE"]); // UI - CLOSE
+        AudioManager.inst.CreateTempClip(new Vector3(terminal_targetTerm.x, terminal_targetTerm.y), AudioManager.inst.dict_ui["CLOSE"]); // UI - CLOSE
 
         StartCoroutine(Terminal_CloseAnim());
     }
@@ -2612,7 +2618,7 @@ public class UIManager : MonoBehaviour
         Terminal_ExtraDetail(false);
 
         // Null out main reference
-        terminal_targetTerm = null;
+        terminal_targetTerm = Vector2Int.zero;
 
         // Do a fade out animation
         #region Image Fade-out
@@ -2904,7 +2910,7 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region Custom Terminal
-    [HideInInspector] public TerminalCustom cTerminal_machine;
+    [HideInInspector] public Vector2Int cTerminal_machine;
     [Header("Custom Terminal")]
     public GameObject cTerminal_gibberishPrefab;
     public bool cTerminal_animating = false;
@@ -2919,11 +2925,11 @@ public class UIManager : MonoBehaviour
         PlayerData.inst.GetComponent<PlayerGridMovement>().playerMovementAllowed = false;
 
         // Set target
-        cTerminal_machine = target.GetComponent<TerminalCustom>();
+        cTerminal_machine = target;
         terminal_targetTerm = target;
 
         // If this is the Hideout Cache, we need to change the / PARTS / header to / CACHE /
-        if(cTerminal_machine.customType == CustomTerminalType.HideoutCache)
+        if(machineTile.machinedata.customType == CustomTerminalType.HideoutCache)
         {
             partsHeaderText.text = "/CACHE/";
             PartsFlashHeader(); // Flash it too so the player can recognize the change
@@ -2942,9 +2948,9 @@ public class UIManager : MonoBehaviour
         bool restrictedAccess = true;
 
         string cTerminalNameSpacer = " "; // Needed due to text alignment
-        terminal_name.text = cTerminalNameSpacer + cTerminal_machine.fullName;
-        secLvl = cTerminal_machine.secLvl;
-        restrictedAccess = cTerminal_machine.restrictedAccess;
+        terminal_name.text = cTerminalNameSpacer + machineTile.machinedata.logName;
+        secLvl = machineTile.machinedata.secLvl;
+        restrictedAccess = machineTile.machinedata.restrictedAccess;
 
 
         // Restricted access? (In most cases no)
@@ -2988,6 +2994,8 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator CTerminal_OpenAnim()
     {
+        WorldTile machineTile = MapManager.inst.mapdata[cTerminal_machine.x, cTerminal_machine.y];
+
         float delay = 0.05f;
 
         // In-case this menu is being re-opened, we need to make all the images un-transparent again
@@ -3013,7 +3021,7 @@ public class UIManager : MonoBehaviour
         // Play (typing) sound
         AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_ui["PRINT_2"]); // UI - PRINT_2
 
-        if (cTerminal_machine.restrictedAccess)
+        if (machineTile.machinedata.restrictedAccess)
         {
             // Next, the "Utilities" text appears at the top of the hacking window
             GameObject hackUtilitiesMessage = Instantiate(terminal_hackinfoV2_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
@@ -3096,7 +3104,7 @@ public class UIManager : MonoBehaviour
         // Add it to list
         terminal_hackinfoList.Add(hackSystemName);
         // Assign Details
-        hackSystemName.GetComponent<UIHackinfoV1>().Setup(terminal_targetTerm.specialName);
+        hackSystemName.GetComponent<UIHackinfoV1>().Setup(machineTile.machinedata.logName);
 
         // Add a spacer
         GameObject hackSpacer4 = Instantiate(terminal_hackinfoSpacer_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
@@ -3189,14 +3197,16 @@ public class UIManager : MonoBehaviour
             return;
         }
 
-        AudioManager.inst.CreateTempClip(terminal_targetTerm.transform.position, AudioManager.inst.dict_ui["CLOSE"]); // UI - CLOSE
+        WorldTile machineTile = MapManager.inst.mapdata[cTerminal_machine.x, cTerminal_machine.y];
+
+        AudioManager.inst.CreateTempClip(new Vector3(cTerminal_machine.x, cTerminal_machine.y), AudioManager.inst.dict_ui["CLOSE"]); // UI - CLOSE
 
         // Did we just close the cache window?
-        bool wasCache = (cTerminal_machine.customType == CustomTerminalType.HideoutCache);
+        bool wasCache = (machineTile.machinedata.customType == CustomTerminalType.HideoutCache);
 
         // Un-assign target
-        terminal_targetTerm = null;
-        cTerminal_machine = null;
+        terminal_targetTerm = Vector2Int.zero;
+        cTerminal_machine = Vector2Int.zero;
 
         // Change back the header
         if (wasCache)
@@ -6461,12 +6471,13 @@ public class UIManager : MonoBehaviour
     [Header("/ DATA / Menu")]
     public UIDataDisplay dataMenu;
 
-    public void Data_OpenMenu(Item item = null, GameObject other = null, Actor itemOwner = null)
+    public void Data_OpenMenu(Vector2Int tilePosition, Item item = null, Actor bot = null, Actor itemOwner = null)
     {
-        // Firstly assign values
-        Actor bot = null;
-        MachinePart machine = null;
-        TileBlock tile = null;
+        // Firstly assign/determine values
+        if(tilePosition != Vector2Int.zero)
+        {
+
+        }
 
         if(other != null)
         {

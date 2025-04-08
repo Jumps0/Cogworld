@@ -13,16 +13,9 @@ public class Scanalyzer : MonoBehaviour
 
     public void Init()
     {
-        //detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
-        //type = MachineType.Scanalyzer;
-
-        // We need to load this machine with the following commands:
+        
 
     }
 
-    // NOTE: Higher level scanalyzers are required to scan prototypes and more advanced parts, and scanalyzers will reject broken or faulty parts.
-    public void Check()
-    {
-
-    }
+    
 }

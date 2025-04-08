@@ -2096,7 +2096,8 @@ public class MapManager : MonoBehaviour
     #endregion
 
     #region Machine Placement
-
+    [Tooltip("Contains references to all 'machine timers' that appear above machines when the player KNOWS it is working on something.")]
+    public Dictionary<Vector2Int, GameObject> machine_timers = new Dictionary<Vector2Int, GameObject>();
     public void PlaceMachines()
     {
         if (mapType == 1) // Caves [Different spawning method]
@@ -2445,6 +2446,7 @@ public class MapManager : MonoBehaviour
             }
         }
 
+        #region Parent
         // Do the parent last
         WorldTile parentTile = MachineAssignDefaults(parentLoc, machine);
 
@@ -2460,7 +2462,11 @@ public class MapManager : MonoBehaviour
         parentTile.machinedata.children = children.ToArray();
         parentTile.AssignParentLocation(parentLoc); // Assign parent location to children
 
+        // - Drop Spot
+        parentTile.machinedata.dropSpot = new Vector2Int((bounds.dropSpot.x - bottomLeft.x) + location.x, (bounds.dropSpot.y - bottomLeft.y) + location.y); ;
+
         placedMachines.Add(parentLoc);
+        #endregion
 
         MapManager.inst.mapdata[parentLoc.x, parentLoc.y] = parentTile;
     }

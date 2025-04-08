@@ -1012,8 +1012,11 @@ public struct MachineData
     [Header("Trojans")]
     public List<HackObject> trojans;
 
-    [Tooltip("Is this machine currently working on something? (Fabricators, Repair Bays, Scanalyzers, etc. use this)")]
-    public bool atWork;
+    [Tooltip("[PARENT ONLY] The ideal location to drop items, spawn bots, and place exits.")]
+    public Vector2Int dropSpot;
+
+    [Tooltip("If this machine does a timed operation, this is the location of the timer which is displayed in the world, on top of the parent part.")]
+    public Vector2Int timerObjectLocation;
 
     [Header("Terminal Variables")]
     public TerminalZone terminalZone;
@@ -1025,6 +1028,7 @@ public struct MachineData
 
     [Header("Custom Terminal Variables")]
     public CustomTerminalType customType;
+    public List<int> cterminal_prototypes;
     [Header("-- Door Control")]
     [Tooltip("Coordinates to the wall(s) that will dissapear if this *door* is opened.")]
     public List<Vector2Int> wallRevealCoordinates;
@@ -1036,13 +1040,68 @@ public struct MachineData
     // Future note:
     // -How to handle Machine audio: https://www.gridsagegames.com/blog/2020/06/building-cogminds-ambient-soundscape/
 
+    #region Generic Operations
+    [Header("Generic Operations")]
+    [Tooltip("How long it will take to work on the specified componenet.")]
+    public int buildTime;
+    [Tooltip("When (based on the current global time) this machine operation started.")]
+    public int begunBuildTime;
+    [Tooltip("Is this machine currently working on something? (Fabricators, Repair Bays, Scanalyzers, etc. use this)")]
+    public bool atWork;
+    [Tooltip("The part this machine is focusing on.")]
+    public ItemObject desiredPart;
+    [Tooltip("The bot this machine is focusing on.")]
+    public BotObject desiredBot;
+
     /// <summary>
     /// Called every turn, used by most "operational" machines when they are busy working on something.
     /// </summary>
     public void OperationTick()
     {
+        if(locked) { return; }
+
         // TODO
+        if (atWork)
+        {
+            switch (type)
+            {
+                case MachineType.Fabricator:
+                    MapManager.inst.machine_timers[location].GetComponent<UITimerMachine>().Tick();
+
+                    if (TurnManager.inst.globalTime >= begunBuildTime + buildTime)
+                    {
+                        Fabricator_FinishBuild();
+                    }
+                    break;
+                case MachineType.Garrison:
+                    break;
+                case MachineType.Recycling:
+                    break;
+                case MachineType.RepairStation:
+                    break;
+                case MachineType.Scanalyzer:
+                    break;
+                case MachineType.Terminal:
+                    break;
+                case MachineType.CustomTerminal:
+                    break;
+                case MachineType.DoorTerminal:
+                    break;
+                case MachineType.Static:
+                    break;
+                case MachineType.None:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if(type == MachineType.Recycling)
+        {
+            Recycling_OverflowCheck();
+        }
     }
+    #endregion
 
     #region Terminal
     private void TerminalInit()
@@ -1349,7 +1408,7 @@ public struct MachineData
     #endregion
 
     #region Custom Terminal
-    private void CustomTerminalInit()
+    private void CustomTerminalInit(CustomTerminalType customtype = CustomTerminalType.Misc)
     {
         /*
          // Whatever this is?
@@ -1364,14 +1423,410 @@ public struct MachineData
                 }
             }
          */
+
+        detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
+        type = MachineType.CustomTerminal;
+        customType = customtype;
+
+        switch (customType)
+        {
+            case CustomTerminalType.Shop:
+                break;
+            case CustomTerminalType.WarlordCamp:
+                break;
+            case CustomTerminalType.LoreEntry:
+                break;
+            case CustomTerminalType.DoorLock:
+                break;
+            case CustomTerminalType.PrototypeData:
+                break;
+            case CustomTerminalType.HideoutCache:
+                CTerminal_SetupAsCache();
+                break;
+            case CustomTerminalType.Misc:
+                break;
+            default:
+                break;
+        }
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y].machinedata = this;
     }
+
+    public void CTerminal_OpenScriptedDoor()
+    {
+        // Essentially we want to:
+        // - Play the door open "sliding" sound
+        //_doorSource.Play();
+        // - Replace the walls with floor tiles (that have rubble texture).
+        //foreach (TileBlock W in linkedDoors)
+        //{
+            // TODO
+        //}
+    }
+
+    #region Hideout Cache
+    public int cache_storedMatter;
+    public void CTerminal_SetupAsCache()
+    {
+        customType = CustomTerminalType.HideoutCache;
+        string specialName = "Hideout Cache (Local)";
+
+        // Setup component inventory
+        if (InventoryControl.inst.hideout_inventory == null)
+        {
+            InventoryControl.inst.hideout_inventory = new InventoryObject(25, specialName + "'s component Inventory");
+        }
+
+        #region Add Commands
+        char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+        List<char> alphabet = alpha.ToList(); // Fill alphabet list
+
+        // We need to populate this machine with the following commands:
+        // -Retrieve (Matter)
+        // -Submit (Matter)
+
+        // [Retrieve (Matter)]
+        string letter = alphabet[0].ToString().ToLower();
+        alphabet.Remove(alphabet[0]);
+
+        HackObject hack = MapManager.inst.hackDatabase.Hack[35];
+
+        TerminalCommand newCommand = new TerminalCommand(letter, "Retrieve(Matter)", TerminalCommandType.Retrieve, "", hack);
+
+        avaiableCommands.Add(newCommand);
+
+        // [Submit (Matter)]
+        letter = alphabet[0].ToString().ToLower();
+        alphabet.Remove(alphabet[0]);
+
+        hack = MapManager.inst.hackDatabase.Hack[186];
+
+        newCommand = new TerminalCommand(letter, "Store(Matter)", TerminalCommandType.Submit, "", hack);
+
+        avaiableCommands.Add(newCommand);
+        #endregion
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y].machinedata = this;
+    }
+
+    #endregion
     #endregion
 
     #region Fabricator
+    public bool fabricator_flag_overload;
+
+    // TODO FUTURE WORK: AUTHCHIPS
+    // https://www.gridsagegames.com/blog/2021/11/design-overhaul-4-fabrication-2-0/
+
+
     private void FabricatorInit()
     {
+        detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
+        type = MachineType.Fabricator;
 
+        char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+        List<char> alphabet = alpha.ToList(); // Fill alphabet list
+
+        // We need to populate this machine with the following commands:
+        // -Network Status
+        // -Load Schematic
+        // -A pre-loaded build command for a bot/item appropriate to the level + 1 (this is random, it can be empty sometimes)
+
+        // [Network Status]
+        string letter = alphabet[0].ToString().ToLower();
+        alphabet.Remove(alphabet[0]);
+
+        HackObject hack = MapManager.inst.hackDatabase.Hack[27];
+
+        TerminalCommand newCommand = new TerminalCommand(letter, "Network Status", TerminalCommandType.Network, "", hack);
+
+        avaiableCommands.Add(newCommand);
+
+        // [Load Schematic]
+        letter = alphabet[0].ToString().ToLower();
+        alphabet.Remove(alphabet[0]);
+
+        hack = MapManager.inst.hackDatabase.Hack[185];
+
+        newCommand = new TerminalCommand(letter, "Load Schematic", TerminalCommandType.LoadIndirect, "", hack);
+
+        avaiableCommands.Add(newCommand);
+
+        // Preload
+        if (Random.Range(0f, 1f) > 0.5f) // 50/50
+        {
+            letter = alphabet[0].ToString().ToLower();
+            alphabet.Remove(alphabet[0]);
+
+            string displayText = "Build ";
+
+            // Pick what to show
+            // -Current level goes from -10 to -1. But we want to scale from tier 1 to 10, so we just add 11
+            int tier = MapManager.inst.currentLevel + 11;
+            if (tier <= 0)
+            {
+                tier = 1;
+            }
+
+            if (tier < 10)
+            {
+                tier++; // +1 for better rewards
+            }
+
+            BotObject bot = null;
+            ItemObject item = null;
+
+            if (Random.Range(0f, 1f) > 0.7f) // 30% to be a Bot
+            {
+                bot = HF.FindBotOfTier(tier);
+
+                hack = MapManager.inst.hackDatabase.Hack[16 + tier]; // bot commands actually start at 17 but the lowest tier can be is 1 so 16 + 1 = 17.
+
+                displayText += bot.botName;
+
+                newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Build, "", hack, null, null, bot);
+
+                
+                if(secLvl == 1)
+                {
+                    buildTime = bot.fabricationInfo.fabTime.x;
+                }
+                else if(secLvl == 2)
+                {
+                    buildTime = bot.fabricationInfo.fabTime.y;
+                }
+                else if( secLvl == 3)
+                {
+                    buildTime = bot.fabricationInfo.fabTime.z;
+                }
+                
+            }
+            else // 70% chance to be an item
+            {
+                item = HF.FindItemOfTier(tier, false);
+
+                displayText += item.itemName;
+
+                hack = HF.HackBuildParser(tier, item.star);
+
+                newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Build, "", hack, null, null, null, item);
+
+                
+                if (secLvl == 1)
+                {
+                    buildTime = item.fabricationInfo.fabTime.x;
+                }
+                else if (secLvl == 2)
+                {
+                    buildTime = item.fabricationInfo.fabTime.y;
+                }
+                else if (secLvl == 3)
+                {
+                    buildTime = item.fabricationInfo.fabTime.z;
+                }
+                
+            }
+
+            avaiableCommands.Add(newCommand);
+        }
+        else // We need to show the "No Schematic Loaded" false command
+        {
+            hack = MapManager.inst.hackDatabase.Hack[26];
+
+            newCommand = new TerminalCommand(letter, "No Schematic Loaded", TerminalCommandType.NONE, "", hack);
+
+            avaiableCommands.Add(newCommand);
+        }
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y].machinedata = this;
     }
+
+    #region Operation
+    public void Fabricator_AddBuildCommand(ItemObject item = null, BotObject bot = null)
+    {
+        char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+        List<char> alphabet = alpha.ToList(); // Fill alphabet list
+
+        
+        string letter = HF.GetNextLetter(avaiableCommands[avaiableCommands.Count - 1].assignedChar);
+        string displayText = "Build ";
+
+        // Remove the old preloaded build option if its there
+        foreach (var command in avaiableCommands.ToList())
+        {
+            if (command.subType == TerminalCommandType.Build)
+            {
+                avaiableCommands.Remove(command);
+            }
+        }
+
+        if (item != null)
+        {
+            displayText += item.itemName;
+
+            HackObject hack = HF.HackBuildParser(item.rating, item.star);
+
+            TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Build, "", hack, null, null, null, item);
+
+            avaiableCommands.Add(newCommand);
+        }
+        else if(bot != null)
+        {
+            displayText += bot.botName;
+
+            HackObject hack = MapManager.inst.hackDatabase.Hack[16 + bot.rating];
+
+            TerminalCommand newCommand = new TerminalCommand(letter, displayText, TerminalCommandType.Build, "", hack, null, null, bot);
+
+            avaiableCommands.Add(newCommand);
+        }
+
+        // Remove the [No Schematic Loaded] option if its there
+        foreach (var command in avaiableCommands.ToList())
+        {
+            if(command.subType == TerminalCommandType.NONE)
+            {
+                avaiableCommands.Remove(command);
+            }
+        }
+
+        // And refresh the options
+        UIManager.inst.Terminal_RefreshHackingOptions();
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y].machinedata = this;
+    }
+
+    public void Fabricator_Load(int time, ItemObject item = null, BotObject bot = null)
+    {
+        if (item != null)
+        {
+            desiredPart = item;
+        }
+        else if (bot != null)
+        {
+            desiredBot = bot;
+        }
+
+        buildTime = time;
+
+        Fabricator_AddBuildCommand(item, bot);
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y].machinedata = this;
+    }
+
+    public void Fabricator_Build()
+    {
+        
+        // Set values
+        begunBuildTime = TurnManager.inst.globalTime;
+        atWork = true;
+
+        // Create physical timer
+        GameObject timerObject = GameObject.Instantiate(UIManager.inst.prefab_machineTimer, new Vector2(location.x, location.y), Quaternion.identity);
+        // Assign Details
+        timerObject.GetComponent<UITimerMachine>().Init(buildTime);
+
+        // Save the object
+        MapManager.inst.machine_timers.Add(location, timerObject);
+
+        // Remove old build command
+        foreach (var command in avaiableCommands.ToList())
+        {
+            if (command.subType == TerminalCommandType.Build)
+            {
+                avaiableCommands.Remove(command);
+            }
+        }
+
+        // Add placeholder (empty) command
+        HackObject hack = MapManager.inst.hackDatabase.Hack[26];
+
+        TerminalCommand newCommand = new TerminalCommand(HF.GetNextLetter(avaiableCommands[avaiableCommands.Count - 1].assignedChar), "No Schematic Loaded", TerminalCommandType.NONE, "", hack);
+
+        avaiableCommands.Add(newCommand);
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y].machinedata = this;
+    }
+
+    public void Fabricator_FinishBuild()
+    {
+        atWork = false;
+
+        AudioManager.inst.CreateTempClip(new Vector3(location.x, location.y), AudioManager.inst.dict_game["FABRICATION"], 1f); // GAME - FABRICATION
+
+        if (desiredPart != null)
+        {
+            Vector2Int dropLocation = HF.LocateFreeSpace(dropSpot, false, true);
+
+            // Spawn in this part on the floor
+            InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(desiredPart.itemName, dropLocation, 1, true));
+        }
+        else if(desiredBot != null)
+        {
+            Vector2Int dropLocation = HF.LocateFreeSpace(dropSpot, true, false);
+
+            // Spawn in a new ALLIED bot at this location
+            Actor newBot = MapManager.inst.PlaceBot(dropLocation, desiredBot);
+            newBot.directPlayerAlly = true;
+            newBot.wasFabricated = true;
+
+            // Modify relations to be friendly to the player and neutral to some other functions
+            List<BotRelation> relationList = new List<BotRelation>();
+
+            relationList.Add(BotRelation.Hostile); // Complex
+            relationList.Add(BotRelation.Neutral); // Derelict
+            relationList.Add(BotRelation.Hostile); // Assembled
+            relationList.Add(BotRelation.Neutral); // Warlord
+            relationList.Add(BotRelation.Neutral); // Zion
+            relationList.Add(BotRelation.Neutral); // Exiles
+            relationList.Add(BotRelation.Hostile); // Architect
+            relationList.Add(BotRelation.Neutral); // Subcaves
+            relationList.Add(BotRelation.Hostile); // Subcaves Hostile
+            relationList.Add(BotRelation.Friendly); // Player
+            relationList.Add(BotRelation.Neutral); // None
+
+            HF.ModifyBotAllegance(newBot, relationList, BotAlignment.Player);
+        }
+
+        PlayerData.inst.GetComponent<Actor>().UpdateFieldOfView();
+
+        GameObject.Destroy(MapManager.inst.machine_timers[location]);
+        MapManager.inst.machine_timers.Remove(location);
+
+        desiredPart = null;
+        desiredBot = null;
+        buildTime = 0;
+        begunBuildTime = 0;
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y].machinedata = this;
+    }
+    #endregion
+
+    #region Hacks
+    public void Force()
+    {
+        locked = true;
+
+        if(desiredBot != null || desiredPart != null)
+        {
+            Fabricator_Build();
+        }
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y].machinedata = this;
+        // (UPDATE VIS) Since we need to change this machine's color
+        MapManager.inst.UpdateTilemap();
+        MapManager.inst.TilemapVisUpdate();
+    }
+
+    #endregion
     #endregion
 
     #region Garrison
@@ -1386,8 +1841,8 @@ public struct MachineData
     [Tooltip("[FALSEBYDEFAULT] ???")]
     public bool garrison_flag_redeploying;
     //
-    [Tooltip("List of item IDs referring to couplers that this machine will spawn when requested to via the command.")]
-    public List<int> garrison_couplerIDs;
+    [Tooltip("List of item IDs referring to couplers that this machine will spawn when requested to via the command, and how many of each type there are.")]
+    public List<(int, int)> garrison_couplerIDs;
     private void GarrisonInit()
     {
         detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
@@ -1415,7 +1870,7 @@ public struct MachineData
         for (int i = 0; i < Random.Range(3,5); i++)
         {
             // TODO: When all coupler items are added, update this range
-            garrison_couplerIDs.Add(Random.Range(0, 5));
+            garrison_couplerIDs.Add((Random.Range(0, 5), Random.Range(1, 3)));
         }
 
         // [Seal]
@@ -1442,7 +1897,7 @@ public struct MachineData
         MapManager.inst.mapdata[location.x, location.y].machinedata = this;
     }
 
-    private void Garrison_Open()
+    public void Garrison_Open()
     {
         garrison_doorIsRevealed = true;
 
@@ -1453,7 +1908,7 @@ public struct MachineData
         MapManager.inst.mapdata[location.x, location.y].machinedata = this;
     }
 
-    private void Garrison_Seal()
+    public void Garrison_Seal()
     {
         garrison_sealed = true;
 
@@ -1466,7 +1921,7 @@ public struct MachineData
         MapManager.inst.TilemapVisUpdate();
     }
 
-    private void Garrison_CouplerStatus()
+    public void Garrison_CouplerStatus()
     {
 
     }
@@ -1520,23 +1975,123 @@ public struct MachineData
     #endregion
 
     #region Recycling Units
+    [Header("Recycling Unit")]
+    public int recycling_storedMatter;
+    public InventoryObject recycling_storedComponents; // !! This may be bad to do since its a struct and considering the way we update this. !!
+
     private void RecyclingInit()
     {
+        detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
+        type = MachineType.Recycling;
 
+        // Setup component inventory
+        recycling_storedComponents = new InventoryObject(10, displayName + "'s component Inventory");
+
+        // We need to load this machine with the following commands:
+        // TODO
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y].machinedata = this;
+    }
+
+    public void Recycling_Check()
+    {
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y].machinedata = this;
+    }
+
+    // If the stored matter goes above 500 it is reset. If components stored goes above 10 that inventory is emptied.
+    private void Recycling_OverflowCheck()
+    {
+        if (recycling_storedMatter > 500)
+        {
+            recycling_storedMatter = 0;
+
+            // (UPDATE MAPDATA)
+            MapManager.inst.mapdata[location.x, location.y].machinedata = this;
+        }
+        if (recycling_storedComponents.Container.Items.Length > 10)
+        {
+            // Reset the inventory but keep the most recently added item
+            Item final = recycling_storedComponents.Container.Items[0].item;
+
+            recycling_storedComponents.Container.Clear();
+            recycling_storedComponents.AddItem(final);
+
+            // (UPDATE MAPDATA)
+            MapManager.inst.mapdata[location.x, location.y].machinedata = this;
+        }
     }
     #endregion
 
     #region Repair Station
+    [Header("Repair Station")]
+    public Item repair_desiredPart;
+    public int repair_timeToComplete;
+
+    // https://www.gridsagegames.com/blog/2014/01/recycling-units-repair-stations/
+
     private void RepairInit()
     {
+        detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
+        type = MachineType.RepairStation;
 
+        // We need to load this machine with the following commands:
+        // TODO
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y].machinedata = this;
+    }
+
+    public void Repair_Scan(Item item, int time)
+    {
+        repair_desiredPart = item;
+        repair_timeToComplete = time;
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y].machinedata = this;
+    }
+
+    // TODO: Repair stations cannot repair faulty prototypes or deteriorating parts
+    public void Repair_Repair(Item item)
+    {
+        repair_desiredPart = item;
+
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y].machinedata = this;
+    }
+
+    public void Repair_Check()
+    {
+
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y].machinedata = this;
     }
     #endregion
 
     #region Scanalyzer
     private void ScanalyzerInit()
     {
+        detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
+        type = MachineType.Scanalyzer;
 
+        // We need to load this machine with the following commands:
+        // TODO
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y].machinedata = this;
+    }
+
+    // NOTE: Higher level scanalyzers are required to scan prototypes and more advanced parts, and scanalyzers will reject broken or faulty parts.
+    public void Scanalyzer_Check()
+    {
+        // TODO
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y].machinedata = this;
     }
     #endregion
 }

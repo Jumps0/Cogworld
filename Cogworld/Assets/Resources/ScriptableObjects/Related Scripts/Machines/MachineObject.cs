@@ -100,6 +100,10 @@ public class MachineBounds
     [Tooltip("The top right corner of this machine (ASCII).")]
     public Vector2Int aboundsTR;
 
+    [Header("Ideal Drop Spot")]
+    [Tooltip("The ideal location to drop items, spawn bots, and place exits, for this specific orientation.")]
+    public Vector2Int dropSpot;
+
     /// <summary>
     /// Given a position within the STANDARD visual bounds, find that same position within the ASCII visual bounds.
     /// </summary>

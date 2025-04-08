@@ -944,20 +944,23 @@ public static class HF
 
                         // 1. Play the sound
                         AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_door["GARRISON_UNLOCK"]); // DOORS - GARRISON_UNLOCK
-                                                                                                                                              // 2. Print out in info blue (time) "EXIT=UNLOCKED: GARRISON"
+                        
+                        // 2. Print out in info blue (time) "EXIT=UNLOCKED: GARRISON"
                         UIManager.inst.CreateNewLogMessage("EXIT=UNLOCKED: GARRISON", UIManager.inst.infoBlue, UIManager.inst.dullGreen, true);
+                        
                         // 3. Spawn an exit to garrison underneath the player, and ensure that the exit notification appears
-                        Vector2Int loc = HF.V3_to_V2I(UIManager.inst.terminal_targetTerm.GetComponent<Garrison>().ejectionSpot.transform.position);
+                        Vector2Int loc = terminal.machinedata.dropSpot;
                         MapManager.inst.mapdata[loc.x, loc.y] = MapManager.inst.PlaceLevelExit(loc, true, 4);
-                        UIManager.inst.terminal_targetTerm.GetComponent<Garrison>().Open(); // Also let the garrison know
-                                                                                            // 4. Print out in deep info blue (no time) "Access door unlocked."
+                        terminal.machinedata.Garrison_Open(); // Also let the garrison know
+                        
+                        // 4. Print out in deep info blue (no time) "Access door unlocked."
                         return "Access door unlocked.";
                     }
                     else if(command.hack.relatedMachine == MachineType.CustomTerminal)
                     {
                         // TODO
                         // Open these scripted doors
-                        UIManager.inst.terminal_targetTerm.GetComponent<TerminalCustom>().OpenDoor();
+                        terminal.machinedata.CTerminal_OpenScriptedDoor();
 
                         // Play door sound (or do this inside the above function? ^)
 
@@ -970,7 +973,7 @@ public static class HF
                 case TerminalCommandType.Query: // This already happens in "lore"
                     break;
                 case TerminalCommandType.Layout:
-                    UIManager.inst.terminal_targetTerm.GetComponent<Terminal>().zone.RevealArea();
+                    terminal.machinedata.terminalZone.RevealArea();
                     string print1 = "";
 
                     string characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -1013,18 +1016,17 @@ public static class HF
 
                     string output = "Installed:\n";
 
-                    Garrison g = UIManager.inst.terminal_targetTerm.GetComponent<Garrison>();
-                    if (g.couplers.Count <= 0)
+                    if (terminal.machinedata.garrison_couplerIDs.Count <= 0)
                     {
                         output += "    [None]";
                     }
                     else
                     {
-                        for (int i = 0; i < g.couplers.Count; i++)
+                        for (int i = 0; i < terminal.machinedata.garrison_couplerIDs.Count; i++)
                         {
                             // Get the info
                             ItemCoupler details = null;
-                            foreach (var E in g.couplers[i].itemData.itemEffects)
+                            foreach (var E in MapManager.inst.itemDatabase.Items[terminal.machinedata.garrison_couplerIDs[i].Item1].itemEffects)
                             {
                                 if (E.couplerDetails.isCoupler)
                                 {
@@ -1032,15 +1034,15 @@ public static class HF
                                 }
                             }
 
-                            output += "    Relay Coupler [" + details.ToString() + "] (" + g.couplers[i].amount + ")";
-                            if (i != g.couplers.Count - 1) // Don't add a newline on the final one
+                            output += "    Relay Coupler [" + details.ToString() + "] (" + terminal.machinedata.garrison_couplerIDs[i].Item2 + ")";
+                            if (i != terminal.machinedata.garrison_couplerIDs.Count - 1) // Don't add a newline on the final one
                             {
                                 output += "\n";
                             }
                         }
                     }
 
-                    UIManager.inst.terminal_targetTerm.GetComponent<Garrison>().CouplerStatus();
+                    terminal.machinedata.Garrison_CouplerStatus();
 
                     return output;
                 case TerminalCommandType.Seal:
@@ -1052,7 +1054,7 @@ public static class HF
                     // 2. Init the red consequences bar /w "GARRISON ACCESS SHUTDOWN" and Forbid any further access to this garrison (via hacking)
                     UIManager.inst.Terminal_DoConsequences(UIManager.inst.highSecRed, "GARRISON ACCESS SHUTDOWN", false, false, false);
                     // 3. Tell the garrison what to do
-                    UIManager.inst.terminal_targetTerm.GetComponent<Garrison>().Seal();
+                    terminal.machinedata.Garrison_Seal();
 
                     return "Access door sealed.";
                 case TerminalCommandType.Unlock:
@@ -1080,7 +1082,7 @@ public static class HF
                     if (PlayerData.inst.currentMatter >= matterCost)
                     {
                         int buildTime = 0;
-                        int secLvl = UIManager.inst.terminal_targetTerm.secLvl;
+                        int secLvl = terminal.machinedata.secLvl;
 
                         if (item != null)
                         {
@@ -1102,7 +1104,7 @@ public static class HF
                                 p = "p";
                             }
 
-                            UIManager.inst.terminal_targetTerm.GetComponent<Fabricator>().Load(buildTime, item);
+                            terminal.machinedata.Fabricator_Load(buildTime, item);
                             UIManager.inst.Schematics_Close();
 
                             return "Uploading " + name + " schematic...\nLoaded successfully:\n    " + name + "\n    Rating: "
@@ -1128,7 +1130,7 @@ public static class HF
                                 p = "p";
                             }
 
-                            UIManager.inst.terminal_targetTerm.GetComponent<Fabricator>().Load(buildTime, null, bot);
+                            terminal.machinedata.Fabricator_Load(buildTime, null, bot);
                             UIManager.inst.Schematics_Close();
 
                             return "Uploading " + name + " schematic...\nLoaded successfully:\n    " + name + "\n    Rating: "
@@ -1153,20 +1155,20 @@ public static class HF
                         bName = bot.botName;
                     }
 
-                    UIManager.inst.terminal_targetTerm.GetComponent<Fabricator>().Build();
+                    terminal.machinedata.Fabricator_Build();
 
-                    return "Building " + bName + "...\nETC: " + UIManager.inst.terminal_targetTerm.GetComponent<Fabricator>().buildTime;
+                    return "Building " + bName + "...\nETC: " + terminal.machinedata.buildTime;
                 case TerminalCommandType.Network:
                     break;
                 case TerminalCommandType.Refit:
                     break;
-                case TerminalCommandType.Repair:
-                    UIManager.inst.terminal_targetTerm.GetComponent<RepairStation>().Repair();
+                case TerminalCommandType.Repair: // TODO
+                    terminal.machinedata.Repair_Repair(null);
 
-                    return "Repairing " + HF.ExtractText(parsedName) + "...\nETC: " + UIManager.inst.terminal_targetTerm.GetComponent<RepairStation>().timeToComplete;
+                    return "Repairing " + HF.ExtractText(parsedName) + "...\nETC: " + terminal.machinedata.repair_timeToComplete;
                 case TerminalCommandType.Scan:
                     int buildTime3 = 0;
-                    int secLvl3 = UIManager.inst.terminal_targetTerm.secLvl;
+                    int secLvl3 = terminal.machinedata.secLvl;
                     if (secLvl3 == 1)
                     {
                         buildTime3 = item.fabricationInfo.fabTime.x;
@@ -1186,7 +1188,8 @@ public static class HF
                         p2 = "p";
                     }
 
-                    UIManager.inst.terminal_targetTerm.GetComponent<RepairStation>().Scan(command.item, buildTime3);
+                    // TODO: FIX THIS. Item NOT ItemObject!!!
+                    terminal.machinedata.Repair_Scan(/*command.item*/ null, buildTime3);
 
                     return "Scanning " + HF.ExtractText(parsedName) + "...\nReady to Repair:\n    " + HF.ExtractText(parsedName) + "\n    Rating: "
                         + item.rating + p2 + "\n    Time: " + buildTime3.ToString();
@@ -1249,22 +1252,20 @@ public static class HF
                     else
                     {
                         // Get the machine
-                        RecyclingUnit recycler = UIManager.inst.terminal_targetTerm.GetComponentInChildren<RecyclingUnit>();
-
                         if (parsedName.Contains("Matter")) // - Player is in the world, attempting to steal some amount of stored matter from a recycling machine
                         {
                             // - "Eject all local matter reserves"
-                            int toDrop = recycler.storedMatter;
+                            int toDrop = terminal.machinedata.recycling_storedMatter;
 
                             if(toDrop > 0)
                             {
-                                Vector2Int pos = HF.V3_to_V2I(recycler.ejectionSpot.transform.position);
+                                Vector2Int pos = terminal.machinedata.dropSpot;
 
                                 // The easiest way to do this is to just drop it under the player and force the pick up check because the logic there is already complete.
                                 InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo("Matter", HF.LocateFreeSpace(pos), toDrop, false)); // Spawn some matter
                                 PlayerData.inst.GetComponent<Actor>().SpecialPickupCheck(pos); // Do the check
 
-                                recycler.storedMatter = 0; // Set storage to 0
+                                terminal.machinedata.recycling_storedMatter = 0; // Set storage to 0
 
                                 // Play a sound
                                 AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_game["FABRICATION"], 0.5f); // GAME - FABRICATION (is there a better sound for this?)
@@ -1280,15 +1281,15 @@ public static class HF
                         {
                             // - "Eject up to 10 parts contained within"
 
-                            if(recycler.storedComponents.Container.Items.Length > 0) // Eject all the stored items
+                            if(terminal.machinedata.recycling_storedComponents.Container.Items.Length > 0) // Eject all the stored items
                             {
-                                foreach (var I in recycler.storedComponents.Container.Items)
+                                foreach (var I in terminal.machinedata.recycling_storedComponents.Container.Items)
                                 {
-                                    InventoryControl.inst.DropItemOnFloor(I.item, null, recycler.storedComponents, HF.V3_to_V2I(recycler.ejectionSpot.transform.position));
+                                    InventoryControl.inst.DropItemOnFloor(I.item, null, terminal.machinedata.recycling_storedComponents, terminal.machinedata.dropSpot);
                                 }
 
                                 // Just to be sure, clear the component inventory (unneccessary but just to be safe)
-                                recycler.storedComponents.Container.Clear();
+                                terminal.machinedata.recycling_storedComponents.Container.Clear();
 
                                 // Play a sound
                                 AudioManager.inst.CreateTempClip(PlayerData.inst.transform.position, AudioManager.inst.dict_game["FABRICATION"], 0.5f); // GAME - FABRICATION (is there a better sound for this?)
@@ -1329,7 +1330,7 @@ public static class HF
                         string print = "Trojan loaded successfully.\nTesting...\nTerminal linked with " + PlayerData.inst.linkedTerminalBotnet + " systems.\nAwaiting botnet instructions.";
                         PlayerData.inst.linkedTerminalBotnet++;
 
-                        UIManager.inst.terminal_targetTerm.trojans.Add(MapManager.inst.hackDatabase.dict["Trojan(Botnet)"]);
+                        terminal.machinedata.trojans.Add(MapManager.inst.hackDatabase.dict["Trojan(Botnet)"]);
 
                         return print;
 
