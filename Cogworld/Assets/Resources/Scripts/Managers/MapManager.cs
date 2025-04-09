@@ -674,7 +674,7 @@ public class MapManager : MonoBehaviour
         PlaceIndividualMachine(new Vector2Int(bl.x + 1, bl.y + 12), machineDatabase.dict["Garrison Angel"].Id, Direction.EA); // Garrison 3x3 "Angel"
 
         // 6 - Place Cache
-        //PlaceHideoutCache(new Vector2Int(bl.x + 8, bl.y + 10));
+        PlaceHideoutCache(new Vector2Int(bl.x + 8, bl.y + 10));
         
         // # - Test bot
         Actor testBot = PlaceBot(new Vector2Int(bl.x + 12, bl.y + 5), HF.GetBotByString("Thug"));
@@ -691,40 +691,12 @@ public class MapManager : MonoBehaviour
     /// <summary>
     /// Places the object/machine prefab which the player can use to access their hideout's inventory storage.
     /// </summary>
-    private void PlaceHideoutCache(Vector2 pos)
+    private void PlaceHideoutCache(Vector2Int pos)
     {
-        /* TODO: COME BACK TO THIS
-        // Set prefab
-        GameObject prefab = imp_customTerminals[0];
+        PlaceIndividualMachine(pos, machineDatabase.dict["Hideout Stash"].Id, Direction.WE); // Custom Terminal 2x2 "Hideout Stash"
 
-        // ~~Adjust position since its 2x2 (We use the bottom left tile as the center)~~
-        Vector2 offset = Vector2.zero; //new Vector2(-0.5f, -0.5f);
-        pos += offset;
-
-        // Instantiate it at the correct position
-        GameObject cache = Instantiate(prefab, pos, Quaternion.identity, mapParent);
-        machines_customTerminals.Add(cache); // Add to list for further use
-
-        // Add to layers
-        MachinePart[] machines = cache.GetComponentsInChildren<MachinePart>();
-        foreach (MachinePart M in machines)
-        {
-            M.GetComponent<SpriteRenderer>().sortingOrder = 7;
-            Vector2Int loc = new Vector2Int((int)(M.gameObject.transform.position.x + offset.x), (int)(M.gameObject.transform.position.y + offset.y));
-
-            TData T = _allTilesRealized[loc];
-            T.bottom.occupied = true;
-            T.top = M.gameObject;
-            _allTilesRealized[loc] = T;
-        }
-        
-        // NOTE:
-        // In the machine prefabs, all components my be perfectly aligned on exact numbers. If there are any decimals in the numbers (eg. -1.9999) there
-        // is a high chance that the spawning will break and the machine part will be spawned in the incorrect space due to rounding.
-
-        // Setup the machine's script
-        cache.GetComponentInChildren<TerminalCustom>().Init(CustomTerminalType.HideoutCache);
-        */
+        // And specifically type the terminal since its custom
+        MapManager.inst.mapdata[pos.x, pos.y].machinedata.customType = CustomTerminalType.HideoutCache;
     }
 
     #endregion
@@ -2122,9 +2094,8 @@ public class MapManager : MonoBehaviour
     public Tilemap staticMachinesTilemap;
     public Tilemap interactableMachinesTilemap;
 
-    private void PlaceInteractableMachines()
+    private void PlaceInteractableMachines() // !! This algorithm needs to be updated later. !!
     {
-        /* TODO: COME BACK TO THIS
         int term = 0, scan = 0, recy = 0, fab = 0, garr = 0;
 
         // We want to spawn in the following machines:
@@ -2134,232 +2105,40 @@ public class MapManager : MonoBehaviour
         // - Fabricators
         // - Garrisons (Layer dependant)
 
-        
-        while (term < 12)
-        {
-            GameObject toPlace = interactableMachinePrefabs_terminals[Random.Range(0, interactableMachinePrefabs_terminals.Count - 1)];
-            PlaceMachineInRooms(toPlace, DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().rooms, GetMachineSizeFromName(toPlace));
-            term++;
-        }
-        
         // The spread of machines depends on the current layer
         List<RoomCTR> rooms = DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().rooms;
 
         int toSpawn = ((mapsize.x * mapsize.y) / 100 / 4);
 
+        // RoomCTR room = rooms[Random.Range(0, rooms.Count - 1)];
+
+        // Vector2Int roomSize = new Vector2Int(room.Width, room.Length);
+
+        // room.machineCount += 1;
+        // machines_terminals.Add(machine);
+
         for (int i = 0; i < toSpawn; i++)
         {
-            RoomCTR room = rooms[Random.Range(0, rooms.Count - 1)];
-            if (room.machineCount == 0) // No machines already
-            {
-                Vector2Int roomSize = new Vector2Int(room.Width, room.Length);
-                int random = Random.Range(0, imp_terminals.Count - 1);
-                Terminal stat = imp_terminals[random].GetComponentInChildren<Terminal>();
-
-                if ((stat._size.x + 2) < roomSize.x && (stat._size.y + 2) < roomSize.y) // Will machine fit? + padding
-                {
-                    // If so spawn it in the center
-                    GameObject machine = Instantiate(imp_terminals[random], new Vector3(room.GetCenter.x, room.GetCenter.y, 0), Quaternion.identity);
-                    machine.transform.SetParent(mapParent);
-                    machine.transform.position = new Vector3(room.GetCenter.x, room.GetCenter.y, 0f);
-                    machine.transform.rotation = Quaternion.Euler(0f, 0f, 90f * 0);
-                    MachinePart[] machines = machine.GetComponentsInChildren<MachinePart>();
-                    foreach (MachinePart M in machines)
-                    {
-                        M.GetComponent<SpriteRenderer>().sortingOrder = 7;
-                        Vector2Int loc = new Vector2Int((int)M.gameObject.transform.position.x, (int)M.gameObject.transform.position.y);
-                        TData T = _allTilesRealized[loc];
-                        T.bottom.occupied = true;
-                        T.top = M.gameObject;
-                        _allTilesRealized[loc] = T;
-                    }
-
-                    room.machineCount += 1;
-                    machines_terminals.Add(machine);
-                }
-                else if ((stat._size.x + 2) < roomSize.y && (stat._size.y + 2) < roomSize.x) // Try rotating it
-                {
-                    // If so spawn it in the center
-                    GameObject machine = Instantiate(imp_terminals[random], new Vector3(room.GetCenter.x, room.GetCenter.y, 0), Quaternion.identity);
-                    machine.transform.SetParent(mapParent);
-                    machine.transform.position = new Vector3(room.GetCenter.x, room.GetCenter.y, 0f);
-                    machine.transform.rotation = Quaternion.Euler(0f, 0f, 90f * 1);
-                    if (machine.GetComponentInChildren<Canvas>())
-                        machine.GetComponentInChildren<Canvas>().transform.rotation = Quaternion.Euler(0f, 0f, 90f * -1); // Don't rotate the canvas
-                    MachinePart[] machines = machine.GetComponentsInChildren<MachinePart>();
-                    foreach (MachinePart M in machines)
-                    {
-                        M.GetComponent<SpriteRenderer>().sortingOrder = 7;
-                        Vector2Int loc = new Vector2Int((int)M.gameObject.transform.position.x, (int)M.gameObject.transform.position.y);
-                        TData T = _allTilesRealized[loc];
-                        T.bottom.occupied = true;
-                        T.top = M.gameObject;
-                        _allTilesRealized[loc] = T;
-                    }
-
-                    room.machineCount += 1;
-                    machines_terminals.Add(machine);
-                }
-            }
+            
         }
-        */
     }
 
-    private void PlaceStaticMachines()
+    private void PlaceStaticMachines() // !! This algorithm needs to be updated later. !!
     {
-        /* TODO: COME BACK THIS
         // The spread of machines depends on the current layer
-        List<RoomCTR> rooms = DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().rooms;
+        //List<RoomCTR> rooms = DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().rooms;
 
         int toSpawn = ((mapsize.x * mapsize.y) / 100);
 
+        // RoomCTR room = rooms[Random.Range(0, rooms.Count - 1)];
+
+        // Vector2Int roomSize = new Vector2Int(room.Width, room.Length);
+
+        // room.machineCount += 1;
+
         for (int i = 0; i < toSpawn; i++)
         {
-            RoomCTR room = rooms[Random.Range(0, rooms.Count - 1)];
-            if (room.machineCount == 0) // No machines already
-            {
-                Vector2Int roomSize = new Vector2Int(room.Width, room.Length);
-                int random = Random.Range(0, staticMachinePrefabs.Count - 1);
-                StaticMachine stat = staticMachinePrefabs[random].GetComponentInChildren<StaticMachine>();
-
-                if ((stat._size.x + 2) < roomSize.x && (stat._size.y + 2) < roomSize.y) // Will machine fit? + padding
-                {
-                    // If so spawn it in the center
-                    GameObject machine = Instantiate(staticMachinePrefabs[random], new Vector3(room.GetCenter.x, room.GetCenter.y, 0), Quaternion.identity);
-                    machine.transform.SetParent(mapParent);
-                    machine.transform.position = new Vector3(room.GetCenter.x, room.GetCenter.y, 0f);
-                    machine.transform.rotation = Quaternion.Euler(0f, 0f, 90f * 0);
-                    MachinePart[] machines = machine.GetComponentsInChildren<MachinePart>();
-                    foreach (MachinePart M in machines)
-                    {
-                        M.GetComponent<SpriteRenderer>().sortingOrder = 7;
-                        Vector2Int loc = new Vector2Int((int)M.gameObject.transform.position.x, (int)M.gameObject.transform.position.y);
-                        TData T = _allTilesRealized[loc];
-                        T.bottom.occupied = true;
-                        T.top = M.gameObject;
-                        _allTilesRealized[loc] = T;
-                    }
-
-                    room.machineCount += 1;
-
-                }
-                else if ((stat._size.x + 2) < roomSize.y && (stat._size.y + 2) < roomSize.x) // Try rotating it
-                {
-                    // If so spawn it in the center
-                    GameObject machine = Instantiate(staticMachinePrefabs[random], new Vector3(room.GetCenter.x, room.GetCenter.y, 0), Quaternion.identity);
-                    machine.transform.SetParent(mapParent);
-                    machine.transform.position = new Vector3(room.GetCenter.x, room.GetCenter.y, 0f);
-                    machine.transform.rotation = Quaternion.Euler(0f, 0f, 90f * 1);
-                    if (machine.GetComponentInChildren<Canvas>())
-                        machine.GetComponentInChildren<Canvas>().transform.rotation = Quaternion.Euler(0f, 0f, 90f * -1); // Don't rotate the canvas
-                    MachinePart[] machines = machine.GetComponentsInChildren<MachinePart>();
-                    foreach (MachinePart M in machines)
-                    {
-                        M.GetComponent<SpriteRenderer>().sortingOrder = 7;
-                        Vector2Int loc = new Vector2Int((int)M.gameObject.transform.position.x, (int)M.gameObject.transform.position.y);
-                        TData T = _allTilesRealized[loc];
-                        T.bottom.occupied = true;
-                        T.top = M.gameObject;
-                        _allTilesRealized[loc] = T;
-                    }
-
-                    room.machineCount += 1;
-                }
-            }
-        }
-        */
-    }
-
-    void PlaceMachineInRooms(GameObject machineToPlace, List<RoomCTR> rooms, Vector2Int machineSize)
-    {
-        /* TODO: COME BACK TO THIS
-        foreach (RoomCTR room in rooms)
-        {
-            RoomCTR roomCtr = room;
-
-            if (roomCtr.machineCount == 0)
-            {
-                List<DTile> floorTiles = roomCtr.GetInterior;
-                List<DTile> doors = roomCtr.GetDoors;
-                bool placed = false;
-                foreach (DTile floorTile in floorTiles)
-                {
-                    for (int rotation = 0; rotation < 4; rotation++)
-                    {
-                        if (CanPlaceMachineAtTile(floorTile, roomCtr, rotation, machineSize.x, machineSize.y))
-                        {
-                            bool blocksDoor = false;
-                            foreach (DTile door in doors)
-                            {
-                                Vector2Int doorPos = door.DTilePos;
-                                Vector2Int rotatedDoorPos = RotateVector2Int(doorPos - floorTile.DTilePos, -rotation);
-                                if (rotatedDoorPos.x >= 0 && rotatedDoorPos.x < machineSize.x && rotatedDoorPos.y >= 0 && rotatedDoorPos.y < machineSize.y)
-                                {
-                                    // The machine overlaps the door
-                                    blocksDoor = true;
-                                    break;
-                                }
-                            }
-                            if (!blocksDoor)
-                            {
-                                GameObject machine = Instantiate(machineToPlace, new Vector3(room.GetCenter.x, room.GetCenter.y, 0), Quaternion.identity);
-                                machine.transform.SetParent(mapParent);
-                                machine.transform.position = new Vector3(floorTile.DTilePos.x, floorTile.DTilePos.y, 0f);
-                                machine.transform.rotation = Quaternion.Euler(0f, 0f, 90f * rotation);
-                                MachinePart[] machines = machine.GetComponentsInChildren<MachinePart>();
-                                foreach (MachinePart M in machines)
-                                {
-                                    M.GetComponent<SpriteRenderer>().sortingOrder = 7;
-                                    Vector2Int loc = new Vector2Int((int)M.gameObject.transform.position.x, (int)M.gameObject.transform.position.y);
-                                    TData T = _allTilesRealized[loc];
-                                    T.bottom.occupied = true;
-                                    T.top = M.gameObject;
-                                    _allTilesRealized[loc] = T;
-                                }
-
-                                roomCtr.machineCount += 1;
-
-                                placed = true;
-                                return;
-                                //break;
-                            }
-                        }
-                    }
-                    if (placed) break;
-                }
-            }
-        }
-        */
-    }
-
-    bool CanPlaceMachineAtTile(DTile tile, RoomCTR room, int rotation, int machineWidth, int machineHeight)
-    {
-        /* TODO: COME BACK TO THIS
-        for (int x = 0; x < machineWidth; x++)
-        {
-            for (int y = 0; y < machineHeight; y++)
-            {
-                Vector2Int offset = new Vector2Int(x, y);
-                Vector2Int tilePos = tile.DTilePos + RotateVector2Int(offset, rotation);
-                if (!room.ContainsTile(tilePos)) return false;
-                if (room.HasWall(tilePos)) return false;
-                //if (room.HasMachine(tilePos)) return false;
-            }
-        }
-        return true;
-        */
-        return false;
-    }
-
-    Vector2Int RotateVector2Int(Vector2Int v, int rotation)
-    {
-        switch (rotation)
-        {
-            case 0: return v;
-            case 1: return new Vector2Int(-v.y, v.x);
-            case 2: return new Vector2Int(-v.x, -v.y);
-            case 3: return new Vector2Int(v.y, -v.x);
-            default: return v;
+            
         }
     }
 

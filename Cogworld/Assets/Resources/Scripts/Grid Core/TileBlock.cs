@@ -844,22 +844,35 @@ public struct WorldTile
     /// </summary>
     public void MachineInit()
     {
+        machinedata.avaiableCommands = new List<TerminalCommand>();
+        machinedata.trojans = new List<HackObject>();
+
         switch (machinedata.type)
         {
             case MachineType.Fabricator:
                 machinedata.displayName = "Fabricator";
+
+                machinedata.FabricatorInit();
                 break;
             case MachineType.Garrison:
                 machinedata.displayName = "Garrison";
+
+                machinedata.GarrisonInit();
                 break;
             case MachineType.Recycling:
                 machinedata.displayName = "Recycling Unit";
+
+                machinedata.RecyclingInit();
                 break;
             case MachineType.RepairStation:
                 machinedata.displayName = "Repair Station";
+
+                machinedata.RepairBayInit();
                 break;
             case MachineType.Scanalyzer:
                 machinedata.displayName = "Scanalyzer";
+
+                machinedata.ScanalyzerInit();
                 break;
             case MachineType.Terminal:
                 machinedata.displayName = "Terminal";
@@ -867,22 +880,23 @@ public struct WorldTile
                 machinedata.terminalZone.assignedTerminal = location;
                 machinedata.terminalZone.assignedArea = new List<Vector2Int>();
 
-                // Save it
-                MapManager.inst.mapdata[location.x, location.y].machinedata.terminalZone = machinedata.terminalZone;
-                MapManager.inst.mapdata[location.x, location.y].machinedata.terminalZone.assignedTerminal = machinedata.terminalZone.assignedTerminal;
-                MapManager.inst.mapdata[location.x, location.y].machinedata.terminalZone.assignedArea = machinedata.terminalZone.assignedArea;
+                machinedata.TerminalInit();
                 break;
             case MachineType.CustomTerminal:
                 // TODO
-                // More complicated
+
+                // NOTE: Since these are custom, they will be placed specifically, and have some details pre-assigned.
+                machinedata.CustomTerminalInit();
                 break;
             case MachineType.DoorTerminal:
                 // TODO
-                // More complicated
+
+                machinedata.DoorTerminal_Init();
                 break;
             case MachineType.Static:
                 // TODO
-                // More complicated
+
+                machinedata.Static_Init();
                 break;
             case MachineType.None:
                 machinedata.displayName = "NONE";
@@ -894,14 +908,12 @@ public struct WorldTile
                 break;
         }
 
-        // And save this name
-        MapManager.inst.mapdata[location.x, location.y].machinedata.displayName = machinedata.displayName;
-
         // Color setup
         machinedata.activeColor = HF.GetMachineColor(machinedata.type);
         machinedata.disabledColor = Color.gray;
-        MapManager.inst.mapdata[location.x, location.y].machinedata.activeColor = machinedata.activeColor;
-        MapManager.inst.mapdata[location.x, location.y].machinedata.disabledColor = machinedata.disabledColor;
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y] = this;
     }
 
     /// <summary>
@@ -1005,7 +1017,7 @@ public struct MachineData
     [Tooltip("While hacking, has the user been detected?")]
     public bool detected;
     [Tooltip("Is this machine no longer accessible (in lockdown).")]
-    public bool locked; // No longer accessable
+    public bool locked;
     [Tooltip("How many times has the user interacted with this machine.")]
     public int timesAccessed;
 
@@ -1020,23 +1032,6 @@ public struct MachineData
 
     [Tooltip("If this machine does a timed operation, this is the location of the timer which is displayed in the world, on top of the parent part.")]
     public Vector2Int timerObjectLocation;
-
-    [Header("Terminal Variables")]
-    public TerminalZone terminalZone;
-    [Tooltip("The Operator class Actor assigned to monitor this machine.")]
-    public Actor terminalOverseer;
-    public List<TerminalCustomCode> terminalCustomCodes;
-    public List<ItemObject> storedObjects;
-    public bool databaseLockout;
-
-    [Header("Custom Terminal Variables")]
-    public CustomTerminalType customType;
-    public List<int> cterminal_prototypes;
-    [Header("-- Door Control")]
-    [Tooltip("Coordinates to the wall(s) that will dissapear if this *door* is opened.")]
-    public List<Vector2Int> wallRevealCoordinates;
-    public AudioClip customDoorRevealSound;
-    public int cacheStoredMatter;
 
     // TODO: !! All the other stuff needed for the individual interactable machines !!
 
@@ -1118,7 +1113,14 @@ public struct MachineData
     #endregion
 
     #region Terminal
-    private void TerminalInit()
+    [Header("Terminal")]
+    public TerminalZone terminalZone;
+    [Tooltip("The Operator class Actor assigned to monitor this machine.")]
+    public Actor terminalOverseer;
+    public List<TerminalCustomCode> terminalCustomCodes;
+    public List<ItemObject> storedObjects;
+    public bool databaseLockout;
+    public void TerminalInit()
     {
         detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
         type = MachineType.Terminal;
@@ -1422,7 +1424,15 @@ public struct MachineData
     #endregion
 
     #region Custom Terminal
-    private void CustomTerminalInit(CustomTerminalType customtype = CustomTerminalType.Misc)
+    [Header("Custom Terminal Variables")]
+    public CustomTerminalType customType;
+    public List<int> cterminal_prototypes;
+    [Header("-- Door Control")]
+    [Tooltip("Coordinates to the wall(s) that will dissapear if this *door* is opened.")]
+    public List<Vector2Int> wallRevealCoordinates;
+    public AudioClip customDoorRevealSound;
+    public int cacheStoredMatter;
+    public void CustomTerminalInit()
     {
         /*
          // Whatever this is?
@@ -1440,7 +1450,6 @@ public struct MachineData
 
         detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
         type = MachineType.CustomTerminal;
-        customType = customtype;
 
         switch (customType)
         {
@@ -1455,6 +1464,7 @@ public struct MachineData
             case CustomTerminalType.PrototypeData:
                 break;
             case CustomTerminalType.HideoutCache:
+                displayName = "Hideout Cache";
                 CTerminal_SetupAsCache();
                 break;
             case CustomTerminalType.Misc:
@@ -1483,7 +1493,6 @@ public struct MachineData
     public int cache_storedMatter;
     public void CTerminal_SetupAsCache()
     {
-        customType = CustomTerminalType.HideoutCache;
         string specialName = "Hideout Cache (Local)";
 
         // Setup component inventory
@@ -1526,6 +1535,7 @@ public struct MachineData
     }
 
     #endregion
+
     #endregion
 
     #region Fabricator
@@ -1535,8 +1545,7 @@ public struct MachineData
     // TODO FUTURE WORK: AUTHCHIPS
     // https://www.gridsagegames.com/blog/2021/11/design-overhaul-4-fabrication-2-0/
 
-
-    private void FabricatorInit()
+    public void FabricatorInit()
     {
         detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
         type = MachineType.Fabricator;
@@ -1858,10 +1867,11 @@ public struct MachineData
     //
     [Tooltip("List of item IDs referring to couplers that this machine will spawn when requested to via the command, and how many of each type there are.")]
     public List<(int, int)> garrison_couplerIDs;
-    private void GarrisonInit()
+    public void GarrisonInit()
     {
         detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
         type = MachineType.Garrison;
+        garrison_couplerIDs = new List<(int, int)>();
 
         char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
         List<char> alphabet = alpha.ToList(); // Fill alphabet list
@@ -1994,7 +2004,7 @@ public struct MachineData
     public int recycling_storedMatter;
     public InventoryObject recycling_storedComponents; // !! This may be bad to do since its a struct and considering the way we update this. !!
 
-    private void RecyclingInit()
+    public void RecyclingInit()
     {
         detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
         type = MachineType.Recycling;
@@ -2046,7 +2056,7 @@ public struct MachineData
 
     // https://www.gridsagegames.com/blog/2014/01/recycling-units-repair-stations/
 
-    private void RepairInit()
+    public void RepairBayInit()
     {
         detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
         type = MachineType.RepairStation;
@@ -2087,7 +2097,7 @@ public struct MachineData
     #endregion
 
     #region Scanalyzer
-    private void ScanalyzerInit()
+    public void ScanalyzerInit()
     {
         detectionChance = GlobalSettings.inst.defaultHackingDetectionChance;
         type = MachineType.Scanalyzer;
@@ -2115,9 +2125,27 @@ public struct MachineData
     public bool static_flag_unstable;
     public int static_timeToDetonation;
 
+    public void Static_Init()
+    {
+
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y].machinedata = this;
+    }
+
     public void Static_Detonate()
     {
         // TODO
+    }
+    #endregion
+
+    #region Door Terminal
+    public void DoorTerminal_Init()
+    {
+
+
+        // (UPDATE MAPDATA)
+        MapManager.inst.mapdata[location.x, location.y].machinedata = this;
     }
     #endregion
 }
