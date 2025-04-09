@@ -426,7 +426,7 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                 Dictionary<Vector2Int, GameObject> objects = new Dictionary<Vector2Int, GameObject>(); // Dictionary of every object to place
                 foreach (Transform child in prefab.transform) // Go through all children and add them to the list of objects
                 {
-                    if (child.gameObject.GetComponent<Actor>() || child.gameObject.GetComponent<MachinePart>() || child.gameObject.GetComponentInChildren<MachinePart>())
+                    if (child.gameObject.GetComponent<Actor>()/* || child.gameObject.GetComponent<MachinePart>() || child.gameObject.GetComponentInChildren<MachinePart>()*/) // TODO: Change upon map-prefab rework
                     {
                         // This is a janky workaround because objects that have their own children (Bots/Terminals) will get added to the Dictionary when they shouldn't.
                         // Also note to self: Make sure all tiles placed are exact placements and not #.9999 or #.00001 because that causes problems too.

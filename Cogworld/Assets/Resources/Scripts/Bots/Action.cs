@@ -1325,11 +1325,11 @@ public static class Action
                         // Do a message
                         if (target.botInfo)
                         {
-                            UIManager.inst.CreateNewLogMessage(target.botInfo + " was knocked back into " + MapManager.inst._allTilesRealized[pos].top.GetComponent<MachinePart>().displayName + ", heavily damaging it.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                            UIManager.inst.CreateNewLogMessage(target.botInfo + " was knocked back into " + MapManager.inst.mapdata[pos.x, pos.y].machinedata.displayName + ", heavily damaging it.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                         }
                         else
                         {
-                            UIManager.inst.CreateNewLogMessage("Knocked back into " + MapManager.inst._allTilesRealized[pos].top.GetComponent<MachinePart>().displayName + ", heavily damaging it.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
+                            UIManager.inst.CreateNewLogMessage("Knocked back into " + MapManager.inst.mapdata[pos.x, pos.y].machinedata.displayName + ", heavily damaging it.", UIManager.inst.cautiousYellow, UIManager.inst.slowOrange, false, false);
                         }
                     }
                 }

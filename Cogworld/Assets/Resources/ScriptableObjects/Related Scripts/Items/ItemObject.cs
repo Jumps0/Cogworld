@@ -1375,7 +1375,8 @@ public class ItemUnique
 
     [Header("Data Core")]
     public bool isDataCore;
-    public Terminal coreTerminal;
+    [Tooltip("The in-world location of the terminal that this data core belongs to.")]
+    public Vector2Int coreTerminal;
 }
 
 [System.Serializable]
