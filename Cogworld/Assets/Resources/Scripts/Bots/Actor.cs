@@ -29,7 +29,7 @@ public class Actor : Entity
     public List<Vector3Int> FieldofView { get => fieldOfView; }
 
     private Color baseColor;
-    [SerializeField] private SpriteRenderer _sprite;
+    public SpriteRenderer _sprite;
     [HideInInspector] public BoxCollider2D _collider;
 
     [Header("Special Bot States")]

@@ -2823,6 +2823,9 @@ public class MapManager : MonoBehaviour
         spawnedPlayer.GetComponent<Actor>().Setup(null);
         spawnedPlayer.GetComponent<Actor>().ClearFieldOfView();
 
+        // Set visuals
+        spawnedPlayer.GetComponent<PlayerData>().SetVisuals(GlobalSettings.inst.settings.asciiMode);
+
         return spawnedPlayer;
     }
 

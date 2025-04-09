@@ -158,6 +158,18 @@ public class PlayerData : MonoBehaviour
         }
     }
 
+    public void SetVisuals(bool ASCII_MODE)
+    {
+        if (ASCII_MODE)
+        {
+            this.GetComponent<Actor>()._sprite.sprite = sprite_ascii;
+        }
+        else
+        {
+            this.GetComponent<Actor>()._sprite.sprite = sprite_standard;
+        }
+        this.GetComponent<Actor>()._sprite.color = sprite_color;
+    }
 
     #region Stat Related
     public void SetDefaults()
