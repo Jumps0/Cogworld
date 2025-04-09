@@ -24,24 +24,28 @@ MonoBehaviour:
     sboundsTR: {x: 20, y: 0}
     aboundsBL: {x: 18, y: 3}
     aboundsTR: {x: 20, y: 4}
+    dropSpot: {x: 19, y: -1}
   varEAST:
     parent: {x: 27, y: 1}
     sboundsBL: {x: 26, y: 0}
     sboundsTR: {x: 27, y: 2}
     aboundsBL: {x: 29, y: 0}
     aboundsTR: {x: 30, y: 2}
+    dropSpot: {x: 28, y: 1}
   varNORTH:
     parent: {x: 23, y: 1}
     sboundsBL: {x: 11, y: 0}
     sboundsTR: {x: 12, y: 1}
     aboundsBL: {x: 11, y: 3}
     aboundsTR: {x: 12, y: 4}
+    dropSpot: {x: 23, y: 2}
   varWEST:
     parent: {x: 26, y: 5}
     sboundsBL: {x: 26, y: 4}
     sboundsTR: {x: 27, y: 6}
     aboundsBL: {x: 29, y: 4}
     aboundsTR: {x: 30, y: 6}
+    dropSpot: {x: 25, y: 5}
   explodes: 0
   explosion_heattransfer: 0
   explosion_details:
