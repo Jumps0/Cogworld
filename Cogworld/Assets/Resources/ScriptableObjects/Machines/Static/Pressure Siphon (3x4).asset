@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce788b639fd6b844a918039e8a6d4a83, type: 3}
   m_Name: Pressure Siphon (3x4)
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 16
   displayName: Pulverizer
   description: 
   type: 8
@@ -24,24 +24,28 @@ MonoBehaviour:
     sboundsTR: {x: 18, y: 11}
     aboundsBL: {x: 16, y: 13}
     aboundsTR: {x: 18, y: 16}
+    dropSpot: {x: 0, y: 0}
   varEAST:
     parent: {x: 21, y: 19}
     sboundsBL: {x: 20, y: 18}
     sboundsTR: {x: 23, y: 20}
     aboundsBL: {x: 20, y: 22}
     aboundsTR: {x: 23, y: 24}
+    dropSpot: {x: 0, y: 0}
   varNORTH:
     parent: {x: 0, y: 0}
     sboundsBL: {x: 0, y: 0}
     sboundsTR: {x: 0, y: 0}
     aboundsBL: {x: 0, y: 0}
     aboundsTR: {x: 0, y: 0}
+    dropSpot: {x: 0, y: 0}
   varWEST:
     parent: {x: 0, y: 0}
     sboundsBL: {x: 0, y: 0}
     sboundsTR: {x: 0, y: 0}
     aboundsBL: {x: 0, y: 0}
     aboundsTR: {x: 0, y: 0}
+    dropSpot: {x: 0, y: 0}
   explodes: 0
   explosion_heattransfer: 0
   explosion_details:

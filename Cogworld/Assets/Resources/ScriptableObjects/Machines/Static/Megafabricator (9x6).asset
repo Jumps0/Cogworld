@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce788b639fd6b844a918039e8a6d4a83, type: 3}
   m_Name: Megafabricator (9x6)
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 41
   displayName: Megafabricator
   description: 
   type: 8
@@ -24,24 +24,28 @@ MonoBehaviour:
     sboundsTR: {x: 8, y: 340}
     aboundsBL: {x: 0, y: 342}
     aboundsTR: {x: 8, y: 347}
+    dropSpot: {x: 0, y: 0}
   varEAST:
     parent: {x: 15, y: 336}
     sboundsBL: {x: 10, y: 335}
     sboundsTR: {x: 15, y: 343}
     aboundsBL: {x: 10, y: 345}
     aboundsTR: {x: 15, y: 353}
+    dropSpot: {x: 0, y: 0}
   varNORTH:
     parent: {x: 0, y: 0}
     sboundsBL: {x: 0, y: 0}
     sboundsTR: {x: 0, y: 0}
     aboundsBL: {x: 0, y: 0}
     aboundsTR: {x: 0, y: 0}
+    dropSpot: {x: 0, y: 0}
   varWEST:
     parent: {x: 0, y: 0}
     sboundsBL: {x: 0, y: 0}
     sboundsTR: {x: 0, y: 0}
     aboundsBL: {x: 0, y: 0}
     aboundsTR: {x: 0, y: 0}
+    dropSpot: {x: 0, y: 0}
   explodes: 0
   explosion_heattransfer: 0
   explosion_details:

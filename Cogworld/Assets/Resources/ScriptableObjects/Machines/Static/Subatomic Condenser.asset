@@ -12,13 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce788b639fd6b844a918039e8a6d4a83, type: 3}
   m_Name: Subatomic Condenser
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 12
   displayName: Subatomic Condenser
   description: 
   type: 8
   operationSound: {fileID: 8300000, guid: e243ac608fb624942879f5f6581dc2b9, type: 3}
-  explosionSound:
-  - {fileID: 0}
   symmetry: 0
   varSOUTH:
     parent: {x: 49, y: 1}
@@ -26,21 +24,50 @@ MonoBehaviour:
     sboundsTR: {x: 50, y: 2}
     aboundsBL: {x: 48, y: 4}
     aboundsTR: {x: 50, y: 6}
+    dropSpot: {x: 0, y: 0}
   varEAST:
     parent: {x: 0, y: 0}
     sboundsBL: {x: 0, y: 0}
     sboundsTR: {x: 0, y: 0}
     aboundsBL: {x: 0, y: 0}
     aboundsTR: {x: 0, y: 0}
+    dropSpot: {x: 0, y: 0}
   varNORTH:
     parent: {x: 0, y: 0}
     sboundsBL: {x: 0, y: 0}
     sboundsTR: {x: 0, y: 0}
     aboundsBL: {x: 0, y: 0}
     aboundsTR: {x: 0, y: 0}
+    dropSpot: {x: 0, y: 0}
   varWEST:
     parent: {x: 0, y: 0}
     sboundsBL: {x: 0, y: 0}
     sboundsTR: {x: 0, y: 0}
     aboundsBL: {x: 0, y: 0}
     aboundsTR: {x: 0, y: 0}
+    dropSpot: {x: 0, y: 0}
+  explodes: 0
+  explosion_heattransfer: 0
+  explosion_details:
+    isGeneral: 0
+    isEffect: 0
+    isDeployable: 0
+    damageType: 0
+    damage: {x: 0, y: 0}
+    radius: 0
+    fallOff: 0
+    chunks: {x: 0, y: 0}
+    salvage: 0
+    disruption: 0
+    hasSpectrum: 0
+    spectrum: 0
+    directional: 0
+    d_arc: 0
+    d_distance: 0
+    stability: 0
+    delay: {x: 0, y: 0}
+  explosion_potential:
+    explosionSounds: []
+    explosionGFX: 0
+  explosionSound:
+  - {fileID: 0}

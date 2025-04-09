@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce788b639fd6b844a918039e8a6d4a83, type: 3}
   m_Name: Wave Intensifier (3x7)
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 20
   displayName: Wave Intensifier
   description: 
   type: 8
@@ -24,24 +24,28 @@ MonoBehaviour:
     sboundsTR: {x: 2, y: 74}
     aboundsBL: {x: 0, y: 76}
     aboundsTR: {x: 2, y: 82}
+    dropSpot: {x: 0, y: 0}
   varEAST:
     parent: {x: 1, y: 85}
     sboundsBL: {x: 0, y: 84}
     sboundsTR: {x: 6, y: 86}
     aboundsBL: {x: 0, y: 88}
     aboundsTR: {x: 6, y: 90}
+    dropSpot: {x: 0, y: 0}
   varNORTH:
     parent: {x: 0, y: 0}
     sboundsBL: {x: 0, y: 0}
     sboundsTR: {x: 0, y: 0}
     aboundsBL: {x: 0, y: 0}
     aboundsTR: {x: 0, y: 0}
+    dropSpot: {x: 0, y: 0}
   varWEST:
     parent: {x: 0, y: 0}
     sboundsBL: {x: 0, y: 0}
     sboundsTR: {x: 0, y: 0}
     aboundsBL: {x: 0, y: 0}
     aboundsTR: {x: 0, y: 0}
+    dropSpot: {x: 0, y: 0}
   explodes: 0
   explosion_heattransfer: 0
   explosion_details:

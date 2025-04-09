@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce788b639fd6b844a918039e8a6d4a83, type: 3}
   m_Name: Recycling Unit 3x2 Matador
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 59
   displayName: Recycling Unit Matador
   description: 
   type: 2

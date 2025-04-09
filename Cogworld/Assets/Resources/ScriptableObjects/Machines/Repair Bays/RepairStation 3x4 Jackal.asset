@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce788b639fd6b844a918039e8a6d4a83, type: 3}
   m_Name: RepairStation 3x4 Jackal
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 56
   displayName: Repair Station Jackal
   description: 
   type: 3

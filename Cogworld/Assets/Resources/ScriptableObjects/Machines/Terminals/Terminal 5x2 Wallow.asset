@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce788b639fd6b844a918039e8a6d4a83, type: 3}
   m_Name: Terminal 5x2 Wallow
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 50
   displayName: Terminal Wallow
   description: 
   type: 5

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce788b639fd6b844a918039e8a6d4a83, type: 3}
   m_Name: Terminal 5x2 Sidebar
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 49
   displayName: Terminal Sidebar
   description: 
   type: 5

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce788b639fd6b844a918039e8a6d4a83, type: 3}
   m_Name: Integration Channel (3x9)
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 21
   displayName: Integration Channel
   description: 
   type: 8
@@ -24,24 +24,28 @@ MonoBehaviour:
     sboundsTR: {x: 2, y: 100}
     aboundsBL: {x: 0, y: 102}
     aboundsTR: {x: 2, y: 110}
+    dropSpot: {x: 0, y: 0}
   varEAST:
     parent: {x: 5, y: 113}
     sboundsBL: {x: 0, y: 112}
     sboundsTR: {x: 8, y: 114}
     aboundsBL: {x: 0, y: 116}
     aboundsTR: {x: 8, y: 118}
+    dropSpot: {x: 0, y: 0}
   varNORTH:
     parent: {x: 0, y: 0}
     sboundsBL: {x: 0, y: 0}
     sboundsTR: {x: 0, y: 0}
     aboundsBL: {x: 0, y: 0}
     aboundsTR: {x: 0, y: 0}
+    dropSpot: {x: 0, y: 0}
   varWEST:
     parent: {x: 0, y: 0}
     sboundsBL: {x: 0, y: 0}
     sboundsTR: {x: 0, y: 0}
     aboundsBL: {x: 0, y: 0}
     aboundsTR: {x: 0, y: 0}
+    dropSpot: {x: 0, y: 0}
   explodes: 0
   explosion_heattransfer: 0
   explosion_details:
