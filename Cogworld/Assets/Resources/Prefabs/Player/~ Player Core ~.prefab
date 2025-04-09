@@ -193,6 +193,9 @@ MonoBehaviour:
   propulsionSlots: 0
   utilitySlots: 0
   weaponSlots: 0
+  sprite_standard: {fileID: 409509797, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
+  sprite_ascii: {fileID: -1394264190, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
+  sprite_color: {r: 0, g: 0.45098042, b: 1, a: 1}
   maxHealth: 0
   currentHealth: 0
   currentCoreExposure: 0

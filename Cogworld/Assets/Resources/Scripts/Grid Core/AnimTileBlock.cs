@@ -17,12 +17,8 @@ public class AnimTileBlock : MonoBehaviour
     [SerializeField] private Animator _animator;
     
     [Header("Assignments")]
-    [HideInInspector] public Item _item;
-    [HideInInspector] public GameObject _tile;
-    [HideInInspector] public BotObject _bot;
     [Tooltip("Is this AnimTileBlock representing the player?")]
     public bool player;
-    [HideInInspector] public Sprite _machineSprite;
 
     [Header("Colors")]
     public Color lowGreen;
@@ -31,47 +27,12 @@ public class AnimTileBlock : MonoBehaviour
     public Color veryDark;
     [SerializeField] private Sprite playerASCII;
 
-    public void Init(string setType, GameObject tile = null, Item item = null, BotObject bot = null, bool isPlayer = false, Sprite macSprite = null)
+    public void Init(string setType, Sprite displaySprite, Color spriteColor, bool isPlayer = false)
     {
-        _sprite.color = Color.black;
+        _sprite.sprite = displaySprite;
+        _sprite.color = spriteColor;
         type = setType;
-
-        if (tile)
-        {
-            _tile = tile;
-            if (_tile.GetComponent<TileBlock>()._debrisSprite.activeInHierarchy)
-            {
-                _sprite.sprite = MiscSpriteStorage.inst.ASCII_debrisSprites[Random.Range(1, MiscSpriteStorage.inst.ASCII_debrisSprites.Count)];
-            }
-            else
-            {
-                _sprite.sprite = _tile.GetComponent<TileBlock>().tileInfo.asciiRep.sprite;
-            }
-        }
-        if (item != null)
-        {
-            _item = item;
-            _sprite.sprite = _item.itemData.asciiRep;
-        }
-        if (bot || isPlayer)
-        {
-            _bot = bot;
-            player = isPlayer;
-
-            if (isPlayer)
-            {
-                _sprite.sprite = playerASCII;
-            }
-            else
-            {
-                _sprite.sprite = _bot.asciiRep;
-            }
-        }
-        if (macSprite)
-        {
-            _machineSprite = macSprite;
-            // TODO
-        }
+        player = isPlayer;
     }
 
     public void Scan()
@@ -163,7 +124,7 @@ public class AnimTileBlock : MonoBehaviour
         // NOTE: WALLs & DOORs are special, they do their own thing.
         //       Everything else goes from black, to bright green, to dark green (unless stated otherwise).
 
-        if ((type == "WALL" || type == "DOOR") && !(_tile.GetComponent<TileBlock>().tileInfo.type == TileType.Exit)) // This only gets called once, and its by the player's darts or a neighboring wall/door.
+        if (type == "WALL" || type == "DOOR") // This only gets called once, and its by the player's darts or a neighboring wall/door.
         {
             pinged = true;
 
@@ -328,7 +289,7 @@ public class AnimTileBlock : MonoBehaviour
             _sprite.color = lowGreen;
             #endregion
         }
-        else if (type == "WALL" && _tile.GetComponent<TileBlock>().tileInfo.type == TileType.Exit) // Next thing to appear after player
+        else if (type == "EXIT") // Next thing to appear after player
         {
             yield return new WaitForSeconds(0.25f);
 
@@ -436,7 +397,7 @@ public class AnimTileBlock : MonoBehaviour
     /// <returns></returns>
     private IEnumerator FinalizationAnim()
     {
-        if(type == "WALL" || type == "DOOR")
+        if(type == "WALL" || type == "DOOR" || type == "EXIT")
         {
             // Over a period of 2 seconds, go from low to high, then back to low.
             #region 2 Second Flash

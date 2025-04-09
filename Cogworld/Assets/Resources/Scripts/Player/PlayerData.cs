@@ -23,7 +23,13 @@ public class PlayerData : MonoBehaviour
     public int propulsionSlots;
     public int utilitySlots;
     public int weaponSlots;
-    
+
+    #region Visuals
+    public Sprite sprite_standard;
+    public Sprite sprite_ascii;
+    public Color sprite_color;
+    #endregion
+
     #region Key Values
     [Header("KeyValues")]
     [Header("  Top Right")]

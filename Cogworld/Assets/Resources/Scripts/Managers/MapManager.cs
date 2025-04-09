@@ -88,7 +88,7 @@ public class MapManager : MonoBehaviour
 
     [Tooltip("List of debris sprites to be used on the tilemap.")]
     public List<Tile> debrisTiles = new List<Tile>();
-    [SerializeField] private List<Tile> debrisTiles_ASCII = new List<Tile>();
+    public List<Tile> debrisTiles_ASCII = new List<Tile>();
 
     [Header("Auto Mapgen Settings")]
     public List<MapGen_DataCTR> mapGenSpecifics = new List<MapGen_DataCTR>();

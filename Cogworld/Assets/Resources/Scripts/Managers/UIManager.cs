@@ -192,165 +192,123 @@ public class UIManager : MonoBehaviour
 
         foreach (var coords in fov)
         {
-            // We want to draw a line from above the location to below the location.
+            // There is a heirarchy of what we want to display:
+            // -A wall
+            // -An exit
+            // -A bot
+            // -An item
+            // -A door
+            // -A machine
+            // -A floor tile WITH *trash*
+            // -A floor tile
 
-            Vector3 lowerPosition = new Vector3(coords.x, coords.y, 2);
-            Vector3 upperPosition = new Vector3(coords.x, coords.y, -2);
-            Vector3 direction = lowerPosition - upperPosition;
-            float distance = Vector3.Distance(new Vector3Int((int)lowerPosition.x, (int)lowerPosition.y, 0), upperPosition);
-            direction.Normalize();
-            RaycastHit2D[] hits = Physics2D.RaycastAll(upperPosition, direction, distance);
+            WorldTile tile = MapManager.inst.mapdata[coords.x, coords.y];
+            Actor actor = HF.FindActorAtPosition((Vector2Int)coords);
+            Part part = HF.TryFindPartAtLocation((Vector2Int)coords);
 
-            // - Flags -
-            GameObject wall = null;
-            GameObject bot = null;
-            GameObject item = null;
-            GameObject door = null;
-            GameObject machine = null;
-            GameObject trashTile = null;
-            GameObject cleanFloor = null;
-
-            // Loop through all the hits and set the targeting highlight on each tile (ideally shouldn't loop that many times)
-            for (int i = 0; i < hits.Length; i++)
+            if(!NFA_squares.ContainsKey(new Vector2Int(coords.x, coords.y)))
             {
-                RaycastHit2D hit = hits[i];
-                // PROBLEM!!! This list of hits is unsorted and contains multiple things that violate the heirarchy below. This MUST be fixed!
-
-                // There is a heirarchy of what we want to display:
-                // -A wall
-                // -A bot
-                // -An item
-                // -A door
-                // -A machine
-                // -A floor tile WITH *trash*
-                // -A floor tile
-
-                // We will solve this problem by setting flags. And then going back afterwards and using our heirarchy.
-
-                #region Hierarchy Flagging
-                if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Wall")
-                && !NFA_squares.ContainsKey(new Vector2Int(coords.x, coords.y)))
-                {
-                    // A wall
-                    wall = hit.collider.gameObject;
-                }
-                else if (hit.collider.GetComponent<Actor>() && !NFA_squares.ContainsKey(new Vector2Int(coords.x, coords.y)))
-                {
-                    // A bot
-                    bot = hit.collider.gameObject;
-                }
-                else if (hit.collider.GetComponent<Part>()
-                    && !NFA_squares.ContainsKey(new Vector2Int(coords.x, coords.y)))
-                {
-                    // An item
-                    item = hit.collider.gameObject;
-                }
-                else if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Door")
-                    && !NFA_squares.ContainsKey(new Vector2Int(coords.x, coords.y)))
-                {
-                    // Door
-                    door = hit.collider.gameObject;
-                }
-                else if (hit.collider.GetComponent<MachinePart>()
-                    && !NFA_squares.ContainsKey(new Vector2Int(coords.x, coords.y))) // maybe refine this later
-                {
-                    // Machine
-                    machine = hit.collider.gameObject;
-                }
-                else if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Floor") && hit.collider.GetComponent<TileBlock>()._debrisSprite.activeInHierarchy
-                    && !NFA_squares.ContainsKey(new Vector2Int(coords.x, coords.y)))
-                {
-                    // Dirty floor tile
-                    trashTile = hit.collider.gameObject;
-                }
-                else if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Floor") && !hit.collider.GetComponent<TileBlock>()._debrisSprite.activeInHierarchy
-                    && !NFA_squares.ContainsKey(new Vector2Int(coords.x, coords.y)))
-                {
-                    // Clean floor tile
-                    cleanFloor = hit.collider.gameObject;
-                }
-                #endregion
-            }
-
-            #region Hit Management
-
-            if (wall && !NFA_squares.ContainsKey(new Vector2Int(coords.x, coords.y)))
-            {
-                // A wall
+                // Create the square
                 GameObject newSquare = Instantiate(NFA_prefab, new Vector3(coords.x, coords.y, 0), Quaternion.identity);
                 newSquare.transform.SetParent(this.gameObject.transform);
                 newSquare.transform.position = new Vector3(coords.x, coords.y, 0f);
-                newSquare.GetComponent<AnimTileBlock>().Init("WALL", wall);
-                NFA_squares.Add(new Vector2Int(coords.x, coords.y), newSquare);
 
-            }
-            else if (bot && !NFA_squares.ContainsKey(new Vector2Int(coords.x, coords.y)))
-            {
-                // A bot
+                // Give (the script) a sprite. NOTE: It uses the ascii sprite!
+                if (tile.type == TileType.Wall)
+                {
+                    if (tile.isDamaged)
+                    {
+                        newSquare.GetComponent<AnimTileBlock>().Init("WALL", tile.tileInfo.asciiDestroyed.sprite, tile.tileInfo.asciiColor);
+                    }
+                    else
+                    {
+                        newSquare.GetComponent<AnimTileBlock>().Init("WALL", tile.tileInfo.asciiRep.sprite, tile.tileInfo.asciiColor);
+                    }
+                }
+                else if(tile.type == TileType.Exit)
+                {
+                    newSquare.GetComponent<AnimTileBlock>().Init("EXIT", tile.tileInfo.asciiRep.sprite, tile.tileInfo.asciiColor);
+                }
+                else if (actor != null)
+                {
+                    if (actor.GetComponent<PlayerData>()) // Player!!!
+                    {
+                        newSquare.GetComponent<AnimTileBlock>().Init("BOT", actor.GetComponent<PlayerData>().sprite_ascii, actor.GetComponent<PlayerData>().sprite_color, true);
+                    }
+                    else // Not the player
+                    {
+                        newSquare.GetComponent<AnimTileBlock>().Init("BOT", actor.botInfo.asciiRep, actor.botInfo.idealColor);
+                    }
+                }
+                else if (part != null && part != null && part._item.Id >= 0)
+                {
+                    newSquare.GetComponent<AnimTileBlock>().Init("ITEM", part._item.itemData.asciiRep, part._item.itemData.itemColor);
+                }
+                else
+                {
+                    if (tile.type == TileType.Door)
+                    {
+                        if (tile.isDamaged)
+                        {
+                            newSquare.GetComponent<AnimTileBlock>().Init("DOOR", tile.tileInfo.asciiDestroyed.sprite, tile.tileInfo.asciiColor);
+                        }
+                        else
+                        {
+                            newSquare.GetComponent<AnimTileBlock>().Init("DOOR", tile.tileInfo.asciiRep.sprite, tile.tileInfo.asciiColor);
+                        }
+                    }
+                    else if (tile.type == TileType.Machine)
+                    {
+                        if (tile.machinedata.machineIsDestroyed)
+                        {
+                            // Floor tile OR destroyed floor tile
+                            if (tile.isDamaged)
+                            {
+                                newSquare.GetComponent<AnimTileBlock>().Init("FLOOR", tile.tileInfo.asciiDestroyed.sprite, tile.tileInfo.asciiColor);
+                            }
+                            else
+                            {
+                                // Dirty vs Clean
+                                if (tile.isDirty > 0)
+                                {
+                                    newSquare.GetComponent<AnimTileBlock>().Init("TRASH", MapManager.inst.debrisTiles_ASCII[tile.isDirty].sprite, tile.tileInfo.asciiColor);
+                                }
+                                else
+                                {
+                                    newSquare.GetComponent<AnimTileBlock>().Init("FLOOR", tile.tileInfo.asciiRep.sprite, tile.tileInfo.asciiColor);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            newSquare.GetComponent<AnimTileBlock>().Init("MACHINE", tile.machinedata.sprite_ascii.sprite, MapManager.inst.DetermineMachineColor((Vector2Int)coords));
+                        }
+                    }
+                    else if (tile.type == TileType.Floor)
+                    {
+                        // Floor tile OR destroyed floor tile
+                        if (tile.isDamaged)
+                        {
+                            newSquare.GetComponent<AnimTileBlock>().Init("FLOOR", tile.tileInfo.asciiDestroyed.sprite, tile.tileInfo.asciiColor);
+                        }
+                        else
+                        {
+                            // Dirty vs Clean
+                            if (tile.isDirty > 0)
+                            {
+                                newSquare.GetComponent<AnimTileBlock>().Init("TRASH", MapManager.inst.debrisTiles_ASCII[tile.isDirty].sprite, tile.tileInfo.asciiColor);
+                            }
+                            else
+                            {
+                                newSquare.GetComponent<AnimTileBlock>().Init("FLOOR", tile.tileInfo.asciiRep.sprite, tile.tileInfo.asciiColor);
+                            }
+                        }
+                    }
+                }
 
-                if (bot.GetComponent<PlayerData>()) // Is this the player?
-                {
-                    GameObject newSquare = Instantiate(NFA_prefab, new Vector3(coords.x, coords.y, 0), Quaternion.identity);
-                    newSquare.transform.SetParent(this.gameObject.transform);
-                    newSquare.transform.position = new Vector3(coords.x, coords.y, 0f);
-                    newSquare.GetComponent<AnimTileBlock>().Init("BOT", null, null, null, true);
-                    NFA_squares.Add(new Vector2Int(coords.x, coords.y), newSquare);
-                }
-                else // This isn't the player
-                {
-                    GameObject newSquare = Instantiate(NFA_prefab, new Vector3(coords.x, coords.y, 0), Quaternion.identity);
-                    newSquare.transform.SetParent(this.gameObject.transform);
-                    newSquare.transform.position = new Vector3(coords.x, coords.y, 0f);
-                    newSquare.GetComponent<AnimTileBlock>().Init("BOT", null, null, bot.GetComponent<Actor>().botInfo, false);
-                    NFA_squares.Add(new Vector2Int(coords.x, coords.y), newSquare);
-                }
-            }
-            else if (item && !NFA_squares.ContainsKey(new Vector2Int(coords.x, coords.y)))
-            {
-                // An item
-                GameObject newSquare = Instantiate(NFA_prefab, new Vector3(coords.x, coords.y, 0), Quaternion.identity);
-                newSquare.transform.SetParent(this.gameObject.transform);
-                newSquare.transform.position = new Vector3(coords.x, coords.y, 0f);
-                newSquare.GetComponent<AnimTileBlock>().Init("ITEM", null, item.GetComponent<Part>()._item);
+                // Store the new square
                 NFA_squares.Add(new Vector2Int(coords.x, coords.y), newSquare);
             }
-            else if (door && !NFA_squares.ContainsKey(new Vector2Int(coords.x, coords.y)))
-            {
-                // Door
-                GameObject newSquare = Instantiate(NFA_prefab, new Vector3(coords.x, coords.y, 0), Quaternion.identity);
-                newSquare.transform.SetParent(this.gameObject.transform);
-                newSquare.transform.position = new Vector3(coords.x, coords.y, 0f);
-                newSquare.GetComponent<AnimTileBlock>().Init("DOOR", door);
-                NFA_squares.Add(new Vector2Int(coords.x, coords.y), newSquare);
-            }
-            else if (machine && !NFA_squares.ContainsKey(new Vector2Int(coords.x, coords.y))) // maybe refine this later
-            {
-                // Machine
-                GameObject newSquare = Instantiate(NFA_prefab, new Vector3(coords.x, coords.y, 0), Quaternion.identity);
-                newSquare.transform.SetParent(this.gameObject.transform);
-                newSquare.transform.position = new Vector3(coords.x, coords.y, 0f);
-                newSquare.GetComponent<AnimTileBlock>().Init("MACHINE", null, null, null, false, machine.gameObject.GetComponent<SpriteRenderer>().sprite);
-                NFA_squares.Add(new Vector2Int(coords.x, coords.y), newSquare);
-            }
-            else if (trashTile && !NFA_squares.ContainsKey(new Vector2Int(coords.x, coords.y)))
-            {
-                // Dirty floor tile
-                GameObject newSquare = Instantiate(NFA_prefab, new Vector3(coords.x, coords.y, 0), Quaternion.identity);
-                newSquare.transform.SetParent(this.gameObject.transform);
-                newSquare.transform.position = new Vector3(coords.x, coords.y, 0f);
-                newSquare.GetComponent<AnimTileBlock>().Init("TRASH", trashTile);
-                NFA_squares.Add(new Vector2Int(coords.x, coords.y), newSquare);
-            }
-            else if (cleanFloor && !NFA_squares.ContainsKey(new Vector2Int(coords.x, coords.y)))
-            {
-                // Clean floor tile
-                GameObject newSquare = Instantiate(NFA_prefab, new Vector3(coords.x, coords.y, 0), Quaternion.identity);
-                newSquare.transform.SetParent(this.gameObject.transform);
-                newSquare.transform.position = new Vector3(coords.x, coords.y, 0f);
-                newSquare.GetComponent<AnimTileBlock>().Init("FLOOR", cleanFloor);
-                NFA_squares.Add(new Vector2Int(coords.x, coords.y), newSquare);
-            }
-            #endregion
         }
 
         // - Bonus! Now we have to collect anything that is known by the player but not in their FOV. This gets a semi-different animation.
@@ -393,168 +351,126 @@ public class UIManager : MonoBehaviour
                 nonFOV.Add(point);
             }
         }
-        // And finally, do the same deal again
+        // And finally, do the same deal again (this time with NFA_secondary)
         foreach (var coords in nonFOV)
         {
-            // We want to draw a line from above the location to below the location.
+            // There is a heirarchy of what we want to display:
+            // -A wall
+            // -An exit
+            // -A bot
+            // -An item
+            // -A door
+            // -A machine
+            // -A floor tile WITH *trash*
+            // -A floor tile
 
-            Vector3 lowerPosition = new Vector3(coords.x, coords.y, 2);
-            Vector3 upperPosition = new Vector3(coords.x, coords.y, -2);
-            Vector3 direction = lowerPosition - upperPosition;
-            float distance = Vector3.Distance(new Vector3Int((int)lowerPosition.x, (int)lowerPosition.y, 0), upperPosition);
-            direction.Normalize();
-            RaycastHit2D[] hits = Physics2D.RaycastAll(upperPosition, direction, distance);
+            WorldTile tile = MapManager.inst.mapdata[coords.x, coords.y];
+            Actor actor = HF.FindActorAtPosition((Vector2Int)coords);
+            Part part = HF.TryFindPartAtLocation((Vector2Int)coords);
 
-            // - Flags -
-            GameObject wall = null;
-            GameObject bot = null;
-            GameObject item = null;
-            GameObject door = null;
-            GameObject machine = null;
-            GameObject trashTile = null;
-            GameObject cleanFloor = null;
-
-            // Loop through all the hits and set the targeting highlight on each tile (ideally shouldn't loop that many times)
-            for (int i = 0; i < hits.Length; i++)
+            if (!NFA_secondary.ContainsKey(new Vector2Int(coords.x, coords.y)))
             {
-                RaycastHit2D hit = hits[i];
-                // PROBLEM!!! This list of hits is unsorted and contains multiple things that violate the heirarchy below. This MUST be fixed!
-
-                // There is a heirarchy of what we want to display:
-                // -A wall
-                // -A bot
-                // -An item
-                // -A door
-                // -A machine
-                // -A floor tile WITH *trash*
-                // -A floor tile
-
-                // We will solve this problem by setting flags. And then going back afterwards and using our heirarchy.
-
-                #region Hierarchy Flagging
-                if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Wall")
-                && !NFA_secondary.ContainsKey(new Vector2Int(coords.x, coords.y)))
-                {
-                    // A wall
-                    wall = hit.collider.gameObject;
-                }
-                else if (hit.collider.GetComponent<Actor>() && !NFA_secondary.ContainsKey(new Vector2Int(coords.x, coords.y)))
-                {
-                    // A bot
-                    bot = hit.collider.gameObject;
-                }
-                else if (hit.collider.GetComponent<Part>()
-                    && !NFA_secondary.ContainsKey(new Vector2Int(coords.x, coords.y)))
-                {
-                    // An item
-                    item = hit.collider.gameObject;
-                }
-                else if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Door")
-                    && !NFA_secondary.ContainsKey(new Vector2Int(coords.x, coords.y)))
-                {
-                    // Door
-                    door = hit.collider.gameObject;
-                }
-                else if (hit.collider.GetComponent<MachinePart>()
-                    && !NFA_secondary.ContainsKey(new Vector2Int(coords.x, coords.y))) // maybe refine this later
-                {
-                    // Machine
-                    machine = hit.collider.gameObject;
-                }
-                else if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Floor") && hit.collider.GetComponent<TileBlock>()._debrisSprite.activeInHierarchy
-                    && !NFA_secondary.ContainsKey(new Vector2Int(coords.x, coords.y)))
-                {
-                    // Dirty floor tile
-                    trashTile = hit.collider.gameObject;
-                }
-                else if (hit.collider.GetComponent<TileBlock>() && hit.collider.gameObject.name.Contains("Floor") && !hit.collider.GetComponent<TileBlock>()._debrisSprite.activeInHierarchy
-                    && !NFA_secondary.ContainsKey(new Vector2Int(coords.x, coords.y)))
-                {
-                    // Clean floor tile
-                    cleanFloor = hit.collider.gameObject;
-                }
-                #endregion
-            }
-
-            #region Hit Management
-
-            if (wall && !NFA_secondary.ContainsKey(new Vector2Int(coords.x, coords.y)))
-            {
-                // A wall
+                // Create the square
                 GameObject newSquare = Instantiate(NFA_prefab, new Vector3(coords.x, coords.y, 0), Quaternion.identity);
                 newSquare.transform.SetParent(this.gameObject.transform);
                 newSquare.transform.position = new Vector3(coords.x, coords.y, 0f);
-                newSquare.GetComponent<AnimTileBlock>().Init("WALL", wall);
-                NFA_secondary.Add(new Vector2Int(coords.x, coords.y), newSquare);
 
-            }
-            else if (bot && !NFA_secondary.ContainsKey(new Vector2Int(coords.x, coords.y)))
-            {
-                // A bot
+                // Give (the script) a sprite. NOTE: It uses the ascii sprite!
+                if (tile.type == TileType.Wall)
+                {
+                    if (tile.isDamaged)
+                    {
+                        newSquare.GetComponent<AnimTileBlock>().Init("WALL", tile.tileInfo.asciiDestroyed.sprite, tile.tileInfo.asciiColor);
+                    }
+                    else
+                    {
+                        newSquare.GetComponent<AnimTileBlock>().Init("WALL", tile.tileInfo.asciiRep.sprite, tile.tileInfo.asciiColor);
+                    }
+                }
+                else if (tile.type == TileType.Exit)
+                {
+                    newSquare.GetComponent<AnimTileBlock>().Init("EXIT", tile.tileInfo.asciiRep.sprite, tile.tileInfo.asciiColor);
+                }
+                else if (actor != null)
+                {
+                    if (actor.GetComponent<PlayerData>()) // Player!!!
+                    {
+                        newSquare.GetComponent<AnimTileBlock>().Init("BOT", actor.GetComponent<PlayerData>().sprite_ascii, actor.GetComponent<PlayerData>().sprite_color, true);
+                    }
+                    else // Not the player
+                    {
+                        newSquare.GetComponent<AnimTileBlock>().Init("BOT", actor.botInfo.asciiRep, actor.botInfo.idealColor);
+                    }
+                }
+                else if (part != null && part != null && part._item.Id >= 0)
+                {
+                    newSquare.GetComponent<AnimTileBlock>().Init("ITEM", part._item.itemData.asciiRep, part._item.itemData.itemColor);
+                }
+                else
+                {
+                    if (tile.type == TileType.Door)
+                    {
+                        if (tile.isDamaged)
+                        {
+                            newSquare.GetComponent<AnimTileBlock>().Init("DOOR", tile.tileInfo.asciiDestroyed.sprite, tile.tileInfo.asciiColor);
+                        }
+                        else
+                        {
+                            newSquare.GetComponent<AnimTileBlock>().Init("DOOR", tile.tileInfo.asciiRep.sprite, tile.tileInfo.asciiColor);
+                        }
+                    }
+                    else if (tile.type == TileType.Machine)
+                    {
+                        if (tile.machinedata.machineIsDestroyed)
+                        {
+                            // Floor tile OR destroyed floor tile
+                            if (tile.isDamaged)
+                            {
+                                newSquare.GetComponent<AnimTileBlock>().Init("FLOOR", tile.tileInfo.asciiDestroyed.sprite, tile.tileInfo.asciiColor);
+                            }
+                            else
+                            {
+                                // Dirty vs Clean
+                                if (tile.isDirty > 0)
+                                {
+                                    newSquare.GetComponent<AnimTileBlock>().Init("TRASH", MapManager.inst.debrisTiles_ASCII[tile.isDirty].sprite, tile.tileInfo.asciiColor);
+                                }
+                                else
+                                {
+                                    newSquare.GetComponent<AnimTileBlock>().Init("FLOOR", tile.tileInfo.asciiRep.sprite, tile.tileInfo.asciiColor);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            newSquare.GetComponent<AnimTileBlock>().Init("MACHINE", tile.machinedata.sprite_ascii.sprite, MapManager.inst.DetermineMachineColor((Vector2Int)coords));
+                        }
+                    }
+                    else if (tile.type == TileType.Floor)
+                    {
+                        // Floor tile OR destroyed floor tile
+                        if (tile.isDamaged)
+                        {
+                            newSquare.GetComponent<AnimTileBlock>().Init("FLOOR", tile.tileInfo.asciiDestroyed.sprite, tile.tileInfo.asciiColor);
+                        }
+                        else
+                        {
+                            // Dirty vs Clean
+                            if (tile.isDirty > 0)
+                            {
+                                newSquare.GetComponent<AnimTileBlock>().Init("TRASH", MapManager.inst.debrisTiles_ASCII[tile.isDirty].sprite, tile.tileInfo.asciiColor);
+                            }
+                            else
+                            {
+                                newSquare.GetComponent<AnimTileBlock>().Init("FLOOR", tile.tileInfo.asciiRep.sprite, tile.tileInfo.asciiColor);
+                            }
+                        }
+                    }
+                }
 
-                if (bot.GetComponent<PlayerData>()) // Is this the player?
-                {
-                    GameObject newSquare = Instantiate(NFA_prefab, new Vector3(coords.x, coords.y, 0), Quaternion.identity);
-                    newSquare.transform.SetParent(this.gameObject.transform);
-                    newSquare.transform.position = new Vector3(coords.x, coords.y, 0f);
-                    newSquare.GetComponent<AnimTileBlock>().Init("BOT", null, null, null, true);
-                    NFA_secondary.Add(new Vector2Int(coords.x, coords.y), newSquare);
-                }
-                else // This isn't the player
-                {
-                    GameObject newSquare = Instantiate(NFA_prefab, new Vector3(coords.x, coords.y, 0), Quaternion.identity);
-                    newSquare.transform.SetParent(this.gameObject.transform);
-                    newSquare.transform.position = new Vector3(coords.x, coords.y, 0f);
-                    newSquare.GetComponent<AnimTileBlock>().Init("BOT", null, null, bot.GetComponent<Actor>().botInfo, false);
-                    NFA_secondary.Add(new Vector2Int(coords.x, coords.y), newSquare);
-                }
-            }
-            else if (item && !NFA_secondary.ContainsKey(new Vector2Int(coords.x, coords.y)))
-            {
-                // An item
-                GameObject newSquare = Instantiate(NFA_prefab, new Vector3(coords.x, coords.y, 0), Quaternion.identity);
-                newSquare.transform.SetParent(this.gameObject.transform);
-                newSquare.transform.position = new Vector3(coords.x, coords.y, 0f);
-                newSquare.GetComponent<AnimTileBlock>().Init("ITEM", null, item.GetComponent<Part>()._item);
+                // Store the new square
                 NFA_secondary.Add(new Vector2Int(coords.x, coords.y), newSquare);
             }
-            else if (door && !NFA_secondary.ContainsKey(new Vector2Int(coords.x, coords.y)))
-            {
-                // Door
-                GameObject newSquare = Instantiate(NFA_prefab, new Vector3(coords.x, coords.y, 0), Quaternion.identity);
-                newSquare.transform.SetParent(this.gameObject.transform);
-                newSquare.transform.position = new Vector3(coords.x, coords.y, 0f);
-                newSquare.GetComponent<AnimTileBlock>().Init("DOOR", door);
-                NFA_secondary.Add(new Vector2Int(coords.x, coords.y), newSquare);
-            }
-            else if (machine && !NFA_secondary.ContainsKey(new Vector2Int(coords.x, coords.y))) // maybe refine this later
-            {
-                // Machine
-                GameObject newSquare = Instantiate(NFA_prefab, new Vector3(coords.x, coords.y, 0), Quaternion.identity);
-                newSquare.transform.SetParent(this.gameObject.transform);
-                newSquare.transform.position = new Vector3(coords.x, coords.y, 0f);
-                newSquare.GetComponent<AnimTileBlock>().Init("MACHINE", null, null, null, false, machine.gameObject.GetComponent<SpriteRenderer>().sprite);
-                NFA_secondary.Add(new Vector2Int(coords.x, coords.y), newSquare);
-            }
-            else if (trashTile && !NFA_secondary.ContainsKey(new Vector2Int(coords.x, coords.y)))
-            {
-                // Dirty floor tile
-                GameObject newSquare = Instantiate(NFA_prefab, new Vector3(coords.x, coords.y, 0), Quaternion.identity);
-                newSquare.transform.SetParent(this.gameObject.transform);
-                newSquare.transform.position = new Vector3(coords.x, coords.y, 0f);
-                newSquare.GetComponent<AnimTileBlock>().Init("TRASH", trashTile);
-                NFA_secondary.Add(new Vector2Int(coords.x, coords.y), newSquare);
-            }
-            else if (cleanFloor && !NFA_secondary.ContainsKey(new Vector2Int(coords.x, coords.y)))
-            {
-                // Clean floor tile
-                GameObject newSquare = Instantiate(NFA_prefab, new Vector3(coords.x, coords.y, 0), Quaternion.identity);
-                newSquare.transform.SetParent(this.gameObject.transform);
-                newSquare.transform.position = new Vector3(coords.x, coords.y, 0f);
-                newSquare.GetComponent<AnimTileBlock>().Init("FLOOR", cleanFloor);
-                NFA_secondary.Add(new Vector2Int(coords.x, coords.y), newSquare);
-            }
-            #endregion
         }
 
         //Debug.ClearDeveloperConsole();
