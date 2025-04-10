@@ -22,6 +22,13 @@ public class UIBorderIndicator : MonoBehaviour
     private bool isFlashing = false;
     private float startTime;
 
+    public void SetValues(Sprite sprite_ascii, Color sprite_color, Vector2Int parentLocation)
+    {
+        sprite.sprite = sprite_ascii;
+        sprite.color = sprite_color;
+        machine_parent = parentLocation;
+    }
+
     bool setup = false;
     private void Setup()
     {

@@ -6,7 +6,6 @@ using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using TMPro;
-using DungeonResources;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Vector2 = UnityEngine.Vector2;
@@ -17,8 +16,6 @@ using Color = UnityEngine.Color;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using ColorUtility = UnityEngine.ColorUtility;
-using System.Drawing;
-using Unity.VisualScripting;
 
 /// <summary>
 /// Contains helper functions to be used globally.

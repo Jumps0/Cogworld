@@ -2233,7 +2233,6 @@ public class MapManager : MonoBehaviour
         Tile normalTile_p = (Tile)machineMap.GetTile((Vector3Int)bounds.parent);
         Tile asciiTile_p = (Tile)machineMap.GetTile((Vector3Int)bounds.GetASCII(bounds.parent, bounds.sboundsBL, bounds.aboundsBL));
         parentTile.machinedata.sprite_normal = normalTile_p;
-        parentTile.machinedata.sprite_ascii = asciiTile_p;
 
         // - Parenting (since this is a child it doesn't have anything)
         parentTile.machinedata.parentLocation = parentLoc;

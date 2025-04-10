@@ -5201,7 +5201,7 @@ public class UIManager : MonoBehaviour
                     scanSubImage.enabled = false;
 
                     // The text shows its name, and then armor
-                    //scanSubTextA.text = tile.machinedata.displayName; // TODO: COME BACK TO THIS AFTER MACHINES REWORK
+                    scanSubTextA.text = tile.machinedata.displayName; // TODO: COME BACK TO THIS AFTER MACHINES REWORK
                     scanSubTextA.color = highGreen;
 
                     scanSubTextB.text = tile.tileInfo.armor.ToString();

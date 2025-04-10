@@ -837,8 +837,6 @@ public struct WorldTile
     #endregion
 
     #region Machines
-    // Dear god this is gonna be a lot.
-
     /// <summary>
     /// Intializes this machine, called upon Map Intialization in `MapManager`.
     /// </summary>
@@ -852,25 +850,40 @@ public struct WorldTile
             case MachineType.Fabricator:
                 machinedata.displayName = "Fabricator";
 
+                // Set the override sprite
+                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["Faricator"].displaySprite;
+
                 machinedata.FabricatorInit();
                 break;
             case MachineType.Garrison:
                 machinedata.displayName = "Garrison";
+
+                // Set the override sprite
+                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["Garrison"].displaySprite;
 
                 machinedata.GarrisonInit();
                 break;
             case MachineType.Recycling:
                 machinedata.displayName = "Recycling Unit";
 
+                // Set the override sprite
+                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["Recycler"].displaySprite;
+
                 machinedata.RecyclingInit();
                 break;
             case MachineType.RepairStation:
                 machinedata.displayName = "Repair Station";
 
+                // Set the override sprite
+                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["Repair Station"].displaySprite;
+
                 machinedata.RepairBayInit();
                 break;
             case MachineType.Scanalyzer:
                 machinedata.displayName = "Scanalyzer";
+
+                // Set the override sprite
+                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["Scanalyzer"].displaySprite;
 
                 machinedata.ScanalyzerInit();
                 break;
@@ -880,16 +893,25 @@ public struct WorldTile
                 machinedata.terminalZone.assignedTerminal = location;
                 machinedata.terminalZone.assignedArea = new List<Vector2Int>();
 
+                // Set the override sprite
+                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["Terminal"].displaySprite;
+
                 machinedata.TerminalInit();
                 break;
             case MachineType.CustomTerminal:
                 // TODO
+
+                // Set the override sprite
+                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["Custom Terminal"].displaySprite;
 
                 // NOTE: Since these are custom, they will be placed specifically, and have some details pre-assigned.
                 machinedata.CustomTerminalInit();
                 break;
             case MachineType.DoorTerminal:
                 // TODO
+
+                // Set the override sprite
+                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["Custom Terminal"].displaySprite;
 
                 machinedata.DoorTerminal_Init();
                 break;
@@ -961,6 +983,8 @@ public struct MachineData
     [Header("Visual")]
     public Tile sprite_normal;
     public Tile sprite_ascii;
+    [Tooltip("The inverted variant of this ASCII sprite with color.")]
+    public Tile sprite_override;
 
     [Header("Basic Info")]
     [Tooltip("The location of this machine tile in the world.")]

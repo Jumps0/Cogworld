@@ -71,8 +71,11 @@ public class BorderIndicators : MonoBehaviour
 
     private void UpdateIndicator(Vector2Int target, GameObject indicator)
     {
+        UIBorderIndicator I = indicator.GetComponent<UIBorderIndicator>();
+
         var screenPos = _camera.WorldToViewportPoint(new Vector3(target.x, target.y));
         bool isOffScreen = screenPos.x <= 0 || screenPos.x >= buffer.x || screenPos.y <= 0 || screenPos.y >= buffer.y; // Defaults are 0 | 1 | 0 | 1. We modify due to UI covering some of the screen
+        
         if (isOffScreen)
         {
             indicator.SetActive(true);
@@ -119,7 +122,7 @@ public class BorderIndicators : MonoBehaviour
             indicator.transform.position = worldPosition;
 
             // Make sure its flashing
-            indicator.GetComponent<UIBorderIndicator>().SetFlash(true);
+            I.SetFlash(true);
 
             //Vector3 direction = target.transform.position - indicator.transform.position;
             //float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -128,7 +131,10 @@ public class BorderIndicators : MonoBehaviour
         else
         {
             // Stop it from flashing
-            indicator.GetComponent<UIBorderIndicator>().SetFlash(false);
+            I.SetFlash(false);
+
+            // And set it back to being ontop of the machine
+            indicator.transform.position = new Vector3(I.machine_parent.x, I.machine_parent.y);
 
             //indicator.SetActive(false);
         }
@@ -150,12 +156,8 @@ public class BorderIndicators : MonoBehaviour
         WorldTile tile = MapManager.inst.mapdata[pos.x, pos.y];
 
         UIBorderIndicator indicator = go.GetComponent<UIBorderIndicator>();
-        // Assign Sprite (The ASCII one, since we want to display the letter instead of a blank full sprite)
-        indicator.sprite.sprite = tile.machinedata.sprite_ascii.sprite;
-        // And set the color
-        indicator.sprite.color = HF.GetMachineColor(tile.machinedata.type);
-        // Assign Parent
-        indicator.machine_parent = pos;
+        // Assign the indicators values.
+        indicator.SetValues(tile.machinedata.sprite_override.sprite, HF.GetMachineColor(tile.machinedata.type), pos);
 
         return go;
     }
