@@ -4346,19 +4346,28 @@ public static class HF
         // Now that we have the full bonus, go through the player's FOV and check for any mines (that the player can't see)
         List<WorldTile> trapsInView = new List<WorldTile>();
 
-        foreach (Vector3Int spot in FOV)
+        foreach (Vector3Int spot in FOV.ToList())
         {
-            Vector2Int loc = new Vector2Int(spot.x, spot.y);
-
-            WorldTile tile = MapManager.inst.mapdata[loc.x, loc.y];
-            if (tile.type == TileType.Trap)
+            // Sanity check
+            if (HF.PosWithinMap((Vector2Int)spot))
             {
-                if (!tile.trap_knowByPlayer
-                    && !tile.trap_tripped
-                    && tile.trap_active)
+                Vector2Int loc = new Vector2Int(spot.x, spot.y);
+
+                WorldTile tile = MapManager.inst.mapdata[loc.x, loc.y];
+                if (tile.type == TileType.Trap)
                 {
-                    trapsInView.Add(tile);
+                    if (!tile.trap_knowByPlayer
+                        && !tile.trap_tripped
+                        && tile.trap_active)
+                    {
+                        trapsInView.Add(tile);
+                    }
                 }
+            }
+            else
+            {
+                // Out of bounds!
+                FOV.Remove(spot);
             }
         }
 
@@ -5661,7 +5670,7 @@ public static class HF
         }
         else if (bot.state_UNPOWERED)
         {
-            return (UIManager.inst.warningOrange, "UNPOWERED", "Unpowered robots will never become active. (Though yeah they’re very much real and you can harvest them for parts if you’d like.)");
+            return (UIManager.inst.warningOrange, "UNPOWERED", "Unpowered robots will never become active. (Though yeah theyï¿½re very much real and you can harvest them for parts if youï¿½d like.)");
         }
 
         // Then consider relations
@@ -5762,15 +5771,15 @@ public static class HF
             case ItemDamageType.Explosive:
                 return "While powerful, explosives generally spread damage across each target in the area of effect, dividing damage into 1~3 chunks before affecting a robot, where each chunk selects its own target part (though they may overlap). Explosions also significantly tend to reduce the amount of salvage remaining after destroying a target.";
             case ItemDamageType.EMP:
-                return "EM weapons have less of an impact on integrity, but are capable of corrupting a target’s computer systems. Anywhere from 50 to 150% of damage done is also applied as system corruption, automatically maximized on a critical hit. EM-based explosions only deal half damage to inactive items lying on the ground.";
+                return "EM weapons have less of an impact on integrity, but are capable of corrupting a targetï¿½s computer systems. Anywhere from 50 to 150% of damage done is also applied as system corruption, automatically maximized on a critical hit. EM-based explosions only deal half damage to inactive items lying on the ground.";
             case ItemDamageType.Phasic: // TODO
                 return "[NO_DATA]";
             case ItemDamageType.Impact:
-                return "Impact melee weapons have a damage-equivalent chance to cause knockback, and while incapable of a critical strike, they ignore coverage and are effective at destroying fragile systems. For every component crushed by an impact, its owner’s system is significantly corrupted (+25-150%), though electromagnetic resistance can help mitigate this effect.";
+                return "Impact melee weapons have a damage-equivalent chance to cause knockback, and while incapable of a critical strike, they ignore coverage and are effective at destroying fragile systems. For every component crushed by an impact, its ownerï¿½s system is significantly corrupted (+25-150%), though electromagnetic resistance can help mitigate this effect.";
             case ItemDamageType.Slashing:
                 return "Slashing melee weapons are generally very damaging, and most are also capable of severing components from a target without destroying them.";
             case ItemDamageType.Piercing:
-                return "Piercing melee weapons achieve critical strikes more often, are more likely to hit a robot’s core (doubles core exposure value in hit location calculations), and get double the melee momentum damage bonus.";
+                return "Piercing melee weapons achieve critical strikes more often, are more likely to hit a robotï¿½s core (doubles core exposure value in hit location calculations), and get double the melee momentum damage bonus.";
             case ItemDamageType.Entropic: // TODO
                 return "[NO_DATA]";
         }

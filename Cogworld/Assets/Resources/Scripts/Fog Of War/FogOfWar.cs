@@ -37,62 +37,70 @@ public class FogOfWar : MonoBehaviour
         // Go through all the tiles
         foreach (Vector3Int pos in allTiles.ToList())
         {
-            // Ensure that this tile is actually set
-            bool tileInDict = !MapManager.inst.mapdata[pos.x, pos.y].Equals(default(WorldTile));
-
-            if (tileInDict)
+            // Sanity check
+            if(HF.PosWithinMap((Vector2Int)pos))
             {
-                // Variables
-                WorldTile tile = MapManager.inst.mapdata[pos.x, pos.y];
+                // Ensure that this tile is actually set
+                bool tileInDict = !MapManager.inst.mapdata[pos.x, pos.y].Equals(default(WorldTile));
 
-                // Is this tile no longer visible?
-                bool tileNoLongerVisible = visibleTiles.Contains(pos) && !playerFOV.Contains(pos);
-                if (tileNoLongerVisible)
+                if (tileInDict)
                 {
-                    tile.vis = 1; // UNSEEN & EXPLORED
-                }
+                    // Variables
+                    WorldTile tile = MapManager.inst.mapdata[pos.x, pos.y];
 
-                // Is this tile in both lists? (No vis change)
-                bool tileStillVisible = visibleTiles.Contains(pos) && playerFOV.Contains(pos);
-                if (tileStillVisible)
-                {
-                    tile.vis = 2; // SEEN & EXPLORED
-                }
-
-                // We just saw this tile
-                bool tileNewlyVisible = !visibleTiles.Contains(pos) && playerFOV.Contains(pos);
-                if (tileNewlyVisible)
-                {
-                    tile.vis = 2; // SEEN & EXPLORED
-
-                    // Do the reveal animation if needed
-                    if (!tile.doneRevealAnimation)
+                    // Is this tile no longer visible?
+                    bool tileNoLongerVisible = visibleTiles.Contains(pos) && !playerFOV.Contains(pos);
+                    if (tileNoLongerVisible)
                     {
-                        tile.doneRevealAnimation = true;
-                        MapManager.inst.TileInitialReveal((Vector2Int)pos);
+                        tile.vis = 1; // UNSEEN & EXPLORED
+                    }
+
+                    // Is this tile in both lists? (No vis change)
+                    bool tileStillVisible = visibleTiles.Contains(pos) && playerFOV.Contains(pos);
+                    if (tileStillVisible)
+                    {
+                        tile.vis = 2; // SEEN & EXPLORED
+                    }
+
+                    // We just saw this tile
+                    bool tileNewlyVisible = !visibleTiles.Contains(pos) && playerFOV.Contains(pos);
+                    if (tileNewlyVisible)
+                    {
+                        tile.vis = 2; // SEEN & EXPLORED
+
+                        // Do the reveal animation if needed
+                        if (!tile.doneRevealAnimation)
+                        {
+                            tile.doneRevealAnimation = true;
+                            MapManager.inst.TileInitialReveal((Vector2Int)pos);
+                        }
+                    }
+
+                    // !! DEBUG - NO FOG !!
+                    if (debug_nofog)
+                    {
+                        // For full vision
+                        tile.vis = 2;
+                    }
+
+                    // Update the actual value
+                    MapManager.inst.mapdata[pos.x, pos.y].vis = tile.vis;
+                    MapManager.inst.mapdata[pos.x, pos.y].doneRevealAnimation = tile.doneRevealAnimation;
+
+                    // Last step: Remove unseen tiles
+                    if (tileNoLongerVisible)
+                    {
+                        allTiles.Remove(pos);
                     }
                 }
 
-                // !! DEBUG - NO FOG !!
-                if (debug_nofog)
-                {
-                    // For full vision
-                    tile.vis = 2;
-                }
-
-                // Update the actual value
-                MapManager.inst.mapdata[pos.x, pos.y].vis = tile.vis;
-                MapManager.inst.mapdata[pos.x, pos.y].doneRevealAnimation = tile.doneRevealAnimation;
-
-                // Last step: Remove unseen tiles
-                if (tileNoLongerVisible)
-                {
-                    allTiles.Remove(pos);
-                }
+                // Update the visibility of this tile
+                MapManager.inst.TileUpdateVis((Vector2Int)pos);
             }
-
-            // Update the visibility of this tile
-            MapManager.inst.TileUpdateVis((Vector2Int)pos);
+            else
+            {
+                allTiles.Remove(pos); // Out of bounds!
+            }
         }
 
         // Update visibleTiles
