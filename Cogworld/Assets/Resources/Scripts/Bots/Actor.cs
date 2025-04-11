@@ -1066,7 +1066,7 @@ public class Actor : Entity
         else // First time confirm
         {
             // Player a warning message
-            UIManager.inst.ShowCenterMessageTop("Collision imminent! Confirm direction.", UIManager.inst.dangerRed, Color.black);
+            UIManager.inst.ShowCenterMessageTop("Collision imminent! Confirm direction.", UIManager.inst.highSecRed, UIManager.inst.dangerRed);
             // Play a warning sound
             AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_ui["COLLISION_WARNING"], 0.7f); // UI - COLLISION_WARNING
             // Flash an indicator on the target

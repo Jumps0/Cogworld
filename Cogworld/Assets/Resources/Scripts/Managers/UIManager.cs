@@ -819,7 +819,7 @@ public class UIManager : MonoBehaviour
     /// <param name="message">The message to be displayed.</param>
     /// <param name="displayType">The visual (color) of the message.</param>
     /// <param name="timeToShow">How long the message appears for, default is 4 seconds.</param>
-    public void ShowCenterMessageTop(string message, Color textColor, Color backColor, float timeToShow = 4f)
+    public void ShowCenterMessageTop(string message, Color textColor, Color highlightColor, float timeToShow = 4f)
     {
         // Only want to play the co-routine if nothing else is running, if something is, stop it.
         if (centerMessageCO != null)
@@ -828,10 +828,10 @@ public class UIManager : MonoBehaviour
             if (centerMessage != null)
                 ClearCenterMessages();
         }
-        centerMessageCO = StartCoroutine(DoCenterMessage(message, textColor, backColor, timeToShow));
+        centerMessageCO = StartCoroutine(DoCenterMessage(message, textColor, highlightColor, timeToShow));
     }
 
-    IEnumerator DoCenterMessage(string message, Color textColor, Color backColor, float timeToShow = 4f)
+    IEnumerator DoCenterMessage(string message, Color textColor, Color highlightColor, float timeToShow = 4f)
     {
         // Instiatiate new message
         GameObject newCenterMessage = Instantiate(centerMessage_prefab, centerMessageArea.transform.position, Quaternion.identity);
@@ -842,7 +842,7 @@ public class UIManager : MonoBehaviour
         centerMessages.Add(centerMessage);
 
         // Assign Details
-        newCenterMessage.GetComponent<UICenterMessage>().Setup(message, textColor, backColor);
+        newCenterMessage.GetComponent<UICenterMessage>().Setup(message, textColor, highlightColor);
         newCenterMessage.GetComponent<UICenterMessage>().Appear();
 
         yield return new WaitForSeconds(timeToShow);
@@ -1047,7 +1047,7 @@ public class UIManager : MonoBehaviour
         yield return null;
     }
 
-    public void ClearItemPopup()
+    public void ClearItemPopups()
     {
         foreach (var item in itemPopups.ToList())
         {
@@ -1166,7 +1166,7 @@ public class UIManager : MonoBehaviour
 
     }
 
-    public void ClearCombatPopup()
+    public void ClearCombatPopups()
     {
         foreach (var item in combatPopups.ToList())
         {
@@ -1256,7 +1256,7 @@ public class UIManager : MonoBehaviour
 
     }
 
-    public void ClearBotPopup()
+    public void ClearBotPopups()
     {
         foreach (var item in botPopups.ToList())
         {
@@ -1724,6 +1724,9 @@ public class UIManager : MonoBehaviour
         WorldTile machineTile = MapManager.inst.mapdata[target.x, target.y];
 
         terminal_isAnimating = true;
+
+        // Close any active popups
+        HF.CloseAllMessageIndicators();
 
         // Freeze player
         PlayerData.inst.GetComponent<PlayerGridMovement>().playerMovementAllowed = false;
@@ -2835,6 +2838,9 @@ public class UIManager : MonoBehaviour
     public void CTerminal_Open(Vector2Int target)
     {
         WorldTile machineTile = MapManager.inst.mapdata[target.x, target.y];
+
+        // Close any active popups
+        HF.CloseAllMessageIndicators();
 
         cTerminal_animating = true;
 

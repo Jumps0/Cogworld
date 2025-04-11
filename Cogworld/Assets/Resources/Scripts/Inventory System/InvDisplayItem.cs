@@ -809,7 +809,7 @@ public class InvDisplayItem : MonoBehaviour
             {
                 if (!item.state)
                 {
-                    UIManager.inst.ShowCenterMessageTop($"{nameUnmodified} cannot be disabled", UIManager.inst.dangerRed, Color.black);
+                    UIManager.inst.ShowCenterMessageTop($"{nameUnmodified} cannot be disabled", UIManager.inst.highSecRed, UIManager.inst.dangerRed);
                 }
             }
         }

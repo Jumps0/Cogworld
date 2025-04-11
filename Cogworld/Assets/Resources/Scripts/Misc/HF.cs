@@ -5050,6 +5050,29 @@ public static class HF
 
     #region Misc
     /// <summary>
+    /// Close ANY currently active message indicators on the screen. Usually called in tandem with a machine interface being opened.
+    /// </summary>
+    public static void CloseAllMessageIndicators()
+    {
+        // Need to close:
+        /* -Center messages
+         * -Left (Alert) messages
+         * -Bottom messages
+         * -Exit popups
+         * -Item popups
+         * -Bot popups
+         */
+
+        UIManager.inst.ClearCenterMessages();
+        UIManager.inst.ClearAllLeftMessages();
+        UIManager.inst.ClearAllBottomMessages();
+        UIManager.inst.ClearExitPopups();
+        UIManager.inst.ClearItemPopups();
+        UIManager.inst.ClearCombatPopups();
+        UIManager.inst.ClearBotPopups();
+    }
+
+    /// <summary>
     /// Verifies if a specific position is within the bounds of the map.
     /// </summary>
     /// <param name="pos">The position to check.</param>
@@ -5959,12 +5982,12 @@ public static class HF
 
         if (matter < mCost)
         {
-            UIManager.inst.ShowCenterMessageTop($"{qualifier} matter stored to equip item ({10 - PlayerData.inst.currentMatter})", UIManager.inst.dangerRed, Color.black);
+            UIManager.inst.ShowCenterMessageTop($"{qualifier} matter stored to equip item ({10 - PlayerData.inst.currentMatter})", UIManager.inst.highSecRed, UIManager.inst.dangerRed);
             canAttach = false;
         }
         else if (energy < eCost)
         {
-            UIManager.inst.ShowCenterMessageTop($"{qualifier} energy stored to equip item ({20 - PlayerData.inst.currentEnergy})", UIManager.inst.dangerRed, Color.black);
+            UIManager.inst.ShowCenterMessageTop($"{qualifier} energy stored to equip item ({20 - PlayerData.inst.currentEnergy})", UIManager.inst.highSecRed, UIManager.inst.dangerRed);
             canAttach = false;
         }
 

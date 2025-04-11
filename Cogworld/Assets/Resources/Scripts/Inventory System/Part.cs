@@ -501,7 +501,7 @@ public class Part : MonoBehaviour
                 InventoryControl.inst.UpdateInterfaceInventories();
                 // Full here too, give up
                 // Display a message(
-                UIManager.inst.ShowCenterMessageTop($"Insufficent inventory capacity ({size})", UIManager.inst.dangerRed, Color.black);
+                UIManager.inst.ShowCenterMessageTop($"Insufficent inventory capacity ({size})", UIManager.inst.highSecRed, UIManager.inst.dangerRed);
                 return;
             }
         }
@@ -613,7 +613,7 @@ public class Part : MonoBehaviour
         }
 
         // Player a warning message
-        UIManager.inst.ShowCenterMessageTop($"Will {hideoutCase} {qualifier} part, repeat to confirm", UIManager.inst.dangerRed, Color.black);
+        UIManager.inst.ShowCenterMessageTop($"Will {hideoutCase} {qualifier} part, repeat to confirm", UIManager.inst.highSecRed, UIManager.inst.dangerRed);
         // Start the timer
         StartCoroutine(ConfirmEquipBadItemCooldown());
     }

@@ -201,7 +201,7 @@ public class PlayerGridMovement : MonoBehaviour
             }
             else
             {
-                UIManager.inst.ShowCenterMessageTop("Invalid move", Color.black, UIManager.inst.alertRed);
+                UIManager.inst.ShowCenterMessageTop("Invalid move", UIManager.inst.highSecRed, UIManager.inst.dangerRed);
             }
         }
         else // "About to Leave Area" (Walking into exit)
@@ -254,7 +254,7 @@ public class PlayerGridMovement : MonoBehaviour
         else // First time confirm
         {
             // Player a warning message
-            UIManager.inst.ShowCenterMessageTop("About to leave area! Confirm direction", UIManager.inst.dangerRed, Color.black);
+            UIManager.inst.ShowCenterMessageTop("About to leave area! Confirm direction", UIManager.inst.highSecRed, UIManager.inst.dangerRed);
             // Start the timer
             StartCoroutine(ConfirmCooldown());
         }

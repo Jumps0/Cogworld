@@ -179,7 +179,7 @@ public abstract class UserInterface : MonoBehaviour
                     string discardWord = "discard";
                     if (obj.GetComponent<InvDisplayItem>().item.isFused){ discardWord = "destroy"; }
 
-                    UIManager.inst.ShowCenterMessageTop($"Will {discardWord} {HF.GetFullItemName(obj.GetComponent<InvDisplayItem>().item)}, repeat to confirm", UIManager.inst.dangerRed, Color.black);
+                    UIManager.inst.ShowCenterMessageTop($"Will {discardWord} {HF.GetFullItemName(obj.GetComponent<InvDisplayItem>().item)}, repeat to confirm", UIManager.inst.highSecRed, UIManager.inst.dangerRed);
                 }
                 else // Not the first time, destroy the item
                 {
@@ -275,7 +275,7 @@ public abstract class UserInterface : MonoBehaviour
         {
             if(MouseData.slotHoveredOver == obj) // If we are attempting to swap the item with itself, cancel and create a message.
             {
-                UIManager.inst.ShowCenterMessageTop("Swap cancelled", UIManager.inst.highlightGreen, Color.black);
+                UIManager.inst.ShowCenterMessageTop("Swap cancelled", UIManager.inst.highlightGreen, UIManager.inst.highGreen);
                 return;
             }
 
@@ -375,12 +375,12 @@ public abstract class UserInterface : MonoBehaviour
             // 1) Check to see if the items are actually in the slot "area" (aka both in inventory/both in power,propulsion,utility,weapon)
             if ((originSlot.AllowedItems.Count == 0 && destinationSlot.AllowedItems.Count == 0)) // Both items share the same (inventory) slot type, obviously we shouldn't swap these.
             {
-                UIManager.inst.ShowCenterMessageTop("Item cannot be placed in this slot", UIManager.inst.dangerRed, Color.black);
+                UIManager.inst.ShowCenterMessageTop("Item cannot be placed in this slot", UIManager.inst.highSecRed, UIManager.inst.dangerRed);
                 return; // Bail out
             }
             else if(originSlot.AllowedItems.Count > 0 && destinationSlot.AllowedItems.Count > 0 && originSlot.AllowedItems[0] == destinationSlot.AllowedItems[0])
             { // Both items share the same (parts) slot type, we shouldn't swap these either.
-                UIManager.inst.ShowCenterMessageTop("Item cannot be placed in this slot", UIManager.inst.dangerRed, Color.black);
+                UIManager.inst.ShowCenterMessageTop("Item cannot be placed in this slot", UIManager.inst.highSecRed, UIManager.inst.dangerRed);
                 return; // Bail out
             }
 
@@ -676,7 +676,7 @@ public abstract class UserInterface : MonoBehaviour
                         slots_destination[i].Key.GetComponent<InvDisplayItem>().FlashItemDisplay(); // [DESTINATION]
                     }
 
-                    UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(originItem), UIManager.inst.highlightGreen, Color.black);
+                    UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(originItem), UIManager.inst.highlightGreen, UIManager.inst.highGreen);
                     UIManager.inst.CreateNewLogMessage("Attached " + HF.GetFullItemName(originItem), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
 
                     // End the player's turn
@@ -689,7 +689,7 @@ public abstract class UserInterface : MonoBehaviour
             }
             else // We can't swap the items, do a message.
             {
-                UIManager.inst.ShowCenterMessageTop("Item cannot be placed in this slot", UIManager.inst.dangerRed, Color.black);
+                UIManager.inst.ShowCenterMessageTop("Item cannot be placed in this slot", UIManager.inst.highSecRed, UIManager.inst.dangerRed);
             }
             #endregion
         }
@@ -787,7 +787,7 @@ public abstract class UserInterface : MonoBehaviour
             if(free_destination < size_origin)
             {
                 // Nope. Stop early.
-                UIManager.inst.ShowCenterMessageTop("Not enough space", UIManager.inst.dangerRed, Color.black);
+                UIManager.inst.ShowCenterMessageTop("Not enough space", UIManager.inst.highSecRed, UIManager.inst.dangerRed);
                 return;
             }
 
@@ -890,7 +890,7 @@ public abstract class UserInterface : MonoBehaviour
                         if (UIManager.inst.cTerminal_machine != null && MapManager.inst.mapdata[UIManager.inst.cTerminal_machine.x, UIManager.inst.cTerminal_machine.y].machinedata.customType == CustomTerminalType.HideoutCache)
                             word = "Retrieved ";
 
-                        UIManager.inst.ShowCenterMessageTop(word + HF.GetFullItemName(originSlot.item), UIManager.inst.highlightGreen, Color.black);
+                        UIManager.inst.ShowCenterMessageTop(word + HF.GetFullItemName(originSlot.item), UIManager.inst.highlightGreen, UIManager.inst.highGreen);
                         UIManager.inst.CreateNewLogMessage(word + HF.GetFullItemName(originSlot.item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
                     }
                     else if (destinationSlot.parent.GetComponent<DynamicInterface>())// Moving TO a /PARTS/ slot
@@ -904,22 +904,22 @@ public abstract class UserInterface : MonoBehaviour
 
                         if (originSlot.item.itemData.slot == ItemSlot.Power)
                         {
-                            UIManager.inst.ShowCenterMessageTop(word + HF.GetFullItemName(originSlot.item), UIManager.inst.highlightGreen, Color.black);
+                            UIManager.inst.ShowCenterMessageTop(word + HF.GetFullItemName(originSlot.item), UIManager.inst.highlightGreen, UIManager.inst.highGreen);
                             UIManager.inst.CreateNewLogMessage(word + HF.GetFullItemName(originSlot.item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
                         }
                         else if (originSlot.item.itemData.slot == ItemSlot.Propulsion)
                         {
-                            UIManager.inst.ShowCenterMessageTop(word + HF.GetFullItemName(originSlot.item), UIManager.inst.highlightGreen, Color.black);
+                            UIManager.inst.ShowCenterMessageTop(word + HF.GetFullItemName(originSlot.item), UIManager.inst.highlightGreen, UIManager.inst.highGreen);
                             UIManager.inst.CreateNewLogMessage(word + HF.GetFullItemName(originSlot.item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
                         }
                         else if (originSlot.item.itemData.slot == ItemSlot.Utilities)
                         {
-                            UIManager.inst.ShowCenterMessageTop(word + HF.GetFullItemName(originSlot.item), UIManager.inst.highlightGreen, Color.black);
+                            UIManager.inst.ShowCenterMessageTop(word + HF.GetFullItemName(originSlot.item), UIManager.inst.highlightGreen, UIManager.inst.highGreen);
                             UIManager.inst.CreateNewLogMessage(word + HF.GetFullItemName(originSlot.item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
                         }
                         else if (originSlot.item.itemData.slot == ItemSlot.Weapons)
                         {
-                            UIManager.inst.ShowCenterMessageTop(word + HF.GetFullItemName(originSlot.item), UIManager.inst.highlightGreen, Color.black);
+                            UIManager.inst.ShowCenterMessageTop(word + HF.GetFullItemName(originSlot.item), UIManager.inst.highlightGreen, UIManager.inst.highGreen);
                             UIManager.inst.CreateNewLogMessage(word + HF.GetFullItemName(originSlot.item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
                         }
                         else
@@ -963,7 +963,7 @@ public abstract class UserInterface : MonoBehaviour
             }
             else // No. Don't move the item.
             {
-                UIManager.inst.ShowCenterMessageTop("Item cannot be placed in this slot", UIManager.inst.dangerRed, Color.black);
+                UIManager.inst.ShowCenterMessageTop("Item cannot be placed in this slot", UIManager.inst.highSecRed, UIManager.inst.dangerRed);
             }
             #endregion
         }
@@ -1055,7 +1055,7 @@ public abstract class UserInterface : MonoBehaviour
         // Did we succeed on finding a slot(s)?
         if(freeSlotsFound < itemSize) // No. Display a message
         {
-            UIManager.inst.ShowCenterMessageTop($"No free {item.itemData.slot.ToString()} slots", UIManager.inst.dangerRed, Color.black);
+            UIManager.inst.ShowCenterMessageTop($"No free {item.itemData.slot.ToString()} slots", UIManager.inst.highSecRed, UIManager.inst.dangerRed);
         }
         else // Yes! Relocate the item.
         {
@@ -1094,7 +1094,7 @@ public abstract class UserInterface : MonoBehaviour
                         InventoryControl.inst.hideout_inventory.AddItem(item, 1);
                         if (!once)
                         {
-                            UIManager.inst.ShowCenterMessageTop("Submitted " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, Color.black);
+                            UIManager.inst.ShowCenterMessageTop("Submitted " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, UIManager.inst.highGreen);
                             UIManager.inst.CreateNewLogMessage("Submitted " + HF.GetFullItemName(item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
                         }
                     }
@@ -1103,7 +1103,7 @@ public abstract class UserInterface : MonoBehaviour
                         PlayerData.inst.GetComponent<PartInventory>().inv_power.AddItem(item, 1);
                         if (!once)
                         {
-                            UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, Color.black);
+                            UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, UIManager.inst.highGreen);
                             UIManager.inst.CreateNewLogMessage("Attached " + HF.GetFullItemName(item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
                         }
                     }
@@ -1112,7 +1112,7 @@ public abstract class UserInterface : MonoBehaviour
                         PlayerData.inst.GetComponent<PartInventory>().inv_propulsion.AddItem(item, 1);
                         if (!once)
                         {
-                            UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, Color.black);
+                            UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, UIManager.inst.highGreen);
                             UIManager.inst.CreateNewLogMessage("Attached " + HF.GetFullItemName(item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
                         }
                     }
@@ -1121,7 +1121,7 @@ public abstract class UserInterface : MonoBehaviour
                         PlayerData.inst.GetComponent<PartInventory>().inv_utility.AddItem(item, 1);
                         if (!once)
                         {
-                            UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, Color.black);
+                            UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, UIManager.inst.highGreen);
                             UIManager.inst.CreateNewLogMessage("Attached " + HF.GetFullItemName(item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
                         }
                     }
@@ -1130,7 +1130,7 @@ public abstract class UserInterface : MonoBehaviour
                         PlayerData.inst.GetComponent<PartInventory>().inv_weapon.AddItem(item, 1);
                         if (!once)
                         {
-                            UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, Color.black);
+                            UIManager.inst.ShowCenterMessageTop("Attached " + HF.GetFullItemName(item), UIManager.inst.highlightGreen, UIManager.inst.highGreen);
                             UIManager.inst.CreateNewLogMessage("Attached " + HF.GetFullItemName(item), UIManager.inst.activeGreen, UIManager.inst.dullGreen);
                         }
                     }
@@ -1199,7 +1199,7 @@ public abstract class UserInterface : MonoBehaviour
         }
 
         // Player a warning message
-        UIManager.inst.ShowCenterMessageTop($"Will {hideoutCase} {qualifier} part, repeat to confirm", UIManager.inst.dangerRed, Color.black);
+        UIManager.inst.ShowCenterMessageTop($"Will {hideoutCase} {qualifier} part, repeat to confirm", UIManager.inst.highSecRed, UIManager.inst.dangerRed);
         // Start the timer
         StartCoroutine(ConfirmEquipBadItemCooldown());
     }
