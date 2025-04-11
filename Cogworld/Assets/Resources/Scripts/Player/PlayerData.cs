@@ -1397,7 +1397,7 @@ public class PlayerData : MonoBehaviour
     public void HandleMouseHighlight()
     {
         // There are probably other cases where this shouldn't be enabled. Consider them here and add more when needed
-        if(UIManager.inst.terminal_targetTerm == null || this.GetComponent<PlayerGridMovement>().interfacingMode != InterfacingMode.COMBAT)
+        if(UIManager.inst.terminal_targetTerm == null || this.GetComponent<PlayerGridMovement>().interfacingMode != InterfacingMode.TYPING)
         {
             mouseTile.SetActive(true);
 
