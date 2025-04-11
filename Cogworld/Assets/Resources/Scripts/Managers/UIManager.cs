@@ -10789,6 +10789,7 @@ public class UITerminalDisplay
     public bool isAnimating = false;
     public TextMeshProUGUI secLvl;
     public TextMeshProUGUI terminal_name; // Terminal ?### - ? Access
+    public int terminal_binaryLen = 1776; // Binary [48 digits per line, 37 lines total (1776)]
 
     [Header("References")]
     public GameObject hackingArea;
@@ -10833,11 +10834,21 @@ public class UITerminalDisplay
     public List<GameObject> hackTargetsList = new List<GameObject>();
     public List<GameObject> hackResultsList = new List<GameObject>();
     public List<GameObject> hackCodesList = new List<GameObject>();
+    //
+    public Coroutine extradetail_co = null;
+    public string extradetail_string = "";
+    [Tooltip("The hacking option the mouse is currently hovering over. Updated via function.")]
+    public GameObject hoveredChoice = null;
 
     [Header("Codes Window")]
     public GameObject codes_window;
     public GameObject codes_setArea; // Where prefabs are assigned to
     public GameObject codes_prefab;
+
+    [Header("Custom Terminal")]
+    public Vector2Int customTerminal_location;
+    public GameObject prefab_gibberish;
+    public bool customTerminal_animating = false;
 }
 
 [System.Serializable]

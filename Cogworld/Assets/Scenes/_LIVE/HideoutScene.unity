@@ -27122,6 +27122,55 @@ MonoBehaviour:
   dialogueActor: {fileID: 0}
   dialogue_readyToDisplay: 0
   dialogue_binaryLen: 368
+  terminalMenu:
+    targetTerminal: {x: 0, y: 0}
+    isAnimating: 0
+    secLvl: {fileID: 1541771764}
+    terminal_name: {fileID: 355644279}
+    terminal_binaryLen: 1776
+    hackingArea: {fileID: 690459395}
+    targetResultsArea: {fileID: 1589001467}
+    hackInfoArea: {fileID: 1631387433}
+    hackInfo_borders:
+    - {fileID: 410785959}
+    - {fileID: 1509546481}
+    - {fileID: 2017123313}
+    - {fileID: 1457180969}
+    TARGETBorders: {fileID: 1387296174}
+    RESULTSBorders: {fileID: 989095394}
+    hackTitleBacker: {fileID: 591258371}
+    TARGETheaderbacker: {fileID: 965665477}
+    RESULTSheaderbacker: {fileID: 1836659679}
+    resultsScrollrect: {fileID: 2142358346}
+    hackOptionsArea: {fileID: 1783066452}
+    hackResultsArea: {fileID: 64064822}
+    activeIField: {fileID: 0}
+    backingBinary: {fileID: 387781460}
+    secLvl_backing: {fileID: 648534756}
+    closeEffect: {fileID: 319977818}
+    terminal_static: {fileID: 2101139848}
+    prefab_hackinfoV1: {fileID: 8519707058798226528, guid: 48db98db2a0da104f87061bb069b5ede, type: 3}
+    prefab_hackinfoV2: {fileID: 7776157754844797134, guid: 96dcc34dd241de1488181dcc45dfdb48, type: 3}
+    prefab_hackinfoV3: {fileID: 8519707058798226528, guid: 78523a769e120f541ae7999ae4d2a79c, type: 3}
+    prefab_hackinfoSpacer: {fileID: 7199519214279676382, guid: 589aed506a640104bb3db5d540a083f6, type: 3}
+    prefab_hackResultsSpacer: {fileID: 7199519214279676382, guid: 624bb04f9d1cda94b86af9dbae202864, type: 3}
+    prefab_trace: {fileID: 8519707058798226528, guid: 7c0f48acb3ae4cf4585f714c7f951637, type: 3}
+    prefab_locked: {fileID: 8519707058798226528, guid: e9d5ef6753ee0374aa4e0a88f2793998, type: 3}
+    prefab_hackoptionb: {fileID: 8519707058798226528, guid: 86b3e83c52a46ee42b22f719597c7481, type: 3}
+    prefab_hackResults: {fileID: 8519707058798226528, guid: 13553f4a107aaa94291a29bbdd0c8374, type: 3}
+    prefab_input: {fileID: 8519707058798226528, guid: 97e1297eec213894cb42536767083d14, type: 3}
+    hackinfoList: []
+    hackTargetsList: []
+    hackResultsList: []
+    hackCodesList: []
+    extradetail_string: 
+    hoveredChoice: {fileID: 0}
+    codes_window: {fileID: 944576326}
+    codes_setArea: {fileID: 1306931254}
+    codes_prefab: {fileID: 8519707058798226528, guid: 8a2f9695f93b74346b5f846236459516, type: 3}
+    customTerminal_location: {x: 0, y: 0}
+    prefab_gibberish: {fileID: 8519707058798226528, guid: 31310cd810a750c45bcedb00502bcb8b, type: 3}
+    customTerminal_animating: 0
   terminal_targetTerm: {x: 0, y: 0}
   terminal_isAnimating: 0
   terminal_hackingAreaRef: {fileID: 690459395}
@@ -27174,7 +27223,6 @@ MonoBehaviour:
   schematics_contentArea: {fileID: 81741505}
   schematics_closer: {fileID: 462778036}
   schematics_backer: {fileID: 722345112}
-  boxBars: []
   logMessage_prefab: {fileID: 8519707058798226528, guid: 552c5927d631a9a4a9ccc335da9497e3, type: 3}
   logTextArea: {fileID: 165584751}
   logFull: []
