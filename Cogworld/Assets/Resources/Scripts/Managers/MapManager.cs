@@ -10,23 +10,6 @@ using static StructureCTR;
 using Random = UnityEngine.Random;
 using Tile = UnityEngine.Tilemaps.Tile;
 
-/// <summary>
-/// Contains all data for a specific position in the world. Includes objects for both layers, and vision status.
-/// </summary>
-public struct TData
-{
-    // NOTE: IM WILL REPLACE THIS IN THE MAPDATA ARRAY WITH JUST WORLDTILE SINCE IT CAN BE ALL IN ONE NOW.
-    /// <summary>
-    /// There are 3 visibility states. 0 = UNSEEN/UNEXPLORED | 1 = UNSEEN/EXPLORED | 2 = SEEN/EXPLORED 
-    /// </summary>
-    public byte vis;
-    [Tooltip("Usually a floor or wall.")]
-    public TileBlock bottom;
-    [Tooltip("Any non-permanent entity. Machines, doors, etc.")]
-    public GameObject top;
-
-}
-
 public class MapManager : MonoBehaviour
 {
     public static MapManager inst;
@@ -94,7 +77,6 @@ public class MapManager : MonoBehaviour
     public List<MapGen_DataCTR> mapGenSpecifics = new List<MapGen_DataCTR>();
 
     [Header("Key Information")]
-    public Dictionary<Vector2Int, TData> _allTilesRealized = new Dictionary<Vector2Int, TData>(); // ~ This stuff is VERY important, but its coded poorly. Lets re-do it!
     [Tooltip("Contains all data related to the map.")]
     public WorldTile[,] mapdata;
     [Tooltip("A mirror of mapdata but used for pathing, where 0 is a free space, and anything above is some level of occupied. (Wall[1], bots[2], machines[3], traps[4], etc.)")]
@@ -1447,6 +1429,7 @@ public class MapManager : MonoBehaviour
                 // We need to place a floor tile below this (since its a layered object)
                 CreateBlock(new Vector2Int((int)obj.transform.position.x, (int)obj.transform.position.y), HF.IDbyTheme(TileType.Floor));
 
+                /*
                 if (!obj.GetComponent<Actor>()) // Sometimes there are bots in here
                 {
                     // This is an awkward bypass instead of using .Add because for some reason neighboring machines get assigned the same key???
@@ -1454,6 +1437,7 @@ public class MapManager : MonoBehaviour
                     T.top = obj;
                     _allTilesRealized[HF.V3_to_V2I(obj.transform.position)] = T;
                 }
+                */
             }
         }
     }
@@ -3132,15 +3116,10 @@ public class MapManager : MonoBehaviour
         }
         TurnManager.inst.actors.Clear();
 
-        // Remove everything in the main dictionary
-        foreach (var data in _allTilesRealized.ToList())
-        {
-            TData T = data.Value;
-            Destroy(T.bottom);
-            Destroy(T.top);
-        }
+        // Reset the entire map
+        mapdata = new WorldTile[1,1];
+        pathdata = new byte[1, 1];
 
-        _allTilesRealized.Clear();
         regions.Clear();
 
         // Clear triggers
