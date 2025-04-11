@@ -1669,6 +1669,9 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region Generic Machine / Terminal
+    [Header("Machine Interaction & Hacking Menu")]
+    public UITerminalDisplay terminalMenu;
+
     [HideInInspector] public Vector2Int terminal_targetTerm;
     [Header("Terminal/Generic Machines")]
     public bool terminal_isAnimating = false;
@@ -3245,10 +3248,6 @@ public class UIManager : MonoBehaviour
     }
 
     #endregion
-
-    [Header("Bar Collection")]
-    [Tooltip("Collection of all bar images that make up the UI boxes.")]
-    public List<Image> boxBars = new List<Image>();
 
     #region Log Messages
 
@@ -10778,6 +10777,67 @@ public class UIManager : MonoBehaviour
 
     #endregion
 
+}
+
+[System.Serializable]
+[Tooltip("Subclass that contains all relevant variables for the Terminal UI window.")]
+public class UITerminalDisplay
+{
+    [Header("Info")]
+    [Tooltip("The location of the parent machine part that the player is currently interacting with.")]
+    public Vector2Int targetTerminal;
+    public bool isAnimating = false;
+    public TextMeshProUGUI secLvl;
+    public TextMeshProUGUI terminal_name; // Terminal ?### - ? Access
+
+    [Header("References")]
+    public GameObject hackingArea;
+    public GameObject targetResultsArea;
+    public GameObject hackInfoArea;
+    public List<GameObject> hackInfo_borders = new List<GameObject>();
+    public Image TARGETBorders;
+    public Image RESULTSBorders;
+    public Image hackTitleBacker;
+    public Image TARGETheaderbacker;
+    public Image RESULTSheaderbacker;
+    public ScrollRect resultsScrollrect;
+    public List<KeyValuePair<string, TerminalCommand>> manualBuffer = new List<KeyValuePair<string, TerminalCommand>>(); // Past used terminal codes
+    //
+    [Tooltip("Where the hacking option prefabs will be put (Target)")]
+    public GameObject hackOptionsArea;
+    [Tooltip("Where the hacking result prefabs will be put (Results)")]
+    public GameObject hackResultsArea;
+    //
+    [Tooltip("Input Field gameObject when using a Terminal")]
+    public GameObject activeIField = null;
+    public TextMeshProUGUI backingBinary;
+    public Image secLvl_backing;
+    
+    [SerializeField] private UIHackCloseEffect closeEffect;
+    [SerializeField] private GameObject terminal_static;
+    private GameObject terminal_staticAudio = null;
+
+    [Header("Prefabs")]
+    public GameObject prefab_hackinfoV1;
+    public GameObject prefab_hackinfoV2;
+    public GameObject prefab_hackinfoV3;
+    public GameObject prefab_hackinfoSpacer;
+    public GameObject prefab_hackResultsSpacer;
+    public GameObject prefab_trace;
+    public GameObject prefab_locked;
+    public GameObject prefab_hackoptionb;
+    public GameObject prefab_hackResults;
+    public GameObject prefab_input;
+    // - Active Lines
+    public List<GameObject> hackinfoList = new List<GameObject>();
+    public List<GameObject> hackTargetsList = new List<GameObject>();
+    public List<GameObject> hackResultsList = new List<GameObject>();
+    public List<GameObject> hackCodesList = new List<GameObject>();
+
+    [Header("Codes Window")]
+    public GameObject codes_window;
+    public GameObject codes_setArea; // Where prefabs are assigned to
+    public GameObject codes_prefab;
 }
 
 [System.Serializable]
