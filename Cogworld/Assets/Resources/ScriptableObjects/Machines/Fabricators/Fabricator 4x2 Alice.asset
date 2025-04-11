@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: Fabricator 4x2 Alice
   m_EditorClassIdentifier: 
   Id: 62
-  displayName: Garrison Alice
+  displayName: Fabricator Alice
   description: 
-  type: 1
+  type: 0
   operationSound: {fileID: 0}
   symmetry: 2
   varSOUTH:
     parent: {x: 17, y: 71}
-    sboundsBL: {x: 16, y: 71}
+    sboundsBL: {x: 15, y: 71}
     sboundsTR: {x: 18, y: 72}
     aboundsBL: {x: 15, y: 74}
     aboundsTR: {x: 18, y: 75}

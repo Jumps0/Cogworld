@@ -851,7 +851,7 @@ public struct WorldTile
                 machinedata.displayName = "Fabricator";
 
                 // Set the override sprite
-                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["Faricator"].displaySprite;
+                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["Fabricator"].displaySprite;
 
                 machinedata.FabricatorInit();
                 break;
@@ -1056,8 +1056,6 @@ public struct MachineData
 
     [Tooltip("If this machine does a timed operation, this is the location of the timer which is displayed in the world, on top of the parent part.")]
     public Vector2Int timerObjectLocation;
-
-    // TODO: !! All the other stuff needed for the individual interactable machines !!
 
     // Future note:
     // -How to handle Machine audio: https://www.gridsagegames.com/blog/2020/06/building-cogminds-ambient-soundscape/

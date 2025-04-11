@@ -654,8 +654,8 @@ public class MapManager : MonoBehaviour
         PlaceIndividualMachine(new Vector2Int(bl.x + 4, bl.y + 7), machineDatabase.dict["Cave Base Generator"].Id); // Static Machine (Outpost Generator)
         PlaceIndividualMachine(new Vector2Int(bl.x + 7, bl.y + 4), machineDatabase.dict["Recharge Station"].Id); // Static Machine (Recharging Bay)
 
-        //PlaceIndividualMachine(new Vector2Int(bl.x + 3, bl.y + 13), 2, 2); // Fabricator 4x2 "Alice"
-        PlaceIndividualMachine(new Vector2Int(bl.x + 1, bl.y + 12), machineDatabase.dict["Garrison Angel"].Id, Direction.EA); // Garrison 3x3 "Angel"
+        PlaceIndividualMachine(new Vector2Int(bl.x + 1, bl.y + 13), machineDatabase.dict["Fabricator Alice"].Id); // Fabricator 4x2 "Alice"
+        //PlaceIndividualMachine(new Vector2Int(bl.x + 1, bl.y + 12), machineDatabase.dict["Garrison Angel"].Id, Direction.EA); // Garrison 3x3 "Angel"
 
         // 6 - Place Cache
         PlaceHideoutCache(new Vector2Int(bl.x + 8, bl.y + 10));
