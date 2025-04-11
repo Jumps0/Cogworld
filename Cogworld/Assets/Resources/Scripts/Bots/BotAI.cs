@@ -45,11 +45,8 @@ public class BotAI : MonoBehaviour
     public void TakeTurn()
     {
         // DEBUG
-        if (isTurn)
-        {
-            isTurn = false;
-            Action.SkipAction(this.GetComponent<Actor>());
-        }
+        Action.SkipAction(this.GetComponent<Actor>());
+        return;
 
         // - Don't do anything if this actor isn't "awake" (or able to reasonably take their turn)
         if (this.GetComponent<Actor>().state_DORMANT || this.GetComponent<Actor>().state_UNPOWERED || this.GetComponent<Actor>().state_DISABLED)

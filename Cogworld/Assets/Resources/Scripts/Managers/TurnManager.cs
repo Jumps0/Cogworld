@@ -165,7 +165,6 @@ public class TurnManager : MonoBehaviour
         // -- TODO: Iron this out
         actor.EndTurn();
         actors.Remove(actor);
-        //Debug.Log(actors.Count + " left to act.");
         if (actors.Count == 0)
         {
             turnCounter++;

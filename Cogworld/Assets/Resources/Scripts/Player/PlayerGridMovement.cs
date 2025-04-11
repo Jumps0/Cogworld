@@ -339,6 +339,8 @@ public class PlayerGridMovement : MonoBehaviour
         // Get mouse position
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
 
+        if (!HF.PosWithinMap(HF.V3_to_V2I(mousePos))){ return; }
+
         // Check if mouse overlaps with the player
         if (PlayerData.inst.GetComponent<BoxCollider2D>().OverlapPoint(mousePos))
         {
@@ -441,7 +443,7 @@ public class PlayerGridMovement : MonoBehaviour
             Vector2Int mPos = new Vector2Int((int)(mousePos.x + 0.5f), (int)(mousePos.y + 0.5f)); // Adjustment due to tiles being offset slightly from natural grid
 
             // If they click on a Bot, Item, or Machine, the /DATA/ window should open
-            if (UIManager.inst.dataMenu.isAnimating) { return; } // Nothing, bail out (or the menu is in the process of opening or closing)
+            if (UIManager.inst.dataMenu.isAnimating || !HF.PosWithinMap(mPos)) { return; } // Nothing, bail out (or the menu is in the process of opening or closing)
 
             // Forcefully exit out of targeting mode since we are about to open this window
             this.GetComponent<PlayerData>().doTargeting = false;

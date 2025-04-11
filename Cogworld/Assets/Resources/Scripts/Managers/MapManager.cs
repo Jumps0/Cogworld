@@ -544,6 +544,8 @@ public class MapManager : MonoBehaviour
         //
         // --            --
 
+        TurnManager.inst.LoadActors();
+
         levelLoadCover.SetActive(false); // Disable the Level Load cover
 
         // Enable Control

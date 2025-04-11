@@ -27,6 +27,8 @@ public class UIBorderIndicator : MonoBehaviour
         sprite.sprite = sprite_ascii;
         sprite.color = sprite_color;
         machine_parent = parentLocation;
+
+        this.gameObject.name = $"[{sprite_ascii}] Border Indicator";
     }
 
     bool setup = false;
@@ -122,9 +124,9 @@ public class UIBorderIndicator : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (UIManager.inst && UIManager.inst.GetComponent<BorderIndicators>().locations.ContainsValue(this.gameObject))
+        if (UIManager.inst && UIManager.inst.GetComponent<BorderIndicators>()._targetIndicators.ContainsValue(this.gameObject))
         {
-            UIManager.inst.GetComponent<BorderIndicators>().locations.Remove(machine_parent); // This should work?
+            UIManager.inst.GetComponent<BorderIndicators>()._targetIndicators.Remove(machine_parent); // This should work?
         }
     }
 
