@@ -1671,57 +1671,6 @@ public class UIManager : MonoBehaviour
     #region Generic Machine / Terminal
     [Header("Machine Interaction & Hacking Menu")]
     public UITerminalDisplay terminalMenu;
-
-    [HideInInspector] public Vector2Int terminal_targetTerm;
-    [Header("Terminal/Generic Machines")]
-    public bool terminal_isAnimating = false;
-    public GameObject terminal_hackingAreaRef;
-    public GameObject terminal_targetresultsAreaRef;
-    public GameObject terminal_hackinfoArea1;
-    public List<GameObject> terminal_hackinfoBorders = new List<GameObject>();
-    public Image terminal_TARGETBorders;
-    public Image terminal_RESULTSBorders;
-    public Image terminal_hackTitleBacker;
-    public Image terminal_TARGETheaderbacker;
-    public Image terminal_RESULTSheaderbacker;
-    public ScrollRect terminal_resultsScrollrect;
-    public List<KeyValuePair<string, TerminalCommand>> terminal_manualBuffer = new List<KeyValuePair<string, TerminalCommand>>(); // Past used terminal codes
-    //
-    public GameObject terminal_hackOptionsArea; // Where the hacking option prefabs will be put (Target)
-    public GameObject terminal_hackResultsArea; // Where the hacking result prefabs will be put (Results)
-    //
-    [Tooltip("Input Field gameObject when using a Terminal")]
-    public GameObject terminal_activeIField = null;
-    //
-    public TextMeshProUGUI terminal_backingBinary;
-    public TextMeshProUGUI terminal_name; // Terminal ?### - ? Access
-    public Image terminal_secLvl_backing;
-    public TextMeshProUGUI terminal_secLvl;
-    [SerializeField] private UIHackCloseEffect terminal_closeEffect;
-    [SerializeField] private GameObject terminal_static;
-    private GameObject terminal_staticAudio = null;
-    // - Prefabs
-    public GameObject terminal_hackinfoV1_prefab;
-    public GameObject terminal_hackinfoV2_prefab;
-    public GameObject terminal_hackinfoV3_prefab;
-    public GameObject terminal_hackinfoSpacer_prefab;
-    public GameObject terminal_hackResultsSpacer_prefab;
-    public GameObject terminal_trace_prefab;
-    public GameObject terminal_locked_prefab;
-    public GameObject terminal_hackoption_prefab;
-    public GameObject terminal_hackResults_prefab;
-    public GameObject terminal_input_prefab;
-    // - Active Lines
-    public List<GameObject> terminal_hackinfoList = new List<GameObject>();
-    public List<GameObject> terminal_hackTargetsList = new List<GameObject>();
-    public List<GameObject> terminal_hackResultsList = new List<GameObject>();
-    public List<GameObject> terminal_hackCodesList = new List<GameObject>();
-
-    [Header("    Codes Window")]
-    public GameObject codes_window;
-    public GameObject codes_setArea; // Where prefabs are assigned to
-    public GameObject codes_prefab;
-
     public void Terminal_OpenGeneric(Vector2Int target)
     {
         WorldTile machineTile = MapManager.inst.mapdata[target.x, target.y];
@@ -2497,7 +2446,6 @@ public class UIManager : MonoBehaviour
         codes_window.SetActive(false);
     }
 
-    [SerializeField] private int terminal_binaryLen = 1776; // Binary [48 digits per line, 37 lines total (1776)]
     private void Terminal_Binary()
     {
         var randomBinaryChars = new char[terminal_binaryLen];
@@ -2732,10 +2680,6 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private Coroutine terminal_extradetail_co = null;
-    private string terminal_extradetail_string = "";
-    [Tooltip("The hacking option the mouse is currently hovering over. Updated via function.")]
-    private GameObject terminal_hoveredChoice = null;
     public void Terminal_UpdateHoveredChoice(GameObject option, bool enteredBounds)
     {
         if (enteredBounds) // If this option has just been entered, it is now the new hovered choice.
@@ -2833,10 +2777,6 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region Custom Terminal
-    [HideInInspector] public Vector2Int cTerminal_machine;
-    [Header("Custom Terminal")]
-    public GameObject cTerminal_gibberishPrefab;
-    public bool cTerminal_animating = false;
 
     public void CTerminal_Open(Vector2Int target)
     {
