@@ -323,7 +323,7 @@ public class PlayerData : MonoBehaviour
 
         // First we only want to do this if the player actually has weapons and atleast one is active
         Item weaponInUse = Action.FindActiveWeapon(this.GetComponent<Actor>());
-        if (weaponInUse != null && !UIManager.inst.dataMenu.data_parent.activeInHierarchy && UIManager.inst.terminal_targetTerm == null && !HF.MouseBoundsCheck())
+        if (weaponInUse != null && !UIManager.inst.dataMenu.data_parent.activeInHierarchy && UIManager.inst.terminalMenu.MACHINE == null && !HF.MouseBoundsCheck())
         {
             canDoTargeting = true;
 
@@ -1397,7 +1397,7 @@ public class PlayerData : MonoBehaviour
     public void HandleMouseHighlight()
     {
         // There are probably other cases where this shouldn't be enabled. Consider them here and add more when needed
-        if(UIManager.inst.terminal_targetTerm == null || this.GetComponent<PlayerGridMovement>().interfacingMode != InterfacingMode.TYPING)
+        if(UIManager.inst.terminalMenu.MACHINE == Vector2Int.zero || this.GetComponent<PlayerGridMovement>().interfacingMode != InterfacingMode.TYPING)
         {
             mouseTile.SetActive(true);
 

@@ -765,7 +765,7 @@ public class InvDisplayItem : MonoBehaviour
     public void RightClick()
     {
         // Terminal not open and /DATA/ menu not in the process of animating
-        if(!UIManager.inst.terminal_targetresultsAreaRef.activeInHierarchy && !UIManager.inst.dataMenu.isAnimating)
+        if(!UIManager.inst.terminalMenu.targetResultsArea.activeInHierarchy && !UIManager.inst.dataMenu.isAnimating)
             UIManager.inst.Data_OpenMenu(Vector2Int.zero, item, null, PlayerData.inst.GetComponent<Actor>());
     }
 
@@ -777,7 +777,7 @@ public class InvDisplayItem : MonoBehaviour
             || (item != null && item.isBroken) // Forbid broken items from being toggled
             || (item != null && item.isFaulty) // Forbid faulty items from being toggled
             || (item != null && item.disabledTimer > 0) // Forbid force disabled items from being toggled.
-            || (UIManager.inst.cTerminal_machine != null && MapManager.inst.mapdata[UIManager.inst.cTerminal_machine.x, UIManager.inst.cTerminal_machine.y].machinedata.customType == CustomTerminalType.HideoutCache)) // Don't toggle items while in the cache inventory mode
+            || (UIManager.inst.terminalMenu.customTerminal_location != Vector2Int.zero && MapManager.inst.mapdata[UIManager.inst.terminalMenu.customTerminal_location.x, UIManager.inst.terminalMenu.customTerminal_location.y].machinedata.customType == CustomTerminalType.HideoutCache)) // Don't toggle items while in the cache inventory mode
         {
             return;
         }

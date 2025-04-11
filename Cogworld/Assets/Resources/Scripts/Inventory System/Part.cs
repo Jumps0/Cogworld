@@ -607,7 +607,7 @@ public class Part : MonoBehaviour
             qualifier = "corrupted";
         }
 
-        if (UIManager.inst.cTerminal_machine != Vector2Int.zero && MapManager.inst.mapdata[UIManager.inst.cTerminal_machine.x, UIManager.inst.cTerminal_machine.y].machinedata.customType == CustomTerminalType.HideoutCache)
+        if (UIManager.inst.terminalMenu.customTerminal_location != Vector2Int.zero && MapManager.inst.mapdata[UIManager.inst.terminalMenu.customTerminal_location.x, UIManager.inst.terminalMenu.customTerminal_location.y].machinedata.customType == CustomTerminalType.HideoutCache)
         {
             hideoutCase = "store";
         }

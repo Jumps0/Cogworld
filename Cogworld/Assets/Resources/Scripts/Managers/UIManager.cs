@@ -10725,7 +10725,7 @@ public class UITerminalDisplay
 {
     [Header("Info")]
     [Tooltip("The location of the parent machine part that the player is currently interacting with.")]
-    public Vector2Int targetTerminal;
+    public Vector2Int MACHINE;
     public bool isAnimating = false;
     public TextMeshProUGUI secLvl;
     public TextMeshProUGUI terminal_name; // Terminal ?### - ? Access

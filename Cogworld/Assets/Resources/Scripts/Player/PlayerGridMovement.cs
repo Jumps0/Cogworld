@@ -421,7 +421,7 @@ public class PlayerGridMovement : MonoBehaviour
         // --                  --
 
         // -- Terminal Extra Detail Tooltip --
-        if (UIManager.inst.terminal_targetresultsAreaRef.activeInHierarchy) // We must be in the menu
+        if (UIManager.inst.terminalMenu.targetResultsArea.activeInHierarchy) // We must be in the menu
         {
             UIManager.inst.Terminal_TryExtraDetail(); // Transfer over logic to UIManager to make things easier
         }
@@ -477,15 +477,15 @@ public class PlayerGridMovement : MonoBehaviour
     public void OnQuit(InputValue value)
     {
         // - Check to close Terminal window -
-        if (UIManager.inst.terminal_targetTerm != null) // Window is open
+        if (UIManager.inst.terminalMenu.MACHINE != Vector2Int.zero) // Window is open
         {
-            if (UIManager.inst.terminal_activeIField == null) // And the player isn't in the input window
+            if (UIManager.inst.terminalMenu.activeIField == null) // And the player isn't in the input window
             {
                 UIManager.inst.Terminal_CloseAny(); // The close the window
             }
             else // If it does exist we need to tell it escape was pressed incase it should be closed out of.
             {
-                UIManager.inst.terminal_activeIField.GetComponent<UIHackInputfield>().Input_Escape();
+                UIManager.inst.terminalMenu.activeIField.GetComponent<UIHackInputfield>().Input_Escape();
             }
         }
 
@@ -515,11 +515,11 @@ public class PlayerGridMovement : MonoBehaviour
     /// <param name="value"></param>
     public void OnAutocomplete(InputValue value)
     {
-        if (UIManager.inst.terminal_targetTerm != null) // Window is open
+        if (UIManager.inst.terminalMenu.MACHINE != Vector2Int.zero) // Window is open
         {
-            if (UIManager.inst.terminal_activeIField != null) // And the player is in the input window
+            if (UIManager.inst.terminalMenu.activeIField != null) // And the player is in the input window
             {
-                UIManager.inst.terminal_activeIField.GetComponent<UIHackInputfield>().Input_Tab();
+                UIManager.inst.terminalMenu.activeIField.GetComponent<UIHackInputfield>().Input_Tab();
             }
         }
     }
@@ -531,7 +531,7 @@ public class PlayerGridMovement : MonoBehaviour
     {
         // Check for player input
         if (Keyboard.current.anyKey.wasPressedThisFrame
-            && !UIManager.inst.terminal_targetresultsAreaRef.gameObject.activeInHierarchy
+            && !UIManager.inst.terminalMenu.targetResultsArea.gameObject.activeInHierarchy
             && !InventoryControl.inst.awaitingSort
             && !GlobalSettings.inst.db_main.activeInHierarchy)
         {

@@ -67,7 +67,7 @@ public class UIHackCustomCode : MonoBehaviour
     private void Update()
     {
         // Input listener
-        if (available && ready && UIManager.inst.terminal_activeIField == null) // Don't want to accept input when doing so somewhere else!
+        if (available && ready && UIManager.inst.terminalMenu.activeIField == null) // Don't want to accept input when doing so somewhere else!
         {
             if (assignedKeyCode.wasPressedThisFrame && !GlobalSettings.inst.db_main.gameObject.activeInHierarchy) // Make sure to not trigger when typing in console
             {
@@ -78,7 +78,7 @@ public class UIHackCustomCode : MonoBehaviour
 
     public void AttemptHack()
     {
-        WorldTile tile = MapManager.inst.mapdata[UIManager.inst.terminal_targetTerm.x, UIManager.inst.terminal_targetTerm.y];
+        WorldTile tile = MapManager.inst.mapdata[UIManager.inst.terminalMenu.MACHINE.x, UIManager.inst.terminalMenu.MACHINE.y];
 
         if (tile.machinedata.type == MachineType.Terminal && tile.machinedata.terminalCustomCodes.Count > 0)
         {

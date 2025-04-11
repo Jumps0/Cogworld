@@ -1045,17 +1045,17 @@ public class GlobalSettings : MonoBehaviour
                 break;
             case "hackfail":
 
-                if(UIManager.inst.terminal_targetTerm != null)
+                if(UIManager.inst.terminalMenu.MACHINE != Vector2Int.zero)
                 {
                     // Need to get current hack status values
-                    bool detected = MapManager.inst.mapdata[UIManager.inst.terminal_targetTerm.x, UIManager.inst.terminal_targetTerm.y].machinedata.detected;
+                    bool detected = MapManager.inst.mapdata[UIManager.inst.terminalMenu.MACHINE.x, UIManager.inst.terminalMenu.MACHINE.y].machinedata.detected;
 
                     if (!detected)
                     {
                         UIManager.inst.Terminal_InitTrace(); // Activate the trace bar
                     }
 
-                    foreach (var item in UIManager.inst.terminal_hackinfoList.ToList())
+                    foreach (var item in UIManager.inst.terminalMenu.hackinfoList.ToList())
                     {
                         if (item.GetComponent<UITraceBar>())
                         {

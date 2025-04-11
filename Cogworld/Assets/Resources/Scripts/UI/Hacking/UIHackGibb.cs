@@ -174,7 +174,7 @@ public class UIHackGibb : MonoBehaviour
 
         _text.text = inputString;
 
-        LayoutRebuilder.ForceRebuildLayoutImmediate(UIManager.inst.terminal_hackinfoArea1.GetComponent<RectTransform>());
+        LayoutRebuilder.ForceRebuildLayoutImmediate(UIManager.inst.terminalMenu.hackInfoArea.GetComponent<RectTransform>());
     }
 
     /*

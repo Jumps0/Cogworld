@@ -642,7 +642,7 @@ public static class HF
         else // This is a special action reward
         {
             string parsedName = HF.ParseHackName(command.hack);
-            WorldTile terminal = MapManager.inst.mapdata[UIManager.inst.terminal_targetTerm.x, UIManager.inst.terminal_targetTerm.y];
+            WorldTile terminal = MapManager.inst.mapdata[UIManager.inst.terminalMenu.MACHINE.x, UIManager.inst.terminalMenu.MACHINE.y];
 
             switch (command.hack.hackType)
             {
@@ -699,7 +699,7 @@ public static class HF
                     }
                     else if (command.secondaryText == "emergency")
                     {
-                        GameManager.inst.AccessEmergency(UIManager.inst.terminal_targetTerm);
+                        GameManager.inst.AccessEmergency(UIManager.inst.terminalMenu.MACHINE);
                         return "Local emergency access data updated.";
                     }
                     break;
@@ -1847,7 +1847,7 @@ public static class HF
                 }
             }
 
-            foreach (var i in UIManager.inst.terminal_hackinfoList.ToList())
+            foreach (var i in UIManager.inst.terminalMenu.hackinfoList.ToList())
             {
                 if (i.GetComponent<UIHackinfoV3>())
                 {
@@ -1872,7 +1872,7 @@ public static class HF
                 traceProgress += failureBonus;
             }
 
-            foreach (var item in UIManager.inst.terminal_hackinfoList.ToList())
+            foreach (var item in UIManager.inst.terminalMenu.hackinfoList.ToList())
             {
                 if (item.GetComponent<UITraceBar>())
                 {

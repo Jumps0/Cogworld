@@ -46,7 +46,7 @@ public class UISchematicOption : MonoBehaviour
         bot = _bot;
         command = new TerminalCommand(letter, "Load Schematic", TerminalCommandType.Load, "", MapManager.inst.hackDatabase.Hack[26], null, null, _bot, _item);
 
-        int secLvl = MapManager.inst.mapdata[UIManager.inst.terminal_targetTerm.x, UIManager.inst.terminal_targetTerm.y].machinedata.secLvl;
+        int secLvl = MapManager.inst.mapdata[UIManager.inst.terminalMenu.MACHINE.x, UIManager.inst.terminalMenu.MACHINE.y].machinedata.secLvl;
         float chance = 0f;
         if (secLvl == 0)
         {
@@ -194,7 +194,7 @@ public class UISchematicOption : MonoBehaviour
         }
 
         // If its an open system we auto-succeed
-        if (MapManager.inst.mapdata[UIManager.inst.terminal_targetTerm.x, UIManager.inst.terminal_targetTerm.y].machinedata.secLvl == 0)
+        if (MapManager.inst.mapdata[UIManager.inst.terminalMenu.MACHINE.x, UIManager.inst.terminalMenu.MACHINE.y].machinedata.secLvl == 0)
         {
             SucceedHack(fill);
         }
@@ -208,7 +208,7 @@ public class UISchematicOption : MonoBehaviour
             {
                 UIManager.inst.Terminal_CreateResult(HF.GenericHackFailure(random), highDetColor, (">>" + HF.HackToPrintout(command.hack)), true, chanceOfSuccess - random);
             }
-            HF.ScrollToBottom(UIManager.inst.terminal_resultsScrollrect); // Force scroll to bottom
+            HF.ScrollToBottom(UIManager.inst.terminalMenu.resultsScrollrect); // Force scroll to bottom
         }
     }
 

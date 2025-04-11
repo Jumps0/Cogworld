@@ -93,7 +93,7 @@ public class UIHackInputfield : MonoBehaviour
         {
             CloseCodesWindow();
             // and destroy this manual input
-            UIManager.inst.terminal_activeIField = null;
+            UIManager.inst.terminalMenu.activeIField = null;
             Destroy(this.gameObject);
         }
     }
@@ -106,7 +106,7 @@ public class UIHackInputfield : MonoBehaviour
         if (field.isFocused)
         {
             // -- Just here to be safe --
-            if (field.text.Length == 0 && UIManager.inst.terminal_manualBuffer.Count > 0)
+            if (field.text.Length == 0 && UIManager.inst.terminalMenu.manualBuffer.Count > 0)
             {
                 BufferSuggestions();
             }
@@ -188,7 +188,7 @@ public class UIHackInputfield : MonoBehaviour
 
             // Previous Suggestions check
             bool EMPTYFIELD = field.text.Length == 0;
-            if ((EMPTYFIELD || !box_main.gameObject.activeInHierarchy) && UIManager.inst.terminal_manualBuffer.Count > 0)
+            if ((EMPTYFIELD || !box_main.gameObject.activeInHierarchy) && UIManager.inst.terminalMenu.manualBuffer.Count > 0)
             {
                 if (EMPTYFIELD) { suggID = -1; }
 
@@ -213,7 +213,7 @@ public class UIHackInputfield : MonoBehaviour
         HackObject hack;
         (hack, command) = HF.ParseHackString(attempt);
 
-        UIManager.inst.terminal_manualBuffer.Add(new KeyValuePair<string, TerminalCommand>(attempt, command)); // Add to buffer
+        UIManager.inst.terminalMenu.manualBuffer.Add(new KeyValuePair<string, TerminalCommand>(attempt, command)); // Add to buffer
 
         if (hack != null)
         {
@@ -233,7 +233,7 @@ public class UIHackInputfield : MonoBehaviour
         // -- Calculate Chance of Success --
         float chance = 0f;
 
-        int secLvl = MapManager.inst.mapdata[UIManager.inst.terminal_targetTerm.x, UIManager.inst.terminal_targetTerm.y].machinedata.secLvl;
+        int secLvl = MapManager.inst.mapdata[UIManager.inst.terminalMenu.MACHINE.x, UIManager.inst.terminalMenu.MACHINE.y].machinedata.secLvl;
         if (secLvl == 0)
         {
             chance = 1f; // If its an open system we auto-succeed
@@ -330,7 +330,7 @@ public class UIHackInputfield : MonoBehaviour
         }
 
         
-        HF.ScrollToBottom(UIManager.inst.terminal_resultsScrollrect); // Force scroll to bottom
+        HF.ScrollToBottom(UIManager.inst.terminalMenu.resultsScrollrect); // Force scroll to bottom
     }
 
     private void SucceedHack(string fill, HackObject hack, TerminalCommand command)
@@ -368,7 +368,7 @@ public class UIHackInputfield : MonoBehaviour
         foreach (HackObject hack in MapManager.inst.hackDatabase.Hack)
         {
             // Hack must be compatible with this machine.
-            if(MapManager.inst.mapdata[UIManager.inst.terminal_targetTerm.x, UIManager.inst.terminal_targetTerm.y].machinedata.type == hack.relatedMachine)
+            if(MapManager.inst.mapdata[UIManager.inst.terminalMenu.MACHINE.x, UIManager.inst.terminalMenu.MACHINE.y].machinedata.type == hack.relatedMachine)
             {
                 AC_list.Add(HF.GetLeftSubstring(HF.ParseHackName(hack).ToLower()));
                 validHacks.Add(hack);
@@ -429,14 +429,14 @@ public class UIHackInputfield : MonoBehaviour
     /// </summary>
     private void BufferSuggestions()
     {
-        List<KeyValuePair<string, TerminalCommand>> _suggestions = UIManager.inst.terminal_manualBuffer;
+        List<KeyValuePair<string, TerminalCommand>> _suggestions = UIManager.inst.terminalMenu.manualBuffer;
 
         if (Keyboard.current.downArrowKey.wasPressedThisFrame) // We want to go from older -> newer
         {
 
             if (suggID > 0) // current ID isn't 0 (we can still go lower, aka newer)
             {
-                if (_suggestions[0].Value == UIManager.inst.terminal_manualBuffer[0].Value) // Need to make sure the list is reversed
+                if (_suggestions[0].Value == UIManager.inst.terminalMenu.manualBuffer[0].Value) // Need to make sure the list is reversed
                     _suggestions.Reverse();
 
                 suggID--; // Go down an ID (--> newer)
@@ -447,7 +447,7 @@ public class UIHackInputfield : MonoBehaviour
         {
             if (suggID < (_suggestions.Count - 1)) // There are still older commands than the current (suggested) one
             {
-                if (_suggestions[0].Value == UIManager.inst.terminal_manualBuffer[0].Value) // Need to make sure the list is reversed
+                if (_suggestions[0].Value == UIManager.inst.terminalMenu.manualBuffer[0].Value) // Need to make sure the list is reversed
                     _suggestions.Reverse();
 
                 suggID++; // Go up an ID (--> older)

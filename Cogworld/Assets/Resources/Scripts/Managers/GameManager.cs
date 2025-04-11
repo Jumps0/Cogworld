@@ -1218,7 +1218,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator IndexMachinesAction(MachineType type)
     {
         // We need to stall while the terminal window is open
-        while (UIManager.inst.terminal_hackinfoArea1.activeInHierarchy)
+        while (UIManager.inst.terminalMenu.hackInfoArea.activeInHierarchy)
         {
             yield return null;
         }

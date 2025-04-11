@@ -115,7 +115,7 @@ public class UIHackTarget : MonoBehaviour
     private void Update()
     {
         // Input listener
-        if (available && ready && UIManager.inst.terminal_activeIField == null) // Don't want to accept input when doing so somewhere else!
+        if (available && ready && UIManager.inst.terminalMenu.activeIField == null) // Don't want to accept input when doing so somewhere else!
         {
             if (assignedKey.wasPressedThisFrame && !GlobalSettings.inst.db_main.gameObject.activeInHierarchy) // Make sure to not trigger when typing in console
             {
@@ -145,7 +145,7 @@ public class UIHackTarget : MonoBehaviour
             }
 
             // If its an open system we auto-succeed
-            if (MapManager.inst.mapdata[UIManager.inst.terminal_targetTerm.x, UIManager.inst.terminal_targetTerm.y].machinedata.secLvl == 0)
+            if (MapManager.inst.mapdata[UIManager.inst.terminalMenu.MACHINE.x, UIManager.inst.terminalMenu.MACHINE.y].machinedata.secLvl == 0)
             {
                 SucceedHack(fill);
             }
@@ -163,14 +163,14 @@ public class UIHackTarget : MonoBehaviour
         }
         else // Manual Command stuff here
         {
-            if(UIManager.inst.terminal_activeIField  == null) // dont wanna double-up
+            if(UIManager.inst.terminalMenu.activeIField  == null) // dont wanna double-up
             {
                 // Play the "MANUAL" sound (56)
                 AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_ui["MANUAL"]); // UI - MANUAL
                 UIManager.inst.Terminal_CreateManualInput();
             }
         }
-        HF.ScrollToBottom(UIManager.inst.terminal_resultsScrollrect); // Force scroll to bottom
+        HF.ScrollToBottom(UIManager.inst.terminalMenu.resultsScrollrect); // Force scroll to bottom
     }
 
     private void SucceedHack(string fill)
