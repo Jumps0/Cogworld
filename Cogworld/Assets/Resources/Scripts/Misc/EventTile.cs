@@ -4,12 +4,6 @@ using UnityEngine;
 
 public class EventTile : MonoBehaviour
 {
-    // NOTE:
-    // Due to a quirk in map generation, DO NOT put a floor tile underneath an event tile in the prefab.
-    // It will cause an error.
-    // Assume that a floor tile will always be placed under event tile.
-    // Because of this DO NOT put event tiles in walls or objects.
-
     [Tooltip("Mean Time To Happen (Turns)")]
     public int mtth;
     [Tooltip("Has this event been triggered to begin its countdown?")]
@@ -21,7 +15,7 @@ public class EventTile : MonoBehaviour
     [Header("Event Effects")]
     [Header("   -Add Dialogue Interaction")]
     public Actor dialogueTarget;
-    public List<string> dialogue;
+    public DialogueObject dialogue;
     [Header("   -Spawn Individual Bot")]
     public GameObject individualBot;
     [Header("   -Spawn Squad of Bots")]
@@ -71,13 +65,8 @@ public class EventTile : MonoBehaviour
             dialogueTarget.GetComponent<BotAI>().hasDialogue = true;
             dialogueTarget.GetComponent<BotAI>().finishedTalking = false;
 
-            // Add lines of dialogue to actor
-            int i = 1;
-            foreach (string line in dialogue)
-            {
-                dialogueTarget.GetComponent<BotAI>().dialogue.Add(new DialogueC(i, line));
-                i++;
-            }
+            // Add dialogue to actor
+            dialogueTarget.GetComponent<BotAI>().dialogue = dialogue;
         }
 
         if(trait.FARCOM || trait.imprinted || trait.CRM || trait.RIF)

@@ -44359,6 +44359,7 @@ MonoBehaviour:
   hackDatabase: {fileID: 11400000, guid: 242c46d91e9de9f4e80d4fd13228919f, type: 2}
   knowledgeDatabase: {fileID: 11400000, guid: fc0dd8fcbaee23847ab15edeaa54afc7, type: 2}
   machineDatabase: {fileID: 11400000, guid: 71d806cde4c0e1a428c43e9830dd64b5, type: 2}
+  dialogueDatabase: {fileID: 11400000, guid: 03396365d73f1944baaa6ce19825f28b, type: 2}
   debugDisabled: 0
   currentLevel: -11
   currentBranch: 0

@@ -1410,15 +1410,15 @@ public class UIManager : MonoBehaviour
         dialogue_readyToDisplay = true;
     }
 
-    public void Dialogue_DisplayText(DialogueC text, bool hasMoreDialogue)
+    public void Dialogue_DisplayText(string text, bool hasMoreDialogue)
     {
         StartCoroutine(DisplayDialogue(text, hasMoreDialogue));
     }
 
-    private IEnumerator DisplayDialogue(DialogueC text, bool hasMoreDialogue)
+    private IEnumerator DisplayDialogue(string text, bool hasMoreDialogue)
     {
         // Set the backer text
-        diagloue_textBacker.text = "<mark=#000000>" + text.speech + "</mark>"; // Mark highlights it as pure black
+        diagloue_textBacker.text = "<mark=#000000>" + text + "</mark>"; // Mark highlights it as pure black
 
         if (hasMoreDialogue)
         {
@@ -1518,7 +1518,7 @@ public class UIManager : MonoBehaviour
 
         // Look at that, a solution that works!
 
-        List<string> revealVariants = GenerateRevealVariants(text.speech);
+        List<string> revealVariants = GenerateRevealVariants(text);
 
         float delay = 0f;
         float perDelay = 0.25f / revealVariants.Count;
@@ -1545,7 +1545,7 @@ public class UIManager : MonoBehaviour
         {
             dialogueLower_text.text = "...";
         }
-        dialogue_text.text = text.speech;
+        dialogue_text.text = text;
     }
 
     private IEnumerator DelayedTextReveal(TextMeshProUGUI UI, string text, float delay)

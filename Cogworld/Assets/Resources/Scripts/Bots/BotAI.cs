@@ -705,7 +705,7 @@ public class BotAI : MonoBehaviour
     public bool hasBufferDialogue = false; // Will freeze the screen if true. If false, just appears at the bottom + log.
     public bool talking = false; // Is this bot currently chatting with the player?
     public bool finishedTalking = false; // Has this bot finished chatting with the player?
-    public List<DialogueC> dialogue = new List<DialogueC>();
+    public DialogueObject dialogue;
     public bool moveToNextDialogue = false;
     public AudioClip uniqueDialogueSound = null;
     public string uniqueName;
@@ -725,10 +725,12 @@ public class BotAI : MonoBehaviour
             yield return null;
         }
 
-        foreach (DialogueC text in dialogue)
+        for (int i = 0; i < dialogue.dialogue.Count; i++)
         {
+            string D = dialogue.dialogue[i];
+
             bool moreToSay = true;
-            if (text.id == dialogue.Count)
+            if (i == dialogue.dialogue.Count - 1)
             {
                 // Out of text
                 moreToSay = false;
@@ -738,8 +740,7 @@ public class BotAI : MonoBehaviour
                 moreToSay = true;
             }
 
-            //Debug.Log(this.name + " has started chatting with the player [" + text.id + "].");
-            UIManager.inst.Dialogue_DisplayText(text, moreToSay);
+            UIManager.inst.Dialogue_DisplayText(D, moreToSay);
 
             while (!moveToNextDialogue)
             {
@@ -756,10 +757,10 @@ public class BotAI : MonoBehaviour
 
         // Finally, show all the text in the log
         bool playOnce = true;
-        foreach (DialogueC text in dialogue)
+        foreach (string text in dialogue.dialogue)
         {
 
-            string speech = botName + ": " + "\"" + text.speech + "\""; // NAME: "Text"
+            string speech = botName + ": " + "\"" + text + "\""; // NAME: "Text"
             UIManager.inst.CreateNewLogMessage(speech, UIManager.inst.deepInfoBlue, UIManager.inst.coolBlue, false, playOnce);
             playOnce = false; // We are only going to play the audio output sound for the log messages once so we dont blast the player with X layered sounds all at once.
         }
@@ -777,19 +778,4 @@ public enum BotAIState
     Returning,// Going back to normal routine
     Fleeing,  // Running from something, probably the player
     Idle
-}
-
-[System.Serializable]
-public class DialogueC
-{
-    [Tooltip("Starts at 1, sorry.")]
-    public int id;
-    [TextArea(3, 5)]
-    public string speech;
-
-    public DialogueC(int id, string speech)
-    {
-        this.id = id;
-        this.speech = speech;
-    }
 }

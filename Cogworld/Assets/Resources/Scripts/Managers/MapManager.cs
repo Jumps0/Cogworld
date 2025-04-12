@@ -23,6 +23,7 @@ public class MapManager : MonoBehaviour
         hackDatabase.SetupDict();
         knowledgeDatabase.SetupDict();
         machineDatabase.SetupDict();
+        dialogueDatabase.SetupDict();
     }
 
     // !! THIS IS WHERE IT ALL STARTS !!
@@ -96,6 +97,7 @@ public class MapManager : MonoBehaviour
     public HackDatabaseObject hackDatabase;
     public KnowledgeDatabaseObject knowledgeDatabase;
     public MachineDatabaseObject machineDatabase;
+    public DialogueDatabaseObject dialogueDatabase;
 
     [Header("DEBUG")]
     // -- Debug --

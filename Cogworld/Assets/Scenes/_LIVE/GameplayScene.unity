@@ -20447,6 +20447,7 @@ MonoBehaviour:
   partMatterAttachmentCost: 10
   partEnergyAttachmentCost: 20
   partEnergyDetachLoss: 10
+  dirtyFloorTileChance: 0.07
   itemPopupLifetime: 5
   globalTextSpeed: 0.35
   defaultItemDataMode: 3
@@ -30502,59 +30503,58 @@ MonoBehaviour:
   dialogueActor: {fileID: 0}
   dialogue_readyToDisplay: 0
   dialogue_binaryLen: 368
-  terminal_targetTerm: {fileID: 0}
-  terminal_isAnimating: 0
-  terminal_hackingAreaRef: {fileID: 690459395}
-  terminal_targetresultsAreaRef: {fileID: 1589001467}
-  terminal_hackinfoArea1: {fileID: 1631387433}
-  terminal_hackinfoBorders:
-  - {fileID: 410785959}
-  - {fileID: 1509546481}
-  - {fileID: 2017123313}
-  - {fileID: 1457180969}
-  terminal_TARGETBorders: {fileID: 1387296174}
-  terminal_RESULTSBorders: {fileID: 989095394}
-  terminal_hackTitleBacker: {fileID: 591258371}
-  terminal_TARGETheaderbacker: {fileID: 965665477}
-  terminal_RESULTSheaderbacker: {fileID: 1836659679}
-  terminal_resultsScrollrect: {fileID: 2142358346}
-  terminal_hackOptionsArea: {fileID: 1783066452}
-  terminal_hackResultsArea: {fileID: 64064822}
-  terminal_activeIField: {fileID: 0}
-  terminal_backingBinary: {fileID: 387781460}
-  terminal_name: {fileID: 355644279}
-  terminal_secLvl_backing: {fileID: 648534756}
-  terminal_secLvl: {fileID: 1541771764}
-  terminal_closeEffect: {fileID: 319977818}
-  terminal_static: {fileID: 2101139848}
-  terminal_hackinfoV1_prefab: {fileID: 8519707058798226528, guid: 48db98db2a0da104f87061bb069b5ede, type: 3}
-  terminal_hackinfoV2_prefab: {fileID: 7776157754844797134, guid: 96dcc34dd241de1488181dcc45dfdb48, type: 3}
-  terminal_hackinfoV3_prefab: {fileID: 8519707058798226528, guid: 78523a769e120f541ae7999ae4d2a79c, type: 3}
-  terminal_hackinfoSpacer_prefab: {fileID: 7199519214279676382, guid: 589aed506a640104bb3db5d540a083f6, type: 3}
-  terminal_hackResultsSpacer_prefab: {fileID: 7199519214279676382, guid: 624bb04f9d1cda94b86af9dbae202864, type: 3}
-  terminal_trace_prefab: {fileID: 8519707058798226528, guid: 7c0f48acb3ae4cf4585f714c7f951637, type: 3}
-  terminal_locked_prefab: {fileID: 8519707058798226528, guid: e9d5ef6753ee0374aa4e0a88f2793998, type: 3}
-  terminal_hackoption_prefab: {fileID: 8519707058798226528, guid: 86b3e83c52a46ee42b22f719597c7481, type: 3}
-  terminal_hackResults_prefab: {fileID: 8519707058798226528, guid: 13553f4a107aaa94291a29bbdd0c8374, type: 3}
-  terminal_input_prefab: {fileID: 8519707058798226528, guid: 97e1297eec213894cb42536767083d14, type: 3}
-  terminal_hackinfoList: []
-  terminal_hackTargetsList: []
-  terminal_hackResultsList: []
-  terminal_hackCodesList: []
-  codes_window: {fileID: 944576326}
-  codes_setArea: {fileID: 1306931254}
-  codes_prefab: {fileID: 8519707058798226528, guid: 8a2f9695f93b74346b5f846236459516, type: 3}
-  terminal_binaryLen: 1776
-  cTerminal_machine: {fileID: 0}
-  cTerminal_gibberishPrefab: {fileID: 8519707058798226528, guid: 31310cd810a750c45bcedb00502bcb8b, type: 3}
-  cTerminal_animating: 0
+  terminalMenu:
+    MACHINE: {x: 0, y: 0}
+    isAnimating: 0
+    secLvl: {fileID: 0}
+    terminal_name: {fileID: 0}
+    terminal_binaryLen: 1776
+    hackingArea: {fileID: 0}
+    targetResultsArea: {fileID: 0}
+    hackInfoArea: {fileID: 0}
+    hackInfo_borders: []
+    TARGETBorders: {fileID: 0}
+    RESULTSBorders: {fileID: 0}
+    hackTitleBacker: {fileID: 0}
+    TARGETheaderbacker: {fileID: 0}
+    RESULTSheaderbacker: {fileID: 0}
+    resultsScrollrect: {fileID: 0}
+    hackOptionsArea: {fileID: 0}
+    hackResultsArea: {fileID: 0}
+    activeIField: {fileID: 0}
+    backingBinary: {fileID: 0}
+    secLvl_backing: {fileID: 0}
+    closeEffect: {fileID: 0}
+    terminal_static: {fileID: 0}
+    terminal_staticAudio: {fileID: 0}
+    prefab_hackinfoV1: {fileID: 0}
+    prefab_hackinfoV2: {fileID: 0}
+    prefab_hackinfoV3: {fileID: 0}
+    prefab_hackinfoSpacer: {fileID: 0}
+    prefab_hackResultsSpacer: {fileID: 0}
+    prefab_trace: {fileID: 0}
+    prefab_locked: {fileID: 0}
+    prefab_hackoptionb: {fileID: 0}
+    prefab_hackResults: {fileID: 0}
+    prefab_input: {fileID: 0}
+    hackinfoList: []
+    hackTargetsList: []
+    hackResultsList: []
+    hackCodesList: []
+    extradetail_string: 
+    hoveredChoice: {fileID: 0}
+    codes_window: {fileID: 0}
+    codes_setArea: {fileID: 0}
+    codes_prefab: {fileID: 0}
+    customTerminal_location: {x: 0, y: 0}
+    prefab_gibberish: {fileID: 0}
+    customTerminal_animating: 0
   schematics_objects: []
   schematics_prefab: {fileID: 8519707058798226528, guid: bdd3366b0d38fe04cb746316a0e2b563, type: 3}
   schematics_parent: {fileID: 901855579}
   schematics_contentArea: {fileID: 81741505}
   schematics_closer: {fileID: 462778036}
   schematics_backer: {fileID: 722345112}
-  boxBars: []
   logMessage_prefab: {fileID: 8519707058798226528, guid: 552c5927d631a9a4a9ccc335da9497e3, type: 3}
   logTextArea: {fileID: 165584751}
   logFull: []
@@ -30767,7 +30767,7 @@ MonoBehaviour:
           type: 0
           connectedMachine: {fileID: 0}
         isDataCore: 0
-        coreTerminal: {fileID: 0}
+        coreTerminal: {x: 0, y: 0}
       storageAmount: 0
       isOverloaded: 0
       isDeteriorating: 0
@@ -30803,7 +30803,7 @@ MonoBehaviour:
           type: 0
           connectedMachine: {fileID: 0}
         isDataCore: 0
-        coreTerminal: {fileID: 0}
+        coreTerminal: {x: 0, y: 0}
       storageAmount: 0
       isOverloaded: 0
       isDeteriorating: 0
@@ -30822,7 +30822,7 @@ MonoBehaviour:
       isDuplicate: 0
       duplicate_uuid: -1
       duplicates: 
-    selection_obj: {fileID: 0}
+    selection_obj: 0
     bits:
     - {fileID: 1613454663}
     - {fileID: 1563824742}
@@ -30851,251 +30851,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   borderParent: {fileID: 2079846892}
   borderRect: {fileID: 0}
-  points:
-  - {fileID: 720757014}
-  - {fileID: 1374614359}
-  - {fileID: 126659707}
-  - {fileID: 101586675}
-  - {fileID: 1064355276}
-  - {fileID: 2142052687}
-  - {fileID: 1053238114}
-  - {fileID: 558167178}
-  - {fileID: 785426788}
-  - {fileID: 2001036113}
-  - {fileID: 1555303555}
-  - {fileID: 1021815806}
-  - {fileID: 760119364}
-  - {fileID: 1143865067}
-  - {fileID: 70030321}
-  - {fileID: 1231610741}
-  - {fileID: 1457786757}
-  - {fileID: 700941843}
-  - {fileID: 320656964}
-  - {fileID: 1383710042}
-  - {fileID: 106897535}
-  - {fileID: 367768370}
-  - {fileID: 1233504912}
-  - {fileID: 1075787182}
-  - {fileID: 1067329171}
-  - {fileID: 2040836829}
-  - {fileID: 662031558}
-  - {fileID: 19913255}
-  - {fileID: 1174409118}
-  - {fileID: 1638393091}
-  - {fileID: 1848183469}
-  - {fileID: 1900463567}
-  - {fileID: 402001614}
-  - {fileID: 1488031371}
-  - {fileID: 1322606933}
-  - {fileID: 1531856761}
-  - {fileID: 1819801233}
-  - {fileID: 38966289}
-  - {fileID: 420582375}
-  - {fileID: 1469841989}
-  - {fileID: 1799401828}
-  - {fileID: 1538788377}
-  - {fileID: 1925681290}
-  - {fileID: 441763458}
-  - {fileID: 1162890393}
-  - {fileID: 1647710575}
-  - {fileID: 1745737214}
-  - {fileID: 587173444}
-  - {fileID: 666894385}
-  - {fileID: 468859003}
-  - {fileID: 1753503623}
-  - {fileID: 2122283180}
-  - {fileID: 157723922}
-  - {fileID: 1048162204}
-  - {fileID: 398472624}
-  - {fileID: 163568173}
-  - {fileID: 206011897}
-  - {fileID: 475445461}
-  - {fileID: 1482213164}
-  - {fileID: 711324440}
-  - {fileID: 1123704690}
-  - {fileID: 599588571}
-  - {fileID: 784043663}
-  - {fileID: 686298107}
-  - {fileID: 1312154191}
-  - {fileID: 91299709}
-  - {fileID: 1631386933}
-  - {fileID: 1952602914}
-  - {fileID: 194511599}
-  - {fileID: 1075087273}
-  - {fileID: 349188987}
-  - {fileID: 154064226}
-  - {fileID: 1376987807}
-  - {fileID: 1252247167}
-  - {fileID: 801526971}
-  - {fileID: 612361007}
-  - {fileID: 612861434}
-  - {fileID: 729407292}
-  - {fileID: 1505378571}
-  - {fileID: 1475015262}
-  - {fileID: 37860868}
-  - {fileID: 1010606683}
-  - {fileID: 1950390987}
-  - {fileID: 174572851}
-  - {fileID: 1536454338}
-  - {fileID: 1319158411}
-  - {fileID: 2116034356}
-  - {fileID: 1635129988}
-  - {fileID: 1069894796}
-  - {fileID: 819989008}
-  - {fileID: 1716461775}
-  - {fileID: 613370973}
-  - {fileID: 1148811891}
-  - {fileID: 1841784792}
-  - {fileID: 1872077546}
-  - {fileID: 1469505546}
-  - {fileID: 1932220315}
-  - {fileID: 865478853}
-  - {fileID: 1063316338}
-  - {fileID: 2090537047}
-  - {fileID: 114869417}
-  - {fileID: 1154025064}
-  - {fileID: 1071615225}
-  - {fileID: 1733541209}
-  - {fileID: 165241168}
-  - {fileID: 359518229}
-  - {fileID: 870150436}
-  - {fileID: 174887190}
-  - {fileID: 120808318}
-  - {fileID: 1826183678}
-  - {fileID: 1044445459}
-  - {fileID: 332648495}
-  - {fileID: 1299504814}
-  - {fileID: 459879500}
-  - {fileID: 232004932}
-  - {fileID: 558888644}
-  - {fileID: 631138986}
-  - {fileID: 116525874}
-  - {fileID: 707842290}
-  - {fileID: 1270476181}
-  - {fileID: 1614315257}
-  - {fileID: 1953173671}
-  - {fileID: 269368543}
-  - {fileID: 151274975}
-  - {fileID: 1350076405}
-  - {fileID: 956014423}
-  - {fileID: 1888297948}
-  - {fileID: 13319641}
-  - {fileID: 562637914}
-  - {fileID: 1021221889}
-  - {fileID: 1769158835}
-  - {fileID: 190138055}
-  - {fileID: 627512752}
-  - {fileID: 1085454670}
-  - {fileID: 718865334}
-  - {fileID: 725658527}
-  - {fileID: 2039714913}
-  - {fileID: 1622234654}
-  - {fileID: 498304375}
-  - {fileID: 4872574}
-  - {fileID: 18027791}
-  - {fileID: 1476702051}
-  - {fileID: 371288251}
-  - {fileID: 1354382406}
-  - {fileID: 1249011604}
-  - {fileID: 530198051}
-  - {fileID: 1954958204}
-  - {fileID: 206753801}
-  - {fileID: 1942282038}
-  - {fileID: 1725019350}
-  - {fileID: 182345312}
-  - {fileID: 527175870}
-  - {fileID: 1174019918}
-  - {fileID: 1122353370}
-  - {fileID: 923523454}
-  - {fileID: 50177477}
-  - {fileID: 524073978}
-  - {fileID: 201481095}
-  - {fileID: 2063198026}
-  - {fileID: 966035724}
-  - {fileID: 1426642100}
-  - {fileID: 352083519}
-  - {fileID: 2018996008}
-  - {fileID: 47040431}
-  - {fileID: 119063984}
-  - {fileID: 160217467}
-  - {fileID: 2048919577}
-  - {fileID: 255939121}
-  - {fileID: 963047316}
-  - {fileID: 1570097496}
-  - {fileID: 271365904}
-  - {fileID: 1380752309}
-  - {fileID: 1858161373}
-  - {fileID: 1483911366}
-  - {fileID: 1795499239}
-  - {fileID: 1679492446}
-  - {fileID: 635600116}
-  - {fileID: 1454157087}
-  - {fileID: 644397724}
-  - {fileID: 1221908367}
-  - {fileID: 1201253005}
-  - {fileID: 1051542714}
-  - {fileID: 1428651706}
-  - {fileID: 1333270359}
-  - {fileID: 569050309}
-  - {fileID: 942307702}
-  - {fileID: 2049707302}
-  - {fileID: 820761302}
-  - {fileID: 2110558871}
-  - {fileID: 691892011}
-  - {fileID: 778865706}
-  - {fileID: 1862553040}
-  - {fileID: 189529559}
-  - {fileID: 701878383}
-  - {fileID: 1380089188}
-  - {fileID: 41732843}
-  - {fileID: 1670919303}
-  - {fileID: 1588898591}
-  - {fileID: 1709617424}
-  - {fileID: 865638792}
-  - {fileID: 1097121244}
-  - {fileID: 452771437}
-  - {fileID: 2058295036}
-  - {fileID: 857223891}
-  - {fileID: 790531004}
-  - {fileID: 1838265415}
-  - {fileID: 505085063}
-  - {fileID: 1722762925}
-  - {fileID: 1630826273}
-  - {fileID: 1592107937}
-  - {fileID: 1989266325}
-  - {fileID: 34644372}
-  - {fileID: 333807990}
-  - {fileID: 1586416205}
-  - {fileID: 168808283}
-  - {fileID: 550905437}
-  - {fileID: 2106983967}
-  - {fileID: 525955479}
-  - {fileID: 906206739}
-  - {fileID: 546284099}
-  - {fileID: 1122244907}
-  - {fileID: 648145503}
-  - {fileID: 1531554420}
-  - {fileID: 148724383}
-  - {fileID: 1939011175}
-  - {fileID: 1902222987}
-  - {fileID: 1592895185}
-  - {fileID: 1543824909}
-  - {fileID: 2131734488}
-  - {fileID: 1910234265}
-  - {fileID: 596917345}
-  - {fileID: 1432280773}
-  - {fileID: 195084116}
-  - {fileID: 1628856692}
-  - {fileID: 48139356}
-  - {fileID: 1885718708}
-  - {fileID: 221052445}
-  - {fileID: 811236902}
-  - {fileID: 1670523768}
-  - {fileID: 1005112202}
-  - {fileID: 1021322608}
-  - {fileID: 831275763}
-  - {fileID: 453535063}
-  - {fileID: 1539020429}
   size: 15
   prefab_indicator: {fileID: 47576572676144994, guid: fd36ade26aeb3874ea631d41c6ee1c4e, type: 3}
   prefab_indicator_alt: {fileID: 7308777045394364362, guid: 78c0c115bf9108a42af609ef01c84a2a, type: 3}
@@ -49592,6 +49347,7 @@ MonoBehaviour:
   hackDatabase: {fileID: 11400000, guid: 242c46d91e9de9f4e80d4fd13228919f, type: 2}
   knowledgeDatabase: {fileID: 11400000, guid: fc0dd8fcbaee23847ab15edeaa54afc7, type: 2}
   machineDatabase: {fileID: 11400000, guid: 71d806cde4c0e1a428c43e9830dd64b5, type: 2}
+  dialogueDatabase: {fileID: 11400000, guid: 03396365d73f1944baaa6ce19825f28b, type: 2}
   debugDisabled: 0
   currentLevel: -11
   currentBranch: 0
@@ -49622,6 +49378,16 @@ MonoBehaviour:
   staticMachinesTilemap: {fileID: 8792998006673259567, guid: fb849e85fe716da4dbabeb99fff4a2bc, type: 3}
   interactableMachinesTilemap: {fileID: 2645767866660683443, guid: ebd454871b6fb394c92ca64ac6b84ecc, type: 3}
   tempPlayer: {fileID: 0}
+  theme_brown: {r: 0, g: 0, b: 0, a: 0}
+  theme_gray: {r: 0, g: 0, b: 0, a: 0}
+  theme_green: {r: 0, g: 0, b: 0, a: 0}
+  theme_blue: {r: 0, g: 0, b: 0, a: 0}
+  theme_yellow: {r: 0, g: 0, b: 0, a: 0}
+  theme_red: {r: 0, g: 0, b: 0, a: 0}
+  theme_orange: {r: 0, g: 0, b: 0, a: 0}
+  theme_white: {r: 0, g: 0, b: 0, a: 0}
+  theme_purple: {r: 0, g: 0, b: 0, a: 0}
+  theme_pink: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &1399552261
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 898f41be10541c94ab71b0b7f0c06d86, type: 3}
+  m_Name: 8R-4WN Greeting
+  m_EditorClassIdentifier: 
+  Id: 0
+  speakerName: 8R-4WN
+  conversationName: 8r4wn_exiles_greeting
+  dialogue:
+  - Oh you look... interesting. The Exiles will probably want to check you out.
+  - Keep your grabby things to yourself, though. I've got my sensors on you.
