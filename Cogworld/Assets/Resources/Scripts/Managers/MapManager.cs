@@ -928,16 +928,6 @@ public class MapManager : MonoBehaviour
 
                 // And color
                 display.color = tile.tileInfo.asciiColor;
-
-                // Unless the wall is impassible, then it is slightly different in color
-                if (tile.isImpassible)
-                {
-                    // These walls will always be visible, and always use their full color.
-                    // In this case, the color needs to match the "theme color" of the current map.
-
-                    // It also needs to be much darker than usual.
-
-                }
                 break;
             case TileType.Door:
                 // Is this destroyed?
@@ -1228,9 +1218,12 @@ public class MapManager : MonoBehaviour
             }
         }
 
-        // !! Impassible (border) tiles must always be visible !!
         if (tile.isImpassible)
-            finalColor = visc_gray;
+        {
+            // Impassible tiles (walls) will always be visible, and always use their full color (thought a bit darker than usual).
+            // In this case, the color needs to match the "theme color" of the current map.
+            finalColor = Mapname_to_ThemeColor();
+        }
 
         // Update the visibility of a part at this position if there is one
         if (InventoryControl.inst.worldItems.ContainsKey(pos))
@@ -3437,6 +3430,127 @@ public class MapManager : MonoBehaviour
     public Color theme_red;
     public Color theme_orange;
     public Color theme_white;
+    public Color theme_purple;
+    public Color theme_pink;
+
+    private Color Mapname_to_ThemeColor()
+    {
+        // FLAG - UPDATE NEW LEVELS
+        //
+        // 
+
+        Color endColor = Color.white;
+
+        switch (currentLevelName)
+        {
+            case "MATERIALS":
+                endColor = theme_brown;
+                break;
+            case "LOWER CAVES":
+                endColor = theme_brown;
+                break;
+            case "STORAGE":
+                endColor = theme_yellow;
+                break;
+            case "DSF":
+                endColor = theme_red;
+                break;
+            case "GARRISON":
+                endColor = theme_red;
+                break;
+            case "FACTORY":
+                endColor = theme_gray;
+                break;
+            case "EXTENSION":
+                endColor = theme_yellow;
+                break;
+            case "UPPER CAVES":
+                endColor = theme_brown;
+                break;
+            case "RESEARCH":
+                endColor = theme_purple;
+                break;
+            case "ACCESS":
+                endColor = theme_white;
+                break;
+            case "COMMAND":
+                endColor = theme_blue;
+                break;
+            case "ARMORY":
+                endColor = theme_red;
+                break;
+            case "WASTE":
+                endColor = theme_brown;
+                break;
+            case "HUB":
+                endColor = theme_yellow;
+                break;
+            case "ARCHIVES":
+                endColor = theme_yellow;
+                break;
+            case "CETUS":
+                endColor = theme_yellow;
+                break;
+            case "ARCHITECT":
+                endColor = theme_white;
+                break;
+            case "ZHIROV":
+                endColor = theme_blue;
+                break;
+            case "DATA MINER":
+                endColor = theme_brown;
+                break;
+            case "EXILES":
+                endColor = theme_brown;
+                break;
+            case "WARLORD":
+                endColor = theme_orange;
+                break;
+            case "SECTION 7":
+                endColor = theme_green;
+                break;
+            case "TESTING":
+                endColor = theme_green;
+                break;
+            case "QUARANTINE":
+                endColor = theme_green;
+                break;
+            case "LAB":
+                endColor = theme_white;
+                break;
+            case "HUB_04(d)":
+                endColor = theme_yellow;
+                break;
+            case "ZION":
+                endColor = theme_brown;
+                break;
+            case "ZDC":
+                endColor = theme_brown;
+                break;
+            case "MINES":
+                endColor = theme_brown;
+                break;
+            case "RECYCLING":
+                endColor = theme_yellow;
+                break;
+            case "SUBCAVES":
+                endColor = theme_brown;
+                break;
+            case "WASTES":
+                endColor = theme_brown;
+                break;
+            case "SCRAPTOWN":
+                endColor = theme_orange;
+                break;
+            default:
+                endColor = theme_brown;
+                break;
+                // EXPAND THIS LATER
+        }
+
+        return endColor;
+    
+}
     #endregion
 }
 

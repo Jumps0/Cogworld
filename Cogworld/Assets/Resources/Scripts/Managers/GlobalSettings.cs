@@ -469,7 +469,7 @@ public class GlobalSettings : MonoBehaviour
                     break;
             }
 
-            db_tileinfo.text += $"Impassible: {(tile.isImpassible ? "<color= #FF3100 >YES</color>" : "NO")}\n";
+            db_tileinfo.text += $"Impassible: {(tile.isImpassible ? "<color=#FF3100>YES</color>" : "NO")}\n";
         }
 
         // Interfacing mode enforcement

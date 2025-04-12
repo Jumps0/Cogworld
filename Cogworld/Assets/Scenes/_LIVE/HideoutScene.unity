@@ -18122,6 +18122,7 @@ MonoBehaviour:
   partMatterAttachmentCost: 10
   partEnergyAttachmentCost: 20
   partEnergyDetachLoss: 10
+  dirtyFloorTileChance: 0.07
   itemPopupLifetime: 5
   globalTextSpeed: 0.35
   defaultItemDataMode: 3
@@ -27123,7 +27124,7 @@ MonoBehaviour:
   dialogue_readyToDisplay: 0
   dialogue_binaryLen: 368
   terminalMenu:
-    targetTerminal: {x: 0, y: 0}
+    MACHINE: {x: 0, y: 0}
     isAnimating: 0
     secLvl: {fileID: 1541771764}
     terminal_name: {fileID: 355644279}
@@ -27149,6 +27150,7 @@ MonoBehaviour:
     secLvl_backing: {fileID: 648534756}
     closeEffect: {fileID: 319977818}
     terminal_static: {fileID: 2101139848}
+    terminal_staticAudio: {fileID: 0}
     prefab_hackinfoV1: {fileID: 8519707058798226528, guid: 48db98db2a0da104f87061bb069b5ede, type: 3}
     prefab_hackinfoV2: {fileID: 7776157754844797134, guid: 96dcc34dd241de1488181dcc45dfdb48, type: 3}
     prefab_hackinfoV3: {fileID: 8519707058798226528, guid: 78523a769e120f541ae7999ae4d2a79c, type: 3}
@@ -27171,52 +27173,6 @@ MonoBehaviour:
     customTerminal_location: {x: 0, y: 0}
     prefab_gibberish: {fileID: 8519707058798226528, guid: 31310cd810a750c45bcedb00502bcb8b, type: 3}
     customTerminal_animating: 0
-  terminal_targetTerm: {x: 0, y: 0}
-  terminal_isAnimating: 0
-  terminal_hackingAreaRef: {fileID: 690459395}
-  terminal_targetresultsAreaRef: {fileID: 1589001467}
-  terminal_hackinfoArea1: {fileID: 1631387433}
-  terminal_hackinfoBorders:
-  - {fileID: 410785959}
-  - {fileID: 1509546481}
-  - {fileID: 2017123313}
-  - {fileID: 1457180969}
-  terminal_TARGETBorders: {fileID: 1387296174}
-  terminal_RESULTSBorders: {fileID: 989095394}
-  terminal_hackTitleBacker: {fileID: 591258371}
-  terminal_TARGETheaderbacker: {fileID: 965665477}
-  terminal_RESULTSheaderbacker: {fileID: 1836659679}
-  terminal_resultsScrollrect: {fileID: 2142358346}
-  terminal_hackOptionsArea: {fileID: 1783066452}
-  terminal_hackResultsArea: {fileID: 64064822}
-  terminal_activeIField: {fileID: 0}
-  terminal_backingBinary: {fileID: 387781460}
-  terminal_name: {fileID: 355644279}
-  terminal_secLvl_backing: {fileID: 648534756}
-  terminal_secLvl: {fileID: 1541771764}
-  terminal_closeEffect: {fileID: 319977818}
-  terminal_static: {fileID: 2101139848}
-  terminal_hackinfoV1_prefab: {fileID: 8519707058798226528, guid: 48db98db2a0da104f87061bb069b5ede, type: 3}
-  terminal_hackinfoV2_prefab: {fileID: 7776157754844797134, guid: 96dcc34dd241de1488181dcc45dfdb48, type: 3}
-  terminal_hackinfoV3_prefab: {fileID: 8519707058798226528, guid: 78523a769e120f541ae7999ae4d2a79c, type: 3}
-  terminal_hackinfoSpacer_prefab: {fileID: 7199519214279676382, guid: 589aed506a640104bb3db5d540a083f6, type: 3}
-  terminal_hackResultsSpacer_prefab: {fileID: 7199519214279676382, guid: 624bb04f9d1cda94b86af9dbae202864, type: 3}
-  terminal_trace_prefab: {fileID: 8519707058798226528, guid: 7c0f48acb3ae4cf4585f714c7f951637, type: 3}
-  terminal_locked_prefab: {fileID: 8519707058798226528, guid: e9d5ef6753ee0374aa4e0a88f2793998, type: 3}
-  terminal_hackoption_prefab: {fileID: 8519707058798226528, guid: 86b3e83c52a46ee42b22f719597c7481, type: 3}
-  terminal_hackResults_prefab: {fileID: 8519707058798226528, guid: 13553f4a107aaa94291a29bbdd0c8374, type: 3}
-  terminal_input_prefab: {fileID: 8519707058798226528, guid: 97e1297eec213894cb42536767083d14, type: 3}
-  terminal_hackinfoList: []
-  terminal_hackTargetsList: []
-  terminal_hackResultsList: []
-  terminal_hackCodesList: []
-  codes_window: {fileID: 944576326}
-  codes_setArea: {fileID: 1306931254}
-  codes_prefab: {fileID: 8519707058798226528, guid: 8a2f9695f93b74346b5f846236459516, type: 3}
-  terminal_binaryLen: 1776
-  cTerminal_machine: {x: 0, y: 0}
-  cTerminal_gibberishPrefab: {fileID: 8519707058798226528, guid: 31310cd810a750c45bcedb00502bcb8b, type: 3}
-  cTerminal_animating: 0
   schematics_objects: []
   schematics_prefab: {fileID: 8519707058798226528, guid: bdd3366b0d38fe04cb746316a0e2b563, type: 3}
   schematics_parent: {fileID: 901855579}
@@ -44433,6 +44389,16 @@ MonoBehaviour:
   staticMachinesTilemap: {fileID: 8792998006673259567, guid: fb849e85fe716da4dbabeb99fff4a2bc, type: 3}
   interactableMachinesTilemap: {fileID: 2645767866660683443, guid: ebd454871b6fb394c92ca64ac6b84ecc, type: 3}
   tempPlayer: {fileID: 0}
+  theme_brown: {r: 0.058823533, g: 0.050980397, b: 0.03137255, a: 1}
+  theme_gray: {r: 0.058823533, g: 0.058823533, b: 0.058823533, a: 1}
+  theme_green: {r: 0.03137255, g: 0.05882353, b: 0.032513253, a: 1}
+  theme_blue: {r: 0.03137255, g: 0.03929874, b: 0.05882353, a: 1}
+  theme_yellow: {r: 0.050980397, g: 0.050980397, b: 0, a: 1}
+  theme_red: {r: 0.0627451, g: 0.019607844, b: 0.011764707, a: 1}
+  theme_orange: {r: 0.0627451, g: 0.03137255, b: 0.003921569, a: 1}
+  theme_white: {r: 0.1509434, g: 0.1509434, b: 0.1509434, a: 1}
+  theme_purple: {r: 0.04330727, g: 0.03137255, b: 0.05882353, a: 1}
+  theme_pink: {r: 0.05882353, g: 0.03137255, b: 0.050656207, a: 1}
 --- !u!114 &1399552261
 MonoBehaviour:
   m_ObjectHideFlags: 0

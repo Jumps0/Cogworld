@@ -145,7 +145,15 @@ public class PlayerGridMovement : MonoBehaviour
         Vector2Int currentPos = HF.V3_to_V2I(PlayerData.inst.transform.position);
         Vector2Int moveTarget = new Vector2Int(currentPos.x + X, currentPos.y + Y); // This is where we want to move to
 
-        // -- Machine interaction detection --
+        #region Impassible Tiles
+        if (MapManager.inst.mapdata[moveTarget.x, moveTarget.y].isImpassible)
+        {
+            isMoving = false;
+            return;
+        }
+        #endregion
+
+        #region Machine Interaction *Detection*
         Vector2Int machineInteraction = Vector2Int.zero;
 
         if (MapManager.inst.mapdata[moveTarget.x, moveTarget.y].type == TileType.Machine) // Tile is type of machine?
@@ -162,6 +170,7 @@ public class PlayerGridMovement : MonoBehaviour
                 machineInteraction = moveTarget;
             }
         }
+        #endregion
 
         List<WorldTile> neighbors = HF.FindNeighbors(currentPos.x, currentPos.y);
 
@@ -209,7 +218,7 @@ public class PlayerGridMovement : MonoBehaviour
             ConfirmLeaveArea(desiredDestinationTile);
         }
 
-        // -- Machine Interaction (Parsing) --
+        #region Machine Interaction *Parsing*
         if (machineInteraction != Vector2Int.zero) // A Machine to interact with
         {
             WorldTile machineTile = MapManager.inst.mapdata[moveTarget.x, moveTarget.y];
@@ -232,7 +241,7 @@ public class PlayerGridMovement : MonoBehaviour
                 UIManager.inst.Terminal_OpenGeneric(machineInteraction);
             }
         }
-        // -----------------------------------------
+        #endregion
 
         isMoving = false;
     }
