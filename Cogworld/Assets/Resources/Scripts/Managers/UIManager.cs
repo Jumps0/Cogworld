@@ -1675,7 +1675,7 @@ public class UIManager : MonoBehaviour
     {
         WorldTile machineTile = MapManager.inst.mapdata[target.x, target.y];
 
-        terminal_isAnimating = true;
+        terminalMenu.isAnimating = true;
 
         // Close any active popups
         HF.CloseAllMessageIndicators();
@@ -1687,7 +1687,7 @@ public class UIManager : MonoBehaviour
         PlayerData.inst.GetComponent<PlayerGridMovement>().UpdateInterfacingMode(InterfacingMode.TYPING);
 
         // Set target
-        terminal_targetTerm = target;
+        terminalMenu.MACHINE = target;
 
         // Binary (Background)
         InvokeRepeating("Terminal_Binary", 0f, 1f);
@@ -1700,36 +1700,36 @@ public class UIManager : MonoBehaviour
         bool restrictedAccess = true;
         string terminalNameSpacer = " "; // Needed due to how UI alignment works
 
-        terminal_name.text = terminalNameSpacer + machineTile.machinedata.terminalName;
+        terminalMenu.terminal_name.text = terminalNameSpacer + machineTile.machinedata.terminalName;
         restrictedAccess = machineTile.machinedata.restrictedAccess;
 
         // Restricted access?
         if (restrictedAccess)
         {
-            terminal_name.text += " - Restricted Access";
+            terminalMenu.terminal_name.text += " - Restricted Access";
         }
         else
         {
-            terminal_name.text += " - Unrestricted Access";
+            terminalMenu.terminal_name.text += " - Unrestricted Access";
         }
 
         // Security level + color
         switch(secLvl) {
             case 0: // OPEN SYSTEM
-                terminal_secLvl_backing.color = highlightGreen;
-                terminal_secLvl.text = "OPEN SYSTEM";
+                terminalMenu.secLvl_backing.color = highlightGreen;
+                terminalMenu.secLvl.text = "OPEN SYSTEM";
                 break;
             case 1: // SECURITY LEVEL #
-                terminal_secLvl_backing.color = warmYellow;
-                terminal_secLvl.text = "SECURITY LEVEL 1";
+                terminalMenu.secLvl_backing.color = warmYellow;
+                terminalMenu.secLvl.text = "SECURITY LEVEL 1";
                 break;
             case 2:
-                terminal_secLvl_backing.color = warningOrange;
-                terminal_secLvl.text = "SECURITY LEVEL 2";
+                terminalMenu.secLvl_backing.color = warningOrange;
+                terminalMenu.secLvl.text = "SECURITY LEVEL 2";
                 break;
             case 3:
-                terminal_secLvl_backing.color = highSecRed;
-                terminal_secLvl.text = "SECURITY LEVEL 3";
+                terminalMenu.secLvl_backing.color = highSecRed;
+                terminalMenu.secLvl.text = "SECURITY LEVEL 3";
                 break;
         }
 
@@ -1745,9 +1745,9 @@ public class UIManager : MonoBehaviour
     {
         // In-case this menu is being re-opened, we need to make all the images un-transparent again
         #region Image Transparency Reset
-        Image[] i1 = terminal_hackingAreaRef.GetComponentsInChildren<Image>();
-        Image[] i2 = terminal_targetresultsAreaRef.GetComponentsInChildren<Image>();
-        Image[] i3 = terminal_hackinfoArea1.GetComponentsInChildren<Image>();
+        Image[] i1 = terminalMenu.hackingArea.GetComponentsInChildren<Image>();
+        Image[] i2 = terminalMenu.targetResultsArea.GetComponentsInChildren<Image>();
+        Image[] i3 = terminalMenu.hackingArea.GetComponentsInChildren<Image>();
 
         var i12 = i1.Concat(i2).ToArray();
         var iFinal = i12.Concat(i3).ToArray();
@@ -1762,28 +1762,28 @@ public class UIManager : MonoBehaviour
         float delay = 0.05f;
 
         // First, the hacking window opens
-        terminal_hackingAreaRef.SetActive(true);
-        terminal_hackingAreaRef.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["OPEN_1"], 0.7f); // UI - OPEN_1
+        terminalMenu.hackingArea.SetActive(true);
+        terminalMenu.hackingArea.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["OPEN_1"], 0.7f); // UI - OPEN_1
         StartCoroutine(Terminal_HackBorderAnim());
 
         // Play (typing) sound
         AudioManager.inst.PlayMiscSpecific(AudioManager.inst.dict_ui["PRINT_2"]); // UI - PRINT_2
 
         // Next, the "Utilities" text appears at the top of the hacking window
-        GameObject hackUtilitiesMessage = Instantiate(terminal_hackinfoV2_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackUtilitiesMessage.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackUtilitiesMessage = Instantiate(terminalMenu.prefab_hackinfoV2, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackUtilitiesMessage.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackUtilitiesMessage.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackUtilitiesMessage);
+        terminalMenu.hackinfoList.Add(hackUtilitiesMessage);
         // Assign Details
         hackUtilitiesMessage.GetComponent<UIHackinfoV2>().Setup("Utilities");
 
         // Add a spacer
-        GameObject hackSpacer = Instantiate(terminal_hackinfoSpacer_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackSpacer.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackSpacer = Instantiate(terminalMenu.prefab_hackinfoSpacer, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackSpacer.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackSpacer.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackSpacer);
+        terminalMenu.hackinfoList.Add(hackSpacer);
 
         // Shortly after
         yield return new WaitForSeconds(delay);
@@ -1796,94 +1796,94 @@ public class UIManager : MonoBehaviour
         {
             foreach (Item item in hackware)
             {
-                GameObject hackinfoMessage = Instantiate(terminal_hackinfoV1_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-                hackinfoMessage.transform.SetParent(terminal_hackinfoArea1.transform);
+                GameObject hackinfoMessage = Instantiate(terminalMenu.prefab_hackinfoV1, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+                hackinfoMessage.transform.SetParent(terminalMenu.hackInfoArea.transform);
                 hackinfoMessage.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
                 // Add it to list
-                terminal_hackinfoList.Add(hackinfoMessage);
+                terminalMenu.hackinfoList.Add(hackinfoMessage);
                 // Assign Details
                 hackinfoMessage.GetComponent<UIHackinfoV1>().Setup(HF.GetFullItemName(item), item.itemData);
             }
         }
         else // Type out "(None)"
         {
-            GameObject hackinfoMessage = Instantiate(terminal_hackinfoV1_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-            hackinfoMessage.transform.SetParent(terminal_hackinfoArea1.transform);
+            GameObject hackinfoMessage = Instantiate(terminalMenu.prefab_hackinfoV1, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+            hackinfoMessage.transform.SetParent(terminalMenu.hackInfoArea.transform);
             hackinfoMessage.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
             // Add it to list
-            terminal_hackinfoList.Add(hackinfoMessage);
+            terminalMenu.hackinfoList.Add(hackinfoMessage);
             // Assign Details
             hackinfoMessage.GetComponent<UIHackinfoV1>().Setup("(NONE)");
         }
 
         // Add a spacer
-        GameObject hackSpacer2 = Instantiate(terminal_hackinfoSpacer_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackSpacer2.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackSpacer2 = Instantiate(terminalMenu.prefab_hackinfoSpacer, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackSpacer2.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackSpacer2.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackSpacer2);
+        terminalMenu.hackinfoList.Add(hackSpacer2);
 
         yield return new WaitForSeconds(delay);
 
         // Next, the "System" text appears
-        GameObject hackSystemMessage = Instantiate(terminal_hackinfoV2_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackSystemMessage.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackSystemMessage = Instantiate(terminalMenu.prefab_hackinfoV2, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackSystemMessage.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackSystemMessage.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackSystemMessage);
+        terminalMenu.hackinfoList.Add(hackSystemMessage);
         // Assign Details
         hackSystemMessage.GetComponent<UIHackinfoV2>().Setup("System");
 
         // Add a spacer
-        GameObject hackSpacer3 = Instantiate(terminal_hackinfoSpacer_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackSpacer3.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackSpacer3 = Instantiate(terminalMenu.prefab_hackinfoSpacer, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackSpacer3.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackSpacer3.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackSpacer3);
+        terminalMenu.hackinfoList.Add(hackSpacer3);
 
         // -- System Name Printout --
-        GameObject hackSystemName = Instantiate(terminal_hackinfoV1_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackSystemName.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackSystemName = Instantiate(terminalMenu.prefab_hackinfoV1, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackSystemName.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackSystemName.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackSystemName);
+        terminalMenu.hackinfoList.Add(hackSystemName);
         // Assign Details
-        hackSystemName.GetComponent<UIHackinfoV1>().Setup(MapManager.inst.mapdata[terminal_targetTerm.x, terminal_targetTerm.y].machinedata.logName);
+        hackSystemName.GetComponent<UIHackinfoV1>().Setup(MapManager.inst.mapdata[terminalMenu.MACHINE.x, terminalMenu.MACHINE.y].machinedata.logName);
 
         // Add a spacer
-        GameObject hackSpacer4 = Instantiate(terminal_hackinfoSpacer_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackSpacer4.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackSpacer4 = Instantiate(terminalMenu.prefab_hackinfoSpacer, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackSpacer4.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackSpacer4.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackSpacer4);
+        terminalMenu.hackinfoList.Add(hackSpacer4);
 
         yield return new WaitForSeconds(delay);
 
         // Next, the "Status" text appears
-        GameObject hackStatusMessage = Instantiate(terminal_hackinfoV2_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackStatusMessage.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackStatusMessage = Instantiate(terminalMenu.prefab_hackinfoV2, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackStatusMessage.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackStatusMessage.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackStatusMessage);
+        terminalMenu.hackinfoList.Add(hackStatusMessage);
         // Assign Details
         hackStatusMessage.GetComponent<UIHackinfoV2>().Setup("Status");
 
         // Add a spacer
-        GameObject hackSpacer5 = Instantiate(terminal_hackinfoSpacer_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackSpacer5.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackSpacer5 = Instantiate(terminalMenu.prefab_hackinfoSpacer, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackSpacer5.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackSpacer5.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackSpacer5);
+        terminalMenu.hackinfoList.Add(hackSpacer5);
 
         yield return new WaitForSeconds(delay);
         // -- If the player has any linked botnet terminals --
         if (PlayerData.inst.linkedTerminalBotnet > 0)
         {
-            GameObject hackTerminalBotnet = Instantiate(terminal_hackinfoV1_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-            hackTerminalBotnet.transform.SetParent(terminal_hackinfoArea1.transform);
+            GameObject hackTerminalBotnet = Instantiate(terminalMenu.prefab_hackinfoV1, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+            hackTerminalBotnet.transform.SetParent(terminalMenu.hackInfoArea.transform);
             hackTerminalBotnet.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
             // Add it to list
-            terminal_hackinfoList.Add(hackTerminalBotnet);
+            terminalMenu.hackinfoList.Add(hackTerminalBotnet);
             // Assign Details
             hackTerminalBotnet.GetComponent<UIHackinfoV1>().Setup("Linking terminal botnet (" + PlayerData.inst.linkedTerminalBotnet + ")...");
         }
@@ -1892,61 +1892,61 @@ public class UIManager : MonoBehaviour
         // -- If the player has any linked operators --
         if (PlayerData.inst.linkedOperators > 0)
         {
-            GameObject hackOperatorBotnet = Instantiate(terminal_hackinfoV1_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-            hackOperatorBotnet.transform.SetParent(terminal_hackinfoArea1.transform);
+            GameObject hackOperatorBotnet = Instantiate(terminalMenu.prefab_hackinfoV1, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+            hackOperatorBotnet.transform.SetParent(terminalMenu.hackInfoArea.transform);
             hackOperatorBotnet.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
             // Add it to list
-            terminal_hackinfoList.Add(hackOperatorBotnet);
+            terminalMenu.hackinfoList.Add(hackOperatorBotnet);
             // Assign Details
             hackOperatorBotnet.GetComponent<UIHackinfoV1>().Setup("Linking terminal botnet (" + PlayerData.inst.linkedOperators + ")...");
         }
 
         yield return new WaitForSeconds(delay);
         // -- "Scanning nodes..." --
-        GameObject hackScanningNodes = Instantiate(terminal_hackinfoV1_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackScanningNodes.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackScanningNodes = Instantiate(terminalMenu.prefab_hackinfoV1, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackScanningNodes.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackScanningNodes.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackScanningNodes);
+        terminalMenu.hackinfoList.Add(hackScanningNodes);
         // Assign Details
         hackScanningNodes.GetComponent<UIHackinfoV1>().Setup("Scanning nodes...");
 
         yield return new WaitForSeconds(delay);
         // -- "Network defenses at 100%..." --
-        GameObject hackNetworkDef = Instantiate(terminal_hackinfoV1_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackNetworkDef.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackNetworkDef = Instantiate(terminalMenu.prefab_hackinfoV1, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackNetworkDef.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackNetworkDef.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackNetworkDef);
+        terminalMenu.hackinfoList.Add(hackNetworkDef);
         // Assign Details
         hackNetworkDef.GetComponent<UIHackinfoV1>().Setup("Network defenses at 100%...");
 
         yield return new WaitForSeconds(delay);
         // -- "Building attack tree..." --
-        GameObject hackAttackTree = Instantiate(terminal_hackinfoV1_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackAttackTree.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackAttackTree = Instantiate(terminalMenu.prefab_hackinfoV1, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackAttackTree.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackAttackTree.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackAttackTree);
+        terminalMenu.hackinfoList.Add(hackAttackTree);
         // Assign Details
         hackAttackTree.GetComponent<UIHackinfoV1>().Setup("Building attack tree...");
 
         yield return new WaitForSeconds(delay);
         // -- "Bypassing authorization..." --
-        GameObject hackBypassAuth = Instantiate(terminal_hackinfoV1_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackBypassAuth.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackBypassAuth = Instantiate(terminalMenu.prefab_hackinfoV1, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackBypassAuth.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackBypassAuth.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackBypassAuth);
+        terminalMenu.hackinfoList.Add(hackBypassAuth);
         // Assign Details
         hackBypassAuth.GetComponent<UIHackinfoV1>().Setup("Bypassing authorization...");
 
         // Add a spacer
-        GameObject hackSpacer6 = Instantiate(terminal_hackinfoSpacer_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackSpacer6.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackSpacer6 = Instantiate(terminalMenu.prefab_hackinfoSpacer, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackSpacer6.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackSpacer6.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackSpacer6);
+        terminalMenu.hackinfoList.Add(hackSpacer6);
 
         yield return new WaitForSeconds(delay);
 
@@ -1956,27 +1956,27 @@ public class UIManager : MonoBehaviour
         StartCoroutine(Terminal_OpenTargetResults());
 
         // -- Chance of Detection --
-        GameObject hackDetChance = Instantiate(terminal_hackinfoV3_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackDetChance.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackDetChance = Instantiate(terminalMenu.prefab_hackinfoV3, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackDetChance.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackDetChance.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackDetChance);
+        terminalMenu.hackinfoList.Add(hackDetChance);
         // Assign Details
-        hackDetChance.GetComponent<UIHackinfoV3>().Setup(terminal_targetTerm);
+        hackDetChance.GetComponent<UIHackinfoV3>().Setup(terminalMenu.MACHINE);
 
         // Add a spacer
-        GameObject hackSpacer7 = Instantiate(terminal_hackinfoSpacer_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackSpacer7.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackSpacer7 = Instantiate(terminalMenu.prefab_hackinfoSpacer, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackSpacer7.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackSpacer7.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackSpacer7);
+        terminalMenu.hackinfoList.Add(hackSpacer7);
 
         yield return new WaitForSeconds(delay);
 
         // Stop the typing sound
         AudioManager.inst.StopMiscSpecific();
 
-        terminal_isAnimating = false;
+        terminalMenu.isAnimating = false;
     }
 
     private IEnumerator Terminal_HackBorderAnim()
@@ -1985,51 +1985,51 @@ public class UIManager : MonoBehaviour
 
         Color usedColor = highlightGreen;
 
-        terminal_hackinfoBorders[0].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0f);
-        terminal_hackinfoBorders[1].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0f);
-        terminal_hackinfoBorders[2].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0f);
-        terminal_hackinfoBorders[3].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0f);
-        terminal_hackTitleBacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.25f);
+        terminalMenu.hackInfo_borders[0].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0f);
+        terminalMenu.hackInfo_borders[1].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0f);
+        terminalMenu.hackInfo_borders[2].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0f);
+        terminalMenu.hackInfo_borders[3].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0f);
+        terminalMenu.hackTitleBacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.25f);
 
         yield return new WaitForSeconds(delay);
 
-        terminal_hackinfoBorders[0].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_hackinfoBorders[1].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_hackinfoBorders[2].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_hackinfoBorders[3].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_hackTitleBacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.75f);
+        terminalMenu.hackInfo_borders[0].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
+        terminalMenu.hackInfo_borders[1].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
+        terminalMenu.hackInfo_borders[2].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
+        terminalMenu.hackInfo_borders[3].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
+        terminalMenu.hackTitleBacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.75f);
 
         yield return new WaitForSeconds(delay);
 
-        terminal_hackinfoBorders[0].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.2f);
-        terminal_hackinfoBorders[1].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.2f);
-        terminal_hackinfoBorders[2].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.2f);
-        terminal_hackinfoBorders[3].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.2f);
-        terminal_hackTitleBacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, 1f);
+        terminalMenu.hackInfo_borders[0].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.2f);
+        terminalMenu.hackInfo_borders[1].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.2f);
+        terminalMenu.hackInfo_borders[2].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.2f);
+        terminalMenu.hackInfo_borders[3].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.2f);
+        terminalMenu.hackTitleBacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, 1f);
 
         yield return new WaitForSeconds(delay);
 
-        terminal_hackinfoBorders[0].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.6f);
-        terminal_hackinfoBorders[1].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.6f);
-        terminal_hackinfoBorders[2].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.6f);
-        terminal_hackinfoBorders[3].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.6f);
-        terminal_hackTitleBacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.75f);
+        terminalMenu.hackInfo_borders[0].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.6f);
+        terminalMenu.hackInfo_borders[1].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.6f);
+        terminalMenu.hackInfo_borders[2].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.6f);
+        terminalMenu.hackInfo_borders[3].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.6f);
+        terminalMenu.hackTitleBacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.75f);
 
         yield return new WaitForSeconds(delay);
 
-        terminal_hackinfoBorders[0].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_hackinfoBorders[1].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_hackinfoBorders[2].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_hackinfoBorders[3].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
-        terminal_hackTitleBacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.25f);
+        terminalMenu.hackInfo_borders[0].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
+        terminalMenu.hackInfo_borders[1].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
+        terminalMenu.hackInfo_borders[2].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
+        terminalMenu.hackInfo_borders[3].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.4f);
+        terminalMenu.hackTitleBacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, 0.25f);
 
         yield return new WaitForSeconds(delay);
 
-        terminal_hackinfoBorders[0].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 1f);
-        terminal_hackinfoBorders[1].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 1f);
-        terminal_hackinfoBorders[2].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 1f);
-        terminal_hackinfoBorders[3].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 1f);
-        terminal_hackTitleBacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, 0f);
+        terminalMenu.hackInfo_borders[0].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 1f);
+        terminalMenu.hackInfo_borders[1].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 1f);
+        terminalMenu.hackInfo_borders[2].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 1f);
+        terminalMenu.hackInfo_borders[3].GetComponent<Image>().color = new Color(usedColor.r, usedColor.g, usedColor.b, 1f);
+        terminalMenu.hackTitleBacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, 0f);
     }
 
     private IEnumerator Terminal_TargetResultBorderAnim()
@@ -2040,90 +2040,90 @@ public class UIManager : MonoBehaviour
 
         float value = 0f;
         float headerValue = 0.25f;
-        terminal_TARGETBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
-        terminal_RESULTSBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+        terminalMenu.TARGETBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+        terminalMenu.RESULTSBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
 
-        terminal_TARGETheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-        terminal_RESULTSheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        terminalMenu.TARGETheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        terminalMenu.RESULTSheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
 
         yield return new WaitForSeconds(delay);
 
         value = 0.4f;
         headerValue = 0.75f;
-        terminal_TARGETBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
-        terminal_RESULTSBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+        terminalMenu.TARGETBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+        terminalMenu.RESULTSBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
 
-        terminal_TARGETheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-        terminal_RESULTSheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        terminalMenu.TARGETheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        terminalMenu.RESULTSheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
 
         yield return new WaitForSeconds(delay);
 
         value = 0.2f;
         headerValue = 1f;
-        terminal_TARGETBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
-        terminal_RESULTSBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+        terminalMenu.TARGETBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+        terminalMenu.RESULTSBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
 
-        terminal_TARGETheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-        terminal_RESULTSheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        terminalMenu.TARGETheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        terminalMenu.RESULTSheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
 
         yield return new WaitForSeconds(delay);
 
         value = 0.6f;
         headerValue = 0.75f;
-        terminal_TARGETBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
-        terminal_RESULTSBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+        terminalMenu.TARGETBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+        terminalMenu.RESULTSBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
 
-        terminal_TARGETheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-        terminal_RESULTSheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        terminalMenu.TARGETheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        terminalMenu.RESULTSheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
 
         yield return new WaitForSeconds(delay);
 
         value = 0.4f;
         headerValue = 0.25f;
-        terminal_TARGETBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
-        terminal_RESULTSBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+        terminalMenu.TARGETBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+        terminalMenu.RESULTSBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
 
-        terminal_TARGETheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-        terminal_RESULTSheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        terminalMenu.TARGETheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        terminalMenu.RESULTSheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
 
         yield return new WaitForSeconds(delay);
 
         value = 1f;
         headerValue = 0f;
-        terminal_TARGETBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
-        terminal_RESULTSBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+        terminalMenu.TARGETBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
+        terminalMenu.RESULTSBorders.color = new Color(usedColor.r, usedColor.g, usedColor.b, value);
 
-        terminal_TARGETheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
-        terminal_RESULTSheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        terminalMenu.TARGETheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
+        terminalMenu.RESULTSheaderbacker.color = new Color(usedColor.r, usedColor.g, usedColor.b, headerValue);
     }
 
     public void Terminal_InitTrace()
     {
         // We want to open up the trance progress
         // -- "Estimated Trace Progress" --
-        GameObject hackEstTrace = Instantiate(terminal_hackinfoV1_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackEstTrace.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackEstTrace = Instantiate(terminalMenu.prefab_hackinfoV1, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackEstTrace.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackEstTrace.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackEstTrace);
+        terminalMenu.hackinfoList.Add(hackEstTrace);
         // Assign Details
         hackEstTrace.GetComponent<UIHackinfoV1>().Setup("Estimated Trace Progress");
 
         // -- Trace Progress Bar --
-        GameObject hackTrace = Instantiate(terminal_trace_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackTrace.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackTrace = Instantiate(terminalMenu.prefab_trace, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackTrace.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackTrace.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackTrace);
+        terminalMenu.hackinfoList.Add(hackTrace);
         // Assign Details
-        hackTrace.GetComponent<UITraceBar>().Setup(terminal_targetTerm);
+        hackTrace.GetComponent<UITraceBar>().Setup(terminalMenu.MACHINE);
 
         // Add a spacer
-        GameObject hackSpacer8 = Instantiate(terminal_hackinfoSpacer_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackSpacer8.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackSpacer8 = Instantiate(terminalMenu.prefab_hackinfoSpacer, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackSpacer8.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackSpacer8.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackSpacer8);
+        terminalMenu.hackinfoList.Add(hackSpacer8);
     }
 
     public void Terminal_DoConsequences(Color setColor, string displayString, bool doSound = true, bool summonInvestigationSquad = true, bool forceExit = false)
@@ -2133,31 +2133,31 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator Terminal_InitConsequences(Color setColor, string displayString, bool doSound = true, bool summonInvestigationSquad = true, bool forceExit = false)
     {
-        WorldTile terminal = MapManager.inst.mapdata[terminal_targetTerm.x, terminal_targetTerm.y];
+        WorldTile terminal = MapManager.inst.mapdata[terminalMenu.MACHINE.x, terminalMenu.MACHINE.y];
 
         // We want to init the consequences thingy
-        GameObject hackLock = Instantiate(terminal_locked_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackLock.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackLock = Instantiate(terminalMenu.prefab_locked, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackLock.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackLock.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackLock);
+        terminalMenu.hackinfoList.Add(hackLock);
         // Assign Details
         hackLock.GetComponent<UIHackLocked>().Setup(setColor, displayString, doSound);
 
         // Force disabled all hacking options
-        foreach (var T in terminal_hackTargetsList.ToList())
+        foreach (var T in terminalMenu.hackTargetsList.ToList())
         {
             T.GetComponent<UIHackTarget>().ForceDisabled();
         }
 
         // Do an animation over the hacking /TARGET/ window (this effect is greatly simplified since I don't know how to optimally achieve the true effect)
         // This also enables the static
-        terminal_static.transform.parent.gameObject.SetActive(true);
-        StartCoroutine(ImageTransparentAnim(terminal_static.GetComponent<Image>(), 1f, true));
-        terminal_closeEffect.Close();
+        terminalMenu.terminal_static.transform.parent.gameObject.SetActive(true);
+        StartCoroutine(ImageTransparentAnim(terminalMenu.terminal_static.GetComponent<Image>(), 1f, true));
+        terminalMenu.closeEffect.Close();
 
         // Create the looping static sound
-        terminal_staticAudio = AudioManager.inst.MakeLoopingEffect(AudioManager.inst.dict_ui["HACK_STATIC"], 0.6f); // UI - HACK_STATIC
+        terminalMenu.terminal_staticAudio = AudioManager.inst.MakeLoopingEffect(AudioManager.inst.dict_ui["HACK_STATIC"], 0.6f); // UI - HACK_STATIC
 
         if (summonInvestigationSquad)
         {
@@ -2168,7 +2168,7 @@ public class UIManager : MonoBehaviour
             HF.TerminalFailConsequence(name);
 
             string alertString = "ALERT: Suspicious activity at " + name + ". Dispatching Investigation squad.";
-            GameManager.inst.DeploySquadTo("Investigation", terminal_targetTerm);
+            GameManager.inst.DeploySquadTo("Investigation", terminalMenu.MACHINE);
             UIManager.inst.CreateLeftMessage(alertString);
             UIManager.inst.CreateNewLogMessage(alertString, UIManager.inst.complexWhite, UIManager.inst.inactiveGray, false, true);
 
@@ -2186,10 +2186,10 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator Terminal_OpenTargetResults()
     {
-        WorldTile terminal = MapManager.inst.mapdata[terminal_targetTerm.x, terminal_targetTerm.y];
+        WorldTile terminal = MapManager.inst.mapdata[terminalMenu.MACHINE.x, terminalMenu.MACHINE.y];
 
-        terminal_targetresultsAreaRef.SetActive(true); // Enable the window
-        terminal_targetresultsAreaRef.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["OPEN_1"], 0.7f); // UI - OPEN_1
+        terminalMenu.targetResultsArea.SetActive(true); // Enable the window
+        terminalMenu.targetResultsArea.GetComponent<AudioSource>().PlayOneShot(AudioManager.inst.dict_ui["OPEN_1"], 0.7f); // UI - OPEN_1
         StartCoroutine(Terminal_TargetResultBorderAnim()); // Do the opener animation
 
         yield return new WaitForSeconds(0.4f);
@@ -2202,11 +2202,11 @@ public class UIManager : MonoBehaviour
         int i = 0;
         foreach (TerminalCommand command in commands)
         {
-            GameObject targetCommand = Instantiate(terminal_hackoption_prefab, terminal_hackOptionsArea.transform.position, Quaternion.identity);
-            targetCommand.transform.SetParent(terminal_hackOptionsArea.transform);
+            GameObject targetCommand = Instantiate(terminalMenu.prefab_hackoptionb, terminalMenu.hackOptionsArea.transform.position, Quaternion.identity);
+            targetCommand.transform.SetParent(terminalMenu.hackOptionsArea.transform);
             targetCommand.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
             // Add it to list
-            terminal_hackTargetsList.Add(targetCommand);
+            terminalMenu.hackTargetsList.Add(targetCommand);
             // Assign Details
             bool drawLine = false;
             if (i % 2 == 0)
@@ -2243,11 +2243,11 @@ public class UIManager : MonoBehaviour
         }
 
         // Lastly, initiate the manual command
-        GameObject manualCommand = Instantiate(terminal_hackoption_prefab, terminal_hackOptionsArea.transform.position, Quaternion.identity);
-        manualCommand.transform.SetParent(terminal_hackOptionsArea.transform);
+        GameObject manualCommand = Instantiate(terminalMenu.prefab_hackoptionb, terminalMenu.hackOptionsArea.transform.position, Quaternion.identity);
+        manualCommand.transform.SetParent(terminalMenu.hackOptionsArea.transform);
         manualCommand.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackTargetsList.Add(manualCommand);
+        terminalMenu.hackTargetsList.Add(manualCommand);
         // Assign Details
         bool drawLine2 = false;
         if (i % 2 == 0)
@@ -2262,10 +2262,10 @@ public class UIManager : MonoBehaviour
 
     public void Terminal_RefreshHackingOptions()
     {
-        WorldTile terminal = MapManager.inst.mapdata[terminal_targetTerm.x, terminal_targetTerm.y];
+        WorldTile terminal = MapManager.inst.mapdata[terminalMenu.MACHINE.x, terminalMenu.MACHINE.y];
 
         // First we need to clear up all the old options
-        foreach (var option in terminal_hackTargetsList.ToList())
+        foreach (var option in terminalMenu.hackTargetsList.ToList())
         {
             if (option.GetComponent<UIHackTarget>())
             {
@@ -2273,7 +2273,7 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        terminal_hackTargetsList.Clear();
+        terminalMenu.hackTargetsList.Clear();
 
         // Then we need to put in the new ones again
         #region New options
@@ -2284,11 +2284,11 @@ public class UIManager : MonoBehaviour
         int i = 0;
         foreach (TerminalCommand command in commands)
         {
-            GameObject targetCommand = Instantiate(terminal_hackoption_prefab, terminal_hackOptionsArea.transform.position, Quaternion.identity);
-            targetCommand.transform.SetParent(terminal_hackOptionsArea.transform);
+            GameObject targetCommand = Instantiate(terminalMenu.prefab_hackoptionb, terminalMenu.hackOptionsArea.transform.position, Quaternion.identity);
+            targetCommand.transform.SetParent(terminalMenu.hackOptionsArea.transform);
             targetCommand.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
             // Add it to list
-            terminal_hackTargetsList.Add(targetCommand);
+            terminalMenu.hackTargetsList.Add(targetCommand);
             // Assign Details
             bool drawLine = false;
             if (i % 2 == 0)
@@ -2324,11 +2324,11 @@ public class UIManager : MonoBehaviour
         }
 
         // Lastly, initiate the manual command
-        GameObject manualCommand = Instantiate(terminal_hackoption_prefab, terminal_hackOptionsArea.transform.position, Quaternion.identity);
-        manualCommand.transform.SetParent(terminal_hackOptionsArea.transform);
+        GameObject manualCommand = Instantiate(terminalMenu.prefab_hackoptionb, terminalMenu.hackOptionsArea.transform.position, Quaternion.identity);
+        manualCommand.transform.SetParent(terminalMenu.hackOptionsArea.transform);
         manualCommand.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackTargetsList.Add(manualCommand);
+        terminalMenu.hackTargetsList.Add(manualCommand);
         // Assign Details
         bool drawLine2 = false;
         if (i % 2 == 0)
@@ -2341,49 +2341,49 @@ public class UIManager : MonoBehaviour
     {
         if (whiteText != "")
         {
-            GameObject header = Instantiate(terminal_hackResults_prefab, terminal_hackResultsArea.transform.position, Quaternion.identity);
-            header.transform.SetParent(terminal_hackResultsArea.transform);
+            GameObject header = Instantiate(terminalMenu.prefab_hackResults, terminalMenu.hackResultsArea.transform.position, Quaternion.identity);
+            header.transform.SetParent(terminalMenu.hackResultsArea.transform);
             header.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
             // Add it to list
-            terminal_hackResultsList.Add(header);
+            terminalMenu.hackResultsList.Add(header);
             // Assign Details
             header.GetComponent<UIHackResults>().Setup(whiteText, header.GetComponent<UIHackResults>().headerWhite);
         }
 
-        GameObject result = Instantiate(terminal_hackResults_prefab, terminal_hackResultsArea.transform.position, Quaternion.identity);
-        result.transform.SetParent(terminal_hackResultsArea.transform);
+        GameObject result = Instantiate(terminalMenu.prefab_hackResults, terminalMenu.hackResultsArea.transform.position, Quaternion.identity);
+        result.transform.SetParent(terminalMenu.hackResultsArea.transform);
         result.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackResultsList.Add(result);
+        terminalMenu.hackResultsList.Add(result);
         // Assign Details
         result.GetComponent<UIHackResults>().Setup(text, setColor, true);
 
         if (tryDetection)
         {
             // Possibly increase detection chance
-            HF.TraceHacking(UIManager.inst.terminal_targetTerm, levelOfFailure);
+            HF.TraceHacking(UIManager.inst.terminalMenu.MACHINE, levelOfFailure);
         }
     }
 
     public void Terminal_CreateManualInput()
     {
-        if(terminal_activeIField != null) // Destroy it if a clone exists
+        if(terminalMenu.activeIField != null) // Destroy it if a clone exists
         {
-            Destroy(terminal_activeIField);
-            terminal_activeIField = null;
+            Destroy(terminalMenu.activeIField);
+            terminalMenu.activeIField = null;
         }
 
         // We want to insert the input field prefab and set the focus to that.
-        terminal_activeIField = Instantiate(terminal_input_prefab, terminal_hackResultsArea.transform.position, Quaternion.identity);
-        terminal_activeIField.transform.SetParent(terminal_hackResultsArea.transform);
-        terminal_activeIField.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+        terminalMenu.activeIField = Instantiate(terminalMenu.prefab_input, terminalMenu.hackResultsArea.transform.position, Quaternion.identity);
+        terminalMenu.activeIField.transform.SetParent(terminalMenu.hackResultsArea.transform);
+        terminalMenu.activeIField.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Assign Details
-        terminal_activeIField.GetComponent<UIHackInputfield>().Setup();
+        terminalMenu.activeIField.GetComponent<UIHackInputfield>().Setup();
     }
 
     public void Terminal_InstantFinishResults()
     {
-        foreach (var obj in terminal_hackResultsList)
+        foreach (var obj in terminalMenu.hackResultsList)
         {
             obj.GetComponent<UIHackResults>().InstantFinish();
         }
@@ -2391,24 +2391,24 @@ public class UIManager : MonoBehaviour
 
     public void Terminal_OpenCodes(float yValue)
     {
-        codes_window.SetActive(true);
+        terminalMenu.codes_window.SetActive(true);
         
         Vector3[] v = new Vector3[4];
-        codes_window.GetComponent<RectTransform>().GetWorldCorners(v);
+        terminalMenu.codes_window.GetComponent<RectTransform>().GetWorldCorners(v);
         float currentY = v[1].y;
         float otherAdj = 10f;
 
-        Vector3 pos = codes_window.transform.position;
+        Vector3 pos = terminalMenu.codes_window.transform.position;
         float adjustment = Mathf.Abs(currentY - yValue);
         if(yValue > currentY) // The input field is higher up than the codes window
         {
             pos = new Vector3(pos.x, pos.y + adjustment + otherAdj, pos.z);
-            codes_window.transform.position = pos;
+            terminalMenu.codes_window.transform.position = pos;
         }
         else // The input field is below the codes window
         {
             pos = new Vector3(pos.x, pos.y - adjustment + otherAdj, pos.z);
-            codes_window.transform.position = pos;
+            terminalMenu.codes_window.transform.position = pos;
         }
 
         Terminal_FillCodes();
@@ -2419,11 +2419,11 @@ public class UIManager : MonoBehaviour
         int i = 0;
         foreach (var cCode in PlayerData.inst.customCodes)
         {
-            GameObject code = Instantiate(codes_prefab, codes_setArea.transform.position, Quaternion.identity);
-            code.transform.SetParent(codes_setArea.transform);
+            GameObject code = Instantiate(terminalMenu.codes_prefab, terminalMenu.codes_setArea.transform.position, Quaternion.identity);
+            code.transform.SetParent(terminalMenu.codes_setArea.transform);
             code.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
             // Add it to list
-            terminal_hackCodesList.Add(code);
+            terminalMenu.hackCodesList.Add(code);
             // Assign Details
             code.GetComponent<UIHackCustomCode>().Setup(cCode, alphabet[i].ToString());
             //
@@ -2433,7 +2433,7 @@ public class UIManager : MonoBehaviour
 
     public void Terminal_CloseCodes()
     {
-        foreach (var i in terminal_hackCodesList.ToList())
+        foreach (var i in terminalMenu.hackCodesList.ToList())
         {
             if (i != null && i.GetComponent<UIHackCustomCode>())
             {
@@ -2441,19 +2441,19 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        codes_window.GetComponent<UIHackCodes>().ShutDown();
+        terminalMenu.codes_window.GetComponent<UIHackCodes>().ShutDown();
 
-        codes_window.SetActive(false);
+        terminalMenu.codes_window.SetActive(false);
     }
 
     private void Terminal_Binary()
     {
-        var randomBinaryChars = new char[terminal_binaryLen];
-        for (int i = 0; i < terminal_binaryLen; i++)
+        var randomBinaryChars = new char[terminalMenu.terminal_binaryLen];
+        for (int i = 0; i < terminalMenu.terminal_binaryLen; i++)
         {
             randomBinaryChars[i] = (Random.Range(0, 2) == 0) ? '0' : '1';
         }
-        terminal_backingBinary.text = new string(randomBinaryChars);
+        terminalMenu.backingBinary.text = new string(randomBinaryChars);
     }
 
     /// <summary>
@@ -2461,7 +2461,7 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void Terminal_CloseAny()
     {
-        if (MapManager.inst.mapdata[terminal_targetTerm.x, terminal_targetTerm.y].machinedata.type == MachineType.CustomTerminal)
+        if (MapManager.inst.mapdata[terminalMenu.MACHINE.x, terminalMenu.MACHINE.y].machinedata.type == MachineType.CustomTerminal)
         {
             CTerminal_Close(); // Custom Terminal
         }
@@ -2473,12 +2473,12 @@ public class UIManager : MonoBehaviour
 
     public void Terminal_Close()
     {
-        if (terminal_isAnimating) // Safety flag
+        if (terminalMenu.isAnimating) // Safety flag
         {
             return;
         }
 
-        AudioManager.inst.CreateTempClip(new Vector3(terminal_targetTerm.x, terminal_targetTerm.y), AudioManager.inst.dict_ui["CLOSE"]); // UI - CLOSE
+        AudioManager.inst.CreateTempClip(new Vector3(terminalMenu.MACHINE.x, terminalMenu.MACHINE.y), AudioManager.inst.dict_ui["CLOSE"]); // UI - CLOSE
 
         StartCoroutine(Terminal_CloseAnim());
     }
@@ -2489,13 +2489,13 @@ public class UIManager : MonoBehaviour
         Terminal_ExtraDetail(false);
 
         // Null out main reference
-        terminal_targetTerm = Vector2Int.zero;
+        terminalMenu.MACHINE = Vector2Int.zero;
 
         // Do a fade out animation
         #region Image Fade-out
-        Image[] i1 = terminal_hackingAreaRef.GetComponentsInChildren<Image>();
-        Image[] i2 = terminal_targetresultsAreaRef.GetComponentsInChildren<Image>();
-        Image[] i3 = terminal_hackinfoArea1.GetComponentsInChildren<Image>();
+        Image[] i1 = terminalMenu.hackingArea.GetComponentsInChildren<Image>();
+        Image[] i2 = terminalMenu.targetResultsArea.GetComponentsInChildren<Image>();
+        Image[] i3 = terminalMenu.hackInfoArea.GetComponentsInChildren<Image>();
 
         var i12 = i1.Concat(i2).ToArray();
         var iFinal = i12.Concat(i3).ToArray();
@@ -2543,14 +2543,14 @@ public class UIManager : MonoBehaviour
         yield return null;
 
         // Stop static effects
-        terminal_closeEffect.ResetEffect();
-        if (terminal_staticAudio != null)
+        terminalMenu.closeEffect.ResetEffect();
+        if (terminalMenu.terminal_staticAudio != null)
         {
-            Destroy(terminal_staticAudio);
+            Destroy(terminalMenu.terminal_staticAudio);
         }
 
         // Shut down all the lines
-        foreach (var i in terminal_hackinfoList.ToList())
+        foreach (var i in terminalMenu.hackinfoList.ToList())
         {
             if (i.GetComponent<UIHackinfoV1>())
             {
@@ -2574,7 +2574,7 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        foreach(var i in terminal_hackTargetsList.ToList())
+        foreach(var i in terminalMenu.hackTargetsList.ToList())
         {
             if (i.GetComponent<UIHackTarget>())
             {
@@ -2582,7 +2582,7 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        foreach (var i in terminal_hackResultsList.ToList())
+        foreach (var i in terminalMenu.hackResultsList.ToList())
         {
             if (i.GetComponent<UIHackResults>())
             {
@@ -2590,7 +2590,7 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        foreach (var i in terminal_hackCodesList.ToList())
+        foreach (var i in terminalMenu.hackCodesList.ToList())
         {
             if (i != null && i.GetComponent<UIHackCustomCode>())
             {
@@ -2598,29 +2598,29 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        codes_window.GetComponent<UIHackCodes>().ShutDown();
+        terminalMenu.codes_window.GetComponent<UIHackCodes>().ShutDown();
         
 
         yield return null;
 
-        terminal_static.transform.parent.gameObject.SetActive(false);
+        terminalMenu.terminal_static.transform.parent.gameObject.SetActive(false);
 
-        terminal_hackinfoList.Clear(); // Clear the list
-        terminal_hackTargetsList.Clear();
-        terminal_hackResultsList.Clear();
-        terminal_hackCodesList.Clear();
+        terminalMenu.hackinfoList.Clear(); // Clear the list
+        terminalMenu.hackTargetsList.Clear();
+        terminalMenu.hackResultsList.Clear();
+        terminalMenu.hackCodesList.Clear();
         // Most of the prefabs will delete themselves
 
         // The spacers however do not, so this is a fallback.
-        foreach (Transform child in terminal_hackinfoArea1.transform)
+        foreach (Transform child in terminalMenu.hackInfoArea.transform)
         {
             Destroy(child.gameObject);
         }
 
         // Close window
-        terminal_hackingAreaRef.SetActive(false);
-        terminal_targetresultsAreaRef.SetActive(false);
-        codes_window.SetActive(false);
+        terminalMenu.hackingArea.SetActive(false);
+        terminalMenu.targetResultsArea.SetActive(false);
+        terminalMenu.codes_window.SetActive(false);
 
         // Un-Freeze the player
         PlayerData.inst.GetComponent<PlayerGridMovement>().playerMovementAllowed = true;
@@ -2665,18 +2665,18 @@ public class UIManager : MonoBehaviour
         if (check)
         {
             // We need to start the checking loop.
-            if(terminal_extradetail_co != null)
+            if(terminalMenu.extradetail_co != null)
             {
-                StopCoroutine(terminal_extradetail_co);
+                StopCoroutine(terminalMenu.extradetail_co);
             }
 
-            terminal_extradetail_co = StartCoroutine(Terminal_ExtraDetailLoop());
+            terminalMenu.extradetail_co = StartCoroutine(Terminal_ExtraDetailLoop());
         }
         else
         {
             // We need to stop the checking loop.
-            StopCoroutine(terminal_extradetail_co);
-            terminal_extradetail_co = null;
+            StopCoroutine(terminalMenu.extradetail_co);
+            terminalMenu.extradetail_co = null;
         }
     }
 
@@ -2684,13 +2684,13 @@ public class UIManager : MonoBehaviour
     {
         if (enteredBounds) // If this option has just been entered, it is now the new hovered choice.
         {
-            terminal_hoveredChoice = option;
+            terminalMenu.hoveredChoice = option;
         }
         else // If this option has just been exited, and nothing new has been set to replace it, it needs to be null.
         {
-            if(terminal_hoveredChoice == option)
+            if(terminalMenu.hoveredChoice == option)
             {
-                terminal_hoveredChoice = null;
+                terminalMenu.hoveredChoice = null;
             }
         }
     }
@@ -2707,27 +2707,27 @@ public class UIManager : MonoBehaviour
             // It's not so lets try and open it
 
             // - Are we over a viable command option?
-            if(terminal_hoveredChoice != null && terminal_extradetail_string != "")
+            if(terminalMenu.hoveredChoice != null && terminalMenu.extradetail_string != "")
             {
                 // We are, open the menu and display the string
                 dataMenu.data_extraDetail.SetActive(true);
-                dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().ShowExtraDetail(terminal_extradetail_string);
-                dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().myGameObject = terminal_hoveredChoice;
+                dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().ShowExtraDetail(terminalMenu.extradetail_string);
+                dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().myGameObject = terminalMenu.hoveredChoice;
             }
         }
     }
 
     private IEnumerator Terminal_ExtraDetailLoop()
     {
-        while (terminal_targetresultsAreaRef.gameObject.activeInHierarchy) // Pretty much a forever loop but this is just here for safety
+        while (terminalMenu.targetResultsArea.gameObject.activeInHierarchy) // Pretty much a forever loop but this is just here for safety
         {
             // Is the player's mouse currently over a hacking option?
-            if(terminal_hoveredChoice != null)
+            if(terminalMenu.hoveredChoice != null)
             {
                 // It is! Lets get the display string for that command.
                 string display = "";
-                UIHackTarget hack = terminal_hoveredChoice.GetComponent<UIHackTarget>();
-                TerminalCommand comm = terminal_hoveredChoice.GetComponent<UIHackTarget>().command;
+                UIHackTarget hack = terminalMenu.hoveredChoice.GetComponent<UIHackTarget>();
+                TerminalCommand comm = terminalMenu.hoveredChoice.GetComponent<UIHackTarget>().command;
                 if (hack.isManualCommand)
                 { // - If it's the manual command we show something different
                     display = "Enter special manual hacking codes prefixed by \\\\, or manually enter any known trojans, brute force hacks, or regular hacks." +
@@ -2740,27 +2740,27 @@ public class UIManager : MonoBehaviour
                 }
 
                 // -- MAIN LOGIC --
-                if (terminal_extradetail_string == "") // Have we got a set string yet?
+                if (terminalMenu.extradetail_string == "") // Have we got a set string yet?
                 {
                     // No? Set it
-                    terminal_extradetail_string = display;
+                    terminalMenu.extradetail_string = display;
                 }
-                else if(display == terminal_extradetail_string)
+                else if(display == terminalMenu.extradetail_string)
                 {
                     // We already have this string set.
                     // Just to be safe, check and see if the gameObjects are different
-                    if(dataMenu.data_extraDetail.gameObject.activeInHierarchy && dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().myGameObject != terminal_hoveredChoice)
+                    if(dataMenu.data_extraDetail.gameObject.activeInHierarchy && dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().myGameObject != terminalMenu.hoveredChoice)
                     {
                         // They are different, we need to close the window.
                         dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().HideExtraDetail();
-                        terminal_extradetail_string = "";
+                        terminalMenu.extradetail_string = "";
                     }
                 }
                 else
                 {
                     // It's a different one, we should close the window.
                     dataMenu.data_extraDetail.GetComponent<UIDataExtraDetail>().HideExtraDetail();
-                    terminal_extradetail_string = "";
+                    terminalMenu.extradetail_string = "";
                 }
 
                 yield return null;
@@ -2785,14 +2785,14 @@ public class UIManager : MonoBehaviour
         // Close any active popups
         HF.CloseAllMessageIndicators();
 
-        cTerminal_animating = true;
+        terminalMenu.customTerminal_animating = true;
 
         // Freeze player
         PlayerData.inst.GetComponent<PlayerGridMovement>().playerMovementAllowed = false;
 
         // Set target
-        cTerminal_machine = target;
-        terminal_targetTerm = target;
+        terminalMenu.customTerminal_location = target;
+        terminalMenu.MACHINE = target;
 
         // If this is the Hideout Cache, we need to change the / PARTS / header to / CACHE /
         if(machineTile.machinedata.customType == CustomTerminalType.HideoutCache)
@@ -2814,7 +2814,7 @@ public class UIManager : MonoBehaviour
         bool restrictedAccess = true;
 
         string cTerminalNameSpacer = " "; // Needed due to text alignment
-        terminal_name.text = cTerminalNameSpacer + machineTile.machinedata.logName;
+        terminalMenu.terminal_name.text = cTerminalNameSpacer + machineTile.machinedata.logName;
         secLvl = machineTile.machinedata.secLvl;
         restrictedAccess = machineTile.machinedata.restrictedAccess;
 
@@ -2822,31 +2822,31 @@ public class UIManager : MonoBehaviour
         // Restricted access? (In most cases no)
         if (restrictedAccess)
         {
-            terminal_name.text += " - Restricted Access";
+            terminalMenu.terminal_name.text += " - Restricted Access";
         }
         else
         {
-            terminal_name.text += " - Unrestricted Access";
+            terminalMenu.terminal_name.text += " - Unrestricted Access";
         }
 
         // Security level + color
         switch (secLvl)
         {
             case 0: // OPEN SYSTEM
-                terminal_secLvl_backing.color = highlightGreen;
-                terminal_secLvl.text = "OPEN SYSTEM";
+                terminalMenu.secLvl_backing.color = highlightGreen;
+                terminalMenu.secLvl.text = "OPEN SYSTEM";
                 break;
             case 1: // SECURITY LEVEL #
-                terminal_secLvl_backing.color = warmYellow;
-                terminal_secLvl.text = "SECURITY LEVEL 1";
+                terminalMenu.secLvl_backing.color = warmYellow;
+                terminalMenu.secLvl.text = "SECURITY LEVEL 1";
                 break;
             case 2:
-                terminal_secLvl_backing.color = warningOrange;
-                terminal_secLvl.text = "SECURITY LEVEL 2";
+                terminalMenu.secLvl_backing.color = warningOrange;
+                terminalMenu.secLvl.text = "SECURITY LEVEL 2";
                 break;
             case 3:
-                terminal_secLvl_backing.color = highSecRed;
-                terminal_secLvl.text = "SECURITY LEVEL 3";
+                terminalMenu.secLvl_backing.color = highSecRed;
+                terminalMenu.secLvl.text = "SECURITY LEVEL 3";
                 break;
         }
 
@@ -2860,15 +2860,15 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator CTerminal_OpenAnim()
     {
-        WorldTile machineTile = MapManager.inst.mapdata[cTerminal_machine.x, cTerminal_machine.y];
+        WorldTile machineTile = MapManager.inst.mapdata[terminalMenu.customTerminal_location.x, terminalMenu.customTerminal_location.y];
 
         float delay = 0.05f;
 
         // In-case this menu is being re-opened, we need to make all the images un-transparent again
         #region Image Transparency Reset
-        Image[] i1 = terminal_hackingAreaRef.GetComponentsInChildren<Image>();
-        Image[] i2 = terminal_targetresultsAreaRef.GetComponentsInChildren<Image>();
-        Image[] i3 = terminal_hackinfoArea1.GetComponentsInChildren<Image>();
+        Image[] i1 = terminalMenu.hackingArea.GetComponentsInChildren<Image>();
+        Image[] i2 = terminalMenu.targetResultsArea.GetComponentsInChildren<Image>();
+        Image[] i3 = terminalMenu.hackInfoArea.GetComponentsInChildren<Image>();
 
         var i12 = i1.Concat(i2).ToArray();
         var iFinal = i12.Concat(i3).ToArray();
@@ -2881,7 +2881,7 @@ public class UIManager : MonoBehaviour
         #endregion
 
         // First, the hacking window opens
-        terminal_hackingAreaRef.SetActive(true);
+        terminalMenu.hackingArea.SetActive(true);
         StartCoroutine(Terminal_HackBorderAnim());
 
         // Play (typing) sound
@@ -2890,20 +2890,20 @@ public class UIManager : MonoBehaviour
         if (machineTile.machinedata.restrictedAccess)
         {
             // Next, the "Utilities" text appears at the top of the hacking window
-            GameObject hackUtilitiesMessage = Instantiate(terminal_hackinfoV2_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-            hackUtilitiesMessage.transform.SetParent(terminal_hackinfoArea1.transform);
+            GameObject hackUtilitiesMessage = Instantiate(terminalMenu.prefab_hackinfoV2, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+            hackUtilitiesMessage.transform.SetParent(terminalMenu.hackInfoArea.transform);
             hackUtilitiesMessage.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
             // Add it to list
-            terminal_hackinfoList.Add(hackUtilitiesMessage);
+            terminalMenu.hackinfoList.Add(hackUtilitiesMessage);
             // Assign Details
             hackUtilitiesMessage.GetComponent<UIHackinfoV2>().Setup("Utilities");
 
             // Add a spacer
-            GameObject hackSpacer = Instantiate(terminal_hackinfoSpacer_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-            hackSpacer.transform.SetParent(terminal_hackinfoArea1.transform);
+            GameObject hackSpacer = Instantiate(terminalMenu.prefab_hackinfoSpacer, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+            hackSpacer.transform.SetParent(terminalMenu.hackInfoArea.transform);
             hackSpacer.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
             // Add it to list
-            terminal_hackinfoList.Add(hackSpacer);
+            terminalMenu.hackinfoList.Add(hackSpacer);
 
             // Shortly after
             yield return new WaitForSeconds(delay);
@@ -2917,128 +2917,128 @@ public class UIManager : MonoBehaviour
             {
                 foreach (Item item in hackware)
                 {
-                    GameObject hackinfoMessage = Instantiate(terminal_hackinfoV1_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-                    hackinfoMessage.transform.SetParent(terminal_hackinfoArea1.transform);
+                    GameObject hackinfoMessage = Instantiate(terminalMenu.prefab_hackinfoV1, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+                    hackinfoMessage.transform.SetParent(terminalMenu.hackInfoArea.transform);
                     hackinfoMessage.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
                     // Add it to list
-                    terminal_hackinfoList.Add(hackinfoMessage);
+                    terminalMenu.hackinfoList.Add(hackinfoMessage);
                     // Assign Details
                     hackinfoMessage.GetComponent<UIHackinfoV1>().Setup(HF.GetFullItemName(item), item.itemData);
                 }
             }
             else // Type out "(None)"
             {
-                GameObject hackinfoMessage = Instantiate(terminal_hackinfoV1_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-                hackinfoMessage.transform.SetParent(terminal_hackinfoArea1.transform);
+                GameObject hackinfoMessage = Instantiate(terminalMenu.prefab_hackinfoV1, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+                hackinfoMessage.transform.SetParent(terminalMenu.hackInfoArea.transform);
                 hackinfoMessage.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
                 // Add it to list
-                terminal_hackinfoList.Add(hackinfoMessage);
+                terminalMenu.hackinfoList.Add(hackinfoMessage);
                 // Assign Details
                 hackinfoMessage.GetComponent<UIHackinfoV1>().Setup("(NONE)");
             }
 
             // Add a spacer
-            GameObject hackSpacer2 = Instantiate(terminal_hackinfoSpacer_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-            hackSpacer2.transform.SetParent(terminal_hackinfoArea1.transform);
+            GameObject hackSpacer2 = Instantiate(terminalMenu.prefab_hackinfoSpacer, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+            hackSpacer2.transform.SetParent(terminalMenu.hackInfoArea.transform);
             hackSpacer2.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
             // Add it to list
-            terminal_hackinfoList.Add(hackSpacer2);
+            terminalMenu.hackinfoList.Add(hackSpacer2);
 
             yield return new WaitForSeconds(delay);
         }
 
         // Next, the "System" text appears
-        GameObject hackSystemMessage = Instantiate(terminal_hackinfoV2_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackSystemMessage.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackSystemMessage = Instantiate(terminalMenu.prefab_hackinfoV2, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackSystemMessage.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackSystemMessage.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackSystemMessage);
+        terminalMenu.hackinfoList.Add(hackSystemMessage);
         // Assign Details
         hackSystemMessage.GetComponent<UIHackinfoV2>().Setup("System");
 
         // Add a spacer
-        GameObject hackSpacer3 = Instantiate(terminal_hackinfoSpacer_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackSpacer3.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackSpacer3 = Instantiate(terminalMenu.prefab_hackinfoSpacer, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackSpacer3.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackSpacer3.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackSpacer3);
+        terminalMenu.hackinfoList.Add(hackSpacer3);
 
         // -- System Name Printout --
-        GameObject hackSystemName = Instantiate(terminal_hackinfoV1_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackSystemName.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackSystemName = Instantiate(terminalMenu.prefab_hackinfoV1, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackSystemName.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackSystemName.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackSystemName);
+        terminalMenu.hackinfoList.Add(hackSystemName);
         // Assign Details
         hackSystemName.GetComponent<UIHackinfoV1>().Setup(machineTile.machinedata.logName);
 
         // Add a spacer
-        GameObject hackSpacer4 = Instantiate(terminal_hackinfoSpacer_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackSpacer4.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackSpacer4 = Instantiate(terminalMenu.prefab_hackinfoSpacer, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackSpacer4.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackSpacer4.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackSpacer4);
+        terminalMenu.hackinfoList.Add(hackSpacer4);
 
         yield return new WaitForSeconds(delay);
 
         // Next, the "Status" text appears
-        GameObject hackStatusMessage = Instantiate(terminal_hackinfoV2_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackStatusMessage.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackStatusMessage = Instantiate(terminalMenu.prefab_hackinfoV2, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackStatusMessage.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackStatusMessage.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackStatusMessage);
+        terminalMenu.hackinfoList.Add(hackStatusMessage);
         // Assign Details
         hackStatusMessage.GetComponent<UIHackinfoV2>().Setup("Status");
 
         // Add a spacer
-        GameObject hackSpacer5 = Instantiate(terminal_hackinfoSpacer_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackSpacer5.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackSpacer5 = Instantiate(terminalMenu.prefab_hackinfoSpacer, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackSpacer5.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackSpacer5.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackSpacer5);
+        terminalMenu.hackinfoList.Add(hackSpacer5);
 
         yield return new WaitForSeconds(delay);
         // -- "Accessing entry node" --
-        GameObject hackScanningNodes = Instantiate(terminal_hackinfoV1_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackScanningNodes.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackScanningNodes = Instantiate(terminalMenu.prefab_hackinfoV1, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackScanningNodes.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackScanningNodes.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackScanningNodes);
+        terminalMenu.hackinfoList.Add(hackScanningNodes);
         // Assign Details
         hackScanningNodes.GetComponent<UIHackinfoV1>().Setup("Accessing entry node");
 
         // Add a spacer
-        GameObject hackSpacer6 = Instantiate(terminal_hackinfoSpacer_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackSpacer6.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackSpacer6 = Instantiate(terminalMenu.prefab_hackinfoSpacer, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackSpacer6.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackSpacer6.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackSpacer6);
+        terminalMenu.hackinfoList.Add(hackSpacer6);
 
         yield return new WaitForSeconds(delay);
 
 
         // -- Now the random gibberish and highlight
-        GameObject hackGibb = Instantiate(cTerminal_gibberishPrefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackGibb.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackGibb = Instantiate(terminalMenu.prefab_gibberish, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackGibb.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackGibb.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackGibb);
+        terminalMenu.hackinfoList.Add(hackGibb);
 
         // Add a spacer
-        GameObject hackSpacer7 = Instantiate(terminal_hackinfoSpacer_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackSpacer7.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackSpacer7 = Instantiate(terminalMenu.prefab_hackinfoSpacer, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackSpacer7.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackSpacer7.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackSpacer7);
+        terminalMenu.hackinfoList.Add(hackSpacer7);
 
         yield return new WaitForSeconds(delay);
 
         // -- "Connection established..." --
-        GameObject hackAttackTree = Instantiate(terminal_hackinfoV1_prefab, terminal_hackinfoArea1.transform.position, Quaternion.identity);
-        hackAttackTree.transform.SetParent(terminal_hackinfoArea1.transform);
+        GameObject hackAttackTree = Instantiate(terminalMenu.prefab_hackinfoV1, terminalMenu.hackInfoArea.transform.position, Quaternion.identity);
+        hackAttackTree.transform.SetParent(terminalMenu.hackInfoArea.transform);
         hackAttackTree.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         // Add it to list
-        terminal_hackinfoList.Add(hackAttackTree);
+        terminalMenu.hackinfoList.Add(hackAttackTree);
         // Assign Details
         hackAttackTree.GetComponent<UIHackinfoV1>().Setup("Connection established");
 
@@ -3053,26 +3053,26 @@ public class UIManager : MonoBehaviour
 
         yield return null;
 
-        cTerminal_animating = false;
+        terminalMenu.customTerminal_animating = false;
     }
 
     public void CTerminal_Close()
     {
-        if (cTerminal_animating) // Safety flag
+        if (terminalMenu.customTerminal_animating) // Safety flag
         {
             return;
         }
 
-        WorldTile machineTile = MapManager.inst.mapdata[cTerminal_machine.x, cTerminal_machine.y];
+        WorldTile machineTile = MapManager.inst.mapdata[terminalMenu.customTerminal_location.x, terminalMenu.customTerminal_location.y];
 
-        AudioManager.inst.CreateTempClip(new Vector3(cTerminal_machine.x, cTerminal_machine.y), AudioManager.inst.dict_ui["CLOSE"]); // UI - CLOSE
+        AudioManager.inst.CreateTempClip(new Vector3(terminalMenu.customTerminal_location.x, terminalMenu.customTerminal_location.y), AudioManager.inst.dict_ui["CLOSE"]); // UI - CLOSE
 
         // Did we just close the cache window?
         bool wasCache = (machineTile.machinedata.customType == CustomTerminalType.HideoutCache);
 
         // Un-assign target
-        terminal_targetTerm = Vector2Int.zero;
-        cTerminal_machine = Vector2Int.zero;
+        terminalMenu.MACHINE = Vector2Int.zero;
+        terminalMenu.customTerminal_location = Vector2Int.zero;
 
         // Change back the header
         if (wasCache)
@@ -5246,7 +5246,7 @@ public class UIManager : MonoBehaviour
 
     public void Evasion_ExpandMenu()
     {
-        if (PlayerData.inst && terminal_targetTerm == null) // Should only be able to open the menu when the player exists & not in terminal menu
+        if (PlayerData.inst && terminalMenu.MACHINE == Vector2Int.zero) // Should only be able to open the menu when the player exists & not in terminal menu
         {
             //StopCoroutine(Evasion_ExpandMenu_Animation());
 
@@ -5709,7 +5709,7 @@ public class UIManager : MonoBehaviour
         string weight = "";
 
         // Do different weight display if using the Hideout Cache
-        if(cTerminal_machine != null)
+        if(terminalMenu.customTerminal_location != null)
         {
             InventoryObject inv = InventoryControl.inst.hideout_inventory;
             int current = inv.ItemCount, max = inv.Container.Items.Length;
@@ -10753,10 +10753,10 @@ public class UITerminalDisplay
     public GameObject activeIField = null;
     public TextMeshProUGUI backingBinary;
     public Image secLvl_backing;
-    
-    [SerializeField] private UIHackCloseEffect closeEffect;
-    [SerializeField] private GameObject terminal_static;
-    private GameObject terminal_staticAudio = null;
+
+    public UIHackCloseEffect closeEffect;
+    public GameObject terminal_static;
+    public GameObject terminal_staticAudio = null;
 
     [Header("Prefabs")]
     public GameObject prefab_hackinfoV1;
