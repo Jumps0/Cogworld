@@ -1504,9 +1504,12 @@ public class DungeonGeneratorCTR : MonoBehaviour {
 
                 float _rotation = element.rotation;
 
-                // TODO: RECONSIDER USING PREFABS --> TILEMAPS
-
                 GameObject prefab = element.prefab;
+
+                // Grab all the info from the container class
+                PMapInfo info = prefab.GetComponent<PMapInfo>();
+                // TODO
+
                 prefab.transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, _rotation));
                 List<GameObject> objects = new List<GameObject>(); // List of every object to place
                 foreach (Transform child in prefab.transform) // Go through all children and add them to the list of objects
