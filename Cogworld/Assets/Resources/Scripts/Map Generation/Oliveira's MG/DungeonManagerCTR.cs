@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Collections;
 
 // Originally made by: Ariel Oliveira [https://github.com/ArielOliveira/DungeonGenerator]
-// Modified by: Cody Jackson | codyj@nevada.unr.edu
+// Modified by: Cody Jackson | cody@krselectric.com
 
 public class DungeonManagerCTR : MonoBehaviour
 {   

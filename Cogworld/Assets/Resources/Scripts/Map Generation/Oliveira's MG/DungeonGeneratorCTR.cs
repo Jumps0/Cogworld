@@ -10,7 +10,7 @@ using System.Linq;
 using System.Collections;
 
 // Originally made by: Ariel Oliveira [https://github.com/ArielOliveira/DungeonGenerator]
-// Modified by: Cody Jackson | codyj@nevada.unr.edu
+// Modified by: Cody Jackson | cody@krselectric.com
 
 /*
  Original description from Github:
@@ -482,12 +482,17 @@ public class DungeonGeneratorCTR : MonoBehaviour {
     }
 
     public bool AdvanceGeneration() {
+
         bool thereAreBuilders = false;
         int highestNegativeAge = 0;
-        foreach (Builder builder in dungeonBuilders) {
-            if (builder != null) {
+
+        foreach (Builder builder in dungeonBuilders) 
+        {
+            if (builder != null) 
+            {
                 thereAreBuilders = true;
-                if (builder.Generation == activeGeneration) {
+                if (builder.Generation == activeGeneration) 
+                {
                     int a = builder.Age;
                     if (a >= 0)
                         return true;
@@ -496,13 +501,18 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                 }
             }
         }
+
         if (highestNegativeAge == 0) {
             activeGeneration++;
             return thereAreBuilders;
-        } else {
+        } 
+        else 
+        {
             Debug.Assert(highestNegativeAge < 0);
-            foreach (Builder builder in dungeonBuilders) {
-                if (builder != null) {
+            foreach (Builder builder in dungeonBuilders) 
+            {
+                if (builder != null) 
+                {
                     if (builder.Generation == activeGeneration)
                         builder.AdvanceAge(-highestNegativeAge);
                 }
@@ -861,22 +871,6 @@ public class DungeonGeneratorCTR : MonoBehaviour {
         return true;
     }
 
-    
-    public bool IsOpen(SquareData square) {if (square == SquareData.OPEN || square == SquareData.NJ_OPEN || square == SquareData.IT_OPEN || square == SquareData.IA_OPEN || square == SquareData.G_OPEN || square == SquareData.NJ_G_OPEN) return true; else return false;}
-    public bool IsChecked(Vector2Int pos) {Debug.Assert((pos.x < sizeX) && (pos.y < sizeY) && (pos.x >= 0) && (pos.y >= 0)); return MapFlagsDirs[pos.x, pos.y]._checked;}
-    public bool IsChecked(Vector2Int pos, List<Vector2Int> check) {
-        foreach (Vector2Int square in check) 
-            if (pos.x == square.x && pos.y == square.y)
-                return true;
-        return false;
-        }
-
-    public bool IsActive(Vector2Int pos, List<Vector2Int> active) {
-        foreach (Vector2Int square in active)
-            if (pos.x == square.x && pos.y == square.y)
-                return true;
-        return false;
-    }
     public void SetChecked(Vector2Int pos) {Debug.Assert((pos.x < sizeX) && (pos.y < sizeY) && (pos.x >= 0) && (pos.y >= 0));  MapFlagsDirs[pos.x, pos.y]._checked = true;}
     public void SetUnchecked(Vector2Int pos) {Debug.Assert((pos.x < sizeX) && (pos.y < sizeY) && (pos.x >= 0) && (pos.y >= 0));  MapFlagsDirs[pos.x, pos.y]._checked = false;}
     
@@ -992,14 +986,25 @@ public class DungeonGeneratorCTR : MonoBehaviour {
         float scaling4 = 1f; // default 4f
         //float scaling2 = 1f; // default 2f
         //float scaling23 = 1f; // default 2.3
+
+        /*  === EXPLANATION ===
+         * The whole idea here is that we are generating a 'theoretical' map of data and specifics
+         * which we will then pass to MapManager which actually realizes the map.
+         * 
+         * Here we will consider each tile/object to be a string so serialization is easier later.
+         * It's data will be separated by commas so its easier to parse.
+         */
+
         Debug.Log($"Call! {structures.Count}");
+
         foreach (T s in structures) {
             Transform structure = new GameObject(name).transform;
             structure.transform.position = new Vector3(s.Center.x, 0f, s.Center.y);
             structure.transform.parent = dungeon;
             dungeonParent = dungeon.gameObject;
             Quaternion rotation = Quaternion.identity;
-            foreach (StructureCTR.DTile square in s.GetTiles(STType.FLOOR)) {
+            foreach (StructureCTR.DTile square in s.GetTiles(STType.FLOOR)) 
+            {
                 GameObject floor = Instantiate(floorObjs[random.Next(floorObjs.Count-1)], new Vector3(square.position.x* scaling4, square.position.y* scaling4, 0f), rotation);
                 floor.transform.parent = structure;
                 floor.gameObject.name = "(" + floor.transform.position.x + "," + floor.transform.position.y + ") " + structure.name;
@@ -1010,7 +1015,8 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                 placedTiles.Add(new Vector3(square.position.x * scaling4, square.position.y * scaling4, 0f), floor);
             }
 
-            foreach (StructureCTR.DTile square in s.GetTiles(STType.EDGE)) {
+            foreach (StructureCTR.DTile square in s.GetTiles(STType.EDGE))
+            {
                 if(doLocalRotation)
                     rotation = Quaternion.LookRotation(new Vector3(square.facing.x, square.facing.y, 0f));
                 GameObject floor = Instantiate(floorObjs[random.Next(floorObjs.Count)], new Vector3(square.position.x* scaling4, square.position.y* scaling4, 0f), rotation);
@@ -1037,7 +1043,8 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                 ceiling.transform.parent = structure;
             }
             */
-            foreach (StructureCTR.DTile square in s.GetTiles(STType.CORNER)) {
+            foreach (StructureCTR.DTile square in s.GetTiles(STType.CORNER)) 
+            {
                 if (doLocalRotation)
                     rotation = Quaternion.LookRotation(new Vector3(square.facing.x, square.facing.y, 0f));
                 GameObject floor = Instantiate(floorObjs[random.Next(floorObjs.Count)], new Vector3(square.position.x* scaling4, square.position.y* scaling4, 0f), rotation);
@@ -1049,7 +1056,8 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                 placedTiles.Add(new Vector3(square.position.x * scaling4, square.position.y * scaling4, 0f), floor);
             }
 
-            foreach (StructureCTR.DTile square in s.GetTiles(STType.DOOR)) {
+            foreach (StructureCTR.DTile square in s.GetTiles(STType.DOOR)) 
+            {
                 if (doLocalRotation)
                     rotation = Quaternion.LookRotation(new Vector3(square.facing.x, square.facing.y, 0f));
                 GameObject door = Instantiate(doorObjs[random.Next(doorObjs.Count)], new Vector3(square.position.x*scaling4, square.position.y*scaling4, 0f), rotation);
@@ -1806,6 +1814,24 @@ public class DungeonGeneratorCTR : MonoBehaviour {
         {
             HF.RemoveWordFromName(child.gameObject, "(Clone)");
         }
+    }
+
+    public bool IsOpen(SquareData square) { if (square == SquareData.OPEN || square == SquareData.NJ_OPEN || square == SquareData.IT_OPEN || square == SquareData.IA_OPEN || square == SquareData.G_OPEN || square == SquareData.NJ_G_OPEN) return true; else return false; }
+    public bool IsChecked(Vector2Int pos) { Debug.Assert((pos.x < sizeX) && (pos.y < sizeY) && (pos.x >= 0) && (pos.y >= 0)); return MapFlagsDirs[pos.x, pos.y]._checked; }
+    public bool IsChecked(Vector2Int pos, List<Vector2Int> check)
+    {
+        foreach (Vector2Int square in check)
+            if (pos.x == square.x && pos.y == square.y)
+                return true;
+        return false;
+    }
+
+    public bool IsActive(Vector2Int pos, List<Vector2Int> active)
+    {
+        foreach (Vector2Int square in active)
+            if (pos.x == square.x && pos.y == square.y)
+                return true;
+        return false;
     }
     #endregion
 }
