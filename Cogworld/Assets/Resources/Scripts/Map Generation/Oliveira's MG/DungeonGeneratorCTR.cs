@@ -28,12 +28,6 @@ using System.Collections;
 
 public class DungeonGeneratorCTR : MonoBehaviour {
     private bool _isCustom;
-    public List<GameObject> wallObjs;
-    public List<GameObject> floorObjs;
-    public List<GameObject> doorObjs;
-    public GameObject ceilingObj;
-    public GameObject column;
-    public GameObject lightObj;
 
     [HideInInspector] public List<Vector2Int> validSpawnLocations;
 
@@ -976,16 +970,12 @@ public class DungeonGeneratorCTR : MonoBehaviour {
 
     [Header("Editor Special")]
     public bool doLocalRotation = false;
-    public Dictionary<Vector3, GameObject> placedTiles = new Dictionary<Vector3, GameObject>();
-    public Dictionary<Vector3, GameObject> placedDoors = new Dictionary<Vector3, GameObject>();
-    public Dictionary<Vector3, GameObject> placedLights = new Dictionary<Vector3, GameObject>();
+    public Dictionary<Vector2Int, string> placedTiles = new Dictionary<Vector2Int, string>();
+    public Dictionary<Vector2Int, string> placedDoors = new Dictionary<Vector2Int, string>();
     public GameObject dungeonParent;
 
     #region Map Realization
     public void PlaceStructure<T>(List<T> structures, string name) where T : StructureCTR {
-        float scaling4 = 1f; // default 4f
-        //float scaling2 = 1f; // default 2f
-        //float scaling23 = 1f; // default 2.3
 
         /*  === EXPLANATION ===
          * The whole idea here is that we are generating a 'theoretical' map of data and specifics
@@ -993,6 +983,9 @@ public class DungeonGeneratorCTR : MonoBehaviour {
          * 
          * Here we will consider each tile/object to be a string so serialization is easier later.
          * It's data will be separated by commas so its easier to parse.
+         * It will take the following form:
+         *     [position.x],[position.y],[TILE.TYPE],[DIRTY/CLEAN],
+         * EX: 22,53,FLOOR,DIRTY,
          */
 
         Debug.Log($"Call! {structures.Count}");
@@ -1003,69 +996,75 @@ public class DungeonGeneratorCTR : MonoBehaviour {
             structure.transform.parent = dungeon;
             dungeonParent = dungeon.gameObject;
             Quaternion rotation = Quaternion.identity;
+
             foreach (StructureCTR.DTile square in s.GetTiles(STType.FLOOR)) 
             {
-                GameObject floor = Instantiate(floorObjs[random.Next(floorObjs.Count-1)], new Vector3(square.position.x* scaling4, square.position.y* scaling4, 0f), rotation);
-                floor.transform.parent = structure;
-                floor.gameObject.name = "(" + floor.transform.position.x + "," + floor.transform.position.y + ") " + structure.name;
-                // This is for dirty floor tile RNG
-                if (placedTiles.ContainsKey(new Vector3(square.position.x * scaling4, square.position.y * scaling4, 0f)) && placedTiles[new Vector3(square.position.x * scaling4, square.position.y * scaling4, 0f)].gameObject.name.Contains("*"))
-                    floor.gameObject.name += "*";
+                string floor = "";
 
-                placedTiles.Add(new Vector3(square.position.x * scaling4, square.position.y * scaling4, 0f), floor);
+                // Position
+                floor += square.position.x + "," + square.position.y + ",";
+
+                // Type
+                floor += "TileType.Floor,";
+
+                // Dirty
+                if (!placedTiles.ContainsKey(new Vector2Int(square.position.x, square.position.y)))
+                    floor += "CLEAN";
+
+                placedTiles.Add(new Vector2Int(square.position.x, square.position.y), floor);
             }
 
             foreach (StructureCTR.DTile square in s.GetTiles(STType.EDGE))
             {
-                if(doLocalRotation)
-                    rotation = Quaternion.LookRotation(new Vector3(square.facing.x, square.facing.y, 0f));
-                GameObject floor = Instantiate(floorObjs[random.Next(floorObjs.Count)], new Vector3(square.position.x* scaling4, square.position.y* scaling4, 0f), rotation);
-                floor.gameObject.name = "(" + floor.transform.position.x + "," + floor.transform.position.y + ") " + structure.name;
-                floor.transform.parent = structure;
-                // This is for dirty floor tile RNG
-                if (placedTiles.ContainsKey(new Vector3(square.position.x * scaling4, square.position.y * scaling4, 0f)) && placedTiles[new Vector3(square.position.x * scaling4, square.position.y * scaling4, 0f)].gameObject.name.Contains("*"))
-                    floor.gameObject.name += "*";
-                placedTiles.Add(new Vector3(square.position.x * scaling4, square.position.y * scaling4, 0f), floor);
+                string floor = "";
+
+                // Position
+                floor += square.position.x + "," + square.position.y + ",";
+
+                // Type
+                floor += "TileType.Floor,";
+
+                // Dirty
+                if (!placedTiles.ContainsKey(new Vector2Int(square.position.x, square.position.y)))
+                    floor += "CLEAN";
+
+                placedTiles.Add(new Vector2Int(square.position.x, square.position.y), floor);
             }
-            /*
-            foreach (StructureCTR.DTile square in s.GetTiles(STType.WALL)) {
-                if (doLocalRotation)
-                    rotation = Quaternion.LookRotation(new Vector3(square.facing.x, square.facing.y, 0f));
-                GameObject wall = Instantiate(wallObjs[random.Next(wallObjs.Count)], new Vector3((square.position.x* scaling4) +square.facing.x* scaling2, (square.position.y* scaling4) +square.facing.y* scaling2, 0f), rotation);
-                wall.transform.parent = structure;
-            }
-            */
-            /*
-            foreach (StructureCTR.DTile square in s.GetTiles(STType.CEILING)) {
-                if(doLocalRotation)
-                    rotation = Quaternion.Euler(0f, 0f, -180f);
-                GameObject ceiling = Instantiate(ceilingObj, new Vector3((square.position.x*scaling4), (square.position.y*scaling4), 4f), rotation);
-                ceiling.transform.parent = structure;
-            }
-            */
+
             foreach (StructureCTR.DTile square in s.GetTiles(STType.CORNER)) 
             {
-                if (doLocalRotation)
-                    rotation = Quaternion.LookRotation(new Vector3(square.facing.x, square.facing.y, 0f));
-                GameObject floor = Instantiate(floorObjs[random.Next(floorObjs.Count)], new Vector3(square.position.x* scaling4, square.position.y* scaling4, 0f), rotation);
-                floor.gameObject.name = "(" + floor.transform.position.x + "," + floor.transform.position.y + ") " + structure.name;
-                floor.transform.parent = structure;
-                // This is for dirty floor tile RNG
-                if (placedTiles.ContainsKey(new Vector3(square.position.x * scaling4, square.position.y * scaling4, 0f)) && placedTiles[new Vector3(square.position.x * scaling4, square.position.y * scaling4, 0f)].gameObject.name.Contains("*"))
-                    floor.gameObject.name += "*";
-                placedTiles.Add(new Vector3(square.position.x * scaling4, square.position.y * scaling4, 0f), floor);
+                string floor = "";
+
+                // Position
+                floor += square.position.x + "," + square.position.y + ",";
+
+                // Type
+                floor += "TileType.Floor,";
+
+                // Dirty
+                if (!placedTiles.ContainsKey(new Vector2Int(square.position.x, square.position.y)))
+                    floor += "CLEAN";
+
+                placedTiles.Add(new Vector2Int(square.position.x, square.position.y), floor);
             }
 
             foreach (StructureCTR.DTile square in s.GetTiles(STType.DOOR)) 
             {
-                if (doLocalRotation)
-                    rotation = Quaternion.LookRotation(new Vector3(square.facing.x, square.facing.y, 0f));
-                GameObject door = Instantiate(doorObjs[random.Next(doorObjs.Count)], new Vector3(square.position.x*scaling4, square.position.y*scaling4, 0f), rotation);
-                door.gameObject.name = "(" + door.transform.position.x + "," + door.transform.position.y + ") " + structure.name;
-                door.transform.parent = structure;
-                placedDoors.Add(new Vector3(square.position.x * scaling4, square.position.y * scaling4, 0f), door);
+                string door = "";
+
+                // Position
+                door += square.position.x + "," + square.position.y + ",";
+
+                // Type
+                door += "TileType.Door,";
+
+                // Dirty
+                door += "False";
+
+                placedDoors.Add(new Vector2Int(square.position.x, square.position.y), door);
             }
 
+            // Although currently not used, this info may be useful later as positional details for specific important objects.
             /*
             foreach (StructureCTR.DTile square in s.GetTiles(STType.COLUMN)) {
                 if(doLocalRotation)
@@ -1098,10 +1097,10 @@ public class DungeonGeneratorCTR : MonoBehaviour {
         }
 
         if (!called)
-            StartCoroutine(InstWallsWait(placedTiles, wallObjs));
+            StartCoroutine(InstWallsWait(placedTiles));
     }
 
-    IEnumerator InstWallsWait(Dictionary<Vector3, GameObject> placedTiles, List<GameObject> wallObjs)
+    IEnumerator InstWallsWait(Dictionary<Vector2Int, string> placedTiles)
     {
         called = true;
 
@@ -1113,18 +1112,27 @@ public class DungeonGeneratorCTR : MonoBehaviour {
          * however it will not do corners.
          */
 
-        Vector3[] directions = { Vector3.up, Vector3.down, Vector3.left, Vector3.right };
+        Vector2Int[] directions = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
 
-        foreach (KeyValuePair<Vector3, GameObject> tile in placedTiles.ToList())
+        foreach (KeyValuePair<Vector2Int, string> tile in placedTiles.ToList())
         {
-            foreach (Vector3 direction in directions)
+            foreach (Vector2Int direction in directions)
             {
-                Vector3 neighborPos = tile.Key + direction;
+                Vector2Int neighborPos = tile.Key + direction;
                 if (!placedTiles.ContainsKey(neighborPos))
                 {
-                    GameObject wallObj = Instantiate(wallObjs[random.Next(wallObjs.Count)], neighborPos, Quaternion.identity);
-                    wallObj.transform.parent = dungeonParent.transform;
-                    placedTiles.Add(neighborPos, wallObj);
+                    string wall = "";
+
+                    // Position
+                    wall += neighborPos.x + "," + neighborPos.y + ",";
+
+                    // Type
+                    wall += "TileType.Wall,";
+
+                    // Dirty
+                    wall += "False";
+
+                    placedTiles.Add(neighborPos, wall);
                 }
             }
         }
@@ -1139,44 +1147,76 @@ public class DungeonGeneratorCTR : MonoBehaviour {
          * it will put down a will tile.
          */
 
-        foreach (KeyValuePair<Vector3, GameObject> tile in placedTiles.ToList())
+        foreach (KeyValuePair<Vector2Int, string> tile in placedTiles.ToList())
         {
             // We only want to check floor tiles
-            if (tile.Value.tag == "Floor")
+            if (tile.Value.Contains("Floor"))
             {
-                Vector3 location = tile.Key;
+                Vector2Int location = tile.Key;
 
-                Vector3 diagonal = location + Vector3.up + Vector3.left; // UP - LEFT
+                Vector2Int diagonal = location + Vector2Int.up + Vector2Int.left; // UP - LEFT
                 if (!placedTiles.ContainsKey(diagonal))
                 {
                     // No tile there, place one
-                    GameObject wallObj = Instantiate(wallObjs[random.Next(wallObjs.Count)], diagonal, Quaternion.identity);
-                    wallObj.transform.parent = dungeonParent.transform;
-                    placedTiles.Add(diagonal, wallObj);
+                    string wall = "";
+
+                    // Position
+                    wall += diagonal.x + "," + diagonal.y + ",";
+
+                    // Type
+                    wall += "TileType.Wall,";
+
+                    // Dirty
+                    wall += "False";
+                    placedTiles.Add(diagonal, wall);
                 }
-                diagonal = location + Vector3.up + Vector3.right; // UP - RIGHT
+                diagonal = location + Vector2Int.up + Vector2Int.right; // UP - RIGHT
                 if (!placedTiles.ContainsKey(diagonal))
                 {
                     // No tile there, place one
-                    GameObject wallObj = Instantiate(wallObjs[random.Next(wallObjs.Count)], diagonal, Quaternion.identity);
-                    wallObj.transform.parent = dungeonParent.transform;
-                    placedTiles.Add(diagonal, wallObj);
+                    string wall = "";
+
+                    // Position
+                    wall += diagonal.x + "," + diagonal.y + ",";
+
+                    // Type
+                    wall += "TileType.Wall,";
+
+                    // Dirty
+                    wall += "False";
+                    placedTiles.Add(diagonal, wall);
                 }
-                diagonal = location + Vector3.down + Vector3.left; // DOWN - LEFT
+                diagonal = location + Vector2Int.down + Vector2Int.left; // DOWN - LEFT
                 if (!placedTiles.ContainsKey(diagonal))
                 {
                     // No tile there, place one
-                    GameObject wallObj = Instantiate(wallObjs[random.Next(wallObjs.Count)], diagonal, Quaternion.identity);
-                    wallObj.transform.parent = dungeonParent.transform;
-                    placedTiles.Add(diagonal, wallObj);
+                    string wall = "";
+
+                    // Position
+                    wall += diagonal.x + "," + diagonal.y + ",";
+
+                    // Type
+                    wall += "TileType.Wall,";
+
+                    // Dirty
+                    wall += "False";
+                    placedTiles.Add(diagonal, wall);
                 }
-                diagonal = location + Vector3.down + Vector3.right; // DOWN - RIGHT
+                diagonal = location + Vector2Int.down + Vector2Int.right; // DOWN - RIGHT
                 if (!placedTiles.ContainsKey(diagonal))
                 {
                     // No tile there, place one
-                    GameObject wallObj = Instantiate(wallObjs[random.Next(wallObjs.Count)], diagonal, Quaternion.identity);
-                    wallObj.transform.parent = dungeonParent.transform;
-                    placedTiles.Add(diagonal, wallObj);
+                    string wall = "";
+
+                    // Position
+                    wall += diagonal.x + "," + diagonal.y + ",";
+
+                    // Type
+                    wall += "TileType.Wall,";
+
+                    // Dirty
+                    wall += "False";
+                    placedTiles.Add(diagonal, wall);
                 }
             }
         }
@@ -1248,19 +1288,20 @@ public class DungeonGeneratorCTR : MonoBehaviour {
         PlaceStructure<AnteRoom>(anteRooms, "AnteRoom");
     }
 
-    //public Vector2Int prefabOffset = new Vector2Int(0,0); // (-1, 2)
 
     public void PlacePreGenerated()
     {
+        // Called BEFORE *PlaceStructure*.
+
         // NOTE:
         // Well, I may be missing it somewhere,
         // but it seems like Oliveira may have not implemented the method for placing down the pre-placed rooms!
-        // Or I may have no implemented it in my later Lists -> Sprites method (the 3 functions above this one), oh well.
+        // Or I may have not implemented it in my later Lists -> Sprites method (the 3 functions above this one), oh well.
         // It does seem the dungeon generation respects whatever tries to be placed (in *map*) so nothing takes up that space,
         // this is very helpful.
         // This is now happening here and im going to do it my own way.
         //
-        // We have to interpet the nonsense that is the SquareData enum (found in Resources.cs), this is how well will do that:
+        // We have to interpet the nonsense that is the SquareData enum (found in Resources.cs), this is how we will do that:
         // 
         // G_CLOSED: Oops, all walls!
         // IR_OPEN: Oops, all floors!
@@ -1283,24 +1324,37 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     for (int y = element.startY; y < element.endY; y++)
                     {
                         // Check if there is already a tile placed:
-                        if (placedTiles.ContainsKey(new Vector3(x, y, 0f))) // Yes, destory and replace it.
+                        if (placedTiles.ContainsKey(new Vector2Int(x, y))) // Yes, destory and replace it.
                         {
-                            Destroy(placedTiles[new Vector3(x, y, 0f)]); // Destroy it
-                            placedTiles.Remove(new Vector3(x, y, 0f)); // This may or may not work
+                            placedTiles.Remove(new Vector2Int(x, y));
 
                             // Place a new one
-                            GameObject wall = Instantiate(wallObjs[0], new Vector3(x, y, 0f), Quaternion.identity);
-                            wall.gameObject.name = "(" + wall.transform.position.x + "," + wall.transform.position.y + ") Wall";
-                            wall.transform.parent = this.dungeonParent.transform;
-                            placedTiles.Add(new Vector3(x, y, 0f), wall);
+                            string wall = "";
+
+                            // Position
+                            wall += x + "," + y + ",";
+
+                            // Type
+                            wall += "TileType.Wall,";
+
+                            // Dirty
+                            wall += "False";
+                            placedTiles.Add(new Vector2Int(x, y), wall);
                         }
                         else // No, place a new tile.
                         {
                             // Place a new one
-                            GameObject wall = Instantiate(wallObjs[0], new Vector3(x, y, 0f), Quaternion.identity);
-                            wall.gameObject.name = "(" + wall.transform.position.x + "," + wall.transform.position.y + ") Wall";
-                            wall.transform.parent = this.dungeonParent.transform;
-                            placedTiles.Add(new Vector3(x, y, 0f), wall);
+                            string wall = "";
+
+                            // Position
+                            wall += x + "," + y + ",";
+
+                            // Type
+                            wall += "TileType.Wall,";
+
+                            // Dirty
+                            wall += "False";
+                            placedTiles.Add(new Vector2Int(x, y), wall);
                         }
                     }
                 }
@@ -1312,24 +1366,37 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     for (int y = element.startY; y < element.endY; y++)
                     {
                         // Check if there is already a tile placed:
-                        if (placedTiles.ContainsKey(new Vector3(x, y, 0f))) // Yes, destory and replace it.
+                        if (placedTiles.ContainsKey(new Vector2Int(x, y))) // Yes, destory and replace it.
                         {
-                            Destroy(placedTiles[new Vector3(x, y, 0f)]); // Destroy it
-                            placedTiles.Remove(new Vector3(x, y, 0f)); // This may or may not work
+                            placedTiles.Remove(new Vector2Int(x, y));
 
                             // Place a new one
-                            GameObject floor = Instantiate(floorObjs[random.Next(floorObjs.Count)], new Vector3(x, y, 0f), Quaternion.identity);
-                            floor.gameObject.name = "(" + floor.transform.position.x + "," + floor.transform.position.y + ") Floor";
-                            floor.transform.parent = this.dungeonParent.transform;
-                            placedTiles.Add(new Vector3(x, y, 0f), floor);
+                            string floor = "";
+
+                            // Position
+                            floor += x + "," + y + ",";
+
+                            // Type
+                            floor += "TileType.Floor,";
+
+                            // Dirty
+                            floor += "False";
+                            placedTiles.Add(new Vector2Int(x, y), floor);
                         }
                         else // No, place a new tile.
                         {
                             // Place a new one
-                            GameObject floor = Instantiate(floorObjs[random.Next(floorObjs.Count)], new Vector3(x, y, 0f), Quaternion.identity);
-                            floor.gameObject.name = "(" + floor.transform.position.x + "," + floor.transform.position.y + ") Floor";
-                            floor.transform.parent = this.dungeonParent.transform;
-                            placedTiles.Add(new Vector3(x, y, 0f), floor);
+                            string floor = "";
+
+                            // Position
+                            floor += x + "," + y + ",";
+
+                            // Type
+                            floor += "TileType.Floor,";
+
+                            // Dirty
+                            floor += "False";
+                            placedTiles.Add(new Vector2Int(x, y), floor);
                         }
                     }
                 }
@@ -1337,7 +1404,7 @@ public class DungeonGeneratorCTR : MonoBehaviour {
             else if(element.type == SquareData.H_DOOR || element.type == SquareData.V_DOOR)
             {
                 // We want to place down a line of walls, and have the center tile be a door.
-                Vector3 center = Vector3.zero;
+                Vector2Int center = Vector2Int.zero;
 
                 if(element.type == SquareData.H_DOOR)
                 {
@@ -1350,7 +1417,7 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                         extra++;
                     }
 
-                    center = new Vector3(element.startX + extra, (length.y / 2) + element.startY, 0);
+                    center = new Vector2Int(element.startX + extra, (length.y / 2) + element.startY);
                 }
                 else
                 {
@@ -1360,53 +1427,73 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     {
                         extra++;
                     }
-                    center = new Vector3((length.x / 2) + element.startX, element.startY + extra, 0);
+                    center = new Vector2Int((length.x / 2) + element.startX, element.startY + extra);
                 }
                 center.y += 2; // odd janky fix
                 center.x -= 1;
 
-                //Debug.Log(element.startX + "," + element.startY + "/" + element.endX + "," + element.endY);
                 for (int x = element.startX; x <= element.endX; x++)
                 {
                     for (int y = element.startY + 2; y <= element.endY + 2; y++) // +2 -> odd janky fix
                     {
                         // Check if there is already a tile placed:
-                        if (placedTiles.ContainsKey(new Vector3(x, y, 0f))) // Yes, destory and replace it.
+                        if (placedTiles.ContainsKey(new Vector2Int(x, y))) // Yes, destory and replace it.
                         {
-                            Destroy(placedTiles[new Vector3(x, y, 0f)]); // Destroy it
-                            placedTiles.Remove(new Vector3(x, y, 0f));
+                            placedTiles.Remove(new Vector2Int(x, y));
 
                             // Place a new one
-                            GameObject wall = Instantiate(wallObjs[0], new Vector3(x, y, 0f), Quaternion.identity);
-                            wall.gameObject.name = "(" + wall.transform.position.x + "," + wall.transform.position.y + ") Wall";
-                            wall.transform.parent = this.dungeonParent.transform;
-                            placedTiles.Add(new Vector3(x, y, 0f), wall);
+                            string wall = "";
+
+                            // Position
+                            wall += x + "," + y + ",";
+
+                            // Type
+                            wall += "TileType.Wall,";
+
+                            // Dirty
+                            wall += "False";
+                            placedTiles.Add(new Vector2Int(x, y), wall);
                         }
                         else // No, place a new tile.
                         {
                             // Place a new one
-                            GameObject wall = Instantiate(wallObjs[0], new Vector3(x, y, 0f), Quaternion.identity);
-                            wall.gameObject.name = "(" + wall.transform.position.x + "," + wall.transform.position.y + ") Wall";
-                            wall.transform.parent = this.dungeonParent.transform;
-                            placedTiles.Add(new Vector3(x, y, 0f), wall);
+                            string wall = "";
+
+                            // Position
+                            wall += x + "," + y + ",";
+
+                            // Type
+                            wall += "TileType.Wall,";
+
+                            // Dirty
+                            wall += "False";
+                            placedTiles.Add(new Vector2Int(x, y), wall);
                         }
                     }
                 }
-                //Debug.Log(center + " >" + length.x + "," + length.y);
+
                 // And lastly, place the door by replacing one of the walls.
                 if (placedTiles.ContainsKey(center))
                 {
-                    Destroy(placedTiles[center]); // Destroy it
                     placedTiles.Remove(center);
                 }
+
                 // Place a new one
-                GameObject door = Instantiate(doorObjs[0], center, Quaternion.identity);
-                door.gameObject.name = "(" + door.transform.position.x + "," + door.transform.position.y + ") Door";
-                door.transform.parent = this.dungeonParent.transform;
+                string door = "";
+
+                // Position
+                door += center.x + "," + center.y + ",";
+
+                // Type
+                door += "TileType.Door,";
+
+                // Dirty
+                door += "False";
                 placedDoors.Add(center, door);
             }
             else if(element.type == SquareData.VAR) // Variable rooms (aka Prefabs). This is the tricky stuff
             {
+                // NOTICE: The following information is outdated and may be innacurate due to recent changes in how map data is stored and formatted.
                 // We have to balance between placing our tiles here and in MapManager.
                 // This is because all tiles placed here are interepreted by MapManager and turned into real tiles
                 // that then get STORED inside MapManager's lists.
@@ -1416,6 +1503,8 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                 // This likely does not include walls, floors, or doors, so we can load it into the LAYERED objects list.
 
                 float _rotation = element.rotation;
+
+                // TODO: RECONSIDER USING PREFABS --> TILEMAPS
 
                 GameObject prefab = element.prefab;
                 prefab.transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, _rotation));
@@ -1434,99 +1523,109 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     if (obj.tag == "Wall")
                     {
                         // Check if there is already a tile placed:
-                        if (placedTiles.ContainsKey(new Vector3(x, y, 0f))) // Yes, destory and replace it.
+                        if (placedTiles.ContainsKey(new Vector2Int(x, y))) // Yes, destory and replace it.
                         {
-                            Destroy(placedTiles[new Vector3(x, y, 0f)]); // Destroy it
-                            placedTiles.Remove(new Vector3(x, y, 0f));
+                            placedTiles.Remove(new Vector2Int(x, y));
 
                             // Place a new one
-                            GameObject wall = Instantiate(wallObjs[0], new Vector3(x, y, 0f), Quaternion.identity);
-                            wall.gameObject.name = "(" + wall.transform.position.x + "," + wall.transform.position.y + ") Wall" + AddSpecialName(obj.gameObject.name);
-                            wall.transform.parent = this.dungeonParent.transform;
-                            placedTiles.Add(new Vector3(x, y, 0f), wall);
+                            string wall = "";
+
+                            // Position
+                            wall += x + "," + y + ",";
+
+                            // Type
+                            wall += "TileType.Wall,";
+
+                            // Dirty
+                            wall += "False";
+                            placedTiles.Add(new Vector2Int(x, y), wall);
                         }
                         else // No, place a new tile.
                         {
                             // Place a new one
-                            GameObject wall = Instantiate(wallObjs[0], new Vector3(x, y, 0f), Quaternion.identity);
-                            wall.gameObject.name = "(" + wall.transform.position.x + "," + wall.transform.position.y + ") Wall" + AddSpecialName(obj.gameObject.name);
-                            wall.transform.parent = this.dungeonParent.transform;
-                            placedTiles.Add(new Vector3(x, y, 0f), wall);
+                            string wall = "";
+
+                            // Position
+                            wall += x + "," + y + ",";
+
+                            // Type
+                            wall += "TileType.Wall,";
+
+                            // Dirty
+                            wall += "False";
+                            placedTiles.Add(new Vector2Int(x, y), wall);
                         }
                     }
                     else if (obj.tag == "Floor")
                     {
                         // Check if there is already a tile placed:
-                        if (placedTiles.ContainsKey(new Vector3(x, y, 0f))) // Yes, destory and replace it.
+                        if (placedTiles.ContainsKey(new Vector2Int(x, y))) // Yes, destory and replace it.
                         {
-                            Destroy(placedTiles[new Vector3(x, y, 0f)]); // Destroy it
-                            placedTiles.Remove(new Vector3(x, y, 0f));
+                            placedTiles.Remove(new Vector2Int(x, y));
 
                             // Place a new one
-                            GameObject floor = Instantiate(floorObjs[random.Next(floorObjs.Count)], new Vector3(x, y, 0f), Quaternion.identity);
-                            floor.gameObject.name = "(" + floor.transform.position.x + "," + floor.transform.position.y + ") Floor";
+                            string floor = "";
+
+                            // Position
+                            floor += x + "," + y + ",";
+
+                            // Type
+                            floor += "TileType.Floor,";
+
+                            // Dirty
                             if (obj.gameObject.name.Contains("*"))
-                                floor.gameObject.name += "*";
-                            floor.transform.parent = this.dungeonParent.transform;
-                            placedTiles.Add(new Vector3(x, y, 0f), floor);
+                            {
+                                floor += "DIRTY";
+                            }
+                            else
+                            {
+                                floor += "CLEAN";
+                            }
+  
+                            placedTiles.Add(new Vector2Int(x, y), floor);
                         }
                         else // No, place a new tile.
                         {
                             // Place a new one
-                            GameObject floor = Instantiate(floorObjs[random.Next(floorObjs.Count)], new Vector3(x, y, 0f), Quaternion.identity);
-                            floor.gameObject.name = "(" + floor.transform.position.x + "," + floor.transform.position.y + ") Floor";
+                            string floor = "";
+
+                            // Position
+                            floor += x + "," + y + ",";
+
+                            // Type
+                            floor += "TileType.Floor,";
+
+                            // Dirty
                             if (obj.gameObject.name.Contains("*"))
-                                floor.gameObject.name += "*";
-                            floor.transform.parent = this.dungeonParent.transform;
-                            placedTiles.Add(new Vector3(x, y, 0f), floor);
+                            {
+                                floor += "DIRTY";
+                            }
+                            else
+                            {
+                                floor += "CLEAN";
+                            }
+
+                            placedTiles.Add(new Vector2Int(x, y), floor);
                         }
                     }
                     else if (obj.tag == "Door")
                     {
-                        // Place a floor tile down underneath it
-                        // Check if there is already a tile placed:
-                        if (placedTiles.ContainsKey(new Vector3(x, y, 0f))) // Yes, destory and replace it.
-                        {
-                            Destroy(placedTiles[new Vector3(x, y, 0f)]); // Destroy it
-                            placedTiles.Remove(new Vector3(x, y, 0f));
+                        string door = "";
 
-                            // Place a new one
-                            GameObject floor = Instantiate(floorObjs[random.Next(floorObjs.Count)], new Vector3(x, y, 0f), Quaternion.identity);
-                            floor.gameObject.name = "(" + floor.transform.position.x + "," + floor.transform.position.y + ") Floor";
-                            if (obj.gameObject.name.Contains("Dirty"))
-                                floor.gameObject.name += "*";
-                            floor.transform.parent = this.dungeonParent.transform;
-                            placedTiles.Add(new Vector3(x, y, 0f), floor);
-                        }
-                        else // No, place a new tile.
-                        {
-                            // Place a new one
-                            GameObject floor = Instantiate(floorObjs[random.Next(floorObjs.Count)], new Vector3(x, y, 0f), Quaternion.identity);
-                            floor.gameObject.name = "(" + floor.transform.position.x + "," + floor.transform.position.y + ") Floor";
-                            if (obj.gameObject.name.Contains("Dirty"))
-                                floor.gameObject.name += "*";
-                            floor.transform.parent = this.dungeonParent.transform;
-                            placedTiles.Add(new Vector3(x, y, 0f), floor);
-                        }
+                        // Position
+                        door += x + "," + y + ",";
 
-                        GameObject door = Instantiate(doorObjs[0], new Vector3(x, y, 0f), Quaternion.identity);
-                        door.gameObject.name = "(" + door.transform.position.x + "," + door.transform.position.y + ") Door";
-                        door.transform.parent = this.dungeonParent.transform;
-                        placedDoors.Add(new Vector3(x, y, 0f), door);
+                        // Type
+                        door += "TileType.Door,";
+
+                        // Dirty
+                        door += "False";
+                        placedDoors.Add(new Vector2Int(x, y), door);
                     }
                     else if (obj.tag.Contains("Pre")) // Pre-init objects
                     {
                         // Items & Bots
                         preInitObjects.Add(Instantiate(obj, dungeonParent.transform));
-
-                        // NOTE: (We create a floor tile under this inside the MapManager function
-                        /*
-                        // - purely visual, won't actually be added to anything
-                        GameObject ib = Instantiate(obj, new Vector3(x, y, 0f), Quaternion.identity);
-                        ib.gameObject.name = "(" + ib.transform.position.x + "," + ib.transform.position.y + ") Item/Bot";
-                        ib.transform.parent = this.dungeonParent.transform;
-                        */
-
                     }
                     else if(obj.tag == "Tile") // Blank space
                     {
@@ -1537,42 +1636,10 @@ public class DungeonGeneratorCTR : MonoBehaviour {
 
                         // Uses the name of "Access-Branch/Stairs-
                         prePlacedObjects.Add(Instantiate(obj, dungeonParent.transform));
-
-                        /*
-                        // - purely visual, won't actually be added to anything
-                        GameObject misc = Instantiate(obj, new Vector3(x, y, 0f), Quaternion.identity);
-                        misc.gameObject.name = "(" + misc.transform.position.x + "," + misc.transform.position.y + ") Access";
-                        misc.transform.parent = this.dungeonParent.transform;
-                        */
                     }
                     else if(obj.tag == "Respawn") // Level spawn point (floor)
                     {
-                        // Place down a floor tile and add this location to valid spawn positions
-
-                        // Check if there is already a tile placed:
-                        if (placedTiles.ContainsKey(new Vector3(x, y, 0f))) // Yes, destory and replace it.
-                        {
-                            Destroy(placedTiles[new Vector3(x, y, 0f)]); // Destroy it
-                            placedTiles.Remove(new Vector3(x, y, 0f));
-
-                            // Place a new one
-                            GameObject floor = Instantiate(floorObjs[random.Next(floorObjs.Count)], new Vector3(x, y, 0f), Quaternion.identity);
-                            floor.gameObject.name = "(" + floor.transform.position.x + "," + floor.transform.position.y + ") Floor";
-                            if (obj.gameObject.name.Contains("Dirty"))
-                                floor.gameObject.name += "*";
-                            floor.transform.parent = this.dungeonParent.transform;
-                            placedTiles.Add(new Vector3(x, y, 0f), floor);
-                        }
-                        else // No, place a new tile.
-                        {
-                            // Place a new one
-                            GameObject floor = Instantiate(floorObjs[random.Next(floorObjs.Count)], new Vector3(x, y, 0f), Quaternion.identity);
-                            floor.gameObject.name = "(" + floor.transform.position.x + "," + floor.transform.position.y + ") Floor";
-                            if (obj.gameObject.name.Contains("Dirty"))
-                                floor.gameObject.name += "*";
-                            floor.transform.parent = this.dungeonParent.transform;
-                            placedTiles.Add(new Vector3(x, y, 0f), floor);
-                        }
+                        // Add this location to valid spawn positions
 
                         validSpawnLocations.Add(new Vector2Int(x, y)); // Add to valid spawnpoints list
                     }
@@ -1583,13 +1650,6 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     else // Machines & whatnot
                     {
                         prePlacedObjects.Add(Instantiate(obj, dungeonParent.transform));
-
-                        /*
-                        // - purely visual, won't actually be added to anything
-                        GameObject misc = Instantiate(obj, new Vector3(x, y, 0f), Quaternion.identity);
-                        misc.gameObject.name = "(" + misc.transform.position.x + "," + misc.transform.position.y + ") PrePlaced";
-                        misc.transform.parent = this.dungeonParent.transform;
-                        */
                     }
                 }
             }

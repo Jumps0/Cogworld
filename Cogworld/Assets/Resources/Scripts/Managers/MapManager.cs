@@ -928,6 +928,16 @@ public class MapManager : MonoBehaviour
 
                 // And color
                 display.color = tile.tileInfo.asciiColor;
+
+                // Unless the wall is impassible, then it is slightly different in color
+                if (tile.isImpassible)
+                {
+                    // These walls will always be visible, and always use their full color.
+                    // In this case, the color needs to match the "theme color" of the current map.
+
+                    // It also needs to be much darker than usual.
+
+                }
                 break;
             case TileType.Door:
                 // Is this destroyed?
@@ -1369,16 +1379,16 @@ public class MapManager : MonoBehaviour
         GridManager.inst.grid = new GameObject[bordersize.x + 1, bordersize.y + 1];
 
         // First the tiles
-        foreach (KeyValuePair<Vector3, GameObject> tile in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().placedTiles)
+        foreach (KeyValuePair<Vector2Int, string> tile in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().placedTiles)
         {
             // Floor
-            if (tile.Value.tag == "Floor")
+            if (tile.Value.Contains("Floor"))
             {
                 bool isTileDirty = false;
 
-                if (tile.Value.name.Contains("*"))
+                if (tile.Value.Contains("DIRTY"))
                 {
-                    if(Random.Range(0f, 1f) < 0.07f) // 7% chance
+                    if(Random.Range(0f, 1f) < GlobalSettings.inst.dirtyFloorTileChance) // 7% chance
                     {
                         isTileDirty = true;
                     }
@@ -1386,8 +1396,9 @@ public class MapManager : MonoBehaviour
 
                 CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), HF.IDbyTheme(TileType.Floor), isTileDirty);
             }
-            else if (tile.Value.tag == "Wall")
+            else if (tile.Value.Contains("Wall"))
             {
+                /* // TODO
                 if (tile.Value.name.Contains("*")) // Specific wall tile
                 {
                     string[] split = tile.Value.name.Split("*"); // we want right side
@@ -1399,11 +1410,12 @@ public class MapManager : MonoBehaviour
                 {
                     CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), HF.IDbyTheme(TileType.Wall));
                 }
+                */
             }
         }
 
         // Then the doors
-        foreach (KeyValuePair<Vector3, GameObject> tile in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().placedDoors.ToList())
+        foreach (KeyValuePair<Vector2Int, string> tile in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().placedDoors.ToList())
         {
             CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), HF.IDbyTheme(TileType.Door));
         }
@@ -1663,17 +1675,7 @@ public class MapManager : MonoBehaviour
         }
         DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().prePlacedObjects.Clear();
 
-        // -- 
-        foreach (KeyValuePair<Vector3, GameObject> obj in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().placedTiles.ToList())
-        {
-            Destroy(obj.Value.gameObject);
-        }
         DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().placedTiles.Clear();
-
-        foreach (KeyValuePair<Vector3, GameObject> obj in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().placedDoors.ToList())
-        {
-            Destroy(obj.Value.gameObject);
-        }
         DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().placedDoors.Clear();
         #endregion
     }
@@ -3423,6 +3425,18 @@ public class MapManager : MonoBehaviour
         AudioManager.inst.PlayAmbient(ambID, 0.4f);
     }
 
+    #endregion
+
+    #region Theme Colors
+    [Header("Map Theme Colors")]
+    public Color theme_brown;
+    public Color theme_gray;
+    public Color theme_green;
+    public Color theme_blue;
+    public Color theme_yellow;
+    public Color theme_red;
+    public Color theme_orange;
+    public Color theme_white;
     #endregion
 }
 

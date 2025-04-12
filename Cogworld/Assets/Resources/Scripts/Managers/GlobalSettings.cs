@@ -96,6 +96,8 @@ public class GlobalSettings : MonoBehaviour
     public int partEnergyAttachmentCost = 20;
     [Tooltip("De-equipping an item expends some amount of energy. (We won't make this a requirement but will remove the amount either way)")]
     public int partEnergyDetachLoss = 10;
+    [Tooltip("The % chance for a (cave) floor tile to be dirty, instead of clean.")]
+    public float dirtyFloorTileChance = 0.07f;
 
     [Header("UI")]
     public float itemPopupLifetime = 5;
