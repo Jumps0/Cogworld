@@ -62,11 +62,11 @@ public class EventTile : MonoBehaviour
         if(dialogueTarget != null)
         {
             // Set flags
-            dialogueTarget.GetComponent<BotAI>().hasDialogue = true;
-            dialogueTarget.GetComponent<BotAI>().finishedTalking = false;
+            dialogueTarget.hasDialogue = true;
+            dialogueTarget.finishedTalking = false;
 
             // Add dialogue to actor
-            dialogueTarget.GetComponent<BotAI>().dialogue = dialogue;
+            dialogueTarget.dialogue = dialogue;
         }
 
         if(trait.FARCOM || trait.imprinted || trait.CRM || trait.RIF)

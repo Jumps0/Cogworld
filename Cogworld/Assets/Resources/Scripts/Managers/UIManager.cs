@@ -1347,10 +1347,10 @@ public class UIManager : MonoBehaviour
         AudioManager.inst.PlayDialogueAmbient(2, 0.5f); // BKG (background)
 
         // This should be the only use case?
-        if (dialogueActor.GetComponent<BotAI>().uniqueDialogueSound != null)
+        if (dialogueActor.uniqueDialogueSound != null)
         {
             // Play a specific sound if this is a unique NPC /w unique dialogue audio
-            AudioManager.inst.PlayMiscSpecific(dialogueActor.GetComponent<BotAI>().uniqueDialogueSound);
+            AudioManager.inst.PlayMiscSpecific(dialogueActor.uniqueDialogueSound);
         }
 
         StartCoroutine(Dialogue_OpenAnim(speaker));
@@ -1626,7 +1626,7 @@ public class UIManager : MonoBehaviour
         // This should be the only use case?
         if (dialogueActor.GetComponent<BotAI>())
         {
-            dialogueActor.GetComponent<BotAI>().moveToNextDialogue = true; // Move on to the next dialogue
+            dialogueActor.moveToNextDialogue = true; // Move on to the next dialogue
         }
         else
         {

@@ -970,10 +970,15 @@ public class DungeonGeneratorCTR : MonoBehaviour {
 
     [Header("Editor Special")]
     public bool doLocalRotation = false;
-    public Dictionary<Vector2Int, string> placedTiles = new Dictionary<Vector2Int, string>();
     public GameObject dungeonParent;
 
     #region Map Realization
+    [Header("Key Map Elements")]
+    public Dictionary<Vector2Int, string> placedTiles = new Dictionary<Vector2Int, string>();
+    [Tooltip("List containing scripted elements like triggers, and events that cannot be simplified to a string.")]
+    [HideInInspector] public List<GameObject> preInitElements = new List<GameObject>();
+    [Tooltip("List containing things like bots that have detail which cannot be stored in a string.")]
+    [HideInInspector] public List<GameObject> preInitObjects = new List<GameObject>();
     public void PlaceStructure<T>(List<T> structures, string name) where T : StructureCTR {
 
         /*  === EXPLANATION ===
@@ -1657,24 +1662,10 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     // Get the position, and adjust it based on the bottom left corner
                     Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
 
-                    string bot = "";
+                    // We don't "string-ify" these since they have a lot of important info.
+                    // In this case the data is help in an `Actor` script.
 
-                    // Position
-                    bot += pos.x + "," + pos.y + ",";
-
-                    // Type
-                    bot += "TileType.Exit,";
-
-                    // Dirty
-                    bot += "False";
-
-                    // Sprite name
-                    bot += $",{I.GetComponent<SpriteRenderer>().sprite.name}";
-
-                    // Object name (Used to determine destination)
-                    bot += $",{I.gameObject.name}";
-
-                    placedTiles.Add(new Vector2Int(pos.x, pos.y), bot);
+                    preInitObjects.Add(Instantiate(I, new Vector3(pos.x, pos.y), Quaternion.identity));
                 }
                 // Triggers
                 foreach (var I in info.objs_trigger)
@@ -1682,6 +1673,10 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     // Get the position, and adjust it based on the bottom left corner
                     Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
 
+                    // We don't "string-ify" these since they have a lot of important info.
+                    // In this case the data is help in an `???` script.
+
+                    preInitElements.Add(Instantiate(I, new Vector3(pos.x, pos.y), Quaternion.identity));
                 }
                 // Events
                 foreach (var I in info.objs_event)
@@ -1689,6 +1684,10 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     // Get the position, and adjust it based on the bottom left corner
                     Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
 
+                    // We don't "string-ify" these since they have a lot of important info.
+                    // In this case the data is help in an `???` script.
+
+                    preInitElements.Add(Instantiate(I, new Vector3(pos.x, pos.y), Quaternion.identity));
                 }
                 // Entrances
                 foreach (var I in info.objs_entrance)
@@ -1742,6 +1741,10 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     // Get the position, and adjust it based on the bottom left corner
                     Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
 
+                    // We don't "string-ify" these since they have a lot of important info.
+                    // In this case the data is help in an `???` script.
+
+                    preInitElements.Add(Instantiate(I, new Vector3(pos.x, pos.y), Quaternion.identity));
                 }
 
                 // TODO
@@ -1867,9 +1870,6 @@ public class DungeonGeneratorCTR : MonoBehaviour {
 
         return ret;
     }
-
-    [HideInInspector] public List<GameObject> prePlacedObjects = new List<GameObject>();
-    [HideInInspector] public List<GameObject> preInitObjects = new List<GameObject>();
 
     public bool HasLightAt(Vector2Int square) {
         if (square.x < 0 || square.x >= sizeX || square.y < 0 || square.y >= sizeY)

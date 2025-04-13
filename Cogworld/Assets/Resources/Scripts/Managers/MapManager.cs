@@ -1417,9 +1417,9 @@ public class MapManager : MonoBehaviour
         }
         */
         // And any pre-placed objects (mostly just machines)
-        if(DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().prePlacedObjects.Count > 0)
+        if(DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().preInitElements.Count > 0)
         {
-            foreach (GameObject obj in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().prePlacedObjects)
+            foreach (GameObject obj in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().preInitElements)
             {
                 /*
                 if (_layeredObjsRealized.ContainsKey(HF.V3_to_V2I(obj.transform.position)))
@@ -1564,7 +1564,7 @@ public class MapManager : MonoBehaviour
             }
         }
 
-        foreach (GameObject obj in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().prePlacedObjects.ToList())
+        foreach (GameObject obj in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().preInitElements.ToList())
         {
             Vector2Int spawnLocation = HF.V3_to_V2I(obj.transform.position);
 
@@ -1665,11 +1665,11 @@ public class MapManager : MonoBehaviour
         }
         DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().preInitObjects.Clear();
 
-        foreach (GameObject obj in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().prePlacedObjects.ToList())
+        foreach (GameObject obj in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().preInitElements.ToList())
         {
             Destroy(obj.gameObject);
         }
-        DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().prePlacedObjects.Clear();
+        DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().preInitElements.Clear();
 
         DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().placedTiles.Clear();
         #endregion

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 610141160191390131}
   - component: {fileID: 8016751945353650053}
+  - component: {fileID: 7954538324426192395}
   m_Layer: 0
   m_Name: Assembled (4)
   m_TagString: Untagged
@@ -84,6 +85,66 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &7954538324426192395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5322697944080156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: adaa2b68fafb9d742be81103be1f9a49, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 1
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
 --- !u!1 &114793010753265201
 GameObject:
   m_ObjectHideFlags: 0
@@ -94,6 +155,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4569802522414857641}
   - component: {fileID: 6499213542175141224}
+  - component: {fileID: 2512146657187467214}
   m_Layer: 0
   m_Name: Assembled (4)
   m_TagString: Untagged
@@ -168,6 +230,66 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2512146657187467214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 114793010753265201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: adaa2b68fafb9d742be81103be1f9a49, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 1
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
 --- !u!1 &292038311514441284
 GameObject:
   m_ObjectHideFlags: 0
@@ -756,6 +878,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8483106769376938370}
   - component: {fileID: 1482038520450177518}
+  - component: {fileID: 6014296311741817322}
   m_Layer: 0
   m_Name: Assembled (4)
   m_TagString: Untagged
@@ -830,6 +953,66 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &6014296311741817322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1535902037020361059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: adaa2b68fafb9d742be81103be1f9a49, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 1
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
 --- !u!1 &1732749085192222810
 GameObject:
   m_ObjectHideFlags: 0
@@ -1006,6 +1189,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5213849679941188474}
   - component: {fileID: 8586336143912007587}
+  - component: {fileID: 7965296061198598661}
   m_Layer: 0
   m_Name: Zionite
   m_TagString: Untagged
@@ -1080,6 +1264,66 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &7965296061198598661
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2219616133231728925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: 1c3e89cb69ac6184fa8146daa510eea7, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 0
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
 --- !u!1 &2268702241258442458
 GameObject:
   m_ObjectHideFlags: 0
@@ -1327,6 +1571,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6378708265537278642}
   - component: {fileID: 1302834919255623906}
+  - component: {fileID: 1164452677301557547}
   m_Layer: 0
   m_Name: EX-DEC
   m_TagString: Untagged
@@ -1401,6 +1646,66 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1164452677301557547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2425433290634413493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: 0daab0d6dca91af45b7d63b86ba27cfc, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 0
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
 --- !u!1 &2521699811470893692
 GameObject:
   m_ObjectHideFlags: 0
@@ -1579,6 +1884,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2908627168051847952}
   - component: {fileID: 3346682299771425526}
+  - component: {fileID: 7851696361686339020}
   m_Layer: 0
   m_Name: EX-HEX
   m_TagString: Untagged
@@ -1653,6 +1959,66 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &7851696361686339020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3192780191330842533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: 8f479693240ca664ebf07fd03879cfaa, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 0
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
 --- !u!1 &3396635163398707184
 GameObject:
   m_ObjectHideFlags: 0
@@ -1747,6 +2113,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1460815368414576940}
   - component: {fileID: 6704650807210659563}
+  - component: {fileID: 1757113416478661255}
   m_Layer: 0
   m_Name: Zionite
   m_TagString: Untagged
@@ -1821,6 +2188,66 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1757113416478661255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3398942547846377359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: 1c3e89cb69ac6184fa8146daa510eea7, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 0
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
 --- !u!1 &3407780223197201492
 GameObject:
   m_ObjectHideFlags: 0
@@ -1999,6 +2426,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3729893665607919075}
   - component: {fileID: 7745428954084208689}
+  - component: {fileID: 8220413563492497106}
   m_Layer: 0
   m_Name: Zionite
   m_TagString: Untagged
@@ -2073,6 +2501,66 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &8220413563492497106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3549345120755434606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: 1c3e89cb69ac6184fa8146daa510eea7, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 0
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
 --- !u!1 &3699687265158122535
 GameObject:
   m_ObjectHideFlags: 0
@@ -2083,6 +2571,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3182036835704166907}
   - component: {fileID: 6726115336021375919}
+  - component: {fileID: 7810257541734984478}
   m_Layer: 0
   m_Name: Zionite
   m_TagString: Untagged
@@ -2157,6 +2646,66 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &7810257541734984478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3699687265158122535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: 1c3e89cb69ac6184fa8146daa510eea7, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 0
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
 --- !u!1 &3787106381306555513
 GameObject:
   m_ObjectHideFlags: 0
@@ -2167,6 +2716,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8574197040158402501}
   - component: {fileID: 7966165393868531667}
+  - component: {fileID: 451127026587840586}
   m_Layer: 0
   m_Name: EX-BIN
   m_TagString: Untagged
@@ -2241,6 +2791,66 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &451127026587840586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3787106381306555513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: a35faa2284e64354c8baf16b7365ff58, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 0
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
 --- !u!1 &4021528094014947041
 GameObject:
   m_ObjectHideFlags: 0
@@ -2251,6 +2861,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3927363605271731085}
   - component: {fileID: 8349894568746598054}
+  - component: {fileID: 5265693738584874008}
   m_Layer: 0
   m_Name: Zionite
   m_TagString: Untagged
@@ -2325,6 +2936,66 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &5265693738584874008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4021528094014947041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: 1c3e89cb69ac6184fa8146daa510eea7, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 0
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
 --- !u!1 &4595851325848790594
 GameObject:
   m_ObjectHideFlags: 0
@@ -3245,6 +3916,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9207304105063020770}
   - component: {fileID: 2501410223483372898}
+  - component: {fileID: 3394478732054863397}
   m_Layer: 0
   m_Name: Assembled (4)
   m_TagString: Untagged
@@ -3319,6 +3991,66 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &3394478732054863397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6578811908465363495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: adaa2b68fafb9d742be81103be1f9a49, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 1
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
 --- !u!1 &6625717554220032513
 GameObject:
   m_ObjectHideFlags: 0
@@ -3329,6 +4061,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7282237478469618711}
   - component: {fileID: 3252421740274166247}
+  - component: {fileID: 3736272211335464742}
   m_Layer: 0
   m_Name: Samaritan
   m_TagString: Untagged
@@ -3403,6 +4136,66 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &3736272211335464742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6625717554220032513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: f9dc5bf0d9bad114587f22a6a9a49655, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 0
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
 --- !u!1 &6775664864893067295
 GameObject:
   m_ObjectHideFlags: 0
@@ -3445,6 +4238,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5973962279445530814}
   - component: {fileID: 7682590783355664761}
+  - component: {fileID: 2171774677956200702}
   m_Layer: 0
   m_Name: Assembled (4)
   m_TagString: Untagged
@@ -3519,6 +4313,66 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2171774677956200702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6784580221940462354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: adaa2b68fafb9d742be81103be1f9a49, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 1
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
 --- !u!1 &6821951068403508432
 GameObject:
   m_ObjectHideFlags: 0
@@ -44405,6 +45259,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3392640957695327467}
   - component: {fileID: 1318181021483740828}
+  - component: {fileID: 6875319672226411740}
   m_Layer: 0
   m_Name: Assembled (4)
   m_TagString: Untagged
@@ -44479,6 +45334,66 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &6875319672226411740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7276643017722166073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: adaa2b68fafb9d742be81103be1f9a49, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 1
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
 --- !u!1 &7458088091110564379
 GameObject:
   m_ObjectHideFlags: 0
@@ -44489,6 +45404,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2814006944191390213}
   - component: {fileID: 3778333874324467750}
+  - component: {fileID: 5823022471845014172}
   m_Layer: 0
   m_Name: Assembled (4)
   m_TagString: Untagged
@@ -44563,6 +45479,66 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &5823022471845014172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7458088091110564379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: adaa2b68fafb9d742be81103be1f9a49, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 1
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
 --- !u!1 &7846646878580617158
 GameObject:
   m_ObjectHideFlags: 0
@@ -45128,6 +46104,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6614739981429584996}
   - component: {fileID: 3492469675365106408}
+  - component: {fileID: 6794785316066089170}
   m_Layer: 0
   m_Name: Zionite
   m_TagString: Untagged
@@ -45202,6 +46179,66 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &6794785316066089170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8074456643686354084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: 1c3e89cb69ac6184fa8146daa510eea7, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 0
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
 --- !u!1 &8267446177774201484
 GameObject:
   m_ObjectHideFlags: 0
@@ -45212,6 +46249,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8696487185319757621}
   - component: {fileID: 7045364127160303343}
+  - component: {fileID: 371538037283360563}
   m_Layer: 0
   m_Name: 8R-4WN
   m_TagString: Untagged
@@ -45286,6 +46324,66 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &371538037283360563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8267446177774201484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: 7febc8e1e95b83d40899cf19a0faa3ea, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 0
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
 --- !u!1 &8270357031119719032
 GameObject:
   m_ObjectHideFlags: 0
@@ -45464,6 +46562,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4305187643422200713}
   - component: {fileID: 5172235108817752895}
+  - component: {fileID: 2075025338663624379}
   m_Layer: 0
   m_Name: Samaritan
   m_TagString: Untagged
@@ -45538,6 +46637,66 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2075025338663624379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8441343894629129568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: f9dc5bf0d9bad114587f22a6a9a49655, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 0
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
 --- !u!1 &8456718297386962466
 GameObject:
   m_ObjectHideFlags: 0
@@ -45632,6 +46791,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3993752165828795631}
   - component: {fileID: 2183920316660962960}
+  - component: {fileID: 6945679585524129887}
   m_Layer: 0
   m_Name: Zionite
   m_TagString: Untagged
@@ -45706,6 +46866,66 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &6945679585524129887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8496050828800019416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: 1c3e89cb69ac6184fa8146daa510eea7, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 0
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
 --- !u!1 &8707421532767386201
 GameObject:
   m_ObjectHideFlags: 0
@@ -45800,6 +47020,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2108083023376446218}
   - component: {fileID: 5039675912844381250}
+  - component: {fileID: 1665419963058866687}
   m_Layer: 0
   m_Name: Samaritan
   m_TagString: Untagged
@@ -45874,6 +47095,66 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1665419963058866687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8738727839111224680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: f9dc5bf0d9bad114587f22a6a9a49655, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 0
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
 --- !u!1 &8931812965571535112
 GameObject:
   m_ObjectHideFlags: 0
@@ -45884,6 +47165,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8787144931877468813}
   - component: {fileID: 1277283398722307977}
+  - component: {fileID: 683346799523332978}
   m_Layer: 0
   m_Name: Assembled (4)
   m_TagString: Untagged
@@ -45958,6 +47240,66 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &683346799523332978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8931812965571535112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: adaa2b68fafb9d742be81103be1f9a49, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 1
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0
 --- !u!1 &9049796749793656780
 GameObject:
   m_ObjectHideFlags: 0
@@ -46052,6 +47394,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4231086048800532322}
   - component: {fileID: 6554548974839643015}
+  - component: {fileID: 6266693461037534681}
   m_Layer: 0
   m_Name: Zionite
   m_TagString: Untagged
@@ -46126,3 +47469,63 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &6266693461037534681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9132380733860399081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8677dac73ad1695479e0ff0e63fbcc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksMovement: 0
+  uniqueName: 
+  currentHealth: 0
+  maxHealth: 0
+  currentHeat: 0
+  heatDissipation: 0
+  residualHeat: []
+  energyGeneration: 0
+  currentEnergy: 100
+  maxEnergy: 250
+  corruption: 0
+  siegeMode: 0
+  inStatis: 0
+  speed: 0
+  weightCurrent: 0
+  weightMax: 0
+  salvageModifier: 0
+  noMovementFor: 1
+  momentum: 0
+  armament: {fileID: 0}
+  components: {fileID: 0}
+  inventory: {fileID: 0}
+  isAlive: 0
+  fieldOfViewRange: 15
+  fieldOfView: []
+  botInfo: {fileID: 11400000, guid: 1c3e89cb69ac6184fa8146daa510eea7, type: 2}
+  myFaction: 0
+  _class: 5
+  wasFabricated: 0
+  Initiative: 0
+  _sprite: {fileID: 0}
+  _collider: {fileID: 0}
+  state_DORMANT: 0
+  state_DISARMED: 0
+  state_CLOAKED: 0
+  state_UNPOWERED: 0
+  state_DISABLED: 0
+  directPlayerAlly: 0
+  followThePlayer: 0
+  hacked_mods: 
+  previousAttackers: []
+  isExplored: 0
+  isVisible: 0
+  fow_sprite: {fileID: 0}
+  sensorSprite: {fileID: 0}
+  showSensorIndicator: 0
+  flashAlertSprite: {fileID: 0}
+  confirmCollision: 0

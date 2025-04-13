@@ -523,8 +523,8 @@ public class Actor : Entity
         #region Death Handling
         // Create the default message
         string botName = this.botInfo.botName;
-        if (this.GetComponent<BotAI>().uniqueName != "")
-            botName = this.GetComponent<BotAI>().uniqueName;
+        if (uniqueName != "")
+            botName = uniqueName;
 
         switch (deathInfo.type)
         {
@@ -880,14 +880,14 @@ public class Actor : Entity
 
             // If this is a friendly bot and is seeing the player for the first AND, has; dialogue, hasn't talked yet, isn't talking, THEN perform that dialogue.
             if ((this.GetComponent<BotAI>().relationToPlayer == BotRelation.Neutral || this.GetComponent<BotAI>().relationToPlayer == BotRelation.Friendly)
-                && GetComponent<BotAI>().hasDialogue
-                && !GetComponent<BotAI>().talking
-                && !GetComponent<BotAI>().finishedTalking &&
+                && hasDialogue
+                && !talking
+                && !finishedTalking &&
                 fieldOfView.Contains(new Vector3Int((int)PlayerData.inst.transform.position.x, (int)PlayerData.inst.transform.position.y, 0)))
             {
                 if (!firstTimeSeen)
                 {
-                    StartCoroutine(GetComponent<BotAI>().PerformScriptedDialogue());
+                    StartCoroutine(PerformScriptedDialogue());
                     firstTimeSeen = true;
                 }
             }
@@ -1254,6 +1254,74 @@ public class Actor : Entity
             spawnedTile.GetComponent<SimpleTileAnimator>().InitIFF(stagger += staggerIncrement);
         }
     }
+    #endregion
+
+    #region Dialogue
+    [Header("Dialogue Related")]
+    public bool hasDialogue = false;
+    public bool hasBufferDialogue = false; // Will freeze the screen if true. If false, just appears at the bottom + log.
+    public bool talking = false; // Is this bot currently chatting with the player?
+    public bool finishedTalking = false; // Has this bot finished chatting with the player?
+    public DialogueObject dialogue;
+    public bool moveToNextDialogue = false;
+    public AudioClip uniqueDialogueSound = null;
+
+    public IEnumerator PerformScriptedDialogue()
+    {
+        talking = true;
+
+        string botName = this.GetComponent<Actor>().botInfo.botName;
+        if (uniqueName != "")
+            botName = uniqueName;
+        UIManager.inst.Dialogue_OpenBox(botName, this.GetComponent<Actor>());
+
+        // Wait for the box to open (and do its little animation)
+        while (!UIManager.inst.dialogue_readyToDisplay)
+        {
+            yield return null;
+        }
+
+        for (int i = 0; i < dialogue.dialogue.Count; i++)
+        {
+            string D = dialogue.dialogue[i];
+
+            bool moreToSay = true;
+            if (i == dialogue.dialogue.Count - 1)
+            {
+                // Out of text
+                moreToSay = false;
+            }
+            else
+            {
+                moreToSay = true;
+            }
+
+            UIManager.inst.Dialogue_DisplayText(D, moreToSay);
+
+            while (!moveToNextDialogue)
+            {
+                // Wait
+                yield return null;
+            }
+            moveToNextDialogue = false;
+        }
+
+        UIManager.inst.Dialogue_Quit();
+
+        talking = false;
+        finishedTalking = true;
+
+        // Finally, show all the text in the log
+        bool playOnce = true;
+        foreach (string text in dialogue.dialogue)
+        {
+
+            string speech = botName + ": " + "\"" + text + "\""; // NAME: "Text"
+            UIManager.inst.CreateNewLogMessage(speech, UIManager.inst.deepInfoBlue, UIManager.inst.coolBlue, false, playOnce);
+            playOnce = false; // We are only going to play the audio output sound for the log messages once so we dont blast the player with X layered sounds all at once.
+        }
+    }
+
     #endregion
 }
 
