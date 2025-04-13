@@ -1372,6 +1372,8 @@ public class MapManager : MonoBehaviour
     {
         Vector2Int bordersize = mapsize;
         GridManager.inst.grid = new GameObject[bordersize.x + 1, bordersize.y + 1];
+        // Remember, string info has the format: [position.x],[position.y],[TILE.TYPE],[DIRTY/CLEAN],[(optional)FULLSPRITENAME],[(optional)MISCINFO]
+        #region Basic Mapgen Elements
 
         // First the tiles
         foreach (KeyValuePair<Vector2Int, string> tile in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().placedTiles)
@@ -1448,10 +1450,11 @@ public class MapManager : MonoBehaviour
                 */
             }
         }
-    }
+        #endregion
 
-    private void PreInitializedItems()
-    {
+        // ====================== PART 2 (the more detailed stuff) ===============================
+        #region Detailed Mapgen Elements
+
         // We interpret what type of object it is by its TAG,
         // and what to actually place by its NAME.
         //
@@ -1478,11 +1481,11 @@ public class MapManager : MonoBehaviour
                 {
                     InventoryControl.inst.CreateItemInWorld(
                         new ItemSpawnInfo(
-                            obj.gameObject.GetComponent<MiscItemPool>().itemPool[Random.Range(0, 
-                            obj.gameObject.GetComponent<MiscItemPool>().itemPool.Count - 1)].itemName, 
-                            spawnLocation, 
-                            1, 
-                            true, 
+                            obj.gameObject.GetComponent<MiscItemPool>().itemPool[Random.Range(0,
+                            obj.gameObject.GetComponent<MiscItemPool>().itemPool.Count - 1)].itemName,
+                            spawnLocation,
+                            1,
+                            true,
                             GlobalSettings.inst.faultyPrototypeChance)
                         );
                 }
@@ -1513,9 +1516,9 @@ public class MapManager : MonoBehaviour
 
                     InventoryControl.inst.CreateItemInWorld(
                         new ItemSpawnInfo(
-                            validitems[Random.Range(0, validitems.Count - 1)], 
-                            spawnLocation, 
-                            1, 
+                            validitems[Random.Range(0, validitems.Count - 1)],
+                            spawnLocation,
+                            1,
                             true,
                             GlobalSettings.inst.faultyPrototypeChance)
                         );
@@ -1528,7 +1531,7 @@ public class MapManager : MonoBehaviour
 
                 // First check to see if this is a specific bot to place
                 BotObject bot = HF.GetBotByString(obj.gameObject.name);
-                
+
                 // If a bot wasn't found, try the generic method
                 if (bot == null)
                 {
@@ -1656,6 +1659,7 @@ public class MapManager : MonoBehaviour
                 */
             }
         }
+        #endregion
 
         #region Old List Clearing
         // Clear the old lists
@@ -1700,6 +1704,13 @@ public class MapManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Place a world tile at a specific location.
+    /// </summary>
+    /// <param name="pos">The position on the map to place it.</param>
+    /// <param name="id">The dictionary ID of the tile, defining its important aspects.</param>
+    /// <param name="dirty">(Optional) Floor tiles have the chance to be clean or dirty.</param>
+    /// <returns>Returns the `WorldTile` that was just placed.</returns>
     private WorldTile CreateBlock(Vector2Int pos, int id, bool dirty = false)
     {
         // Create the new tile

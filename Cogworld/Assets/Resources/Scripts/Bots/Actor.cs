@@ -118,6 +118,13 @@ public class Actor : Entity
 
                 myFaction = botInfo.locations.alignment;
                 uniqueName = botInfo.botName; // TODO: Fancy system for names (later)
+
+                // Dialogue
+                if(dialogue != null)
+                {
+                    hasDialogue = true;
+                    hasBufferDialogue = dialogue.type == DialogueType.Major;
+                }
             }
 
             algorithm = new AdamMilVisibility(this); // Set visual algo
@@ -1259,7 +1266,8 @@ public class Actor : Entity
     #region Dialogue
     [Header("Dialogue Related")]
     public bool hasDialogue = false;
-    public bool hasBufferDialogue = false; // Will freeze the screen if true. If false, just appears at the bottom + log.
+    [Tooltip("Will freeze the screen if true. If false, just appears at the bottom + log.")]
+    public bool hasBufferDialogue = false;
     public bool talking = false; // Is this bot currently chatting with the player?
     public bool finishedTalking = false; // Has this bot finished chatting with the player?
     public DialogueObject dialogue;

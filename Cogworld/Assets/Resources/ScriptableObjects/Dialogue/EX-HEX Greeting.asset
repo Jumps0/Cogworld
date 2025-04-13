@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 898f41be10541c94ab71b0b7f0c06d86, type: 3}
+  m_Name: EX-HEX Greeting
+  m_EditorClassIdentifier: 
+  Id: 0
+  speakerName: EX-HEX
+  conversationName: exiles_ex-hex_greeting
+  dialogue:
+  - I assure you this isn't what it looks like. We're just trying to learn more about
+    the Assembled.
+  - They're clearly not of 0b10 construction, and their tech is weird, seemingly
+    copying a wide array of components of other bots with little pattern or logic.
+    It's almost like the early stages of some sort of... evolution.
+  - I'd love to just go ask the Imprinter what all this is about, she must know something,
+    but I doubt that would end well.
+  - The Zionites will tell you those Marauders at the gates are defenses set up by
+    Warlord... Nope, the Imprinter put them there mostly to keep us out!
+  - Anyway, I've got to get back to poking and prodding these nasty little guys.
+    Go see BIN. I can't imagine you'll want to stay in our boring little cave for
+    long, and we could use some help with the project in the back.

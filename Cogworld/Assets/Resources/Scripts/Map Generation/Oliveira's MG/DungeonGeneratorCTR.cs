@@ -1674,7 +1674,7 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
 
                     // We don't "string-ify" these since they have a lot of important info.
-                    // In this case the data is help in an `???` script.
+                    // In this case the data is help in an `TriggerArea` script.
 
                     preInitElements.Add(Instantiate(I, new Vector3(pos.x, pos.y), Quaternion.identity));
                 }
@@ -1685,7 +1685,7 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
 
                     // We don't "string-ify" these since they have a lot of important info.
-                    // In this case the data is help in an `???` script.
+                    // In this case the data is help in an `EventTile` script.
 
                     preInitElements.Add(Instantiate(I, new Vector3(pos.x, pos.y), Quaternion.identity));
                 }
@@ -1741,74 +1741,25 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     // Get the position, and adjust it based on the bottom left corner
                     Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
 
-                    // We don't "string-ify" these since they have a lot of important info.
-                    // In this case the data is help in an `???` script.
+                    string machine = "";
 
-                    preInitElements.Add(Instantiate(I, new Vector3(pos.x, pos.y), Quaternion.identity));
+                    // Position
+                    machine += pos.x + "," + pos.y + ",";
+
+                    // Type
+                    machine += "TileType.Machine,";
+
+                    // Dirty
+                    machine += "False";
+
+                    // Sprite name
+                    machine += $",{I.GetComponent<SpriteRenderer>().sprite.name}";
+
+                    // Object name (Used to determine what the machine does)
+                    machine += $",{I.gameObject.name}";
+
+                    placedTiles.Add(new Vector2Int(pos.x, pos.y), machine);
                 }
-
-                // TODO
-
-                /*
-                // We will then choose which objects to place here.
-                foreach (GameObject obj in objects)
-                {
-                    int x = (int)obj.transform.position.x + element.startX;
-                    int y = (int)obj.transform.position.y + element.startY;
-
-                    if (obj.tag == "Wall")
-                    {
-                        
-                    }
-                    else if (obj.tag == "Floor")
-                    {
-                        
-                    }
-                    else if (obj.tag == "Door")
-                    {
-                        string door = "";
-
-                        // Position
-                        door += x + "," + y + ",";
-
-                        // Type
-                        door += "TileType.Door,";
-
-                        // Dirty
-                        door += "False";
-                        placedDoors.Add(new Vector2Int(x, y), door);
-                    }
-                    else if (obj.tag.Contains("Pre")) // Pre-init objects
-                    {
-                        // Items & Bots
-                        preInitObjects.Add(Instantiate(obj, dungeonParent.transform));
-                    }
-                    else if(obj.tag == "Tile") // Blank space
-                    {
-
-                    }
-                    else if(obj.tag == "Access") // Level Exit
-                    {
-
-                        // Uses the name of "Access-Branch/Stairs-
-                        prePlacedObjects.Add(Instantiate(obj, dungeonParent.transform));
-                    }
-                    else if(obj.tag == "Respawn") // Level spawn point (floor)
-                    {
-                        // Add this location to valid spawn positions
-
-                        validSpawnLocations.Add(new Vector2Int(x, y)); // Add to valid spawnpoints list
-                    }
-                    else if (obj.tag == "Trigger" || obj.tag == "Event")
-                    {
-                        preInitObjects.Add(Instantiate(obj, dungeonParent.transform));
-                    }
-                    else // Machines & whatnot
-                    {
-                        prePlacedObjects.Add(Instantiate(obj, dungeonParent.transform));
-                    }
-                }
-                */
             }
         }
     }
