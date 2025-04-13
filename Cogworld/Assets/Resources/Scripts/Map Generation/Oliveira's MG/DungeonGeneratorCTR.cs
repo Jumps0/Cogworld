@@ -983,7 +983,7 @@ public class DungeonGeneratorCTR : MonoBehaviour {
          * Here we will consider each tile/object to be a string so serialization is easier later.
          * It's data will be separated by commas so its easier to parse.
          * It will take the following form:
-         *     [position.x],[position.y],[TILE.TYPE],[DIRTY/CLEAN],[(optional)FULLSPRITENAME]
+         *     [position.x],[position.y],[TILE.TYPE],[DIRTY/CLEAN],[(optional)FULLSPRITENAME],[(optional)MISCINFO]
          * EX: 22,53,FLOOR,DIRTY,floor_cave
          */
 
@@ -1624,14 +1624,32 @@ public class DungeonGeneratorCTR : MonoBehaviour {
 
                 }
                 // Then go through all the misc objects in the lists
+                // Remember, string info has the format: [position.x],[position.y],[TILE.TYPE],[DIRTY/CLEAN],[(optional)FULLSPRITENAME],[(optional)MISCINFO]
                 // Items
                 foreach (var I in info.objs_item)
                 {
                     // Get the position, and adjust it based on the bottom left corner
                     Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
 
+                    string item = "";
 
+                    // Position
+                    item += pos.x + "," + pos.y + ",";
 
+                    // Type
+                    item += "TileType.Item,"; // Not a real tiletype but used for parsing
+
+                    // Dirty
+                    item += "False";
+
+                    // Sprite name
+                    item += $",{I.GetComponent<SpriteRenderer>().sprite.name}";
+
+                    // Object name (Used to determine thing being spawned)
+                    // Some examples are: Storage-1, Med. Battery*, EX-Vault Item, Rigged Nuclear Core*
+                    item += $",{I.gameObject.name}";
+
+                    placedTiles.Add(new Vector2Int(pos.x, pos.y), item);
                 }
                 // Bots
                 foreach (var I in info.objs_bot)
@@ -1639,6 +1657,24 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     // Get the position, and adjust it based on the bottom left corner
                     Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
 
+                    string bot = "";
+
+                    // Position
+                    bot += pos.x + "," + pos.y + ",";
+
+                    // Type
+                    bot += "TileType.Exit,";
+
+                    // Dirty
+                    bot += "False";
+
+                    // Sprite name
+                    bot += $",{I.GetComponent<SpriteRenderer>().sprite.name}";
+
+                    // Object name (Used to determine destination)
+                    bot += $",{I.gameObject.name}";
+
+                    placedTiles.Add(new Vector2Int(pos.x, pos.y), bot);
                 }
                 // Triggers
                 foreach (var I in info.objs_trigger)
@@ -1660,6 +1696,20 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     // Get the position, and adjust it based on the bottom left corner
                     Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
 
+                    // Not much to this
+                    
+                    string entrance = "";
+
+                    // Position
+                    entrance += pos.x + "," + pos.y + ",";
+
+                    // Type
+                    entrance += "TileType.Arrival,"; // Not a real tiletype but used for parsing
+
+                    // Dirty
+                    entrance += "False";
+
+                    placedTiles.Add(new Vector2Int(pos.x, pos.y), entrance);
                 }
                 // Exits
                 foreach (var I in info.objs_exit)
@@ -1680,6 +1730,9 @@ public class DungeonGeneratorCTR : MonoBehaviour {
 
                     // Sprite name
                     exit += $",{I.GetComponent<SpriteRenderer>().sprite.name}";
+
+                    // Object name (Used to determine destination)
+                    exit += $",{I.gameObject.name}";
 
                     placedTiles.Add(new Vector2Int(pos.x, pos.y), exit);
                 }

@@ -2336,7 +2336,7 @@ GameObject:
   - component: {fileID: 5412493433426879298}
   - component: {fileID: 2083249252150888960}
   m_Layer: 0
-  m_Name: Access-Branch-1
+  m_Name: Access-Main-1
   m_TagString: Access
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2722,7 +2722,7 @@ GameObject:
   - component: {fileID: 4062149096701874144}
   - component: {fileID: 8046697943212795554}
   m_Layer: 0
-  m_Name: Access-Branch-1
+  m_Name: Access-Main-1
   m_TagString: Access
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

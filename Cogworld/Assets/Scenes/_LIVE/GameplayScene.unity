@@ -49378,16 +49378,16 @@ MonoBehaviour:
   staticMachinesTilemap: {fileID: 8792998006673259567, guid: fb849e85fe716da4dbabeb99fff4a2bc, type: 3}
   interactableMachinesTilemap: {fileID: 2645767866660683443, guid: ebd454871b6fb394c92ca64ac6b84ecc, type: 3}
   tempPlayer: {fileID: 0}
-  theme_brown: {r: 0, g: 0, b: 0, a: 0}
-  theme_gray: {r: 0, g: 0, b: 0, a: 0}
-  theme_green: {r: 0, g: 0, b: 0, a: 0}
-  theme_blue: {r: 0, g: 0, b: 0, a: 0}
-  theme_yellow: {r: 0, g: 0, b: 0, a: 0}
-  theme_red: {r: 0, g: 0, b: 0, a: 0}
-  theme_orange: {r: 0, g: 0, b: 0, a: 0}
-  theme_white: {r: 0, g: 0, b: 0, a: 0}
-  theme_purple: {r: 0, g: 0, b: 0, a: 0}
-  theme_pink: {r: 0, g: 0, b: 0, a: 0}
+  theme_brown: {r: 0.058823533, g: 0.050980397, b: 0.03137255, a: 1}
+  theme_gray: {r: 0.058823533, g: 0.058823533, b: 0.058823533, a: 1}
+  theme_green: {r: 0.03137255, g: 0.058823533, b: 0.03137255, a: 1}
+  theme_blue: {r: 0.03137255, g: 0.039215688, b: 0.058823533, a: 1}
+  theme_yellow: {r: 0.050980397, g: 0.050980397, b: 0, a: 1}
+  theme_red: {r: 0.0627451, g: 0.019607844, b: 0.011764707, a: 1}
+  theme_orange: {r: 0.0627451, g: 0.03137255, b: 0.003921569, a: 1}
+  theme_white: {r: 0.17254902, g: 0.17254902, b: 0.17254902, a: 1}
+  theme_purple: {r: 0.07450981, g: 0.011764707, b: 0.098039225, a: 1}
+  theme_pink: {r: 0.058823533, g: 0.03137255, b: 0.050980397, a: 1}
 --- !u!114 &1399552261
 MonoBehaviour:
   m_ObjectHideFlags: 0
