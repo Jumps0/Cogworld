@@ -1410,11 +1410,12 @@ public class MapManager : MonoBehaviour
         }
 
         // Then the doors
+        /*
         foreach (KeyValuePair<Vector2Int, string> tile in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().placedDoors.ToList())
         {
             CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), HF.IDbyTheme(TileType.Door));
         }
-
+        */
         // And any pre-placed objects (mostly just machines)
         if(DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().prePlacedObjects.Count > 0)
         {
@@ -1671,7 +1672,6 @@ public class MapManager : MonoBehaviour
         DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().prePlacedObjects.Clear();
 
         DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().placedTiles.Clear();
-        DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().placedDoors.Clear();
         #endregion
     }
 

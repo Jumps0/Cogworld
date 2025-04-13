@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 [System.Serializable]
 [Tooltip("Holds information for prefab maps/rooms/encounters that get parsed during CTR map generation.")]
@@ -9,12 +10,15 @@ public class PMapInfo : MonoBehaviour
     [Header("Information")]
     public string prefabname;
     public PMapType type;
+    public Tilemap tilemap;
     [Tooltip("The (dictionary) ID of the main walls that appear on this map.")]
     public int tile_wallID = -1;
     [Tooltip("The (dictionary) ID of the main doors that appear on this map.")]
     public int tile_doorID = -1;
     [Tooltip("The (dictionary) ID of the main floors that appear on this map.")]
     public int tile_floorID = -1;
+    [Tooltip("Should the floor tiles on this prefab have a chance to spawn dirty?")]
+    public bool hasDirtyFloor;
 
     [Header("List Components")]
     [Tooltip("List containing all floor item gameObjects.")]

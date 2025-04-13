@@ -5,9 +5,9 @@ using DungeonResources;
 using STType = StructureCTR.STType;
 using System;
 using UnityEngine.UIElements;
-//using UnityEngine.WSA;
 using System.Linq;
 using System.Collections;
+using UnityEngine.Tilemaps;
 
 // Originally made by: Ariel Oliveira [https://github.com/ArielOliveira/DungeonGenerator]
 // Modified by: Cody Jackson | cody@krselectric.com
@@ -971,7 +971,6 @@ public class DungeonGeneratorCTR : MonoBehaviour {
     [Header("Editor Special")]
     public bool doLocalRotation = false;
     public Dictionary<Vector2Int, string> placedTiles = new Dictionary<Vector2Int, string>();
-    public Dictionary<Vector2Int, string> placedDoors = new Dictionary<Vector2Int, string>();
     public GameObject dungeonParent;
 
     #region Map Realization
@@ -984,8 +983,8 @@ public class DungeonGeneratorCTR : MonoBehaviour {
          * Here we will consider each tile/object to be a string so serialization is easier later.
          * It's data will be separated by commas so its easier to parse.
          * It will take the following form:
-         *     [position.x],[position.y],[TILE.TYPE],[DIRTY/CLEAN],
-         * EX: 22,53,FLOOR,DIRTY,
+         *     [position.x],[position.y],[TILE.TYPE],[DIRTY/CLEAN],[(optional)FULLSPRITENAME]
+         * EX: 22,53,FLOOR,DIRTY,floor_cave
          */
 
         Debug.Log($"Call! {structures.Count}");
@@ -1061,7 +1060,7 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                 // Dirty
                 door += "False";
 
-                placedDoors.Add(new Vector2Int(square.position.x, square.position.y), door);
+                placedTiles.Add(new Vector2Int(square.position.x, square.position.y), door);
             }
 
             // Although currently not used, this info may be useful later as positional details for specific important objects.
@@ -1489,7 +1488,7 @@ public class DungeonGeneratorCTR : MonoBehaviour {
 
                 // Dirty
                 door += "False";
-                placedDoors.Add(center, door);
+                placedTiles.Add(center, door);
             }
             else if(element.type == SquareData.VAR) // Variable rooms (aka Prefabs). This is the tricky stuff
             {
@@ -1508,15 +1507,193 @@ public class DungeonGeneratorCTR : MonoBehaviour {
 
                 // Grab all the info from the container class
                 PMapInfo info = prefab.GetComponent<PMapInfo>();
-                // TODO
-
-                prefab.transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, _rotation));
-                List<GameObject> objects = new List<GameObject>(); // List of every object to place
-                foreach (Transform child in prefab.transform) // Go through all children and add them to the list of objects
+                Tilemap tilemap = info.tilemap;
+                // Then put all the tiles in a list
+                List<KeyValuePair<Vector2Int, Tile>> tiles = new List<KeyValuePair<Vector2Int, Tile>>();
+                for (int bx = info.bounds_BL.x; bx < info.bounds_TR.x; bx++)
                 {
-                    objects.Add(child.gameObject);
+                    for (int by = info.bounds_BL.y; by < info.bounds_TR.y; by++)
+                    {
+                        Tile T = (Tile)tilemap.GetTile(new Vector3Int(bx, by, 0));
+                        // Also shift tiles so that the Bottom Left corner is at the origin
+                        tiles.Add(new KeyValuePair<Vector2Int, Tile>(new Vector2Int(bx - info.bounds_BL.x, by - info.bounds_BL.y), T));
+                    }
                 }
 
+                // First go through the tiles
+                foreach (var kvp in tiles)
+                {
+                    Vector2Int pos = kvp.Key;
+                    Tile T = kvp.Value;
+
+                    // We go based on the sprite name
+                    if (T.sprite.name.Contains("floor"))
+                    {
+                        // Check if there is already a tile placed:
+                        if (placedTiles.ContainsKey(new Vector2Int(pos.x, pos.y)))
+                        {
+                            placedTiles.Remove(new Vector2Int(pos.x, pos.y));
+                        }
+
+                        // Place a new one
+                        string floor = "";
+
+                        // Position
+                        floor += pos.x + "," + pos.y + ",";
+
+                        // Type
+                        floor += "TileType.Floor,";
+
+                        // Dirty
+                        if (info.hasDirtyFloor)
+                        {
+                            floor += "DIRTY";
+                        }
+                        else
+                        {
+                            floor += "CLEAN";
+                        }
+
+                        // Sprite name
+                        floor += $",{T.sprite.name}";
+
+                        placedTiles.Add(new Vector2Int(pos.x, pos.y), floor);
+                    }
+                    else if (T.sprite.name.Contains("wall"))
+                    {
+                        // Check if there is already a tile placed:
+                        if (placedTiles.ContainsKey(new Vector2Int(pos.x, pos.y))) // Yes, destory and replace it.
+                        {
+                            placedTiles.Remove(new Vector2Int(pos.x, pos.y));
+                        }
+
+                        // Place a new one
+                        string wall = "";
+
+                        // Position
+                        wall += pos.x + "," + pos.y + ",";
+
+                        // Type
+                        wall += "TileType.Wall,";
+
+                        // Dirty
+                        wall += "False";
+
+                        // Sprite name
+                        wall += $",{T.sprite.name}";
+
+                        placedTiles.Add(new Vector2Int(pos.x, pos.y), wall);
+                    }
+                    else if (T.sprite.name.Contains("pipe") || T.sprite.name.Contains("machine"))
+                    {
+                        // These are all DECORATIVE machines with no logic
+                        string mach = "";
+
+                        // Position
+                        mach += pos.x + "," + pos.y + ",";
+
+                        // Type
+                        mach += "TileType.Machine,";
+
+                        // Dirty
+                        mach += "False";
+
+                        // Sprite name
+                        mach += $",{T.sprite.name}";
+
+                        placedTiles.Add(new Vector2Int(pos.x, pos.y), mach);
+                    }
+                    else if (T.sprite.name.Contains("door"))
+                    {
+                        string door = "";
+
+                        // Position
+                        door += pos.x + "," + pos.y + ",";
+
+                        // Type
+                        door += "TileType.Door,";
+
+                        // Dirty
+                        door += "False";
+
+                        // Sprite name
+                        door += $",{T.sprite.name}";
+
+                        placedTiles.Add(new Vector2Int(pos.x, pos.y), door);
+                    }
+
+                }
+                // Then go through all the misc objects in the lists
+                // Items
+                foreach (var I in info.objs_item)
+                {
+                    // Get the position, and adjust it based on the bottom left corner
+                    Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
+
+
+
+                }
+                // Bots
+                foreach (var I in info.objs_bot)
+                {
+                    // Get the position, and adjust it based on the bottom left corner
+                    Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
+
+                }
+                // Triggers
+                foreach (var I in info.objs_trigger)
+                {
+                    // Get the position, and adjust it based on the bottom left corner
+                    Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
+
+                }
+                // Events
+                foreach (var I in info.objs_event)
+                {
+                    // Get the position, and adjust it based on the bottom left corner
+                    Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
+
+                }
+                // Entrances
+                foreach (var I in info.objs_entrance)
+                {
+                    // Get the position, and adjust it based on the bottom left corner
+                    Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
+
+                }
+                // Exits
+                foreach (var I in info.objs_exit)
+                {
+                    // Get the position, and adjust it based on the bottom left corner
+                    Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
+
+                    string exit = "";
+
+                    // Position
+                    exit += pos.x + "," + pos.y + ",";
+
+                    // Type
+                    exit += "TileType.Exit,";
+
+                    // Dirty
+                    exit += "False";
+
+                    // Sprite name
+                    exit += $",{I.GetComponent<SpriteRenderer>().sprite.name}";
+
+                    placedTiles.Add(new Vector2Int(pos.x, pos.y), exit);
+                }
+                // Interactable Machines
+                foreach (var I in info.objs_machine)
+                {
+                    // Get the position, and adjust it based on the bottom left corner
+                    Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
+
+                }
+
+                // TODO
+
+                /*
                 // We will then choose which objects to place here.
                 foreach (GameObject obj in objects)
                 {
@@ -1525,91 +1702,11 @@ public class DungeonGeneratorCTR : MonoBehaviour {
 
                     if (obj.tag == "Wall")
                     {
-                        // Check if there is already a tile placed:
-                        if (placedTiles.ContainsKey(new Vector2Int(x, y))) // Yes, destory and replace it.
-                        {
-                            placedTiles.Remove(new Vector2Int(x, y));
-
-                            // Place a new one
-                            string wall = "";
-
-                            // Position
-                            wall += x + "," + y + ",";
-
-                            // Type
-                            wall += "TileType.Wall,";
-
-                            // Dirty
-                            wall += "False";
-                            placedTiles.Add(new Vector2Int(x, y), wall);
-                        }
-                        else // No, place a new tile.
-                        {
-                            // Place a new one
-                            string wall = "";
-
-                            // Position
-                            wall += x + "," + y + ",";
-
-                            // Type
-                            wall += "TileType.Wall,";
-
-                            // Dirty
-                            wall += "False";
-                            placedTiles.Add(new Vector2Int(x, y), wall);
-                        }
+                        
                     }
                     else if (obj.tag == "Floor")
                     {
-                        // Check if there is already a tile placed:
-                        if (placedTiles.ContainsKey(new Vector2Int(x, y))) // Yes, destory and replace it.
-                        {
-                            placedTiles.Remove(new Vector2Int(x, y));
-
-                            // Place a new one
-                            string floor = "";
-
-                            // Position
-                            floor += x + "," + y + ",";
-
-                            // Type
-                            floor += "TileType.Floor,";
-
-                            // Dirty
-                            if (obj.gameObject.name.Contains("*"))
-                            {
-                                floor += "DIRTY";
-                            }
-                            else
-                            {
-                                floor += "CLEAN";
-                            }
-  
-                            placedTiles.Add(new Vector2Int(x, y), floor);
-                        }
-                        else // No, place a new tile.
-                        {
-                            // Place a new one
-                            string floor = "";
-
-                            // Position
-                            floor += x + "," + y + ",";
-
-                            // Type
-                            floor += "TileType.Floor,";
-
-                            // Dirty
-                            if (obj.gameObject.name.Contains("*"))
-                            {
-                                floor += "DIRTY";
-                            }
-                            else
-                            {
-                                floor += "CLEAN";
-                            }
-
-                            placedTiles.Add(new Vector2Int(x, y), floor);
-                        }
+                        
                     }
                     else if (obj.tag == "Door")
                     {
@@ -1655,6 +1752,7 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                         prePlacedObjects.Add(Instantiate(obj, dungeonParent.transform));
                     }
                 }
+                */
             }
         }
     }
