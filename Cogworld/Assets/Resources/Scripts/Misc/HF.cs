@@ -333,6 +333,52 @@ public static class HF
             return 1;
         }
     }
+
+    /// <summary>
+    /// Given the name of a tile (from the tilemap) will return that tile's ID by checking the tile database.
+    /// </summary>
+    /// <param name="tile">Name of a specific tile that is FROM THE TILEMAP.</param>
+    /// <returns>An ID referring to a tile in the database.</returns>
+    public static int TileName_to_ID(string tile)
+    {
+        switch (tile)
+        {
+            case "floor_clean":
+                return 22;
+            case "floor_metal":
+                return 4;
+            case "door_emergency":
+                return 13;
+            case "door_angle":
+                return 12;
+            case "door_split":
+                return 5;
+            case "door_ocular":
+                return 48;
+            case "door_orb":
+                return 16;
+            case "door_triangle":
+                return 17;
+            case "door_vert":
+                return 49;
+            case "wall_super":
+                return 20;
+            case "wall_cave2":
+                return 18;
+            case "wall_cave1":
+                return 2;
+            case "wall_industrial":
+                return 8;
+            case "wall_basic":
+                return 1;
+            case "wall_science":
+                return 15;
+            case "wall_extra":
+                return 19;
+            default:
+                return 0;
+        }
+    }
     #endregion
 
     #region Machines/Hacking

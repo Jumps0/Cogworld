@@ -2,6 +2,7 @@ using DungeonResources;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
@@ -218,8 +219,6 @@ public class MapManager : MonoBehaviour
         }
         originalPlayerSpawnLocation = new Vector3(sl.x, sl.y, 0f);
         playerSpawnLocation = originalPlayerSpawnLocation;
-
-        PreInitializedItems(); // This is here because if its any lower "FillWithRock" will put walls everywhere and break many things.
 
         if (mapType == 1) // Cave
         {
@@ -1372,18 +1371,36 @@ public class MapManager : MonoBehaviour
     {
         Vector2Int bordersize = mapsize;
         GridManager.inst.grid = new GameObject[bordersize.x + 1, bordersize.y + 1];
-        // Remember, string info has the format: [position.x],[position.y],[TILE.TYPE],[DIRTY/CLEAN],[(optional)FULLSPRITENAME],[(optional)MISCINFO]
+        // Remember, string info has the format: [position.x],[position.y],[TILE.TYPE],[DIRTY/CLEAN(True/False)],[(optional)FULLSPRITENAME],[(optional)MISCINFO]
         #region Basic Mapgen Elements
 
         // First the tiles
         foreach (KeyValuePair<Vector2Int, string> tile in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().placedTiles)
         {
+            Vector2Int pos = tile.Key;
+            string T = tile.Value;
+            string[] split = T.Split(',');
+
+            string type = split[2], dirty = split[3].ToLower();
+
+            // Could be a specific tile to place
+            int specific = -1;
+            #pragma warning disable CS0168
+            try
+            {
+                string specific_tile = split[4];
+
+                // Now parse it using the function
+                specific = HF.TileName_to_ID(specific_tile);
+            }
+            catch (System.Exception ex) {} // No specifics = use default by theme
+
             // Floor
-            if (tile.Value.Contains("Floor"))
+            if (type.Contains("Floor")) // Floors
             {
                 bool isTileDirty = false;
 
-                if (tile.Value.Contains("DIRTY"))
+                if (dirty == "true")
                 {
                     if(Random.Range(0f, 1f) < GlobalSettings.inst.dirtyFloorTileChance) // 7% chance
                     {
@@ -1391,65 +1408,43 @@ public class MapManager : MonoBehaviour
                     }
                 }
 
-                CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), HF.IDbyTheme(TileType.Floor), isTileDirty);
+                if(specific == -1) // If there is no pre-set floor tile, use the theme'd one.
+                {
+                    specific = HF.IDbyTheme(TileType.Floor);
+                }
+
+                CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), specific, isTileDirty);
             }
-            else if (tile.Value.Contains("Wall"))
+            else if (type.Contains("Wall")) // Walls
             {
-                /* // TODO
-                if (tile.Value.name.Contains("*")) // Specific wall tile
+                if (specific == -1) // If there is no pre-set wall tile, use the theme'd one.
                 {
-                    string[] split = tile.Value.name.Split("*"); // we want right side
-                    string tileName = split[1];
+                    specific = HF.IDbyTheme(TileType.Wall);
+                }
 
-                    CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), HF.GetTileByString(tileName).Id);
-                }
-                else // Generic themed wall tile
-                {
-                    CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), HF.IDbyTheme(TileType.Wall));
-                }
-                */
+                CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), specific);
             }
-        }
-
-        // Then the doors
-        /*
-        foreach (KeyValuePair<Vector2Int, string> tile in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().placedDoors.ToList())
-        {
-            CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), HF.IDbyTheme(TileType.Door));
-        }
-        */
-        // And any pre-placed objects (mostly just machines)
-        if(DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().preInitElements.Count > 0)
-        {
-            foreach (GameObject obj in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().preInitElements)
+            else if (type.Contains("Door")) // Doors
             {
-                /*
-                if (_layeredObjsRealized.ContainsKey(HF.V3_to_V2I(obj.transform.position)))
+                if (specific == -1) // If there is no pre-set door tile, use the theme'd one.
                 {
-                    //Debug.Log("Problem! - Dupe [" + HF.V3_to_V2I(obj.transform.position) + "]");
-                    Debug.Log("KEYERROR: [" + HF.V3_to_V2I(obj.transform.position) + "]" +
-                        " when trying to place: " + obj.name + ", Dict<> already contains: " + _layeredObjsRealized[HF.V3_to_V2I(obj.transform.position)]);
+                    specific = HF.IDbyTheme(TileType.Door);
                 }
-                else
-                {
-                    
-                }
-                */
 
-                // We need to place a floor tile below this (since its a layered object)
-                CreateBlock(new Vector2Int((int)obj.transform.position.x, (int)obj.transform.position.y), HF.IDbyTheme(TileType.Floor));
+                CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), specific);
+            }
+            else if (type.Contains("Machine")) // *Decorative* Machines (non-functional)
+            {
+                // This is a bit tricky, because we have the exact sprite we want to place.
+                string specific_tile = split[4];
+                // But the only exists tile objects of specific placements.
+                // And within those objects are options for all possible ROTATIONS for that machine.
+                // So we need to be a bit tricky here.
 
-                /*
-                if (!obj.GetComponent<Actor>()) // Sometimes there are bots in here
-                {
-                    // This is an awkward bypass instead of using .Add because for some reason neighboring machines get assigned the same key???
-                    TData T = _allTilesRealized[HF.V3_to_V2I(obj.transform.position)];
-                    T.top = obj;
-                    _allTilesRealized[HF.V3_to_V2I(obj.transform.position)] = T;
-                }
-                */
+
             }
         }
+
         #endregion
 
         // ====================== PART 2 (the more detailed stuff) ===============================
@@ -1710,8 +1705,9 @@ public class MapManager : MonoBehaviour
     /// <param name="pos">The position on the map to place it.</param>
     /// <param name="id">The dictionary ID of the tile, defining its important aspects.</param>
     /// <param name="dirty">(Optional) Floor tiles have the chance to be clean or dirty.</param>
+    /// <param name="machineOverride">Override for machine sprites based on their internal sprite lists. Required for different rotations.</param>
     /// <returns>Returns the `WorldTile` that was just placed.</returns>
-    private WorldTile CreateBlock(Vector2Int pos, int id, bool dirty = false)
+    private WorldTile CreateBlock(Vector2Int pos, int id, bool dirty = false, string machineOverride = "")
     {
         // Create the new tile
         WorldTile newTile = new WorldTile();
@@ -1757,6 +1753,13 @@ public class MapManager : MonoBehaviour
                 break;
             case TileType.Machine:
                 pathdata[pos.x, pos.y] = 2;
+
+                // Sprite override
+                newTile.machinedata.machineSpriteOverride = machineOverride;
+
+                // TODO
+                newTile.machinedata.sprite_normal = null;
+                newTile.machinedata.sprite_ascii = null;
                 break;
             case TileType.Exit:
                 pathdata[pos.x, pos.y] = 0;
