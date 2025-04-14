@@ -445,8 +445,12 @@ public class GlobalSettings : MonoBehaviour
                     db_tileinfo.text += $"Door is: {(tile.door_open ? "<color= #54cc00 >YES</color>" : "CLOSED")}\n";
                     break;
                 case TileType.Machine:
-                    // TODO
-                    Debug.LogWarning("Needs to be implemented when `MachineData` is done.");
+                    db_tileinfo.text += $"DisplayName: {tile.machinedata.displayName}\n";
+                    db_tileinfo.text += $"LogName: {tile.machinedata.logName}\n";
+                    db_tileinfo.text += $"TerminalName: {tile.machinedata.terminalName}\n";
+                    db_tileinfo.text += $"Type: {tile.machinedata.type}\n";
+                    db_tileinfo.text += $"Working: {(tile.machinedata.atWork ? "<color=#00CC00>YES</color>" : "NO")}\n";
+                    db_tileinfo.text += $"Inoperable: {(tile.machinedata.machineIsDestroyed ? "<color=#FF3100>YES</color>" : "NO")}\n";
                     break;
                 case TileType.Exit:
                     db_tileinfo.text += $"Destination: (<color=#FF9600>{tile.access_destination}</color>) <color=#FF9600>{tile.access_destinationName}</color>\n";

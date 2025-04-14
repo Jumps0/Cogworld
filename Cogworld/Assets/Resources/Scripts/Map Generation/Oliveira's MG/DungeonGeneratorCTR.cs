@@ -1636,25 +1636,13 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     // Get the position, and adjust it based on the bottom left corner
                     Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
 
-                    string item = "";
-
-                    // Position
-                    item += pos.x + "," + pos.y + ",";
-
-                    // Type
-                    item += "TileType.Item,"; // Not a real tiletype but used for parsing
-
-                    // Dirty
-                    item += "False";
-
-                    // Sprite name
-                    item += $",{I.GetComponent<SpriteRenderer>().sprite.name}";
-
+                    // No stringification here because it may have the item pool attached to it
+                    GameObject obj = GameObject.Instantiate(I, new Vector3(pos.x, pos.y), Quaternion.identity);
                     // Object name (Used to determine thing being spawned)
                     // Some examples are: Storage-1, Med. Battery*, EX-Vault Item, Rigged Nuclear Core*
-                    item += $",{I.gameObject.name}";
+                    obj.name = $",{I.gameObject.name}";
 
-                    placedTiles.Add(new Vector2Int(pos.x, pos.y), item);
+                    preInitObjects.Add(obj);
                 }
                 // Bots
                 foreach (var I in info.objs_bot)

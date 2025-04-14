@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Pipe Multisplit 2
   m_EditorClassIdentifier: 
   Id: 43
-  tileName: pipe_multisplit1
+  tileName: pipe_multisplit2
   displaySprite: {fileID: 11400000, guid: a42bfacc6986c344e848f0f0114d823c, type: 2}
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}

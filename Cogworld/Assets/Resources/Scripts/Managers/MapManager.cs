@@ -6,7 +6,6 @@ using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
-using UnityEngine.UIElements;
 using static StructureCTR;
 using Random = UnityEngine.Random;
 using Tile = UnityEngine.Tilemaps.Tile;
@@ -652,7 +651,7 @@ public class MapManager : MonoBehaviour
         
         // 5 - Place custom machines
         PlaceIndividualMachine(new Vector2Int(bl.x + 1, bl.y + 1), machineDatabase.dict["Terminal Pipeworks"].Id, Direction.NO); // Terminal 4x3 "Pipeworks"
-        PlaceIndividualMachine(new Vector2Int(bl.x + 4, bl.y + 7), machineDatabase.dict["Cave Base Generator"].Id); // Static Machine (Outpost Generator)
+        PlaceIndividualMachine(new Vector2Int(bl.x + 4, bl.y + 6), machineDatabase.dict["Cave Base Generator"].Id); // Static Machine (Outpost Generator)
         PlaceIndividualMachine(new Vector2Int(bl.x + 7, bl.y + 4), machineDatabase.dict["Recharge Station"].Id); // Static Machine (Recharging Bay)
 
         PlaceIndividualMachine(new Vector2Int(bl.x + 1, bl.y + 13), machineDatabase.dict["Fabricator Alice"].Id); // Fabricator 4x2 "Alice"
@@ -669,7 +668,7 @@ public class MapManager : MonoBehaviour
 
         // test trap
         Vector2Int trapPosition = new Vector2Int(bl.x + 5, bl.y + 11);
-        mapdata[trapPosition.x, trapPosition.y] = PlaceTrap(trapPosition, 50, BotAlignment.Complex, false, 0);
+        mapdata[trapPosition.x, trapPosition.y] = PlaceTrap(trapPosition, tileDatabase.dict["Blade Trap"].Id, BotAlignment.Complex, false, 0);
         
     }
 
@@ -1489,11 +1488,7 @@ public class MapManager : MonoBehaviour
                 int id = tileDatabase.dict[specific_tile].Id;
 
                 CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), id);
-            }
-            else if (type.Contains("Item")) // Items
-            {
-                // TODO
-            }
+            } 
             else if (type.Contains("Arrival")) // Entrance (spawnpoints)
             {
                 DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().validSpawnLocations.Add(pos);
@@ -1526,52 +1521,41 @@ public class MapManager : MonoBehaviour
         #region Detailed Mapgen Elements
         // These are in the form of gameObjects with a specific name and a script attached to them giving more detail.
 
-        // This is (currently) only bots
+        // This is bots & items
         foreach (GameObject obj in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().preInitObjects)
         {
+            Vector2Int pos = HF.V3_to_V2I(obj.transform.position);
             Actor A = obj.GetComponent<Actor>();
 
             if (A) // Bots
             {
                 string name = obj.gameObject.name;
 
+                // First check to see if this is a specific bot to place
+                BotObject bot = HF.GetBotByString(name);
 
-            }
-        }
-
-        // This is Triggers & Events
-        foreach (GameObject obj in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().preInitElements)
-        {
-            TriggerArea T = obj.GetComponent<TriggerArea>();
-            EventTile E = obj.GetComponent<EventTile>();
-
-            if (T) // Triggers
-            {
-
-            }
-            else if (E) // Events
-            {
-
-            }
-        }
-
-
-        // Items: Category-PoolType (ex. Storage-Normal)
-
-
-        foreach (GameObject obj in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().preInitObjects)
-        {
-            Vector2Int spawnLocation = HF.V3_to_V2I(obj.transform.position);
-            if (obj.tag.Contains("Item"))
-            {
-
-                // There needs to be a floor under this
-                CreateBlock(spawnLocation, HF.IDbyTheme(TileType.Floor));
-
-                if (obj.gameObject.name.Contains("*")) // Specific Item Reference
+                // If a bot wasn't found, try the generic method
+                if (bot == null)
                 {
-                    string[] itemName = obj.gameObject.name.Split("*");
-                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(itemName[0], spawnLocation, 1, true, GlobalSettings.inst.faultyPrototypeChance));
+                    string[] words = name.Split('-');
+                    //string type = words[0]; // "Bot-"
+                    string rating = words[1];
+
+                    bot = HF.FindBotOfTier(int.Parse(rating));
+                }
+
+                PlaceBot(pos, bot, false, obj.gameObject);
+            }
+            else // Items
+            {
+                // Here the name is used to determine the details
+                string detail = obj.name;
+
+                // Items: Category-PoolType (ex. Storage-Normal)
+                if (detail.Contains("*")) // Specific Item Reference
+                {
+                    string[] itemName = detail.Split("*");
+                    InventoryControl.inst.CreateItemInWorld(new ItemSpawnInfo(itemName[0], pos, 1, true, GlobalSettings.inst.faultyPrototypeChance));
                 }
                 else if (obj.gameObject.GetComponent<MiscItemPool>()) // Specific Item Pool
                 {
@@ -1579,7 +1563,7 @@ public class MapManager : MonoBehaviour
                         new ItemSpawnInfo(
                             obj.gameObject.GetComponent<MiscItemPool>().itemPool[Random.Range(0,
                             obj.gameObject.GetComponent<MiscItemPool>().itemPool.Count - 1)].itemName,
-                            spawnLocation,
+                            pos,
                             1,
                             true,
                             GlobalSettings.inst.faultyPrototypeChance)
@@ -1613,146 +1597,32 @@ public class MapManager : MonoBehaviour
                     InventoryControl.inst.CreateItemInWorld(
                         new ItemSpawnInfo(
                             validitems[Random.Range(0, validitems.Count - 1)],
-                            spawnLocation,
+                            pos,
                             1,
                             true,
                             GlobalSettings.inst.faultyPrototypeChance)
                         );
                 }
             }
-            else if (obj.tag.Contains("Bot"))
+        }
+
+        // This is Triggers & Events
+        foreach (GameObject obj in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().preInitElements)
+        {
+            TriggerArea T = obj.GetComponent<TriggerArea>();
+            EventTile E = obj.GetComponent<EventTile>();
+
+            if (T) // Triggers
             {
-                // There needs to be a floor under this
-                CreateBlock(spawnLocation, HF.IDbyTheme(TileType.Floor));
-
-                // First check to see if this is a specific bot to place
-                BotObject bot = HF.GetBotByString(obj.gameObject.name);
-
-                // If a bot wasn't found, try the generic method
-                if (bot == null)
-                {
-                    string[] words = obj.gameObject.name.Split('-');
-                    //string type = words[0]; // "Bot-"
-                    string rating = words[1];
-
-                    bot = HF.FindBotOfTier(int.Parse(rating));
-
-                    PlaceBot(spawnLocation, bot, obj.gameObject);
-                }
-                else // Bot was found, place it
-                {
-                    PlaceBot(spawnLocation, bot, obj.gameObject);
-                }
-            }
-            else if (obj.tag == "Trigger" || obj.gameObject.name.Contains("Trigger"))
-            {
-                // There needs to be a floor under this
-                CreateBlock(spawnLocation, HF.IDbyTheme(TileType.Floor));
-
-                obj.transform.position += obj.transform.position; // Janky nudge
                 obj.gameObject.GetComponent<SpriteRenderer>().enabled = false;
                 obj.gameObject.transform.parent = mapParent;
                 triggers.Add(obj.gameObject);
             }
-            else if (obj.tag == "Event" || obj.gameObject.name.Contains("Event"))
+            else if (E) // Events
             {
-                obj.transform.position += obj.transform.position; // Janky nudge
                 obj.gameObject.GetComponent<SpriteRenderer>().enabled = false;
                 obj.gameObject.transform.parent = mapParent;
                 events.Add(obj.gameObject);
-            }
-        }
-
-        foreach (GameObject obj in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().preInitElements.ToList())
-        {
-            Vector2Int spawnLocation = HF.V3_to_V2I(obj.transform.position);
-
-            if (obj.tag.Contains("Access") || obj.gameObject.name.Contains("Access"))
-            {
-                // There needs to be a floor under this
-                CreateBlock(spawnLocation, HF.IDbyTheme(TileType.Floor));
-
-                string[] words = obj.gameObject.name.Split('-');
-                string exitType = words[1];
-                string exitTarget = words[2];
-
-                int _target = int.Parse(exitTarget);
-
-                Vector2Int location = spawnLocation;
-                if (exitType.Contains("Branch"))
-                {
-                    mapdata[location.x, location.y] = PlaceLevelExit(location, true, _target);
-                }
-                else // Stairs (up)
-                {
-                    mapdata[location.x, location.y] = PlaceLevelExit(location, false, _target);
-                }
-
-            }
-            else if (obj.gameObject.name.Contains("Machine"))
-            {
-                /* TODO: COME BACK TO THIS
-                // We are just going to create an exact copy of this part and copy over its component data
-                GameObject M = Instantiate(obj.gameObject);
-                M.transform.position = obj.transform.position;
-                M.transform.rotation = obj.transform.rotation;
-
-                CopyComponentData<SpriteRenderer>(obj.gameObject, M);
-                CopyComponentData<MachinePart>(obj.gameObject, M);
-
-                #region Specific Machine Types
-                if(obj.gameObject.GetComponent<Terminal>())
-                {
-                    CopyComponentData<Terminal>(obj.gameObject, M);
-                    machines_terminals.Add(M.gameObject);
-                }
-                else if (obj.gameObject.GetComponent<TerminalCustom>())
-                {
-                    CopyComponentData<TerminalCustom>(obj.gameObject, M);
-                    machines_customTerminals.Add(M.gameObject);
-                }
-                else if (obj.gameObject.GetComponent<Scanalyzer>())
-                {
-                    CopyComponentData<Scanalyzer>(obj.gameObject, M);
-                    machines_scanalyzers.Add(M.gameObject);
-                }
-                else if (obj.gameObject.GetComponent<Garrison>())
-                {
-                    CopyComponentData<Garrison>(obj.gameObject, M);
-                    machines_garrisons.Add(M.gameObject);
-                }
-                else if (obj.gameObject.GetComponent<RepairStation>())
-                {
-                    CopyComponentData<RepairStation>(obj.gameObject, M);
-                    machines_repairStation.Add(M.gameObject);
-                }
-                else if (obj.gameObject.GetComponent<Fabricator>())
-                {
-                    CopyComponentData<Fabricator>(obj.gameObject, M);
-                    machines_fabricators.Add(M.gameObject);
-                }
-                else if (obj.gameObject.GetComponent<RecyclingUnit>())
-                {
-                    CopyComponentData<RecyclingUnit>(obj.gameObject, M);
-                    machines_recyclingUnits.Add(M.gameObject);
-                }
-                else if (obj.gameObject.GetComponent<StaticMachine>())
-                {
-                    CopyComponentData<StaticMachine>(obj.gameObject, M);
-                    machines_static.Add(M.gameObject);
-                }
-
-                #endregion
-
-                M.GetComponent<SpriteRenderer>().sortingOrder = 7;
-                Vector2Int loc = HF.V3_to_V2I(M.transform.position);
-                M.gameObject.transform.parent = mapParent;
-
-                TData T = _allTilesRealized[loc];
-                T.bottom.occupied = true;
-                T.top = M.gameObject;
-                _allTilesRealized[loc] = T;
-                */
             }
         }
         #endregion
@@ -2299,7 +2169,7 @@ public class MapManager : MonoBehaviour
 
                         // Just flatly assign the defaults
                         WorldTile tile = MachineAssignDefaults(worldPos, machine);
-
+                        
                         // Then assign both sprites
                         tile.machinedata.sprite_normal = tileObject;
                         Tile asciiTile = (Tile)machineMap.GetTile((Vector3Int)bounds.GetASCII(pos, bounds.sboundsBL, bounds.aboundsBL));
@@ -2918,6 +2788,15 @@ public class MapManager : MonoBehaviour
         var spawnedBot = Instantiate(botPrefab, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
         spawnedBot.name = ($"{info.botName} @ ({pos.x},{pos.y})"); // Give grid based name
 
+        spawnedBot.transform.SetParent(botParent, true);
+
+        #region Information Copying
+        if (_reference)
+        {
+            CopyComponentData<Actor>(_reference, spawnedBot.gameObject);
+        }
+        #endregion
+
         spawnedBot.GetComponent<Actor>().Setup(info);
         spawnedBot.GetComponent<Actor>().isVisible = false;
         spawnedBot.GetComponent<Actor>().isExplored = false;
@@ -2928,14 +2807,6 @@ public class MapManager : MonoBehaviour
         // Make it a squad leader
         if (squadlead)
             spawnedBot.AddComponent<GroupLeader>();
-
-        spawnedBot.transform.SetParent(botParent, true);
-        if(_reference)
-            CopyComponentData<BotAI>(_reference, spawnedBot.gameObject);
-        
-
-        if(_reference)
-            _reference.GetComponent<Actor>().TransferStates(spawnedBot.GetComponent<Actor>()); // Transfer any states
 
         return spawnedBot.GetComponent<Actor>();
     }

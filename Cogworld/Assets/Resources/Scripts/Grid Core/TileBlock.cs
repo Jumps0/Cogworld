@@ -1487,6 +1487,8 @@ public struct MachineData
                 break;
             case CustomTerminalType.HideoutCache:
                 displayName = "Hideout Cache";
+                logName = "LOCAL CACHE";
+                terminalName = "LOCAL CACHE";
                 CTerminal_SetupAsCache();
                 break;
             case CustomTerminalType.Misc:

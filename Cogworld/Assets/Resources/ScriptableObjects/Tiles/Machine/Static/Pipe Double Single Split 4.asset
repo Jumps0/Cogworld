@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Pipe Double Single Split 4
   m_EditorClassIdentifier: 
   Id: 36
-  tileName: pipe_doublesinglesplit1
+  tileName: pipe_doublesinglesplit4
   displaySprite: {fileID: 11400000, guid: ef97cb415f898e548a01a49c895e7514, type: 2}
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}
