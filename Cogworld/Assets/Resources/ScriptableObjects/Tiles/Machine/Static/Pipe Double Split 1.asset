@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caf3c7381c065f640ad97b10eeab224e, type: 3}
   m_Name: Pipe Double Split 1
   m_EditorClassIdentifier: 
-  Id: 35
+  Id: 52
   tileName: pipe_doublesplit1
   displaySprite: {fileID: 11400000, guid: f47dfc2398f05ba4398e9bdc6ed451f7, type: 2}
   altSprite: {fileID: 0}

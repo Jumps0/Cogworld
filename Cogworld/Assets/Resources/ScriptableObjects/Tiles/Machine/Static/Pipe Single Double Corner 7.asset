@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caf3c7381c065f640ad97b10eeab224e, type: 3}
   m_Name: Pipe Single Double Corner 7
   m_EditorClassIdentifier: 
-  Id: 37
+  Id: 71
   tileName: pipe_singledoublecorner7
   displaySprite: {fileID: 11400000, guid: 6b2a1f267e953f9488ba8f88d451b408, type: 2}
   altSprite: {fileID: 0}

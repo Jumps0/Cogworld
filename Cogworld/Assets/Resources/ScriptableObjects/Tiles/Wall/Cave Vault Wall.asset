@@ -18,11 +18,13 @@ MonoBehaviour:
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 11400000, guid: e4ce95d44c1378b4986a69c92f942e7b, type: 2}
   asciiRep: {fileID: 11400000, guid: a2c8357fbce19c948a5954355184ddbf, type: 2}
+  asciiAltSprite: {fileID: 0}
   asciiDestroyed: {fileID: 11400000, guid: 58bc9ea63bff94541bf03c3af0185c5f, type: 2}
   asciiColor: {r: 0.37647063, g: 0.3019608, b: 0.18823531, a: 1}
   type: 1
   isDirty: 0
   impassable: 0
+  isCaveWall: 0
   health: {x: 10, y: 10}
   armor: 48
   destructionClips:
@@ -32,3 +34,22 @@ MonoBehaviour:
   resistances: []
   door_open: []
   door_close: []
+  trapData:
+    trapname: 
+    trapType: 0
+    canSever: 0
+    sever_amount: {x: 0, y: 0}
+    sever_damage: {x: 0, y: 0}
+    canShock: 0
+    shock_amount: {x: 0, y: 0}
+    canBurn: 0
+    burn_amount: {x: 0, y: 0}
+    burn_damage: {x: 0, y: 0}
+    burn_heat: {x: 0, y: 0}
+    burn_affectsNeighbors: 0
+    canPierce: 0
+    pierce_amount: 0
+    pierce_damage: {x: 0, y: 0}
+    pierce_impaleChance: 0
+    canStasis: 0
+    stasis_strength: 0

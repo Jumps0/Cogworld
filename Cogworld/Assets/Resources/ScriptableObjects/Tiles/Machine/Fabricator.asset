@@ -12,16 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caf3c7381c065f640ad97b10eeab224e, type: 3}
   m_Name: Fabricator
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 30
   tileName: Fabricator
   displaySprite: {fileID: 11400000, guid: 6eb8c96d54ce01543bf9eba2af56ac6e, type: 2}
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}
   asciiRep: {fileID: 11400000, guid: 1383c210bae1d7347b75ea9e4ac42c42, type: 2}
+  asciiAltSprite: {fileID: 0}
+  asciiDestroyed: {fileID: 0}
   asciiColor: {r: 0, g: 0.427451, b: 0.854902, a: 1}
   type: 3
   isDirty: 0
   impassable: 0
+  isCaveWall: 0
   health: {x: 15, y: 15}
   armor: 15
   destructionClips: []
@@ -49,3 +52,22 @@ MonoBehaviour:
     immune: 0
   door_open: []
   door_close: []
+  trapData:
+    trapname: 
+    trapType: 0
+    canSever: 0
+    sever_amount: {x: 0, y: 0}
+    sever_damage: {x: 0, y: 0}
+    canShock: 0
+    shock_amount: {x: 0, y: 0}
+    canBurn: 0
+    burn_amount: {x: 0, y: 0}
+    burn_damage: {x: 0, y: 0}
+    burn_heat: {x: 0, y: 0}
+    burn_affectsNeighbors: 0
+    canPierce: 0
+    pierce_amount: 0
+    pierce_damage: {x: 0, y: 0}
+    pierce_impaleChance: 0
+    canStasis: 0
+    stasis_strength: 0

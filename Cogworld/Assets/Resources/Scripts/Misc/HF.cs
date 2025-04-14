@@ -77,104 +77,76 @@ public static class HF
         // This is going to suck
         if (type == TileType.Wall)
         {
-            #region Tile ID Guide
-            /* Guide:
-            0 = Impassible DEV wall (Map border)
-            1 = Materials walls
-            2 = Cave walls
-            3 = Industrial cave walls
-            4 = Materials Floor Tile
-            5 = Materials Door
-            6 = ACCESS_MAIN (Stairs)
-            7 = ACCESS_BRANCH (Door)
-            8 = Factory wall
-            9 = DSF Wall (Orange)
-            10 = Waste wall (Brown)
-            11 = Garrison wall (Red)
-            12 = Factory Door
-            13 = Emergency Access Door
-            14 = Zhirov Wall (Blue)
-            15 = Research wall (Purple)
-            16 = Research Door
-            17 = Triangle Door
-            18 = Upper cave walls (the other rocky texture)
-            19 = Testing (Green)
-            20 = Architect wall (White) also for access and lab
-            21 = Cave vault wall (Orange)
-            22 = Cave floor (Smooth floor with no rivits in the corners)
-            */
-            #endregion
-
             switch (MapManager.inst.currentLevelName)
             {
                 case "MATERIALS":
-                    return 1;
+                    return MapManager.inst.tileDatabase.dict["Materials Wall"].Id;
                 case "LOWER CAVES":
-                    return 2;
+                    return MapManager.inst.tileDatabase.dict["Cave Wall"].Id;
                 case "STORAGE":
-                    return 1;
+                    return MapManager.inst.tileDatabase.dict["Materials Wall"].Id;
                 case "DSF":
-                    return 9;
+                    return MapManager.inst.tileDatabase.dict["DSF Wall"].Id;
                 case "GARRISON":
-                    return 11;
+                    return MapManager.inst.tileDatabase.dict["Garrison Wall"].Id;
                 case "FACTORY":
-                    return 8;
+                    return MapManager.inst.tileDatabase.dict["Factory Wall"].Id;
                 case "EXTENSION":
-                    return 1;
+                    return MapManager.inst.tileDatabase.dict["Materials Wall"].Id;
                 case "UPPER CAVES":
-                    return 2;
+                    return MapManager.inst.tileDatabase.dict["Cave Wall"].Id;
                 case "RESEARCH":
-                    return 1;
+                    return MapManager.inst.tileDatabase.dict["Materials Wall"].Id;
                 case "ACCESS":
-                    return 20;
+                    return MapManager.inst.tileDatabase.dict["Architect Wall"].Id;
                 case "COMMAND":
-                    return 1;
+                    return MapManager.inst.tileDatabase.dict["Materials Wall"].Id;
                 case "ARMORY":
-                    return 11;
+                    return MapManager.inst.tileDatabase.dict["Garrison Wall"].Id;
                 case "WASTE":
-                    return 10;
+                    return MapManager.inst.tileDatabase.dict["Waste Wall"].Id;
                 case "HUB":
-                    return 1;
+                    return MapManager.inst.tileDatabase.dict["Materials Wall"].Id;
                 case "ARCHIVES":
-                    return 1;
+                    return MapManager.inst.tileDatabase.dict["Materials Wall"].Id;
                 case "CETUS":
-                    return 14;
+                    return MapManager.inst.tileDatabase.dict["Zhirov Wall"].Id;
                 case "ARCHITECT":
-                    return 20;
+                    return MapManager.inst.tileDatabase.dict["Architect Wall"].Id;
                 case "ZHIROV":
-                    return 14;
+                    return MapManager.inst.tileDatabase.dict["Zhirov Wall"].Id;
                 case "DATA MINER":
-                    return 1;
+                    return MapManager.inst.tileDatabase.dict["Materials Wall"].Id;
                 case "EXILES":
-                    return 18;
+                    return MapManager.inst.tileDatabase.dict["Upper Caves Wall"].Id;
                 case "WARLORD":
-                    return 18;
+                    return MapManager.inst.tileDatabase.dict["Upper Caves Wall"].Id;
                 case "SECTION 7":
-                    return 19;
+                    return MapManager.inst.tileDatabase.dict["Testing Wall"].Id;
                 case "TESTING":
-                    return 19;
+                    return MapManager.inst.tileDatabase.dict["Testing Wall"].Id;
                 case "QUARANTINE":
-                    return 19;
+                    return MapManager.inst.tileDatabase.dict["Testing Wall"].Id;
                 case "LAB":
-                    return 20;
+                    return MapManager.inst.tileDatabase.dict["Architect Wall"].Id;
                 case "HUB_04(d)":
-                    return 21;
+                    return MapManager.inst.tileDatabase.dict["Reinforced Wall"].Id; // this is wrong
                 case "ZION":
-                    return 2;
+                    return MapManager.inst.tileDatabase.dict["Cave Wall"].Id;
                 case "ZDC":
-                    return 18;
+                    return MapManager.inst.tileDatabase.dict["Upper Caves Wall"].Id;
                 case "MINES":
-                    return 2;
+                    return MapManager.inst.tileDatabase.dict["Cave Wall"].Id;
                 case "RECYCLING":
-                    return 9;
+                    return MapManager.inst.tileDatabase.dict["DSF Wall"].Id;
                 case "SUBCAVES":
-                    return 2;
+                    return MapManager.inst.tileDatabase.dict["Cave Wall"].Id;
                 case "WASTES":
-                    return 10;
+                    return MapManager.inst.tileDatabase.dict["Waste Wall"].Id;
                 case "SCRAPTOWN":
-                    return 2;
+                    return MapManager.inst.tileDatabase.dict["DSF Wall"].Id;
                 default:
-                    return 1;
+                    return MapManager.inst.tileDatabase.dict["Materials Wall"].Id;
                     // EXPAND THIS LATER
             }
         }
@@ -183,73 +155,73 @@ public static class HF
             switch (MapManager.inst.currentLevelName)
             { // We have two types of floor tiles at the moment. One thats clean (for caves), and one thats industrial (for everythign else)
                 case "MATERIALS":
-                    return 4;
+                    return MapManager.inst.tileDatabase.dict["Materials Floor"].Id;
                 case "LOWER CAVES":
-                    return 22;
+                    return MapManager.inst.tileDatabase.dict["Cave Floor"].Id;
                 case "STORAGE":
-                    return 4;
+                    return MapManager.inst.tileDatabase.dict["Materials Floor"].Id;
                 case "DSF":
-                    return 4;
+                    return MapManager.inst.tileDatabase.dict["Materials Floor"].Id;
                 case "GARRISON":
-                    return 4;
+                    return MapManager.inst.tileDatabase.dict["Materials Floor"].Id;
                 case "FACTORY":
-                    return 4;
+                    return MapManager.inst.tileDatabase.dict["Materials Floor"].Id;
                 case "EXTENSION":
-                    return 4;
+                    return MapManager.inst.tileDatabase.dict["Materials Floor"].Id;
                 case "UPPER CAVES":
-                    return 22;
+                    return MapManager.inst.tileDatabase.dict["Cave Floor"].Id;
                 case "RESEARCH":
-                    return 4;
+                    return MapManager.inst.tileDatabase.dict["Materials Floor"].Id;
                 case "ACCESS":
-                    return 4;
+                    return MapManager.inst.tileDatabase.dict["Materials Floor"].Id;
                 case "COMMAND":
-                    return 4;
+                    return MapManager.inst.tileDatabase.dict["Materials Floor"].Id;
                 case "ARMORY":
-                    return 4;
+                    return MapManager.inst.tileDatabase.dict["Materials Floor"].Id;
                 case "WASTE":
-                    return 4;
+                    return MapManager.inst.tileDatabase.dict["Materials Floor"].Id;
                 case "HUB":
-                    return 4;
+                    return MapManager.inst.tileDatabase.dict["Materials Floor"].Id;
                 case "ARCHIVES":
-                    return 4;
+                    return MapManager.inst.tileDatabase.dict["Materials Floor"].Id;
                 case "CETUS":
-                    return 4;
+                    return MapManager.inst.tileDatabase.dict["Materials Floor"].Id;
                 case "ARCHITECT":
-                    return 22;
+                    return MapManager.inst.tileDatabase.dict["Cave Floor"].Id;
                 case "ZHIROV":
-                    return 22;
+                    return MapManager.inst.tileDatabase.dict["Cave Floor"].Id;
                 case "DATA MINER":
-                    return 22;
+                    return MapManager.inst.tileDatabase.dict["Cave Floor"].Id;
                 case "EXILES":
-                    return 22;
+                    return MapManager.inst.tileDatabase.dict["Cave Floor"].Id;
                 case "WARLORD":
-                    return 22;
+                    return MapManager.inst.tileDatabase.dict["Cave Floor"].Id;
                 case "SECTION 7":
-                    return 4;
+                    return MapManager.inst.tileDatabase.dict["Materials Floor"].Id;
                 case "TESTING":
-                    return 4;
+                    return MapManager.inst.tileDatabase.dict["Materials Floor"].Id;
                 case "QUARANTINE":
-                    return 4;
+                    return MapManager.inst.tileDatabase.dict["Materials Floor"].Id;
                 case "LAB":
-                    return 4;
+                    return MapManager.inst.tileDatabase.dict["Materials Floor"].Id;
                 case "HUB_04(d)":
-                    return 4;
+                    return MapManager.inst.tileDatabase.dict["Materials Floor"].Id;
                 case "ZION":
-                    return 22;
+                    return MapManager.inst.tileDatabase.dict["Cave Floor"].Id;
                 case "ZDC":
-                    return 22;
+                    return MapManager.inst.tileDatabase.dict["Cave Floor"].Id;
                 case "MINES":
-                    return 22;
+                    return MapManager.inst.tileDatabase.dict["Cave Floor"].Id;
                 case "RECYCLING":
-                    return 4;
+                    return MapManager.inst.tileDatabase.dict["Materials Floor"].Id;
                 case "SUBCAVES":
-                    return 22;
+                    return MapManager.inst.tileDatabase.dict["Cave Floor"].Id;
                 case "WASTES":
-                    return 4;
+                    return MapManager.inst.tileDatabase.dict["Materials Floor"].Id  ;
                 case "SCRAPTOWN":
-                    return 22;
+                    return MapManager.inst.tileDatabase.dict["Cave Floor"].Id;
                 default:
-                    return 4;
+                    return MapManager.inst.tileDatabase.dict["Materials Floor"].Id;
                     // EXPAND THIS LATER
             }
         }
@@ -258,73 +230,73 @@ public static class HF
             switch (MapManager.inst.currentLevelName)
             {
                 case "MATERIALS":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "LOWER CAVES":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "STORAGE":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "DSF":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "GARRISON":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "FACTORY":
-                    return 12;
+                    return MapManager.inst.tileDatabase.dict["Factory Door"].Id;
                 case "EXTENSION":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "UPPER CAVES":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "RESEARCH":
-                    return 16;
+                    return MapManager.inst.tileDatabase.dict["Research Door"].Id;
                 case "ACCESS":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "COMMAND":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "ARMORY":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "WASTE":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "HUB":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "ARCHIVES":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "CETUS":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "ARCHITECT":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "ZHIROV":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "DATA MINER":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "EXILES":
-                    return 18;
+                    return MapManager.inst.tileDatabase.dict["Triangle Door"].Id;
                 case "WARLORD":
-                    return 18;
+                    return MapManager.inst.tileDatabase.dict["Triangle Door"].Id;
                 case "SECTION 7":
-                    return 16;
+                    return MapManager.inst.tileDatabase.dict["Research Door"].Id;
                 case "TESTING":
-                    return 16;
+                    return MapManager.inst.tileDatabase.dict["Research Door"].Id;
                 case "QUARANTINE":
-                    return 16;
+                    return MapManager.inst.tileDatabase.dict["Research Door"].Id;
                 case "LAB":
-                    return 19;
+                    return MapManager.inst.tileDatabase.dict["Ocular Door"].Id;
                 case "HUB_04(d)":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "ZION":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "ZDC":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "MINES":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "RECYCLING":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "SUBCAVES":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "WASTES":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 case "SCRAPTOWN":
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                 default:
-                    return 5;
+                    return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
                     // EXPAND THIS LATER
             }
         }
@@ -344,37 +316,37 @@ public static class HF
         switch (tile)
         {
             case "floor_clean":
-                return 22;
+                return MapManager.inst.tileDatabase.dict["Cave Floor"].Id;
             case "floor_metal":
-                return 4;
+                return MapManager.inst.tileDatabase.dict["Materials Floor"].Id;
             case "door_emergency":
-                return 13;
+                return MapManager.inst.tileDatabase.dict["Emergency Access Door"].Id;
             case "door_angle":
-                return 12;
+                return MapManager.inst.tileDatabase.dict["Factory Door"].Id;
             case "door_split":
-                return 5;
+                return MapManager.inst.tileDatabase.dict["Materials Door"].Id;
             case "door_ocular":
-                return 48;
+                return MapManager.inst.tileDatabase.dict["Ocular Door"].Id;
             case "door_orb":
-                return 16;
+                return MapManager.inst.tileDatabase.dict["Research Door"].Id;
             case "door_triangle":
-                return 17;
+                return MapManager.inst.tileDatabase.dict["Triangle Door"].Id;
             case "door_vert":
-                return 49;
+                return MapManager.inst.tileDatabase.dict["Vertical Door"].Id;
             case "wall_super":
-                return 20;
+                return MapManager.inst.tileDatabase.dict["Architect Wall"].Id;
             case "wall_cave2":
-                return 18;
+                return MapManager.inst.tileDatabase.dict["Upper Caves Wall"].Id;
             case "wall_cave1":
-                return 2;
+                return MapManager.inst.tileDatabase.dict["Cave Wall"].Id;
             case "wall_industrial":
-                return 8;
+                return MapManager.inst.tileDatabase.dict["Factory Wall"].Id;
             case "wall_basic":
-                return 1;
+                return MapManager.inst.tileDatabase.dict["Industrial Cave Wall"].Id;
             case "wall_science":
-                return 15;
+                return MapManager.inst.tileDatabase.dict["Research Wall"].Id;
             case "wall_extra":
-                return 19;
+                return MapManager.inst.tileDatabase.dict["Testing Wall"].Id;
             default:
                 return 0;
         }

@@ -1013,6 +1013,11 @@ public class MapManager : MonoBehaviour
                         display = tile.machinedata.sprite_normal;
                     }
 
+                    if(display == null)
+                    {
+                        display = tile.tileInfo.displaySprite;
+                        Debug.Log($"No sprite found for {display}.");
+                    }
                     display.color = DetermineMachineColor(pos);
                 }
                 else
@@ -1763,6 +1768,7 @@ public class MapManager : MonoBehaviour
     {
         // Create the new trap
         WorldTile newTrap = CreateBlock(pos, id, false);
+        Debug.Log($"Created floor trap {newTrap} at {pos.x},{pos.y} with type {newTrap.type}, with ID {id}");
 
         // Add trap information
         newTrap.trap_active = true;

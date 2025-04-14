@@ -24,6 +24,7 @@ MonoBehaviour:
   type: 2
   isDirty: 0
   impassable: 0
+  isCaveWall: 0
   health: {x: 10, y: 10}
   armor: 5
   destructionClips:
@@ -37,3 +38,22 @@ MonoBehaviour:
   - {fileID: 8300000, guid: abcfeaf312fb07846b0049eb0b05b121, type: 3}
   door_close:
   - {fileID: 8300000, guid: 304a9f70d2b54f743b17fe8cd14d06a7, type: 3}
+  trapData:
+    trapname: 
+    trapType: 0
+    canSever: 0
+    sever_amount: {x: 0, y: 0}
+    sever_damage: {x: 0, y: 0}
+    canShock: 0
+    shock_amount: {x: 0, y: 0}
+    canBurn: 0
+    burn_amount: {x: 0, y: 0}
+    burn_damage: {x: 0, y: 0}
+    burn_heat: {x: 0, y: 0}
+    burn_affectsNeighbors: 0
+    canPierce: 0
+    pierce_amount: 0
+    pierce_damage: {x: 0, y: 0}
+    pierce_impaleChance: 0
+    canStasis: 0
+    stasis_strength: 0

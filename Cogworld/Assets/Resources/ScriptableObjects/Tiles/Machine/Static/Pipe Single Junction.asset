@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caf3c7381c065f640ad97b10eeab224e, type: 3}
   m_Name: Pipe Single Junction
   m_EditorClassIdentifier: 
-  Id: 42
+  Id: 78
   tileName: pipe_singlejunction
   displaySprite: {fileID: 11400000, guid: f523b0c496a6d834fac7b220115642f8, type: 2}
   altSprite: {fileID: 0}

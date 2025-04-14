@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caf3c7381c065f640ad97b10eeab224e, type: 3}
   m_Name: Machinery Processor
   m_EditorClassIdentifier: 
-  Id: 44
+  Id: 43
   tileName: machine_processor
   displaySprite: {fileID: 11400000, guid: fc59173813456f9469702daaf271d7ef, type: 2}
   altSprite: {fileID: 656695595, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}

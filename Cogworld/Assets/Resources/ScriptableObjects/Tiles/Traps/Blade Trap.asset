@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11d958572c23fc14e94145b869655998, type: 3}
   m_Name: Blade Trap
   m_EditorClassIdentifier: 
-  Id: 50
+  Id: 34
   tileName: Blade Trap
   displaySprite: {fileID: 11400000, guid: 078ac9ea5f3ea1b4c85d4723c1eee2ac, type: 2}
   altSprite: {fileID: -1865799676, guid: ea1eb4774646f634a9ef28da937c8adf, type: 3}
@@ -24,6 +24,7 @@ MonoBehaviour:
   type: 6
   isDirty: 0
   impassable: 0
+  isCaveWall: 0
   health: {x: 10, y: 10}
   armor: 4
   destructionClips:
@@ -35,6 +36,7 @@ MonoBehaviour:
   door_open: []
   door_close: []
   trapData:
+    trapname: 
     trapType: 1
     canSever: 0
     sever_amount: {x: 0, y: 0}

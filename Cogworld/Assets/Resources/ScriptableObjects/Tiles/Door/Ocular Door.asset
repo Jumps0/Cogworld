@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bf959f1c2ce52248b62ff453abcc06c, type: 3}
   m_Name: Ocular Door
   m_EditorClassIdentifier: 
-  Id: 48
+  Id: 32
   tileName: Ocular Door
   displaySprite: {fileID: 11400000, guid: d6cfb34f61cbb8148881f77018757fb2, type: 2}
   altSprite: {fileID: 11400000, guid: 00d3b54e10dc69141a78236b3573c0cd, type: 2}
@@ -24,6 +24,7 @@ MonoBehaviour:
   type: 2
   isDirty: 0
   impassable: 0
+  isCaveWall: 0
   health: {x: 20, y: 20}
   armor: 20
   destructionClips:
@@ -40,3 +41,22 @@ MonoBehaviour:
   - {fileID: 8300000, guid: b75b35f303219aa419d8ad7d801dd57a, type: 3}
   - {fileID: 8300000, guid: cfb76e962101dc248bcee61c3cedd5f9, type: 3}
   - {fileID: 8300000, guid: 6655acd1d06e892459dfc0ff0055bef2, type: 3}
+  trapData:
+    trapname: 
+    trapType: 0
+    canSever: 0
+    sever_amount: {x: 0, y: 0}
+    sever_damage: {x: 0, y: 0}
+    canShock: 0
+    shock_amount: {x: 0, y: 0}
+    canBurn: 0
+    burn_amount: {x: 0, y: 0}
+    burn_damage: {x: 0, y: 0}
+    burn_heat: {x: 0, y: 0}
+    burn_affectsNeighbors: 0
+    canPierce: 0
+    pierce_amount: 0
+    pierce_damage: {x: 0, y: 0}
+    pierce_impaleChance: 0
+    canStasis: 0
+    stasis_strength: 0

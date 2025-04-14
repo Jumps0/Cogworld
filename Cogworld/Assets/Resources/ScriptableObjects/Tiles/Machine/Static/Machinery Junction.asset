@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caf3c7381c065f640ad97b10eeab224e, type: 3}
   m_Name: Machinery Junction
   m_EditorClassIdentifier: 
-  Id: 45
+  Id: 42
   tileName: machine_junction
   displaySprite: {fileID: 11400000, guid: aa8589d85a9553143b0f6eddc84a400b, type: 2}
   altSprite: {fileID: -124849826, guid: a940f9fcc5f902c439c283b1365440a5, type: 3}
