@@ -857,6 +857,29 @@ public class MapManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Performs a LOCAL tilemap update around a specific position (as a SQUARE).
+    /// </summary>
+    /// <param name="center">The center point of the update.</param>
+    /// <param name="radius">The "radius" of the area to update.</param>
+    public void UpdateTilemapLOCAL(Vector2Int center, int radius)
+    {
+        Vector2Int BL = new Vector2Int(center.x - radius, center.y - radius);
+
+        for (int x = BL.x; x < BL.x + (radius * 2); x++)
+        {
+            for (int y = BL.y; y < BL.y + (radius * 2); y++)
+            {
+                Vector2Int pos = new Vector2Int(x, y);
+
+                if (!mapdata[x, y].Equals(default(WorldTile)))
+                {
+                    UpdateTile(mapdata[x, y], pos);
+                }
+            }
+        }
+    }
+
+    /// <summary>
     /// Update an individual tile on the tilemap to what it should be based on the `mapdata` array [DOES NOT UPDATE FogOfWar VISION].
     /// </summary>
     public void UpdateTile(WorldTile tile, Vector2Int pos)
@@ -1155,6 +1178,24 @@ public class MapManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Performs a LOCAL vis update around a specific position (as a SQUARE).
+    /// </summary>
+    /// <param name="center">The center point of the update.</param>
+    /// <param name="radius">The "radius" of the area to update.</param>
+    public void TilemapVisUpdateLOCAL(Vector2Int center, int radius)
+    {
+        Vector2Int BL = new Vector2Int(center.x - radius, center.y - radius);
+
+        for (int x = BL.x; x < BL.x + (radius * 2); x++)
+        {
+            for (int y = BL.y; y < BL.y + (radius * 2); y++)
+            {
+                MapManager.inst.TileUpdateVis(new Vector2Int(x, y));
+            }
+        }
+    }
+
+    /// <summary>
     /// Sets the visibility of a tile at a specific position.
     /// </summary>
     /// <param name="pos">The position on the map of the tile to update.</param>
@@ -1435,13 +1476,39 @@ public class MapManager : MonoBehaviour
             }
             else if (type.Contains("Machine")) // *Decorative* Machines (non-functional)
             {
-                // This is a bit tricky, because we have the exact sprite we want to place.
                 string specific_tile = split[4];
-                // But the only exists tile objects of specific placements.
-                // And within those objects are options for all possible ROTATIONS for that machine.
-                // So we need to be a bit tricky here.
 
+                int id = tileDatabase.dict[specific_tile].Id;
 
+                CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), id);
+            }
+            else if (type.Contains("Item")) // Items
+            {
+                // TODO
+            }
+            else if (type.Contains("Arrival")) // Entrance (spawnpoints)
+            {
+                DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().validSpawnLocations.Add(pos);
+            }
+            else if (type.Contains("Exit")) // Exits
+            {
+                // Here the name is used to determine the destination
+                string detail = split[5];
+
+                string[] words = detail.Split('-');
+                string exitType = words[1];
+                string exitTarget = words[2];
+
+                int _target = int.Parse(exitTarget);
+
+                if (exitType.Contains("Branch"))
+                {
+                    mapdata[pos.x, pos.y] = PlaceLevelExit(pos, true, _target);
+                }
+                else // Stairs (up)
+                {
+                    mapdata[pos.x, pos.y] = PlaceLevelExit(pos, false, _target);
+                }
             }
         }
 
@@ -1449,14 +1516,40 @@ public class MapManager : MonoBehaviour
 
         // ====================== PART 2 (the more detailed stuff) ===============================
         #region Detailed Mapgen Elements
+        // These are in the form of gameObjects with a specific name and a script attached to them giving more detail.
 
-        // We interpret what type of object it is by its TAG,
-        // and what to actually place by its NAME.
-        //
+        // This is (currently) only bots
+        foreach (GameObject obj in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().preInitObjects)
+        {
+            Actor A = obj.GetComponent<Actor>();
+
+            if (A) // Bots
+            {
+                string name = obj.gameObject.name;
+
+
+            }
+        }
+
+        // This is Triggers & Events
+        foreach (GameObject obj in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().preInitElements)
+        {
+            TriggerArea T = obj.GetComponent<TriggerArea>();
+            EventTile E = obj.GetComponent<EventTile>();
+
+            if (T) // Triggers
+            {
+
+            }
+            else if (E) // Events
+            {
+
+            }
+        }
+
+
         // Items: Category-PoolType (ex. Storage-Normal)
-        // Bots: Bot Type (matched closest to player depth)
-        // Access: "Access"-Branch/Stairs-LevelName
-        // Machine: "Machine" 
+
 
         foreach (GameObject obj in DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().preInitObjects)
         {
@@ -1705,9 +1798,8 @@ public class MapManager : MonoBehaviour
     /// <param name="pos">The position on the map to place it.</param>
     /// <param name="id">The dictionary ID of the tile, defining its important aspects.</param>
     /// <param name="dirty">(Optional) Floor tiles have the chance to be clean or dirty.</param>
-    /// <param name="machineOverride">Override for machine sprites based on their internal sprite lists. Required for different rotations.</param>
     /// <returns>Returns the `WorldTile` that was just placed.</returns>
-    private WorldTile CreateBlock(Vector2Int pos, int id, bool dirty = false, string machineOverride = "")
+    private WorldTile CreateBlock(Vector2Int pos, int id, bool dirty = false)
     {
         // Create the new tile
         WorldTile newTile = new WorldTile();
@@ -1753,13 +1845,6 @@ public class MapManager : MonoBehaviour
                 break;
             case TileType.Machine:
                 pathdata[pos.x, pos.y] = 2;
-
-                // Sprite override
-                newTile.machinedata.machineSpriteOverride = machineOverride;
-
-                // TODO
-                newTile.machinedata.sprite_normal = null;
-                newTile.machinedata.sprite_ascii = null;
                 break;
             case TileType.Exit:
                 pathdata[pos.x, pos.y] = 0;

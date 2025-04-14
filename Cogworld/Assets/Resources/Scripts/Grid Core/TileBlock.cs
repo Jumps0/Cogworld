@@ -985,8 +985,6 @@ public struct MachineData
     public Tile sprite_ascii;
     [Tooltip("The inverted variant of this ASCII sprite with color.")]
     public Tile sprite_override;
-    [Tooltip("A janky method to override the default sprite the TileObjects will use for visuals on the tile.")]
-    public string machineSpriteOverride;
 
     [Header("Basic Info")]
     [Tooltip("The location of this machine tile in the world.")]
@@ -1870,8 +1868,8 @@ public struct MachineData
         // (UPDATE MAPDATA)
         MapManager.inst.mapdata[location.x, location.y].machinedata = this;
         // (UPDATE VIS) Since we need to change this machine's color
-        MapManager.inst.UpdateTilemap();
-        MapManager.inst.TilemapVisUpdate();
+        MapManager.inst.UpdateTilemapLOCAL(location, 10);
+        MapManager.inst.TilemapVisUpdateLOCAL(location, 10);
     }
 
     #endregion
@@ -1966,8 +1964,8 @@ public struct MachineData
         // (UPDATE MAPDATA)
         MapManager.inst.mapdata[location.x, location.y].machinedata = this;
         // (UPDATE VIS) Since we need to change this machine's color
-        MapManager.inst.UpdateTilemap();
-        MapManager.inst.TilemapVisUpdate();
+        MapManager.inst.UpdateTilemapLOCAL(location, 10);
+        MapManager.inst.TilemapVisUpdateLOCAL(location, 10);
     }
 
     public void Garrison_CouplerStatus()
