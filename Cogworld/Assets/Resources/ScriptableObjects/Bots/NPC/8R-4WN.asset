@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 530edc62ed973694caed63aea242337c, type: 3}
-  m_Name: 8R-AWN
+  m_Name: 8R-4WN
   m_EditorClassIdentifier: 
   Id: 14
   displaySprite: {fileID: 21300000, guid: 448062d3d726527448ef3c47ff255da5, type: 3}
@@ -65,7 +65,7 @@ MonoBehaviour:
           type: 0
           connectedMachine: {fileID: 0}
         isDataCore: 0
-        coreTerminal: {fileID: 0}
+        coreTerminal: {x: 0, y: 0}
       storageAmount: 0
       isOverloaded: 0
       isDeteriorating: 0
@@ -104,7 +104,7 @@ MonoBehaviour:
           type: 0
           connectedMachine: {fileID: 0}
         isDataCore: 0
-        coreTerminal: {fileID: 0}
+        coreTerminal: {x: 0, y: 0}
       storageAmount: 0
       isOverloaded: 0
       isDeteriorating: 0
@@ -144,7 +144,7 @@ MonoBehaviour:
           type: 0
           connectedMachine: {fileID: 0}
         isDataCore: 0
-        coreTerminal: {fileID: 0}
+        coreTerminal: {x: 0, y: 0}
       storageAmount: 0
       isOverloaded: 0
       isDeteriorating: 0
@@ -183,7 +183,7 @@ MonoBehaviour:
           type: 0
           connectedMachine: {fileID: 0}
         isDataCore: 0
-        coreTerminal: {fileID: 0}
+        coreTerminal: {x: 0, y: 0}
       storageAmount: 0
       isOverloaded: 0
       isDeteriorating: 0
@@ -222,7 +222,7 @@ MonoBehaviour:
           type: 0
           connectedMachine: {fileID: 0}
         isDataCore: 0
-        coreTerminal: {fileID: 0}
+        coreTerminal: {x: 0, y: 0}
       storageAmount: 0
       isOverloaded: 0
       isDeteriorating: 0
@@ -261,7 +261,7 @@ MonoBehaviour:
           type: 0
           connectedMachine: {fileID: 0}
         isDataCore: 0
-        coreTerminal: {fileID: 0}
+        coreTerminal: {x: 0, y: 0}
       storageAmount: 0
       isOverloaded: 0
       isDeteriorating: 0
@@ -300,7 +300,7 @@ MonoBehaviour:
           type: 0
           connectedMachine: {fileID: 0}
         isDataCore: 0
-        coreTerminal: {fileID: 0}
+        coreTerminal: {x: 0, y: 0}
       storageAmount: 0
       isOverloaded: 0
       isDeteriorating: 0
@@ -339,7 +339,7 @@ MonoBehaviour:
           type: 0
           connectedMachine: {fileID: 0}
         isDataCore: 0
-        coreTerminal: {fileID: 0}
+        coreTerminal: {x: 0, y: 0}
       storageAmount: 0
       isOverloaded: 0
       isDeteriorating: 0
@@ -378,7 +378,7 @@ MonoBehaviour:
           type: 0
           connectedMachine: {fileID: 0}
         isDataCore: 0
-        coreTerminal: {fileID: 0}
+        coreTerminal: {x: 0, y: 0}
       storageAmount: 0
       isOverloaded: 0
       isDeteriorating: 0
@@ -417,7 +417,7 @@ MonoBehaviour:
           type: 0
           connectedMachine: {fileID: 0}
         isDataCore: 0
-        coreTerminal: {fileID: 0}
+        coreTerminal: {x: 0, y: 0}
       storageAmount: 0
       isOverloaded: 0
       isDeteriorating: 0
@@ -456,7 +456,7 @@ MonoBehaviour:
           type: 0
           connectedMachine: {fileID: 0}
         isDataCore: 0
-        coreTerminal: {fileID: 0}
+        coreTerminal: {x: 0, y: 0}
       storageAmount: 0
       isOverloaded: 0
       isDeteriorating: 0
@@ -495,7 +495,7 @@ MonoBehaviour:
           type: 0
           connectedMachine: {fileID: 0}
         isDataCore: 0
-        coreTerminal: {fileID: 0}
+        coreTerminal: {x: 0, y: 0}
       storageAmount: 0
       isOverloaded: 0
       isDeteriorating: 0
@@ -542,9 +542,9 @@ MonoBehaviour:
     fabTime: {x: 81, y: 40, z: 27}
     matterCost: 180
     componenetsRequired: []
-  botName: 8R-AWN
+  botName: 8R-4WN
   description: A former grunt armed and aligned with the EXILES. A loyal defender
-    and friend, 8R-AWN is usually found around their base or on scouting missions.
+    and friend, 8R-4WN is usually found around their base or on scouting missions.
     Don't mess with him!
   locations:
     all0b10Maps: 0
@@ -554,4 +554,3 @@ MonoBehaviour:
     relation: 2
     alignment: 5
   playerHasAnalysisData: 0
-  prefab: {fileID: 1489840735499938570, guid: e0a4390b5deb49f48bc4e52a1777998e, type: 3}

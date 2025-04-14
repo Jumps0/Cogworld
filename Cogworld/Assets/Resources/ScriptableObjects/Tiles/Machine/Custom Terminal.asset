@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Custom Terminal
   m_EditorClassIdentifier: 
   Id: 31
-  tileName: Custom Terminal
+  tileName: interactable_custom
   displaySprite: {fileID: 11400000, guid: 1e92cd78b4501494b8c4e0874526d7ee, type: 2}
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Archives
   m_EditorClassIdentifier: 
   Id: 29
-  tileName: Archive Terminal
+  tileName: interactable_archives
   displaySprite: {fileID: 11400000, guid: 702f75bd6f2ae0345b1a8ed7eaa95f62, type: 2}
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}

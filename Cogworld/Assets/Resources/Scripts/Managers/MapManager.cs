@@ -1497,6 +1497,25 @@ public class MapManager : MonoBehaviour
             else if (type.Contains("Arrival")) // Entrance (spawnpoints)
             {
                 DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().validSpawnLocations.Add(pos);
+
+                // Then just a floor
+
+                bool isTileDirty = false;
+
+                if (dirty == "true")
+                {
+                    if (Random.Range(0f, 1f) < GlobalSettings.inst.dirtyFloorTileChance) // 7% chance
+                    {
+                        isTileDirty = true;
+                    }
+                }
+
+                if (specific == -1) // If there is no pre-set floor tile, use the theme'd one.
+                {
+                    specific = HF.IDbyTheme(TileType.Floor);
+                }
+
+                CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), specific, isTileDirty);
             }
             else if (type.Contains("Exit")) // Exits
             {
@@ -1536,6 +1555,13 @@ public class MapManager : MonoBehaviour
             {
                 string name = obj.gameObject.name;
 
+                // Failsafe
+                if (name.Contains("(Clone)"))
+                {
+                    string[] temp = name.Split("(");
+                    name = temp[0];
+                }
+
                 // First check to see if this is a specific bot to place
                 BotObject bot = HF.GetBotByString(name);
 
@@ -1549,6 +1575,7 @@ public class MapManager : MonoBehaviour
                     bot = HF.FindBotOfTier(int.Parse(rating));
                 }
 
+                Debug.Log($"Attempting to place {bot} at {pos.x},{pos.y} - {MapManager.inst.mapdata[pos.x, pos.y].type} - {MapManager.inst.mapdata[pos.x, pos.y].tileInfo}");
                 PlaceBot(pos, bot, false, obj.gameObject);
             }
             else // Items
@@ -1768,7 +1795,6 @@ public class MapManager : MonoBehaviour
     {
         // Create the new trap
         WorldTile newTrap = CreateBlock(pos, id, false);
-        Debug.Log($"Created floor trap {newTrap} at {pos.x},{pos.y} with type {newTrap.type}, with ID {id}");
 
         // Add trap information
         newTrap.trap_active = true;
@@ -2879,7 +2905,7 @@ public class MapManager : MonoBehaviour
 
         Vector2Int exitLocation = new Vector2Int(offset.x += Random.Range(4, 6), offset.y += Random.Range(1, 6));
 
-        mapdata[exitLocation.x, exitLocation.y] = PlaceLevelExit(exitLocation, false, 0);
+        mapdata[exitLocation.x, exitLocation.y] = PlaceLevelExit(exitLocation, false, 16);
     }
 
     #endregion

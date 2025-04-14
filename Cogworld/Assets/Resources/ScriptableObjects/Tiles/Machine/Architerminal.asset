@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Architerminal
   m_EditorClassIdentifier: 
   Id: 28
-  tileName: Unknown Terminal
+  tileName: interactable_architect
   displaySprite: {fileID: 11400000, guid: 3a77451f97ca84e4a8bc142388091e9f, type: 2}
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}

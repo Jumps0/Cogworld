@@ -178,7 +178,7 @@ public class Actor : Entity
 
     private void Update()
     {
-        if (GameManager.inst)
+        if (GameManager.inst && MapManager.inst.loaded)
         {
             HealthCheck();
             if (state_DISABLED && canDisabledCheck)

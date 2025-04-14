@@ -8,6 +8,7 @@ using UnityEngine.UIElements;
 using System.Linq;
 using System.Collections;
 using UnityEngine.Tilemaps;
+using Unity.VisualScripting;
 
 // Originally made by: Ariel Oliveira [https://github.com/ArielOliveira/DungeonGenerator]
 // Modified by: Cody Jackson | cody@krselectric.com
@@ -413,6 +414,8 @@ public class DungeonGeneratorCTR : MonoBehaviour {
         } else {
             if (rect.type == SquareData.VAR) // For placing doors, random positions, and random locations
             {
+                // Unsure if this is relevant anymore
+                /*
                 float _rotation = rect.rotation;
                 
                 GameObject prefab = rect.prefab;
@@ -420,22 +423,8 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                 Dictionary<Vector2Int, GameObject> objects = new Dictionary<Vector2Int, GameObject>(); // Dictionary of every object to place
                 foreach (Transform child in prefab.transform) // Go through all children and add them to the list of objects
                 {
-                    if (child.gameObject.GetComponent<Actor>()/* || child.gameObject.GetComponent<MachinePart>() || child.gameObject.GetComponentInChildren<MachinePart>()*/) // TODO: Change upon map-prefab rework
-                    {
-                        // This is a janky workaround because objects that have their own children (Bots/Terminals) will get added to the Dictionary when they shouldn't.
-                        // Also note to self: Make sure all tiles placed are exact placements and not #.9999 or #.00001 because that causes problems too.
-                    }
-                    else
-                    {
-                        if (objects.ContainsKey(HF.V3_to_V2I(child.transform.position)))
-                        {
-                            Debug.Log("Problem: " + HF.V3_to_V2I(child.transform.position));
-                        }
-                        else
-                        {
-                            objects.Add(HF.V3_to_V2I(child.transform.position), child.gameObject);
-                        }
-                    }
+                    Debug.Log(child.gameObject.name);
+                    objects.Add(HF.V3_to_V2I(child.transform.position), child.gameObject);
                 }
 
                 for (int i = rect.startX; i <= rect.endX; i++)
@@ -460,6 +449,7 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                         }
                     }
                 }
+                */
             }
             else
             {
@@ -992,8 +982,6 @@ public class DungeonGeneratorCTR : MonoBehaviour {
          * EX: 22,53,FLOOR,DIRTY,floor_cave
          */
 
-        Debug.Log($"Call! {structures.Count}");
-
         foreach (T s in structures) {
             Transform structure = new GameObject(name).transform;
             structure.transform.position = new Vector3(s.Center.x, 0f, s.Center.y);
@@ -1520,8 +1508,12 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     for (int by = info.bounds_BL.y; by < info.bounds_TR.y; by++)
                     {
                         Tile T = (Tile)tilemap.GetTile(new Vector3Int(bx, by, 0));
-                        // Also shift tiles so that the Bottom Left corner is at the origin
-                        tiles.Add(new KeyValuePair<Vector2Int, Tile>(new Vector2Int(bx - info.bounds_BL.x, by - info.bounds_BL.y), T));
+
+                        if(T != null)
+                        {
+                            // Also shift tiles so that the Bottom Left corner is at the origin
+                            tiles.Add(new KeyValuePair<Vector2Int, Tile>(new Vector2Int(bx - info.bounds_BL.x, by - info.bounds_BL.y), T));
+                        }
                     }
                 }
 
@@ -1534,12 +1526,6 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     // We go based on the sprite name
                     if (T.sprite.name.Contains("floor"))
                     {
-                        // Check if there is already a tile placed:
-                        if (placedTiles.ContainsKey(new Vector2Int(pos.x, pos.y)))
-                        {
-                            placedTiles.Remove(new Vector2Int(pos.x, pos.y));
-                        }
-
                         // Place a new one
                         string floor = "";
 
@@ -1566,12 +1552,6 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     }
                     else if (T.sprite.name.Contains("wall"))
                     {
-                        // Check if there is already a tile placed:
-                        if (placedTiles.ContainsKey(new Vector2Int(pos.x, pos.y))) // Yes, destory and replace it.
-                        {
-                            placedTiles.Remove(new Vector2Int(pos.x, pos.y));
-                        }
-
                         // Place a new one
                         string wall = "";
 
@@ -1626,7 +1606,6 @@ public class DungeonGeneratorCTR : MonoBehaviour {
 
                         placedTiles.Add(new Vector2Int(pos.x, pos.y), door);
                     }
-
                 }
                 // Then go through all the misc objects in the lists
                 // Remember, string info has the format: [position.x],[position.y],[TILE.TYPE],[DIRTY/CLEAN],[(optional)FULLSPRITENAME],[(optional)MISCINFO]
@@ -1640,7 +1619,7 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     GameObject obj = GameObject.Instantiate(I, new Vector3(pos.x, pos.y), Quaternion.identity);
                     // Object name (Used to determine thing being spawned)
                     // Some examples are: Storage-1, Med. Battery*, EX-Vault Item, Rigged Nuclear Core*
-                    obj.name = $",{I.gameObject.name}";
+                    obj.name = $"{I.gameObject.name}";
 
                     preInitObjects.Add(obj);
                 }
@@ -1696,7 +1675,10 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     // Dirty
                     entrance += "False";
 
-                    placedTiles.Add(new Vector2Int(pos.x, pos.y), entrance);
+                    if (!placedTiles.ContainsKey(pos))
+                    {
+                        placedTiles.Add(pos, entrance);
+                    }
                 }
                 // Exits
                 foreach (var I in info.objs_exit)
@@ -1721,7 +1703,10 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     // Object name (Used to determine destination)
                     exit += $",{I.gameObject.name}";
 
-                    placedTiles.Add(new Vector2Int(pos.x, pos.y), exit);
+                    if (!placedTiles.ContainsKey(pos))
+                    {
+                        placedTiles.Add(pos, exit);
+                    }
                 }
                 // Interactable Machines
                 foreach (var I in info.objs_machine)
@@ -1746,8 +1731,12 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     // Object name (Used to determine what the machine does)
                     machine += $",{I.gameObject.name}";
 
-                    placedTiles.Add(new Vector2Int(pos.x, pos.y), machine);
+                    if (!placedTiles.ContainsKey(pos))
+                    {
+                        placedTiles.Add(pos, machine);
+                    }
                 }
+
             }
         }
     }

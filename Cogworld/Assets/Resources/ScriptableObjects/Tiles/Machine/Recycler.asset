@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Recycler
   m_EditorClassIdentifier: 
   Id: 27
-  tileName: Recycler
+  tileName: interactable_recycler
   displaySprite: {fileID: 11400000, guid: 6507f133cb1bc5448b07670b3eba6e4e, type: 2}
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Garrison
   m_EditorClassIdentifier: 
   Id: 26
-  tileName: Garrison
+  tileName: interactable_garrison
   displaySprite: {fileID: 11400000, guid: 671222f299779d448a73df51cc25d002, type: 2}
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}

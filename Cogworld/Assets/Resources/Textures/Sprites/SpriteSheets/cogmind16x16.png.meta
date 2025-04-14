@@ -4541,7 +4541,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_318
+      name: wall_destroyed
       rect:
         serializedVersion: 2
         x: 480
@@ -7838,7 +7838,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_544
+      name: wall_cave1
       rect:
         serializedVersion: 2
         x: 0
@@ -7880,7 +7880,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_546
+      name: floor_metal
       rect:
         serializedVersion: 2
         x: 32
@@ -7901,7 +7901,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_547
+      name: floor_reinforced
       rect:
         serializedVersion: 2
         x: 48
@@ -7922,7 +7922,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_548
+      name: door_emergency
       rect:
         serializedVersion: 2
         x: 64
@@ -7943,7 +7943,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_549
+      name: door_emergencyOPEN
       rect:
         serializedVersion: 2
         x: 80
@@ -8027,7 +8027,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_553
+      name: floor_clean
       rect:
         serializedVersion: 2
         x: 144
@@ -8048,7 +8048,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_578
+      name: wall_basic
       rect:
         serializedVersion: 2
         x: 32
@@ -8069,7 +8069,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_579
+      name: wall_industrial
       rect:
         serializedVersion: 2
         x: 48
@@ -8090,7 +8090,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_580
+      name: wall_science
       rect:
         serializedVersion: 2
         x: 64
@@ -8111,7 +8111,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_581
+      name: wall_super
       rect:
         serializedVersion: 2
         x: 80
@@ -8132,7 +8132,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_585
+      name: wall_cave2
       rect:
         serializedVersion: 2
         x: 144
@@ -8153,7 +8153,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_590
+      name: wall_extra
       rect:
         serializedVersion: 2
         x: 224
@@ -8174,7 +8174,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_610
+      name: door_split
       rect:
         serializedVersion: 2
         x: 32
@@ -8216,7 +8216,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_612
+      name: door_orb
       rect:
         serializedVersion: 2
         x: 64
@@ -8237,7 +8237,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_613
+      name: door_ocular
       rect:
         serializedVersion: 2
         x: 80
@@ -8258,7 +8258,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_617
+      name: door_triangle
       rect:
         serializedVersion: 2
         x: 144
@@ -8279,7 +8279,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_622
+      name: door_vert
       rect:
         serializedVersion: 2
         x: 224
@@ -8300,7 +8300,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_642
+      name: door_splitOPEN
       rect:
         serializedVersion: 2
         x: 32
@@ -8342,7 +8342,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_644
+      name: door_orbOPEN
       rect:
         serializedVersion: 2
         x: 64
@@ -8363,7 +8363,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_645
+      name: door_ocularOPEN
       rect:
         serializedVersion: 2
         x: 80
@@ -8384,7 +8384,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_649
+      name: door_triangleOPEN
       rect:
         serializedVersion: 2
         x: 144
@@ -8405,7 +8405,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cogmind16x16_654
+      name: door_vertOPEN
       rect:
         serializedVersion: 2
         x: 224
@@ -8593,7 +8593,6 @@ TextureImporter:
       cogmind16x16_315: -1690212872
       cogmind16x16_316: 2048797736
       cogmind16x16_317: 96182265
-      cogmind16x16_318: 1183146453
       cogmind16x16_319: -1374710888
       cogmind16x16_32: -1394264190
       cogmind16x16_320: -1751022050
@@ -8843,17 +8842,11 @@ TextureImporter:
       cogmind16x16_541: -537941718
       cogmind16x16_542: -1510356124
       cogmind16x16_543: -1796183209
-      cogmind16x16_544: 196241989
       cogmind16x16_545: 1302345909
-      cogmind16x16_546: -464743126
-      cogmind16x16_547: 809681769
-      cogmind16x16_548: -948246548
-      cogmind16x16_549: -693035053
       cogmind16x16_55: 856845628
       cogmind16x16_550: -1393104630
       cogmind16x16_551: 1814630223
       cogmind16x16_552: -1970926256
-      cogmind16x16_553: 860581020
       cogmind16x16_554: 288571721
       cogmind16x16_555: 1181179527
       cogmind16x16_556: -1920601434
@@ -8880,21 +8873,15 @@ TextureImporter:
       cogmind16x16_575: -1680723147
       cogmind16x16_576: -186719595
       cogmind16x16_577: 1683883584
-      cogmind16x16_578: 1643540314
-      cogmind16x16_579: -1680834344
       cogmind16x16_58: 84283797
-      cogmind16x16_580: -394928475
-      cogmind16x16_581: 812843351
       cogmind16x16_582: -1631177280
       cogmind16x16_583: -756407327
       cogmind16x16_584: -622530890
-      cogmind16x16_585: -538309465
       cogmind16x16_586: 1016290628
       cogmind16x16_587: -2093109844
       cogmind16x16_588: 1639163139
       cogmind16x16_589: -719094149
       cogmind16x16_59: -545242766
-      cogmind16x16_590: -250554578
       cogmind16x16_591: 94274459
       cogmind16x16_592: -1680212443
       cogmind16x16_593: -1967521016
@@ -8917,20 +8904,15 @@ TextureImporter:
       cogmind16x16_608: 421294394
       cogmind16x16_609: 323150503
       cogmind16x16_61: -46522700
-      cogmind16x16_610: 606576322
       cogmind16x16_611: -378436970
-      cogmind16x16_612: -2024961713
-      cogmind16x16_613: 2071829078
       cogmind16x16_614: -846175733
       cogmind16x16_615: 419097627
       cogmind16x16_616: 1694110609
-      cogmind16x16_617: -492495679
       cogmind16x16_618: -69200051
       cogmind16x16_619: 1299053965
       cogmind16x16_62: -1216861315
       cogmind16x16_620: 699516394
       cogmind16x16_621: 137309864
-      cogmind16x16_622: 879865451
       cogmind16x16_623: -1747635581
       cogmind16x16_624: -1952916107
       cogmind16x16_625: 1743117418
@@ -8951,19 +8933,14 @@ TextureImporter:
       cogmind16x16_639: 107169304
       cogmind16x16_640: -496059479
       cogmind16x16_641: -1149253495
-      cogmind16x16_642: 680423888
       cogmind16x16_643: 1106910663
-      cogmind16x16_644: 647667715
-      cogmind16x16_645: -224078323
       cogmind16x16_646: 400515989
       cogmind16x16_647: -752077972
       cogmind16x16_648: -1665061490
-      cogmind16x16_649: 82537833
       cogmind16x16_650: -1964476962
       cogmind16x16_651: 195887949
       cogmind16x16_652: 2018593050
       cogmind16x16_653: -687715960
-      cogmind16x16_654: 585595576
       cogmind16x16_655: 785829090
       cogmind16x16_656: 1384589334
       cogmind16x16_657: 1714099171
@@ -8991,8 +8968,23 @@ TextureImporter:
       cogmind16x16_94: -678305873
       cogmind16x16_95: 344476501
       d: -1712406792
+      door_emergency: -948246548
+      door_emergencyOPEN: -693035053
+      door_ocular: 2071829078
+      door_ocularOPEN: -224078323
+      door_orb: -2024961713
+      door_orbOPEN: 647667715
+      door_split: 606576322
+      door_splitOPEN: 680423888
+      door_triangle: -492495679
+      door_triangleOPEN: 82537833
+      door_vert: 879865451
+      door_vertOPEN: 585595576
       e: 1162617741
       f: -2023856607
+      floor_clean: 860581020
+      floor_metal: -464743126
+      floor_reinforced: 809681769
       g: 758715441
       h: -1981017274
       i: -1067903401
@@ -9105,6 +9097,14 @@ TextureImporter:
       u: 2088309697
       v: -2141637632
       w: 86131148
+      wall_basic: 1643540314
+      wall_cave1: 196241989
+      wall_cave2: -538309465
+      wall_destroyed: 1183146453
+      wall_extra: -250554578
+      wall_industrial: -1680834344
+      wall_science: -394928475
+      wall_super: 812843351
       x: -438342873
       y: -552515267
       z: 43537944

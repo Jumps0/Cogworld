@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Scanalyzer
   m_EditorClassIdentifier: 
   Id: 24
-  tileName: Scanalyzer
+  tileName: interactable_scanalyzer
   displaySprite: {fileID: 11400000, guid: 59022ce141855474680496dada9c3aea, type: 2}
   altSprite: {fileID: 0}
   destroyedSprite: {fileID: 0}

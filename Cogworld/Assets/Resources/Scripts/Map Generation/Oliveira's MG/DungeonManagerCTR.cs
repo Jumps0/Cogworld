@@ -131,7 +131,7 @@ public class DungeonManagerCTR : MonoBehaviour
 
     public void DungeonGenLive()
     {
-        bool input = Input.GetButtonDown("Jump");
+        //bool input = Input.GetButtonDown("Jump");
         //if (input) {
         if (stillActive1)
         {

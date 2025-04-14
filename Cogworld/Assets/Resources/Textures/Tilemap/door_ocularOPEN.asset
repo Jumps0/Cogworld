@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: wall_ocularOPEN
+  m_Name: door_ocularOPEN
   m_EditorClassIdentifier: 
   m_Sprite: {fileID: -224078323, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

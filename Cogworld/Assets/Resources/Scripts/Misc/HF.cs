@@ -4136,7 +4136,7 @@ public static class HF
     public static bool IsUnoccupiedTile(WorldTile tile, bool ignoreBots = false)
     {
         bool ret = false;
-
+        Debug.Log($"{tile} - {tile.type} - {tile.tileInfo}");
         TileType type = tile.tileInfo.type;
         switch (type)
         {
