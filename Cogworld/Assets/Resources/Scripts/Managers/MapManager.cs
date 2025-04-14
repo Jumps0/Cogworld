@@ -871,9 +871,12 @@ public class MapManager : MonoBehaviour
             {
                 Vector2Int pos = new Vector2Int(x, y);
 
-                if (!mapdata[x, y].Equals(default(WorldTile)))
+                if (HF.PosWithinMap(pos))
                 {
-                    UpdateTile(mapdata[x, y], pos);
+                    if (!mapdata[x, y].Equals(default(WorldTile)))
+                    {
+                        UpdateTile(mapdata[x, y], pos);
+                    }
                 }
             }
         }
@@ -1190,7 +1193,12 @@ public class MapManager : MonoBehaviour
         {
             for (int y = BL.y; y < BL.y + (radius * 2); y++)
             {
-                MapManager.inst.TileUpdateVis(new Vector2Int(x, y));
+                Vector2Int pos = new Vector2Int(x, y);
+
+                if (HF.PosWithinMap(pos))
+                {
+                    MapManager.inst.TileUpdateVis(pos);
+                }
             }
         }
     }
