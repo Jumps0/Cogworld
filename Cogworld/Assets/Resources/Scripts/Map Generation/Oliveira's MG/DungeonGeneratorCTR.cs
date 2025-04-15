@@ -1613,7 +1613,7 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                 foreach (var I in info.objs_item)
                 {
                     // Get the position, and adjust it based on the bottom left corner
-                    Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
+                    Vector2Int pos = new Vector2Int((int)(I.transform.position.x - 0.5f) - info.bounds_BL.x, (int)(I.transform.position.y - 0.5f) - info.bounds_BL.y);
 
                     // No stringification here because it may have the item pool attached to it
                     GameObject obj = GameObject.Instantiate(I, new Vector3(pos.x, pos.y), Quaternion.identity);
@@ -1627,7 +1627,7 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                 foreach (var I in info.objs_bot)
                 {
                     // Get the position, and adjust it based on the bottom left corner
-                    Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
+                    Vector2Int pos = new Vector2Int((int)(I.transform.position.x - 0.5f) - info.bounds_BL.x, (int)(I.transform.position.y - 0.5f) - info.bounds_BL.y);
 
                     // We don't "string-ify" these since they have a lot of important info.
                     // In this case the data is help in an `Actor` script.
@@ -1638,7 +1638,7 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                 foreach (var I in info.objs_trigger)
                 {
                     // Get the position, and adjust it based on the bottom left corner
-                    Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
+                    Vector2Int pos = new Vector2Int((int)(I.transform.position.x - 0.5f) - info.bounds_BL.x, (int)(I.transform.position.y - 0.5f) - info.bounds_BL.y);
 
                     // We don't "string-ify" these since they have a lot of important info.
                     // In this case the data is help in an `TriggerArea` script.
@@ -1649,7 +1649,7 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                 foreach (var I in info.objs_event)
                 {
                     // Get the position, and adjust it based on the bottom left corner
-                    Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
+                    Vector2Int pos = new Vector2Int((int)(I.transform.position.x - 0.5f) - info.bounds_BL.x, (int)(I.transform.position.y - 0.5f) - info.bounds_BL.y);
 
                     // We don't "string-ify" these since they have a lot of important info.
                     // In this case the data is help in an `EventTile` script.
@@ -1660,10 +1660,10 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                 foreach (var I in info.objs_entrance)
                 {
                     // Get the position, and adjust it based on the bottom left corner
-                    Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
+                    Vector2Int pos = new Vector2Int((int)(I.transform.position.x - 0.5f) - info.bounds_BL.x, (int)(I.transform.position.y - 0.5f) - info.bounds_BL.y);
 
                     // Not much to this (!! We will place a floor tile under this later !!)
-                    
+
                     string entrance = "";
 
                     // Position
@@ -1688,7 +1688,7 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                 foreach (var I in info.objs_exit)
                 {
                     // Get the position, and adjust it based on the bottom left corner
-                    Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
+                    Vector2Int pos = new Vector2Int((int)(I.transform.position.x - 0.5f) - info.bounds_BL.x, (int)(I.transform.position.y - 0.5f) - info.bounds_BL.y);
 
                     string exit = "";
 
@@ -1716,7 +1716,7 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                 foreach (var I in info.objs_machine)
                 {
                     // Get the position, and adjust it based on the bottom left corner
-                    Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
+                    Vector2Int pos = new Vector2Int((int)(I.transform.position.x - 0.5f) - info.bounds_BL.x, (int)(I.transform.position.y - 0.5f) - info.bounds_BL.y);
 
                     string machine = "";
 

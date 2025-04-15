@@ -471,7 +471,7 @@ public class PlayerGridMovement : MonoBehaviour
                 // If right clicked, the /DATA/ menu should open and display info about the item.
                 UIManager.inst.Data_OpenMenu(Vector2Int.zero, part._item);
             }
-            else if (tile.type == TileType.Machine) // A machine
+            else if (tile.type == TileType.Machine && tile.machinedata.state) // A machine
             {
                 // If right clicked, the /DATA/ menu should open and display info about the machine.
                 UIManager.inst.Data_OpenMenu(mPos);

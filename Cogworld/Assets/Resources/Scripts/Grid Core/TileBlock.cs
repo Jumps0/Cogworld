@@ -985,6 +985,10 @@ public struct MachineData
     public Tile sprite_ascii;
     [Tooltip("The inverted variant of this ASCII sprite with color.")]
     public Tile sprite_override;
+    [Tooltip("The color of this machine and its parts when its active. [Set in the Init function]")]
+    public Color activeColor;
+    [Tooltip("The color of this machine and its parts when it is damaged/destroyed an thus inactive. [Set in the Init function]")]
+    public Color disabledColor;
 
     [Header("Basic Info")]
     [Tooltip("The location of this machine tile in the world.")]
@@ -1021,12 +1025,6 @@ public struct MachineData
     public Vector2Int[] children;
     [Tooltip("Reference to the UI indicator showing where this machine is IF it is currently not on the screen.")]
     public GameObject indicator;
-
-    [Header("Colors")]
-    [Tooltip("The color of this machine and its parts when its active. [Set in the Init function]")]
-    public Color activeColor;
-    [Tooltip("The color of this machine and its parts when it is damaged/destroyed an thus inactive. [Set in the Init function]")]
-    public Color disabledColor;
 
     [Header("** Interactable Machine Variables **")]
     [Header("Hacking Info")]

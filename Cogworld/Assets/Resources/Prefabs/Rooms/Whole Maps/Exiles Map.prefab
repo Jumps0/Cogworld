@@ -45886,7 +45886,7 @@ MonoBehaviour:
   - {fileID: 3540560737757001898}
   - {fileID: 7874604391826581240}
   - {fileID: 9049796749793656780}
-  bounds_BL: {x: 9, y: 9}
+  bounds_BL: {x: 0, y: 0}
   bounds_TR: {x: 136, y: 105}
 --- !u!1 &7874604391826581240
 GameObject:

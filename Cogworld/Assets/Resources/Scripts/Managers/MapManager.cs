@@ -1219,6 +1219,7 @@ public class MapManager : MonoBehaviour
 
         Color finalColor = Color.black;
         Color visc_white = tile.tileInfo.asciiColor;
+
         // Its a bit more complicated for machines
         if (tile.type == TileType.Machine && !tile.machinedata.machineIsDestroyed) { visc_white = DetermineMachineColor(pos); }
         Color visc_gray = HF.GetDarkerColor(visc_white, 0.3f);
@@ -1492,7 +1493,7 @@ public class MapManager : MonoBehaviour
 
                 int id = tileDatabase.dict[specific_tile].Id;
 
-                mapdata[pos.x, pos.y] = CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), id);
+                mapdata[pos.x, pos.y] = CreateBlock(new Vector2Int(pos.x, pos.y), id);
             } 
             else if (type.Contains("Arrival")) // Entrance (spawnpoints)
             {
@@ -1576,9 +1577,7 @@ public class MapManager : MonoBehaviour
                     bot = HF.FindBotOfTier(int.Parse(rating));
                 }
 
-                //Debug.Log($"Attempting to place {bot} at {pos.x},{pos.y} - {MapManager.inst.mapdata[pos.x, pos.y].type} - {MapManager.inst.mapdata[pos.x, pos.y].tileInfo}");
-                if(MapManager.inst.mapdata[pos.x, pos.y].tileInfo != null)
-                    PlaceBot(pos, bot, false, obj.gameObject);
+                PlaceBot(pos, bot, false, obj.gameObject);
             }
             else // Items
             {
@@ -1756,7 +1755,19 @@ public class MapManager : MonoBehaviour
                 pathdata[pos.x, pos.y] = 0;
                 break;
             case TileType.Machine:
+                // Important note, this state is only ever reached for decorative (non-functional) machines. So we need to fill in the blanks here.
                 pathdata[pos.x, pos.y] = 2;
+                newTile.machinedata.location = newTile.location;
+                newTile.machinedata.sprite_normal = newTile.tileInfo.displaySprite;
+                newTile.machinedata.sprite_ascii = newTile.tileInfo.asciiRep;
+                newTile.machinedata.activeColor = newTile.tileInfo.asciiColor;
+                newTile.machinedata.disabledColor = Color.gray;
+                newTile.machinedata.machineIsDestroyed = false;
+                newTile.machinedata.locked = true;
+                newTile.machinedata.state = false;
+                newTile.machinedata.type = MachineType.Static;
+                newTile.machinedata.explodes = false;
+                newTile.machinedata.parentLocation = newTile.location;
                 break;
             case TileType.Exit:
                 pathdata[pos.x, pos.y] = 0;
@@ -2214,6 +2225,7 @@ public class MapManager : MonoBehaviour
 
                         // Finally, overwrite the map
                         MapManager.inst.mapdata[worldPos.x, worldPos.y] = tile;
+                        MapManager.inst.pathdata[parentLoc.x, parentLoc.y] = 2;
                     }
                 }
             }
@@ -2241,6 +2253,7 @@ public class MapManager : MonoBehaviour
         #endregion
 
         MapManager.inst.mapdata[parentLoc.x, parentLoc.y] = parentTile;
+        MapManager.inst.pathdata[parentLoc.x, parentLoc.y] = 2;
     }
 
     /// <summary>
@@ -2816,7 +2829,7 @@ public class MapManager : MonoBehaviour
     public Actor PlaceBot(Vector2Int pos, BotObject info, bool squadlead = false, GameObject _reference = null)
     {
         // Re-asses the requested placement location (Is this space free?)
-        pos = HF.LocateFreeSpace(pos, true);
+        pos = HF.LocateFreeSpace(pos, true, false);
 
         // Create the bot and add in its details
         var spawnedBot = Instantiate(botPrefab, new Vector3(pos.x, pos.y), Quaternion.identity); // Instantiate
@@ -3156,6 +3169,7 @@ public class MapManager : MonoBehaviour
         TurnManager.inst.actors.Clear();
 
         // Reset the entire map
+        tilemap.ClearAllTiles();
         mapdata = new WorldTile[1,1];
         pathdata = new byte[1, 1];
 

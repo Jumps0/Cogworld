@@ -115,13 +115,13 @@ MonoBehaviour:
   - item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
     coverage: 0
     alternatives: []
-  - item: {fileID: 0}
+  - item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
     coverage: 0
     alternatives: []
-  - item: {fileID: 0}
+  - item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
     coverage: 0
     alternatives: []
-  - item: {fileID: 0}
+  - item: {fileID: 11400000, guid: abbcf9798d7b5cd459778d80ac93fd70, type: 2}
     coverage: 0
     alternatives: []
   resistances:

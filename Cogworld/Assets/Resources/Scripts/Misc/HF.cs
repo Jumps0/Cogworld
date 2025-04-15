@@ -3866,7 +3866,7 @@ public static class HF
         byte pathdata = MapManager.inst.pathdata[position.x, position.y];
 
         bool ret = true;
-
+        
         ret = HF.IsUnoccupiedTile(tile);
 
         if (ignoreBots == false && pathdata == 4)
@@ -4136,7 +4136,7 @@ public static class HF
     public static bool IsUnoccupiedTile(WorldTile tile, bool ignoreBots = false)
     {
         bool ret = false;
-
+        
         TileType type = tile.tileInfo.type;
         switch (type)
         {
