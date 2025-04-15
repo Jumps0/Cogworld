@@ -49,10 +49,12 @@ public class MapManager : MonoBehaviour
         if (sceneName == "GameplayScene")
         {
             StartCoroutine(MapManager.inst.InitNewLevel());
+            //InitializeMap(false);
         }
         else if (sceneName == "HideoutScene")
         {
             StartCoroutine(MapManager.inst.InitNewHideout());
+            //InitializeMap(true);
         }
     }
 
@@ -129,7 +131,6 @@ public class MapManager : MonoBehaviour
     public List<Vector2Int> initialAISpawnPositions = new List<Vector2Int>();
 
     [Header("Misc")]
-    [SerializeField] private Vector3 originalPlayerSpawnLocation;
     [Tooltip("Used by engineers to find things to repair. This list is updated by TileBlocks that get damaged.")]
     public List<GameObject> damagedStructures = new List<GameObject>();
 
@@ -138,8 +139,327 @@ public class MapManager : MonoBehaviour
     public int mapType = 0;
     [Tooltip("-1 = Starting Cave | 0 = Exiles")]
     public int customMapType = -1;
-    Vector3 playerSpawnLocation = Vector3.zero;
+    Vector2Int playerSpawnLocation = Vector2Int.zero;
     public bool loaded = false;
+
+    #region Map Initialization
+    public void InitializeMap(bool hideout = false)
+    {
+        levelLoadCover.SetActive(true); // Enable the Level Load cover
+
+        playerIsInHideout = hideout;
+
+        if(playerIsInHideout || currentLevel == -11)
+        { // Use starting values in hideout or starting level (-11)
+            GlobalSettings.inst.SetStartingValues();
+        }
+
+        #region Map Generation
+        if (playerIsInHideout)
+        {
+            currentLevelName = BaseManager.inst.data.layerName.ToUpper();
+
+            // Change this later !!!
+            DungeonGenerator.instance.GenerateCaveDungeon(121, 121);
+            mapsize.x = DungeonGenerator._dungeon.GetLength(0);
+            mapsize.y = DungeonGenerator._dungeon.GetLength(1);
+
+            // !! Initialize the mapdata array
+            mapdata = new WorldTile[mapsize.x, mapsize.y];
+            pathdata = new byte[mapsize.x, mapsize.y];
+
+            // Realize the map
+            GenerateByGrid(DungeonGenerator._dungeon);
+        }
+        else
+        {
+            if (mapType == 1) // Cave Dungeon
+            {
+                DungeonGenerator.instance.GenerateCaveDungeon(mapsize.x, mapsize.y);
+
+                mapsize.x = DungeonGenerator._dungeon.GetLength(0);
+                mapsize.y = DungeonGenerator._dungeon.GetLength(1);
+
+                // !! Initialize the mapdata array
+                mapdata = new WorldTile[mapsize.x, mapsize.y];
+                pathdata = new byte[mapsize.x, mapsize.y];
+
+                GenerateByGrid(DungeonGenerator._dungeon);
+
+            }
+            else if (mapType == 2) // Normal (0b10 Complex) Dungeon
+            {
+                DungeonManagerCTR.instance.genData = mapGenSpecifics[(currentLevel + 10)];
+
+                // !! Initialize the mapdata array
+                mapdata = new WorldTile[mapsize.x, mapsize.y];
+                pathdata = new byte[mapsize.x, mapsize.y];
+
+                GenerateByCTR();
+            }
+            else // Custom
+            {
+                switch (customMapType)
+                {
+                    case -1: // Starting cave
+                             // !! Initialize the mapdata array
+                        mapsize = new Vector2Int(120, 120);
+                        mapdata = new WorldTile[mapsize.x, mapsize.y];
+                        pathdata = new byte[mapsize.x, mapsize.y];
+                        break;
+                    case 0: // EXILEs cave
+                        DungeonManagerCTR.instance.doDungeonGen = true;
+
+                        // !! Initialize the mapdata array
+                        mapdata = new WorldTile[mapsize.x, mapsize.y];
+                        pathdata = new byte[mapsize.x, mapsize.y];
+
+                        GenerateByCTR();
+                        break;
+                }
+            }
+        }
+        #endregion
+
+        #region Player Placement
+        if (playerIsInHideout)
+        {
+            // Pick a random cave and spot in that cave to spawn in (change later)
+
+            int random = Random.Range(0, DungeonGenerator.instance.Caves.Count - 1);
+
+            List<Vector2Int> spawnPoints = HF.LIST_IV2_to_V2I(DungeonGenerator.instance.Caves[random]);
+            List<Vector2Int> validSpawnPoints = new List<Vector2Int>();
+
+            // Iterate through each spawn point
+            foreach (Vector2Int spawnPoint in spawnPoints)
+            {
+                int minDistanceFromEdge = 12;
+
+                // Check if the spawn point is at least 'minDistanceFromEdge' units away from the map border
+                if (spawnPoint.x >= minDistanceFromEdge && spawnPoint.x < mapsize.x - minDistanceFromEdge &&
+                    spawnPoint.y >= minDistanceFromEdge && spawnPoint.y < mapsize.y - minDistanceFromEdge)
+                {
+                    validSpawnPoints.Add(spawnPoint);
+                }
+            }
+
+            if (validSpawnPoints.Count == 0)
+            {
+                //Debug.LogError("ERROR: No valid spawn points found!");
+                //Debug.Break();
+                // Just spawn at (50,50) for now
+                validSpawnPoints.Add(new Vector2Int(50, 50));
+            }
+
+            playerSpawnLocation = validSpawnPoints[Random.Range(0, validSpawnPoints.Count - 1)];
+        }
+        else
+        {
+            if (DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().validSpawnLocations.Count > 0)
+            {
+                playerSpawnLocation = DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().validSpawnLocations[Random.Range(0, DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().validSpawnLocations.Count - 1)];
+            }
+        }
+        #endregion
+
+        #region Map Finalization
+        if (playerIsInHideout)
+        {
+            PlaceGenericOutpost(playerSpawnLocation); // Place the outpost
+            FillWithRock(mapsize);
+        }
+        else
+        {
+            if (DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().validSpawnLocations.Count > 0)
+            {
+                playerSpawnLocation = DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().validSpawnLocations[Random.Range(0, DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().validSpawnLocations.Count - 1)];
+            }
+
+            if (mapType == 1) // Cave
+            {
+
+            }
+            else if (mapType == 2) // Complex
+            {
+                FillWithRock(mapsize);
+            }
+            else
+            {
+                switch (customMapType)
+                {
+                    case -1:
+                        GridManager.inst.grid = new GameObject[mapsize.x + 1, mapsize.y + 1];
+
+                        CustomMap_StartingCave(); // Overrides spawn position in here so we good
+                        FillWithRock(mapsize);
+                        break;
+
+                    case 0: // EXILEs cave
+                        mapsize = new Vector2Int(DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().sizeX, DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().sizeY);
+                        GridManager.inst.grid = new GameObject[mapsize.x + 1, mapsize.y + 1];
+
+                        FillWithRock(mapsize);
+                        break;
+                    default:
+
+                        break;
+                }
+            }
+
+            PlaceBranchNExits(); // Place exits (map type logic handled inside)
+        }
+        #endregion
+
+        DrawBorder(); // Draw the border
+
+        CreateRegions();
+
+        #region Player Placement
+        // Spawn the player
+        var spawnedPlayer = PlacePlayer();
+
+        // Sync the player's stats
+        if (tempPlayer == null)
+        {
+            // - First apply defaults
+            spawnedPlayer.GetComponent<PlayerData>().SetDefaults();
+        }
+        else
+        {
+            LoadFromTempPlayer(spawnedPlayer.gameObject);
+        }
+
+        // Setup player's UI
+        if (!firstTimeUISetup)
+        {
+            UIManager.inst.FirstTimeStartup(); // This also plays the UI animation
+
+            /*
+            InventoryControl.inst.ClearInterfacesInventories();
+            InventoryControl.inst.p_inventoryPower.Container.Items = new InventorySlot[1];
+            InventoryControl.inst.p_inventoryPropulsion.Container.Items = new InventorySlot[2];
+            InventoryControl.inst.p_inventoryUtilities.Container.Items = new InventorySlot[2];
+            InventoryControl.inst.p_inventoryWeapons.Container.Items = new InventorySlot[2];
+            InventoryControl.inst.p_inventory.Container.Items = new InventorySlot[5];
+            */
+
+            InventoryControl.inst.SetInterfaceInventories();
+            firstTimeUISetup = true;
+        }
+        #endregion
+
+        #region Machine/Item/Bot Placement & Setup
+        if (!playerIsInHideout)
+        {
+            QuestManager.inst.Init();
+
+            PlaceMachines();
+            PlaceRandomItems(mapType);
+            CalculatePointsOfInterest();
+
+            initialAISpawnPositions.Clear();
+
+            PlacePassiveBots(mapsize);
+            PlaceHostileBots(mapsize);
+        }
+
+        AssignMachineNames(); // Assign names to all placed machines
+        AssignMachineCommands(); // Assign commands (for terminal interaction) to all placed machines.
+        ZoneTerminals(); // Create terminal zones
+        #endregion
+
+        // !! Update the Tilemap !!
+        UpdateTilemap();
+
+        UIManager.inst.GetComponent<BorderIndicators>().CreateIndicators(); // Create indicators for all (interactable) machines
+
+        TurnManager.inst.LoadActors();
+
+        levelLoadCover.SetActive(false); // Disable the Level Load cover
+        UIManager.inst.NewFloor_BeginAnimate(); // Do the new floor "scanning" animation
+
+        #region Finishing Up
+        if (!playerIsInHideout)
+        {
+            if (mapType == 3)
+            {
+                switch (customMapType) // Starting Map
+                {
+                    case -1:
+                        UIManager.inst.CreateNewLogMessage("Systems online...", UIManager.inst.deepInfoBlue, UIManager.inst.coolBlue, true);
+                        UIManager.inst.CreateNewLogMessage("Loading variables...", UIManager.inst.deepInfoBlue, UIManager.inst.coolBlue, true);
+                        UIManager.inst.CreateNewLogMessage("CORE=STABLE", UIManager.inst.deepInfoBlue, UIManager.inst.coolBlue, true);
+                        UIManager.inst.CreateNewLogMessage("INTEGRATION=OK", UIManager.inst.deepInfoBlue, UIManager.inst.coolBlue, true);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+            if (logEvoChanges) // If player evolved, display those changes
+            {
+                if (evoChanges[0] > 0) // Power
+                {
+                    UIManager.inst.CreateNewLogMessage("PARAMETERS=POWER+" + evoChanges[0].ToString(), UIManager.inst.deepInfoBlue, UIManager.inst.coolBlue, true);
+                }
+                if (evoChanges[1] > 0) // Propulsion
+                {
+                    UIManager.inst.CreateNewLogMessage("PARAMETERS=PROPULSION+" + evoChanges[1].ToString(), UIManager.inst.deepInfoBlue, UIManager.inst.coolBlue, true);
+                }
+                if (evoChanges[2] > 0) // Utility
+                {
+                    UIManager.inst.CreateNewLogMessage("PARAMETERS=UTILITY+" + evoChanges[2].ToString(), UIManager.inst.deepInfoBlue, UIManager.inst.coolBlue, true);
+                }
+                if (evoChanges[3] > 0) // Weapon
+                {
+                    UIManager.inst.CreateNewLogMessage("PARAMETERS=WEAPON+" + evoChanges[3].ToString(), UIManager.inst.deepInfoBlue, UIManager.inst.coolBlue, true);
+                }
+
+                logEvoChanges = false;
+                evoChanges = new List<int>();
+            }
+
+            LocationLog(currentLevelName.ToUpper());
+
+            if (mapType == 2)
+            {
+                if (!rogueBotArrivalMessage)
+                {
+                    UIManager.inst.CreateNewLogMessage("ALERT: A rogue bot has emerged from the junkyard. Terminate on contact.", UIManager.inst.complexWhite, UIManager.inst.inactiveGray, false, true);
+                    rogueBotArrivalMessage = false;
+                }
+            }
+        }
+        else
+        {
+            PlayAmbientMusic(); // Ambient music
+
+            UIManager.inst.CreateNewLogMessage("Arrived at Hideout...", UIManager.inst.deepInfoBlue, UIManager.inst.coolBlue, true);
+            UIManager.inst.CreateNewLogMessage("LOCATION=" + BaseManager.inst.data.layerName.ToUpper(), UIManager.inst.deepInfoBlue, UIManager.inst.coolBlue, true);
+        }
+
+        TurnManager.inst.AllEntityVisUpdate(); // Update vis
+        TurnManager.inst.AllEntityLateSetup(); // and finish setting up
+
+        if (!playerIsInHideout)
+        {
+            // Load stored intel (non-branches)
+            if (!currentLevelIsBranch)
+                GameManager.inst.RevealStoredIntel();
+        }
+
+        // Save Game
+        GameManager.inst.SavePlayerStatus(currentLevel, currentLevelName, mapSeed, currentBranch, GameManager.inst.data.storedMatter, TurnManager.inst.globalTime,
+            new Vector2Int(PlayerData.inst.powerSlots, PlayerData.inst.propulsionSlots),
+            new Vector2Int(PlayerData.inst.utilitySlots, PlayerData.inst.weaponSlots),
+            PlayerData.inst.robotsKilled);
+        #endregion
+
+        loaded = true;
+    }
+    #endregion
 
     #region InitNewLevel
     public IEnumerator InitNewLevel()
@@ -211,13 +531,10 @@ public class MapManager : MonoBehaviour
 
         // - Place the Player -
         // (Depends on Map Gen)
-        Vector2Int sl = Vector2Int.zero;
         if (DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().validSpawnLocations.Count > 0)
         {
-            sl = DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().validSpawnLocations[Random.Range(0, DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().validSpawnLocations.Count - 1)];
+            playerSpawnLocation = DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().validSpawnLocations[Random.Range(0, DungeonManagerCTR.instance.GetComponent<DungeonGeneratorCTR>().validSpawnLocations.Count - 1)];
         }
-        originalPlayerSpawnLocation = new Vector3(sl.x, sl.y, 0f);
-        playerSpawnLocation = originalPlayerSpawnLocation;
 
         if (mapType == 1) // Cave
         {
@@ -466,12 +783,9 @@ public class MapManager : MonoBehaviour
             validSpawnPoints.Add(new Vector2Int(50, 50));
         }
 
-        Vector2Int spawnLoc = validSpawnPoints[Random.Range(0, validSpawnPoints.Count - 1)];
+        playerSpawnLocation = validSpawnPoints[Random.Range(0, validSpawnPoints.Count - 1)];
 
-        originalPlayerSpawnLocation = new Vector3(spawnLoc.x, spawnLoc.y, 0);
-        playerSpawnLocation = originalPlayerSpawnLocation;
-
-        PlaceGenericOutpost(spawnLoc); // Place the outpost
+        PlaceGenericOutpost(playerSpawnLocation); // Place the outpost
         FillWithRock(mapsize);
 
         DrawBorder(); // Draw the border
@@ -1860,7 +2174,7 @@ public class MapManager : MonoBehaviour
             // Determine valid locations for exits
             foreach (Tunnel hall in halls)
             {
-                if (Vector2Int.Distance(hall.Center, HF.V3_to_V2I(playerSpawnLocation)) > 50f && hall.Width >= 2 && hall.Length >= 2)
+                if (Vector2Int.Distance(hall.Center, playerSpawnLocation) > 50f && hall.Width >= 2 && hall.Length >= 2)
                 {
                     exitLocations.Add(hall.Center);
                 }
@@ -2917,8 +3231,7 @@ public class MapManager : MonoBehaviour
 
         // While we're at it, set the players spawn location
         Vector2Int temp = offset;
-        Vector3 spawnLoc = new Vector3(temp.x += Random.Range(0, 7), temp.y += Random.Range(0, 7));
-        playerSpawnLocation = spawnLoc;
+        playerSpawnLocation = new Vector2Int(temp.x += Random.Range(0, 7), temp.y += Random.Range(0, 7));
 
         // Adjust the offset
         offset.x += 8;
