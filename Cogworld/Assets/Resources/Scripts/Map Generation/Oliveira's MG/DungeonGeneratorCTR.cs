@@ -1662,7 +1662,7 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     // Get the position, and adjust it based on the bottom left corner
                     Vector2Int pos = new Vector2Int((int)(I.transform.position.x) - info.bounds_BL.x, (int)(I.transform.position.y) - info.bounds_BL.y);
 
-                    // Not much to this
+                    // Not much to this (!! We will place a floor tile under this later !!)
                     
                     string entrance = "";
 
@@ -1675,7 +1675,11 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     // Dirty
                     entrance += "False";
 
-                    if (!placedTiles.ContainsKey(pos))
+                    if (placedTiles.ContainsKey(pos))
+                    {
+                        placedTiles[pos] = entrance;
+                    }
+                    else
                     {
                         placedTiles.Add(pos, entrance);
                     }

@@ -1466,7 +1466,7 @@ public class MapManager : MonoBehaviour
                     specific = HF.IDbyTheme(TileType.Floor);
                 }
 
-                CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), specific, isTileDirty);
+                mapdata[pos.x, pos.y] = CreateBlock(new Vector2Int(pos.x, pos.y), specific, isTileDirty);
             }
             else if (type.Contains("Wall")) // Walls
             {
@@ -1475,7 +1475,7 @@ public class MapManager : MonoBehaviour
                     specific = HF.IDbyTheme(TileType.Wall);
                 }
 
-                CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), specific);
+                mapdata[pos.x, pos.y] = CreateBlock(new Vector2Int(pos.x, pos.y), specific);
             }
             else if (type.Contains("Door")) // Doors
             {
@@ -1484,7 +1484,7 @@ public class MapManager : MonoBehaviour
                     specific = HF.IDbyTheme(TileType.Door);
                 }
 
-                CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), specific);
+                mapdata[pos.x, pos.y] = CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), specific);
             }
             else if (type.Contains("Machine")) // *Decorative* Machines (non-functional)
             {
@@ -1492,7 +1492,7 @@ public class MapManager : MonoBehaviour
 
                 int id = tileDatabase.dict[specific_tile].Id;
 
-                CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), id);
+                mapdata[pos.x, pos.y] = CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), id);
             } 
             else if (type.Contains("Arrival")) // Entrance (spawnpoints)
             {
@@ -1515,7 +1515,7 @@ public class MapManager : MonoBehaviour
                     specific = HF.IDbyTheme(TileType.Floor);
                 }
 
-                CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), specific, isTileDirty);
+                mapdata[pos.x, pos.y] = CreateBlock(new Vector2Int((int)tile.Key.x, (int)tile.Key.y), specific, isTileDirty);
             }
             else if (type.Contains("Exit")) // Exits
             {
@@ -1558,7 +1558,7 @@ public class MapManager : MonoBehaviour
                 // Failsafe
                 if (name.Contains("(Clone)"))
                 {
-                    string[] temp = name.Split("(");
+                    string[] temp = name.Split("(Clone)");
                     name = temp[0];
                 }
 
@@ -1568,6 +1568,7 @@ public class MapManager : MonoBehaviour
                 // If a bot wasn't found, try the generic method
                 if (bot == null)
                 {
+                    Debug.Log($"Failed to find bot with name: {name}");
                     string[] words = name.Split('-');
                     //string type = words[0]; // "Bot-"
                     string rating = words[1];
@@ -1575,8 +1576,9 @@ public class MapManager : MonoBehaviour
                     bot = HF.FindBotOfTier(int.Parse(rating));
                 }
 
-                Debug.Log($"Attempting to place {bot} at {pos.x},{pos.y} - {MapManager.inst.mapdata[pos.x, pos.y].type} - {MapManager.inst.mapdata[pos.x, pos.y].tileInfo}");
-                PlaceBot(pos, bot, false, obj.gameObject);
+                //Debug.Log($"Attempting to place {bot} at {pos.x},{pos.y} - {MapManager.inst.mapdata[pos.x, pos.y].type} - {MapManager.inst.mapdata[pos.x, pos.y].tileInfo}");
+                if(MapManager.inst.mapdata[pos.x, pos.y].tileInfo != null)
+                    PlaceBot(pos, bot, false, obj.gameObject);
             }
             else // Items
             {
@@ -2825,7 +2827,7 @@ public class MapManager : MonoBehaviour
         #region Information Copying
         if (_reference)
         {
-            CopyComponentData<Actor>(_reference, spawnedBot.gameObject);
+            spawnedBot = CopyKeyActorInfo(spawnedBot.gameObject, _reference.GetComponent<Actor>());
         }
         #endregion
 
@@ -2841,6 +2843,36 @@ public class MapManager : MonoBehaviour
             spawnedBot.AddComponent<GroupLeader>();
 
         return spawnedBot.GetComponent<Actor>();
+    }
+
+    /// <summary>
+    /// Given a target and a reference, copies some key information between one actor to another.
+    /// </summary>
+    /// <param name="target">The actor (gameObject) recieving the information.</param>
+    /// <param name="info">The actor the info is coming from.</param>
+    /// <returns>The target actor (gameObject) who now has new info.</returns>
+    private GameObject CopyKeyActorInfo(GameObject target, Actor info)
+    {
+        // WE CARE ABOUT THE FOLLOWING THINGS:
+        // Bot Info
+        target.GetComponent<Actor>().botInfo = info.botInfo;
+        // Faction
+        target.GetComponent<Actor>().myFaction = info.myFaction;
+        // Special states
+        target.GetComponent<Actor>().state_CLOAKED = info.state_CLOAKED;
+        target.GetComponent<Actor>().state_DISABLED = info.state_DISABLED;
+        target.GetComponent<Actor>().state_DISARMED = info.state_DISARMED;
+        target.GetComponent<Actor>().state_DORMANT = info.state_DORMANT;
+        target.GetComponent<Actor>().state_UNPOWERED = info.state_UNPOWERED;
+        // Follower flags
+        target.GetComponent<Actor>().followThePlayer = info.followThePlayer;
+        target.GetComponent<Actor>().directPlayerAlly = info.directPlayerAlly;
+        // Dialogue
+        target.GetComponent<Actor>().hasDialogue = info.hasDialogue;
+        target.GetComponent<Actor>().dialogue = info.dialogue;
+        target.GetComponent<Actor>().uniqueDialogueSound = info.uniqueDialogueSound;
+
+        return target;
     }
 
     #endregion

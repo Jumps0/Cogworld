@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8016751945353650053}
   - component: {fileID: 7954538324426192395}
   m_Layer: 0
-  m_Name: Assembled (4)
+  m_Name: Assembled
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -123,7 +123,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: adaa2b68fafb9d742be81103be1f9a49, type: 2}
-  myFaction: 0
+  myFaction: 2
   _class: 5
   wasFabricated: 0
   Initiative: 0
@@ -164,7 +164,7 @@ GameObject:
   - component: {fileID: 6499213542175141224}
   - component: {fileID: 2512146657187467214}
   m_Layer: 0
-  m_Name: Assembled (4)
+  m_Name: Assembled
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -275,7 +275,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: adaa2b68fafb9d742be81103be1f9a49, type: 2}
-  myFaction: 0
+  myFaction: 2
   _class: 5
   wasFabricated: 0
   Initiative: 0
@@ -894,7 +894,7 @@ GameObject:
   - component: {fileID: 1482038520450177518}
   - component: {fileID: 6014296311741817322}
   m_Layer: 0
-  m_Name: Assembled (4)
+  m_Name: Assembled
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1005,7 +1005,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: adaa2b68fafb9d742be81103be1f9a49, type: 2}
-  myFaction: 0
+  myFaction: 2
   _class: 5
   wasFabricated: 0
   Initiative: 0
@@ -1323,7 +1323,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: 1c3e89cb69ac6184fa8146daa510eea7, type: 2}
-  myFaction: 0
+  myFaction: 5
   _class: 5
   wasFabricated: 0
   Initiative: 0
@@ -1712,7 +1712,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: 0daab0d6dca91af45b7d63b86ba27cfc, type: 2}
-  myFaction: 0
+  myFaction: 5
   _class: 5
   wasFabricated: 0
   Initiative: 0
@@ -1740,7 +1740,7 @@ MonoBehaviour:
   finishedTalking: 0
   dialogue: {fileID: 11400000, guid: b53f0c9d57fa005459c94b81f9ac1925, type: 2}
   moveToNextDialogue: 0
-  uniqueDialogueSound: {fileID: 0}
+  uniqueDialogueSound: {fileID: 8300000, guid: d6d8fa8c590a76e4eb230edf2562f9e9, type: 3}
 --- !u!1 &2521699811470893692
 GameObject:
   m_ObjectHideFlags: 0
@@ -2032,7 +2032,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: 8f479693240ca664ebf07fd03879cfaa, type: 2}
-  myFaction: 0
+  myFaction: 5
   _class: 5
   wasFabricated: 0
   Initiative: 0
@@ -2060,7 +2060,7 @@ MonoBehaviour:
   finishedTalking: 0
   dialogue: {fileID: 11400000, guid: b8837c7f387fec84c81362a3de986fa7, type: 2}
   moveToNextDialogue: 0
-  uniqueDialogueSound: {fileID: 0}
+  uniqueDialogueSound: {fileID: 8300000, guid: 736a5df1b7c0cc345bdc1a07b9d36000, type: 3}
 --- !u!1 &3200839008402075151
 GameObject:
   m_ObjectHideFlags: 0
@@ -2377,7 +2377,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: 1c3e89cb69ac6184fa8146daa510eea7, type: 2}
-  myFaction: 0
+  myFaction: 5
   _class: 5
   wasFabricated: 0
   Initiative: 0
@@ -2697,7 +2697,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: 1c3e89cb69ac6184fa8146daa510eea7, type: 2}
-  myFaction: 0
+  myFaction: 5
   _class: 5
   wasFabricated: 0
   Initiative: 0
@@ -2849,7 +2849,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: 1c3e89cb69ac6184fa8146daa510eea7, type: 2}
-  myFaction: 0
+  myFaction: 5
   _class: 5
   wasFabricated: 0
   Initiative: 0
@@ -3001,7 +3001,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: a35faa2284e64354c8baf16b7365ff58, type: 2}
-  myFaction: 0
+  myFaction: 5
   _class: 5
   wasFabricated: 0
   Initiative: 0
@@ -3029,7 +3029,7 @@ MonoBehaviour:
   finishedTalking: 0
   dialogue: {fileID: 11400000, guid: 182185b5665b94246893ada388ef2ecb, type: 2}
   moveToNextDialogue: 0
-  uniqueDialogueSound: {fileID: 0}
+  uniqueDialogueSound: {fileID: 8300000, guid: cc99fae9d73fc4d45954e7684010e8e2, type: 3}
 --- !u!1 &4021528094014947041
 GameObject:
   m_ObjectHideFlags: 0
@@ -3153,7 +3153,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: 1c3e89cb69ac6184fa8146daa510eea7, type: 2}
-  myFaction: 0
+  myFaction: 5
   _class: 5
   wasFabricated: 0
   Initiative: 0
@@ -4104,7 +4104,7 @@ GameObject:
   - component: {fileID: 2501410223483372898}
   - component: {fileID: 3394478732054863397}
   m_Layer: 0
-  m_Name: Assembled (4)
+  m_Name: Assembled
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4215,7 +4215,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: adaa2b68fafb9d742be81103be1f9a49, type: 2}
-  myFaction: 0
+  myFaction: 2
   _class: 5
   wasFabricated: 0
   Initiative: 0
@@ -4367,7 +4367,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: f9dc5bf0d9bad114587f22a6a9a49655, type: 2}
-  myFaction: 0
+  myFaction: 5
   _class: 5
   wasFabricated: 0
   Initiative: 0
@@ -4440,7 +4440,7 @@ GameObject:
   - component: {fileID: 7682590783355664761}
   - component: {fileID: 2171774677956200702}
   m_Layer: 0
-  m_Name: Assembled (4)
+  m_Name: Assembled
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4551,7 +4551,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: adaa2b68fafb9d742be81103be1f9a49, type: 2}
-  myFaction: 0
+  myFaction: 2
   _class: 5
   wasFabricated: 0
   Initiative: 0
@@ -7861,7 +7861,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 37
-      m_TileSpriteIndex: 37
+      m_TileSpriteIndex: 42
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -11171,7 +11171,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 35
-      m_TileSpriteIndex: 35
+      m_TileSpriteIndex: 41
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -11221,7 +11221,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 36
-      m_TileSpriteIndex: 36
+      m_TileSpriteIndex: 40
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -21161,7 +21161,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 14
-      m_TileSpriteIndex: 14
+      m_TileSpriteIndex: 39
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -22041,7 +22041,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 15
-      m_TileSpriteIndex: 15
+      m_TileSpriteIndex: 37
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -27851,7 +27851,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 16
-      m_TileSpriteIndex: 16
+      m_TileSpriteIndex: 36
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -37041,7 +37041,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 25
-      m_TileSpriteIndex: 25
+      m_TileSpriteIndex: 35
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -40751,7 +40751,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 31
-      m_TileSpriteIndex: 31
+      m_TileSpriteIndex: 34
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -45130,12 +45130,12 @@ Tilemap:
     m_Data: {fileID: -854626553, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - m_RefCount: 21
     m_Data: {fileID: -729473093, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
-  - m_RefCount: 1
-    m_Data: {fileID: 4188727, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
-  - m_RefCount: 1
-    m_Data: {fileID: -1169513998, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
-  - m_RefCount: 1
-    m_Data: {fileID: 1614205099, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 34
     m_Data: {fileID: -160610638, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - m_RefCount: 33
@@ -45152,8 +45152,8 @@ Tilemap:
     m_Data: {fileID: 651467399, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - m_RefCount: 6
     m_Data: {fileID: -1413906042, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
-  - m_RefCount: 1
-    m_Data: {fileID: 537538478, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 2
     m_Data: {fileID: 1288600129, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - m_RefCount: 2
@@ -45164,30 +45164,30 @@ Tilemap:
     m_Data: {fileID: -1376957122, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - m_RefCount: 3
     m_Data: {fileID: -1445687972, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
-  - m_RefCount: 1
-    m_Data: {fileID: 1804017316, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 1
     m_Data: {fileID: 379352891, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - m_RefCount: 1
     m_Data: {fileID: -1355311795, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
   - m_RefCount: 1
-    m_Data: {fileID: 295089235, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
+    m_Data: {fileID: 1804017316, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
+  - m_RefCount: 1
+    m_Data: {fileID: 537538478, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
+  - m_RefCount: 1
+    m_Data: {fileID: 1614205099, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
+  - m_RefCount: 1
+    m_Data: {fileID: -1169513998, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
+  - m_RefCount: 6
+    m_Data: {fileID: -864200448, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
+  - m_RefCount: 1
+    m_Data: {fileID: 4188727, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - m_RefCount: 1
     m_Data: {fileID: 504642789, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - m_RefCount: 1
+    m_Data: {fileID: 295089235, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
+  - m_RefCount: 1
     m_Data: {fileID: -2073628508, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
-  - m_RefCount: 6
-    m_Data: {fileID: -864200448, guid: d0044dc737f80e448a829994fbca32ad, type: 3}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
   - m_RefCount: 23
     m_Data: {fileID: -538309465, guid: ca1a5a530d65f9840870dbe101007d13, type: 3}
   - m_RefCount: 2177
@@ -45471,7 +45471,7 @@ GameObject:
   - component: {fileID: 1318181021483740828}
   - component: {fileID: 6875319672226411740}
   m_Layer: 0
-  m_Name: Assembled (4)
+  m_Name: Assembled
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45582,7 +45582,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: adaa2b68fafb9d742be81103be1f9a49, type: 2}
-  myFaction: 0
+  myFaction: 2
   _class: 5
   wasFabricated: 0
   Initiative: 0
@@ -45623,7 +45623,7 @@ GameObject:
   - component: {fileID: 3778333874324467750}
   - component: {fileID: 5823022471845014172}
   m_Layer: 0
-  m_Name: Assembled (4)
+  m_Name: Assembled
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45734,7 +45734,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: adaa2b68fafb9d742be81103be1f9a49, type: 2}
-  myFaction: 0
+  myFaction: 2
   _class: 5
   wasFabricated: 0
   Initiative: 0
@@ -46441,7 +46441,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: 1c3e89cb69ac6184fa8146daa510eea7, type: 2}
-  myFaction: 0
+  myFaction: 5
   _class: 5
   wasFabricated: 0
   Initiative: 0
@@ -46593,7 +46593,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: 7febc8e1e95b83d40899cf19a0faa3ea, type: 2}
-  myFaction: 0
+  myFaction: 5
   _class: 5
   wasFabricated: 0
   Initiative: 0
@@ -46621,7 +46621,7 @@ MonoBehaviour:
   finishedTalking: 0
   dialogue: {fileID: 11400000, guid: 578591b7b0fe6254994937783c9dd70b, type: 2}
   moveToNextDialogue: 0
-  uniqueDialogueSound: {fileID: 0}
+  uniqueDialogueSound: {fileID: 8300000, guid: 90c69b1b5df42714cb31ded0323c7d13, type: 3}
 --- !u!1 &8270357031119719032
 GameObject:
   m_ObjectHideFlags: 0
@@ -46913,7 +46913,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: f9dc5bf0d9bad114587f22a6a9a49655, type: 2}
-  myFaction: 0
+  myFaction: 5
   _class: 5
   wasFabricated: 0
   Initiative: 0
@@ -47149,7 +47149,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: 1c3e89cb69ac6184fa8146daa510eea7, type: 2}
-  myFaction: 0
+  myFaction: 5
   _class: 5
   wasFabricated: 0
   Initiative: 0
@@ -47385,7 +47385,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: f9dc5bf0d9bad114587f22a6a9a49655, type: 2}
-  myFaction: 0
+  myFaction: 5
   _class: 5
   wasFabricated: 0
   Initiative: 0
@@ -47426,7 +47426,7 @@ GameObject:
   - component: {fileID: 1277283398722307977}
   - component: {fileID: 683346799523332978}
   m_Layer: 0
-  m_Name: Assembled (4)
+  m_Name: Assembled
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47537,7 +47537,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: adaa2b68fafb9d742be81103be1f9a49, type: 2}
-  myFaction: 0
+  myFaction: 2
   _class: 5
   wasFabricated: 0
   Initiative: 0
@@ -47773,7 +47773,7 @@ MonoBehaviour:
   fieldOfViewRange: 15
   fieldOfView: []
   botInfo: {fileID: 11400000, guid: 1c3e89cb69ac6184fa8146daa510eea7, type: 2}
-  myFaction: 0
+  myFaction: 5
   _class: 5
   wasFabricated: 0
   Initiative: 0

@@ -5246,7 +5246,7 @@ public class UIManager : MonoBehaviour
 
     public void Evasion_ExpandMenu()
     {
-        if (PlayerData.inst && terminalMenu.MACHINE == Vector2Int.zero) // Should only be able to open the menu when the player exists & not in terminal menu
+        if (PlayerData.inst && terminalMenu.MACHINE == Vector2Int.zero && MapManager.inst.loaded) // Should only be able to open the menu when the player exists & not in terminal menu
         {
             //StopCoroutine(Evasion_ExpandMenu_Animation());
 

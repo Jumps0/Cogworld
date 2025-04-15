@@ -68,7 +68,7 @@ MonoBehaviour:
           type: 0
           connectedMachine: {fileID: 0}
         isDataCore: 0
-        coreTerminal: {fileID: 0}
+        coreTerminal: {x: 0, y: 0}
       storageAmount: 0
       isOverloaded: 0
       isDeteriorating: 0
@@ -105,7 +105,7 @@ MonoBehaviour:
           type: 0
           connectedMachine: {fileID: 0}
         isDataCore: 0
-        coreTerminal: {fileID: 0}
+        coreTerminal: {x: 0, y: 0}
       storageAmount: 0
       isOverloaded: 0
       isDeteriorating: 0
@@ -140,7 +140,7 @@ MonoBehaviour:
           type: 0
           connectedMachine: {fileID: 0}
         isDataCore: 0
-        coreTerminal: {fileID: 0}
+        coreTerminal: {x: 0, y: 0}
       storageAmount: 0
       isOverloaded: 0
       isDeteriorating: 0
@@ -175,7 +175,7 @@ MonoBehaviour:
           type: 0
           connectedMachine: {fileID: 0}
         isDataCore: 0
-        coreTerminal: {fileID: 0}
+        coreTerminal: {x: 0, y: 0}
       storageAmount: 0
       isOverloaded: 0
       isDeteriorating: 0
@@ -210,7 +210,7 @@ MonoBehaviour:
           type: 0
           connectedMachine: {fileID: 0}
         isDataCore: 0
-        coreTerminal: {fileID: 0}
+        coreTerminal: {x: 0, y: 0}
       storageAmount: 0
       isOverloaded: 0
       isDeteriorating: 0
@@ -252,7 +252,7 @@ MonoBehaviour:
           type: 0
           connectedMachine: {fileID: 0}
         isDataCore: 0
-        coreTerminal: {fileID: 0}
+        coreTerminal: {x: 0, y: 0}
       storageAmount: 0
       isOverloaded: 0
       isDeteriorating: 0
@@ -299,7 +299,7 @@ MonoBehaviour:
     fabTime: {x: 81, y: 40, z: 27}
     matterCost: 180
     componenetsRequired: []
-  botName: Asseembled
+  botName: Assembled
   description: A quick but not especially dangerous combat derelict with fully integrated
     systems, constructed seemingly at random by an Assembler's self-contained fabrication
     apparatus. Individually resilient for their size, they pose a real threat in
@@ -312,4 +312,3 @@ MonoBehaviour:
     relation: 0
     alignment: 2
   playerHasAnalysisData: 0
-  prefab: {fileID: 1489840735499938570, guid: cbbdfc75c1c42bd4ca12fd24178c768b, type: 3}
