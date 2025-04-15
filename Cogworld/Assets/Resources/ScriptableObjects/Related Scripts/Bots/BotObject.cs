@@ -179,11 +179,11 @@ public class BotProfile
 public class BotArmament
 {
     public Item item;
-    [Tooltip("Float so 0.##")]
-    public float dropChance;
-    [Tooltip("Coverage")]
-    public List<Item> _altChoices; // This is actually the item's coverage
-    [Tooltip("Float so 0.##")] public List<float> altChoicesDropChance;
+    public float coverage;
+
+    // Alternatives
+    [Tooltip("Sometimes bot's will have an alternate loadout, here are those options.")] // See DRS Ranger or Alpha 7 for examples.
+    public List<BotArmament> alternatives;
 }
 
 [System.Serializable]
