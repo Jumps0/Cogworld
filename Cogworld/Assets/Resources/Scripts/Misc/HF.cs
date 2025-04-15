@@ -4009,7 +4009,7 @@ public static class HF
     {
         foreach (var I in inventory)
         {
-            if (I.item.itemData == item)
+            if (I.item == item)
             {
                 return I.coverage;
             }

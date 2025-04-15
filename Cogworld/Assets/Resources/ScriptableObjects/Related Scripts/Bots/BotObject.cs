@@ -178,7 +178,7 @@ public class BotProfile
 [System.Serializable]
 public class BotArmament
 {
-    public Item item;
+    public ItemObject item;
     public float coverage;
 
     // Alternatives

@@ -107,11 +107,11 @@ public class Actor : Entity
                 // Fill up armament & component inventories
                 foreach (var item in botInfo.armament)
                 {
-                    armament.AddItem(item.item, 1);
+                    armament.AddItem(new Item(MapManager.inst.itemDatabase.Items[item.item.data.Id]), 1);
                 }
                 foreach (var item in botInfo.components)
                 {
-                    components.AddItem(item.item, 1);
+                    components.AddItem(new Item(MapManager.inst.itemDatabase.Items[item.item.data.Id]), 1);
                 }
 
                 inventory = new InventoryObject(HF.CalculateMaxInventorySize(components), botInfo.botName + "'s Inventory");

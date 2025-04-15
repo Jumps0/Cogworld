@@ -51,45 +51,9 @@ MonoBehaviour:
     - {x: 3, y: -10}
     hasSchematic: 0
   armament:
-  - item:
-      Name: 
-      Id: -1
-      stackable: 0
-      amount: 1
-      itemData: {fileID: 0}
-      state: 1
-      integrityCurrent: 0
-      uniqueDetail:
-        isScrap: 0
-        scrapReward: {fileID: 0}
-        isDataLog: 0
-        logMessage: 
-        logAction:
-          type: 0
-          connectedMachine: {fileID: 0}
-        isDataCore: 0
-        coreTerminal: {fileID: 0}
-      storageAmount: 0
-      isOverloaded: 0
-      isDeteriorating: 0
-      isRigged: 0
-      isFused: 0
-      isFaulty: 0
-      doneFaultyFailure: 0
-      isBroken: 0
-      corrupted: 0
-      doneCorruptionFeedback: 0
-      disabledTimer: 0
-      unstable: -1
-      disposable: -1
-      chargable: -1
-      siege: 0
-      isDuplicate: 0
-      duplicate_uuid: -1
-      duplicates: 
-    dropChance: 0.7
-    _altChoices: []
-    altChoicesDropChance: []
+  - item: {fileID: 11400000, guid: 23d65a95fab258149b3d5bb0cb39f8b2, type: 2}
+    coverage: 0.7
+    alternatives: []
   components: []
   resistances:
   - damageType: 0
@@ -121,4 +85,3 @@ MonoBehaviour:
     relation: 2
     alignment: 1
   playerHasAnalysisData: 0
-  prefab: {fileID: 1489840735499938570, guid: 13a34325f006c7f47a891ca9d74bf78b, type: 3}
