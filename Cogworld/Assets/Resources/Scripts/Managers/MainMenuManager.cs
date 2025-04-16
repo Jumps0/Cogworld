@@ -2366,7 +2366,9 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private Transform spritewheel_orbit;
     [SerializeField] private int spritewheel_max = 10;
     [SerializeField] private float spritewheel_speed = 5f;
-    [SerializeField] private float spritewheel_radius = 290f;
+    [SerializeField] private float spritewheel_startingRadius = 250f;
+    [SerializeField] private float spritewheel_radius;
+    private float spritewheel_startingWidth = 1113.6f;
     [SerializeField] private List<GameObject> spritewheel_objects = new List<GameObject>();
     [SerializeField] private List<(Sprite, Color)> spritewheel_sprites = new List<(Sprite, Color)>();
     [SerializeField] private GameObject spritewheel_prefab;
@@ -2388,6 +2390,8 @@ public class MainMenuManager : MonoBehaviour
                 spritewheel_sprites.Add((botSprite, botColor));
             }
         }
+
+        spritewheel_radius = spritewheel_startingRadius;
 
         // Create the objects
 
@@ -2425,6 +2429,12 @@ public class MainMenuManager : MonoBehaviour
     {
         while (true)
         {
+            // Radius needs to be altered based on aspect ratio
+            float width = Screen.width;
+            float ratio = width / spritewheel_startingWidth;
+            spritewheel_radius = spritewheel_startingRadius * ratio;
+            Debug.Log($"Ratio {ratio} | Width {width} | New Radius {spritewheel_radius}");
+
             for (int i = 0; i < spritewheel_objects.Count; i++)
             {
                 // Calculate the new angle based on time and orbit speed

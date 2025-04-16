@@ -585,7 +585,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Cogworld 0.1-A1
+  m_text: Cogworld 0.2-A1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3f1bf64e23c81b149a75c74890c74f84, type: 2}
   m_sharedMaterial: {fileID: -6821579221814523707, guid: 3f1bf64e23c81b149a75c74890c74f84, type: 2}
@@ -10331,7 +10331,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 122.25, y: -2}
-  m_SizeDelta: {x: 4, y: 366.4668}
+  m_SizeDelta: {x: 4, y: 335.85742}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1002566453
 MonoBehaviour:
@@ -24644,7 +24644,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 126.25, y: -2}
-  m_SizeDelta: {x: 248.5, y: 370.4668}
+  m_SizeDelta: {x: 248.5, y: 339.85742}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &2132004511
 MonoBehaviour:
