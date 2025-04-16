@@ -48,13 +48,13 @@ public class MapManager : MonoBehaviour
 
         if (sceneName == "GameplayScene")
         {
-            StartCoroutine(MapManager.inst.InitNewLevel());
-            //InitializeMap(false);
+            //StartCoroutine(MapManager.inst.InitNewLevel());
+            InitializeMap(false);
         }
         else if (sceneName == "HideoutScene")
         {
-            StartCoroutine(MapManager.inst.InitNewHideout());
-            //InitializeMap(true);
+            //StartCoroutine(MapManager.inst.InitNewHideout());
+            InitializeMap(true);
         }
     }
 

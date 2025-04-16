@@ -851,7 +851,7 @@ public struct WorldTile
                 machinedata.displayName = "Fabricator";
 
                 // Set the override sprite
-                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["Fabricator"].displaySprite;
+                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["interactable_fabricator"].displaySprite;
 
                 machinedata.FabricatorInit();
                 break;
@@ -859,7 +859,7 @@ public struct WorldTile
                 machinedata.displayName = "Garrison";
 
                 // Set the override sprite
-                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["Garrison"].displaySprite;
+                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["interactable_garrison"].displaySprite;
 
                 machinedata.GarrisonInit();
                 break;
@@ -867,7 +867,7 @@ public struct WorldTile
                 machinedata.displayName = "Recycling Unit";
 
                 // Set the override sprite
-                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["Recycler"].displaySprite;
+                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["interactable_recycler"].displaySprite;
 
                 machinedata.RecyclingInit();
                 break;
@@ -875,7 +875,7 @@ public struct WorldTile
                 machinedata.displayName = "Repair Station";
 
                 // Set the override sprite
-                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["Repair Station"].displaySprite;
+                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["interactable_repairbay"].displaySprite;
 
                 machinedata.RepairBayInit();
                 break;
@@ -883,7 +883,7 @@ public struct WorldTile
                 machinedata.displayName = "Scanalyzer";
 
                 // Set the override sprite
-                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["Scanalyzer"].displaySprite;
+                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["interactable_scanalyzer"].displaySprite;
 
                 machinedata.ScanalyzerInit();
                 break;
@@ -894,7 +894,7 @@ public struct WorldTile
                 machinedata.terminalZone.assignedArea = new List<Vector2Int>();
 
                 // Set the override sprite
-                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["Terminal"].displaySprite;
+                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["interactable_terminal"].displaySprite;
 
                 machinedata.TerminalInit();
                 break;
@@ -902,7 +902,7 @@ public struct WorldTile
                 // TODO
 
                 // Set the override sprite
-                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["Custom Terminal"].displaySprite;
+                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["interactable_custom"].displaySprite;
 
                 // NOTE: Since these are custom, they will be placed specifically, and have some details pre-assigned.
                 machinedata.CustomTerminalInit();
@@ -911,7 +911,7 @@ public struct WorldTile
                 // TODO
 
                 // Set the override sprite
-                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["Custom Terminal"].displaySprite;
+                machinedata.sprite_override = MapManager.inst.tileDatabase.dict["interactable_custom"].displaySprite;
 
                 machinedata.DoorTerminal_Init();
                 break;

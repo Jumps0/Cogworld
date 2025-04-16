@@ -107,11 +107,25 @@ public class Actor : Entity
                 // Fill up armament & component inventories
                 foreach (var item in botInfo.armament)
                 {
-                    armament.AddItem(new Item(MapManager.inst.itemDatabase.Items[item.item.data.Id]), 1);
+                    try
+                    {
+                        armament.AddItem(new Item(MapManager.inst.itemDatabase.Items[item.item.data.Id]), 1);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Debug.LogError($"{this.gameObject.name} with {botInfo} has an unset armament item! [{ex}]");
+                    }
                 }
                 foreach (var item in botInfo.components)
                 {
-                    components.AddItem(new Item(MapManager.inst.itemDatabase.Items[item.item.data.Id]), 1);
+                    try
+                    {
+                        components.AddItem(new Item(MapManager.inst.itemDatabase.Items[item.item.data.Id]), 1);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Debug.LogError($"{this.gameObject.name} with {botInfo} has an unset component item! [{ex}]");
+                    }
                 }
 
                 inventory = new InventoryObject(HF.CalculateMaxInventorySize(components), botInfo.botName + "'s Inventory");

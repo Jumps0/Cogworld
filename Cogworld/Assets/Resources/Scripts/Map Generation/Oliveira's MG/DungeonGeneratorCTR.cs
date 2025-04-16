@@ -1707,7 +1707,11 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     // Object name (Used to determine destination)
                     exit += $",{I.gameObject.name}";
 
-                    if (!placedTiles.ContainsKey(pos))
+                    if (placedTiles.ContainsKey(pos))
+                    {
+                        placedTiles[pos] = exit;
+                    }
+                    else
                     {
                         placedTiles.Add(pos, exit);
                     }
@@ -1735,7 +1739,11 @@ public class DungeonGeneratorCTR : MonoBehaviour {
                     // Object name (Used to determine what the machine does)
                     machine += $",{I.gameObject.name}";
 
-                    if (!placedTiles.ContainsKey(pos))
+                    if (placedTiles.ContainsKey(pos))
+                    {
+                        placedTiles[pos] = machine;
+                    }
+                    else
                     {
                         placedTiles.Add(pos, machine);
                     }

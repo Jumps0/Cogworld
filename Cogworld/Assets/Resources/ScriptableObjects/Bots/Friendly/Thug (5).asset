@@ -51,241 +51,25 @@ MonoBehaviour:
     - {x: 3, y: -10}
     hasSchematic: 0
   armament:
-  - item:
-      Name: Beamcaster
-      Id: 45
-      stackable: 0
-      amount: 1
-      itemData: {fileID: 11400000, guid: 9ceff4d16cf286a4293ba2ebc44f6704, type: 2}
-      state: 1
-      integrityCurrent: 0
-      uniqueDetail:
-        isScrap: 0
-        scrapReward: {fileID: 0}
-        isDataLog: 0
-        logMessage: 
-        logAction:
-          type: 0
-          connectedMachine: {fileID: 0}
-        isDataCore: 0
-        coreTerminal: {fileID: 0}
-      storageAmount: 0
-      isOverloaded: 0
-      isDeteriorating: 0
-      isRigged: 0
-      isFused: 0
-      isFaulty: 0
-      doneFaultyFailure: 0
-      isBroken: 0
-      corrupted: 0
-      doneCorruptionFeedback: 0
-      disabledTimer: 0
-      unstable: -1
-      disposable: -1
-      chargable: -1
-      siege: 0
-      isDuplicate: 0
-      duplicate_uuid: -1
-      duplicates: 
-    dropChance: 0.11
-    _altChoices: []
-    altChoicesDropChance: []
+  - item: {fileID: 11400000, guid: 9ceff4d16cf286a4293ba2ebc44f6704, type: 2}
+    coverage: 0.11
+    alternatives: []
   components:
-  - item:
-      Name: Lgt. Angular Momentum Engine
-      Id: 46
-      stackable: 0
-      amount: 1
-      itemData: {fileID: 11400000, guid: 75bb6b8f21fe4b7469d2689302308b83, type: 2}
-      state: 1
-      integrityCurrent: 0
-      uniqueDetail:
-        isScrap: 0
-        scrapReward: {fileID: 0}
-        isDataLog: 0
-        logMessage: 
-        logAction:
-          type: 0
-          connectedMachine: {fileID: 0}
-        isDataCore: 0
-        coreTerminal: {fileID: 0}
-      storageAmount: 0
-      isOverloaded: 0
-      isDeteriorating: 0
-      isRigged: 0
-      isFused: 0
-      isFaulty: 0
-      doneFaultyFailure: 0
-      isBroken: 0
-      corrupted: 0
-      doneCorruptionFeedback: 0
-      disabledTimer: 0
-      unstable: -1
-      disposable: -1
-      chargable: -1
-      siege: 0
-      isDuplicate: 0
-      duplicate_uuid: -1
-      duplicates: 
-    dropChance: 0.11
-    _altChoices: []
-    altChoicesDropChance: []
-  - item:
-      Name: Carbon-Fiber Leg
-      Id: 47
-      stackable: 0
-      amount: 1
-      itemData: {fileID: 11400000, guid: e8164a5545bf0244090775c2dfad165d, type: 2}
-      state: 1
-      integrityCurrent: 0
-      uniqueDetail:
-        isScrap: 0
-        scrapReward: {fileID: 0}
-        isDataLog: 0
-        logMessage: 
-        logAction:
-          type: 0
-          connectedMachine: {fileID: 0}
-        isDataCore: 0
-        coreTerminal: {fileID: 0}
-      storageAmount: 0
-      isOverloaded: 0
-      isDeteriorating: 0
-      isRigged: 0
-      isFused: 0
-      isFaulty: 0
-      doneFaultyFailure: 0
-      isBroken: 0
-      corrupted: 0
-      doneCorruptionFeedback: 0
-      disabledTimer: 0
-      unstable: -1
-      disposable: -1
-      chargable: -1
-      siege: 0
-      isDuplicate: 0
-      duplicate_uuid: -1
-      duplicates: 
-    dropChance: 0.15
-    _altChoices: []
-    altChoicesDropChance: []
-  - item:
-      Name: Carbon-Fiber Leg
-      Id: 47
-      stackable: 0
-      amount: 1
-      itemData: {fileID: 11400000, guid: e8164a5545bf0244090775c2dfad165d, type: 2}
-      state: 1
-      integrityCurrent: 0
-      uniqueDetail:
-        isScrap: 0
-        scrapReward: {fileID: 0}
-        isDataLog: 0
-        logMessage: 
-        logAction:
-          type: 0
-          connectedMachine: {fileID: 0}
-        isDataCore: 0
-        coreTerminal: {fileID: 0}
-      storageAmount: 0
-      isOverloaded: 0
-      isDeteriorating: 0
-      isRigged: 0
-      isFused: 0
-      isFaulty: 0
-      doneFaultyFailure: 0
-      isBroken: 0
-      corrupted: 0
-      doneCorruptionFeedback: 0
-      disabledTimer: 0
-      unstable: -1
-      disposable: -1
-      chargable: -1
-      siege: 0
-      isDuplicate: 0
-      duplicate_uuid: -1
-      duplicates: 
-    dropChance: 0.15
-    _altChoices: []
-    altChoicesDropChance: []
-  - item:
-      Name: Imp. Heat Sink
-      Id: 23
-      stackable: 0
-      amount: 1
-      itemData: {fileID: 11400000, guid: 591a744c750455244bc8ee986a032d0b, type: 2}
-      state: 1
-      integrityCurrent: 0
-      uniqueDetail:
-        isScrap: 0
-        scrapReward: {fileID: 0}
-        isDataLog: 0
-        logMessage: 
-        logAction:
-          type: 0
-          connectedMachine: {fileID: 0}
-        isDataCore: 0
-        coreTerminal: {fileID: 0}
-      storageAmount: 0
-      isOverloaded: 0
-      isDeteriorating: 0
-      isRigged: 0
-      isFused: 0
-      isFaulty: 0
-      doneFaultyFailure: 0
-      isBroken: 0
-      corrupted: 0
-      doneCorruptionFeedback: 0
-      disabledTimer: 0
-      unstable: -1
-      disposable: -1
-      chargable: -1
-      siege: 0
-      isDuplicate: 0
-      duplicate_uuid: -1
-      duplicates: 
-    dropChance: 0.03
-    _altChoices: []
-    altChoicesDropChance: []
-  - item:
-      Name: Imp. Heat Sink
-      Id: 23
-      stackable: 0
-      amount: 1
-      itemData: {fileID: 11400000, guid: 591a744c750455244bc8ee986a032d0b, type: 2}
-      state: 1
-      integrityCurrent: 0
-      uniqueDetail:
-        isScrap: 0
-        scrapReward: {fileID: 0}
-        isDataLog: 0
-        logMessage: 
-        logAction:
-          type: 0
-          connectedMachine: {fileID: 0}
-        isDataCore: 0
-        coreTerminal: {fileID: 0}
-      storageAmount: 0
-      isOverloaded: 0
-      isDeteriorating: 0
-      isRigged: 0
-      isFused: 0
-      isFaulty: 0
-      doneFaultyFailure: 0
-      isBroken: 0
-      corrupted: 0
-      doneCorruptionFeedback: 0
-      disabledTimer: 0
-      unstable: -1
-      disposable: -1
-      chargable: -1
-      siege: 0
-      isDuplicate: 0
-      duplicate_uuid: -1
-      duplicates: 
-    dropChance: 0.03
-    _altChoices: []
-    altChoicesDropChance: []
+  - item: {fileID: 11400000, guid: 75bb6b8f21fe4b7469d2689302308b83, type: 2}
+    coverage: 0.11
+    alternatives: []
+  - item: {fileID: 11400000, guid: e8164a5545bf0244090775c2dfad165d, type: 2}
+    coverage: 0.15
+    alternatives: []
+  - item: {fileID: 11400000, guid: e8164a5545bf0244090775c2dfad165d, type: 2}
+    coverage: 0.15
+    alternatives: []
+  - item: {fileID: 11400000, guid: 591a744c750455244bc8ee986a032d0b, type: 2}
+    coverage: 0.03
+    alternatives: []
+  - item: {fileID: 11400000, guid: 591a744c750455244bc8ee986a032d0b, type: 2}
+    coverage: 0.03
+    alternatives: []
   resistances:
   - damageType: 3
     resistanceAmount: -0.25
@@ -392,4 +176,3 @@ MonoBehaviour:
     relation: 2
     alignment: 1
   playerHasAnalysisData: 0
-  prefab: {fileID: 1489840735499938570, guid: f2a4c14f84f10bb4082892437bbd4799, type: 3}
