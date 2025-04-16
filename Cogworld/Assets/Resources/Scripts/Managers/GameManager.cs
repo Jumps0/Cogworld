@@ -433,7 +433,7 @@ public class GameManager : MonoBehaviour
     {
         ExitStartup();
 
-        StartCoroutine(MapManager.inst.InitNewLevel());
+        MapManager.inst.InitializeMap(false);
     }
 
     public void LNG_ShowGameSettings()
@@ -658,7 +658,7 @@ public class GameManager : MonoBehaviour
                 new Vector2Int(PlayerData.inst.utilitySlots, PlayerData.inst.weaponSlots), data.killCount);
         }
 
-        StartCoroutine(MapManager.inst.InitNewLevel()); // All done, generate the new level
+        MapManager.inst.InitializeMap(false); // All done, generate the new level
     }
 
     int usedPoints = 0;

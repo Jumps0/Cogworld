@@ -47,7 +47,7 @@ public class BaseManager : MonoBehaviour
 
     public void CreateNewBase()
     {
-        StartCoroutine(MapManager.inst.InitNewHideout());
+        MapManager.inst.InitializeMap(true);
     }
     
     public void InstantiateCurrentBase()
