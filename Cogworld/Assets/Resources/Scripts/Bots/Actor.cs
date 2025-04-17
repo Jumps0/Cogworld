@@ -84,6 +84,7 @@ public class Actor : Entity
 
         if (GameManager.inst)
         {
+            /*MP-TEMP-REMOVE
             TurnManager.inst.turnEvents.onTurnTick += TurnTick; // Begin listening to the turn tick event
 
             AddToGameManager();
@@ -143,6 +144,7 @@ public class Actor : Entity
 
             algorithm = new AdamMilVisibility(this); // Set visual algo
             allegances = GlobalSettings.inst.GenerateDefaultAllengances(botInfo); // Set allegances
+            */
         }
         else
         {
@@ -249,7 +251,7 @@ public class Actor : Entity
     }
     */
 
-    #region Turns
+            #region Turns
     public void StartTurn()
     {
         if (this.GetComponent<BotAI>() != null)

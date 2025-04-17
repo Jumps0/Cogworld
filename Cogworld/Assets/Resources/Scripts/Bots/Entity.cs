@@ -1,15 +1,19 @@
 // Origionally made by: Chizaruu @ https://github.com/Chizaruu/Unity-RL-Tutorial/blob/part-4-field-of-view/Assets/Scripts/Entity/Entity.cs
-// Expanded & Modified by: Cody Jackson @ codyj@nevada.unr.edu
+// Expanded & Modified by: Cody Jackson @ cody@krselectric.com
 
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 /// <summary>
-/// A generic class to represent players, enemies, items, etc.
+/// A generic class to represent players, enemies, items, etc. Holds the NetworkBehavior for the relevant entity.
 /// </summary>
-public class Entity : MonoBehaviour
+public class Entity : NetworkBehaviour
 {
+    [Header("Network Values")]
+    public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>(readPerm: NetworkVariableReadPermission.Everyone, writePerm: NetworkVariableWritePermission.Owner);
+
     public bool blocksMovement;
     public bool BlocksMovement { get => blocksMovement; set => blocksMovement = value; }
 
@@ -51,17 +55,58 @@ public class Entity : MonoBehaviour
     public InventoryObject components;
     public InventoryObject inventory;
 
+    #region Network Setup
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner && this.GetComponent<PlayerGridMovement>())
+        {
+            PlayerGridMovement pgm = this.GetComponent<PlayerGridMovement>();
+            pgm.ent = this;
+
+            pgm.inputActions = Resources.Load<InputActionsSO>("Inputs/InputActionsSO").InputActions;
+
+            pgm.inputActions.Player.Move.performed += pgm.OnMovePerformed;
+            pgm.inputActions.Player.Move.canceled += pgm.OnMoveCanceled;
+            pgm.inputActions.Player.LeftClick.performed += pgm.OnLeftClick;
+            pgm.inputActions.Player.RightClick.performed += pgm.OnRightClick;
+            pgm.inputActions.Player.Quit.performed += pgm.OnQuit;
+            pgm.inputActions.Player.Autocomplete.performed += pgm.OnAutocomplete;
+            pgm.inputActions.Player.Volley.performed += pgm.OnVolley;
+
+            // Random position for testing purposes
+            Move(new Vector2Int(Random.Range(-1, 1), Random.Range(-1, 1)));
+        }
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        if (IsOwner && this.GetComponent<PlayerGridMovement>())
+        {
+            PlayerGridMovement pgm = this.GetComponent<PlayerGridMovement>();
+
+            pgm.inputActions.Player.Move.performed -= pgm.OnMovePerformed;
+            pgm.inputActions.Player.Move.canceled -= pgm.OnMoveCanceled;
+            pgm.inputActions.Player.LeftClick.performed -= pgm.OnLeftClick;
+            pgm.inputActions.Player.RightClick.performed -= pgm.OnRightClick;
+            pgm.inputActions.Player.Quit.performed -= pgm.OnQuit;
+            pgm.inputActions.Player.Autocomplete.performed -= pgm.OnAutocomplete;
+            pgm.inputActions.Player.Volley.performed -= pgm.OnVolley;
+        }
+    }
+    #endregion
+
     public void Move(Vector2 direction)
     {
         #region Pre-move
-        Vector2Int oldPosition = HF.V3_to_V2I(this.transform.position);
 
+        Vector2Int oldPosition = HF.V3_to_V2I(this.transform.position);
+        /*MP-TEMP-REMOVE
         // Movement Indicator Tile
         if (this.GetComponent<Actor>() != PlayerData.inst.GetComponent<Actor>()) // (The thing moving should not see its own path)
         {
             MapManager.inst.TileInitialReveal(oldPosition);
         }
-
+        */
         // Mark previous position as "free"
         // NOTE: We (hopefully) avoid a race condition here if another bot tries to move here as we will handle movement "one by one".
         if (MapManager.inst.pathdata[oldPosition.x, oldPosition.y] > 0) { MapManager.inst.pathdata[oldPosition.x, oldPosition.y] = 0; }
@@ -69,13 +114,14 @@ public class Entity : MonoBehaviour
 
         // Move character
         transform.position += (Vector3)direction;
+        Position.Value = transform.position;
 
         #region Post-move
         Vector2Int newPosition = new Vector2Int((int)transform.position.x, (int)transform.position.y);
 
         // Indicate new position as occupied (by a bot)
         if (MapManager.inst.pathdata[newPosition.x, newPosition.y] == 0) { MapManager.inst.pathdata[newPosition.x, newPosition.y] = 2; }
-
+        /*MP-TEMP-REMOVE
         // Update momentum
         if (lastDirection == direction)
         {
@@ -103,6 +149,7 @@ public class Entity : MonoBehaviour
         }
 
         this.GetComponent<Actor>().UpdateFieldOfView(); // Update their FOV
+        */
         #endregion
     }
 

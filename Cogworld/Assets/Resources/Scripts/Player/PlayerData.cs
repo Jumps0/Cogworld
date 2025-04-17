@@ -2,13 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
 /// Stores all data related to the player.
 /// </summary>
-public class PlayerData : MonoBehaviour
+public class PlayerData : NetworkBehaviour
 {
     public static PlayerData inst;
     public void Awake()
@@ -150,12 +151,14 @@ public class PlayerData : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /*MP-TEMP-REMOVE
         if (this.gameObject.GetComponent<PartInventory>())
         {
             CombatInputs();
             UpdateStats();
             HandleMouseHighlight();
         }
+        */
     }
 
     public void SetVisuals(bool ASCII_MODE)
@@ -488,77 +491,77 @@ public class PlayerData : MonoBehaviour
             }
             #endregion
             */
-            #endregion
+#endregion
 
-            #region B) Line Drawing via "Dart"
-            /*
-            // I'm not 100% happy with this method, but as implemented, it works better than raycasting (especially the line trimming).
-            
-            // - Explainer -
-            // With this method we are imagining a "dart" which starts at the player, and is shot towards the target position.
-            // The closest tile to the dart's closest position is added to the path.
-            // We finish when we "reach" the end point.
-            // There are some safety rails in place to make sure the "dart" doesn't shoot past the edge of the map, but honestly I
-            // don't 100% trust it, so there is probably like a 0.1% chance when the player is aiming an error happens.
+        #region B) Line Drawing via "Dart"
+        /*
+        // I'm not 100% happy with this method, but as implemented, it works better than raycasting (especially the line trimming).
 
-            path = new List<Vector2>();
+        // - Explainer -
+        // With this method we are imagining a "dart" which starts at the player, and is shot towards the target position.
+        // The closest tile to the dart's closest position is added to the path.
+        // We finish when we "reach" the end point.
+        // There are some safety rails in place to make sure the "dart" doesn't shoot past the edge of the map, but honestly I
+        // don't 100% trust it, so there is probably like a 0.1% chance when the player is aiming an error happens.
 
-            Vector2 start = new Vector2Int(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y));
-            Vector2 finish = mousePosition;
+        path = new List<Vector2>();
 
-            Vector2 currentPos = start;
-            Vector2 direction = (finish - start).normalized;
-            Vector2 lastDirection = direction; // Store the last direction
-            float distance = Vector2.Distance(start, finish);
+        Vector2 start = new Vector2Int(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y));
+        Vector2 finish = mousePosition;
 
-            while (Vector2.Distance(currentPos, finish) > 0.1f)
+        Vector2 currentPos = start;
+        Vector2 direction = (finish - start).normalized;
+        Vector2 lastDirection = direction; // Store the last direction
+        float distance = Vector2.Distance(start, finish);
+
+        while (Vector2.Distance(currentPos, finish) > 0.1f)
+        {
+
+            // Add current point to path
+            path.Add(currentPos);
+
+            // Move towards finish point in the calculated direction
+            currentPos += direction;
+
+            // Check if current position is out of bounds, if so, break the loop
+            if (currentPos.x < 0 || currentPos.y < 0 || currentPos.x >= MapManager.inst.mapsize.x - 2 || currentPos.y >= MapManager.inst.mapsize.y - 2)
+                break;
+
+            // Update direction towards finish point
+            direction = (finish - currentPos).normalized;
+
+            // Check if direction has changed (passed the finish point)
+            if (Vector2.Dot(direction, lastDirection) < 0)
+                break; // Stop if the direction changes
+
+            lastDirection = direction; // Update last direction
+        }
+
+        // Add the finish point to the path
+        path.Add(finish);
+
+        // - Now "draw" the path -
+
+        foreach (var P in path) // Go through the path and mark each tile
+        {
+            if (!targetLine.ContainsKey(new Vector2Int((int)P.x, (int)P.y)))
             {
-
-                // Add current point to path
-                path.Add(currentPos);
-
-                // Move towards finish point in the calculated direction
-                currentPos += direction;
-
-                // Check if current position is out of bounds, if so, break the loop
-                if (currentPos.x < 0 || currentPos.y < 0 || currentPos.x >= MapManager.inst.mapsize.x - 2 || currentPos.y >= MapManager.inst.mapsize.y - 2)
-                    break;
-
-                // Update direction towards finish point
-                direction = (finish - currentPos).normalized;
-
-                // Check if direction has changed (passed the finish point)
-                if (Vector2.Dot(direction, lastDirection) < 0)
-                    break; // Stop if the direction changes
-
-                lastDirection = direction; // Update last direction
+                CreateHighlightTile(new Vector2Int((int)P.x, (int)P.y));
             }
+        }
 
-            // Add the finish point to the path
-            path.Add(finish);
+        if (GapCheckHelper(new Vector2Int((int)finish.x, (int)finish.y)))
+        {
+            GapCheck();
+        }
+        //CleanPath(); // Clean the path
+        */
+        #endregion
 
-            // - Now "draw" the path -
+        #region C) Bresenham's Line Algorithm
+        // Finally, a better option.
 
-            foreach (var P in path) // Go through the path and mark each tile
-            {
-                if (!targetLine.ContainsKey(new Vector2Int((int)P.x, (int)P.y)))
-                {
-                    CreateHighlightTile(new Vector2Int((int)P.x, (int)P.y));
-                }
-            }
-
-            if (GapCheckHelper(new Vector2Int((int)finish.x, (int)finish.y)))
-            {
-                GapCheck();
-            }
-            //CleanPath(); // Clean the path
-            */
-            #endregion
-
-            #region C) Bresenham's Line Algorithm
-            // Finally, a better option.
-
-            Vector2Int start = new Vector2Int(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y));
+        Vector2Int start = new Vector2Int(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y));
             Vector2Int finish = HF.V3_to_V2I(mousePosition);
 
             if(start == finish) { return; } // Don't draw a line with no length!
@@ -1396,6 +1399,7 @@ public class PlayerData : MonoBehaviour
 
     public void HandleMouseHighlight()
     {
+        /*MP-TEMP-REMOVE
         // There are probably other cases where this shouldn't be enabled. Consider them here and add more when needed
         if(UIManager.inst.terminalMenu.MACHINE == Vector2Int.zero || this.GetComponent<PlayerGridMovement>().interfacingMode != InterfacingMode.TYPING)
         {
@@ -1424,9 +1428,10 @@ public class PlayerData : MonoBehaviour
         {
             mouseTile.SetActive(false);
         }
+        */
     }
     #endregion
-    
+
     /// <summary>
     /// Currently just used for the exit pinging.
     /// </summary>

@@ -11,11 +11,13 @@ public class MouseTracker : MonoBehaviour
 {
     void Update()
     {
+        /*MP-TEMP-REMOVE
         if (PlayerData.inst)
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
             mousePosition = new Vector3(Mathf.RoundToInt(mousePosition.x), Mathf.RoundToInt(mousePosition.y));
             this.transform.position = mousePosition;
         }
+        */
     }
 }

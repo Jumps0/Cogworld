@@ -105,6 +105,7 @@ public static class Action
     /// <returns>Returns true if the bot can (and will) move there. False if it can't (and won't).</returns>
     public static bool BumpAction(Actor actor, Vector2 direction)
     {
+        /* MP-TEMP-REMOVE
         Actor target = GameManager.inst.GetBlockingActorAtLocation(actor.transform.position + (Vector3)direction);
 
         if (target)
@@ -129,10 +130,11 @@ public static class Action
             return false;
         }
         else
-        {
+        {*/
             MovementAction(actor, direction);
             return true;
-        }
+        //} MP-TEMP-REMOVE
+        
     }
 
     /// <summary>
@@ -1056,6 +1058,7 @@ public static class Action
 
     public static void MovementAction(Actor actor, Vector2 direction)
     {
+        /*MP-TEMP-REMOVE
         // Incurr costs for moving
         float tomove_energy = 0, tomove_heat = 0;
         foreach (var I in Action.FindBotPropulsion(actor))
@@ -1089,13 +1092,13 @@ public static class Action
             actor.currentHeat += (int)tomove_heat;
             actor.currentEnergy += (int)tomove_energy;
         }
-
+        */
         // -- Movement -- //
         actor.noMovementFor = 0;
         actor.Move(direction); // Actually move the actor
 
         // End the actor's turn
-        TurnManager.inst.EndTurn(actor);
+        //TurnManager.inst.EndTurn(actor);MP-TEMP-REMOVE
     }
 
     public static void SkipAction(Actor actor)
@@ -1251,7 +1254,7 @@ public static class Action
                  * modified by +/-10% per size class difference between the blocking robot and the knocked back robot, and the resulting damage 
                  * equals [originalDamage] (see Attack Resolution), further divided by the blocker size class if that class is greater than 1 (where Medium = 2, and so on).
                  */
-                float followUpChance = og_knockback;
+        float followUpChance = og_knockback;
                 int followUpDamage = og_damage;
 
                 BotSize size_a = BotSize.Medium;

@@ -6,9 +6,7 @@ using UnityEngine.InputSystem.Controls;
 
 public class PlayerGridMovement : MonoBehaviour
 {
-    /// <summary>
-    /// Is the player allowed to move?
-    /// </summary>
+    [Tooltip("Is the player allowed to move?")]
     public bool playerMovementAllowed = true;
     public bool inDialogueSequence = false;
     public bool isMoving;
@@ -17,6 +15,8 @@ public class PlayerGridMovement : MonoBehaviour
 
     [Tooltip("Use non-smooth \"instant\" tile movement.")]
     public bool doInstantMovement = true;
+
+    public Entity ent;
 
     #region Input Registering
     public InterfacingMode interfacingMode = InterfacingMode.COMBAT;
@@ -41,13 +41,13 @@ public class PlayerGridMovement : MonoBehaviour
         //inputActions.Player.RightClick.performed -= OnRightClick;
     }
 
-    private void OnMovePerformed(InputAction.CallbackContext context)
+    public void OnMovePerformed(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
         HandleMovement(moveInput);
     }
 
-    private void OnMoveCanceled(InputAction.CallbackContext context)
+    public void OnMoveCanceled(InputAction.CallbackContext context)
     {
         moveInput = Vector2.zero;
     }
@@ -58,9 +58,9 @@ public class PlayerGridMovement : MonoBehaviour
     }
     #endregion
 
-    // Update is called once per frame
     void Update()
     {
+        /*MP-TEMP-REMOVE
         if(Mouse.current.scroll.ReadValue().y != 0f)
         {
             TrySkipTurn();
@@ -70,6 +70,7 @@ public class PlayerGridMovement : MonoBehaviour
         {
             InventoryInputDetection();
         }
+        */
     }
 
     #region Turn Skipping
@@ -131,17 +132,18 @@ public class PlayerGridMovement : MonoBehaviour
     [SerializeField] private bool moveKeyHeld;
     public void AttemptMovement(int X, int Y)
     {
+        /*MP-TEMP-REMOVE
         // Before we try anything, we need to make sure the player can *afford* to move since there is usually always a movement cost.
         if (!HF.HasResourcesToMove(this.GetComponent<Actor>()))
         {
             return;
         }
-
+        */
         // Attempt to move in the *direction* described by X & Y
         // So we need to add that to our current position to obtain where we want to end up
 
         isMoving = true;
-
+        /*MP-TEMP-REMOVE
         Vector2Int currentPos = HF.V3_to_V2I(PlayerData.inst.transform.position);
         Vector2Int moveTarget = new Vector2Int(currentPos.x + X, currentPos.y + Y); // This is where we want to move to
 
@@ -192,13 +194,14 @@ public class PlayerGridMovement : MonoBehaviour
             Debug.LogError("ERROR: Desired destination tile for movement is null! <PlayerGridMovement.cs>");
             return;
         }
-
+        *//*MP-TEMP-REMOVE
         if (desiredDestinationTile.type != TileType.Exit)
         {
             if (HF.LocationUnoccupied(desiredDestinationTile.location)) // Space is Clear (Move!)
             {
-                moveKeyHeld = Action.BumpAction(GetComponent<Actor>(), new Vector2(X, Y));
-
+                */
+        moveKeyHeld = Action.BumpAction(GetComponent<Actor>(), new Vector2(X, Y));
+        /*MP-TEMP-REMOVE
                 if (desiredDestinationTile.type == TileType.Trap)
                 {
                     // There is a trap here!
@@ -242,7 +245,7 @@ public class PlayerGridMovement : MonoBehaviour
             }
         }
         #endregion
-
+        */
         isMoving = false;
     }
 
@@ -282,9 +285,9 @@ public class PlayerGridMovement : MonoBehaviour
 
     #region Input Handling
 
-    public void OnEnter(InputValue value)
+    public void OnEnter(InputAction.CallbackContext context)
     {
-        if (!GetComponent<Actor>().isAlive || interfacingMode != InterfacingMode.COMBAT) return;
+        if (!ent.IsOwner || !GetComponent<Actor>().isAlive || interfacingMode != InterfacingMode.COMBAT) return;
 
         // Player must be on top of a tile with an item on it to be able to interact with it
         Vector2Int playerPos = HF.V3_to_V2I(this.transform.position);
@@ -305,9 +308,9 @@ public class PlayerGridMovement : MonoBehaviour
     }
 
     // -- Handle [LEFT] Clicks
-    public void OnLeftClick(InputValue value)
+    public void OnLeftClick(InputAction.CallbackContext context)
     {
-        if (!GetComponent<Actor>().isAlive) return;
+        if (!ent.IsOwner || !GetComponent<Actor>().isAlive) return;
 
         // -- Combat --
         if(this.GetComponent<PlayerData>().doTargeting)
@@ -417,9 +420,9 @@ public class PlayerGridMovement : MonoBehaviour
     }
 
     // -- Handle [RIGHT] Clicks
-    public void OnRightClick(InputValue value)
+    public void OnRightClick(InputAction.CallbackContext context)
     {
-        if (!GetComponent<Actor>().isAlive) return;
+        if (!ent.IsOwner || !GetComponent<Actor>().isAlive) return;
 
         // -- Combat Targeting --
         if (this.GetComponent<PlayerData>().canDoTargeting)
@@ -483,8 +486,10 @@ public class PlayerGridMovement : MonoBehaviour
     /// aka the ESCAPE key
     /// </summary>
     /// <param name="value"></param>
-    public void OnQuit(InputValue value)
+    public void OnQuit(InputAction.CallbackContext context)
     {
+        if (!ent.IsOwner || !GetComponent<Actor>().isAlive) return;
+
         // - Check to close Terminal window -
         if (UIManager.inst.terminalMenu.MACHINE != Vector2Int.zero) // Window is open
         {
@@ -509,8 +514,10 @@ public class PlayerGridMovement : MonoBehaviour
     /// aka the V key. Used for EVASION - Volley mode switching. See `Evasion_VolleyModeFlip()` inside UIManager for more details.
     /// </summary>
     /// <param name="value"></param>
-    public void OnVolley(InputValue value)
+    public void OnVolley(InputAction.CallbackContext context)
     {
+        if (!ent.IsOwner || !GetComponent<Actor>().isAlive) return;
+
         // Here we are just checking if the player presses the "V" key or not. This activates a special visual, and also changes the color of the "V".
         if ((UIManager.inst.volleyMain.activeInHierarchy || UIManager.inst.volleyTiles.Count > 0) && !UIManager.inst.volleyAnimating)
         {
@@ -522,8 +529,10 @@ public class PlayerGridMovement : MonoBehaviour
     /// aka the TAB key. Used for Autocompleting text while hacking
     /// </summary>
     /// <param name="value"></param>
-    public void OnAutocomplete(InputValue value)
+    public void OnAutocomplete(InputAction.CallbackContext context)
     {
+        if (!ent.IsOwner || !GetComponent<Actor>().isAlive) return;
+
         if (UIManager.inst.terminalMenu.MACHINE != Vector2Int.zero) // Window is open
         {
             if (UIManager.inst.terminalMenu.activeIField != null) // And the player is in the input window

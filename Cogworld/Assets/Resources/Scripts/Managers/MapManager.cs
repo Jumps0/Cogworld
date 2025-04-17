@@ -142,6 +142,8 @@ public class MapManager : MonoBehaviour
     #region Map Initialization
     public void InitializeMap(bool hideout = false)
     {
+        return; // MP-TEMP-REMOVE
+
         levelLoadCover.SetActive(true); // Enable the Level Load cover
 
         playerIsInHideout = hideout;

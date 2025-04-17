@@ -100,6 +100,7 @@ GameObject:
   - component: {fileID: 6264526523162837533}
   - component: {fileID: 8069790356811527637}
   - component: {fileID: 78723924119389563}
+  - component: {fileID: 8873876583755348571}
   - component: {fileID: -3755893158877589520}
   m_Layer: 3
   m_Name: ~ Player Core ~
@@ -455,6 +456,27 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &8873876583755348571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1489840735499938570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 3048775617
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!114 &-3755893158877589520
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -515,6 +537,13 @@ MonoBehaviour:
   showSensorIndicator: 0
   flashAlertSprite: {fileID: 0}
   confirmCollision: 0
+  hasDialogue: 0
+  hasBufferDialogue: 0
+  talking: 0
+  finishedTalking: 0
+  dialogue: {fileID: 0}
+  moveToNextDialogue: 0
+  uniqueDialogueSound: {fileID: 0}
 --- !u!1 &1736281184690216797
 GameObject:
   m_ObjectHideFlags: 0
